@@ -35,7 +35,7 @@ export default function Login() {
 
       if (data.user) {
         // Successful Login! Route to the dashboard
-        navigate('/dashboard');
+        navigate('/home');
       }
     } catch (error) {
       console.error("Login Error:", error);
