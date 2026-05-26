@@ -1,4 +1,4 @@
-// src/data/Y9/Science_1A/data.js
+// src/data/Y9/SCIENCE_1A/data.js
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';

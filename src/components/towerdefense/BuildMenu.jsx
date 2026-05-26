@@ -1,0 +1,138 @@
+// src/components/towerdefense/BuildMenu.jsx
+import React, { useState } from 'react';
+import { Coins, Zap, Crosshair, Clock, Maximize2, Info } from 'lucide-react';
+import { TOWERS, TOWER_ORDER } from './gameData';
+import TowerVisual from './TowerVisual'; 
+
+const TOWER_THEME = {
+  DART:   { bg: 'bg-[#62b530]', border: 'border-[#4e9226]', text: 'text-white' },
+  SNIPER: { bg: 'bg-[#14bdd2]', border: 'border-[#1098a8]', text: 'text-white' },
+  SPLASH: { bg: 'bg-[#c21487]', border: 'border-[#9b106c]', text: 'text-white' },
+  FROST:  { bg: 'bg-[#8dbcf0]', border: 'border-[#7196c0]', text: 'text-slate-900' },
+  CHAIN:  { bg: 'bg-[#f3c40f]', border: 'border-[#c39d0c]', text: 'text-amber-950' },
+  NITRO:  { bg: 'bg-[#8842d0]', border: 'border-[#6d35a6]', text: 'text-white' }
+};
+
+export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSelect, bolts, onUseBolt }) {
+  const ids = TOWER_ORDER.filter(id => allowedTowers.includes(id));
+  const [hoveredTower, setHoveredTower] = useState(null);
+
+  const renderTooltip = (t) => {
+    if (!t) return null;
+    return (
+      <>
+        <div className="text-white font-black text-lg flex items-center justify-between mb-1">
+          <span>{t.name}</span>
+          <span className="text-slate-400 text-[10px] uppercase tracking-widest bg-slate-800 px-2 py-0.5 rounded">
+            {t.type === 'BUFF' ? 'Support' : t.type === 'SPLASH' ? 'AoE' : t.type}
+          </span>
+        </div>
+        <div className="text-slate-400 text-[11px] font-bold mb-3 leading-snug">{t.desc}</div>
+        <div className="grid grid-cols-2 gap-2 text-[10px] font-black uppercase tracking-widest">
+          {t.type !== 'BUFF' && t.base.damage && (
+            <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+              <Crosshair className="w-3.5 h-3.5 text-rose-400" />
+              <span className="text-slate-300">DMG</span>
+              <span className="text-white ml-auto">{t.base.damage}</span>
+            </div>
+          )}
+          {t.base.cooldown && (
+            <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+              <Clock className="w-3.5 h-3.5 text-sky-400" />
+              <span className="text-slate-300">SPD</span>
+              <span className="text-white ml-auto">{(t.base.cooldown/1000).toFixed(1)}s</span>
+            </div>
+          )}
+          {(t.base.range || t.base.auraRange) && (
+            <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+              <Maximize2 className="w-3.5 h-3.5 text-violet-400" />
+              <span className="text-slate-300">RNG</span>
+              <span className="text-white ml-auto">{t.base.range || t.base.auraRange}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+              <Info className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-slate-300">TGT</span>
+              <span className="text-white ml-auto truncate max-w-[40px] text-right">{t.defaultTargeting || 'ALL'}</span>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <aside className="relative order-3 md:order-none w-full md:w-28 h-auto bg-slate-800 md:border-l-4 border-t-4 md:border-t-0 border-slate-950 flex flex-row md:flex-col p-2 sm:p-3 md:p-4 gap-2 sm:gap-3 flex-shrink-0 z-50 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.3)] md:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.3)]">
+      
+      {/* Mobile Hover Tooltip */}
+      {hoveredTower && (
+        <div className="md:hidden absolute bottom-[calc(100%+8px)] left-2 right-2 bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 shadow-2xl flex flex-col z-50 pointer-events-none animate-in fade-in slide-in-from-bottom-2 duration-200">
+          {renderTooltip(TOWERS[hoveredTower])}
+        </div>
+      )}
+
+      {/* Desktop Hover Tooltip */}
+      {hoveredTower && (
+        <div className="hidden md:flex absolute top-0 right-[calc(100%+16px)] w-64 bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 shadow-2xl flex-col z-[100] pointer-events-none animate-in fade-in slide-in-from-right-2 duration-200">
+          {renderTooltip(TOWERS[hoveredTower])}
+        </div>
+      )}
+
+      {/* Scrollable list of towers */}
+      <div className="flex-1 overflow-x-auto md:overflow-visible flex flex-row md:flex-col gap-2 md:gap-3 items-center md:items-stretch custom-scrollbar h-[72px] md:h-auto pb-1 md:pb-0 relative">
+        
+        {ids.map(id => {
+          const t = TOWERS[id];
+          if (!t) return null;
+          const theme = TOWER_THEME[id];
+          const canAfford = credits >= t.cost;
+          const isSelected = activeBuilder?.typeId === id;
+
+          let cls;
+          if (isSelected) {
+            cls = `${theme.bg} ${theme.text} translate-y-1 border-b-0 ring-4 ring-offset-2 ring-offset-slate-800 ring-white`;
+          } else if (canAfford) {
+            cls = `${theme.bg} border-b-[6px] ${theme.border} ${theme.text} hover:brightness-110 active:border-b-0 active:translate-y-[6px]`;
+          } else {
+            cls = 'bg-slate-700 border-b-[6px] border-slate-900 text-slate-500 opacity-50 cursor-not-allowed';
+          }
+
+          return (
+            <button
+              key={id}
+              onClick={() => canAfford && onSelect({ typeId: id })}
+              onMouseEnter={() => setHoveredTower(id)}
+              onMouseLeave={() => setHoveredTower(null)}
+              disabled={!canAfford}
+              className={`group relative h-16 md:h-auto aspect-square md:w-full rounded-2xl transition-all flex flex-col items-center justify-center gap-1 p-2 shrink-0 ${cls}`}
+            >
+              <TowerVisual typeId={id} size="sm" dimmed={!canAfford} />
+
+              <div className={`flex items-center justify-center gap-0.5 px-1.5 py-0.5 rounded-lg mt-0.5 text-[10px] font-black tabular-nums bg-black/20 ${!canAfford && 'text-slate-400'}`}>
+                <Coins className="w-2.5 h-2.5" strokeWidth={3} />
+                {t.cost}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Reward Blasts */}
+      <div className="flex flex-row md:flex-col items-center justify-center md:border-t-2 border-slate-700 md:pt-4 gap-2 w-auto md:w-full shrink-0 border-l-2 md:border-l-0 pl-3 md:pl-0">
+        <div className="hidden md:block text-[9px] font-black uppercase text-slate-400 text-center leading-tight">Reward<br/>Blasts</div>
+        <button
+          onClick={onUseBolt}
+          disabled={bolts === 0}
+          title="Ignore Armor! Massive damage to all!"
+          className={`h-16 aspect-square md:w-full rounded-2xl flex flex-col items-center justify-center transition-all 
+            ${bolts > 0 
+              ? 'bg-indigo-500 border-b-[6px] border-indigo-700 active:border-b-0 active:translate-y-[6px] text-white shadow-[0_0_15px_rgba(99,102,241,0.6)] hover:brightness-110' 
+              : 'bg-slate-700 border-b-[6px] border-slate-800 text-slate-500 cursor-not-allowed opacity-50'}`}
+        >
+          <Zap className={`w-6 h-6 ${bolts > 0 ? 'fill-current animate-pulse' : ''}`} strokeWidth={2.5} />
+          <span className="font-black mt-1 text-sm tabular-nums">{bolts}</span>
+        </button>
+      </div>
+
+    </aside>
+  );
+}

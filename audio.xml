@@ -1,0 +1,2373 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: public/audio/Y9/**, public/audio/Y8/**, src/data/Y8/Math_1A/**, src/data/Y9/Science_1A/**
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+public/audio/Y8/def_aerobic respiration.mp3
+public/audio/Y8/def_air resistance.mp3
+public/audio/Y8/def_alveoli.mp3
+public/audio/Y8/def_balanced.mp3
+public/audio/Y8/def_blood plasma.mp3
+public/audio/Y8/def_breathing.mp3
+public/audio/Y8/def_bronchi.mp3
+public/audio/Y8/def_capillaries.mp3
+public/audio/Y8/def_concentrated.mp3
+public/audio/Y8/def_constant.mp3
+public/audio/Y8/def_contract.mp3
+public/audio/Y8/def_diaphragm.mp3
+public/audio/Y8/def_diffusion.mp3
+public/audio/Y8/def_dilute.mp3
+public/audio/Y8/def_dissolving.mp3
+public/audio/Y8/def_force.mp3
+public/audio/Y8/def_friction.mp3
+public/audio/Y8/def_glucose.mp3
+public/audio/Y8/def_haemoglobin.mp3
+public/audio/Y8/def_metres per second.mp3
+public/audio/Y8/def_mitochondria.mp3
+public/audio/Y8/def_newtons.mp3
+public/audio/Y8/def_opaque.mp3
+public/audio/Y8/def_oxyhaemoglobin.mp3
+public/audio/Y8/def_reactants.mp3
+public/audio/Y8/def_red blood cells.mp3
+public/audio/Y8/def_relax.mp3
+public/audio/Y8/def_respiration.mp3
+public/audio/Y8/def_respiratory system.mp3
+public/audio/Y8/def_saturated.mp3
+public/audio/Y8/def_solubility.mp3
+public/audio/Y8/def_solute.mp3
+public/audio/Y8/def_solution.mp3
+public/audio/Y8/def_solvent.mp3
+public/audio/Y8/def_speed.mp3
+public/audio/Y8/def_trachea.mp3
+public/audio/Y8/def_transparent.mp3
+public/audio/Y8/def_unbalanced.mp3
+public/audio/Y8/def_weight.mp3
+public/audio/Y8/def_white blood cells.mp3
+public/audio/Y8/dictation_aerobic respiration.mp3
+public/audio/Y8/dictation_air resistance.mp3
+public/audio/Y8/dictation_alveoli.mp3
+public/audio/Y8/dictation_balanced.mp3
+public/audio/Y8/dictation_blood plasma.mp3
+public/audio/Y8/dictation_breathing.mp3
+public/audio/Y8/dictation_bronchi.mp3
+public/audio/Y8/dictation_capillaries.mp3
+public/audio/Y8/dictation_concentrated.mp3
+public/audio/Y8/dictation_constant.mp3
+public/audio/Y8/dictation_contract.mp3
+public/audio/Y8/dictation_diaphragm.mp3
+public/audio/Y8/dictation_diffusion.mp3
+public/audio/Y8/dictation_dilute.mp3
+public/audio/Y8/dictation_dissolving.mp3
+public/audio/Y8/dictation_force.mp3
+public/audio/Y8/dictation_friction.mp3
+public/audio/Y8/dictation_glucose.mp3
+public/audio/Y8/dictation_haemoglobin.mp3
+public/audio/Y8/dictation_metres per second.mp3
+public/audio/Y8/dictation_mitochondria.mp3
+public/audio/Y8/dictation_newtons.mp3
+public/audio/Y8/dictation_opaque.mp3
+public/audio/Y8/dictation_oxyhaemoglobin.mp3
+public/audio/Y8/dictation_reactants.mp3
+public/audio/Y8/dictation_red blood cells.mp3
+public/audio/Y8/dictation_relax.mp3
+public/audio/Y8/dictation_respiration.mp3
+public/audio/Y8/dictation_respiratory system.mp3
+public/audio/Y8/dictation_saturated.mp3
+public/audio/Y8/dictation_solubility.mp3
+public/audio/Y8/dictation_solute.mp3
+public/audio/Y8/dictation_solution.mp3
+public/audio/Y8/dictation_solvent.mp3
+public/audio/Y8/dictation_speed.mp3
+public/audio/Y8/dictation_trachea.mp3
+public/audio/Y8/dictation_transparent.mp3
+public/audio/Y8/dictation_unbalanced.mp3
+public/audio/Y8/dictation_weight.mp3
+public/audio/Y8/dictation_white blood cells.mp3
+public/audio/Y8/MATH_1A/def_acute angle.mp3
+public/audio/Y8/MATH_1A/def_alternate angles.mp3
+public/audio/Y8/MATH_1A/def_co-interior angles.mp3
+public/audio/Y8/MATH_1A/def_complementary.mp3
+public/audio/Y8/MATH_1A/def_corresponding angles.mp3
+public/audio/Y8/MATH_1A/def_obtuse angle.mp3
+public/audio/Y8/MATH_1A/def_parallel lines.mp3
+public/audio/Y8/MATH_1A/def_supplementary.mp3
+public/audio/Y8/MATH_1A/def_transversal.mp3
+public/audio/Y8/MATH_1A/def_vertically opposite.mp3
+public/audio/Y8/MATH_1A/dictation_acute angle.mp3
+public/audio/Y8/MATH_1A/dictation_alternate angles.mp3
+public/audio/Y8/MATH_1A/dictation_co-interior angles.mp3
+public/audio/Y8/MATH_1A/dictation_complementary.mp3
+public/audio/Y8/MATH_1A/dictation_corresponding angles.mp3
+public/audio/Y8/MATH_1A/dictation_obtuse angle.mp3
+public/audio/Y8/MATH_1A/dictation_parallel lines.mp3
+public/audio/Y8/MATH_1A/dictation_supplementary.mp3
+public/audio/Y8/MATH_1A/dictation_transversal.mp3
+public/audio/Y8/MATH_1A/dictation_vertically opposite.mp3
+public/audio/Y8/MATH_1A/passage_MATH_1A_1.mp3
+public/audio/Y8/MATH_1A/passage_MATH_1A_2.mp3
+public/audio/Y8/MATH_1A/passage_MATH_1A_3.mp3
+public/audio/Y8/MATH_1A/sentence_acute angle.mp3
+public/audio/Y8/MATH_1A/sentence_alternate angles.mp3
+public/audio/Y8/MATH_1A/sentence_co-interior angles.mp3
+public/audio/Y8/MATH_1A/sentence_complementary.mp3
+public/audio/Y8/MATH_1A/sentence_corresponding angles.mp3
+public/audio/Y8/MATH_1A/sentence_obtuse angle.mp3
+public/audio/Y8/MATH_1A/sentence_parallel lines.mp3
+public/audio/Y8/MATH_1A/sentence_supplementary.mp3
+public/audio/Y8/MATH_1A/sentence_transversal.mp3
+public/audio/Y8/MATH_1A/sentence_vertically opposite.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_1.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_2.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_3.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_4.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_5.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_6.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_7.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_8.mp3
+public/audio/Y8/MATH_1A/slide_MATH_1A_9.mp3
+public/audio/Y8/MATH_1A/word_acute angle.mp3
+public/audio/Y8/MATH_1A/word_alternate angles.mp3
+public/audio/Y8/MATH_1A/word_co-interior angles.mp3
+public/audio/Y8/MATH_1A/word_complementary.mp3
+public/audio/Y8/MATH_1A/word_corresponding angles.mp3
+public/audio/Y8/MATH_1A/word_obtuse angle.mp3
+public/audio/Y8/MATH_1A/word_parallel lines.mp3
+public/audio/Y8/MATH_1A/word_supplementary.mp3
+public/audio/Y8/MATH_1A/word_transversal.mp3
+public/audio/Y8/MATH_1A/word_vertically opposite.mp3
+public/audio/Y8/passage_1A_1.mp3
+public/audio/Y8/passage_1A_2.mp3
+public/audio/Y8/passage_1A_3.mp3
+public/audio/Y8/passage_1B_1.mp3
+public/audio/Y8/passage_1B_2.mp3
+public/audio/Y8/passage_1B_3.mp3
+public/audio/Y8/passage_2A_1.mp3
+public/audio/Y8/passage_2A_2.mp3
+public/audio/Y8/passage_2A_3.mp3
+public/audio/Y8/passage_3A_1.mp3
+public/audio/Y8/passage_3A_2.mp3
+public/audio/Y8/passage_3A_3.mp3
+public/audio/Y8/passage_Y8_1.mp3
+public/audio/Y8/passage_Y8_2.mp3
+public/audio/Y8/passage_Y8_3.mp3
+public/audio/Y8/sentence_aerobic respiration.mp3
+public/audio/Y8/sentence_air resistance.mp3
+public/audio/Y8/sentence_alveoli.mp3
+public/audio/Y8/sentence_balanced.mp3
+public/audio/Y8/sentence_blood plasma.mp3
+public/audio/Y8/sentence_breathing.mp3
+public/audio/Y8/sentence_bronchi.mp3
+public/audio/Y8/sentence_capillaries.mp3
+public/audio/Y8/sentence_concentrated.mp3
+public/audio/Y8/sentence_constant.mp3
+public/audio/Y8/sentence_contract.mp3
+public/audio/Y8/sentence_diaphragm.mp3
+public/audio/Y8/sentence_diffusion.mp3
+public/audio/Y8/sentence_dilute.mp3
+public/audio/Y8/sentence_dissolving.mp3
+public/audio/Y8/sentence_force.mp3
+public/audio/Y8/sentence_friction.mp3
+public/audio/Y8/sentence_glucose.mp3
+public/audio/Y8/sentence_haemoglobin.mp3
+public/audio/Y8/sentence_metres per second.mp3
+public/audio/Y8/sentence_mitochondria.mp3
+public/audio/Y8/sentence_newtons.mp3
+public/audio/Y8/sentence_opaque.mp3
+public/audio/Y8/sentence_oxyhaemoglobin.mp3
+public/audio/Y8/sentence_reactants.mp3
+public/audio/Y8/sentence_red blood cells.mp3
+public/audio/Y8/sentence_relax.mp3
+public/audio/Y8/sentence_respiration.mp3
+public/audio/Y8/sentence_respiratory system.mp3
+public/audio/Y8/sentence_saturated.mp3
+public/audio/Y8/sentence_solubility.mp3
+public/audio/Y8/sentence_solute.mp3
+public/audio/Y8/sentence_solution.mp3
+public/audio/Y8/sentence_solvent.mp3
+public/audio/Y8/sentence_speed.mp3
+public/audio/Y8/sentence_trachea.mp3
+public/audio/Y8/sentence_transparent.mp3
+public/audio/Y8/sentence_unbalanced.mp3
+public/audio/Y8/sentence_weight.mp3
+public/audio/Y8/sentence_white blood cells.mp3
+public/audio/Y8/word_aerobic respiration.mp3
+public/audio/Y8/word_air resistance.mp3
+public/audio/Y8/word_alveoli.mp3
+public/audio/Y8/word_balanced.mp3
+public/audio/Y8/word_blood plasma.mp3
+public/audio/Y8/word_breathing.mp3
+public/audio/Y8/word_bronchi.mp3
+public/audio/Y8/word_capillaries.mp3
+public/audio/Y8/word_concentrated.mp3
+public/audio/Y8/word_constant.mp3
+public/audio/Y8/word_contract.mp3
+public/audio/Y8/word_diaphragm.mp3
+public/audio/Y8/word_diffusion.mp3
+public/audio/Y8/word_dilute.mp3
+public/audio/Y8/word_dissolving.mp3
+public/audio/Y8/word_force.mp3
+public/audio/Y8/word_friction.mp3
+public/audio/Y8/word_glucose.mp3
+public/audio/Y8/word_haemoglobin.mp3
+public/audio/Y8/word_metres per second.mp3
+public/audio/Y8/word_mitochondria.mp3
+public/audio/Y8/word_newtons.mp3
+public/audio/Y8/word_opaque.mp3
+public/audio/Y8/word_oxyhaemoglobin.mp3
+public/audio/Y8/word_reactants.mp3
+public/audio/Y8/word_red blood cells.mp3
+public/audio/Y8/word_relax.mp3
+public/audio/Y8/word_respiration.mp3
+public/audio/Y8/word_respiratory system.mp3
+public/audio/Y8/word_saturated.mp3
+public/audio/Y8/word_solubility.mp3
+public/audio/Y8/word_solute.mp3
+public/audio/Y8/word_solution.mp3
+public/audio/Y8/word_solvent.mp3
+public/audio/Y8/word_speed.mp3
+public/audio/Y8/word_trachea.mp3
+public/audio/Y8/word_transparent.mp3
+public/audio/Y8/word_unbalanced.mp3
+public/audio/Y8/word_weight.mp3
+public/audio/Y8/word_white blood cells.mp3
+public/audio/Y9/def_blood.mp3
+public/audio/Y9/def_carbon cycle.mp3
+public/audio/Y9/def_carbon.mp3
+public/audio/Y9/def_cell membrane.mp3
+public/audio/Y9/def_cell wall.mp3
+public/audio/Y9/def_cell.mp3
+public/audio/Y9/def_chlorophyll.mp3
+public/audio/Y9/def_chloroplast.mp3
+public/audio/Y9/def_chromosome.mp3
+public/audio/Y9/def_climate change.mp3
+public/audio/Y9/def_combustion.mp3
+public/audio/Y9/def_consumer.mp3
+public/audio/Y9/def_cytoplasm.mp3
+public/audio/Y9/def_decomposer.mp3
+public/audio/Y9/def_dissolved.mp3
+public/audio/Y9/def_dna.mp3
+public/audio/Y9/def_egg.mp3
+public/audio/Y9/def_evaporation.mp3
+public/audio/Y9/def_excess.mp3
+public/audio/Y9/def_excretory.mp3
+public/audio/Y9/def_fertilisation.mp3
+public/audio/Y9/def_fertiliser.mp3
+public/audio/Y9/def_filter.mp3
+public/audio/Y9/def_fossil fuels.mp3
+public/audio/Y9/def_gene.mp3
+public/audio/Y9/def_genetics.mp3
+public/audio/Y9/def_glucose.mp3
+public/audio/Y9/def_greenhouse gases.mp3
+public/audio/Y9/def_kidney.mp3
+public/audio/Y9/def_magnesium.mp3
+public/audio/Y9/def_mineral ions.mp3
+public/audio/Y9/def_nitrate.mp3
+public/audio/Y9/def_nucleus.mp3
+public/audio/Y9/def_phloem.mp3
+public/audio/Y9/def_photosynthesis.mp3
+public/audio/Y9/def_producer.mp3
+public/audio/Y9/def_respiration.mp3
+public/audio/Y9/def_root hair.mp3
+public/audio/Y9/def_species.mp3
+public/audio/Y9/def_sperm.mp3
+public/audio/Y9/def_starch.mp3
+public/audio/Y9/def_stomata.mp3
+public/audio/Y9/def_transpiration.mp3
+public/audio/Y9/def_urea.mp3
+public/audio/Y9/def_urine.mp3
+public/audio/Y9/def_variation.mp3
+public/audio/Y9/def_waste.mp3
+public/audio/Y9/def_water vapour.mp3
+public/audio/Y9/def_xylem.mp3
+public/audio/Y9/def_yield.mp3
+public/audio/Y9/dictation_blood.mp3
+public/audio/Y9/dictation_carbon cycle.mp3
+public/audio/Y9/dictation_carbon.mp3
+public/audio/Y9/dictation_cell membrane.mp3
+public/audio/Y9/dictation_cell wall.mp3
+public/audio/Y9/dictation_cell.mp3
+public/audio/Y9/dictation_chlorophyll.mp3
+public/audio/Y9/dictation_chloroplast.mp3
+public/audio/Y9/dictation_chromosome.mp3
+public/audio/Y9/dictation_climate change.mp3
+public/audio/Y9/dictation_combustion.mp3
+public/audio/Y9/dictation_consumer.mp3
+public/audio/Y9/dictation_cytoplasm.mp3
+public/audio/Y9/dictation_decomposer.mp3
+public/audio/Y9/dictation_dissolved.mp3
+public/audio/Y9/dictation_dna.mp3
+public/audio/Y9/dictation_egg.mp3
+public/audio/Y9/dictation_evaporation.mp3
+public/audio/Y9/dictation_excess.mp3
+public/audio/Y9/dictation_excretory.mp3
+public/audio/Y9/dictation_fertilisation.mp3
+public/audio/Y9/dictation_fertiliser.mp3
+public/audio/Y9/dictation_filter.mp3
+public/audio/Y9/dictation_fossil fuels.mp3
+public/audio/Y9/dictation_gene.mp3
+public/audio/Y9/dictation_genetics.mp3
+public/audio/Y9/dictation_glucose.mp3
+public/audio/Y9/dictation_greenhouse gases.mp3
+public/audio/Y9/dictation_kidney.mp3
+public/audio/Y9/dictation_magnesium.mp3
+public/audio/Y9/dictation_mineral ions.mp3
+public/audio/Y9/dictation_nitrate.mp3
+public/audio/Y9/dictation_nucleus.mp3
+public/audio/Y9/dictation_phloem.mp3
+public/audio/Y9/dictation_photosynthesis.mp3
+public/audio/Y9/dictation_producer.mp3
+public/audio/Y9/dictation_respiration.mp3
+public/audio/Y9/dictation_root hair.mp3
+public/audio/Y9/dictation_species.mp3
+public/audio/Y9/dictation_sperm.mp3
+public/audio/Y9/dictation_starch.mp3
+public/audio/Y9/dictation_stomata.mp3
+public/audio/Y9/dictation_transpiration.mp3
+public/audio/Y9/dictation_urea.mp3
+public/audio/Y9/dictation_urine.mp3
+public/audio/Y9/dictation_variation.mp3
+public/audio/Y9/dictation_waste.mp3
+public/audio/Y9/dictation_water vapour.mp3
+public/audio/Y9/dictation_xylem.mp3
+public/audio/Y9/dictation_yield.mp3
+public/audio/Y9/MATH_1A/def_axis.mp3
+public/audio/Y9/MATH_1A/def_coordinate.mp3
+public/audio/Y9/MATH_1A/def_correlation.mp3
+public/audio/Y9/MATH_1A/def_negative correlation.mp3
+public/audio/Y9/MATH_1A/def_positive correlation.mp3
+public/audio/Y9/MATH_1A/def_scatter graph.mp3
+public/audio/Y9/MATH_1A/def_strong correlation.mp3
+public/audio/Y9/MATH_1A/def_trend.mp3
+public/audio/Y9/MATH_1A/def_variable.mp3
+public/audio/Y9/MATH_1A/def_weak correlation.mp3
+public/audio/Y9/MATH_1A/dictation_axis.mp3
+public/audio/Y9/MATH_1A/dictation_coordinate.mp3
+public/audio/Y9/MATH_1A/dictation_correlation.mp3
+public/audio/Y9/MATH_1A/dictation_negative correlation.mp3
+public/audio/Y9/MATH_1A/dictation_positive correlation.mp3
+public/audio/Y9/MATH_1A/dictation_scatter graph.mp3
+public/audio/Y9/MATH_1A/dictation_strong correlation.mp3
+public/audio/Y9/MATH_1A/dictation_trend.mp3
+public/audio/Y9/MATH_1A/dictation_variable.mp3
+public/audio/Y9/MATH_1A/dictation_weak correlation.mp3
+public/audio/Y9/MATH_1A/sentence_axis.mp3
+public/audio/Y9/MATH_1A/sentence_coordinate.mp3
+public/audio/Y9/MATH_1A/sentence_correlation.mp3
+public/audio/Y9/MATH_1A/sentence_negative correlation.mp3
+public/audio/Y9/MATH_1A/sentence_positive correlation.mp3
+public/audio/Y9/MATH_1A/sentence_scatter graph.mp3
+public/audio/Y9/MATH_1A/sentence_strong correlation.mp3
+public/audio/Y9/MATH_1A/sentence_trend.mp3
+public/audio/Y9/MATH_1A/sentence_variable.mp3
+public/audio/Y9/MATH_1A/sentence_weak correlation.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_1.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_10.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_11.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_12.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_2.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_3.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_4.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_5.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_6.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_7.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_8.mp3
+public/audio/Y9/MATH_1A/slide_MATH_1A_9.mp3
+public/audio/Y9/MATH_1A/word_axis.mp3
+public/audio/Y9/MATH_1A/word_coordinate.mp3
+public/audio/Y9/MATH_1A/word_correlation.mp3
+public/audio/Y9/MATH_1A/word_negative correlation.mp3
+public/audio/Y9/MATH_1A/word_positive correlation.mp3
+public/audio/Y9/MATH_1A/word_scatter graph.mp3
+public/audio/Y9/MATH_1A/word_strong correlation.mp3
+public/audio/Y9/MATH_1A/word_trend.mp3
+public/audio/Y9/MATH_1A/word_variable.mp3
+public/audio/Y9/MATH_1A/word_weak correlation.mp3
+public/audio/Y9/passage_1A_1.mp3
+public/audio/Y9/passage_1A_2.mp3
+public/audio/Y9/passage_1A_3.mp3
+public/audio/Y9/passage_1B_1.mp3
+public/audio/Y9/passage_1B_2.mp3
+public/audio/Y9/passage_1B_3.mp3
+public/audio/Y9/passage_4A_1.mp3
+public/audio/Y9/passage_4A_2.mp3
+public/audio/Y9/passage_4A_3.mp3
+public/audio/Y9/passage_Genetics_1.mp3
+public/audio/Y9/passage_Genetics_2.mp3
+public/audio/Y9/passage_Genetics_3.mp3
+public/audio/Y9/passage_RenalSystem_1.mp3
+public/audio/Y9/passage_RenalSystem_2.mp3
+public/audio/Y9/passage_RenalSystem_3.mp3
+public/audio/Y9/passage_Y9_1.mp3
+public/audio/Y9/passage_Y9_2.mp3
+public/audio/Y9/passage_Y9_3.mp3
+public/audio/Y9/SCIENCE_1A/def_ammeter.mp3
+public/audio/Y9/SCIENCE_1A/def_cell.mp3
+public/audio/Y9/SCIENCE_1A/def_component.mp3
+public/audio/Y9/SCIENCE_1A/def_current.mp3
+public/audio/Y9/SCIENCE_1A/def_ohms law.mp3
+public/audio/Y9/SCIENCE_1A/def_parallel circuit.mp3
+public/audio/Y9/SCIENCE_1A/def_resistance.mp3
+public/audio/Y9/SCIENCE_1A/def_series circuit.mp3
+public/audio/Y9/SCIENCE_1A/def_voltage.mp3
+public/audio/Y9/SCIENCE_1A/def_voltmeter.mp3
+public/audio/Y9/SCIENCE_1A/dictation_ammeter.mp3
+public/audio/Y9/SCIENCE_1A/dictation_cell.mp3
+public/audio/Y9/SCIENCE_1A/dictation_component.mp3
+public/audio/Y9/SCIENCE_1A/dictation_current.mp3
+public/audio/Y9/SCIENCE_1A/dictation_ohms law.mp3
+public/audio/Y9/SCIENCE_1A/dictation_parallel circuit.mp3
+public/audio/Y9/SCIENCE_1A/dictation_resistance.mp3
+public/audio/Y9/SCIENCE_1A/dictation_series circuit.mp3
+public/audio/Y9/SCIENCE_1A/dictation_voltage.mp3
+public/audio/Y9/SCIENCE_1A/dictation_voltmeter.mp3
+public/audio/Y9/SCIENCE_1A/sentence_ammeter.mp3
+public/audio/Y9/SCIENCE_1A/sentence_cell.mp3
+public/audio/Y9/SCIENCE_1A/sentence_component.mp3
+public/audio/Y9/SCIENCE_1A/sentence_current.mp3
+public/audio/Y9/SCIENCE_1A/sentence_ohms law.mp3
+public/audio/Y9/SCIENCE_1A/sentence_parallel circuit.mp3
+public/audio/Y9/SCIENCE_1A/sentence_resistance.mp3
+public/audio/Y9/SCIENCE_1A/sentence_series circuit.mp3
+public/audio/Y9/SCIENCE_1A/sentence_voltage.mp3
+public/audio/Y9/SCIENCE_1A/sentence_voltmeter.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_1.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_10.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_11.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_2.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_3.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_4.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_5.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_6.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_7.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_8.mp3
+public/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_9.mp3
+public/audio/Y9/SCIENCE_1A/word_ammeter.mp3
+public/audio/Y9/SCIENCE_1A/word_cell.mp3
+public/audio/Y9/SCIENCE_1A/word_component.mp3
+public/audio/Y9/SCIENCE_1A/word_current.mp3
+public/audio/Y9/SCIENCE_1A/word_ohms law.mp3
+public/audio/Y9/SCIENCE_1A/word_parallel circuit.mp3
+public/audio/Y9/SCIENCE_1A/word_resistance.mp3
+public/audio/Y9/SCIENCE_1A/word_series circuit.mp3
+public/audio/Y9/SCIENCE_1A/word_voltage.mp3
+public/audio/Y9/SCIENCE_1A/word_voltmeter.mp3
+public/audio/Y9/sentence_blood.mp3
+public/audio/Y9/sentence_carbon cycle.mp3
+public/audio/Y9/sentence_carbon.mp3
+public/audio/Y9/sentence_cell membrane.mp3
+public/audio/Y9/sentence_cell wall.mp3
+public/audio/Y9/sentence_cell.mp3
+public/audio/Y9/sentence_chlorophyll.mp3
+public/audio/Y9/sentence_chloroplast.mp3
+public/audio/Y9/sentence_chromosome.mp3
+public/audio/Y9/sentence_climate change.mp3
+public/audio/Y9/sentence_combustion.mp3
+public/audio/Y9/sentence_consumer.mp3
+public/audio/Y9/sentence_cytoplasm.mp3
+public/audio/Y9/sentence_decomposer.mp3
+public/audio/Y9/sentence_dissolved.mp3
+public/audio/Y9/sentence_dna.mp3
+public/audio/Y9/sentence_egg.mp3
+public/audio/Y9/sentence_evaporation.mp3
+public/audio/Y9/sentence_excess.mp3
+public/audio/Y9/sentence_excretory.mp3
+public/audio/Y9/sentence_fertilisation.mp3
+public/audio/Y9/sentence_fertiliser.mp3
+public/audio/Y9/sentence_filter.mp3
+public/audio/Y9/sentence_fossil fuels.mp3
+public/audio/Y9/sentence_gene.mp3
+public/audio/Y9/sentence_genetics.mp3
+public/audio/Y9/sentence_glucose.mp3
+public/audio/Y9/sentence_greenhouse gases.mp3
+public/audio/Y9/sentence_kidney.mp3
+public/audio/Y9/sentence_magnesium.mp3
+public/audio/Y9/sentence_mineral ions.mp3
+public/audio/Y9/sentence_nitrate.mp3
+public/audio/Y9/sentence_nucleus.mp3
+public/audio/Y9/sentence_phloem.mp3
+public/audio/Y9/sentence_photosynthesis.mp3
+public/audio/Y9/sentence_producer.mp3
+public/audio/Y9/sentence_respiration.mp3
+public/audio/Y9/sentence_root hair.mp3
+public/audio/Y9/sentence_species.mp3
+public/audio/Y9/sentence_sperm.mp3
+public/audio/Y9/sentence_starch.mp3
+public/audio/Y9/sentence_stomata.mp3
+public/audio/Y9/sentence_transpiration.mp3
+public/audio/Y9/sentence_urea.mp3
+public/audio/Y9/sentence_urine.mp3
+public/audio/Y9/sentence_variation.mp3
+public/audio/Y9/sentence_waste.mp3
+public/audio/Y9/sentence_water vapour.mp3
+public/audio/Y9/sentence_xylem.mp3
+public/audio/Y9/sentence_yield.mp3
+public/audio/Y9/word_blood.mp3
+public/audio/Y9/word_carbon cycle.mp3
+public/audio/Y9/word_carbon.mp3
+public/audio/Y9/word_cell membrane.mp3
+public/audio/Y9/word_cell wall.mp3
+public/audio/Y9/word_cell.mp3
+public/audio/Y9/word_chlorophyll.mp3
+public/audio/Y9/word_chloroplast.mp3
+public/audio/Y9/word_chromosome.mp3
+public/audio/Y9/word_climate change.mp3
+public/audio/Y9/word_combustion.mp3
+public/audio/Y9/word_consumer.mp3
+public/audio/Y9/word_cytoplasm.mp3
+public/audio/Y9/word_decomposer.mp3
+public/audio/Y9/word_dissolved.mp3
+public/audio/Y9/word_dna.mp3
+public/audio/Y9/word_egg.mp3
+public/audio/Y9/word_evaporation.mp3
+public/audio/Y9/word_excess.mp3
+public/audio/Y9/word_excretory.mp3
+public/audio/Y9/word_fertilisation.mp3
+public/audio/Y9/word_fertiliser.mp3
+public/audio/Y9/word_filter.mp3
+public/audio/Y9/word_fossil fuels.mp3
+public/audio/Y9/word_gene.mp3
+public/audio/Y9/word_genetics.mp3
+public/audio/Y9/word_glucose.mp3
+public/audio/Y9/word_greenhouse gases.mp3
+public/audio/Y9/word_kidney.mp3
+public/audio/Y9/word_magnesium.mp3
+public/audio/Y9/word_mineral ions.mp3
+public/audio/Y9/word_nitrate.mp3
+public/audio/Y9/word_nucleus.mp3
+public/audio/Y9/word_phloem.mp3
+public/audio/Y9/word_photosynthesis.mp3
+public/audio/Y9/word_producer.mp3
+public/audio/Y9/word_respiration.mp3
+public/audio/Y9/word_root hair.mp3
+public/audio/Y9/word_species.mp3
+public/audio/Y9/word_sperm.mp3
+public/audio/Y9/word_starch.mp3
+public/audio/Y9/word_stomata.mp3
+public/audio/Y9/word_transpiration.mp3
+public/audio/Y9/word_urea.mp3
+public/audio/Y9/word_urine.mp3
+public/audio/Y9/word_variation.mp3
+public/audio/Y9/word_waste.mp3
+public/audio/Y9/word_water vapour.mp3
+public/audio/Y9/word_xylem.mp3
+public/audio/Y9/word_yield.mp3
+src/data/Y8/Math_1A/assessment.js
+src/data/Y8/Math_1A/data.js
+src/data/Y8/Math_1A/games.js
+src/data/Y8/Math_1A/notes.js
+src/data/Y8/Math_1A/workbook.js
+src/data/Y9/Science_1A/assessment.js
+src/data/Y9/Science_1A/data.js
+src/data/Y9/Science_1A/games.js
+src/data/Y9/Science_1A/notes.js
+src/data/Y9/Science_1A/workbook.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/data/Y8/Math_1A/assessment.js">
+// src/data/Y8/Math_1A/assessment.js
+export const assessment = {
+  timeLimit: 1800, // 30 minutes
+  passages: [], // No text passages needed for this Math assessment
+  questions: [
+    {
+      id: "q1_comp_inline",
+      type: "inline",
+      title: "1. Look at the right angle below split into two adjacent angles. Select the correct relationship.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 120 50 L 120 200 L 270 200" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 170 L 150 170 L 150 200" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 200 L 240 106" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 180 200 A 60 60 0 0 0 170 161" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <text x="195" y="185" font-family="sans-serif" font-weight="bold" font-size="20" fill="#1d4ed8" text-anchor="middle">a</text>
+        <path d="M 170 161 A 60 60 0 0 0 120 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="145" y="135" font-family="sans-serif" font-weight="bold" font-size="20" fill="#b91c1c" text-anchor="middle">b</text>
+      </svg>`,
+      options: [],
+      textParts: [
+        "Because the two angles form a perfect right corner, they are known as ",
+        " angles. This means their mathematical sum will always equal exactly ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "complementary",
+          options: [
+            { val: "supplementary", text: "supplementary" },
+            { val: "complementary", text: "complementary" },
+            { val: "vertically opposite", text: "vertically opposite" }
+          ]
+        },
+        "2": {
+          correct: "90",
+          options: [
+            { val: "90", text: "90°" },
+            { val: "180", text: "180°" },
+            { val: "360", text: "360°" }
+          ]
+        }
+      },
+      expEn: "Adjacent angles that form a right corner (indicated by the square symbol) add up to 90°. These are mathematically defined as complementary angles.",
+      expVn: "Các góc kề nhau tạo thành một góc vuông (được chỉ ra bởi ký hiệu hình vuông) có tổng là 90°. Chúng được định nghĩa toán học là các góc phụ nhau."
+    },
+    {
+      id: "q2_comp_mcq",
+      type: "mcq",
+      title: "2. The angle marked with a square is a right angle. If angle 'a' measures 38°, what is the exact measurement of angle 'b'?",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 120 50 L 120 200 L 270 200" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 170 L 150 170 L 150 200" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 200 L 240 106" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 180 200 A 60 60 0 0 0 170 161" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <text x="200" y="185" font-family="sans-serif" font-weight="bold" font-size="20" fill="#1d4ed8" text-anchor="middle">38°</text>
+        <path d="M 170 161 A 60 60 0 0 0 120 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="145" y="135" font-family="sans-serif" font-weight="bold" font-size="20" fill="#b91c1c" text-anchor="middle">b</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. 142°" },
+        { val: "B", text: "B. 52°" },
+        { val: "C", text: "C. 62°" },
+        { val: "D", text: "D. 90°" }
+      ],
+      correct: "B",
+      expEn: "Complementary angles add up to 90°. Subtracting the known angle gives the missing value: 90° - 38° = 52°.",
+      expVn: "Các góc phụ nhau có tổng là 90°. Trừ đi góc đã biết sẽ ra giá trị còn thiếu: 90° - 38° = 52°."
+    },
+    {
+      id: "q3_vocab_dnd",
+      type: "dnd",
+      title: "3. Drag and drop the visual letter shapes that help identify these specific parallel line angle pairs.",
+      options: [],
+      bank: [
+        { id: "v1", val: "z_shape", text: "Z-Shape" },
+        { id: "v2", val: "c_shape", text: "C-Shape" },
+        { id: "v3", val: "f_shape", text: "F-Shape" },
+        { id: "v4", val: "x_shape", text: "X-Shape" }
+      ],
+      targets: [
+        { id: "alt", title: "Alternate Angles" },
+        { id: "corr", title: "Corresponding Angles" },
+        { id: "co_int", title: "Co-interior Angles" }
+      ],
+      correctSets: {
+        "alt": ["z_shape"],
+        "corr": ["f_shape"],
+        "co_int": ["c_shape"]
+      },
+      expEn: "Alternate angles form a Z-shape, Corresponding angles form an F-shape, and Co-interior angles form a C-shape.",
+      expVn: "Góc so le trong tạo thành hình chữ Z, Góc đồng vị tạo thành hình chữ F, và Góc trong cùng phía tạo thành hình chữ C."
+    },
+    {
+      id: "q4_math_inline",
+      type: "inline",
+      title: "4. Identify the relationship to calculate the missing angle 'y'.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+        <text x="160" y="115" font-family="sans-serif" font-weight="bold" font-size="18" fill="#9333ea">72°</text>
+        <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+        <text x="230" y="150" font-family="sans-serif" font-weight="bold" font-size="18" fill="#9333ea">y</text>
+      </svg>`,
+      options: [],
+      textParts: [
+        "Because the horizontal lines are parallel, the angle marked 'y' is ",
+        " to the 72° angle. This means their mathematical values are exactly ",
+        ", making y = 72°."
+      ],
+      blanks: {
+        "1": {
+          correct: "alt",
+          options: [
+            { val: "co_int", text: "co-interior" },
+            { val: "alt", text: "alternate" },
+            { val: "corr", text: "corresponding" }
+          ]
+        },
+        "2": {
+          correct: "equal",
+          options: [
+            { val: "supp", text: "supplementary" },
+            { val: "equal", text: "equal" }
+          ]
+        }
+      },
+      expEn: "The highlighted angles sit on opposite sides of the transversal forming a Z-shape. This makes them alternate angles, which are always mathematically equal.",
+      expVn: "Các góc được làm nổi bật nằm ở hai phía đối diện của đường cát tuyến tạo thành hình chữ Z. Điều này khiến chúng trở thành góc so le trong, và chúng luôn bằng nhau về mặt toán học."
+    },
+    {
+      id: "q5_math_mcq",
+      type: "mcq",
+      title: "5. Examine the C-shape highlight. Calculate the value of angle z.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="160" y="115" font-family="sans-serif" font-weight="bold" font-size="18" fill="#ef4444">105°</text>
+        <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+        <text x="245" y="145" font-family="sans-serif" font-weight="bold" font-size="18" fill="#22c55e">z</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. 105°" },
+        { val: "B", text: "B. 90°" },
+        { val: "C", text: "C. 85°" },
+        { val: "D", text: "D. 75°" }
+      ],
+      correct: "D",
+      expEn: "The highlighted angles are on the same side of the transversal (C-shape), meaning they are co-interior. Co-interior angles are supplementary (add to 180). 180 - 105 = 75°.",
+      expVn: "Các góc được đánh dấu nằm cùng một phía của đường cát tuyến (hình chữ C), nghĩa là chúng là góc trong cùng phía. Góc trong cùng phía thì bù nhau (tổng bằng 180). 180 - 105 = 75°."
+    },
+    {
+      id: "q6_x_intersect_dnd",
+      type: "dnd",
+      title: "6. Analyze the intersecting system below. Drag the correct numerical values to identify angles d, e, and f.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 125 L 350 125" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 120 225 L 280 25" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 160 125 A 40 40 0 0 1 225 94" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="185" y="90" font-family="sans-serif" font-weight="bold" font-size="18" fill="#b91c1c" text-anchor="middle">130°</text>
+        <path d="M 240 125 A 40 40 0 0 1 175 156" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <text x="215" y="175" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8" text-anchor="middle">d</text>
+        <path d="M 225 94 A 40 40 0 0 1 240 125" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+        <text x="245" y="110" font-family="sans-serif" font-weight="bold" font-size="18" fill="#d97706" text-anchor="middle">f</text>
+        <path d="M 175 156 A 40 40 0 0 1 160 125" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+        <text x="155" y="150" font-family="sans-serif" font-weight="bold" font-size="18" fill="#059669" text-anchor="middle">e</text>
+      </svg>`,
+      options: [],
+      bank: [
+        { id: "n1", val: "130", text: "130°" },
+        { id: "n2", val: "50", text: "50°" },
+        { id: "n3", val: "50", text: "50°" },
+        { id: "n4", val: "40", text: "40°" }
+      ],
+      targets: [
+        { id: "t_d", title: "Angle d" },
+        { id: "t_e", title: "Angle e" },
+        { id: "t_f", title: "Angle f" }
+      ],
+      correctSets: {
+        "t_d": ["130"],
+        "t_e": ["50"],
+        "t_f": ["50"]
+      },
+      expEn: "Angle 'd' is vertically opposite to 130°, making it equal to 130°. Angles 'e' and 'f' sit on a straight line intersecting the 130° angle, making them supplementary: 180° - 130° = 50°.",
+      expVn: "Góc 'd' đối đỉnh với góc 130°, nên nó bằng 130°. Góc 'e' và 'f' nằm trên đường thẳng kề bù với góc 130°, nên chúng có tổng bằng 180°: 180° - 130° = 50°."
+    },
+    {
+      id: "q7_complex_dnd",
+      type: "dnd",
+      title: "7. Drag the correct numerical values to complete the calculations for angles a, b, c, and d.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        
+        <text x="185" y="70" font-family="sans-serif" font-weight="bold" font-size="18" fill="#334155">65°</text>
+        <text x="150" y="105" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">a</text>
+        <text x="200" y="105" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">b</text>
+        <text x="210" y="155" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">c</text>
+        <text x="255" y="155" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">d</text>
+      </svg>`,
+      options: [],
+      bank: [
+        { id: "x1", val: "65", text: "65°" },
+        { id: "x2", val: "65", text: "65°" },
+        { id: "x3", val: "115", text: "115°" },
+        { id: "x4", val: "115", text: "115°" },
+        { id: "x5", val: "180", text: "180°" }
+      ],
+      targets: [
+        { id: "a_val", title: "Angle a" },
+        { id: "b_val", title: "Angle b" },
+        { id: "c_val", title: "Angle c" },
+        { id: "d_val", title: "Angle d" }
+      ],
+      correctSets: {
+        "a_val": ["65"],
+        "b_val": ["115"],
+        "c_val": ["115"],
+        "d_val": ["65"]
+      },
+      expEn: "'a' is vertically opposite to 65° (so a=65). 'b' is supplementary to 'a' on a straight line (180-65=115). 'c' is alternate interior to 'b' (so c=115). 'd' is alternate interior to 'a' (so d=65).",
+      expVn: "'a' là góc đối đỉnh với 65° (nên a=65). 'b' là góc bù với 'a' trên một đường thẳng (180-65=115). 'c' là góc so le trong với 'b' (nên c=115). 'd' là góc so le trong với 'a' (nên d=65)."
+    },
+    {
+      id: "q8_global_class_dnd",
+      type: "dnd",
+      title: "8. Sort the geometric angle pairs or rules into their correct structural property category.",
+      options: [],
+      bank: [
+        { id: "g1", val: "vert", text: "Vertically Opposite" },
+        { id: "g2", val: "alt", text: "Alternate Angles" },
+        { id: "g3", val: "corr", text: "Corresponding Angles" },
+        { id: "g4", val: "coint", text: "Co-interior Angles" },
+        { id: "g5", val: "straight", text: "Angles on a Straight Line" }
+      ],
+      targets: [
+        { id: "equal_angles", title: "Equal Angles (=)" },
+        { id: "supp_angles", title: "Supplementary Angles (Adds to 180°)" }
+      ],
+      correctSets: {
+        "equal_angles": ["vert", "alt", "corr"],
+        "supp_angles": ["coint", "straight"]
+      },
+      expEn: "Vertically opposite, alternate, and corresponding angles are always mathematically equal. Co-interior angles and angles running along a straight flat line are supplementary (summing to 180°).",
+      expVn: "Các góc đối đỉnh, so le trong và đồng vị luôn bằng nhau về mặt toán học. Các góc trong cùng phía và góc trên đường thẳng là các góc bù nhau (tổng bằng 180°)."
+    }
+  ]
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/data.js">
+// src/data/Y8/Math_1A/data.js
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const MATH_1A_DATA = {
+  meta: {
+    id: "MATH_1A",
+    title: "Parallel Lines & Angles",
+    desc: "Master the properties of angle pairs, transversals, and parallel lines in geometry.",
+    track: "Y8",
+    icon: "Hash"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    {
+      word: "Acute Angle",
+      vn: "Góc nhọn",
+      def: "An angle that is greater than 0° but strictly less than 90°.",
+      vnDef: "Góc lớn hơn 0° nhưng nhỏ hơn 90°.",
+      sent: "An equilateral triangle is made up of three acute angles.",
+      vnSent: "Một tam giác đều được tạo thành từ ba góc nhọn.",
+      dictSent: "An acute angle is always smaller than a perfect right angle.",
+      isReal: true
+    },
+    {
+      word: "Obtuse Angle",
+      vn: "Góc tù",
+      def: "An angle that is greater than 90° but strictly less than 180°.",
+      vnDef: "Góc lớn hơn 90° nhưng nhỏ hơn 180°.",
+      sent: "The reclining chair leaned back to form a wide obtuse angle.",
+      vnSent: "Chiếc ghế ngả dựa ra sau tạo thành một góc tù rộng.",
+      dictSent: "An obtuse angle is wider than a right angle but smaller than a straight line.",
+      isReal: true
+    },
+    {
+      word: "Complementary",
+      vn: "Phụ nhau",
+      def: "Two angles whose sum is exactly 90 degrees.",
+      vnDef: "Hai góc có tổng số đo chính xác bằng 90 độ.",
+      sent: "Because the two angles form a right angle, they are complementary.",
+      vnSent: "Vì hai góc tạo thành một góc vuông nên chúng là hai góc phụ nhau.",
+      dictSent: "Complementary angles combine to form a perfect ninety degree corner.",
+      isReal: true
+    },
+    {
+      word: "Supplementary",
+      vn: "Bù nhau",
+      def: "Two angles whose sum is exactly 180 degrees.",
+      vnDef: "Hai góc có tổng số đo chính xác bằng 180 độ.",
+      sent: "The two adjacent angles on the straight line are supplementary.",
+      vnSent: "Hai góc kề nhau trên đường thẳng là hai góc bù nhau.",
+      dictSent: "Supplementary angles always add up to one hundred and eighty degrees.",
+      isReal: true
+    },
+    {
+      word: "Vertically Opposite",
+      vn: "Đối đỉnh",
+      def: "The angles directly across from each other when two intersecting lines form an X.",
+      vnDef: "Các góc nằm đối diện trực tiếp với nhau khi hai đường thẳng cắt nhau tạo thành hình chữ X.",
+      sent: "The scissors open to reveal vertically opposite angles that are perfectly equal.",
+      vnSent: "Chiếc kéo mở ra để lộ các góc đối đỉnh hoàn toàn bằng nhau.",
+      dictSent: "Vertically opposite angles sit across from each other and are always equal.",
+      isReal: true
+    },
+    {
+      word: "Parallel Lines",
+      vn: "Đường thẳng song song",
+      def: "Two lines on a plane that never meet and are always the same distance apart.",
+      vnDef: "Hai đường thẳng trên một mặt phẳng không bao giờ gặp nhau và luôn cách nhau một khoảng bằng nhau.",
+      sent: "The train tracks run continuously as parallel lines.",
+      vnSent: "Các đường ray xe lửa chạy liên tục như những đường thẳng song song.",
+      dictSent: "Parallel lines stay exactly the same distance apart and never intersect.",
+      isReal: true
+    },
+    {
+      word: "Transversal",
+      vn: "Đường cát tuyến",
+      def: "A line that passes through two or more other lines.",
+      vnDef: "Một đường thẳng đi qua hai hoặc nhiều đường thẳng khác.",
+      sent: "The transversal line cut through the parallel tracks, creating eight new angles.",
+      vnSent: "Đường cát tuyến cắt ngang qua các đường ray song song, tạo ra tám góc mới.",
+      dictSent: "A transversal is a single line that cuts across two parallel lines.",
+      isReal: true
+    },
+    {
+      word: "Alternate Angles",
+      vn: "Góc so le trong",
+      def: "A pair of angles on opposite sides of a transversal and between the parallel lines (Z-shape).",
+      vnDef: "Một cặp góc ở hai phía đối diện của đường cát tuyến và nằm giữa các đường thẳng song song (hình chữ Z).",
+      sent: "By finding the Z-shape, she proved the alternate angles were equal.",
+      vnSent: "Bằng cách tìm ra hình chữ Z, cô ấy đã chứng minh các góc so le trong bằng nhau.",
+      dictSent: "Alternate angles form a Z shape and are always equal to each other.",
+      isReal: true
+    },
+    {
+      word: "Corresponding Angles",
+      vn: "Góc đồng vị",
+      def: "A pair of angles occupying the exact same relative position at each intersection (F-shape).",
+      vnDef: "Một cặp góc chiếm cùng một vị trí tương đối chính xác tại mỗi giao điểm (hình chữ F).",
+      sent: "The architect used corresponding angles to ensure the two roof panels matched perfectly.",
+      vnSent: "Kiến trúc sư đã sử dụng các góc đồng vị để đảm bảo hai tấm mái khớp nhau hoàn hảo.",
+      dictSent: "Corresponding angles sit in the exact same position and form an F shape.",
+      isReal: true
+    },
+    {
+      word: "Co-interior Angles",
+      vn: "Góc trong cùng phía",
+      def: "A pair of angles on the same side of the transversal and between parallel lines (C-shape).",
+      vnDef: "Một cặp góc ở cùng một phía của đường cát tuyến và nằm giữa các đường thẳng song song (hình chữ C).",
+      sent: "Unlike other pairs, co-interior angles are not equal; they add up to 180 degrees.",
+      vnSent: "Không giống như các cặp khác, các góc trong cùng phía không bằng nhau; tổng của chúng là 180 độ.",
+      dictSent: "Co-interior angles sit on the same side and are always supplementary.",
+      isReal: true
+    }
+  ],
+  fakeWords: [
+    { word: "Acutance", imitating: "Acute Angle", isReal: false },
+    { word: "Obtusity", imitating: "Obtuse Angle", isReal: false },
+    { word: "Complemention", imitating: "Complementary", isReal: false },
+    { word: "Supplementity", imitating: "Supplementary", isReal: false },
+    { word: "Verticality", imitating: "Vertically Opposite", isReal: false },
+    { word: "Parallelism", imitating: "Parallel Lines", isReal: false },
+    { word: "Transversity", imitating: "Transversal", isReal: false },
+    { word: "Alternation", imitating: "Alternate Angles", isReal: false },
+    { word: "Correspondance", imitating: "Corresponding Angles", isReal: false },
+    { word: "Co-interity", imitating: "Co-interior Angles", isReal: false }
+  ],
+  dictation: [
+    { sent: "An acute angle is always smaller than a perfect right angle.", vnSent: "Góc nhọn luôn nhỏ hơn một góc vuông hoàn hảo." },
+    { sent: "An obtuse angle is wider than a right angle but smaller than a straight line.", vnSent: "Góc tù rộng hơn góc vuông nhưng nhỏ hơn một đường thẳng." },
+    { sent: "Complementary angles combine to form a perfect ninety degree corner.", vnSent: "Các góc phụ nhau kết hợp lại tạo thành một góc chín mươi độ hoàn hảo." },
+    { sent: "Supplementary angles always add up to one hundred and eighty degrees.", vnSent: "Các góc bù nhau luôn có tổng bằng một trăm tám mươi độ." },
+    { sent: "Vertically opposite angles sit across from each other and are always equal.", vnSent: "Các góc đối đỉnh nằm đối diện nhau và luôn luôn bằng nhau." },
+    { sent: "Parallel lines stay exactly the same distance apart and never intersect.", vnSent: "Các đường thẳng song song luôn giữ khoảng cách bằng nhau và không bao giờ cắt nhau." },
+    { sent: "A transversal is a single line that cuts across two parallel lines.", vnSent: "Đường cát tuyến là một đường thẳng duy nhất cắt ngang qua hai đường thẳng song song." },
+    { sent: "Alternate angles form a Z shape and are always equal to each other.", vnSent: "Các góc so le trong tạo thành hình chữ Z và luôn bằng nhau." },
+    { sent: "Corresponding angles sit in the exact same position and form an F shape.", vnSent: "Các góc đồng vị nằm ở cùng một vị trí và tạo thành hình chữ F." },
+    { sent: "Co-interior angles sit on the same side and are always supplementary.", vnSent: "Các góc trong cùng phía nằm ở cùng một phía và luôn bù nhau." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Architect's Blueprint",
+      text: "When designing a house, an architect must ensure the walls are perfectly straight. They use {parallel lines} to make sure the ceiling and floor never intersect. If a roof needs a sharp point, they will draw an {acute angle}. If they want a wider, flatter roof, they will use an {obtuse angle}. Sometimes, a single wooden beam, acting as a {transversal}, cuts directly across the frame to add structural strength.",
+      vnTitle: "Bản thiết kế của Kiến trúc sư",
+      vnText: "Khi thiết kế một ngôi nhà, kiến trúc sư phải đảm bảo các bức tường hoàn toàn thẳng. Họ sử dụng các đường thẳng song song để chắc chắn rằng trần và sàn không bao giờ giao nhau. Nếu mái nhà cần một điểm nhọn, họ sẽ vẽ một góc nhọn. Nếu họ muốn một mái nhà phẳng và rộng hơn, họ sẽ sử dụng một góc tù. Đôi khi, một thanh xà ngang bằng gỗ, đóng vai trò như một đường cát tuyến, cắt ngang qua khung để tăng thêm độ cứng cáp cho cấu trúc."
+    },
+    {
+      id: "passage_2",
+      title: "The Bridge of Z and F",
+      text: "When two straight beams cross, they create four distinct angles. The angles facing directly across from each other are {vertically opposite} and are always perfectly equal. When a single long beam crosses two parallel tracks, it creates hidden matching patterns. The {alternate angles} sit on opposite sides of the line, forming a Z-shape. The {corresponding angles} sit in the exact same position at each intersection, forming an F-shape.",
+      vnTitle: "Cây cầu của chữ Z và F",
+      vnText: "Khi hai thanh xà thẳng cắt nhau, chúng tạo ra bốn góc riêng biệt. Các góc nằm trực tiếp đối diện nhau là các góc đối đỉnh và luôn luôn bằng nhau hoàn hảo. Khi một thanh xà dài duy nhất cắt qua hai đường ray song song, nó tạo ra các mẫu hình trùng khớp ẩn giấu. Các góc so le trong nằm ở hai phía đối diện của đường thẳng, tạo thành hình chữ Z. Các góc đồng vị nằm ở cùng một vị trí chính xác tại mỗi giao điểm, tạo thành hình chữ F."
+    },
+    {
+      id: "passage_3",
+      title: "The Rules of the Grid",
+      text: "In mathematics, angles often work together as a team to form reliable shapes. If two angles combine to make a perfect 90-degree corner, they are {complementary}. If they stretch out to form a flat 180-degree straight line, they are {supplementary}. When looking inside the parallel lines, the angles locked inside the C-shape are called {co-interior angles}. They do not match each other, but they are always supplementary.",
+      vnTitle: "Các quy tắc của Lưới tọa độ",
+      vnText: "Trong toán học, các góc thường hoạt động cùng nhau như một đội để tạo thành các hình dạng đáng tin cậy. Nếu hai góc kết hợp với nhau tạo thành một góc 90 độ hoàn hảo, chúng là hai góc phụ nhau. Nếu chúng trải dài để tạo thành một đường thẳng 180 độ, chúng là hai góc bù nhau. Khi nhìn vào bên trong các đường thẳng song song, các góc bị khóa bên trong hình chữ C được gọi là góc trong cùng phía. Chúng không bằng nhau, nhưng chúng luôn là hai góc bù nhau."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Angle Rules & Parallel Lines",
+    vnTitle: "Bài 1A: Các quy tắc về Góc & Đường thẳng song song",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their geometric shapes.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với các hình dạng hình học của chúng.",
+    sections: [
+      {
+        heading: "1. Basic Angle Pairs",
+        vnHeading: "1. Các cặp góc cơ bản",
+        text: "Two angles are **Complementary** if they sum to 90°. They are **Supplementary** if they sum to 180°. When two lines cross, they form an X-shape, creating **Vertically Opposite** angles which are always equal.",
+        vnText: "Hai góc là góc **Phụ nhau** (Complementary) nếu tổng của chúng là 90°. Chúng là góc **Bù nhau** (Supplementary) nếu tổng của chúng là 180°. Khi hai đường thẳng cắt nhau, chúng tạo thành hình chữ X, tạo ra các góc **Đối đỉnh** (Vertically Opposite) luôn luôn bằng nhau."
+      },
+      {
+        heading: "2. The Transversal",
+        vnHeading: "2. Đường cát tuyến",
+        text: "A **Transversal** is a line that cuts across two or more **Parallel Lines**. This intersection creates geometric patterns that allow us to easily calculate missing angles.",
+        vnText: "Một **Đường cát tuyến** (Transversal) là một đường thẳng cắt ngang qua hai hoặc nhiều **Đường thẳng song song** (Parallel Lines). Sự giao cắt này tạo ra các mẫu hình học cho phép chúng ta dễ dàng tính toán các góc còn thiếu."
+      },
+      {
+        heading: "3. Parallel Line Rules",
+        vnHeading: "3. Các quy tắc về đường thẳng song song",
+        text: "**Alternate Angles** form a Z-shape and are equal. **Corresponding Angles** form an F-shape and are also equal. **Co-interior Angles** form a C-shape and are supplementary (they add to 180°).",
+        vnText: "Các **Góc so le trong** (Alternate Angles) tạo thành hình chữ Z và bằng nhau. Các **Góc đồng vị** (Corresponding Angles) tạo thành hình chữ F và cũng bằng nhau. Các **Góc trong cùng phía** (Co-interior Angles) tạo thành hình chữ C và là các góc bù nhau (tổng bằng 180°)."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "Describe the numerical difference between complementary and supplementary angles.",
+      requiredWords: [["90", "ninety"], ["180", "one hundred and eighty", "eighty"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that complementary angles add up to 90 degrees.",
+        "1 mark for stating that supplementary angles add up to 180 degrees."
+      ],
+      modelAnswer: "Complementary angles add up to exactly 90 degrees, while supplementary angles add up to exactly 180 degrees."
+    },
+    {
+      id: "q2",
+      question: "How do you visually identify alternate angles on a set of parallel lines, and what is their mathematical relationship?",
+      requiredWords: [["z", "z-shape", "z shape"], ["equal", "same"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying that they form a 'Z' shape.",
+        "1 mark for stating that the alternate angles are always equal to each other."
+      ],
+      modelAnswer: "You can identify alternate angles by looking for a 'Z' shape along the transversal. These angles are mathematically equal to each other."
+    },
+    {
+      id: "q3",
+      question: "Explain the difference in the relationship between corresponding angles (F-shape) and co-interior angles (C-shape).",
+      requiredWords: [["equal", "same"], ["supplementary", "180", "add"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that corresponding angles are equal.",
+        "1 mark for stating that co-interior angles are not equal, but are supplementary (add up to 180)."
+      ],
+      modelAnswer: "Corresponding angles are exactly equal to each other. However, co-interior angles are not equal; they are supplementary and add up to 180 degrees."
+    }
+  ],
+diagrams: [
+    {
+      id: "d1",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+      </svg>`,
+      imageFile: "transversal_z_shape.png", 
+      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick purple line highlights the 'Z' shape formed by the inner segments. The top inner angle and bottom opposite inner angle are marked with matching purple arcs. Minimalist, pure white background, sans-serif font.",
+      promptText: "Analyze the provided diagram. Identify the type of angle pair highlighted by the geometric shape, and state their mathematical relationship.",
+      // Changed required words to prevent spoiling the exact term "alternate"
+      requiredWords: [["z-shape", "z shape", "shape"], ["equal", "same"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying the highlighted angles as Alternate Angles.",
+        "1 mark for stating that they are equal."
+      ],
+      modelAnswer: "The diagram highlights alternate angles forming a Z-shape. These angles are equal to each other."
+    },
+    {
+      id: "d2",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#1d4ed8" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+        <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Adds to 180°</text>
+      </svg>`,
+      imageFile: "transversal_c_shape.png",
+      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick blue line highlights the 'C' shape formed by the inner segments on the left side of the transversal. The two inside angles are marked with different colored arcs. Text reads 'Adds to 180°'. Minimalist, pure white background.",
+      promptText: "Examine the second diagram showing the C-shape. Name this angle pair and explain why they are fundamentally different from alternate and corresponding angles.",
+      // Changed required words to prevent spoiling "co-interior"
+      requiredWords: [["c-shape", "c shape", "shape"], ["supplementary", "180", "add"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying them as Co-interior angles.",
+        "1 mark for explaining they are supplementary (add to 180°) instead of being equal."
+      ],
+      modelAnswer: "These are co-interior angles. They are different because, unlike alternate and corresponding angles which are equal, co-interior angles are supplementary and add up to 180 degrees."
+    },
+    {
+      id: "d3",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        
+        <path d="M 145 80 A 25 25 0 0 1 156.1 59.2" fill="none" stroke="#1e3a8a" stroke-width="4" stroke-linecap="round"/>
+        <text x="135" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a">60°</text>
+        
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+        <text x="190" y="105" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ef4444">x</text>
+        
+        <path d="M 255 170 A 25 25 0 0 1 243.9 190.8" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
+        <text x="250" y="195" font-family="sans-serif" font-weight="bold" font-size="16" fill="#22c55e">y</text>
+        
+        <path d="M 205 170 A 25 25 0 0 0 216.1 190.8" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round"/>
+        <text x="200" y="195" font-family="sans-serif" font-weight="bold" font-size="16" fill="#a855f7">z</text>
+      </svg>`,
+      imageFile: "transversal_four_angles.png",
+      promptText: "In the diagram, one angle is given as 60°. Calculate the values of angles x, y, and z. State the geometric reason for each calculation based on the properties discussed in class.",
+      requiredWords: [["60", "60°"], ["120", "120°"], ["vertically", "corresponding", "alternate", "co-interior", "opposite"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "1 mark for calculating x = 60° and stating it is vertically opposite.",
+        "1 mark for calculating y = 60° and stating it is corresponding to x (or alternate to 60°).",
+        "1 mark for calculating z = 120° and stating it is co-interior to x (or angles on a straight line with y)."
+      ],
+      modelAnswer: "Angle x is 60° because it is vertically opposite to the given 60° angle. Angle y is also 60° because it is corresponding to angle x. Finally, angle z is 120° because it sits on a straight line with y, making them supplementary (180 - 60 = 120)."
+    }
+  ],
+essay: {
+    task: "When a transversal line cuts through two parallel lines, how many total angles are created at the intersections? Of those angles, what is the minimum number of angle measurements you need to be given to calculate the exact degrees of all the rest? Explain your reasoning.",
+    guidelines: [
+      "State the total number of angles formed by the intersection.",
+      "State the minimum number of angles you need to know.",
+      "Explain how rules like alternate, corresponding, and supplementary angles allow you to find the rest."
+    ],
+    requiredWords: [
+      ["supplementary", "180"], 
+      ["vertical", "opposite"],
+      ["alternate", "corresponding"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for stating that 8 angles are created in total.",
+      "1 mark for stating that you only need to be given 1 angle measurement.",
+      "1 mark for explaining that you can use geometric rules (like alternate, corresponding, or supplementary) to deduce all other 7 angles from that single known angle."
+    ],
+    modelAnswer: "When a transversal cuts across two parallel lines, a total of 8 angles are created at the two intersections. You only need to be told the measurement of 1 angle to figure out all the rest. Because the lines are parallel, you can use the rules of vertically opposite, alternate, and corresponding angles to find all the equal angles. For the remaining angles, you can subtract the known angle from 180 degrees, since angles on a straight line are supplementary. Therefore, one angle gives you the key to all eight."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/games.js">
+// src/data/GED/ENG_1A/games.js
+import { WAVE_PRESETS } from '../../../components/towerdefense/wavePresets';
+
+export const games = {
+  gameConfig: {
+    themeId: 'RANDOM', // Option 5: Triggers the randomized map selector
+    layout: {
+      rows: 10,
+      cols: 15,
+      path: [
+        [2, 0], [2, 3], [7, 3], [7, 7], [2, 7], [2, 11], [7, 11], [7, 14]
+      ]
+    },
+    allowedTowers: ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN'],
+    waves: WAVE_PRESETS.SET_1,
+    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR
+  }
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/notes.js">
+// src/data/Y8/Math_1A/notes.js
+
+export const notes = [
+  {
+    type: "intro",
+    title: "Parallel Lines & Angles",
+    titleVn: "Đường thẳng song song & Góc",
+    subtitle: "Objective: Master the properties of angle pairs, transversals, and parallel lines.",
+    subtitleVn: "Mục tiêu: Nắm vững các tính chất của các cặp góc, đường cát tuyến và đường thẳng song song.",
+    color: "bg-[#8b5cf6]", 
+    borderColor: "border-[#7c3aed]",
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_1.mp3"
+  },
+  {
+    type: "concept",
+    title: "Classifying Basic Angles",
+    titleVn: "Phân loại các góc cơ bản",
+    icon: "Target",
+    color: "bg-[#1cb0f6]",
+    content: "Angles are measured in degrees. Before we look at intersecting lines, we must classify individual angles based on their size.\n\n> An **Acute Angle** is an angle that is greater than 0° but strictly less than 90°.\n> An **Obtuse Angle** is an angle that is greater than 90° but strictly less than 180°.",
+    contentVn: "Góc được đo bằng độ. Trước khi xem xét các đường cắt nhau, chúng ta phải phân loại từng góc dựa trên kích thước của chúng.\n\n> **Góc Nhọn** là góc lớn hơn 0° nhưng nhỏ hơn 90°.\n> **Góc Tù** là góc lớn hơn 90° nhưng nhỏ hơn 180°.",
+    example: "An angle measuring 45° is acute, while an angle measuring 120° is obtuse.",
+    exampleVn: "Góc có số đo 45° là góc nhọn, trong khi góc có số đo 120° là góc tù.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 150 L 200 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 100 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 130 150 A 30 30 0 0 0 113.4 123.2" fill="none" stroke="#1cb0f6" stroke-width="5" stroke-linecap="round"/>
+      <text x="145" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0284c7" text-anchor="middle">Acute (< 90°)</text>
+      
+      <path d="M 250 150 L 350 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 250 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 280 150 A 30 30 0 0 0 228.8 128.8" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <text x="290" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Obtuse (> 90°)</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_2.mp3"
+  },
+  {
+    type: "concept",
+    title: "Angle Pairs",
+    titleVn: "Các cặp góc",
+    icon: "Scale",
+    color: "bg-[#ff9600]",
+    content: "When two adjacent angles sit side-by-side, their combined total gives them a special mathematical name.\n\n> **Complementary Angles** are two angles that add up to exactly 90° (forming a right angle).\n> **Supplementary Angles** are two angles that add up to exactly 180° (forming a straight line).",
+    contentVn: "Khi hai góc kề nhau nằm cạnh nhau, tổng của chúng tạo ra một tên gọi toán học đặc biệt.\n\n> **Góc Phụ nhau** là hai góc có tổng số đo chính xác bằng 90° (tạo thành một góc vuông).\n> **Góc Bù nhau** là hai góc có tổng số đo chính xác bằng 180° (tạo thành một đường thẳng).",
+    example: "If Angle A is 60° and Angle B is 120°, they are supplementary because 60 + 120 = 180.",
+    exampleVn: "Nếu Góc A là 60° và Góc B là 120°, chúng là hai góc bù nhau vì 60 + 120 = 180.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 50 L 50 150 L 150 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M 50 150 L 120 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 90 150 A 40 40 0 0 0 76.3 119.9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 76.3 119.9 A 40 40 0 0 0 50 110" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <rect x="50" y="135" width="15" height="15" fill="none" stroke="#cbd5e1" stroke-width="3"/>
+      <text x="100" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 90°</text>
+      
+      <path d="M 170 150 L 380 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 280 150 L 330 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 320 150 A 40 40 0 0 0 301.2 116" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 301.2 116 A 40 40 0 0 0 240 150" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <text x="280" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 180°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_3.mp3"
+  },
+  {
+    type: "concept",
+    title: "Vertically Opposite Angles",
+    titleVn: "Góc đối đỉnh",
+    icon: "ShieldCheck",
+    color: "bg-[#ff4b4b]",
+    content: "When two straight lines cross, they create four angles around a central point. The angles directly facing each other share a strong relationship.\n\n> **Vertically Opposite Angles** sit across from each other, forming an **'X' shape**. They are always equal to each other.",
+    contentVn: "Khi hai đường thẳng cắt nhau, chúng tạo ra bốn góc quanh một điểm trung tâm. Các góc đối diện trực tiếp với nhau chia sẻ một mối quan hệ bền chặt.\n\n> **Góc đối đỉnh** nằm đối diện nhau, tạo thành hình chữ **'X'**. Chúng luôn luôn bằng nhau.",
+    example: "If the top angle in an intersection is 105°, the bottom angle directly across from it is also exactly 105°.",
+    exampleVn: "Nếu góc trên cùng tại một giao điểm là 105°, thì góc dưới cùng đối diện trực tiếp với nó cũng chính xác là 105°.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 50 L 300 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 300 50 L 100 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      
+      <path d="M 224 107 A 30 30 0 0 0 176 107" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 176 143 A 30 30 0 0 0 224 143" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 176 107 A 30 30 0 0 0 176 143" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 224 143 A 30 30 0 0 0 224 107" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="200" y="90" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
+      <text x="200" y="175" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_4.mp3"
+  },
+  {
+    type: "concept",
+    title: "Parallel Lines & Transversals",
+    titleVn: "Đường thẳng song song & Đường cát tuyến",
+    icon: "BookOpen",
+    color: "bg-[#14b8a6]",
+    content: "In geometry, lines that never touch are marked with small matching arrows (>).\n\n> **Parallel Lines** are two or more lines that stay exactly the same distance apart and never intersect.\n> A **Transversal** is a single line that cuts across two or more parallel lines.",
+    contentVn: "Trong hình học, các đường thẳng không bao giờ chạm nhau được đánh dấu bằng các mũi tên nhỏ giống nhau (>).\n\n> **Đường thẳng song song** là hai hoặc nhiều đường thẳng luôn giữ nguyên một khoảng cách và không bao giờ cắt nhau.\n> **Đường cát tuyến** là một đường thẳng duy nhất cắt ngang qua hai hoặc nhiều đường thẳng song song.",
+    example: "Think of a set of train tracks as the parallel lines, and a straight road crossing over both tracks as the transversal.",
+    exampleVn: "Hãy tưởng tượng một bộ đường ray xe lửa là các đường thẳng song song, và một con đường thẳng chạy vắt ngang qua cả hai đường ray là đường cát tuyến.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 180 70 L 195 80 L 180 90" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 180 160 L 195 170 L 180 180" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <path d="M 130 20 L 270 230" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+      
+      <text x="350" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#2563eb" text-anchor="end">Parallel Lines</text>
+      <text x="280" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="start">Transversal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_5.mp3"
+  },
+  {
+    type: "concept",
+    title: "Alternate Angles",
+    titleVn: "Góc so le trong",
+    icon: "MessageSquare",
+    color: "bg-[#ce82ff]",
+    content: "When a transversal cuts parallel lines, it creates a predictable set of angle patterns hidden inside the intersections.\n\n> **Alternate Angles** sit on opposite sides of the transversal, forming a **'Z' shape**. They are always equal.",
+    contentVn: "Khi một đường cát tuyến cắt các đường thẳng song song, nó tạo ra một tập hợp các mẫu góc có thể đoán trước ẩn bên trong các giao điểm.\n\n> **Góc so le trong** nằm ở hai phía đối diện của đường cát tuyến, tạo thành hình chữ **'Z'**. Chúng luôn luôn bằng nhau.",
+    example: "If you trace a 'Z' along the lines and find the inner top angle is 50°, the opposite inner angle at the bottom of the 'Z' is also 50°.",
+    exampleVn: "Nếu bạn vẽ một chữ 'Z' dọc theo các đường thẳng và thấy góc trong phía trên là 50°, thì góc trong đối diện ở dưới cùng của chữ 'Z' cũng là 50°.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="215" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="start">Equal</text>
+      <text x="185" y="145" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="end">Equal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_6.mp3"
+  },
+  {
+    type: "concept",
+    title: "Corresponding Angles",
+    titleVn: "Góc đồng vị",
+    icon: "Target",
+    color: "bg-[#58cc02]",
+    content: "Imagine sliding the top intersection down the transversal until it perfectly overlaps the bottom intersection.\n\n> **Corresponding Angles** sit in the exact same position at each intersection, forming an **'F' shape**. They are always equal.",
+    contentVn: "Hãy tưởng tượng việc trượt giao điểm trên cùng xuống dọc theo đường cát tuyến cho đến khi nó trùng khít hoàn hảo với giao điểm dưới cùng.\n\n> **Góc đồng vị** nằm ở vị trí chính xác giống nhau tại mỗi giao điểm, tạo thành hình chữ **'F'**. Chúng luôn luôn bằng nhau.",
+    example: "The top-right angle of the upper intersection is corresponding and exactly equal to the top-right angle of the lower intersection.",
+    exampleVn: "Góc trên cùng bên phải của giao điểm trên là đồng vị và hoàn toàn bằng với góc trên cùng bên phải của giao điểm dưới.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 140 35 L 230 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 170 80 L 270 80" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 230 170 L 330 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 0 156.1 59.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="210" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
+      <text x="270" y="155" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_7.mp3"
+  },
+  {
+    type: "concept",
+    title: "Co-interior Angles",
+    titleVn: "Góc trong cùng phía",
+    icon: "BookOpen",
+    color: "bg-[#3b82f6]",
+    content: "Unlike the Z and F shapes, these angles are NOT equal to each other. Instead, they work together as a team.\n\n> **Co-interior Angles** (or Allied Angles) sit on the same side of the transversal, forming a **'C' shape**. They are supplementary (they add up to 180°).",
+    contentVn: "Không giống như hình chữ Z và F, các góc này KHÔNG bằng nhau. Thay vào đó, chúng phối hợp với nhau như một đội.\n\n> **Góc trong cùng phía** (hoặc Góc liên minh) nằm ở cùng một phía của đường cát tuyến, tạo thành hình chữ **'C'**. Chúng bù nhau (tổng của chúng là 180°).",
+    example: "If the top inside angle is 110°, the bottom inside angle right below it must be 70° (because 110 + 70 = 180).",
+    exampleVn: "Nếu góc bên trong phía trên là 110°, góc bên trong phía dưới ngay bên dưới nó phải là 70° (vì 110 + 70 = 180).",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#3b82f6" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Add to 180°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_8.mp3"
+  },
+  {
+    type: "summary",
+    title: "Lesson Complete!",
+    titleVn: "Hoàn thành Bài học!",
+    subtitle: "Objective Achieved: You can now identify and calculate geometric angle patterns.",
+    subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể nhận diện và tính toán các mẫu hình góc trong hình học.",
+    color: "bg-[#14b8a6]",
+    borderColor: "border-[#0d9488]"
+  }
+];
+</file>
+
+<file path="src/data/Y8/Math_1A/workbook.js">
+// src/data/GED/ENG_1A/workbook.js
+export const workbook = null;
+</file>
+
+<file path="src/data/Y9/Science_1A/assessment.js">
+// src/data/Y9/SCIENCE_1A/assessment.js
+
+export const assessment = {
+  timeLimit: 2400, // Increased to 40 minutes for the expanded test
+  passages: [], 
+  questions: [
+    {
+      id: "q1_mcq_symbols_battery",
+      type: "mcq",
+      title: "1. Look at the symbols used in electrical circuits. Which symbol shows a battery?",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" class="w-full h-full drop-shadow-md">
+        <line x1="40" y1="80" x2="60" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="80" cy="80" r="20" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 66 66 L 94 94 M 94 66 L 66 94" stroke="#1e293b" stroke-width="2"/>
+        <line x1="100" y1="80" x2="120" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <text x="80" y="140" font-family="sans-serif" font-weight="900" font-size="18" fill="#3b82f6" text-anchor="middle">A</text>
+  
+        <line x1="140" y1="80" x2="160" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <line x1="160" y1="60" x2="160" y2="100" stroke="#1e293b" stroke-width="2"/>
+        <line x1="175" y1="70" x2="175" y2="90" stroke="#1e293b" stroke-width="6"/>
+        <line x1="185" y1="80" x2="195" y2="80" stroke="#1e293b" stroke-width="2" stroke-dasharray="4"/>
+        <line x1="205" y1="60" x2="205" y2="100" stroke="#1e293b" stroke-width="2"/>
+        <line x1="220" y1="70" x2="220" y2="90" stroke="#1e293b" stroke-width="6"/>
+        <line x1="220" y1="80" x2="240" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <text x="190" y="140" font-family="sans-serif" font-weight="900" font-size="18" fill="#3b82f6" text-anchor="middle">B</text>
+  
+        <line x1="260" y1="80" x2="280" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="300" cy="80" r="20" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <text x="300" y="86" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e293b" text-anchor="middle">V</text>
+        <line x1="320" y1="80" x2="340" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <text x="300" y="140" font-family="sans-serif" font-weight="900" font-size="18" fill="#3b82f6" text-anchor="middle">C</text>
+  
+        <line x1="360" y1="80" x2="375" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="380" cy="80" r="4" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="410" cy="80" r="4" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <line x1="380" y1="76" x2="405" y2="55" stroke="#1e293b" stroke-width="2"/>
+        <line x1="415" y1="80" x2="430" y2="80" stroke="#1e293b" stroke-width="2"/>
+        <text x="395" y="140" font-family="sans-serif" font-weight="900" font-size="18" fill="#3b82f6" text-anchor="middle">D</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A" },
+        { val: "B", text: "B" },
+        { val: "C", text: "C" },
+        { val: "D", text: "D" }
+      ],
+      correct: "B",
+      expEn: "Symbol B shows a battery, which is made of two or more cells connected together. A is a lamp, C is a voltmeter, and D is an open switch.",
+      expVn: "Ký hiệu B chỉ một bộ pin, bao gồm hai hoặc nhiều pin được kết nối với nhau. A là bóng đèn, C là vôn kế, và D là công tắc mở."
+    },
+    {
+      id: "q2_inline_fixed_resistor",
+      type: "inline",
+      title: "2. Analyze the specific electrical component shown below and complete the definitions.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 150" class="w-full h-full drop-shadow-md">
+        <rect x="50" y="20" width="300" height="110" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="100" y1="75" x2="150" y2="75" stroke="#1e293b" stroke-width="4"/>
+        <rect x="150" y="50" width="100" height="50" fill="white" stroke="#1e293b" stroke-width="4"/>
+        <line x1="250" y1="75" x2="300" y2="75" stroke="#1e293b" stroke-width="4"/>
+      </svg>`,
+      options: [],
+      textParts: [
+        "The symbol above represents a ",
+        ". Its primary function is to restrict or oppose the flow of current in a circuit. This opposition is measured in ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "fixed resistor",
+          options: [
+            { val: "variable resistor", text: "variable resistor" },
+            { val: "fixed resistor", text: "fixed resistor" },
+            { val: "cell", text: "cell" }
+          ]
+        },
+        "2": {
+          correct: "Ohms",
+          options: [
+            { val: "Volts", text: "Volts" },
+            { val: "Amps", text: "Amps" },
+            { val: "Ohms", text: "Ohms" }
+          ]
+        }
+      },
+      expEn: "A plain rectangle is a fixed resistor. It provides a constant resistance to the flow of electrons, which is mathematically measured in Ohms (Ω).",
+      expVn: "Một hình chữ nhật trơn là một điện trở cố định. Nó cung cấp một điện trở không đổi đối với dòng điện tử, được đo bằng toán học là Ohms (Ω)."
+    },
+    {
+      id: "q3_mcq_ammeter",
+      type: "mcq",
+      title: "3. A student needs to measure the current flowing through a circuit. Which diagram correctly shows how an ammeter must be connected?",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" class="w-full h-full drop-shadow-md">
+        <line x1="200" y1="10" x2="200" y2="290" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4"/>
+        <line x1="10" y1="150" x2="390" y2="150" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4"/>
+  
+        <text x="20" y="30" font-family="sans-serif" font-weight="900" font-size="16" fill="#f43f5e">A</text>
+        <path d="M 60 40 L 140 40 L 140 100 L 60 100 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        <rect x="90" y="30" width="20" height="20" fill="white"/> <line x1="95" y1="25" x2="95" y2="55" stroke="#1e293b" stroke-width="2"/><line x1="105" y1="35" x2="105" y2="45" stroke="#1e293b" stroke-width="4"/>
+        <rect x="90" y="90" width="20" height="20" fill="white"/> <circle cx="100" cy="100" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 93 93 L 107 107 M 107 93 L 93 107" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 80 100 L 80 130 L 120 130 L 120 100" fill="none" stroke="#10b981" stroke-width="2"/>
+        <rect x="90" y="120" width="20" height="20" fill="white"/> <circle cx="100" cy="130" r="10" fill="white" stroke="#10b981" stroke-width="2"/>
+        <text x="100" y="134" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">A</text>
+  
+        <text x="220" y="30" font-family="sans-serif" font-weight="900" font-size="16" fill="#10b981">B</text>
+        <path d="M 260 40 L 340 40 L 340 120 L 260 120 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        <rect x="290" y="30" width="20" height="20" fill="white"/> <line x1="295" y1="25" x2="295" y2="55" stroke="#1e293b" stroke-width="2"/><line x1="305" y1="35" x2="305" y2="45" stroke="#1e293b" stroke-width="4"/>
+        <rect x="290" y="110" width="20" height="20" fill="white"/> <circle cx="300" cy="120" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 293 113 L 307 127 M 307 113 L 293 127" stroke="#1e293b" stroke-width="2"/>
+        <rect x="250" y="70" width="20" height="20" fill="white"/> <circle cx="260" cy="80" r="10" fill="white" stroke="#10b981" stroke-width="2"/>
+        <text x="260" y="84" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">A</text>
+  
+        <text x="20" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#f43f5e">C</text>
+        <path d="M 60 190 L 140 190 L 140 270 L 60 270 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        <rect x="90" y="180" width="20" height="20" fill="white"/> <line x1="95" y1="175" x2="95" y2="205" stroke="#1e293b" stroke-width="2"/><line x1="105" y1="185" x2="105" y2="195" stroke="#1e293b" stroke-width="4"/>
+        <rect x="90" y="260" width="20" height="20" fill="white"/> <circle cx="100" cy="270" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 93 263 L 107 277 M 107 263 L 93 277" stroke="#1e293b" stroke-width="2"/>
+        <rect x="130" y="220" width="20" height="20" fill="white"/> <circle cx="140" cy="230" r="10" fill="white" stroke="#3b82f6" stroke-width="2"/>
+        <text x="140" y="234" font-family="sans-serif" font-weight="bold" font-size="12" fill="#3b82f6" text-anchor="middle">V</text>
+  
+        <text x="220" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#f43f5e">D</text>
+        <path d="M 260 200 L 340 200 L 340 270 L 260 270 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        <rect x="290" y="190" width="20" height="20" fill="white"/> <line x1="295" y1="185" x2="295" y2="215" stroke="#1e293b" stroke-width="2"/><line x1="305" y1="195" x2="305" y2="205" stroke="#1e293b" stroke-width="4"/>
+        <rect x="290" y="260" width="20" height="20" fill="white"/> <circle cx="300" cy="270" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 293 263 L 307 277 M 307 263 L 293 277" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 280 200 L 280 170 L 320 170 L 320 200" fill="none" stroke="#10b981" stroke-width="2"/>
+        <rect x="290" y="160" width="20" height="20" fill="white"/> <circle cx="300" cy="170" r="10" fill="white" stroke="#10b981" stroke-width="2"/>
+        <text x="300" y="174" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">A</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. Diagram A" },
+        { val: "B", text: "B. Diagram B" },
+        { val: "C", text: "C. Diagram C" },
+        { val: "D", text: "D. Diagram D" }
+      ],
+      correct: "B",
+      expEn: "An ammeter must always be connected in SERIES so that the current flows directly through it. Diagram B is the only one where the ammeter is part of the main loop.",
+      expVn: "Ampe kế luôn phải được mắc nối tiếp (SERIES) để dòng điện chạy trực tiếp qua nó. Sơ đồ B là sơ đồ duy nhất trong đó ampe kế là một phần của vòng lặp chính."
+    },
+    {
+      id: "q4_dnd_rules",
+      type: "dnd",
+      title: "4. Drag and drop the correct rules for Current (A) and Voltage (V) to their respective circuit types.",
+      options: [],
+      bank: [
+        { id: "b1", val: "I_same", text: "Current is the SAME everywhere" },
+        { id: "b2", val: "I_splits", text: "Current SPLITS down branches" },
+        { id: "b3", val: "V_shared", text: "Voltage is SHARED between components" },
+        { id: "b4", val: "V_same", text: "Voltage is the SAME across all branches" }
+      ],
+      targets: [
+        { id: "series", title: "Series Circuit Rules" },
+        { id: "parallel", title: "Parallel Circuit Rules" }
+      ],
+      correctSets: {
+        "series": ["I_same", "V_shared"],
+        "parallel": ["I_splits", "V_same"]
+      },
+      expEn: "In Series, there is only one path, so current is the same, but voltage is shared. In Parallel, paths branch out, so current splits, but each branch receives the full voltage.",
+      expVn: "Trong Mạch Nối tiếp, chỉ có một đường đi, vì vậy dòng điện giống nhau, nhưng điện áp được chia sẻ. Trong Mạch Song song, các đường phân nhánh, vì vậy dòng điện bị chia nhỏ, nhưng mỗi nhánh nhận được toàn bộ điện áp."
+    },
+    {
+      id: "q5_inline_ohm",
+      type: "inline",
+      title: "5. Use Ohm's Law (V = I × R) to calculate the missing values.",
+      options: [],
+      textParts: [
+        "A circuit has a battery supplying ",
+        " of Voltage. An ammeter in the circuit reads a Current of 2 Amps. Because V = I × R, the total Resistance of the circuit must be ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "10 Volts",
+          options: [
+            { val: "5 Volts", text: "5 Volts" },
+            { val: "10 Volts", text: "10 Volts" },
+            { val: "20 Volts", text: "20 Volts" }
+          ]
+        },
+        "2": {
+          correct: "5 Ohms",
+          options: [
+            { val: "5 Ohms", text: "5 Ohms" },
+            { val: "10 Ohms", text: "10 Ohms" },
+            { val: "20 Ohms", text: "20 Ohms" }
+          ]
+        }
+      },
+      expEn: "To find the missing resistance, rearrange the formula: R = V ÷ I. If Voltage is 10V and Current is 2A, then 10 ÷ 2 = 5 Ohms.",
+      expVn: "Để tìm điện trở còn thiếu, hãy sắp xếp lại công thức: R = V ÷ I. Nếu Điện áp là 10V và Dòng điện là 2A, thì 10 ÷ 2 = 5 Ohms."
+    },
+    {
+      id: "q6_mcq_broken_parallel",
+      type: "mcq",
+      title: "6. Look at the parallel circuit below. If the top lamp breaks, what will happen to the bottom lamp?",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 100 60 L 300 60 L 300 190 L 100 190 Z" fill="none" stroke="#1e293b" stroke-width="3"/>
+        <line x1="100" y1="125" x2="300" y2="125" stroke="#1e293b" stroke-width="3"/>
+        
+        <rect x="170" y="50" width="60" height="20" fill="white"/>
+        <line x1="180" y1="45" x2="180" y2="75" stroke="#1e293b" stroke-width="2"/>
+        <line x1="190" y1="55" x2="190" y2="65" stroke="#1e293b" stroke-width="4"/>
+        <line x1="200" y1="60" x2="210" y2="60" stroke="#1e293b" stroke-width="2" stroke-dasharray="2"/>
+        <line x1="220" y1="45" x2="220" y2="75" stroke="#1e293b" stroke-width="2"/>
+        <line x1="230" y1="55" x2="230" y2="65" stroke="#1e293b" stroke-width="4"/>
+  
+        <rect x="180" y="115" width="40" height="20" fill="white"/>
+        <circle cx="200" cy="125" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 190 115 L 210 135 M 210 115 L 190 135" stroke="#1e293b" stroke-width="2"/>
+        <line x1="180" y1="105" x2="220" y2="145" stroke="#ef4444" stroke-width="4"/>
+        <line x1="220" y1="105" x2="180" y2="145" stroke="#ef4444" stroke-width="4"/>
+  
+        <rect x="180" y="180" width="40" height="20" fill="white"/>
+        <circle cx="200" cy="190" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 190 180 L 210 200 M 210 180 L 190 200" stroke="#1e293b" stroke-width="2"/>
+  
+        <circle cx="100" cy="125" r="5" fill="#1e293b"/>
+        <circle cx="300" cy="125" r="5" fill="#1e293b"/>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. It will turn off because the circuit is completely broken." },
+        { val: "B", text: "B. It will stay on because it has its own direct loop to the battery." },
+        { val: "C", text: "C. It will get dimmer because the voltage decreases." },
+        { val: "D", text: "D. It will explode because it receives double the current." }
+      ],
+      correct: "B",
+      expEn: "In a parallel circuit, each branch is independent. The bottom lamp still has a complete, unbroken loop back to the battery, so it stays on.",
+      expVn: "Trong mạch song song, mỗi nhánh độc lập. Đèn dưới cùng vẫn có một vòng lặp hoàn chỉnh, không bị hỏng quay trở lại pin, vì vậy nó vẫn sáng."
+    },
+    {
+      id: "q7_inline_variable_resistor",
+      type: "inline",
+      title: "7. Complete the statement regarding the control of electrical circuits.",
+      options: [],
+      textParts: [
+        "If an engineer slides the control on a variable resistor to ",
+        " the total resistance in a circuit, the amount of current flowing through will immediately ",
+        ", which would cause a connected lamp to become dimmer."
+      ],
+      blanks: {
+        "1": {
+          correct: "increase",
+          options: [
+            { val: "increase", text: "increase" },
+            { val: "decrease", text: "decrease" }
+          ]
+        },
+        "2": {
+          correct: "decrease",
+          options: [
+            { val: "increase", text: "increase" },
+            { val: "decrease", text: "decrease" }
+          ]
+        }
+      },
+      expEn: "Resistance opposes current. If you increase the resistance, the current decreases, causing the lamp to dim.",
+      expVn: "Điện trở cản trở dòng điện. Nếu bạn tăng điện trở, dòng điện sẽ giảm, khiến đèn mờ đi."
+    },
+    {
+      id: "q8_mcq_series_voltage",
+      type: "mcq",
+      title: "8. A 12V battery is connected in series with three identical lamps. What will a voltmeter read if connected across just ONE of the lamps?",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80 L 350 180 L 50 180 Z" fill="none" stroke="#1e293b" stroke-width="3"/>
+        
+        <rect x="170" y="70" width="60" height="20" fill="white"/>
+        <line x1="180" y1="65" x2="180" y2="95" stroke="#1e293b" stroke-width="2"/>
+        <line x1="190" y1="75" x2="190" y2="85" stroke="#1e293b" stroke-width="4"/>
+        <line x1="200" y1="80" x2="210" y2="80" stroke="#1e293b" stroke-width="2" stroke-dasharray="2"/>
+        <line x1="220" y1="65" x2="220" y2="95" stroke="#1e293b" stroke-width="2"/>
+        <line x1="230" y1="75" x2="230" y2="85" stroke="#1e293b" stroke-width="4"/>
+        <text x="200" y="55" font-family="sans-serif" font-weight="900" font-size="16" fill="#1e293b" text-anchor="middle">12V Battery</text>
+  
+        <rect x="90" y="170" width="20" height="20" fill="white"/>
+        <circle cx="100" cy="180" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 90 170 L 110 190 M 110 170 L 90 190" stroke="#1e293b" stroke-width="2"/>
+  
+        <rect x="190" y="170" width="20" height="20" fill="white"/>
+        <circle cx="200" cy="180" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 190 170 L 210 190 M 210 170 L 190 190" stroke="#1e293b" stroke-width="2"/>
+  
+        <rect x="290" y="170" width="20" height="20" fill="white"/>
+        <circle cx="300" cy="180" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 290 170 L 310 190 M 310 170 L 290 190" stroke="#1e293b" stroke-width="2"/>
+  
+        <path d="M 160 180 L 160 220 L 240 220 L 240 180" fill="none" stroke="#ec4899" stroke-width="3" stroke-dasharray="4"/>
+        <rect x="185" y="210" width="30" height="20" fill="white"/>
+        <circle cx="200" cy="220" r="14" fill="white" stroke="#ec4899" stroke-width="3"/>
+        <text x="200" y="225" font-family="sans-serif" font-weight="900" font-size="14" fill="#ec4899" text-anchor="middle">V</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. 12 Volts" },
+        { val: "B", text: "B. 6 Volts" },
+        { val: "C", text: "C. 4 Volts" },
+        { val: "D", text: "D. 3 Volts" }
+      ],
+      correct: "C",
+      expEn: "In a series circuit, voltage is SHARED between the components. If a 12V battery is shared equally among 3 identical lamps, each lamp uses 4 Volts (12 ÷ 3 = 4).",
+      expVn: "Trong một mạch nối tiếp, điện áp được CHIA SẺ giữa các linh kiện. Nếu một pin 12V được chia đều cho 3 đèn giống hệt nhau, mỗi đèn sử dụng 4 Vôn (12 ÷ 3 = 4)."
+    }
+  ]
+};
+</file>
+
+<file path="src/data/Y9/Science_1A/data.js">
+// src/data/Y9/Science_1A/data.js
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const SCIENCE_1A_DATA = {
+  meta: {
+    id: "SCIENCE_1A",
+    title: "Electrical Circuits",
+    desc: "Understanding current, voltage, resistance, and the universal symbols used to design series and parallel circuits.",
+    track: "Y9",
+    icon: "Zap"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    { word: "Current", vn: "Dòng điện", def: "The rate at which electrons flow around a closed circuit, measured in Amperes (A).", vnDef: "Tốc độ mà các electron chạy quanh một mạch khép kín, được đo bằng Ampe (A).", sent: "The current is exactly the same everywhere in a series circuit.", vnSent: "Dòng điện hoàn toàn giống nhau ở mọi nơi trong một mạch nối tiếp.", dictSent: "Current is the rate of flow of electrons around a circuit.", isReal: true },
+    { word: "Voltage", vn: "Điện áp", def: "The electrical push or energy provided by the battery, measured in Volts (V).", vnDef: "Lực đẩy điện hoặc năng lượng do pin cung cấp, được đo bằng Vôn (V).", sent: "A 12V battery provides the voltage needed to push electrons through the wires.", vnSent: "Một bộ pin 12V cung cấp điện áp cần thiết để đẩy các electron qua dây dẫn.", dictSent: "Voltage is shared between components in a series loop.", isReal: true },
+    { word: "Resistance", vn: "Điện trở", def: "A measure of how much a component opposes the flow of current, measured in Ohms (Ω).", vnDef: "Thước đo mức độ một linh kiện cản trở dòng điện, được đo bằng Ohm (Ω).", sent: "Adding a variable resistor allows you to change the total resistance in the circuit.", vnSent: "Việc thêm một biến trở cho phép bạn thay đổi tổng điện trở trong mạch.", dictSent: "Resistance is measured in Ohms and reduces the flow of current.", isReal: true },
+    { word: "Ammeter", vn: "Ampe kế", def: "A device used to measure current, which must always be connected in series.", vnDef: "Một thiết bị dùng để đo dòng điện, luôn phải được mắc nối tiếp.", sent: "We placed the ammeter directly in the main loop to measure the current.", vnSent: "Chúng tôi đặt ampe kế trực tiếp vào vòng lặp chính để đo dòng điện.", dictSent: "An ammeter must always be connected in series.", isReal: true },
+    { word: "Voltmeter", vn: "Vôn kế", def: "A device used to measure voltage, which must always be connected in parallel.", vnDef: "Một thiết bị dùng để đo điện áp, luôn phải được mắc song song.", sent: "To find the potential difference, Mia connected the voltmeter across the lamp.", vnSent: "Để tìm hiệu điện thế, Mia đã mắc vôn kế ngang qua bóng đèn.", dictSent: "A voltmeter is used to measure voltage in parallel.", isReal: true },
+    { word: "Series Circuit", vn: "Mạch nối tiếp", def: "A circuit with only one path for the current to flow through all components.", vnDef: "Một mạch điện chỉ có một đường đi cho dòng điện chạy qua tất cả các linh kiện.", sent: "In a series circuit, if one bulb blows out, all the other bulbs will turn off.", vnSent: "Trong một mạch nối tiếp, nếu một bóng đèn bị cháy, tất cả các bóng đèn khác sẽ tắt.", dictSent: "In a series circuit, the current is the same everywhere.", isReal: true },
+    { word: "Parallel Circuit", vn: "Mạch song song", def: "A circuit that branches into multiple paths for the current to flow.", vnDef: "Một mạch điện rẽ thành nhiều nhánh cho dòng điện chạy qua.", sent: "Houses are wired in a parallel circuit so you can turn off one room without turning off the whole house.", vnSent: "Các ngôi nhà được đi dây theo mạch song song để bạn có thể tắt điện một phòng mà không làm tắt điện toàn bộ ngôi nhà.", dictSent: "In a parallel circuit, the voltage is the same across each branch.", isReal: true },
+    { word: "Component", vn: "Linh kiện", def: "Any individual working part in a circuit, such as a lamp, switch, or bell.", vnDef: "Bất kỳ bộ phận hoạt động độc lập nào trong mạch, chẳng hạn như bóng đèn, công tắc hoặc chuông.", sent: "You must draw the correct symbol for each electrical component.", vnSent: "Bạn phải vẽ đúng ký hiệu cho từng linh kiện điện.", dictSent: "If one bulb breaks in a parallel circuit, the others stay on.", isReal: true },
+    { word: "Cell", vn: "Pin", def: "A single source of electrical energy. Multiple connected cells make a battery.", vnDef: "Một nguồn năng lượng điện đơn lẻ. Nhiều pin kết nối với nhau tạo thành một bộ pin.", sent: "The symbol for a single cell is one long line and one short line.", vnSent: "Ký hiệu của một viên pin đơn là một vạch dài và một vạch ngắn.", dictSent: "A variable resistor can be adjusted to act as a dimmer switch.", isReal: true },
+    { word: "Ohms Law", vn: "Định luật Ohm", def: "The mathematical rule stating that Voltage equals Current multiplied by Resistance (V = I × R).", vnDef: "Quy tắc toán học phát biểu rằng Điện áp bằng Dòng điện nhân với Điện trở (V = I × R).", sent: "By using Ohm's Law, we can calculate the missing voltage if we know the current and resistance.", vnSent: "Bằng cách sử dụng Định luật Ohm, chúng ta có thể tính toán điện áp còn thiếu nếu biết dòng điện và điện trở.", dictSent: "Ohm's law states that voltage equals current multiplied by resistance.", isReal: true }
+  ],
+  fakeWords: [
+    { word: "Currencity", imitating: "Current", isReal: false },
+    { word: "Voltatron", imitating: "Voltage", isReal: false },
+    { word: "Resiston", imitating: "Resistance", isReal: false },
+    { word: "Ammetron", imitating: "Ammeter", isReal: false },
+    { word: "Voltimeter", imitating: "Voltmeter", isReal: false },
+    { word: "Serial Circuit", imitating: "Series Circuit", isReal: false },
+    { word: "Parallax Circuit", imitating: "Parallel Circuit", isReal: false },
+    { word: "Componator", imitating: "Component", isReal: false },
+    { word: "Cellule", imitating: "Cell", isReal: false },
+    { word: "Ohmson's Law", imitating: "Ohm's Law", isReal: false }
+  ],
+  dictation: [
+    { sent: "An ammeter must always be connected in series.", vnSent: "Ampe kế luôn phải được mắc nối tiếp." },
+    { sent: "A voltmeter is used to measure voltage in parallel.", vnSent: "Vôn kế được sử dụng để đo điện áp mắc song song." },
+    { sent: "Current is the rate of flow of electrons around a circuit.", vnSent: "Dòng điện là tốc độ dòng chảy của các electron quanh một mạch." },
+    { sent: "In a series circuit, the current is the same everywhere.", vnSent: "Trong một mạch nối tiếp, dòng điện giống nhau ở mọi nơi." },
+    { sent: "Voltage is shared between components in a series loop.", vnSent: "Điện áp được chia sẻ giữa các linh kiện trong một vòng lặp nối tiếp." },
+    { sent: "In a parallel circuit, the voltage is the same across each branch.", vnSent: "Trong một mạch song song, điện áp giống nhau trên mỗi nhánh." },
+    { sent: "If one bulb breaks in a parallel circuit, the others stay on.", vnSent: "Nếu một bóng đèn bị hỏng trong mạch song song, các bóng khác vẫn sáng." },
+    { sent: "Resistance is measured in Ohms and reduces the flow of current.", vnSent: "Điện trở được đo bằng Ohm và làm giảm dòng điện." },
+    { sent: "A variable resistor can be adjusted to act as a dimmer switch.", vnSent: "Một biến trở có thể được điều chỉnh để hoạt động như một công tắc điều chỉnh độ sáng." },
+    { sent: "Ohm's law states that voltage equals current multiplied by resistance.", vnSent: "Định luật Ohm phát biểu rằng điện áp bằng dòng điện nhân với điện trở." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "Drawing the Flow",
+      text: "When scientists design electrical systems, they do not draw realistic pictures of batteries and wires. Instead, they use universal {component} symbols. For example, a single {cell} is drawn as a long and short line, while a battery is multiple cells joined together. These symbols allow us to build a {series circuit}, where electrons follow one single loop, carrying the electrical push, or {voltage}, to a lamp or a bell.",
+      vnTitle: "Vẽ sơ đồ Dòng chảy",
+      vnText: "Khi các nhà khoa học thiết kế hệ thống điện, họ không vẽ hình ảnh thực tế của pin và dây điện. Thay vào đó, họ sử dụng các ký hiệu {component} phổ quát. Ví dụ, một {cell} đơn lẻ được vẽ bằng một vạch dài và một vạch ngắn, trong khi bộ pin là nhiều viên pin ghép lại với nhau. Các ký hiệu này cho phép chúng ta xây dựng một {series circuit}, nơi các electron đi theo một vòng lặp duy nhất, mang theo lực đẩy điện, hay {voltage}, đến một bóng đèn hoặc một cái chuông."
+    },
+    {
+      id: "passage_2",
+      title: "Measuring the Invisible",
+      text: "Because we cannot see electricity, we must use meters to measure it. To measure the {current}—how fast the electrons are flowing—we use an {ammeter}. This device must be placed directly into the main loop so the electrons flow right through it. However, a {voltmeter} works differently. To measure the electrical push across a lamp, the voltmeter must be connected in a {parallel circuit} loop, branching over the component like a bridge.",
+      vnTitle: "Đo lường những thứ vô hình",
+      vnText: "Vì chúng ta không thể nhìn thấy điện, chúng ta phải sử dụng máy đo để đo nó. Để đo {current}—tốc độ các electron đang chảy—chúng ta sử dụng một {ammeter}. Thiết bị này phải được đặt trực tiếp vào vòng lặp chính để các electron chảy thẳng qua nó. Tuy nhiên, một {voltmeter} hoạt động khác. Để đo lực đẩy điện ngang qua một bóng đèn, vôn kế phải được mắc trong một vòng lặp {parallel circuit}, bắc cầu qua linh kiện như một cây cầu."
+    },
+    {
+      id: "passage_3",
+      title: "The Mathematical Rules",
+      text: "Electrical circuits follow strict rules. If you add more lamps to a series circuit, the voltage is shared, causing all the lamps to grow dim. But in a parallel circuit, the voltage remains at maximum across every branch, while the current splits! If you want to change these values, you can add a {resistance} block. By using {Ohm's Law} (V = I × R), an engineer can calculate exactly how much resistance is needed to control the power safely.",
+      vnTitle: "Các Quy tắc Toán học",
+      vnText: "Mạch điện tuân theo những quy tắc nghiêm ngặt. Nếu bạn thêm nhiều đèn vào mạch nối tiếp, điện áp sẽ được chia sẻ, khiến tất cả các đèn trở nên mờ đi. Nhưng trong mạch song song, điện áp duy trì ở mức tối đa trên mọi nhánh, trong khi dòng điện bị chia nhỏ! Nếu muốn thay đổi các giá trị này, bạn có thể thêm một khối {resistance}. Bằng cách sử dụng {Ohm's Law} (V = I × R), một kỹ sư có thể tính toán chính xác cần bao nhiêu điện trở để kiểm soát công suất một cách an toàn."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Electrical Circuits",
+    vnTitle: "Bài 1A: Mạch điện",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their definitions.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với định nghĩa của chúng.",
+    sections: [
+      {
+        heading: "1. Current and Voltage",
+        vnHeading: "1. Dòng điện và Điện áp",
+        text: "**Current** is the flow of electrons, measured in Amps (A). **Voltage** is the electrical push from the power source, measured in Volts (V).",
+        vnText: "**Dòng điện** là dòng chảy của các electron, đo bằng Ampe (A). **Điện áp** là lực đẩy điện từ nguồn điện, đo bằng Vôn (V)."
+      },
+      {
+        heading: "2. Circuit Symbols and Meters",
+        vnHeading: "2. Ký hiệu mạch và Máy đo",
+        text: "We use universal symbols to draw circuits. An **Ammeter** measures current and must be placed in series. A **Voltmeter** measures voltage and must be placed in parallel.",
+        vnText: "Chúng ta sử dụng các ký hiệu phổ quát để vẽ mạch điện. Một **Ampe kế** đo dòng điện và phải được đặt nối tiếp. Một **Vôn kế** đo điện áp và phải được đặt song song."
+      },
+      {
+        heading: "3. Series vs. Parallel",
+        vnHeading: "3. Nối tiếp và Song song",
+        text: "In a **Series Circuit**, current is the same everywhere, but voltage is shared. In a **Parallel Circuit**, voltage is the same across branches, but the current splits. **Resistance** (measured in Ohms) opposes this flow.",
+        vnText: "Trong một **Mạch Nối tiếp**, dòng điện giống nhau ở mọi nơi, nhưng điện áp được chia sẻ. Trong một **Mạch Song song**, điện áp giống nhau trên các nhánh, nhưng dòng điện bị chia nhỏ. **Điện trở** (đo bằng Ohm) cản trở dòng chảy này."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "Mia wants to measure the current flowing through a circuit and the voltage across a specific lamp. Explain exactly how she should connect the ammeter and the voltmeter.",
+      requiredWords: [["ammeter", "series"], ["voltmeter", "parallel", "across"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating the ammeter goes in series.",
+        "1 mark for stating the voltmeter goes in parallel (or across the lamp)."
+      ],
+      modelAnswer: "Mia must connect the ammeter in series within the main loop to measure current, and she must connect the voltmeter in parallel across the lamp to measure voltage."
+    },
+    {
+      id: "q2",
+      question: "Explain what will happen to the remaining lamps if one bulb breaks in a Series Circuit compared to a Parallel Circuit.",
+      requiredWords: [["series", "off", "stop", "broken"], ["parallel", "on", "work", "shine"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating all lamps turn off in a series circuit.",
+        "1 mark for stating the other lamps stay on in a parallel circuit."
+      ],
+      modelAnswer: "In a series circuit, if one bulb breaks, the circuit is broken and all other lamps turn off. In a parallel circuit, the other branches still have a complete loop to the battery, so the remaining lamps stay on."
+    },
+    {
+      id: "q3",
+      question: "Using Ohm's Law (V = I × R), calculate the Voltage of a circuit if the Current is 3 Amps and the Resistance is 4 Ohms.",
+      requiredWords: [["12", "twelve"], ["Volts", "V", "voltage"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for calculating the correct number (12).",
+        "1 mark for providing the correct unit (Volts or V)."
+      ],
+      modelAnswer: "Because V = I × R, we multiply 3 Amps by 4 Ohms to get a Voltage of 12 Volts (12V)."
+    }
+  ],
+  diagrams: [
+    {
+      id: "d1",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 100 50 L 300 50 L 300 200 L 100 200 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        
+        <rect x="170" y="40" width="60" height="20" fill="white"/>
+        <line x1="180" y1="35" x2="180" y2="65" stroke="#1e293b" stroke-width="2"/>
+        <line x1="190" y1="45" x2="190" y2="55" stroke="#1e293b" stroke-width="4"/>
+        <line x1="200" y1="50" x2="210" y2="50" stroke="#1e293b" stroke-width="2" stroke-dasharray="2"/>
+        <line x1="220" y1="35" x2="220" y2="65" stroke="#1e293b" stroke-width="2"/>
+        <line x1="230" y1="45" x2="230" y2="55" stroke="#1e293b" stroke-width="4"/>
+
+        <rect x="90" y="115" width="20" height="20" fill="white"/>
+        <circle cx="100" cy="125" r="14" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 90 115 L 110 135 M 110 115 L 90 135" stroke="#1e293b" stroke-width="2"/>
+
+        <rect x="170" y="190" width="60" height="20" fill="white"/>
+        <rect x="175" y="190" width="50" height="20" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <line x1="165" y1="225" x2="230" y2="175" stroke="#1e293b" stroke-width="2"/>
+        <polygon points="230,175 222,175 228,182" fill="#1e293b"/>
+        
+        <text x="200" y="240" font-family="sans-serif" font-weight="900" font-size="20" fill="#f43f5e" text-anchor="middle">X</text>
+      </svg>`,
+      promptText: "Identify the component marked 'X' in the diagram and explain its primary function in this electrical circuit.",
+      requiredWords: [["variable", "resistor"], ["change", "adjust", "control", "alter"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying component X as a variable resistor.",
+        "1 mark for explaining that it is used to adjust or control the resistance (or current) in the circuit."
+      ],
+      modelAnswer: "Component X is a variable resistor. Its function is to allow the user to change the amount of resistance in the circuit, which in turn controls the flow of current."
+    },
+    {
+      id: "d2",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 80 180 L 80 80 L 320 80 L 320 180 L 80 180 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        
+        <rect x="180" y="70" width="40" height="20" fill="white"/>
+        <line x1="190" y1="65" x2="190" y2="95" stroke="#1e293b" stroke-width="2"/>
+        <line x1="210" y1="55" x2="210" y2="105" stroke="#1e293b" stroke-width="4"/>
+        
+        <rect x="180" y="170" width="40" height="20" fill="white"/>
+        <circle cx="200" cy="180" r="14" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 190 170 L 210 190 M 210 170 L 190 190" stroke="#1e293b" stroke-width="2"/>
+
+        <path d="M 160 180 L 160 220 L 240 220 L 240 180" fill="none" stroke="#3b82f6" stroke-width="3"/>
+        <rect x="185" y="210" width="30" height="20" fill="white"/>
+        <circle cx="200" cy="220" r="14" fill="white" stroke="#3b82f6" stroke-width="3"/>
+        <text x="200" y="225" font-family="sans-serif" font-weight="900" font-size="14" fill="#3b82f6" text-anchor="middle">V</text>
+      </svg>`,
+      promptText: "Examine the circuit diagram. Explain why the voltmeter (V) is placed in this specific branching position relative to the lamp.",
+      requiredWords: [["parallel", "across"], ["voltage", "potential difference"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying that the voltmeter is connected in parallel (or across the component).",
+        "1 mark for stating that this is necessary to measure the voltage (potential difference) across that specific component."
+      ],
+      modelAnswer: "The voltmeter is placed in a parallel loop across the lamp because a voltmeter must always be connected in parallel to measure the voltage (potential difference) dropping across a specific component."
+    },
+    {
+      id: "d3",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 250" class="w-full h-full drop-shadow-md">
+        <line x1="250" y1="10" x2="250" y2="240" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4"/>
+        
+        <text x="125" y="30" font-family="sans-serif" font-weight="900" font-size="16" fill="#f43f5e" text-anchor="middle">Circuit A</text>
+        <path d="M 50 60 L 200 60 L 200 200 L 50 200 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        <rect x="110" y="50" width="30" height="20" fill="white"/>
+        <line x1="120" y1="45" x2="120" y2="75" stroke="#1e293b" stroke-width="2"/>
+        <line x1="130" y1="55" x2="130" y2="65" stroke="#1e293b" stroke-width="4"/>
+        <rect x="40" y="120" width="20" height="20" fill="white"/>
+        <circle cx="50" cy="130" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 43 123 L 57 137 M 57 123 L 43 137" stroke="#1e293b" stroke-width="2"/>
+        <rect x="115" y="190" width="20" height="20" fill="white"/>
+        <circle cx="125" cy="200" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 118 193 L 132 207 M 132 193 L 118 207" stroke="#1e293b" stroke-width="2"/>
+
+        <text x="375" y="30" font-family="sans-serif" font-weight="900" font-size="16" fill="#3b82f6" text-anchor="middle">Circuit B</text>
+        <path d="M 300 60 L 450 60 L 450 200 L 300 200 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+        <line x1="300" y1="130" x2="450" y2="130" stroke="#1e293b" stroke-width="2"/>
+        <rect x="360" y="50" width="30" height="20" fill="white"/>
+        <line x1="370" y1="45" x2="370" y2="75" stroke="#1e293b" stroke-width="2"/>
+        <line x1="380" y1="55" x2="380" y2="65" stroke="#1e293b" stroke-width="4"/>
+        <rect x="365" y="120" width="20" height="20" fill="white"/>
+        <circle cx="375" cy="130" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 368 123 L 382 137 M 382 123 L 368 137" stroke="#1e293b" stroke-width="2"/>
+        <rect x="365" y="190" width="20" height="20" fill="white"/>
+        <circle cx="375" cy="200" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+        <path d="M 368 193 L 382 207 M 382 193 L 368 207" stroke="#1e293b" stroke-width="2"/>
+      </svg>`,
+      promptText: "Assume an identical battery is used in both diagrams. Compare how the current behaves in Circuit A (Series) versus Circuit B (Parallel).",
+      requiredWords: [["same", "one path", "constant"], ["split", "splits", "branches", "divide"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for explaining that the current in Circuit A stays exactly the same everywhere because there is only one path.",
+        "1 mark for explaining that the current in Circuit B splits down the different branches."
+      ],
+      modelAnswer: "In Circuit A (a series circuit), the current is the exact same everywhere because there is only one loop. In Circuit B (a parallel circuit), the current splits up when it reaches the different branches."
+    }
+  ],
+  essay: {
+    task: "Compare and contrast Series and Parallel circuits. In your explanation, you must describe how Current (A) and Voltage (V) behave in each type of circuit, and provide one real-world example of where a parallel circuit is used.",
+    guidelines: [
+      "Define the physical layout of both circuits.",
+      "Explain the rules for sharing or splitting current and voltage.",
+      "Provide a logical real-world application."
+    ],
+    requiredWords: [
+      ["series", "one", "single"], 
+      ["parallel", "branches", "multiple"], 
+      ["current", "voltage", "same", "shared", "split"], 
+      ["example", "house", "lights"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for explaining that Series has one path (current is same, voltage is shared).",
+      "1 mark for explaining that Parallel has multiple branches (voltage is same, current splits).",
+      "1 mark for a valid real-world example (e.g., house wiring)."
+    ],
+    modelAnswer: "A series circuit has only one path; therefore, the current is exactly the same everywhere, but the voltage is shared among the components. A parallel circuit has multiple branches; here, the voltage is the same across every branch, but the current splits down the different paths. A real-world example of a parallel circuit is the lighting in a house, which ensures that if a lightbulb breaks in the kitchen, the living room lights will stay on."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/data/Y9/Science_1A/games.js">
+// src/data/GED/ENG_1A/games.js
+import { WAVE_PRESETS } from '../../../components/towerdefense/wavePresets';
+
+export const games = {
+  gameConfig: {
+    themeId: 'RANDOM', // Option 5: Triggers the randomized map selector
+    layout: {
+      rows: 10,
+      cols: 15,
+      path: [
+        [2, 0], [2, 3], [7, 3], [7, 7], [2, 7], [2, 11], [7, 11], [7, 14]
+      ]
+    },
+    allowedTowers: ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN'],
+    waves: WAVE_PRESETS.SET_1,
+    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR
+  }
+};
+</file>
+
+<file path="src/data/Y9/Science_1A/notes.js">
+// src/data/Y9/SCIENCE_1A/notes.js
+
+export const notes = [
+  {
+    type: "intro",
+    title: "Electrical Circuits",
+    titleVn: "Mạch điện",
+    subtitle: "Objective: Understand current, voltage, resistance, and the universal symbols used to design series and parallel circuits.",
+    subtitleVn: "Mục tiêu: Hiểu về dòng điện, điện áp, điện trở và các ký hiệu phổ quát được sử dụng để thiết kế mạch nối tiếp và song song.",
+    color: "bg-[#0ea5e9]", 
+    borderColor: "border-[#0284c7]",
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_1.mp3"
+  },
+  {
+    type: "concept",
+    title: "Current & Voltage",
+    titleVn: "Dòng điện & Điện áp",
+    icon: "Target",
+    color: "bg-[#f59e0b]",
+    content: "Electricity is the flow of tiny charged particles called electrons around a closed loop. To understand circuits, we must define two fundamental concepts:\n\n> **Current (I):** The rate at which electrons flow around the circuit. It is measured in **Amperes (A)**.\n> **Voltage (V):** Also called Potential Difference. This is the 'push' or energy given to the electrons by the power source. It is measured in **Volts (V)**.",
+    contentVn: "Điện là dòng chảy của các hạt mang điện tích nhỏ gọi là electron quanh một vòng khép kín. Để hiểu về mạch điện, chúng ta phải xác định hai khái niệm cơ bản:\n\n> **Dòng điện (I):** Tốc độ mà các electron chạy quanh mạch. Nó được đo bằng **Ampe (A)**.\n> **Điện áp (V):** Còn được gọi là Hiệu điện thế. Đây là 'lực đẩy' hoặc năng lượng được cung cấp cho các electron bởi nguồn điện. Nó được đo bằng **Vôn (V)**.",
+    example: "Think of a water pipe: Current is the amount of water flowing, and Voltage is the water pressure pushing it through.",
+    exampleVn: "Hãy nghĩ về một ống nước: Dòng điện là lượng nước chảy, và Điện áp là áp lực nước đẩy nó đi.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 80 L 300 80 L 300 180 L 100 180 Z" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-linejoin="round"/>
+      <rect x="180" y="60" width="40" height="40" fill="white"/>
+      <line x1="190" y1="65" x2="190" y2="95" stroke="#1e293b" stroke-width="2"/>
+      <line x1="210" y1="55" x2="210" y2="105" stroke="#1e293b" stroke-width="6"/>
+      <text x="200" y="45" font-family="sans-serif" font-weight="bold" font-size="14" fill="#f59e0b" text-anchor="middle">Voltage (Push)</text>
+      <rect x="180" y="160" width="40" height="40" fill="white"/>
+      <circle cx="200" cy="180" r="16" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 189 169 L 211 191 M 211 169 L 189 191" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 250 80 L 270 80" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow)"/>
+      <path d="M 300 110 L 300 130" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow)"/>
+      <path d="M 150 180 L 130 180" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow)"/>
+      <path d="M 100 150 L 100 130" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow)"/>
+      <text x="200" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ef4444" text-anchor="middle">Current (Electron Flow)</text>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+        </marker>
+      </defs>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_2.mp3"
+  },
+  {
+    type: "concept",
+    title: "Circuit Symbols",
+    titleVn: "Ký hiệu Mạch điện",
+    icon: "BookOpen",
+    color: "bg-[#8b5cf6]",
+    content: "Scientists and engineers use universal symbols to draw circuit diagrams. You must memorize these exact shapes.\n\n> **Cell vs. Battery:** A single cell has one long line and one short line. A battery is made of two or more cells connected together.\n> **Lamp / Bulb:** A circle with a cross inside.\n> **Bell / Buzzer:** Looks like a mushroom or an upside-down cup.",
+    contentVn: "Các nhà khoa học và kỹ sư sử dụng các ký hiệu phổ quát để vẽ sơ đồ mạch điện. Bạn phải ghi nhớ chính xác những hình dạng này.\n\n> **Pin (Cell) vs. Bộ pin (Battery):** Một pin đơn có một đường dài và một đường ngắn. Bộ pin bao gồm hai hoặc nhiều pin kết nối với nhau.\n> **Bóng đèn:** Một vòng tròn có dấu chéo bên trong.\n> **Chuông:** Trông giống như một cây nấm hoặc một cái cốc lộn ngược.",
+    example: "When drawing a circuit, always use a ruler for the wires (straight lines) and never leave gaps between the components.",
+    exampleVn: "Khi vẽ mạch điện, luôn sử dụng thước kẻ cho các dây dẫn (đường thẳng) và không bao giờ để khoảng trống giữa các linh kiện.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="200" y1="20" x2="200" y2="230" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4"/>
+      <line x1="20" y1="125" x2="380" y2="125" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4"/>
+      <text x="100" y="45" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Cell</text>
+      <line x1="60" y1="80" x2="140" y2="80" stroke="#1e293b" stroke-width="2"/>
+      <rect x="90" y="60" width="20" height="40" fill="white"/>
+      <line x1="95" y1="65" x2="95" y2="95" stroke="#1e293b" stroke-width="2"/>
+      <line x1="105" y1="55" x2="105" y2="105" stroke="#1e293b" stroke-width="4"/>
+      <text x="300" y="45" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Battery</text>
+      <line x1="250" y1="80" x2="350" y2="80" stroke="#1e293b" stroke-width="2"/>
+      <rect x="270" y="60" width="60" height="40" fill="white"/>
+      <line x1="280" y1="65" x2="280" y2="95" stroke="#1e293b" stroke-width="2"/>
+      <line x1="290" y1="55" x2="290" y2="105" stroke="#1e293b" stroke-width="4"/>
+      <line x1="300" y1="80" x2="310" y2="80" stroke="#1e293b" stroke-width="2" stroke-dasharray="4"/>
+      <line x1="320" y1="65" x2="320" y2="95" stroke="#1e293b" stroke-width="2"/>
+      <line x1="330" y1="55" x2="330" y2="105" stroke="#1e293b" stroke-width="4"/>
+      <text x="100" y="155" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Lamp</text>
+      <line x1="60" y1="190" x2="140" y2="190" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="100" cy="190" r="16" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 89 179 L 111 201 M 111 179 L 89 201" stroke="#1e293b" stroke-width="2"/>
+      <text x="300" y="155" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Bell</text>
+      <line x1="260" y1="180" x2="340" y2="180" stroke="#1e293b" stroke-width="2"/>
+      <rect x="280" y="160" width="40" height="40" fill="white"/>
+      <path d="M 285 180 Q 300 210 315 180" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <line x1="285" y1="180" x2="315" y2="180" stroke="#1e293b" stroke-width="2"/>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_3.mp3"
+  },
+  {
+    type: "concept",
+    title: "Measuring Electricity",
+    titleVn: "Đo lường Điện",
+    icon: "ShieldCheck",
+    color: "bg-[#10b981]",
+    content: "To measure current and voltage, we use specific meters that have their own circuit symbols and strict rules for how they are connected.\n\n> **Ammeter (A):** Measures current. It must ALWAYS be connected in **Series** (in the main path of the circuit).\n> **Voltmeter (V):** Measures voltage. It must ALWAYS be connected in **Parallel** (branching *across* the component you are measuring).",
+    contentVn: "Để đo dòng điện và điện áp, chúng ta sử dụng các máy đo cụ thể có ký hiệu mạch riêng và các quy tắc nghiêm ngặt về cách chúng được kết nối.\n\n> **Ampe kế (A):** Đo dòng điện. Nó LUÔN LUÔN phải được mắc **Nối tiếp** (trên đường dẫn chính của mạch).\n> **Vôn kế (V):** Đo điện áp. Nó LUÔN LUÔN phải được mắc **Song song** (rẽ nhánh *ngang qua* linh kiện bạn đang đo).",
+    example: "If Mia wants to measure the voltage across a lamp, she must draw an extra loop with a 'V' circle bridging over the lamp.",
+    exampleVn: "Nếu Mia muốn đo điện áp ngang qua một bóng đèn, cô ấy phải vẽ một vòng lặp phụ có vòng tròn chữ 'V' bắc cầu qua bóng đèn.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 80 180 L 80 80 L 320 80 L 320 180 L 80 180 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <rect x="180" y="70" width="40" height="20" fill="white"/>
+      <line x1="190" y1="65" x2="190" y2="95" stroke="#1e293b" stroke-width="2"/>
+      <line x1="210" y1="55" x2="210" y2="105" stroke="#1e293b" stroke-width="4"/>
+      <rect x="65" y="110" width="30" height="40" fill="white"/>
+      <circle cx="80" cy="120" r="3" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="80" cy="140" r="3" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <line x1="80" y1="120" x2="65" y2="135" stroke="#1e293b" stroke-width="2"/>
+      <rect x="180" y="170" width="40" height="20" fill="white"/>
+      <circle cx="200" cy="180" r="14" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 190 170 L 210 190 M 210 170 L 190 190" stroke="#1e293b" stroke-width="2"/>
+      <rect x="310" y="115" width="20" height="30" fill="white"/>
+      <circle cx="320" cy="130" r="14" fill="white" stroke="#10b981" stroke-width="2"/>
+      <text x="320" y="135" font-family="sans-serif" font-weight="bold" font-size="14" fill="#10b981" text-anchor="middle">A</text>
+      <text x="365" y="135" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">Series</text>
+      <path d="M 338 130 L 345 130" stroke="#10b981" stroke-width="2"/>
+      <path d="M 160 180 L 160 220 L 240 220 L 240 180" fill="none" stroke="#3b82f6" stroke-width="2"/>
+      <rect x="185" y="210" width="30" height="20" fill="white"/>
+      <circle cx="200" cy="220" r="14" fill="white" stroke="#3b82f6" stroke-width="2"/>
+      <text x="200" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#3b82f6" text-anchor="middle">V</text>
+      <text x="200" y="245" font-family="sans-serif" font-weight="bold" font-size="12" fill="#3b82f6" text-anchor="middle">Parallel</text>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_4.mp3"
+  },
+  {
+    type: "concept",
+    title: "Resistance & Variable Resistors",
+    titleVn: "Điện trở & Biến trở",
+    icon: "Scale",
+    color: "bg-[#ec4899]",
+    content: "**Resistance** is the opposition to the flow of current, measured in Ohms (Ω). Higher resistance means lower current flows through the circuit.\n\n> **Fixed Resistor:** A rectangle symbol. It provides a constant amount of resistance.\n> **Variable Resistor:** A rectangle with an arrow striking through it. You can adjust it to change the resistance (e.g., to act as a dimmer switch for a lamp).",
+    contentVn: "**Điện trở** là sự cản trở dòng điện, được đo bằng Ohm (Ω). Điện trở cao hơn có nghĩa là dòng điện chạy qua mạch thấp hơn.\n\n> **Điện trở cố định (Fixed Resistor):** Ký hiệu hình chữ nhật. Nó cung cấp một lượng điện trở không đổi.\n> **Biến trở (Variable Resistor):** Hình chữ nhật có mũi tên xuyên qua. Bạn có thể điều chỉnh nó để thay đổi điện trở (ví dụ: hoạt động như một công tắc điều chỉnh độ sáng cho đèn).",
+    example: "If you slide the control on a variable resistor to INCREASE the resistance, the lamp in the circuit will get DIMMER.",
+    exampleVn: "Nếu bạn trượt thanh điều khiển trên biến trở để TĂNG điện trở, bóng đèn trong mạch sẽ MỜ ĐI.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="200" y1="20" x2="200" y2="230" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4"/>
+      <text x="100" y="100" font-family="sans-serif" font-weight="bold" font-size="16" fill="#64748b" text-anchor="middle">Fixed Resistor</text>
+      <line x1="40" y1="140" x2="160" y2="140" stroke="#1e293b" stroke-width="2"/>
+      <rect x="75" y="130" width="50" height="20" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <text x="100" y="175" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">Constant Ω</text>
+      <text x="300" y="100" font-family="sans-serif" font-weight="bold" font-size="16" fill="#64748b" text-anchor="middle">Variable Resistor</text>
+      <line x1="240" y1="140" x2="360" y2="140" stroke="#1e293b" stroke-width="2"/>
+      <rect x="275" y="130" width="50" height="20" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <line x1="265" y1="165" x2="330" y2="115" stroke="#1e293b" stroke-width="2"/>
+      <polygon points="330,115 322,115 328,122" fill="#1e293b"/>
+      <text x="300" y="175" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">Adjustable Ω</text>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_5.mp3"
+  },
+  {
+    type: "concept",
+    title: "Ohm's Law",
+    titleVn: "Định luật Ohm",
+    icon: "MessageSquare",
+    color: "bg-[#8b5cf6]",
+    content: "Voltage, Current, and Resistance are perfectly connected by a mathematical rule called **Ohm's Law**. \n\n> **V = I × R** (Voltage = Current × Resistance)\n\nTo easily remember and rearrange this formula, scientists use the Formula Triangle. Cover up the letter you want to find, and the remaining letters tell you what math to do!",
+    contentVn: "Điện áp, Dòng điện và Điện trở được kết nối hoàn hảo bởi một quy tắc toán học gọi là **Định luật Ohm**.\n\n> **V = I × R** (Điện áp = Dòng điện × Điện trở)\n\nĐể dễ dàng ghi nhớ và sắp xếp lại công thức này, các nhà khoa học sử dụng Tam giác Công thức. Hãy che đi chữ cái bạn muốn tìm, và các chữ cái còn lại sẽ cho bạn biết phải làm phép toán nào!",
+    example: "If I want to find Resistance (R), I cover the 'R' on the triangle. I am left with 'V' over 'I'. So, R = V ÷ I.",
+    exampleVn: "Nếu tôi muốn tìm Điện trở (R), tôi che chữ 'R' trên tam giác. Tôi còn lại 'V' trên 'I'. Vì vậy, R = V ÷ I.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <polygon points="200,30 80,210 320,210" fill="#f8fafc" stroke="#1e293b" stroke-width="4" stroke-linejoin="round"/>
+      <line x1="120" y1="150" x2="280" y2="150" stroke="#1e293b" stroke-width="4"/>
+      <line x1="200" y1="150" x2="200" y2="210" stroke="#1e293b" stroke-width="4"/>
+      <text x="200" y="115" font-family="sans-serif" font-weight="900" font-size="48" fill="#3b82f6" text-anchor="middle">V</text>
+      <text x="160" y="195" font-family="sans-serif" font-weight="900" font-size="42" fill="#ef4444" text-anchor="middle">I</text>
+      <text x="240" y="195" font-family="sans-serif" font-weight="900" font-size="42" fill="#ec4899" text-anchor="middle">R</text>
+      <text x="200" y="190" font-family="sans-serif" font-weight="bold" font-size="24" fill="#64748b" text-anchor="middle">×</text>
+      <text x="200" y="145" font-family="sans-serif" font-weight="bold" font-size="20" fill="#64748b" text-anchor="middle">÷</text>
+      <text x="330" y="90" font-family="sans-serif" font-weight="bold" font-size="14" fill="#3b82f6">Voltage (Volts)</text>
+      <text x="20" y="195" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ef4444">Current (Amps)</text>
+      <text x="330" y="195" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ec4899">Resistance (Ω)</text>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_6.mp3"
+  },
+  {
+    type: "concept",
+    title: "Series Circuits",
+    titleVn: "Mạch Nối tiếp",
+    icon: "Target",
+    color: "bg-[#f43f5e]",
+    content: "A **Series Circuit** has only ONE path for the current to flow. All components are connected in a single loop.\n\n> Because there are no branches, the electrons have nowhere else to go.\n> If one component breaks (like a blown bulb or an open switch), the entire circuit is broken and everything stops working.",
+    contentVn: "Một **Mạch Nối tiếp** chỉ có MỘT đường duy nhất cho dòng điện chạy qua. Tất cả các linh kiện được kết nối trong một vòng lặp duy nhất.\n\n> Bởi vì không có nhánh rẽ, các electron không có nơi nào khác để đi.\n> Nếu một linh kiện bị hỏng (như bóng đèn bị cháy hoặc công tắc mở), toàn bộ mạch điện bị hỏng và mọi thứ ngừng hoạt động.",
+    example: "Cheap holiday fairy lights are often in series. If one bulb breaks, the whole string goes dark!",
+    exampleVn: "Đèn nháy trang trí rẻ tiền thường được mắc nối tiếp. Nếu một bóng bị hỏng, toàn bộ dây đèn sẽ tắt tối thui!",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 60 L 300 60 L 300 190 L 100 190 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <rect x="170" y="50" width="60" height="20" fill="white"/>
+      <line x1="180" y1="45" x2="180" y2="75" stroke="#1e293b" stroke-width="2"/>
+      <line x1="190" y1="55" x2="190" y2="65" stroke="#1e293b" stroke-width="4"/>
+      <line x1="200" y1="60" x2="210" y2="60" stroke="#1e293b" stroke-width="2" stroke-dasharray="2"/>
+      <line x1="220" y1="45" x2="220" y2="75" stroke="#1e293b" stroke-width="2"/>
+      <line x1="230" y1="55" x2="230" y2="65" stroke="#1e293b" stroke-width="4"/>
+      <rect x="130" y="180" width="30" height="20" fill="white"/>
+      <circle cx="145" cy="190" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 135 180 L 155 200 M 155 180 L 135 200" stroke="#1e293b" stroke-width="2"/>
+      <rect x="240" y="180" width="30" height="20" fill="white"/>
+      <circle cx="255" cy="190" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 245 180 L 265 200 M 265 180 L 245 200" stroke="#1e293b" stroke-width="2"/>
+      <text x="200" y="135" font-family="sans-serif" font-weight="900" font-size="20" fill="#f43f5e" text-anchor="middle">Single Loop</text>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_7.mp3"
+  },
+  {
+    type: "concept",
+    title: "Parallel Circuits",
+    titleVn: "Mạch Song song",
+    icon: "Target",
+    color: "bg-[#3b82f6]",
+    content: "A **Parallel Circuit** has multiple branching paths for the current to flow. \n\n> Because the track splits, electrons can choose different paths to return to the battery.\n> If one branch breaks, the other branches keep working perfectly because they still have a direct loop to the battery.",
+    contentVn: "Một **Mạch Song song** có nhiều đường rẽ nhánh cho dòng điện chạy qua.\n\n> Bởi vì đường ray chia tách, các electron có thể chọn các đường khác nhau để trở về pin.\n> Nếu một nhánh bị hỏng, các nhánh khác vẫn tiếp tục hoạt động hoàn hảo vì chúng vẫn có một vòng lặp trực tiếp về pin.",
+    example: "The lights in your house are wired in parallel. If you turn off the kitchen light, the living room lights stay on!",
+    exampleVn: "Hệ thống đèn trong nhà bạn được mắc song song. Nếu bạn tắt đèn nhà bếp, đèn phòng khách vẫn sáng!",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 60 L 300 60 L 300 190 L 100 190 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <line x1="100" y1="125" x2="300" y2="125" stroke="#1e293b" stroke-width="2"/>
+      <rect x="170" y="50" width="60" height="20" fill="white"/>
+      <line x1="180" y1="45" x2="180" y2="75" stroke="#1e293b" stroke-width="2"/>
+      <line x1="190" y1="55" x2="190" y2="65" stroke="#1e293b" stroke-width="4"/>
+      <line x1="200" y1="60" x2="210" y2="60" stroke="#1e293b" stroke-width="2" stroke-dasharray="2"/>
+      <line x1="220" y1="45" x2="220" y2="75" stroke="#1e293b" stroke-width="2"/>
+      <line x1="230" y1="55" x2="230" y2="65" stroke="#1e293b" stroke-width="4"/>
+      <rect x="180" y="115" width="40" height="20" fill="white"/>
+      <circle cx="200" cy="125" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 190 115 L 210 135 M 210 115 L 190 135" stroke="#1e293b" stroke-width="2"/>
+      <text x="235" y="130" font-family="sans-serif" font-weight="bold" font-size="12" fill="#3b82f6">Branch 1</text>
+      <rect x="180" y="180" width="40" height="20" fill="white"/>
+      <circle cx="200" cy="190" r="14" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 190 180 L 210 200 M 210 180 L 190 200" stroke="#1e293b" stroke-width="2"/>
+      <text x="235" y="195" font-family="sans-serif" font-weight="bold" font-size="12" fill="#3b82f6">Branch 2</text>
+      <circle cx="100" cy="125" r="4" fill="#1e293b"/>
+      <circle cx="300" cy="125" r="4" fill="#1e293b"/>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_8.mp3"
+  },
+  {
+    type: "concept",
+    title: "Rule #1: Current (A)",
+    titleVn: "Quy tắc #1: Dòng điện (A)",
+    icon: "Scale",
+    color: "bg-[#10b981]",
+    content: "The behavior of Current (measured by an Ammeter) changes depending on the circuit type.\n\n> **Series Circuit:** Current is EXACTLY THE SAME everywhere. It doesn't get 'used up'.\n> **Parallel Circuit:** Current SPLITS at the branches. The total current leaving the battery equals the current in Branch 1 + Branch 2.",
+    contentVn: "Hành vi của Dòng điện (được đo bằng Ampe kế) thay đổi tùy thuộc vào loại mạch.\n\n> **Mạch Nối tiếp:** Dòng điện HOÀN TOÀN GIỐNG NHAU ở mọi nơi. Nó không bị 'sử dụng hết'.\n> **Mạch Song song:** Dòng điện BỊ CHIA NHỎ tại các nhánh. Tổng dòng điện rời khỏi pin bằng dòng điện ở Nhánh 1 + Nhánh 2.",
+    example: "Look at the Parallel diagram. If 4 Amps leave the battery, it splits at the junction into 2 Amps for the top lamp and 2 Amps for the bottom lamp.",
+    exampleVn: "Hãy nhìn vào biểu đồ Song song. Nếu 4 Ampe rời khỏi pin, nó sẽ chia tách tại ngã ba thành 2 Ampe cho bóng đèn trên và 2 Ampe cho bóng đèn dưới.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="200" y1="20" x2="200" y2="230" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4"/>
+      <text x="100" y="35" font-family="sans-serif" font-weight="bold" font-size="16" fill="#f43f5e" text-anchor="middle">Series (Same Everywhere)</text>
+      <path d="M 40 60 L 160 60 L 160 190 L 40 190 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <rect x="80" y="50" width="40" height="20" fill="white"/> <line x1="90" y1="45" x2="90" y2="75" stroke="#1e293b" stroke-width="2"/><line x1="110" y1="55" x2="110" y2="65" stroke="#1e293b" stroke-width="4"/>
+      <rect x="30" y="115" width="20" height="20" fill="white"/>
+      <circle cx="40" cy="125" r="12" fill="white" stroke="#10b981" stroke-width="2"/>
+      <text x="40" y="129" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">2A</text>
+      <rect x="85" y="180" width="30" height="20" fill="white"/>
+      <circle cx="100" cy="190" r="12" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 92 182 L 108 198 M 108 182 L 92 198" stroke="#1e293b" stroke-width="2"/>
+      <rect x="150" y="115" width="20" height="20" fill="white"/>
+      <circle cx="160" cy="125" r="12" fill="white" stroke="#10b981" stroke-width="2"/>
+      <text x="160" y="129" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">2A</text>
+      <text x="300" y="35" font-family="sans-serif" font-weight="bold" font-size="16" fill="#3b82f6" text-anchor="middle">Parallel (Splits)</text>
+      <path d="M 240 60 L 360 60 L 360 190 L 240 190 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <line x1="240" y1="125" x2="360" y2="125" stroke="#1e293b" stroke-width="2"/>
+      <rect x="280" y="50" width="40" height="20" fill="white"/> <line x1="290" y1="45" x2="290" y2="75" stroke="#1e293b" stroke-width="2"/><line x1="310" y1="55" x2="310" y2="65" stroke="#1e293b" stroke-width="4"/>
+      <rect x="230" y="80" width="20" height="20" fill="white"/>
+      <circle cx="240" cy="90" r="12" fill="white" stroke="#10b981" stroke-width="2"/>
+      <text x="240" y="94" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">4A</text>
+      <rect x="270" y="115" width="20" height="20" fill="white"/>
+      <circle cx="280" cy="125" r="12" fill="white" stroke="#10b981" stroke-width="2"/>
+      <text x="280" y="129" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">2A</text>
+      <circle cx="320" cy="125" r="12" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 312 117 L 328 133 M 328 117 L 312 133" stroke="#1e293b" stroke-width="2"/>
+      <rect x="270" y="180" width="20" height="20" fill="white"/>
+      <circle cx="280" cy="190" r="12" fill="white" stroke="#10b981" stroke-width="2"/>
+      <text x="280" y="194" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">2A</text>
+      <circle cx="320" cy="190" r="12" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 312 182 L 328 198 M 328 182 L 312 198" stroke="#1e293b" stroke-width="2"/>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_9.mp3"
+  },
+  {
+    type: "concept",
+    title: "Rule #2: Voltage (V)",
+    titleVn: "Quy tắc #2: Điện áp (V)",
+    icon: "Target",
+    color: "bg-[#ec4899]",
+    content: "The behavior of Voltage (measured by a Voltmeter) is the exact opposite of Current!\n\n> **Series Circuit:** Voltage is SHARED between components. (12V Battery = 6V on Lamp 1 + 6V on Lamp 2).\n> **Parallel Circuit:** Voltage is the SAME across all branches. Each branch gets the full power of the battery (12V).",
+    contentVn: "Hành vi của Điện áp (được đo bằng Vôn kế) hoàn toàn trái ngược với Dòng điện!\n\n> **Mạch Nối tiếp:** Điện áp ĐƯỢC CHIA SẺ giữa các linh kiện. (Pin 12V = 6V ở Bóng đèn 1 + 6V ở Bóng đèn 2).\n> **Mạch Song song:** Điện áp GIỐNG NHAU trên tất cả các nhánh. Mỗi nhánh nhận được toàn bộ sức mạnh của pin (12V).",
+    example: "Because Parallel circuits give the full voltage to every branch, adding more lamps in parallel won't make them dimmer. In Series, adding more lamps makes them all share the voltage, so they get very dim!",
+    exampleVn: "Vì mạch Song song cung cấp toàn bộ điện áp cho mọi nhánh, việc thêm nhiều đèn song song sẽ không làm chúng mờ đi. Ở mạch Nối tiếp, việc thêm nhiều đèn làm cho chúng chia sẻ điện áp, vì vậy chúng trở nên rất mờ!",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="200" y1="20" x2="200" y2="230" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4"/>
+      <text x="100" y="35" font-family="sans-serif" font-weight="bold" font-size="16" fill="#f43f5e" text-anchor="middle">Series (Shared V)</text>
+      <path d="M 40 70 L 160 70 L 160 160 L 40 160 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <rect x="80" y="60" width="40" height="20" fill="white"/> <line x1="90" y1="55" x2="90" y2="85" stroke="#1e293b" stroke-width="2"/><line x1="110" y1="65" x2="110" y2="75" stroke="#1e293b" stroke-width="4"/>
+      <text x="100" y="50" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ec4899" text-anchor="middle">12V Battery</text>
+      <rect x="65" y="150" width="20" height="20" fill="white"/>
+      <circle cx="75" cy="160" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 68 153 L 82 167 M 82 153 L 68 167" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 50 160 L 50 200 L 100 200 L 100 160" fill="none" stroke="#ec4899" stroke-width="2" stroke-dasharray="2"/>
+      <circle cx="75" cy="200" r="12" fill="white" stroke="#ec4899" stroke-width="2"/>
+      <text x="75" y="204" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">6V</text>
+      <rect x="115" y="150" width="20" height="20" fill="white"/>
+      <circle cx="125" cy="160" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 118 153 L 132 167 M 132 153 L 118 167" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 100 160 L 100 200 L 150 200 L 150 160" fill="none" stroke="#ec4899" stroke-width="2" stroke-dasharray="2"/>
+      <circle cx="125" cy="200" r="12" fill="white" stroke="#ec4899" stroke-width="2"/>
+      <text x="125" y="204" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">6V</text>
+      <text x="300" y="35" font-family="sans-serif" font-weight="bold" font-size="16" fill="#3b82f6" text-anchor="middle">Parallel (Full V)</text>
+      <path d="M 240 70 L 360 70 L 360 160 L 240 160 Z" fill="none" stroke="#1e293b" stroke-width="2"/>
+      <line x1="240" y1="115" x2="360" y2="115" stroke="#1e293b" stroke-width="2"/>
+      <rect x="280" y="60" width="40" height="20" fill="white"/> <line x1="290" y1="55" x2="290" y2="85" stroke="#1e293b" stroke-width="2"/><line x1="310" y1="65" x2="310" y2="75" stroke="#1e293b" stroke-width="4"/>
+      <text x="300" y="50" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ec4899" text-anchor="middle">12V Battery</text>
+      <rect x="290" y="105" width="20" height="20" fill="white"/>
+      <circle cx="300" cy="115" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 293 108 L 307 122 M 307 108 L 293 122" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="340" cy="115" r="12" fill="white" stroke="#ec4899" stroke-width="2"/>
+      <text x="340" y="119" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">12V</text>
+      <path d="M 310 115 L 328 115" stroke="#ec4899" stroke-width="2" stroke-dasharray="2"/>
+      <rect x="290" y="150" width="20" height="20" fill="white"/>
+      <circle cx="300" cy="160" r="10" fill="white" stroke="#1e293b" stroke-width="2"/>
+      <path d="M 293 153 L 307 167 M 307 153 L 293 167" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="340" cy="160" r="12" fill="white" stroke="#ec4899" stroke-width="2"/>
+      <text x="340" y="164" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">12V</text>
+      <path d="M 310 160 L 328 160" stroke="#ec4899" stroke-width="2" stroke-dasharray="2"/>
+    </svg>`,
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_10.mp3"
+  },
+  {
+    type: "summary",
+    title: "Lesson Complete!",
+    titleVn: "Hoàn thành Bài học!",
+    subtitle: "Objective Achieved: You can now identify standard electrical components and understand the rules of series and parallel circuits.",
+    subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể nhận diện các linh kiện điện tiêu chuẩn và hiểu các quy tắc của mạch nối tiếp và song song.",
+    color: "bg-[#10b981]",
+    borderColor: "border-[#059669]",
+    audio: "audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_11.mp3"
+  }
+];
+</file>
+
+<file path="src/data/Y9/Science_1A/workbook.js">
+// src/data/GED/ENG_1A/workbook.js
+export const workbook = null;
+</file>
+
+</files>

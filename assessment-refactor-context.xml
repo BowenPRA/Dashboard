@@ -1,0 +1,2306 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/tasks/Assessment.jsx, src/data/Y8/Math_1A/assessment.js, src/data/Y8/Math_1A/**, src/data/Y9/Math_1A/**
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/data/Y8/Math_1A/assessment.js
+src/data/Y8/Math_1A/data.js
+src/data/Y8/Math_1A/games.js
+src/data/Y8/Math_1A/notes.js
+src/data/Y8/Math_1A/workbook.js
+src/data/Y9/Math_1A/assessment.js
+src/data/Y9/Math_1A/data.js
+src/data/Y9/Math_1A/games.js
+src/data/Y9/Math_1A/notes.js
+src/data/Y9/Math_1A/workbook.js
+src/tasks/Assessment.jsx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/data/Y8/Math_1A/assessment.js">
+// src/data/Y8/Math_1A/assessment.js
+export const assessment = {
+  timeLimit: 1800, // 30 minutes
+  passages: [], // No text passages needed for this Math assessment
+  questions: [
+    {
+      id: "q1_comp_inline",
+      type: "inline",
+      title: "1. Look at the right angle below split into two adjacent angles. Select the correct relationship.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 120 50 L 120 200 L 270 200" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 170 L 150 170 L 150 200" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 200 L 240 106" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 180 200 A 60 60 0 0 0 170 161" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <text x="195" y="185" font-family="sans-serif" font-weight="bold" font-size="20" fill="#1d4ed8" text-anchor="middle">a</text>
+        <path d="M 170 161 A 60 60 0 0 0 120 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="145" y="135" font-family="sans-serif" font-weight="bold" font-size="20" fill="#b91c1c" text-anchor="middle">b</text>
+      </svg>`,
+      options: [],
+      textParts: [
+        "Because the two angles form a perfect right corner, they are known as ",
+        " angles. This means their mathematical sum will always equal exactly ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "complementary",
+          options: [
+            { val: "supplementary", text: "supplementary" },
+            { val: "complementary", text: "complementary" },
+            { val: "vertically opposite", text: "vertically opposite" }
+          ]
+        },
+        "2": {
+          correct: "90",
+          options: [
+            { val: "90", text: "90°" },
+            { val: "180", text: "180°" },
+            { val: "360", text: "360°" }
+          ]
+        }
+      },
+      expEn: "Adjacent angles that form a right corner (indicated by the square symbol) add up to 90°. These are mathematically defined as complementary angles.",
+      expVn: "Các góc kề nhau tạo thành một góc vuông (được chỉ ra bởi ký hiệu hình vuông) có tổng là 90°. Chúng được định nghĩa toán học là các góc phụ nhau."
+    },
+    {
+      id: "q2_comp_mcq",
+      type: "mcq",
+      title: "2. The angle marked with a square is a right angle. If angle 'a' measures 38°, what is the exact measurement of angle 'b'?",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 120 50 L 120 200 L 270 200" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 170 L 150 170 L 150 200" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 120 200 L 240 106" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 180 200 A 60 60 0 0 0 170 161" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <text x="200" y="185" font-family="sans-serif" font-weight="bold" font-size="20" fill="#1d4ed8" text-anchor="middle">38°</text>
+        <path d="M 170 161 A 60 60 0 0 0 120 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="145" y="135" font-family="sans-serif" font-weight="bold" font-size="20" fill="#b91c1c" text-anchor="middle">b</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. 142°" },
+        { val: "B", text: "B. 52°" },
+        { val: "C", text: "C. 62°" },
+        { val: "D", text: "D. 90°" }
+      ],
+      correct: "B",
+      expEn: "Complementary angles add up to 90°. Subtracting the known angle gives the missing value: 90° - 38° = 52°.",
+      expVn: "Các góc phụ nhau có tổng là 90°. Trừ đi góc đã biết sẽ ra giá trị còn thiếu: 90° - 38° = 52°."
+    },
+    {
+      id: "q3_vocab_dnd",
+      type: "dnd",
+      title: "3. Drag and drop the visual letter shapes that help identify these specific parallel line angle pairs.",
+      options: [],
+      bank: [
+        { id: "v1", val: "z_shape", text: "Z-Shape" },
+        { id: "v2", val: "c_shape", text: "C-Shape" },
+        { id: "v3", val: "f_shape", text: "F-Shape" },
+        { id: "v4", val: "x_shape", text: "X-Shape" }
+      ],
+      targets: [
+        { id: "alt", title: "Alternate Angles" },
+        { id: "corr", title: "Corresponding Angles" },
+        { id: "co_int", title: "Co-interior Angles" }
+      ],
+      correctSets: {
+        "alt": ["z_shape"],
+        "corr": ["f_shape"],
+        "co_int": ["c_shape"]
+      },
+      expEn: "Alternate angles form a Z-shape, Corresponding angles form an F-shape, and Co-interior angles form a C-shape.",
+      expVn: "Góc so le trong tạo thành hình chữ Z, Góc đồng vị tạo thành hình chữ F, và Góc trong cùng phía tạo thành hình chữ C."
+    },
+    {
+      id: "q4_math_inline",
+      type: "inline",
+      title: "4. Identify the relationship to calculate the missing angle 'y'.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+        <text x="160" y="115" font-family="sans-serif" font-weight="bold" font-size="18" fill="#9333ea">72°</text>
+        <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+        <text x="230" y="150" font-family="sans-serif" font-weight="bold" font-size="18" fill="#9333ea">y</text>
+      </svg>`,
+      options: [],
+      textParts: [
+        "Because the horizontal lines are parallel, the angle marked 'y' is ",
+        " to the 72° angle. This means their mathematical values are exactly ",
+        ", making y = 72°."
+      ],
+      blanks: {
+        "1": {
+          correct: "alt",
+          options: [
+            { val: "co_int", text: "co-interior" },
+            { val: "alt", text: "alternate" },
+            { val: "corr", text: "corresponding" }
+          ]
+        },
+        "2": {
+          correct: "equal",
+          options: [
+            { val: "supp", text: "supplementary" },
+            { val: "equal", text: "equal" }
+          ]
+        }
+      },
+      expEn: "The highlighted angles sit on opposite sides of the transversal forming a Z-shape. This makes them alternate angles, which are always mathematically equal.",
+      expVn: "Các góc được làm nổi bật nằm ở hai phía đối diện của đường cát tuyến tạo thành hình chữ Z. Điều này khiến chúng trở thành góc so le trong, và chúng luôn bằng nhau về mặt toán học."
+    },
+    {
+      id: "q5_math_mcq",
+      type: "mcq",
+      title: "5. Examine the C-shape highlight. Calculate the value of angle z.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="160" y="115" font-family="sans-serif" font-weight="bold" font-size="18" fill="#ef4444">105°</text>
+        <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+        <text x="245" y="145" font-family="sans-serif" font-weight="bold" font-size="18" fill="#22c55e">z</text>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. 105°" },
+        { val: "B", text: "B. 90°" },
+        { val: "C", text: "C. 85°" },
+        { val: "D", text: "D. 75°" }
+      ],
+      correct: "D",
+      expEn: "The highlighted angles are on the same side of the transversal (C-shape), meaning they are co-interior. Co-interior angles are supplementary (add to 180). 180 - 105 = 75°.",
+      expVn: "Các góc được đánh dấu nằm cùng một phía của đường cát tuyến (hình chữ C), nghĩa là chúng là góc trong cùng phía. Góc trong cùng phía thì bù nhau (tổng bằng 180). 180 - 105 = 75°."
+    },
+    {
+      id: "q6_x_intersect_dnd",
+      type: "dnd",
+      title: "6. Analyze the intersecting system below. Drag the correct numerical values to identify angles d, e, and f.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 125 L 350 125" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 120 225 L 280 25" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 160 125 A 40 40 0 0 1 225 94" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <text x="185" y="90" font-family="sans-serif" font-weight="bold" font-size="18" fill="#b91c1c" text-anchor="middle">130°</text>
+        <path d="M 240 125 A 40 40 0 0 1 175 156" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <text x="215" y="175" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8" text-anchor="middle">d</text>
+        <path d="M 225 94 A 40 40 0 0 1 240 125" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+        <text x="245" y="110" font-family="sans-serif" font-weight="bold" font-size="18" fill="#d97706" text-anchor="middle">f</text>
+        <path d="M 175 156 A 40 40 0 0 1 160 125" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+        <text x="155" y="150" font-family="sans-serif" font-weight="bold" font-size="18" fill="#059669" text-anchor="middle">e</text>
+      </svg>`,
+      options: [],
+      bank: [
+        { id: "n1", val: "130", text: "130°" },
+        { id: "n2", val: "50", text: "50°" },
+        { id: "n3", val: "50", text: "50°" },
+        { id: "n4", val: "40", text: "40°" }
+      ],
+      targets: [
+        { id: "t_d", title: "Angle d" },
+        { id: "t_e", title: "Angle e" },
+        { id: "t_f", title: "Angle f" }
+      ],
+      correctSets: {
+        "t_d": ["130"],
+        "t_e": ["50"],
+        "t_f": ["50"]
+      },
+      expEn: "Angle 'd' is vertically opposite to 130°, making it equal to 130°. Angles 'e' and 'f' sit on a straight line intersecting the 130° angle, making them supplementary: 180° - 130° = 50°.",
+      expVn: "Góc 'd' đối đỉnh với góc 130°, nên nó bằng 130°. Góc 'e' và 'f' nằm trên đường thẳng kề bù với góc 130°, nên chúng có tổng bằng 180°: 180° - 130° = 50°."
+    },
+    {
+      id: "q7_complex_dnd",
+      type: "dnd",
+      title: "7. Drag the correct numerical values to complete the calculations for angles a, b, c, and d.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        
+        <text x="185" y="70" font-family="sans-serif" font-weight="bold" font-size="18" fill="#334155">65°</text>
+        <text x="150" y="105" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">a</text>
+        <text x="200" y="105" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">b</text>
+        <text x="210" y="155" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">c</text>
+        <text x="255" y="155" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">d</text>
+      </svg>`,
+      options: [],
+      bank: [
+        { id: "x1", val: "65", text: "65°" },
+        { id: "x2", val: "65", text: "65°" },
+        { id: "x3", val: "115", text: "115°" },
+        { id: "x4", val: "115", text: "115°" },
+        { id: "x5", val: "180", text: "180°" }
+      ],
+      targets: [
+        { id: "a_val", title: "Angle a" },
+        { id: "b_val", title: "Angle b" },
+        { id: "c_val", title: "Angle c" },
+        { id: "d_val", title: "Angle d" }
+      ],
+      correctSets: {
+        "a_val": ["65"],
+        "b_val": ["115"],
+        "c_val": ["115"],
+        "d_val": ["65"]
+      },
+      expEn: "'a' is vertically opposite to 65° (so a=65). 'b' is supplementary to 'a' on a straight line (180-65=115). 'c' is alternate interior to 'b' (so c=115). 'd' is alternate interior to 'a' (so d=65).",
+      expVn: "'a' là góc đối đỉnh với 65° (nên a=65). 'b' là góc bù với 'a' trên một đường thẳng (180-65=115). 'c' là góc so le trong với 'b' (nên c=115). 'd' là góc so le trong với 'a' (nên d=65)."
+    },
+    {
+      id: "q8_global_class_dnd",
+      type: "dnd",
+      title: "8. Sort the geometric angle pairs or rules into their correct structural property category.",
+      options: [],
+      bank: [
+        { id: "g1", val: "vert", text: "Vertically Opposite" },
+        { id: "g2", val: "alt", text: "Alternate Angles" },
+        { id: "g3", val: "corr", text: "Corresponding Angles" },
+        { id: "g4", val: "coint", text: "Co-interior Angles" },
+        { id: "g5", val: "straight", text: "Angles on a Straight Line" }
+      ],
+      targets: [
+        { id: "equal_angles", title: "Equal Angles (=)" },
+        { id: "supp_angles", title: "Supplementary Angles (Adds to 180°)" }
+      ],
+      correctSets: {
+        "equal_angles": ["vert", "alt", "corr"],
+        "supp_angles": ["coint", "straight"]
+      },
+      expEn: "Vertically opposite, alternate, and corresponding angles are always mathematically equal. Co-interior angles and angles running along a straight flat line are supplementary (summing to 180°).",
+      expVn: "Các góc đối đỉnh, so le trong và đồng vị luôn bằng nhau về mặt toán học. Các góc trong cùng phía và góc trên đường thẳng là các góc bù nhau (tổng bằng 180°)."
+    }
+  ]
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/data.js">
+// src/data/Y8/Math_1A/data.js
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const MATH_1A_DATA = {
+  meta: {
+    id: "MATH_1A",
+    title: "Parallel Lines & Angles",
+    desc: "Master the properties of angle pairs, transversals, and parallel lines in geometry.",
+    track: "Y8",
+    icon: "Hash"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    {
+      word: "Acute Angle",
+      vn: "Góc nhọn",
+      def: "An angle that is greater than 0° but strictly less than 90°.",
+      vnDef: "Góc lớn hơn 0° nhưng nhỏ hơn 90°.",
+      sent: "An equilateral triangle is made up of three acute angles.",
+      vnSent: "Một tam giác đều được tạo thành từ ba góc nhọn.",
+      dictSent: "An acute angle is always smaller than a perfect right angle.",
+      isReal: true
+    },
+    {
+      word: "Obtuse Angle",
+      vn: "Góc tù",
+      def: "An angle that is greater than 90° but strictly less than 180°.",
+      vnDef: "Góc lớn hơn 90° nhưng nhỏ hơn 180°.",
+      sent: "The reclining chair leaned back to form a wide obtuse angle.",
+      vnSent: "Chiếc ghế ngả dựa ra sau tạo thành một góc tù rộng.",
+      dictSent: "An obtuse angle is wider than a right angle but smaller than a straight line.",
+      isReal: true
+    },
+    {
+      word: "Complementary",
+      vn: "Phụ nhau",
+      def: "Two angles whose sum is exactly 90 degrees.",
+      vnDef: "Hai góc có tổng số đo chính xác bằng 90 độ.",
+      sent: "Because the two angles form a right angle, they are complementary.",
+      vnSent: "Vì hai góc tạo thành một góc vuông nên chúng là hai góc phụ nhau.",
+      dictSent: "Complementary angles combine to form a perfect ninety degree corner.",
+      isReal: true
+    },
+    {
+      word: "Supplementary",
+      vn: "Bù nhau",
+      def: "Two angles whose sum is exactly 180 degrees.",
+      vnDef: "Hai góc có tổng số đo chính xác bằng 180 độ.",
+      sent: "The two adjacent angles on the straight line are supplementary.",
+      vnSent: "Hai góc kề nhau trên đường thẳng là hai góc bù nhau.",
+      dictSent: "Supplementary angles always add up to one hundred and eighty degrees.",
+      isReal: true
+    },
+    {
+      word: "Vertically Opposite",
+      vn: "Đối đỉnh",
+      def: "The angles directly across from each other when two intersecting lines form an X.",
+      vnDef: "Các góc nằm đối diện trực tiếp với nhau khi hai đường thẳng cắt nhau tạo thành hình chữ X.",
+      sent: "The scissors open to reveal vertically opposite angles that are perfectly equal.",
+      vnSent: "Chiếc kéo mở ra để lộ các góc đối đỉnh hoàn toàn bằng nhau.",
+      dictSent: "Vertically opposite angles sit across from each other and are always equal.",
+      isReal: true
+    },
+    {
+      word: "Parallel Lines",
+      vn: "Đường thẳng song song",
+      def: "Two lines on a plane that never meet and are always the same distance apart.",
+      vnDef: "Hai đường thẳng trên một mặt phẳng không bao giờ gặp nhau và luôn cách nhau một khoảng bằng nhau.",
+      sent: "The train tracks run continuously as parallel lines.",
+      vnSent: "Các đường ray xe lửa chạy liên tục như những đường thẳng song song.",
+      dictSent: "Parallel lines stay exactly the same distance apart and never intersect.",
+      isReal: true
+    },
+    {
+      word: "Transversal",
+      vn: "Đường cát tuyến",
+      def: "A line that passes through two or more other lines.",
+      vnDef: "Một đường thẳng đi qua hai hoặc nhiều đường thẳng khác.",
+      sent: "The transversal line cut through the parallel tracks, creating eight new angles.",
+      vnSent: "Đường cát tuyến cắt ngang qua các đường ray song song, tạo ra tám góc mới.",
+      dictSent: "A transversal is a single line that cuts across two parallel lines.",
+      isReal: true
+    },
+    {
+      word: "Alternate Angles",
+      vn: "Góc so le trong",
+      def: "A pair of angles on opposite sides of a transversal and between the parallel lines (Z-shape).",
+      vnDef: "Một cặp góc ở hai phía đối diện của đường cát tuyến và nằm giữa các đường thẳng song song (hình chữ Z).",
+      sent: "By finding the Z-shape, she proved the alternate angles were equal.",
+      vnSent: "Bằng cách tìm ra hình chữ Z, cô ấy đã chứng minh các góc so le trong bằng nhau.",
+      dictSent: "Alternate angles form a Z shape and are always equal to each other.",
+      isReal: true
+    },
+    {
+      word: "Corresponding Angles",
+      vn: "Góc đồng vị",
+      def: "A pair of angles occupying the exact same relative position at each intersection (F-shape).",
+      vnDef: "Một cặp góc chiếm cùng một vị trí tương đối chính xác tại mỗi giao điểm (hình chữ F).",
+      sent: "The architect used corresponding angles to ensure the two roof panels matched perfectly.",
+      vnSent: "Kiến trúc sư đã sử dụng các góc đồng vị để đảm bảo hai tấm mái khớp nhau hoàn hảo.",
+      dictSent: "Corresponding angles sit in the exact same position and form an F shape.",
+      isReal: true
+    },
+    {
+      word: "Co-interior Angles",
+      vn: "Góc trong cùng phía",
+      def: "A pair of angles on the same side of the transversal and between parallel lines (C-shape).",
+      vnDef: "Một cặp góc ở cùng một phía của đường cát tuyến và nằm giữa các đường thẳng song song (hình chữ C).",
+      sent: "Unlike other pairs, co-interior angles are not equal; they add up to 180 degrees.",
+      vnSent: "Không giống như các cặp khác, các góc trong cùng phía không bằng nhau; tổng của chúng là 180 độ.",
+      dictSent: "Co-interior angles sit on the same side and are always supplementary.",
+      isReal: true
+    }
+  ],
+  fakeWords: [
+    { word: "Acutance", imitating: "Acute Angle", isReal: false },
+    { word: "Obtusity", imitating: "Obtuse Angle", isReal: false },
+    { word: "Complemention", imitating: "Complementary", isReal: false },
+    { word: "Supplementity", imitating: "Supplementary", isReal: false },
+    { word: "Verticality", imitating: "Vertically Opposite", isReal: false },
+    { word: "Parallelism", imitating: "Parallel Lines", isReal: false },
+    { word: "Transversity", imitating: "Transversal", isReal: false },
+    { word: "Alternation", imitating: "Alternate Angles", isReal: false },
+    { word: "Correspondance", imitating: "Corresponding Angles", isReal: false },
+    { word: "Co-interity", imitating: "Co-interior Angles", isReal: false }
+  ],
+  dictation: [
+    { sent: "An acute angle is always smaller than a perfect right angle.", vnSent: "Góc nhọn luôn nhỏ hơn một góc vuông hoàn hảo." },
+    { sent: "An obtuse angle is wider than a right angle but smaller than a straight line.", vnSent: "Góc tù rộng hơn góc vuông nhưng nhỏ hơn một đường thẳng." },
+    { sent: "Complementary angles combine to form a perfect ninety degree corner.", vnSent: "Các góc phụ nhau kết hợp lại tạo thành một góc chín mươi độ hoàn hảo." },
+    { sent: "Supplementary angles always add up to one hundred and eighty degrees.", vnSent: "Các góc bù nhau luôn có tổng bằng một trăm tám mươi độ." },
+    { sent: "Vertically opposite angles sit across from each other and are always equal.", vnSent: "Các góc đối đỉnh nằm đối diện nhau và luôn luôn bằng nhau." },
+    { sent: "Parallel lines stay exactly the same distance apart and never intersect.", vnSent: "Các đường thẳng song song luôn giữ khoảng cách bằng nhau và không bao giờ cắt nhau." },
+    { sent: "A transversal is a single line that cuts across two parallel lines.", vnSent: "Đường cát tuyến là một đường thẳng duy nhất cắt ngang qua hai đường thẳng song song." },
+    { sent: "Alternate angles form a Z shape and are always equal to each other.", vnSent: "Các góc so le trong tạo thành hình chữ Z và luôn bằng nhau." },
+    { sent: "Corresponding angles sit in the exact same position and form an F shape.", vnSent: "Các góc đồng vị nằm ở cùng một vị trí và tạo thành hình chữ F." },
+    { sent: "Co-interior angles sit on the same side and are always supplementary.", vnSent: "Các góc trong cùng phía nằm ở cùng một phía và luôn bù nhau." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Architect's Blueprint",
+      text: "When designing a house, an architect must ensure the walls are perfectly straight. They use {parallel lines} to make sure the ceiling and floor never intersect. If a roof needs a sharp point, they will draw an {acute angle}. If they want a wider, flatter roof, they will use an {obtuse angle}. Sometimes, a single wooden beam, acting as a {transversal}, cuts directly across the frame to add structural strength.",
+      vnTitle: "Bản thiết kế của Kiến trúc sư",
+      vnText: "Khi thiết kế một ngôi nhà, kiến trúc sư phải đảm bảo các bức tường hoàn toàn thẳng. Họ sử dụng các đường thẳng song song để chắc chắn rằng trần và sàn không bao giờ giao nhau. Nếu mái nhà cần một điểm nhọn, họ sẽ vẽ một góc nhọn. Nếu họ muốn một mái nhà phẳng và rộng hơn, họ sẽ sử dụng một góc tù. Đôi khi, một thanh xà ngang bằng gỗ, đóng vai trò như một đường cát tuyến, cắt ngang qua khung để tăng thêm độ cứng cáp cho cấu trúc."
+    },
+    {
+      id: "passage_2",
+      title: "The Bridge of Z and F",
+      text: "When two straight beams cross, they create four distinct angles. The angles facing directly across from each other are {vertically opposite} and are always perfectly equal. When a single long beam crosses two parallel tracks, it creates hidden matching patterns. The {alternate angles} sit on opposite sides of the line, forming a Z-shape. The {corresponding angles} sit in the exact same position at each intersection, forming an F-shape.",
+      vnTitle: "Cây cầu của chữ Z và F",
+      vnText: "Khi hai thanh xà thẳng cắt nhau, chúng tạo ra bốn góc riêng biệt. Các góc nằm trực tiếp đối diện nhau là các góc đối đỉnh và luôn luôn bằng nhau hoàn hảo. Khi một thanh xà dài duy nhất cắt qua hai đường ray song song, nó tạo ra các mẫu hình trùng khớp ẩn giấu. Các góc so le trong nằm ở hai phía đối diện của đường thẳng, tạo thành hình chữ Z. Các góc đồng vị nằm ở cùng một vị trí chính xác tại mỗi giao điểm, tạo thành hình chữ F."
+    },
+    {
+      id: "passage_3",
+      title: "The Rules of the Grid",
+      text: "In mathematics, angles often work together as a team to form reliable shapes. If two angles combine to make a perfect 90-degree corner, they are {complementary}. If they stretch out to form a flat 180-degree straight line, they are {supplementary}. When looking inside the parallel lines, the angles locked inside the C-shape are called {co-interior angles}. They do not match each other, but they are always supplementary.",
+      vnTitle: "Các quy tắc của Lưới tọa độ",
+      vnText: "Trong toán học, các góc thường hoạt động cùng nhau như một đội để tạo thành các hình dạng đáng tin cậy. Nếu hai góc kết hợp với nhau tạo thành một góc 90 độ hoàn hảo, chúng là hai góc phụ nhau. Nếu chúng trải dài để tạo thành một đường thẳng 180 độ, chúng là hai góc bù nhau. Khi nhìn vào bên trong các đường thẳng song song, các góc bị khóa bên trong hình chữ C được gọi là góc trong cùng phía. Chúng không bằng nhau, nhưng chúng luôn là hai góc bù nhau."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Angle Rules & Parallel Lines",
+    vnTitle: "Bài 1A: Các quy tắc về Góc & Đường thẳng song song",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their geometric shapes.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với các hình dạng hình học của chúng.",
+    sections: [
+      {
+        heading: "1. Basic Angle Pairs",
+        vnHeading: "1. Các cặp góc cơ bản",
+        text: "Two angles are **Complementary** if they sum to 90°. They are **Supplementary** if they sum to 180°. When two lines cross, they form an X-shape, creating **Vertically Opposite** angles which are always equal.",
+        vnText: "Hai góc là góc **Phụ nhau** (Complementary) nếu tổng của chúng là 90°. Chúng là góc **Bù nhau** (Supplementary) nếu tổng của chúng là 180°. Khi hai đường thẳng cắt nhau, chúng tạo thành hình chữ X, tạo ra các góc **Đối đỉnh** (Vertically Opposite) luôn luôn bằng nhau."
+      },
+      {
+        heading: "2. The Transversal",
+        vnHeading: "2. Đường cát tuyến",
+        text: "A **Transversal** is a line that cuts across two or more **Parallel Lines**. This intersection creates geometric patterns that allow us to easily calculate missing angles.",
+        vnText: "Một **Đường cát tuyến** (Transversal) là một đường thẳng cắt ngang qua hai hoặc nhiều **Đường thẳng song song** (Parallel Lines). Sự giao cắt này tạo ra các mẫu hình học cho phép chúng ta dễ dàng tính toán các góc còn thiếu."
+      },
+      {
+        heading: "3. Parallel Line Rules",
+        vnHeading: "3. Các quy tắc về đường thẳng song song",
+        text: "**Alternate Angles** form a Z-shape and are equal. **Corresponding Angles** form an F-shape and are also equal. **Co-interior Angles** form a C-shape and are supplementary (they add to 180°).",
+        vnText: "Các **Góc so le trong** (Alternate Angles) tạo thành hình chữ Z và bằng nhau. Các **Góc đồng vị** (Corresponding Angles) tạo thành hình chữ F và cũng bằng nhau. Các **Góc trong cùng phía** (Co-interior Angles) tạo thành hình chữ C và là các góc bù nhau (tổng bằng 180°)."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "Describe the numerical difference between complementary and supplementary angles.",
+      requiredWords: [["90", "ninety"], ["180", "one hundred and eighty", "eighty"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that complementary angles add up to 90 degrees.",
+        "1 mark for stating that supplementary angles add up to 180 degrees."
+      ],
+      modelAnswer: "Complementary angles add up to exactly 90 degrees, while supplementary angles add up to exactly 180 degrees."
+    },
+    {
+      id: "q2",
+      question: "How do you visually identify alternate angles on a set of parallel lines, and what is their mathematical relationship?",
+      requiredWords: [["z", "z-shape", "z shape"], ["equal", "same"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying that they form a 'Z' shape.",
+        "1 mark for stating that the alternate angles are always equal to each other."
+      ],
+      modelAnswer: "You can identify alternate angles by looking for a 'Z' shape along the transversal. These angles are mathematically equal to each other."
+    },
+    {
+      id: "q3",
+      question: "Explain the difference in the relationship between corresponding angles (F-shape) and co-interior angles (C-shape).",
+      requiredWords: [["equal", "same"], ["supplementary", "180", "add"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that corresponding angles are equal.",
+        "1 mark for stating that co-interior angles are not equal, but are supplementary (add up to 180)."
+      ],
+      modelAnswer: "Corresponding angles are exactly equal to each other. However, co-interior angles are not equal; they are supplementary and add up to 180 degrees."
+    }
+  ],
+diagrams: [
+    {
+      id: "d1",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
+      </svg>`,
+      imageFile: "transversal_z_shape.png", 
+      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick purple line highlights the 'Z' shape formed by the inner segments. The top inner angle and bottom opposite inner angle are marked with matching purple arcs. Minimalist, pure white background, sans-serif font.",
+      promptText: "Analyze the provided diagram. Identify the type of angle pair highlighted by the geometric shape, and state their mathematical relationship.",
+      // Changed required words to prevent spoiling the exact term "alternate"
+      requiredWords: [["z-shape", "z shape", "shape"], ["equal", "same"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying the highlighted angles as Alternate Angles.",
+        "1 mark for stating that they are equal."
+      ],
+      modelAnswer: "The diagram highlights alternate angles forming a Z-shape. These angles are equal to each other."
+    },
+    {
+      id: "d2",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#1d4ed8" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+        <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Adds to 180°</text>
+      </svg>`,
+      imageFile: "transversal_c_shape.png",
+      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick blue line highlights the 'C' shape formed by the inner segments on the left side of the transversal. The two inside angles are marked with different colored arcs. Text reads 'Adds to 180°'. Minimalist, pure white background.",
+      promptText: "Examine the second diagram showing the C-shape. Name this angle pair and explain why they are fundamentally different from alternate and corresponding angles.",
+      // Changed required words to prevent spoiling "co-interior"
+      requiredWords: [["c-shape", "c shape", "shape"], ["supplementary", "180", "add"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying them as Co-interior angles.",
+        "1 mark for explaining they are supplementary (add to 180°) instead of being equal."
+      ],
+      modelAnswer: "These are co-interior angles. They are different because, unlike alternate and corresponding angles which are equal, co-interior angles are supplementary and add up to 180 degrees."
+    },
+    {
+      id: "d3",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
+        
+        <path d="M 145 80 A 25 25 0 0 1 156.1 59.2" fill="none" stroke="#1e3a8a" stroke-width="4" stroke-linecap="round"/>
+        <text x="135" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a">60°</text>
+        
+        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+        <text x="190" y="105" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ef4444">x</text>
+        
+        <path d="M 255 170 A 25 25 0 0 1 243.9 190.8" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
+        <text x="250" y="195" font-family="sans-serif" font-weight="bold" font-size="16" fill="#22c55e">y</text>
+        
+        <path d="M 205 170 A 25 25 0 0 0 216.1 190.8" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round"/>
+        <text x="200" y="195" font-family="sans-serif" font-weight="bold" font-size="16" fill="#a855f7">z</text>
+      </svg>`,
+      imageFile: "transversal_four_angles.png",
+      promptText: "In the diagram, one angle is given as 60°. Calculate the values of angles x, y, and z. State the geometric reason for each calculation based on the properties discussed in class.",
+      requiredWords: [["60", "60°"], ["120", "120°"], ["vertically", "corresponding", "alternate", "co-interior", "opposite"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "1 mark for calculating x = 60° and stating it is vertically opposite.",
+        "1 mark for calculating y = 60° and stating it is corresponding to x (or alternate to 60°).",
+        "1 mark for calculating z = 120° and stating it is co-interior to x (or angles on a straight line with y)."
+      ],
+      modelAnswer: "Angle x is 60° because it is vertically opposite to the given 60° angle. Angle y is also 60° because it is corresponding to angle x. Finally, angle z is 120° because it sits on a straight line with y, making them supplementary (180 - 60 = 120)."
+    }
+  ],
+essay: {
+    task: "When a transversal line cuts through two parallel lines, how many total angles are created at the intersections? Of those angles, what is the minimum number of angle measurements you need to be given to calculate the exact degrees of all the rest? Explain your reasoning.",
+    guidelines: [
+      "State the total number of angles formed by the intersection.",
+      "State the minimum number of angles you need to know.",
+      "Explain how rules like alternate, corresponding, and supplementary angles allow you to find the rest."
+    ],
+    requiredWords: [
+      ["supplementary", "180"], 
+      ["vertical", "opposite"],
+      ["alternate", "corresponding"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for stating that 8 angles are created in total.",
+      "1 mark for stating that you only need to be given 1 angle measurement.",
+      "1 mark for explaining that you can use geometric rules (like alternate, corresponding, or supplementary) to deduce all other 7 angles from that single known angle."
+    ],
+    modelAnswer: "When a transversal cuts across two parallel lines, a total of 8 angles are created at the two intersections. You only need to be told the measurement of 1 angle to figure out all the rest. Because the lines are parallel, you can use the rules of vertically opposite, alternate, and corresponding angles to find all the equal angles. For the remaining angles, you can subtract the known angle from 180 degrees, since angles on a straight line are supplementary. Therefore, one angle gives you the key to all eight."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/games.js">
+// src/data/GED/ENG_1A/games.js
+import { WAVE_PRESETS } from '../../../components/towerdefense/wavePresets';
+
+export const games = {
+  gameConfig: {
+    themeId: 'RANDOM', // Option 5: Triggers the randomized map selector
+    layout: {
+      rows: 10,
+      cols: 15,
+      path: [
+        [2, 0], [2, 3], [7, 3], [7, 7], [2, 7], [2, 11], [7, 11], [7, 14]
+      ]
+    },
+    allowedTowers: ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN'],
+    waves: WAVE_PRESETS.SET_1,
+    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR
+  }
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/notes.js">
+// src/data/Y8/Math_1A/notes.js
+
+export const notes = [
+  {
+    type: "intro",
+    title: "Parallel Lines & Angles",
+    titleVn: "Đường thẳng song song & Góc",
+    subtitle: "Objective: Master the properties of angle pairs, transversals, and parallel lines.",
+    subtitleVn: "Mục tiêu: Nắm vững các tính chất của các cặp góc, đường cát tuyến và đường thẳng song song.",
+    color: "bg-[#8b5cf6]", 
+    borderColor: "border-[#7c3aed]",
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_1.mp3"
+  },
+  {
+    type: "concept",
+    title: "Classifying Basic Angles",
+    titleVn: "Phân loại các góc cơ bản",
+    icon: "Target",
+    color: "bg-[#1cb0f6]",
+    content: "Angles are measured in degrees. Before we look at intersecting lines, we must classify individual angles based on their size.\n\n> An **Acute Angle** is an angle that is greater than 0° but strictly less than 90°.\n> An **Obtuse Angle** is an angle that is greater than 90° but strictly less than 180°.",
+    contentVn: "Góc được đo bằng độ. Trước khi xem xét các đường cắt nhau, chúng ta phải phân loại từng góc dựa trên kích thước của chúng.\n\n> **Góc Nhọn** là góc lớn hơn 0° nhưng nhỏ hơn 90°.\n> **Góc Tù** là góc lớn hơn 90° nhưng nhỏ hơn 180°.",
+    example: "An angle measuring 45° is acute, while an angle measuring 120° is obtuse.",
+    exampleVn: "Góc có số đo 45° là góc nhọn, trong khi góc có số đo 120° là góc tù.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 150 L 200 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 100 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 130 150 A 30 30 0 0 0 113.4 123.2" fill="none" stroke="#1cb0f6" stroke-width="5" stroke-linecap="round"/>
+      <text x="145" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0284c7" text-anchor="middle">Acute (< 90°)</text>
+      
+      <path d="M 250 150 L 350 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 250 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 280 150 A 30 30 0 0 0 228.8 128.8" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <text x="290" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Obtuse (> 90°)</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_2.mp3"
+  },
+  {
+    type: "concept",
+    title: "Angle Pairs",
+    titleVn: "Các cặp góc",
+    icon: "Scale",
+    color: "bg-[#ff9600]",
+    content: "When two adjacent angles sit side-by-side, their combined total gives them a special mathematical name.\n\n> **Complementary Angles** are two angles that add up to exactly 90° (forming a right angle).\n> **Supplementary Angles** are two angles that add up to exactly 180° (forming a straight line).",
+    contentVn: "Khi hai góc kề nhau nằm cạnh nhau, tổng của chúng tạo ra một tên gọi toán học đặc biệt.\n\n> **Góc Phụ nhau** là hai góc có tổng số đo chính xác bằng 90° (tạo thành một góc vuông).\n> **Góc Bù nhau** là hai góc có tổng số đo chính xác bằng 180° (tạo thành một đường thẳng).",
+    example: "If Angle A is 60° and Angle B is 120°, they are supplementary because 60 + 120 = 180.",
+    exampleVn: "Nếu Góc A là 60° và Góc B là 120°, chúng là hai góc bù nhau vì 60 + 120 = 180.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 50 L 50 150 L 150 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M 50 150 L 120 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 90 150 A 40 40 0 0 0 76.3 119.9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 76.3 119.9 A 40 40 0 0 0 50 110" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <rect x="50" y="135" width="15" height="15" fill="none" stroke="#cbd5e1" stroke-width="3"/>
+      <text x="100" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 90°</text>
+      
+      <path d="M 170 150 L 380 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 280 150 L 330 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 320 150 A 40 40 0 0 0 301.2 116" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 301.2 116 A 40 40 0 0 0 240 150" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <text x="280" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 180°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_3.mp3"
+  },
+  {
+    type: "concept",
+    title: "Vertically Opposite Angles",
+    titleVn: "Góc đối đỉnh",
+    icon: "ShieldCheck",
+    color: "bg-[#ff4b4b]",
+    content: "When two straight lines cross, they create four angles around a central point. The angles directly facing each other share a strong relationship.\n\n> **Vertically Opposite Angles** sit across from each other, forming an **'X' shape**. They are always equal to each other.",
+    contentVn: "Khi hai đường thẳng cắt nhau, chúng tạo ra bốn góc quanh một điểm trung tâm. Các góc đối diện trực tiếp với nhau chia sẻ một mối quan hệ bền chặt.\n\n> **Góc đối đỉnh** nằm đối diện nhau, tạo thành hình chữ **'X'**. Chúng luôn luôn bằng nhau.",
+    example: "If the top angle in an intersection is 105°, the bottom angle directly across from it is also exactly 105°.",
+    exampleVn: "Nếu góc trên cùng tại một giao điểm là 105°, thì góc dưới cùng đối diện trực tiếp với nó cũng chính xác là 105°.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 50 L 300 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 300 50 L 100 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      
+      <path d="M 224 107 A 30 30 0 0 0 176 107" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 176 143 A 30 30 0 0 0 224 143" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 176 107 A 30 30 0 0 0 176 143" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 224 143 A 30 30 0 0 0 224 107" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="200" y="90" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
+      <text x="200" y="175" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_4.mp3"
+  },
+  {
+    type: "concept",
+    title: "Parallel Lines & Transversals",
+    titleVn: "Đường thẳng song song & Đường cát tuyến",
+    icon: "BookOpen",
+    color: "bg-[#14b8a6]",
+    content: "In geometry, lines that never touch are marked with small matching arrows (>).\n\n> **Parallel Lines** are two or more lines that stay exactly the same distance apart and never intersect.\n> A **Transversal** is a single line that cuts across two or more parallel lines.",
+    contentVn: "Trong hình học, các đường thẳng không bao giờ chạm nhau được đánh dấu bằng các mũi tên nhỏ giống nhau (>).\n\n> **Đường thẳng song song** là hai hoặc nhiều đường thẳng luôn giữ nguyên một khoảng cách và không bao giờ cắt nhau.\n> **Đường cát tuyến** là một đường thẳng duy nhất cắt ngang qua hai hoặc nhiều đường thẳng song song.",
+    example: "Think of a set of train tracks as the parallel lines, and a straight road crossing over both tracks as the transversal.",
+    exampleVn: "Hãy tưởng tượng một bộ đường ray xe lửa là các đường thẳng song song, và một con đường thẳng chạy vắt ngang qua cả hai đường ray là đường cát tuyến.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 180 70 L 195 80 L 180 90" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 180 160 L 195 170 L 180 180" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <path d="M 130 20 L 270 230" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+      
+      <text x="350" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#2563eb" text-anchor="end">Parallel Lines</text>
+      <text x="280" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="start">Transversal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_5.mp3"
+  },
+  {
+    type: "concept",
+    title: "Alternate Angles",
+    titleVn: "Góc so le trong",
+    icon: "MessageSquare",
+    color: "bg-[#ce82ff]",
+    content: "When a transversal cuts parallel lines, it creates a predictable set of angle patterns hidden inside the intersections.\n\n> **Alternate Angles** sit on opposite sides of the transversal, forming a **'Z' shape**. They are always equal.",
+    contentVn: "Khi một đường cát tuyến cắt các đường thẳng song song, nó tạo ra một tập hợp các mẫu góc có thể đoán trước ẩn bên trong các giao điểm.\n\n> **Góc so le trong** nằm ở hai phía đối diện của đường cát tuyến, tạo thành hình chữ **'Z'**. Chúng luôn luôn bằng nhau.",
+    example: "If you trace a 'Z' along the lines and find the inner top angle is 50°, the opposite inner angle at the bottom of the 'Z' is also 50°.",
+    exampleVn: "Nếu bạn vẽ một chữ 'Z' dọc theo các đường thẳng và thấy góc trong phía trên là 50°, thì góc trong đối diện ở dưới cùng của chữ 'Z' cũng là 50°.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="215" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="start">Equal</text>
+      <text x="185" y="145" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="end">Equal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_6.mp3"
+  },
+  {
+    type: "concept",
+    title: "Corresponding Angles",
+    titleVn: "Góc đồng vị",
+    icon: "Target",
+    color: "bg-[#58cc02]",
+    content: "Imagine sliding the top intersection down the transversal until it perfectly overlaps the bottom intersection.\n\n> **Corresponding Angles** sit in the exact same position at each intersection, forming an **'F' shape**. They are always equal.",
+    contentVn: "Hãy tưởng tượng việc trượt giao điểm trên cùng xuống dọc theo đường cát tuyến cho đến khi nó trùng khít hoàn hảo với giao điểm dưới cùng.\n\n> **Góc đồng vị** nằm ở vị trí chính xác giống nhau tại mỗi giao điểm, tạo thành hình chữ **'F'**. Chúng luôn luôn bằng nhau.",
+    example: "The top-right angle of the upper intersection is corresponding and exactly equal to the top-right angle of the lower intersection.",
+    exampleVn: "Góc trên cùng bên phải của giao điểm trên là đồng vị và hoàn toàn bằng với góc trên cùng bên phải của giao điểm dưới.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 140 35 L 230 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 170 80 L 270 80" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 230 170 L 330 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 0 156.1 59.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="210" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
+      <text x="270" y="155" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_7.mp3"
+  },
+  {
+    type: "concept",
+    title: "Co-interior Angles",
+    titleVn: "Góc trong cùng phía",
+    icon: "BookOpen",
+    color: "bg-[#3b82f6]",
+    content: "Unlike the Z and F shapes, these angles are NOT equal to each other. Instead, they work together as a team.\n\n> **Co-interior Angles** (or Allied Angles) sit on the same side of the transversal, forming a **'C' shape**. They are supplementary (they add up to 180°).",
+    contentVn: "Không giống như hình chữ Z và F, các góc này KHÔNG bằng nhau. Thay vào đó, chúng phối hợp với nhau như một đội.\n\n> **Góc trong cùng phía** (hoặc Góc liên minh) nằm ở cùng một phía của đường cát tuyến, tạo thành hình chữ **'C'**. Chúng bù nhau (tổng của chúng là 180°).",
+    example: "If the top inside angle is 110°, the bottom inside angle right below it must be 70° (because 110 + 70 = 180).",
+    exampleVn: "Nếu góc bên trong phía trên là 110°, góc bên trong phía dưới ngay bên dưới nó phải là 70° (vì 110 + 70 = 180).",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#3b82f6" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Add to 180°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_8.mp3"
+  },
+  {
+    type: "summary",
+    title: "Lesson Complete!",
+    titleVn: "Hoàn thành Bài học!",
+    subtitle: "Objective Achieved: You can now identify and calculate geometric angle patterns.",
+    subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể nhận diện và tính toán các mẫu hình góc trong hình học.",
+    color: "bg-[#14b8a6]",
+    borderColor: "border-[#0d9488]"
+  }
+];
+</file>
+
+<file path="src/data/Y8/Math_1A/workbook.js">
+// src/data/GED/ENG_1A/workbook.js
+export const workbook = null;
+</file>
+
+<file path="src/data/Y9/Math_1A/assessment.js">
+// src/data/GED/ENG_1B/assessment.js
+export const assessment = {
+  timeLimit: 3000, // 50 minutes
+  passages: [
+    {
+      id: "p1_anthony",
+      title: "On Women's Right to Vote",
+      meta: "Historical Speech: Susan B. Anthony, 1873",
+      text: [
+        "Friends and fellow citizens: I stand before you tonight under indictment for the alleged crime of having voted at the last presidential election, without having a lawful right to vote. It shall be my work this evening to prove to you that in thus voting, I not only committed no crime, but, instead, simply exercised my citizen's rights, guaranteed to me and all United States citizens by the National Constitution, beyond the power of any state to deny.",
+        "The preamble of the Federal Constitution says: 'We, the people of the United States, in order to form a more perfect union, establish justice, insure domestic tranquility, provide for the common defense, promote the general welfare, and secure the blessings of liberty to ourselves and our posterity, do ordain and establish this Constitution for the United States of America.'",
+        "It was we, the people; not we, the white male citizens; nor yet we, the male citizens; but we, the whole people, who formed the Union. And we formed it, not to give the blessings of liberty, but to secure them; not to the half of ourselves and the half of our posterity, but to the whole people—women as well as men. And it is a downright mockery to talk to women of their enjoyment of the blessings of liberty while they are denied the use of the only means of securing them provided by this democratic-republican government—the ballot."
+      ],
+      glossary: {
+        "indictment": { "def": "A formal charge or accusation of a serious crime.", "vn": "Sự buộc tội", "vnDef": "Một lời buộc tội hoặc cáo buộc chính thức về một tội ác nghiêm trọng." },
+        "posterity": { "def": "All future generations of people.", "vn": "Hậu thế", "vnDef": "Tất cả các thế hệ tương lai của con người." },
+        "mockery": { "def": "Teasing and contemptuous language or behavior directed at a particular person or thing.", "vn": "Sự nhạo báng", "vnDef": "Ngôn ngữ hoặc hành vi trêu chọc và khinh miệt nhắm vào một người hoặc vật cụ thể." }
+      }
+    },
+    {
+      id: "p2_carnegie",
+      title: "The Gospel of Wealth",
+      meta: "Historical Essay: Andrew Carnegie, 1889",
+      text: [
+        "The problem of our age is the proper administration of wealth, so that the ties of brotherhood may still bind together the rich and poor in harmonious relationship. The conditions of human life have not only been changed, but revolutionized, within the past few hundred years. In former days there was little difference between the dwelling, dress, food, and environment of the chief and those of his retainers.",
+        "The contrast between the palace of the millionaire and the cottage of the laborer with us today measures the change which has come with civilization. This change, however, is not to be deplored, but welcomed as highly beneficial. It is well, nay, essential for the progress of the race, that the houses of some should be homes for all that is highest and best in literature and the arts, and for all the refinements of civilization, rather than that none should be so. Much better this great irregularity than universal squalor.",
+        "We accept and welcome, therefore, as conditions to which we must accommodate ourselves, great inequality of environment, the concentration of business, industrial and commercial, in the hands of a few, and the law of competition between these, as being not only beneficial, but essential for the future progress of the race."
+      ],
+      glossary: {
+        "retainers": { "def": "Servants or followers of a noble or wealthy person.", "vn": "Người hầu", "vnDef": "Người hầu hoặc người đi theo một người quý tộc hoặc giàu có." },
+        "deplored": { "def": "Feel or express strong disapproval of something.", "vn": "Thương tâm / Phản đối", "vnDef": "Cảm thấy hoặc bày tỏ sự phản đối mạnh mẽ về một điều gì đó." },
+        "squalor": { "def": "The state of being extremely dirty and unpleasant, especially as a result of poverty.", "vn": "Sự bẩn thỉu / Nghèo khổ", "vnDef": "Tình trạng vô cùng bẩn thỉu và khó chịu, đặc biệt là do nghèo đói." }
+      }
+    },
+    {
+      id: "p3_carson",
+      title: "Silent Spring",
+      meta: "Informational Science Commentary: Rachel Carson, 1962",
+      text: [
+        "There was once a town in the heart of America where all life seemed to live in harmony with its surroundings. The town lay in the midst of a checkerboard of prosperous farms, with fields of grain and hillsides of orchards, where, in spring, white clouds of bloom drifted above the green fields. In autumn, oak and maple and birch set up a blaze of color that flamed and flickered across a backdrop of pines. Then foxes barked in the hills and deer silently crossed the fields, half hidden in the mists of the fall mornings.",
+        "Then a strange blight crept over the area and everything began to change. Some evil spell had settled on the community: mysterious maladies swept the flocks of chickens; the cattle and sheep sickened and died. Everywhere was a shadow of death. The farmers spoke of much illness among their families. In the town the doctors had become more and more puzzled by new kinds of sickness appearing among their patients.",
+        "No witchcraft, no enemy action had silenced the rebirth of new life in this stricken world. The people had done it themselves. This town does not actually exist, but it might easily have a thousand counterparts in America or elsewhere in the world. I know of no community that has experienced all the misfortunes I describe. Yet every one of these disasters has actually happened somewhere, and many real communities have already suffered a substantial number of them."
+      ],
+      glossary: {
+        "blight": { "def": "A plant disease, typically one caused by fungi such as mildews, rusts, and smuts; a thing that spoils or damages something.", "vn": "Tai họa / Bệnh thối rữa", "vnDef": "Một căn bệnh ở thực vật, hoặc một thứ làm hỏng hoặc tàn phá điều gì đó." },
+        "maladies": { "def": "Diseases or ailments.", "vn": "Căn bệnh", "vnDef": "Bệnh tật hoặc ốm đau." },
+        "counterparts": { "def": "A person or thing holding a position or performing a function that corresponds to that of another person or thing in another place.", "vn": "Bản sao / Đối tác", "vnDef": "Một người hoặc vật giữ một vị trí hoặc thực hiện một chức năng tương ứng với một người hoặc vật khác ở một nơi khác." }
+      }
+    }
+  ],
+  questions: [
+    // PASSAGE 1: ANTHONY
+    {
+      id: "q1_anthony_mcq",
+      passageId: "p1_anthony",
+      type: "mcq",
+      title: "1. What is the primary function of the dependent clauses in Anthony's opening sentence?",
+      options: [
+        { val: "A", text: "A. To distract the audience from the fact that she committed a crime." },
+        { val: "B", text: "B. To explicitly outline the legal context and specific nature of her indictment." },
+        { val: "C", text: "C. To apologize to the audience for voting illegally in the presidential election." },
+        { val: "D", text: "D. To juxtapose her actions with the actions of white male citizens." }
+      ],
+      correct: "B",
+      expEn: "Anthony uses subordination ('under indictment for the alleged crime...') to establish the precise legal context of her situation before transitioning to her main independent claim.",
+      expVn: "Anthony sử dụng cấu trúc phụ thuộc ('dưới sự buộc tội vì tội danh bị cáo buộc...') để thiết lập bối cảnh pháp lý chính xác cho tình huống của cô ấy trước khi chuyển sang luận điểm độc lập chính."
+    },
+    {
+      id: "q2_anthony_inline",
+      passageId: "p1_anthony",
+      type: "inline",
+      title: "2. Syntax & Clauses: Fix the structural error in the sentence below by selecting the correct transition.",
+      options: [],
+      textParts: [
+        "Susan B. Anthony argued passionately for her constitutional rights",
+        " many lawmakers completely dismissed her claims because of her gender."
+      ],
+      blanks: {
+        "1": {
+          correct: "semi_however",
+          options: [
+            { val: "comma_however", text: ", however," },
+            { val: "semi_however", text: "; however," },
+            { val: "although", text: "although" }
+          ]
+        }
+      },
+      expEn: "This sentence contains two independent clauses. Using a comma before 'however' creates a comma splice run-on. You must use a semicolon to join two independent clauses with a conjunctive adverb.",
+      expVn: "Câu này chứa hai mệnh đề độc lập. Sử dụng dấu phẩy trước 'however' tạo ra lỗi sai cú pháp (comma splice). Bạn phải sử dụng dấu chấm phẩy để nối hai mệnh đề độc lập bằng một phó từ liên kết."
+    },
+    {
+      id: "q3_anthony_mcq",
+      passageId: "p1_anthony",
+      type: "mcq",
+      title: "3. What logical inference can be made about Anthony's view of the Constitution based on the final paragraph?",
+      options: [
+        { val: "A", text: "A. She believes it needs to be completely rewritten by women." },
+        { val: "B", text: "B. She believes it already grants women the right to vote; the government is simply violating it." },
+        { val: "C", text: "C. She believes it is a flawed document because it only mentions white males." },
+        { val: "D", text: "D. She believes it applies only to the people who originally signed it." }
+      ],
+      correct: "B",
+      expEn: "Anthony states, 'It was we, the people... who formed the Union.' Her argument is not that the Constitution needs changing, but that women are already 'the people' and are therefore already guaranteed the ballot.",
+      expVn: "Anthony nói, 'Đó là chúng ta, những người dân... đã thành lập nên Liên bang.' Lập luận của bà không phải là Hiến pháp cần thay đổi, mà là phụ nữ vốn đã là 'người dân' và do đó đã được đảm bảo quyền bầu cử."
+    },
+
+    // PASSAGE 2: CARNEGIE
+    {
+      id: "q4_carnegie_mcq",
+      passageId: "p2_carnegie",
+      type: "mcq",
+      title: "4. How does Carnegie use juxtaposition in the second paragraph?",
+      options: [
+        { val: "A", text: "A. By comparing the 'palace of the millionaire' to the 'cottage of the laborer' to highlight economic changes." },
+        { val: "B", text: "B. By placing literature and the arts side-by-side with modern science." },
+        { val: "C", text: "C. By showing the similarities between a Native American chief and a modern factory worker." },
+        { val: "D", text: "D. By contrasting the law of competition with the concept of brotherhood." }
+      ],
+      correct: "A",
+      expEn: "Carnegie juxtaposes the immense wealth of the millionaire's palace with the modest cottage of the laborer to visually emphasize the massive economic shift caused by civilization.",
+      expVn: "Carnegie đặt cạnh nhau sự giàu có khổng lồ của cung điện triệu phú với ngôi nhà tranh khiêm tốn của người lao động để nhấn mạnh bằng hình ảnh sự thay đổi kinh tế to lớn do nền văn minh mang lại."
+    },
+    {
+      id: "q5_carnegie_inline",
+      passageId: "p2_carnegie",
+      type: "inline",
+      title: "5. Subordination Strategy: Select the correct subordinating conjunction to establish a logical concession.",
+      options: [],
+      textParts: [
+        "",
+        " the industrial revolution vastly increased the availability of cheap goods, it simultaneously widened the socio-economic gap between factory owners and laborers."
+      ],
+      blanks: {
+        "1": {
+          correct: "while",
+          options: [
+            { val: "furthermore", text: "Furthermore," },
+            { val: "because", text: "Because" },
+            { val: "while", text: "While" }
+          ]
+        }
+      },
+      expEn: "'While' establishes a concession and creates a complex sentence where the first clause (the benefit of cheap goods) is subordinated to the main idea (the widening wealth gap).",
+      expVn: "'While' (Mặc dù/Trong khi) thiết lập một sự nhượng bộ và tạo ra một câu phức, trong đó mệnh đề đầu tiên (lợi ích của hàng hóa rẻ) phụ thuộc vào ý chính (khoảng cách giàu nghèo ngày càng gia tăng)."
+    },
+    {
+      id: "q6_carnegie_dnd",
+      passageId: "p2_carnegie",
+      type: "dnd",
+      title: "6. Drag and drop to map Carnegie's rhetorical structure in the final paragraph.",
+      options: [],
+      bank: [
+        { val: "A", text: "Inequality is highly beneficial and essential for progress." },
+        { val: "B", text: "There is a great inequality of environment today." },
+        { val: "C", text: "The law of competition controls business." }
+      ],
+      targets: [
+        { id: "concession", title: "Concession (Acknowledging the Reality)" },
+        { id: "primary", title: "Primary Claim (The Author's Defense)" }
+      ],
+      correctSets: {
+        "concession": ["B", "C"],
+        "primary": ["A"]
+      },
+      expEn: "Carnegie concedes the reality that massive inequality and harsh business competition exist (B & C). However, his primary claim—his ultimate defense—is that these conditions are actually beneficial for human progress (A).",
+      expVn: "Carnegie thừa nhận thực tế rằng sự bất bình đẳng lớn và cạnh tranh kinh doanh khốc liệt đang tồn tại (B & C). Tuy nhiên, luận điểm chính của ông—lời biện hộ cuối cùng—là những điều kiện này thực sự có lợi cho sự tiến bộ của con người (A)."
+    },
+
+    // PASSAGE 3: CARSON
+    {
+      id: "q7_carson_mcq",
+      passageId: "p3_carson",
+      type: "mcq",
+      title: "7. How does the tone shift between the first and second paragraphs?",
+      options: [
+        { val: "A", text: "A. From objective to highly subjective and emotional." },
+        { val: "B", text: "B. From peaceful and pastoral to ominous and tragic." },
+        { val: "C", text: "C. From scientific and data-driven to fictional and imaginative." },
+        { val: "D", text: "D. From angry and demanding to passive and accepting." }
+      ],
+      correct: "B",
+      expEn: "The first paragraph describes a beautiful, harmonious natural world ('white clouds of bloom'). The second paragraph abruptly shifts to a dark, ominous tone ('strange blight', 'shadow of death').",
+      expVn: "Đoạn đầu tiên mô tả một thế giới tự nhiên tươi đẹp, hài hòa ('những đám mây hoa trắng'). Đoạn thứ hai đột ngột chuyển sang một giọng điệu đen tối, đáng ngại ('tai họa kỳ lạ', 'bóng đen của cái chết')."
+    },
+    {
+      id: "q8_carson_inline",
+      passageId: "p3_carson",
+      type: "inline",
+      title: "8. Eliminating Ambiguity: Fix the dangling modifier to make the syntax logically sound.",
+      options: [],
+      textParts: [
+        "While examining environmental degradation caused by chemical pesticides, ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "carson_wrote",
+          options: [
+            { val: "book_written", text: "the book Silent Spring was written by Rachel Carson" },
+            { val: "carson_wrote", text: "Rachel Carson wrote Silent Spring" },
+            { val: "warning_issued", text: "a warning was issued to the general public" }
+          ]
+        }
+      },
+      expEn: "A dependent clause starting with 'While examining...' must be immediately followed by the person who is doing the examining. Rachel Carson is the one examining, so she must be the subject of the independent clause.",
+      expVn: "Một mệnh đề phụ thuộc bắt đầu bằng 'Trong khi kiểm tra...' phải được theo sau ngay lập tức bởi người đang thực hiện việc kiểm tra. Rachel Carson là người kiểm tra, vì vậy cô ấy phải là chủ ngữ của mệnh đề độc lập."
+    },
+    {
+      id: "q9_carson_mcq",
+      passageId: "p3_carson",
+      type: "mcq",
+      title: "9. In the final paragraph, Carson admits that 'This town does not actually exist.' Why is this synthesis of real events an effective rhetorical strategy?",
+      options: [
+        { val: "A", text: "A. It proves that pesticides only affect imaginary places, reducing panic." },
+        { val: "B", text: "B. It prevents specific towns from suing her for defamation." },
+        { val: "C", text: "C. It allows her to compile various real-world consequences into one powerful, universal narrative." },
+        { val: "D", text: "D. It demonstrates that her entire argument is fictional and meant to entertain." }
+      ],
+      correct: "C",
+      expEn: "Carson synthesizes multiple real-world disasters into a single narrative to show the cumulative, universal threat of pesticides, making the danger feel immediate to every reader.",
+      expVn: "Carson tổng hợp nhiều thảm họa trong thế giới thực thành một câu chuyện duy nhất để cho thấy mối đe dọa chung, tích lũy của thuốc trừ sâu, khiến sự nguy hiểm trở nên cấp bách đối với mọi độc giả."
+    },
+    
+    // MIXED REVIEW / SYNTAX REINFORCEMENT
+    {
+      id: "q10_mixed_mcq",
+      passageId: "p3_carson", // Tied loosely to passage 3's context but testing general 1B concept
+      type: "mcq",
+      title: "10. Read the following sentence: 'The birds, which once sang in the morning, were suddenly silent.' What role does the clause 'which once sang in the morning' play?",
+      options: [
+        { val: "A", text: "A. It is an independent clause containing the main idea." },
+        { val: "B", text: "B. It is a dependent clause serving as a transition." },
+        { val: "C", text: "C. It is a dependent clause that modifies the subject 'birds'." },
+        { val: "D", text: "D. It is a run-on sentence that creates ambiguity." }
+      ],
+      correct: "C",
+      expEn: "The clause 'which once sang in the morning' cannot stand alone as a sentence. It is a dependent relative clause that gives the reader more descriptive information about the noun 'birds'.",
+      expVn: "Mệnh đề 'which once sang in the morning' không thể đứng riêng lẻ như một câu. Nó là một mệnh đề quan hệ phụ thuộc cung cấp cho người đọc thêm thông tin mô tả về danh từ 'birds' (những con chim)."
+    }
+  ]
+};
+</file>
+
+<file path="src/data/Y9/Math_1A/data.js">
+// src/data/Y9/MATH_1A/data.js
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const MATH_1A_DATA = {
+  meta: {
+    id: "MATH_1A",
+    title: "Correlation & Scatter Graphs",
+    desc: "Introduction to bivariate data, scatter graphs, and identifying correlation trends in scientific data.",
+    track: "Y9",
+    icon: "ScatterChart"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    {
+      word: "Correlation",
+      vn: "Sự tương quan",
+      def: "A connection or relationship between two things.",
+      vnDef: "Sự kết nối hoặc mối quan hệ giữa hai sự vật.",
+      sent: "There is a strong correlation between heavy rain and flooding.", 
+      vnSent: "Có một sự tương quan mạnh mẽ giữa mưa lớn và ngập lụt.",
+      dictSent: "Correlation does not always mean that one thing causes another.",
+      isReal: true
+    },
+    {
+      word: "Variable",
+      vn: "Biến số",
+      def: "Something that can change or be measured, like temperature or height.",
+      vnDef: "Một thứ gì đó có thể thay đổi hoặc được đo lường, như nhiệt độ hoặc chiều cao.",
+      sent: "In this experiment, the amount of sunlight is the independent variable.",
+      vnSent: "Trong thí nghiệm này, lượng ánh sáng mặt trời là biến độc lập.",
+      dictSent: "A scatter graph shows the relationship between two variables.",
+      isReal: true
+    },
+    {
+      word: "Scatter Graph",
+      vn: "Biểu đồ phân tán",
+      def: "A graph that uses dots to show the relationship between two variables.",
+      vnDef: "Một biểu đồ sử dụng các dấu chấm để thể hiện mối quan hệ giữa hai biến số.",
+      sent: "We plotted the data on a scatter graph to look for a pattern.",
+      vnSent: "Chúng tôi đã vẽ dữ liệu trên một biểu đồ phân tán để tìm kiếm một quy luật.",
+      dictSent: "A scatter graph shows the relationship between two variables.",
+      isReal: true
+    },
+    {
+      word: "Axis",
+      vn: "Trục",
+      def: "The horizontal (X) and vertical (Y) lines used to measure data on a graph.",
+      vnDef: "Các đường ngang (X) và dọc (Y) được sử dụng để đo lường dữ liệu trên một biểu đồ.",
+      sent: "Make sure you label the x-axis and the y-axis clearly.",
+      vnSent: "Hãy chắc chắn rằng bạn dán nhãn trục x và trục y rõ ràng.",
+      dictSent: "We use the x-axis and y-axis to graph our data.",
+      isReal: true
+    },
+    {
+      word: "Coordinate",
+      vn: "Tọa độ",
+      def: "A pair of numbers that shows exactly where a point belongs on a grid.",
+      vnDef: "Một cặp số cho thấy chính xác vị trí của một điểm trên lưới.",
+      sent: "Plot the coordinate (4, 5) on your graph paper.",
+      vnSent: "Hãy vẽ tọa độ (4, 5) trên giấy vẽ đồ thị của bạn.",
+      dictSent: "An outlier is a point that does not fit the pattern.",
+      isReal: true
+    },
+    {
+      word: "Positive Correlation",
+      vn: "Tương quan dương",
+      def: "A relationship where both variables increase together.",
+      vnDef: "Một mối quan hệ trong đó cả hai biến số cùng tăng.",
+      sent: "There is a positive correlation between studying and high test scores.",
+      vnSent: "Có một sự tương quan dương giữa việc học hành và điểm thi cao.",
+      dictSent: "Positive correlation means both variables increase at the same time.",
+      isReal: true
+    },
+    {
+      word: "Negative Correlation",
+      vn: "Tương quan âm",
+      def: "A relationship where one variable increases while the other decreases.",
+      vnDef: "Một mối quan hệ trong đó một biến số tăng trong khi biến số kia giảm.",
+      sent: "The graph showed a negative correlation between temperature and coat sales.",
+      vnSent: "Biểu đồ cho thấy sự tương quan âm giữa nhiệt độ và doanh số bán áo khoác.",
+      dictSent: "Negative correlation occurs when one variable decreases as the other increases.",
+      isReal: true
+    },
+    {
+      word: "Strong Correlation",
+      vn: "Tương quan mạnh",
+      def: "When the data points on a graph are packed closely together in a clear line.",
+      vnDef: "Khi các điểm dữ liệu trên biểu đồ được xếp chặt chẽ với nhau thành một đường rõ ràng.",
+      sent: "The dots form a straight line, indicating a very strong correlation.",
+      vnSent: "Các dấu chấm tạo thành một đường thẳng, cho thấy một sự tương quan rất mạnh.",
+      dictSent: "If the points are closely packed, the correlation is very strong.",
+      isReal: true
+    },
+    {
+      word: "Weak Correlation",
+      vn: "Tương quan yếu",
+      def: "When the data points follow a general direction but are spread far apart.",
+      vnDef: "Khi các điểm dữ liệu đi theo một hướng chung nhưng nằm cách xa nhau.",
+      sent: "Because the dots are scattered widely, it is only a weak correlation.",
+      vnSent: "Bởi vì các dấu chấm bị phân tán rộng, nó chỉ là một sự tương quan yếu.",
+      dictSent: "A weak correlation has data points that are widely spread out.",
+      isReal: true
+    },
+    {
+      word: "Trend",
+      vn: "Xu hướng",
+      def: "The general direction in which the data points are moving.",
+      vnDef: "Hướng đi chung mà các điểm dữ liệu đang di chuyển.",
+      sent: "By looking at the trend on the graph, we can predict future results.",
+      vnSent: "Bằng cách nhìn vào xu hướng trên biểu đồ, chúng ta có thể dự đoán kết quả trong tương lai.",
+      dictSent: "Scientists look for trends in the data to make accurate predictions.",
+      isReal: true
+    }
+  ],
+  fakeWords: [
+    { word: "Correlance", imitating: "Correlation", isReal: false },
+    { word: "Variate", imitating: "Variable", isReal: false },
+    { word: "Scatterment", imitating: "Scatter Graph", isReal: false },
+    { word: "Axises", imitating: "Axis", isReal: false },
+    { word: "Coordinance", imitating: "Coordinate", isReal: false },
+    { word: "Positivity", imitating: "Positive Correlation", isReal: false },
+    { word: "Negativity", imitating: "Negative Correlation", isReal: false },
+    { word: "Strongness", imitating: "Strong Correlation", isReal: false },
+    { word: "Weakity", imitating: "Weak Correlation", isReal: false },
+    { word: "Trendency", imitating: "Trend", isReal: false }
+  ],
+  dictation: [
+    { sent: "A scatter graph shows the relationship between two variables.", vnSent: "Biểu đồ phân tán cho thấy mối quan hệ giữa hai biến số." },
+    { sent: "We use the x-axis and y-axis to graph our data.", vnSent: "Chúng tôi sử dụng trục x và trục y để vẽ biểu đồ dữ liệu của mình." },
+    { sent: "Positive correlation means both variables increase at the same time.", vnSent: "Tương quan dương có nghĩa là cả hai biến số cùng tăng." },
+    { sent: "Negative correlation occurs when one variable decreases as the other increases.", vnSent: "Tương quan âm xảy ra khi một biến số giảm trong khi biến số kia tăng." },
+    { sent: "If the points are closely packed, the correlation is very strong.", vnSent: "Nếu các điểm được xếp chặt chẽ, sự tương quan là rất mạnh." },
+    { sent: "A weak correlation has data points that are widely spread out.", vnSent: "Một sự tương quan yếu có các điểm dữ liệu nằm cách xa nhau." },
+    { sent: "Zero correlation means there is no pattern on the graph.", vnSent: "Không có sự tương quan có nghĩa là không có quy luật nào trên biểu đồ." },
+    { sent: "Scientists look for trends in the data to make accurate predictions.", vnSent: "Các nhà khoa học tìm kiếm các xu hướng trong dữ liệu để đưa ra các dự đoán chính xác." },
+    { sent: "An outlier is a point that does not fit the pattern.", vnSent: "Một giá trị ngoại lai là một điểm không phù hợp với quy luật." },
+    { sent: "Correlation does not always mean that one thing causes another.", vnSent: "Sự tương quan không phải lúc nào cũng có nghĩa là một điều gây ra điều kia." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Taller, The Faster?",
+      text: "In science and mathematics, we often want to know if two things are connected. These things are called variables. For example, is there a {correlation} between a student's height and how fast they can run? To find out, a scientist would measure the height of fifty students and then time how fast they can sprint. By looking at these two {variables} together, we can discover if being taller actually makes you a faster runner.",
+      vnTitle: "Càng cao thì càng nhanh?",
+      vnText: "Trong khoa học và toán học, chúng ta thường muốn biết liệu hai sự vật có liên quan với nhau hay không. Những thứ này được gọi là biến số. Ví dụ, có sự tương quan nào giữa chiều cao của một học sinh và tốc độ họ có thể chạy không? Để tìm hiểu, một nhà khoa học sẽ đo chiều cao của năm mươi học sinh và sau đó bấm giờ xem họ có thể chạy nước rút nhanh như thế nào. Bằng cách xem xét hai biến số này cùng nhau, chúng ta có thể khám phá ra liệu việc cao hơn có thực sự khiến bạn trở thành một người chạy nhanh hơn hay không."
+    },
+    {
+      id: "passage_2",
+      title: "Plotting the Dots",
+      text: "Once we have collected our data, reading a list of numbers can be very confusing. This is why mathematicians use a {scatter} graph. By drawing an X-axis and a Y-axis, we create a mathematical grid. Every student becomes a single {coordinate} on this grid. When we plot all fifty dots, a visual {trend} appears, making it incredibly easy for our brains to see the relationship.",
+      vnTitle: "Vẽ các dấu chấm",
+      vnText: "Sau khi chúng ta đã thu thập dữ liệu của mình, việc đọc một danh sách các con số có thể rất khó hiểu. Đây là lý do tại sao các nhà toán học sử dụng biểu đồ phân tán. Bằng cách vẽ một trục X và một trục Y, chúng ta tạo ra một lưới toán học. Mỗi học sinh trở thành một tọa độ duy nhất trên lưới này. Khi chúng ta vẽ tất cả năm mươi dấu chấm, một xu hướng hình ảnh xuất hiện, khiến bộ não của chúng ta vô cùng dễ dàng nhìn thấy mối quan hệ."
+    },
+    {
+      id: "passage_3",
+      title: "The Trap of Coincidence",
+      text: "It is easy to spot a {positive} correlation on a graph, but we must be careful. Just because two things grow at the same time does not mean one causes the other. For instance, in the summer, ice cream sales go up. At the same time, the number of sunburns goes up. This is a {strong} correlation. However, eating ice cream does not cause sunburns! Both variables are simply caused by the hot weather.",
+      vnTitle: "Cạm bẫy của Sự trùng hợp",
+      vnText: "Thật dễ dàng để phát hiện ra một sự tương quan dương trên biểu đồ, nhưng chúng ta phải cẩn thận. Chỉ vì hai thứ cùng phát triển không có nghĩa là cái này gây ra cái kia. Ví dụ, vào mùa hè, doanh số bán kem tăng lên. Đồng thời, số lượng người bị cháy nắng cũng tăng lên. Đây là một sự tương quan mạnh mẽ. Tuy nhiên, ăn kem không gây ra cháy nắng! Cả hai biến số đơn giản chỉ là do thời tiết nắng nóng gây ra."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Correlation & Scatter Graphs",
+    vnTitle: "Bài 1A: Tương quan & Biểu đồ phân tán",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their definitions.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với định nghĩa của chúng.",
+    sections: [
+      {
+        heading: "1. The Coordinate Grid",
+        vnHeading: "1. Lưới Tọa độ",
+        text: "We use a **Scatter Graph** to plot data points. The horizontal line is the X-**Axis** and the vertical line is the Y-**Axis**. Each point is a single **Coordinate** that represents two **Variables**.",
+        vnText: "Chúng ta sử dụng Biểu đồ phân tán (**Scatter Graph**) để vẽ các điểm dữ liệu. Đường ngang là Trục (**Axis**) X và đường dọc là Trục (**Axis**) Y. Mỗi điểm là một Tọa độ (**Coordinate**) duy nhất đại diện cho hai Biến số (**Variables**)."
+      },
+      {
+        heading: "2. Types of Correlation",
+        vnHeading: "2. Các loại Tương quan",
+        text: "When comparing data, a **Positive Correlation** means both variables go up together. A **Negative Correlation** means one goes up while the other goes down.",
+        vnText: "Khi so sánh dữ liệu, Tương quan dương (**Positive Correlation**) có nghĩa là cả hai biến số cùng tăng. Tương quan âm (**Negative Correlation**) có nghĩa là một biến số tăng trong khi biến số kia giảm."
+      },
+      {
+        heading: "3. Identifying Trends",
+        vnHeading: "3. Xác định Xu hướng",
+        text: "If the dots are packed tightly together, the **Correlation** is **Strong**. If the dots are spread far apart, it is **Weak**. Following this **Trend** helps scientists make accurate predictions.",
+        vnText: "Nếu các dấu chấm được xếp chặt chẽ với nhau, Sự tương quan (**Correlation**) là Mạnh (**Strong**). Nếu các dấu chấm nằm cách xa nhau, nó là Yếu (**Weak**). Theo dõi Xu hướng (**Trend**) này giúp các nhà khoa học đưa ra những dự đoán chính xác."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "Describe the visual difference between a positive correlation and a negative correlation on a scatter graph.",
+      requiredWords: [["upward", "up", "increase", "increases"], ["downward", "down", "decrease", "decreases"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that a positive correlation slopes upward (from left to right) or that both variables increase together.",
+        "1 mark for stating that a negative correlation slopes downward (from left to right) or that one variable decreases as the other increases."
+      ],
+      modelAnswer: "A positive correlation visually slopes upward from left to right, while a negative correlation visually slopes downward."
+    },
+    {
+      id: "q2",
+      question: "Look at a scatter graph. How can you tell if the correlation between two variables is strong or weak?",
+      requiredWords: [["close", "closely", "packed", "tight"], ["spread", "scattered", "far", "apart"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that strong correlation means the data points are packed closely together.",
+        "1 mark for stating that weak correlation means the data points are spread further apart."
+      ],
+      modelAnswer: "A strong correlation has data points that are packed closely together. A weak correlation has data points that are spread far apart."
+    },
+    {
+      id: "q3",
+      question: "Why do mathematicians plot bivariate data (two variables) on a coordinate grid instead of just reading a table of numbers?",
+      requiredWords: [["visual", "see", "easier", "picture"], ["trend", "pattern", "relationship", "trends"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying that graphing makes the data visual or easier to see.",
+        "1 mark for explaining that it allows us to quickly identify trends, patterns, or relationships between the two variables."
+      ],
+      modelAnswer: "Graphing makes the data highly visual, allowing mathematicians to quickly identify trends or patterns that are hidden in a table of numbers."
+    }
+  ],
+  diagrams: [
+    {
+      id: "d1",
+      imageUrl: "/images/Y9/strong_negative_scatter.png",
+      imagePrompt: "A clean, flat vector illustration of an academic scatter graph. The y-axis is labeled 'Soup Sales ($)' and the x-axis is labeled 'Outside Temperature (°C)'. The graph features about 20 circular dots that form a very tight, clear downward slope from the top-left to the bottom-right. The style is minimalist and modern, using teal and navy blue on a pure white background. Legible sans-serif font. No 3D effects.",
+      promptText: "Analyze the provided scatter graph. Describe the direction and strength of the correlation shown between the two variables.",
+      requiredWords: [["negative", "downward"], ["strong", "tight", "close"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying the direction as a negative correlation.",
+        "1 mark for correctly identifying the strength as a strong correlation."
+      ],
+      modelAnswer: "The scatter graph shows a strong negative correlation between the outside temperature and soup sales."
+    },
+    {
+      id: "d2",
+      imageUrl: "/images/Y9/weak_positive_scatter.png",
+      imagePrompt: "A clean, flat vector illustration of an academic scatter graph. The y-axis is labeled 'Test Score (%)' and the x-axis is labeled 'Hours of Sleep'. The graph features about 25 circular dots. The dots form a general upward slope from bottom-left to top-right, but they are widely scattered and spread far apart, indicating a weak relationship. The style is minimalist and modern, using coral and orange on a pure white background. Legible sans-serif font. No 3D effects.",
+      promptText: "Examine the second scatter graph. Describe the direction and strength of the correlation shown, and explain how you know the strength.",
+      requiredWords: [["positive", "upward"], ["weak", "spread", "scattered", "apart"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying it as a weak positive correlation.",
+        "1 mark for explaining that it is weak because the data points are spread far apart."
+      ],
+      modelAnswer: "This graph shows a weak positive correlation. We know it is weak because the data points are spread widely apart rather than forming a tight line."
+    }
+  ],
+  essay: {
+    task: "Explain how to determine the strength and direction of a correlation on a scatter graph, and provide one real-world example of a positive correlation.",
+    guidelines: [
+      "Define what makes a correlation positive or negative.",
+      "Explain the difference between a strong and weak correlation visually.",
+      "Provide a logical real-world example."
+    ],
+    requiredWords: [
+      ["direction", "positive", "negative"], 
+      ["strength", "strong", "weak", "spread", "tight"],
+      ["example", "instance"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for explaining direction (positive goes up, negative goes down).",
+      "1 mark for explaining strength (strong is closely packed, weak is spread apart).",
+      "1 mark for providing a valid real-world example of a positive correlation."
+    ],
+    modelAnswer: "To determine direction, look at the slope; a positive correlation slopes upward, while a negative correlation slopes downward. Strength is determined by how closely packed the dots are; tightly packed dots mean a strong correlation, while widely spread dots mean a weak correlation. A real-world example of a positive correlation is the relationship between the amount of time spent studying and the score received on a math test."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/data/Y9/Math_1A/games.js">
+// src/data/GED/ENG_1A/games.js
+import { WAVE_PRESETS } from '../../../components/towerdefense/wavePresets';
+
+export const games = {
+  gameConfig: {
+    themeId: 'RANDOM', // Option 5: Triggers the randomized map selector
+    layout: {
+      rows: 10,
+      cols: 15,
+      path: [
+        [2, 0], [2, 3], [7, 3], [7, 7], [2, 7], [2, 11], [7, 11], [7, 14]
+      ]
+    },
+    allowedTowers: ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN'],
+    waves: WAVE_PRESETS.SET_1,
+    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR
+  }
+};
+</file>
+
+<file path="src/data/Y9/Math_1A/notes.js">
+// src/data/Y9/MATH_1A/notes.js
+
+export const notes = [
+  {
+    type: "intro",
+    title: "Correlation & Scatter Graphs",
+    titleVn: "Tương quan & Biểu đồ phân tán",
+    subtitle: "Objective: Understand bivariate data, scatter graphs, and the mathematical measurement of correlation.",
+    subtitleVn: "Mục tiêu: Hiểu về dữ liệu hai biến, biểu đồ phân tán và phép đo lường toán học của sự tương quan.",
+    color: "bg-[#8b5cf6]", // Modern purple
+    borderColor: "border-[#7c3aed]"
+  },
+  {
+    type: "concept",
+    title: "What is Correlation?",
+    titleVn: "Sự tương quan là gì?",
+    icon: "Link",
+    color: "bg-[#14b8a6]", // Teal
+    content: "In science and mathematics, we don't just guess if two things are connected. We measure exactly *how* they are connected using data.\n\n> A **Correlation** is a mathematical connection or relationship between two variables. It helps us predict how one thing affects another.",
+    contentVn: "Trong khoa học và toán học, chúng ta không chỉ đoán xem hai sự vật có liên kết với nhau hay không. Chúng ta đo lường chính xác *cách* chúng kết nối bằng dữ liệu.\n\n> **Sự tương quan** là một sự kết nối hoặc mối quan hệ toán học giữa hai biến số. Nó giúp chúng ta dự đoán cách một sự vật ảnh hưởng đến sự vật khác.",
+    example: "There is a correlation between how long you sleep (Variable 1) and how much energy you have the next day (Variable 2).",
+    exampleVn: "Có một sự tương quan giữa việc bạn ngủ bao lâu (Biến số 1) và mức năng lượng bạn có vào ngày hôm sau (Biến số 2).",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <defs>
+        <linearGradient id="linkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#38bdf8" />
+          <stop offset="100%" stop-color="#34d399" />
+        </linearGradient>
+      </defs>
+      <circle cx="120" cy="125" r="45" fill="#e0f2fe" stroke="#38bdf8" stroke-width="6"/>
+      <text x="120" y="132" fill="#0284c7" font-size="20" font-weight="900" text-anchor="middle" font-family="sans-serif">Thing A</text>
+      <circle cx="280" cy="125" r="45" fill="#d1fae5" stroke="#34d399" stroke-width="6"/>
+      <text x="280" y="132" fill="#059669" font-size="20" font-weight="900" text-anchor="middle" font-family="sans-serif">Thing B</text>
+      <path d="M 165 125 L 235 125" stroke="url(#linkGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="10 10"/>
+      <path d="M 180 105 L 220 105" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+      <path d="M 180 145 L 220 145" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Variables & The Grid",
+    titleVn: "Biến số & Lưới Tọa độ",
+    icon: "Target",
+    color: "bg-[#3b82f6]", // Blue
+    content: "To measure a connection mathematically, we need two **Variables** (things we can measure, like height and weight). We plot these on a coordinate grid.\n\n> **The X-Axis:** The horizontal line, usually representing the independent variable (the cause).\n> **The Y-Axis:** The vertical line, usually representing the dependent variable (the effect).",
+    contentVn: "Để đo lường một sự kết nối về mặt toán học, chúng ta cần hai **Biến số** (những thứ có thể đo lường, như chiều cao và cân nặng). Chúng ta vẽ chúng trên một lưới tọa độ.\n\n> **Trục X:** Đường nằm ngang, thường đại diện cho biến độc lập (nguyên nhân).\n> **Trục Y:** Đường thẳng đứng, thường đại diện cho biến phụ thuộc (kết quả).",
+    example: "If tracking plant growth, 'Time' goes on the X-Axis, and the 'Plant's Height' goes on the Y-Axis.",
+    exampleVn: "Nếu theo dõi sự phát triển của cây, 'Thời gian' nằm trên Trục X, và 'Chiều cao của cây' nằm trên Trục Y.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <g stroke="#f1f5f9" stroke-width="2">
+        <line x1="50" y1="50" x2="350" y2="50"/>
+        <line x1="50" y1="100" x2="350" y2="100"/>
+        <line x1="50" y1="150" x2="350" y2="150"/>
+        <line x1="100" y1="20" x2="100" y2="200"/>
+        <line x1="150" y1="20" x2="150" y2="200"/>
+        <line x1="200" y1="20" x2="200" y2="200"/>
+        <line x1="250" y1="20" x2="250" y2="200"/>
+        <line x1="300" y1="20" x2="300" y2="200"/>
+      </g>
+      <line x1="50" y1="200" x2="360" y2="200" stroke="#1e293b" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow)"/>
+      <line x1="50" y1="200" x2="50" y2="20" stroke="#1e293b" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow)"/>
+      <rect x="180" y="215" width="80" height="25" rx="6" fill="#3b82f6" />
+      <text x="220" y="233" fill="white" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif">X-Axis</text>
+      <rect x="5" y="80" width="80" height="25" rx="6" fill="#3b82f6" transform="rotate(-90 45 92)" />
+      <text x="45" y="97" fill="white" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 45 92)">Y-Axis</text>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e293b" />
+        </marker>
+      </defs>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Positive Correlation",
+    titleVn: "Tương quan Dương",
+    icon: "ChevronRight",
+    color: "bg-[#10b981]", // Emerald
+    content: "When we plot data, the dots might form an upward pattern. This tells us the two variables are moving in the same direction.\n\n> A **Positive Correlation** occurs when both variables increase together.\n> **Rule:** As X gets bigger, Y gets bigger.",
+    contentVn: "Khi vẽ biểu đồ dữ liệu, các dấu chấm có thể tạo thành một dải hướng lên. Điều này cho chúng ta biết hai biến số đang di chuyển cùng chiều.\n\n> Một **Tương quan Dương** xảy ra khi cả hai biến số cùng tăng.\n> **Quy tắc:** Khi X lớn hơn, Y cũng lớn hơn.",
+    example: "There is a positive correlation between 'Hours Spent Studying' (X) and 'Math Test Score' (Y). The more you study, the higher your score.",
+    exampleVn: "Có một sự tương quan dương giữa 'Số giờ học' (X) và 'Điểm bài kiểm tra' (Y). Bạn càng học nhiều, điểm càng cao.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="50" y1="200" x2="350" y2="200" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <line x1="50" y1="200" x2="50" y2="30" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <text x="200" y="230" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif">Hours Studying (X)</text>
+      <text x="20" y="115" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 20 115)">Test Score (Y)</text>
+      <line x1="60" y1="190" x2="330" y2="50" stroke="#d1fae5" stroke-width="20" stroke-linecap="round"/>
+      <circle cx="80" cy="180" r="7" fill="#10b981"/>
+      <circle cx="100" cy="170" r="7" fill="#10b981"/>
+      <circle cx="130" cy="160" r="7" fill="#10b981"/>
+      <circle cx="140" cy="140" r="7" fill="#10b981"/>
+      <circle cx="180" cy="135" r="7" fill="#10b981"/>
+      <circle cx="210" cy="110" r="7" fill="#10b981"/>
+      <circle cx="240" cy="100" r="7" fill="#10b981"/>
+      <circle cx="270" cy="80" r="7" fill="#10b981"/>
+      <circle cx="290" cy="90" r="7" fill="#10b981"/>
+      <circle cx="320" cy="60" r="7" fill="#10b981"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Negative Correlation",
+    titleVn: "Tương quan Âm",
+    icon: "ChevronLeft",
+    color: "bg-[#f43f5e]", // Rose
+    content: "Sometimes, variables move in opposite directions, acting like a mathematical seesaw.\n\n> A **Negative Correlation** occurs when one variable decreases while the other increases.\n> **Rule:** As X gets bigger, Y gets smaller.",
+    contentVn: "Đôi khi, các biến số di chuyển theo hướng ngược nhau, hoạt động giống như một chiếc bập bênh toán học.\n\n> Một **Tương quan Âm** xảy ra khi một biến số giảm trong khi biến số kia tăng.\n> **Quy tắc:** Khi X lớn hơn, Y nhỏ đi.",
+    example: "There is a negative correlation between 'Age of a Car' (X) and 'Value of the Car' (Y). As the car gets older, its price goes down.",
+    exampleVn: "Có một sự tương quan âm giữa 'Tuổi của Ô tô' (X) và 'Giá trị của Ô tô' (Y). Xe càng cũ, giá của nó càng giảm.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="50" y1="200" x2="350" y2="200" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <line x1="50" y1="200" x2="50" y2="30" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <text x="200" y="230" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif">Age of Car in Years (X)</text>
+      <text x="20" y="115" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 20 115)">Value in Dollars (Y)</text>
+      <line x1="70" y1="50" x2="330" y2="180" stroke="#ffe4e6" stroke-width="20" stroke-linecap="round"/>
+      <circle cx="70" cy="60" r="7" fill="#f43f5e"/>
+      <circle cx="90" cy="75" r="7" fill="#f43f5e"/>
+      <circle cx="120" cy="85" r="7" fill="#f43f5e"/>
+      <circle cx="150" cy="110" r="7" fill="#f43f5e"/>
+      <circle cx="180" cy="100" r="7" fill="#f43f5e"/>
+      <circle cx="210" cy="130" r="7" fill="#f43f5e"/>
+      <circle cx="240" cy="140" r="7" fill="#f43f5e"/>
+      <circle cx="280" cy="155" r="7" fill="#f43f5e"/>
+      <circle cx="300" cy="170" r="7" fill="#f43f5e"/>
+      <circle cx="320" cy="165" r="7" fill="#f43f5e"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Strong vs. Weak",
+    titleVn: "Mạnh và Yếu",
+    icon: "Scale",
+    color: "bg-[#f59e0b]", // Amber
+    content: "We also measure the **Strength** of the correlation by looking at how closely the dots are grouped together.\n\n> **Strong Correlation:** The dots are packed tightly into a clear line. Predictions are highly accurate.\n> **Weak Correlation:** The dots follow a general direction but are spread apart like a cloud. Predictions are less certain.",
+    contentVn: "Chúng ta cũng đo lường **Độ mạnh** của sự tương quan bằng cách nhìn vào mức độ chụm lại của các dấu chấm.\n\n> **Tương quan Mạnh:** Các dấu chấm xếp chặt chẽ thành một đường rõ ràng. Dự đoán rất chính xác.\n> **Tương quan Yếu:** Các dấu chấm đi theo hướng chung nhưng phân tán như một đám mây. Dự đoán ít chắc chắn hơn.",
+    example: "A person's height and their shoe size have a Strong Correlation. A person's height and their hair length have No Correlation.",
+    exampleVn: "Chiều cao và cỡ giày của một người có Tương quan Mạnh. Chiều cao và độ dài tóc của họ Không có Tương quan.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="200" y1="20" x2="200" y2="230" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="8 8"/>
+      
+      <text x="100" y="30" fill="#d97706" font-size="16" font-weight="900" text-anchor="middle" font-family="sans-serif">STRONG</text>
+      <line x1="20" y1="200" x2="180" y2="200" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="20" y1="200" x2="20" y2="50" stroke="#94a3b8" stroke-width="3"/>
+      <circle cx="40" cy="180" r="5" fill="#f59e0b"/>
+      <circle cx="60" cy="155" r="5" fill="#f59e0b"/>
+      <circle cx="75" cy="140" r="5" fill="#f59e0b"/>
+      <circle cx="95" cy="120" r="5" fill="#f59e0b"/>
+      <circle cx="110" cy="105" r="5" fill="#f59e0b"/>
+      <circle cx="130" cy="85" r="5" fill="#f59e0b"/>
+      <circle cx="150" cy="65" r="5" fill="#f59e0b"/>
+      <circle cx="165" cy="50" r="5" fill="#f59e0b"/>
+
+      <text x="300" y="30" fill="#d97706" font-size="16" font-weight="900" text-anchor="middle" font-family="sans-serif">WEAK</text>
+      <line x1="220" y1="200" x2="380" y2="200" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="220" y1="200" x2="220" y2="50" stroke="#94a3b8" stroke-width="3"/>
+      <circle cx="240" cy="190" r="5" fill="#fcd34d"/>
+      <circle cx="270" cy="140" r="5" fill="#fcd34d"/>
+      <circle cx="250" cy="120" r="5" fill="#fcd34d"/>
+      <circle cx="300" cy="160" r="5" fill="#fcd34d"/>
+      <circle cx="290" cy="90" r="5" fill="#fcd34d"/>
+      <circle cx="320" cy="120" r="5" fill="#fcd34d"/>
+      <circle cx="340" cy="70" r="5" fill="#fcd34d"/>
+      <circle cx="360" cy="100" r="5" fill="#fcd34d"/>
+      <circle cx="370" cy="50" r="5" fill="#fcd34d"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "The Correlation Coefficient",
+    titleVn: "Hệ số Tương quan",
+    icon: "BookOpen",
+    color: "bg-[#6366f1]", // Indigo
+    content: "Mathematicians use a specific number to measure this relationship, called the **Correlation Coefficient (r)**.\n\n> The value of **r** is always between **-1** and **1**.\n> **1:** A perfect positive line.\n> **-1:** A perfect negative line.\n> **0:** No correlation at all (random dots).",
+    contentVn: "Các nhà toán học sử dụng một con số cụ thể để đo lường mối quan hệ này, gọi là **Hệ số Tương quan (r)**.\n\n> Giá trị của **r** luôn nằm trong khoảng từ **-1** đến **1**.\n> **1:** Một đường thẳng dương hoàn hảo.\n> **-1:** Một đường thẳng âm hoàn hảo.\n> **0:** Không có sự tương quan (các dấu chấm ngẫu nhiên).",
+    example: "If r = 0.95, the correlation is strong and positive. If r = -0.1, there is basically no correlation.",
+    exampleVn: "Nếu r = 0.95, tương quan là mạnh và dương. Nếu r = -0.1, về cơ bản là không có sự tương quan.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md">
+      <line x1="50" y1="150" x2="450" y2="150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      
+      <circle cx="50" cy="150" r="8" fill="#f43f5e"/>
+      <text x="50" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#e11d48" text-anchor="middle">-1</text>
+      <rect x="25" y="40" width="50" height="50" fill="none" stroke="#e11d48" stroke-width="2" rx="4"/>
+      <line x1="30" y1="45" x2="70" y2="85" stroke="#f43f5e" stroke-width="4" stroke-dasharray="2 4" stroke-linecap="round"/>
+
+      <circle cx="250" cy="150" r="8" fill="#94a3b8"/>
+      <text x="250" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#64748b" text-anchor="middle">0</text>
+      <rect x="225" y="40" width="50" height="50" fill="none" stroke="#64748b" stroke-width="2" rx="4"/>
+      <circle cx="235" cy="50" r="3" fill="#94a3b8"/><circle cx="260" cy="45" r="3" fill="#94a3b8"/>
+      <circle cx="240" cy="70" r="3" fill="#94a3b8"/><circle cx="265" cy="65" r="3" fill="#94a3b8"/>
+      <circle cx="250" cy="80" r="3" fill="#94a3b8"/><circle cx="245" cy="55" r="3" fill="#94a3b8"/>
+
+      <circle cx="450" cy="150" r="8" fill="#10b981"/>
+      <text x="450" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#059669" text-anchor="middle">1</text>
+      <rect x="425" y="40" width="50" height="50" fill="none" stroke="#059669" stroke-width="2" rx="4"/>
+      <line x1="430" y1="85" x2="470" y2="45" stroke="#10b981" stroke-width="4" stroke-dasharray="2 4" stroke-linecap="round"/>
+
+      <path d="M 230 150 L 70 150" stroke="#f43f5e" stroke-width="4" fill="none" marker-end="url(#arrowNeg)"/>
+      <path d="M 270 150 L 430 150" stroke="#10b981" stroke-width="4" fill="none" marker-end="url(#arrowPos)"/>
+      
+      <text x="150" y="140" font-family="sans-serif" font-weight="bold" font-size="12" fill="#f43f5e" text-anchor="middle">Stronger Negative</text>
+      <text x="350" y="140" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">Stronger Positive</text>
+
+      <defs>
+        <marker id="arrowNeg" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
+        </marker>
+        <marker id="arrowPos" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+        </marker>
+      </defs>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Think About It: Variable Matching",
+    titleVn: "Hãy suy nghĩ: Nối các Biến số",
+    icon: "MessageSquare",
+    color: "bg-[#ec4899]", // Pink
+    content: "Take a look at the variable bank in the image. In your head or with a partner, try to link two blocks together.\n\n> **Task:** Identify the relationship between two variables.\n> Ask yourself: Is it Positive, Negative, or Zero? Is it Strong or Weak?",
+    contentVn: "Hãy xem ngân hàng biến số trong hình ảnh. Cùng với bạn học, hãy thử liên kết hai khối lại với nhau.\n\n> **Nhiệm vụ:** Xác định mối quan hệ giữa hai biến số.\n> Hãy tự hỏi: Nó là Dương, Âm, hay Không có? Nó Mạnh hay Yếu?",
+    example: "Linking 'Amount of Rain' and 'Umbrella Sales' would create a Strong Positive Correlation.",
+    exampleVn: "Liên kết 'Lượng mưa' và 'Doanh số bán Ô' sẽ tạo ra một Tương quan Dương Mạnh.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300" class="w-full h-full drop-shadow-md">
+      <rect x="10" y="10" width="480" height="280" rx="16" fill="#fdf2f8" stroke="#fbcfe8" stroke-width="4"/>
+      <text x="250" y="45" font-family="sans-serif" font-weight="900" font-size="18" fill="#db2777" text-anchor="middle">THE VARIABLE BANK</text>
+      
+      <rect x="40" y="70" width="130" height="80" rx="12" fill="#bae6fd" stroke="#7dd3fc" stroke-width="3"/>
+      <text x="105" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0369a1" text-anchor="middle">Amount of Rain</text>
+      
+      <rect x="185" y="70" width="130" height="80" rx="12" fill="#fed7aa" stroke="#fdba74" stroke-width="3"/>
+      <text x="250" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#c2410c" text-anchor="middle">Outdoor</text>
+      <text x="250" y="125" font-family="sans-serif" font-weight="bold" font-size="14" fill="#c2410c" text-anchor="middle">Temperature</text>
+      
+      <rect x="330" y="70" width="130" height="80" rx="12" fill="#bbf7d0" stroke="#86efac" stroke-width="3"/>
+      <text x="395" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="middle">Umbrella</text>
+      <text x="395" y="125" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="middle">Sales</text>
+
+      <rect x="40" y="170" width="130" height="80" rx="12" fill="#e9d5ff" stroke="#d8b4fe" stroke-width="3"/>
+      <text x="105" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="middle">Ice Cream</text>
+      <text x="105" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="middle">Sales</text>
+
+      <rect x="185" y="170" width="130" height="80" rx="12" fill="#fecaca" stroke="#fca5a5" stroke-width="3"/>
+      <text x="250" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#b91c1c" text-anchor="middle">Distance</text>
+      <text x="250" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#b91c1c" text-anchor="middle">Driven</text>
+
+      <rect x="330" y="170" width="130" height="80" rx="12" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="3"/>
+      <text x="395" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#475569" text-anchor="middle">Fuel Left</text>
+      <text x="395" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#475569" text-anchor="middle">in Tank</text>
+    </svg>`
+  },
+  {
+    type: "summary",
+    title: "Lesson Complete!",
+    titleVn: "Hoàn thành Bài học!",
+    subtitle: "Objective Achieved: You can now identify and measure correlation in scatter graphs.",
+    subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể xác định và đo lường sự tương quan trong các biểu đồ phân tán.",
+    color: "bg-[#14b8a6]",
+    borderColor: "border-[#0d9488]"
+  }
+];
+</file>
+
+<file path="src/data/Y9/Math_1A/workbook.js">
+// src/data/GED/ENG_1A/workbook.js
+export const workbook = null;
+</file>
+
+<file path="src/tasks/Assessment.jsx">
+// src/tasks/Assessment.jsx
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, XCircle, GripVertical, CornerDownRight, Clock, AlertTriangle, Construction, FileQuestion, ArrowRight } from 'lucide-react';
+import TopBar from '../components/TopBar';
+import Feedback from '../components/Feedback';
+
+export default function Assessment({ unit, onComplete, onQuit }) {
+  const assessmentData = unit?.assessment;
+  
+  if (!assessmentData || !assessmentData.questions || !Array.isArray(assessmentData.questions) || assessmentData.questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+        <div className="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+          <Construction className="w-12 h-12 text-amber-500" />
+        </div>
+        <h2 className="text-4xl font-black text-slate-800 mb-4 tracking-tight">Assessment Unavailable</h2>
+        <div className="bg-white px-8 py-4 rounded-2xl shadow-sm border border-slate-200 mb-10 text-lg font-bold text-slate-500">
+          No assessment data is currently configured for this unit.
+        </div>
+        <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  const questions = assessmentData.questions;
+  const passages = assessmentData.passages || [];
+  const totalQuestions = questions.length;
+
+  const [testPhase, setTestPhase] = useState('testing'); 
+  const [answers, setAnswers] = useState({}); 
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  
+  const [timeLeft, setTimeLeft] = useState(assessmentData.timeLimit || 1800); 
+  const [isTimeUp, setIsTimeUp] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
+
+  const [activeGlossaryTerm, setActiveGlossaryTerm] = useState(null);
+  const [draggedItem, setDraggedItem] = useState(null); // Now stores the unique 'id' of the bank item
+
+  const currentQuestion = questions[currentQIndex] || null;
+  const currentPassage = currentQuestion ? passages.find(p => p.id === currentQuestion.passageId) : null;
+
+  const isDND = currentQuestion?.type === 'dnd' || currentQuestion?.type === 'order';
+  const isInline = currentQuestion?.type === 'inline' || currentQuestion?.type === 'scrollBox';
+  const isMCQ = !isDND && !isInline;
+
+  const hasGraphic = currentQuestion?.inlineSvg || currentQuestion?.imageUrl || currentQuestion?.imageFile;
+  const hasPassage = !!currentPassage;
+  const hasLHS = hasGraphic || hasPassage;
+
+  const currentAns = answers[currentQIndex] || {};
+
+  useEffect(() => {
+    if (testPhase !== 'testing') return;
+    if (timeLeft <= 0 && !isTimeUp) {
+      setIsTimeUp(true);
+      finishTest();
+      return;
+    }
+    const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    return () => clearInterval(timerId);
+  }, [timeLeft, testPhase, isTimeUp]);
+
+  const formatTime = (seconds) => {
+    if (seconds < 0) seconds = 0;
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  useEffect(() => { 
+    setActiveGlossaryTerm(null); 
+  }, [currentQIndex, testPhase]);
+
+  const updateAnswer = (payload) => {
+    setAnswers(prev => {
+      const currentAnsObj = prev[currentQIndex] || {};
+      return { ...prev, [currentQIndex]: { ...currentAnsObj, ...payload } };
+    });
+  };
+
+  const handleSelectOption = (val) => {
+    if (testPhase !== 'testing') return;
+    updateAnswer({ selectedOption: val });
+  };
+
+  const handleDragStart = (e, itemId) => {
+    if (testPhase !== 'testing') return;
+    setDraggedItem(itemId);
+    e.dataTransfer.setData('text/plain', itemId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDrop = (e, slotId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (testPhase !== 'testing' || !draggedItem) return;
+    
+    const currentDrops = currentAns.droppedItems || {};
+    const newDrops = { ...currentDrops };
+    
+    // Prevent same ID existing in multiple slots
+    for (const key in newDrops) { 
+      if (newDrops[key] === draggedItem) delete newDrops[key]; 
+    }
+    
+    newDrops[slotId] = draggedItem;
+    updateAnswer({ droppedItems: newDrops });
+    setDraggedItem(null);
+  };
+
+  const removeDroppedItem = (slotId) => {
+    if (testPhase !== 'testing') return;
+    const currentDrops = currentAns.droppedItems || {};
+    const newDrops = { ...currentDrops };
+    delete newDrops[slotId];
+    updateAnswer({ droppedItems: newDrops });
+  };
+
+  const handleInlineChange = (blankIndex, val) => {
+    if (testPhase !== 'testing') return;
+    const currentInline = currentAns.inlineAnswers || {};
+    updateAnswer({ inlineAnswers: { ...currentInline, [blankIndex]: val } });
+  };
+
+  let isCurrentAnswered = false;
+  if (currentQuestion) {
+    if (isMCQ) isCurrentAnswered = !!currentAns.selectedOption;
+    if (isInline) isCurrentAnswered = Object.keys(currentAns.inlineAnswers || {}).length === Object.keys(currentQuestion.blanks || {}).length;
+    if (isDND) {
+      let totalSlots = 0;
+      (currentQuestion.targets || []).forEach(t => totalSlots += (currentQuestion.correctSets?.[t.id]?.length || 1));
+      isCurrentAnswered = Object.keys(currentAns.droppedItems || {}).length === totalSlots;
+    }
+  }
+
+  const checkQuestionCorrect = (qIndex) => {
+    const q = questions[qIndex];
+    const ans = answers[qIndex] || {};
+    
+    if (q.type === 'mcq') return ans.selectedOption === q.correct;
+    
+    if (q.type === 'inline' || q.type === 'scrollBox') {
+      const userInline = ans.inlineAnswers || {};
+      const blanks = q.blanks || {};
+      for (const blankId of Object.keys(blanks)) {
+        if (userInline[blankId] !== blanks[blankId].correct) return false;
+      }
+      return true;
+    }
+    
+    if (q.type === 'dnd' || q.type === 'order') {
+      const dropped = ans.droppedItems || {};
+      let allCorrect = true;
+      for (const target of (q.targets || [])) {
+        const expectedArr = q.correctSets?.[target.id] || [];
+        const userDroppedVals = [];
+        
+        for (let i = 0; i < expectedArr.length; i++) {
+          const dId = dropped[`${target.id}_${i}`];
+          const bankItem = (q.bank || []).find(b => b.id === dId);
+          if (bankItem) userDroppedVals.push(bankItem.val);
+        }
+
+        if (q.type === 'order') {
+          if (JSON.stringify(userDroppedVals) !== JSON.stringify(expectedArr)) allCorrect = false;
+        } else {
+          if (userDroppedVals.length !== expectedArr.length) allCorrect = false;
+          const unmatchedExpected = [...expectedArr];
+          for (const val of userDroppedVals) {
+             const idx = unmatchedExpected.indexOf(val);
+             if (idx !== -1) {
+                unmatchedExpected.splice(idx, 1);
+             } else {
+                allCorrect = false;
+             }
+          }
+        }
+      }
+      return allCorrect;
+    }
+    return false;
+  };
+
+  const finishTest = () => {
+    let totalPossible = 0;
+    let totalEarned = 0;
+
+    for (let i = 0; i < totalQuestions; i++) {
+      const q = questions[i];
+      const ans = answers[i] || {};
+
+      if (q.type === 'mcq') {
+        totalPossible += 1;
+        if (ans.selectedOption === q.correct) totalEarned += 1;
+      } else if (q.type === 'inline' || q.type === 'scrollBox') {
+        const blanks = q.blanks || {};
+        const userInline = ans.inlineAnswers || {};
+        for (const blankId of Object.keys(blanks)) {
+          totalPossible += 1;
+          if (userInline[blankId] === blanks[blankId].correct) totalEarned += 1;
+        }
+      } else if (q.type === 'dnd' || q.type === 'order') {
+        const dropped = ans.droppedItems || {};
+        for (const target of (q.targets || [])) {
+          const expectedArr = q.correctSets?.[target.id] || [];
+          totalPossible += expectedArr.length;
+
+          const userDroppedVals = [];
+          for (let s = 0; s < expectedArr.length; s++) {
+             const dId = dropped[`${target.id}_${s}`];
+             const bankItem = (q.bank || []).find(b => b.id === dId);
+             if (bankItem) userDroppedVals.push(bankItem.val);
+          }
+
+          if (q.type === 'order') {
+            for (let s = 0; s < expectedArr.length; s++) {
+              if (userDroppedVals[s] === expectedArr[s]) totalEarned += 1;
+            }
+          } else {
+            const unmatchedExpected = [...expectedArr];
+            for (const val of userDroppedVals) {
+               const idx = unmatchedExpected.indexOf(val);
+               if (idx !== -1) {
+                 totalEarned += 1;
+                 unmatchedExpected.splice(idx, 1);
+               }
+            }
+          }
+        }
+      }
+    }
+
+    const calculatedScore = totalPossible === 0 ? 0 : Math.ceil((totalEarned / totalPossible) * 10);
+    setFinalScore(calculatedScore);
+    setTestPhase('intermission');
+  };
+
+  const handleNextTest = () => {
+    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
+    else finishTest();
+  };
+
+  const handlePrevTest = () => {
+    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  };
+
+  const handleNextReview = () => {
+    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
+    else {
+      if (typeof onComplete === 'function') onComplete(finalScore);
+    }
+  };
+
+  const handlePrevReview = () => {
+    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  };
+
+  const renderPassageWithGlossary = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const parts = text.split(/\{([^}]+)\}/g);
+    return parts.map((part, i) => {
+      if (i % 2 !== 0) {
+        const cleanWord = part.toLowerCase();
+        const termData = currentPassage?.glossary?.[cleanWord];
+        if (!termData) return <span key={i} className="font-bold text-slate-800">{part}</span>;
+        return (
+          <button 
+            key={i} 
+            onClick={() => { setActiveGlossaryTerm({ word: part, ...termData }); }}
+            className="text-emerald-600 font-bold border-b-2 border-dashed border-emerald-600 hover:bg-emerald-50 transition-colors mx-0.5 rounded px-1"
+          >
+            {part}
+          </button>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
+  if (testPhase === 'intermission') {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-indigo-100 relative overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200 opacity-40 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-200 opacity-40 blur-[120px] pointer-events-none" />
+        
+        <TopBar onQuit={onQuit} current={totalQuestions} total={totalQuestions} modeTitle="Assessment Module" />
+        
+        <div className="flex-1 flex flex-col items-center justify-center p-6 z-10 animate-in zoom-in-95 duration-500">
+          <div className="bg-white p-12 md:p-16 rounded-[2.5rem] shadow-2xl border border-slate-200 text-center max-w-2xl w-full">
+             <div className="w-32 h-32 mx-auto bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-8 shadow-inner">
+               <CheckCircle2 className="w-16 h-16" strokeWidth={3} />
+             </div>
+             <h1 className="text-5xl font-black text-slate-800 tracking-tight mb-4">Assessment Complete</h1>
+             <p className="text-2xl font-bold text-slate-500 mb-8">Let's see how you did.</p>
+             
+             <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl py-8 mb-10 shadow-sm">
+                <span className="block text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Normalized XP</span>
+                <div className="text-6xl font-black text-emerald-500">
+                  {finalScore} <span className="text-4xl text-slate-300">/ 10</span>
+                </div>
+             </div>
+
+             <button 
+                onClick={() => { setCurrentQIndex(0); setTestPhase('reviewing'); }}
+                className="w-full py-5 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all bg-[#1CB0F6] border-b-[6px] border-[#1899D6] hover:bg-[#1899D6] active:border-b-0 active:translate-y-[6px] shadow-lg flex items-center justify-center"
+             >
+                Review Answers <ArrowRight className="w-6 h-6 ml-3" strokeWidth={3} />
+             </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isCurrentlyCorrect = testPhase === 'reviewing' ? checkQuestionCorrect(currentQIndex) : null;
+
+  return (
+    <div className="flex flex-col h-screen bg-slate-50 font-sans relative">
+      
+      <TopBar 
+        onQuit={onQuit} 
+        current={currentQIndex + 1} 
+        total={totalQuestions} 
+        modeTitle={testPhase === 'testing' ? "Assessment Module" : "Assessment Review"} 
+      />
+
+      {isTimeUp && testPhase === 'testing' && (
+        <div className="bg-red-600 text-white p-3 text-center font-bold text-lg uppercase tracking-widest flex justify-center items-center shadow-md z-30 animate-in slide-in-from-top-2">
+          <AlertTriangle className="mr-2" /> Time is up! Submitting answers...
+        </div>
+      )}
+
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative z-10">
+        
+        {/* Left Hand Side (Passage & Graphics) - Only renders if they exist */}
+        {hasLHS && (
+          <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto border-b md:border-b-0 md:border-r border-slate-200 bg-white z-10 pb-32">
+            {hasPassage && (
+              <div className={`animate-in fade-in duration-300 ${hasGraphic ? 'mb-8 border-b-2 border-slate-100 pb-8' : ''}`}>
+                <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-6 leading-tight">{currentPassage.title}</h2>
+                <div className="mb-6">
+                  {currentPassage.meta && (
+                    <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 mb-4 gap-3">
+                      <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">{currentPassage.meta}</h3>
+                    </div>
+                  )}
+                  <div className="space-y-4 text-slate-700 text-lg leading-relaxed font-medium">
+                    {(currentPassage.text || []).map((p, i) => (
+                      <p key={i}>{renderPassageWithGlossary(p)}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {hasGraphic && (
+              <div className="w-full animate-in fade-in duration-300">
+                {currentQuestion.inlineSvg ? (
+                  <div 
+                    className="w-full h-auto flex items-center justify-center p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-inner"
+                    dangerouslySetInnerHTML={{ __html: currentQuestion.inlineSvg }}
+                  />
+                ) : (
+                  <img 
+                    src={`${import.meta.env.BASE_URL || ''}images/${unit?.id || 'MATH_1A'}/${(currentQuestion.imageFile || currentQuestion.imageUrl).split('/').pop()}`} 
+                    alt="Assessment Diagram" 
+                    className="w-full h-auto object-contain rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-inner p-6"
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Right Hand Side (Questions & Controls) */}
+        <div className={`w-full ${hasLHS ? 'md:w-1/2 bg-slate-50' : 'max-w-4xl mx-auto bg-white border-x border-slate-200'} flex flex-col relative overflow-hidden pb-48`}>
+          
+          {testPhase === 'testing' && !isTimeUp && (
+            <div className="absolute top-4 right-4 z-30 flex items-center font-black text-lg px-4 py-2 rounded-xl bg-white border-2 border-slate-200 shadow-sm text-slate-700">
+               <Clock className="w-5 h-5 mr-2" />
+               {formatTime(timeLeft)}
+            </div>
+          )}
+
+          <div className="p-6 md:p-8 overflow-y-auto h-full relative animate-in fade-in slide-in-from-right-4 duration-300 pt-16 md:pt-10">
+            <h3 className="text-xl font-black text-slate-800 leading-snug tracking-tight mb-8 pr-20">{currentQuestion.title}</h3>
+            
+            {isMCQ && (
+              <div className="space-y-3">
+                {(currentQuestion.options || []).map((opt) => {
+                  const isSelected = currentAns.selectedOption === opt.val;
+                  const isCorrectAnswer = opt.val === currentQuestion.correct;
+                  let btnStyle = "bg-white border-slate-200 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 shadow-sm hover:shadow-md";
+                  
+                  if (testPhase === 'reviewing') {
+                    if (isCorrectAnswer) btnStyle = "bg-[#D7FFD7] border-[#58A700] text-[#3E7500] shadow-sm";
+                    else if (isSelected && !isCorrectAnswer) btnStyle = "bg-[#FFE5E5] border-[#EA4335] text-[#A32D23] shadow-sm";
+                    else btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                  } else if (isSelected) {
+                    btnStyle = "bg-emerald-50 border-emerald-500 border-b-4 text-emerald-800 translate-y-[-2px] shadow-md";
+                  }
+
+                  return (
+                    <button 
+                      key={opt.val}
+                      onClick={() => handleSelectOption(opt.val)}
+                      disabled={testPhase !== 'testing'}
+                      className={`w-full text-left p-4 rounded-2xl border-2 font-medium text-lg transition-all ${btnStyle}`}
+                    >
+                      {opt.text}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {isDND && (
+              <div className="space-y-8">
+                <div className="sticky top-0 z-30 pt-1 pb-4 bg-slate-50/90 backdrop-blur-md shadow-[0_15px_15px_-15px_rgba(0,0,0,0.1)] -mt-2">
+                  <div className="bg-white border-2 border-dashed border-slate-300 rounded-3xl p-5 shadow-sm">
+                    <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Options Bank</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {(currentQuestion.bank || []).map((opt) => {
+                        // Check if the unique ID is already used
+                        const isUsed = Object.values(currentAns.droppedItems || {}).includes(opt.id);
+                        if (isUsed) return null;
+                        return (
+                          <div
+                            key={opt.id}
+                            draggable={testPhase === 'testing'}
+                            onDragStart={(e) => handleDragStart(e, opt.id)}
+                            className={`flex items-center px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-medium text-slate-700 shadow-sm transition-all ${testPhase === 'testing' ? 'cursor-grab active:cursor-grabbing hover:border-emerald-400 hover:shadow-md' : 'opacity-50'}`}
+                          >
+                            <GripVertical className="w-5 h-5 mr-2 text-slate-400" />
+                            {opt.text}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Targets</h4>
+                  <div className={`grid gap-4 ${(currentQuestion.targets || []).length > 1 && currentQuestion.type !== 'order' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'}`}>
+                    {(currentQuestion.targets || []).map((target) => {
+                      const requiredCount = currentQuestion.correctSets?.[target.id]?.length || 1;
+                      return (
+                        <div key={target.id} className="flex flex-col bg-white p-4 rounded-3xl border-2 border-slate-200 shadow-sm">
+                          <div className="font-bold text-slate-800 mb-3 text-[15px] leading-tight text-center border-b-2 border-slate-100 pb-3">{target.title}</div>
+                          <div className="flex flex-col gap-2">
+                            {Array.from({ length: requiredCount }).map((_, slotIndex) => {
+                              const slotId = `${target.id}_${slotIndex}`;
+                              const droppedId = (currentAns.droppedItems || {})[slotId];
+                              const droppedObj = (currentQuestion.bank || []).find(b => b.id === droppedId);
+                              
+                              let slotStyle = "bg-slate-50 border-dashed border-slate-300 text-slate-400";
+                              
+                              if (testPhase === 'reviewing') {
+                                const expectedArr = currentQuestion.correctSets?.[target.id] || [];
+                                // For evaluation, compare the 'val' property, not the 'id'
+                                const droppedVal = droppedObj ? droppedObj.val : null;
+                                let isCorrectInSlot = currentQuestion.type === 'order' ? expectedArr[slotIndex] === droppedVal : expectedArr.includes(droppedVal);
+                                
+                                if (!droppedId) slotStyle = "bg-[#FFE5E5] border-[#EA4335] border-solid text-[#A32D23] shadow-sm";
+                                else if (isCorrectInSlot) slotStyle = "bg-[#D7FFD7] border-[#58A700] border-solid text-[#3E7500] shadow-sm";
+                                else slotStyle = "bg-[#FFE5E5] border-[#EA4335] border-solid text-[#A32D23] shadow-sm";
+                              } else if (droppedObj) {
+                                slotStyle = "bg-emerald-50 border-emerald-400 border-solid text-emerald-800 shadow-sm";
+                              }
+
+                              return (
+                                <div 
+                                  key={slotId}
+                                  onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }}
+                                  onDrop={(e) => handleDrop(e, slotId)}
+                                  onClick={() => droppedObj && removeDroppedItem(slotId)}
+                                  className={`min-h-[70px] flex items-center p-3 rounded-2xl border-2 transition-all ${slotStyle} ${testPhase === 'testing' && droppedObj ? 'cursor-pointer hover:bg-rose-50 hover:border-rose-300' : ''}`}
+                                >
+                                  {!droppedObj ? (
+                                    <div className="flex items-center justify-center w-full">
+                                      <CornerDownRight className="w-5 h-5 mr-2 opacity-50" />
+                                      <span className="font-medium text-sm">{testPhase === 'reviewing' ? 'Left Blank' : 'Drop Item Here'}</span>
+                                    </div>
+                                  ) : (
+                                    <div className="font-bold flex items-center justify-between w-full text-[15px]">
+                                      <span>{droppedObj.text}</span>
+                                      {testPhase === 'testing' && <XCircle className="w-5 h-5 text-slate-400 hover:text-rose-500 ml-2 flex-shrink-0 transition-colors" />}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isInline && (
+              <div className="text-lg leading-loose text-slate-700 bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm">
+                {(currentQuestion.textParts || []).map((part, i) => {
+                  const blankIndex = i + 1;
+                  const blankData = currentQuestion.blanks?.[blankIndex];
+                  const selectedVal = (currentAns.inlineAnswers || {})[blankIndex];
+                  
+                  let selectStyle = 'bg-emerald-50 border-emerald-400 text-emerald-800 hover:bg-emerald-100 hover:shadow-md';
+                  let showCorrection = false;
+
+                  if (testPhase === 'reviewing') {
+                    const isCorrect = selectedVal === blankData?.correct;
+                    if (isCorrect) selectStyle = 'bg-[#D7FFD7] border-[#58A700] text-[#3E7500]';
+                    else {
+                      selectStyle = 'bg-[#FFE5E5] border-[#EA4335] text-[#A32D23]';
+                      showCorrection = true;
+                    }
+                  }
+
+                  return (
+                    <React.Fragment key={i}>
+                      {part}
+                      {blankData && (
+                        <span className="inline-flex items-center">
+                          <select
+                            value={selectedVal || ""}
+                            onChange={(e) => handleInlineChange(blankIndex, e.target.value)}
+                            disabled={testPhase !== 'testing'}
+                            className={`mx-2 p-2 border-b-4 border-2 rounded-xl font-bold cursor-pointer transition-all outline-none appearance-none pr-8 bg-no-repeat shadow-sm ${selectStyle}`}
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundSize: '1.5em 1.5em' }}
+                          >
+                            <option value="" disabled>{testPhase === 'reviewing' ? 'Blank' : 'Select...'}</option>
+                            {(blankData.options || []).map(opt => <option key={opt.val} value={opt.val}>{opt.text}</option>)}
+                          </select>
+                          {showCorrection && (
+                            <span className="text-[#3E7500] bg-[#D7FFD7] border border-[#58A700] px-2 py-1 rounded-lg ml-1 text-sm font-bold shadow-sm">
+                              {blankData.options.find(o => o.val === blankData.correct)?.text}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {testPhase === 'testing' && (
+        <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-2">
+            <button 
+              onClick={handlePrevTest} 
+              disabled={currentQIndex === 0}
+              className="px-6 py-3 rounded-xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30"
+            >
+              Previous
+            </button>
+            <button 
+              onClick={handleNextTest}
+              disabled={!isCurrentAnswered}
+              className="px-10 py-4 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md bg-[#1CB0F6] border-[#1899D6] hover:bg-[#159bd9] disabled:opacity-50 disabled:bg-slate-300 disabled:border-slate-400 disabled:text-slate-500"
+            >
+              {currentQIndex === totalQuestions - 1 ? 'Submit Test' : 'Next Question'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {testPhase === 'reviewing' && (
+        <Feedback 
+          isCorrect={isCurrentlyCorrect}
+          expEn={currentQuestion.expEn}
+          expVn={currentQuestion.expVn}
+          onPrev={handlePrevReview}
+          onNext={handleNextReview}
+          isFirst={currentQIndex === 0}
+          isLast={currentQIndex === totalQuestions - 1}
+        />
+      )}
+
+    </div>
+  );
+}
+</file>
+
+</files>

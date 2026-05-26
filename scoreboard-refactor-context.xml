@@ -1,0 +1,826 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/tasks/Games.jsx, src/tasks/games/TowerDefense.jsx, src/utils/supabaseClient.js, src/hooks, useStudentProgress.js
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/hooks/useStudentProgress.js
+src/tasks/Games.jsx
+src/tasks/games/TowerDefense.jsx
+src/utils/supabaseClient.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/hooks/useStudentProgress.js">
+import { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
+// Ensure this matches how you initialize Supabase in your project!
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Notice we added 'track' as a parameter here, defaulting to Y9
+export function useStudentProgress(navigate, track = 'Y9') {
+  const [user, setUser] = useState(null);
+  const [allProgress, setAllProgress] = useState({
+    Y8: {},
+    Y9: {},
+    ESL: {},
+    GED: {}
+  });
+  const [isLoadingDB, setIsLoadingDB] = useState(true);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate('/');
+        return;
+      }
+      
+      setUser(session.user);
+
+      const { data } = await supabase
+        .from('students')
+        .select('progress')
+        .eq('id', session.user.id)
+        .single();
+
+      if (data && data.progress) {
+        let dbProgress = data.progress;
+        const validTracks = ['Y8', 'Y9', 'ESL', 'GED'];
+
+        // AUTO-MIGRATION: If keys are old unit IDs like "U1", move everything to Y9
+        const isOldFormat = Object.keys(dbProgress).some(key => !validTracks.includes(key));
+        if (isOldFormat) {
+          dbProgress = {
+            Y8: {},
+            Y9: dbProgress,
+            ESL: {},
+            GED: {}
+          };
+          // Silently fix the database in the background so it doesn't happen again
+          await supabase.from('students').update({ progress: dbProgress }).eq('id', session.user.id);
+        } else {
+          // Ensure the base structure exists even if a track is empty
+          validTracks.forEach(t => {
+            if (!dbProgress[t]) dbProgress[t] = {};
+          });
+        }
+
+        setAllProgress(dbProgress);
+      }
+      
+      setIsLoadingDB(false);
+    };
+
+    fetchProgress();
+  }, [navigate]);
+
+  const saveScore = async (unitId, section, score, answers = null) => {
+    const newProgress = { ...allProgress };
+    
+    if (!newProgress[track]) newProgress[track] = {};
+    if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
+
+    // Get the existing score (defaults to 0 if they have never played this section)
+    const existingScore = newProgress[track][unitId][section]?.current || 0;
+
+    newProgress[track][unitId] = {
+      ...newProgress[track][unitId],
+      [section]: {
+        // ⚠️ FIX: Math.max ensures we only ever keep the highest XP score
+        current: Math.max(existingScore, score),
+        // We still update the answers if they provide new ones so they can see their latest work
+        answers: answers || newProgress[track][unitId][section]?.answers || null
+      }
+    };
+
+    setAllProgress(newProgress);
+    await supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
+  };
+
+  const addStrike = async (unitId, newStrikes) => {
+    const newProgress = { ...allProgress };
+    
+    if (!newProgress[track]) newProgress[track] = {};
+    if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
+
+    newProgress[track][unitId].strikes = newStrikes;
+
+    setAllProgress(newProgress);
+    await supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
+
+  return { 
+    user, 
+    allProgress, // <-- THE FIX: Exposing allProgress so the Dashboard can actually read it
+    unitScores: allProgress[track] || {}, 
+    isLoadingDB, 
+    saveScore, 
+    addStrike, 
+    handleLogout 
+  };
+}
+</file>
+
+<file path="src/tasks/Games.jsx">
+// src/tasks/Games.jsx
+import React, { useState } from 'react';
+import { X, Shield, Trophy, Lock, Loader2, Play, Users, Award, ChevronLeft } from 'lucide-react';
+import { supabase } from '../hooks/useStudentProgress';
+import TowerDefense from './games/TowerDefense';
+
+export default function Games({ pool, unitId, scores, onComplete, onQuit }) {
+  const [view, setView] = useState('MENU');
+  const [toast, setToast] = useState(null);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+
+  // Calculate total Unit XP to use as the starting economy.
+  // We enforce a minimum of 20 credits, multiplied by 2 to give players a stronger start.
+  const unitXP = Object.values(scores || {}).reduce((sum, section) => sum + (section?.current || 0), 0);
+  const startingCredits = Math.max(20, unitXP * 2);
+
+  const fetchLeaderboard = async () => {
+    if (!supabase) return;
+    setLoadingLeaderboard(true);
+    try {
+      const { data, error } = await supabase.from('students').select('id, raw_user_meta_data, email, progress');
+      if (error) throw error;
+
+      let parsedScores = [];
+      data.forEach(student => {
+        const name = student.raw_user_meta_data?.name || student.email?.split('@')[0] || 'Unknown Agent';
+        let maxScore = 0;
+        
+        // Safely parse across all potential tracks to extract the p12 (Games) high score for this unit
+        ['Y8', 'Y9', 'ESL', 'GED'].forEach(track => {
+          if (student.progress?.[track]?.[unitId]?.p12?.current) {
+            maxScore = Math.max(maxScore, student.progress[track][unitId].p12.current);
+          }
+        });
+
+        if (maxScore > 0) {
+          parsedScores.push({ name, score: maxScore });
+        }
+      });
+
+      // Sort descending and slice Top 5
+      parsedScores.sort((a, b) => b.score - a.score);
+      setLeaderboard(parsedScores.slice(0, 5));
+    } catch (err) {
+      console.error('Failed to parse leaderboard profiles:', err);
+    }
+    setLoadingLeaderboard(false);
+  };
+
+  const handleModeSelect = (mode) => {
+    if (mode === 'SURVIVOR' || mode === 'WALL') {
+      setToast(`${mode === 'SURVIVOR' ? 'Survivor' : 'The Wall'} Mode is currently in development!`);
+      setTimeout(() => setToast(null), 3000);
+      return;
+    }
+    if (mode === 'LEADERBOARD') {
+      fetchLeaderboard();
+      setView('LEADERBOARD');
+      return;
+    }
+    if (mode === 'TD') {
+      setView('TD');
+    }
+  };
+
+  if (view === 'TD') {
+    return (
+      <TowerDefense 
+        pool={pool} 
+        unitId={unitId} 
+        scores={scores} 
+        startingCredits={startingCredits}
+        onComplete={onComplete} 
+        onQuit={() => setView('MENU')} 
+      />
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col bg-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-hidden">
+      
+      {/* Toast Notification */}
+      {toast && (
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top-4 fade-in">
+          <div className="bg-rose-500 text-white px-8 py-4 rounded-2xl shadow-2xl font-black tracking-widest uppercase border-b-4 border-rose-700 flex items-center">
+            <Lock className="w-6 h-6 mr-3" /> {toast}
+          </div>
+        </div>
+      )}
+
+      {/* Decorative Background Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600 opacity-20 blur-[120px] rounded-full mix-blend-screen"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-600 opacity-20 blur-[120px] rounded-full mix-blend-screen"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05]"></div>
+      </div>
+
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
+        
+        {view === 'MENU' && (
+          <div className="w-full max-w-5xl animate-in zoom-in-95 duration-300">
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg mb-2">Arcade Hub</h1>
+                <p className="text-slate-400 font-bold tracking-widest uppercase text-sm md:text-base">Select your deployment protocol</p>
+              </div>
+              <button onClick={onQuit} className="p-4 bg-slate-800 hover:bg-rose-500 rounded-2xl transition-all border-b-[6px] border-slate-950 hover:border-rose-700 active:border-b-0 active:translate-y-[6px]">
+                <X className="w-8 h-8 text-white" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              
+              {/* Tower Defense Button */}
+              <button onClick={() => handleModeSelect('TD')} className="relative group bg-[#1CB0F6] p-8 rounded-[2.5rem] border-b-[8px] border-[#1899D6] active:border-b-0 active:translate-y-[8px] transition-all text-left overflow-hidden shadow-lg">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-white opacity-10 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:scale-125 transition-transform duration-700"></div>
+                <Shield className="w-16 h-16 text-white mb-6 drop-shadow-md" />
+                <h2 className="text-4xl font-black text-white mb-2 drop-shadow-sm">Tower Defense</h2>
+                <div className="flex items-center gap-3 mt-4">
+                  <p className="text-[#0e5c8a] font-black uppercase tracking-widest text-sm bg-white/20 px-3 py-1.5 rounded-xl">Play</p>
+                  <p className="text-white/90 font-bold text-sm">Starts with <span className="text-[#FFC800] drop-shadow-sm">{startingCredits} XP Credits</span></p>
+                </div>
+              </button>
+
+              {/* Leaderboard Button */}
+              <button onClick={() => handleModeSelect('LEADERBOARD')} className="relative group bg-[#FFC800] p-8 rounded-[2.5rem] border-b-[8px] border-[#D1A300] active:border-b-0 active:translate-y-[8px] transition-all text-left overflow-hidden shadow-lg">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-white opacity-20 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:scale-125 transition-transform duration-700"></div>
+                <Trophy className="w-16 h-16 text-amber-900 mb-6 drop-shadow-md" />
+                <h2 className="text-4xl font-black text-amber-950 mb-2 drop-shadow-sm">Leaderboard</h2>
+                <div className="flex items-center gap-3 mt-4">
+                  <p className="text-amber-900 font-black uppercase tracking-widest text-sm bg-black/10 px-3 py-1.5 rounded-xl">View Top 5</p>
+                  <p className="text-amber-900/80 font-bold text-sm">Unit Clear Scores</p>
+                </div>
+              </button>
+
+              {/* Survivor Mode (Coming Soon) */}
+              <button onClick={() => handleModeSelect('SURVIVOR')} className="relative group bg-slate-800 p-8 rounded-[2.5rem] border-b-[8px] border-slate-950 active:border-b-0 active:translate-y-[8px] transition-all text-left opacity-80 hover:opacity-100 overflow-hidden">
+                <div className="absolute top-4 right-6 bg-slate-700 text-slate-300 text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full border border-slate-600">Coming Soon</div>
+                <Lock className="w-16 h-16 text-slate-400 mb-6" />
+                <h2 className="text-4xl font-black text-white mb-2">Survivor</h2>
+                <p className="text-slate-400 font-medium text-lg">One life. Endless waves.</p>
+              </button>
+
+              {/* The Wall (Coming Soon) */}
+              <button onClick={() => handleModeSelect('WALL')} className="relative group bg-slate-800 p-8 rounded-[2.5rem] border-b-[8px] border-slate-950 active:border-b-0 active:translate-y-[8px] transition-all text-left opacity-80 hover:opacity-100 overflow-hidden">
+                <div className="absolute top-4 right-6 bg-slate-700 text-slate-300 text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full border border-slate-600">Coming Soon</div>
+                <Lock className="w-16 h-16 text-slate-400 mb-6" />
+                <h2 className="text-4xl font-black text-white mb-2">The Wall</h2>
+                <p className="text-slate-400 font-medium text-lg">Multiplayer cooperative defense.</p>
+              </button>
+
+            </div>
+          </div>
+        )}
+
+        {view === 'LEADERBOARD' && (
+          <div className="w-full max-w-3xl animate-in zoom-in-95 duration-300 flex flex-col h-full py-10">
+            <div className="flex items-center justify-between mb-8">
+              <button onClick={() => setView('MENU')} className="bg-slate-800 p-4 rounded-2xl hover:bg-slate-700 transition-all text-white border-b-4 border-slate-950 active:border-b-0 active:translate-y-1 shadow-sm">
+                <ChevronLeft className="w-8 h-8" />
+              </button>
+              <div className="text-center">
+                <h2 className="text-4xl font-black text-white tracking-tight flex items-center justify-center drop-shadow-md">
+                  <Award className="w-10 h-10 text-[#FFC800] mr-4" /> Global Top 5
+                </h2>
+                <p className="text-slate-400 font-bold tracking-widest uppercase mt-2">Unit Hall of Fame</p>
+              </div>
+              <div className="w-16"></div> {/* Spacer for centering */}
+            </div>
+
+            <div className="flex-1 bg-slate-800 border-4 border-slate-900 rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto">
+              {loadingLeaderboard ? (
+                <div className="h-full flex flex-col items-center justify-center">
+                  <Loader2 className="w-12 h-12 animate-spin text-[#FFC800] mb-4" />
+                  <span className="text-slate-400 font-bold uppercase tracking-widest animate-pulse">Decrypting Network Records...</span>
+                </div>
+              ) : leaderboard.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center">
+                  <Users className="w-16 h-16 text-slate-600 mb-4" />
+                  <h3 className="text-2xl font-black text-white mb-2">No Records Found</h3>
+                  <p className="text-slate-400 font-medium">Be the first to set a high score for this sector!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {leaderboard.map((entry, index) => (
+                    <div key={index} className={`flex items-center justify-between p-6 rounded-2xl border-b-4 transition-transform hover:scale-[1.02] ${index === 0 ? 'bg-[#FFC800] border-[#D1A300]' : index === 1 ? 'bg-slate-300 border-slate-400' : index === 2 ? 'bg-amber-700 border-amber-900' : 'bg-slate-700 border-slate-900'}`}>
+                      <div className="flex items-center">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl mr-6 ${index === 0 ? 'bg-white/30 text-amber-950' : index === 1 ? 'bg-white/50 text-slate-800' : index === 2 ? 'bg-white/20 text-amber-100' : 'bg-slate-800 text-slate-400'}`}>
+                          #{index + 1}
+                        </div>
+                        <span className={`text-2xl font-black uppercase tracking-wide ${index === 0 ? 'text-amber-950' : index === 1 ? 'text-slate-900' : index === 2 ? 'text-white' : 'text-white'}`}>{entry.name}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className={`block text-xs font-black uppercase tracking-widest mb-1 ${index === 0 ? 'text-amber-900' : index === 1 ? 'text-slate-600' : index === 2 ? 'text-amber-200' : 'text-slate-400'}`}>Score</span>
+                        <span className={`text-3xl font-black ${index === 0 ? 'text-amber-950' : index === 1 ? 'text-slate-900' : index === 2 ? 'text-white' : 'text-white'}`}>{entry.score}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/games/TowerDefense.jsx">
+// src/tasks/games/TowerDefense.jsx
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { games } from '../../data/GED/ENG_1A/games';
+import { ENGLISH_1A_DATA } from '../../data/GED/ENG_1A/data';
+import { TOWERS, ENEMIES, getSellValue } from '../../components/towerdefense/gameData';
+import GameBoard from '../../components/towerdefense/GameBoard';
+import BuildMenu from '../../components/towerdefense/BuildMenu';
+import UpgradePanel from '../../components/towerdefense/UpgradePanel';
+import VocabChallenge from '../../components/towerdefense/VocabChallenge';
+import HUD from '../../components/towerdefense/HUD';
+import ExitConfirmModal from '../../components/towerdefense/ExitConfirmModal';
+import { useGameEngine } from '../../components/towerdefense/useGameEngine';
+
+const DEFAULT_GAME_CONFIG = games.gameConfig;
+
+const DEFAULT_VOCAB = (ENGLISH_1A_DATA.realWords || []).map(w => ({
+  word: w.word,
+  def: w.def
+}));
+
+const CHALLENGE_DURATION = 15;
+
+function buildPathSet(path) {
+  const s = new Set();
+  for (let i = 0; i < path.length - 1; i++) {
+    const [r1, c1] = path[i];
+    const [r2, c2] = path[i + 1];
+    const minR = Math.min(r1, r2), maxR = Math.max(r1, r2);
+    const minC = Math.min(c1, c2), maxC = Math.max(c1, c2);
+    for (let r = minR; r <= maxR; r++) {
+      for (let c = minC; c <= maxC; c++) s.add(`${r}_${c}`);
+    }
+  }
+  return s;
+}
+
+function generateDecorations(layout, pathSet) {
+  const out = [];
+  let id = 1;
+  for (let r = 0; r < layout.rows; r++) {
+    for (let c = 0; c < layout.cols; c++) {
+      if (pathSet.has(`${r}_${c}`)) continue;
+      if (Math.random() < 0.16) {
+        out.push({ id: id++, row: r, col: c, variant: Math.floor(Math.random() * 5) });
+      }
+    }
+  }
+  return out;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+export default function TowerDefense({
+  gameConfig = DEFAULT_GAME_CONFIG,
+  vocab = DEFAULT_VOCAB,
+  startingCredits = 200,
+  unitId = 'default',
+  themeId = 'STANDARD',
+  onQuit = () => window.history.back(),
+  onComplete = () => {}
+}) {
+  const layout = gameConfig.layout;
+  const totalWaves = gameConfig.waves.length; 
+  const pathSet = useRef(buildPathSet(layout.path)).current;
+
+  const activeThemeId = useMemo(() => {
+    const requestedTheme = gameConfig.themeId || themeId;
+    if (requestedTheme === 'RANDOM') {
+      const themes = ['STANDARD', 'NIGHT', 'ICE', 'DESERT'];
+      return themes[Math.floor(Math.random() * themes.length)];
+    }
+    return requestedTheme;
+  }, [gameConfig.themeId, themeId]);
+
+  const basicEnemyType = useMemo(() => {
+    return gameConfig.waves?.[0]?.[0]?.type || Object.keys(ENEMIES)[0];
+  }, [gameConfig]);
+
+  const gRef = useRef(null);
+  if (gRef.current === null) {
+    gRef.current = {
+      credits: startingCredits, lives: 20, maxLives: 20, wave: 0, score: 0, bolts: 0,
+      speed: 1, gameState: 'PLAYING',
+      towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
+      decorations: generateDecorations(layout, pathSet),
+      waveInProgress: false, spawnQueue: [], spawnTimer: 0,
+      fireCooldowns: {}, nextId: 1, challengeTimer: Infinity, wave5ChallengeSpawned: false,
+      usedVocab: [], autoPlayDelay: 0, triggerNextWave: false
+    };
+  }
+  const g = gRef.current;
+
+  const [, setTick] = useState(0);
+  const render = () => setTick(t => (t + 1) % 1e9);
+
+  const [selectedTowerId, setSelectedTowerId] = useState(null);
+  const [hoveredTowerId] = useState(null);
+  const [activeBuilder, setActiveBuilder] = useState(null);
+  const [hoverCell, setHoverCell] = useState({ row: -1, col: -1, valid: false });
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const autoPlayRef = useRef(false);
+  const [bestScore, setBestScore] = useState(0);
+
+  const [challenge, setChallenge] = useState(null);
+  const [challengeInput, setChallengeInput] = useState('');
+  const [challengeTimeLeft, setChallengeTimeLeft] = useState(0);
+  const [challengeShakeKey, setChallengeShakeKey] = useState(0);
+  const challengeActiveRef = useRef(false);
+
+  const boardWrapperRef = useRef(null);
+  const [boardScale, setBoardScale] = useState(1);
+
+  useGameEngine({
+    gRef, render, layout, gameConfig,
+    onTriggerChallenge: buildChallengeTrigger,
+    challengeActiveRef, autoPlayRef
+  });
+
+  useEffect(() => {
+    if (g.triggerNextWave) {
+      handleStartWave();
+      g.triggerNextWave = false;
+    }
+  }, [g.triggerNextWave]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`td_best_${unitId}`);
+    if (saved) setBestScore(Number(saved));
+  }, [unitId]);
+
+  useEffect(() => {
+    const obs = new ResizeObserver(entries => {
+      if (entries[0]) {
+        const { width, height } = entries[0].contentRect;
+        const bw = layout.cols * 48; 
+        const bh = layout.rows * 48;
+        const scale = Math.min((width - 16) / bw, (height - 16) / bh);
+        setBoardScale(Math.max(0.5, Math.min(scale, 2.5)));
+      }
+    });
+    if (boardWrapperRef.current) obs.observe(boardWrapperRef.current);
+    return () => obs.disconnect();
+  }, [layout]);
+
+  function buildChallengeTrigger() {
+    if (!vocab || vocab.length === 0) return;
+    const available = vocab.filter(v => !g.usedVocab.includes(v.word));
+    if (available.length === 0) return; 
+
+    const v = available[Math.floor(Math.random() * available.length)];
+    g.usedVocab.push(v.word); 
+
+    const mode = Math.random() < 0.5 ? 'TYPE' : 'CHOICE';
+    let choices = null;
+    if (mode === 'CHOICE') {
+      const others = vocab.filter(x => x.word.toLowerCase() !== v.word.toLowerCase());
+      const distractors = shuffle(others).slice(0, 3).map(x => x.word);
+      choices = shuffle([v.word, ...distractors]);
+    }
+    
+    challengeActiveRef.current = true;
+    setChallenge({ mode, word: v.word, def: v.def, choices });
+    setChallengeInput('');
+    setChallengeTimeLeft(CHALLENGE_DURATION);
+  }
+
+  function closeChallenge() {
+    challengeActiveRef.current = false;
+    setChallenge(null);
+    setChallengeInput('');
+  }
+
+  function awardChallengeWin() {
+    g.bolts += 1;
+    g.score += 50;
+    g.floaters.push({
+      id: g.nextId++, text: '⚡ +1', row: 1, col: layout.cols / 2, colorClass: 'text-[#FFC800] font-black', life: 1500, maxLife: 1500
+    });
+  }
+
+  function punishChallengeFail() {
+    const count = Math.max(1, Math.floor(g.wave / 2));
+    g.spawnQueue.unshift({ type: basicEnemyType, count, interval: 350 });
+    g.spawnTimer = 9999;
+    g.floaters.push({
+      id: g.nextId++, text: `+${count} 👾`, row: 1, col: layout.cols / 2, colorClass: 'text-[#EA2B2B] font-black', life: 1600, maxLife: 1600
+    });
+  }
+
+  useEffect(() => {
+    if (!challenge) return;
+    if (challengeTimeLeft <= 0) {
+      if (challenge.mode === 'CHOICE') punishChallengeFail();
+      closeChallenge();
+      return;
+    }
+    const t = setTimeout(() => setChallengeTimeLeft(s => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [challenge, challengeTimeLeft]);
+
+  function handleStartWave() {
+    if (g.waveInProgress || g.gameState !== 'PLAYING') return;
+    let data;
+    if (g.wave < gameConfig.waves.length) {
+      data = gameConfig.waves[g.wave];
+    } else if (gameConfig.generateInfiniteWave) {
+      data = gameConfig.generateInfiniteWave(g.wave);
+    } else return; 
+
+    g.spawnQueue = data.map(w => ({ ...w }));
+    g.spawnTimer = 9999;
+    g.wave += 1;
+    g.waveInProgress = true;
+    if (g.wave === 5 && !g.wave5ChallengeSpawned) g.challengeTimer = 8000; 
+    render();
+  }
+
+  function handleCellClick(r, c, isPath) {
+    if (activeBuilder) {
+      if (isPath) return;
+      if (g.towers.some(t => t.row === r && t.col === c)) return;
+      const conf = TOWERS[activeBuilder.typeId];
+      if (g.credits < conf.cost) return;
+      g.credits -= conf.cost;
+      g.towers.push({ id: g.nextId++, typeId: activeBuilder.typeId, row: r, col: c, upgrades: {} });
+      setActiveBuilder(null);
+      setHoverCell({ row: -1, col: -1, valid: false });
+      render();
+    } else setSelectedTowerId(null);
+  }
+
+  function handleCellHover(r, c, isPath) {
+    if (!activeBuilder) { 
+      if (hoverCell.row !== -1) setHoverCell({ row: -1, col: -1, valid: false }); 
+      return; 
+    }
+    if (hoverCell.row === r && hoverCell.col === c) return;
+
+    const valid = !isPath && !g.towers.some(t => t.row === r && t.col === c);
+    setHoverCell({ row: r, col: c, valid });
+  }
+
+  function handleTowerClick(id) {
+    if (activeBuilder) { setActiveBuilder(null); return; }
+    setSelectedTowerId(id);
+  }
+
+  function handleUpgrade(key) {
+    const t = g.towers.find(x => x.id === selectedTowerId);
+    if (!t) return;
+    const conf = TOWERS[t.typeId];
+    const upg = conf.upgrades[key];
+    if (!upg || t.upgrades[key] || g.credits < upg.cost) return;
+    g.credits -= upg.cost;
+    t.upgrades = { ...t.upgrades, [key]: true };
+    render();
+  }
+
+  function handleSell() {
+    const t = g.towers.find(x => x.id === selectedTowerId);
+    if (!t) return;
+    g.credits += getSellValue(t);
+    g.towers = g.towers.filter(x => x.id !== selectedTowerId);
+    delete g.fireCooldowns[t.id];
+    setSelectedTowerId(null);
+    render();
+  }
+
+  function handleUseBolt() {
+    if (g.bolts <= 0) return;
+    g.bolts -= 1;
+    g.creeps.forEach(c => {
+      c.hp -= 500;
+      if (c.hp <= 0) g.credits += ENEMIES[c.typeKey].reward;
+    });
+    g.particles.push({ id: g.nextId++, row: layout.rows / 2, col: layout.cols / 2, radius: Math.max(layout.rows, layout.cols), color: 'rgba(99,102,241,0.6)', life: 450, maxLife: 450 });
+    render();
+  }
+
+  function handleChallengeSubmit(e) {
+    e.preventDefault();
+    if (!challenge || challenge.mode !== 'TYPE') return;
+    const guess = challengeInput.trim().toLowerCase();
+    if (!guess) return;
+    if (guess === challenge.word.toLowerCase()) { awardChallengeWin(); closeChallenge(); }
+    else { setChallengeShakeKey(k => k + 1); setChallengeInput(''); }
+  }
+
+  function handleChallengeChoice(choice) {
+    if (!challenge || challenge.mode !== 'CHOICE') return;
+    if (choice.toLowerCase() === challenge.word.toLowerCase()) awardChallengeWin();
+    else punishChallengeFail();
+    closeChallenge();
+  }
+
+  function handleReset() {
+    Object.assign(g, {
+      credits: startingCredits, lives: 20, maxLives: 20, wave: 0, score: 0, bolts: 0,
+      gameState: 'PLAYING', towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
+      waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false, usedVocab: [], autoPlayDelay: 0
+    });
+    challengeActiveRef.current = false;
+    setSelectedTowerId(null);
+    setActiveBuilder(null);
+    setChallenge(null);
+    setChallengeInput('');
+    render();
+  }
+
+  function confirmExit() {
+    setShowExitConfirm(false);
+    if (g.score > bestScore) {
+      localStorage.setItem(`td_best_${unitId}`, g.score);
+      setBestScore(g.score);
+    }
+    onComplete(g.score);
+    onQuit();
+  }
+
+  useEffect(() => {
+    if (g.score > bestScore) {
+      setBestScore(g.score);
+      localStorage.setItem(`td_best_${unitId}`, g.score);
+    }
+  }, [g.score, bestScore, unitId]);
+
+  const selectedTower = g.towers.find(t => t.id === selectedTowerId) || null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col bg-slate-900 text-white font-sans overflow-hidden">
+      <HUD
+        credits={g.credits}
+        lives={g.lives}
+        wave={g.wave}
+        totalWaves={totalWaves}
+        score={g.score}
+        bestScore={bestScore}
+        speed={g.speed}
+        gameState={g.gameState}
+        waveInProgress={g.waveInProgress}
+        autoPlay={autoPlayRef.current}
+        onStartWave={handleStartWave}
+        onToggleAutoPlay={() => { autoPlayRef.current = !autoPlayRef.current; render(); }}
+        onSetSpeed={(s) => { g.speed = s; render(); }}
+        onQuit={() => setShowExitConfirm(true)}
+      />
+
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 relative bg-slate-900">
+        <main ref={boardWrapperRef} className="flex-1 order-1 flex items-center justify-center overflow-hidden p-0 sm:p-0">
+          <div style={{ transform: `scale(${boardScale})`, transformOrigin: 'center' }}>
+             <GameBoard
+               layout={layout} towers={g.towers} creeps={g.creeps} projectiles={g.projectiles}
+               floaters={g.floaters} particles={g.particles} burnZones={g.burnZones}
+               decorations={g.decorations} lives={g.lives} maxLives={g.maxLives}
+               selectedTowerId={selectedTowerId} hoveredTowerId={hoveredTowerId}
+               activeBuilder={activeBuilder} hoverCell={hoverCell}
+               onCellClick={handleCellClick} onCellHover={handleCellHover}
+               onCellLeave={() => setHoverCell({ row: -1, col: -1, valid: false })}
+               onTowerClick={handleTowerClick} themeId={activeThemeId}
+             />
+          </div>
+        </main>
+
+        <div className="order-2 flex h-auto md:h-full z-20">
+          <UpgradePanel
+            tower={selectedTower} towers={g.towers} credits={g.credits}
+            onUpgrade={handleUpgrade} onSell={handleSell} onClose={() => setSelectedTowerId(null)}
+          />
+        </div>
+
+        <div className="order-3 flex h-auto md:h-full z-20">
+          <BuildMenu
+            allowedTowers={gameConfig.allowedTowers} credits={g.credits}
+            activeBuilder={activeBuilder} bolts={g.bolts} onUseBolt={handleUseBolt}
+            onSelect={(b) => setActiveBuilder(prev => prev?.typeId === b.typeId ? null : b)}
+          />
+        </div>
+      </div>
+
+      <VocabChallenge
+        challenge={challenge} input={challengeInput} onInputChange={setChallengeInput}
+        onSubmit={handleChallengeSubmit} onChoice={handleChallengeChoice}
+        timeLeft={challengeTimeLeft} maxTime={CHALLENGE_DURATION} shakeKey={challengeShakeKey}
+      />
+
+      <ExitConfirmModal open={showExitConfirm} onCancel={() => setShowExitConfirm(false)} onConfirm={confirmExit} />
+
+      {g.gameState !== 'PLAYING' && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[2rem] border-b-8 border-slate-200 p-8 text-center max-w-md w-full shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+            <div className="text-6xl mb-4">{g.gameState === 'WON' ? '🏆' : '💀'}</div>
+            <div className="text-3xl font-black text-slate-800 mb-2 tracking-tight">
+              {g.gameState === 'WON' ? 'Victory' : 'Defeat'}
+            </div>
+            <div className="text-base font-bold text-slate-500 mb-6">
+              {g.gameState === 'WON' ? 'You defended every wave!' : 'Too many enemies got through.'}
+            </div>
+            <div className="bg-slate-100 border-2 border-slate-200 rounded-2xl py-4 mb-6 shadow-inner">
+              <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Final Score</div>
+              <div className="text-4xl font-black text-[#1CB0F6] tabular-nums">{g.score}</div>
+              {g.score >= bestScore && g.score > 0 && <div className="text-sm font-bold text-[#FFC800] mt-1">New Best!</div>}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={handleReset} className="flex-1 px-5 py-4 rounded-2xl bg-[#58A700] border-b-[4px] border-[#46a802] active:border-b-0 active:translate-y-[4px] text-white font-black transition-all uppercase tracking-widest text-sm">
+                Play Again
+              </button>
+              <button onClick={confirmExit} className="flex-1 px-5 py-4 rounded-2xl bg-slate-200 border-b-[4px] border-slate-300 active:border-b-0 active:translate-y-[4px] text-slate-600 font-black transition-all uppercase tracking-widest text-sm">
+                Exit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/utils/supabaseClient.js">
+import { createClient } from '@supabase/supabase-js';
+
+// We updated the key name here to match your .env exactly
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+// If the keys are missing, throw a clear warning so we know!
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("🚨 Missing Supabase Environment Variables! Check your .env file.");
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+</file>
+
+</files>

@@ -1,0 +1,1434 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/tasks/Diagrams.jsx, src/data/Y8/Math_1A/data.js, src/data/Y8/Math_1A/notes.js, src/views/YearDashboard.jsx
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/data/Y8/Math_1A/data.js
+src/data/Y8/Math_1A/notes.js
+src/tasks/Diagrams.jsx
+src/views/YearDashboard.jsx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/data/Y8/Math_1A/data.js">
+// src/data/Y8/Math_1A/data.js
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const MATH_1A_DATA = {
+  meta: {
+    id: "MATH_1A",
+    title: "Parallel Lines & Angles",
+    desc: "Master the properties of angle pairs, transversals, and parallel lines in geometry.",
+    track: "Y8",
+    icon: "Hash"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    {
+      word: "Acute Angle",
+      vn: "Góc nhọn",
+      def: "An angle that is greater than 0° but strictly less than 90°.",
+      vnDef: "Góc lớn hơn 0° nhưng nhỏ hơn 90°.",
+      sent: "An equilateral triangle is made up of three acute angles.",
+      vnSent: "Một tam giác đều được tạo thành từ ba góc nhọn.",
+      dictSent: "An acute angle is always smaller than a perfect right angle.",
+      isReal: true
+    },
+    {
+      word: "Obtuse Angle",
+      vn: "Góc tù",
+      def: "An angle that is greater than 90° but strictly less than 180°.",
+      vnDef: "Góc lớn hơn 90° nhưng nhỏ hơn 180°.",
+      sent: "The reclining chair leaned back to form a wide obtuse angle.",
+      vnSent: "Chiếc ghế ngả dựa ra sau tạo thành một góc tù rộng.",
+      dictSent: "An obtuse angle is wider than a right angle but smaller than a straight line.",
+      isReal: true
+    },
+    {
+      word: "Complementary",
+      vn: "Phụ nhau",
+      def: "Two angles whose sum is exactly 90 degrees.",
+      vnDef: "Hai góc có tổng số đo chính xác bằng 90 độ.",
+      sent: "Because the two angles form a right angle, they are complementary.",
+      vnSent: "Vì hai góc tạo thành một góc vuông nên chúng là hai góc phụ nhau.",
+      dictSent: "Complementary angles combine to form a perfect ninety degree corner.",
+      isReal: true
+    },
+    {
+      word: "Supplementary",
+      vn: "Bù nhau",
+      def: "Two angles whose sum is exactly 180 degrees.",
+      vnDef: "Hai góc có tổng số đo chính xác bằng 180 độ.",
+      sent: "The two adjacent angles on the straight line are supplementary.",
+      vnSent: "Hai góc kề nhau trên đường thẳng là hai góc bù nhau.",
+      dictSent: "Supplementary angles always add up to one hundred and eighty degrees.",
+      isReal: true
+    },
+    {
+      word: "Vertically Opposite",
+      vn: "Đối đỉnh",
+      def: "The angles directly across from each other when two intersecting lines form an X.",
+      vnDef: "Các góc nằm đối diện trực tiếp với nhau khi hai đường thẳng cắt nhau tạo thành hình chữ X.",
+      sent: "The scissors open to reveal vertically opposite angles that are perfectly equal.",
+      vnSent: "Chiếc kéo mở ra để lộ các góc đối đỉnh hoàn toàn bằng nhau.",
+      dictSent: "Vertically opposite angles sit across from each other and are always equal.",
+      isReal: true
+    },
+    {
+      word: "Parallel Lines",
+      vn: "Đường thẳng song song",
+      def: "Two lines on a plane that never meet and are always the same distance apart.",
+      vnDef: "Hai đường thẳng trên một mặt phẳng không bao giờ gặp nhau và luôn cách nhau một khoảng bằng nhau.",
+      sent: "The train tracks run continuously as parallel lines.",
+      vnSent: "Các đường ray xe lửa chạy liên tục như những đường thẳng song song.",
+      dictSent: "Parallel lines stay exactly the same distance apart and never intersect.",
+      isReal: true
+    },
+    {
+      word: "Transversal",
+      vn: "Đường cát tuyến",
+      def: "A line that passes through two or more other lines.",
+      vnDef: "Một đường thẳng đi qua hai hoặc nhiều đường thẳng khác.",
+      sent: "The transversal line cut through the parallel tracks, creating eight new angles.",
+      vnSent: "Đường cát tuyến cắt ngang qua các đường ray song song, tạo ra tám góc mới.",
+      dictSent: "A transversal is a single line that cuts across two parallel lines.",
+      isReal: true
+    },
+    {
+      word: "Alternate Angles",
+      vn: "Góc so le trong",
+      def: "A pair of angles on opposite sides of a transversal and between the parallel lines (Z-shape).",
+      vnDef: "Một cặp góc ở hai phía đối diện của đường cát tuyến và nằm giữa các đường thẳng song song (hình chữ Z).",
+      sent: "By finding the Z-shape, she proved the alternate angles were equal.",
+      vnSent: "Bằng cách tìm ra hình chữ Z, cô ấy đã chứng minh các góc so le trong bằng nhau.",
+      dictSent: "Alternate angles form a Z shape and are always equal to each other.",
+      isReal: true
+    },
+    {
+      word: "Corresponding Angles",
+      vn: "Góc đồng vị",
+      def: "A pair of angles occupying the exact same relative position at each intersection (F-shape).",
+      vnDef: "Một cặp góc chiếm cùng một vị trí tương đối chính xác tại mỗi giao điểm (hình chữ F).",
+      sent: "The architect used corresponding angles to ensure the two roof panels matched perfectly.",
+      vnSent: "Kiến trúc sư đã sử dụng các góc đồng vị để đảm bảo hai tấm mái khớp nhau hoàn hảo.",
+      dictSent: "Corresponding angles sit in the exact same position and form an F shape.",
+      isReal: true
+    },
+    {
+      word: "Co-interior Angles",
+      vn: "Góc trong cùng phía",
+      def: "A pair of angles on the same side of the transversal and between parallel lines (C-shape).",
+      vnDef: "Một cặp góc ở cùng một phía của đường cát tuyến và nằm giữa các đường thẳng song song (hình chữ C).",
+      sent: "Unlike other pairs, co-interior angles are not equal; they add up to 180 degrees.",
+      vnSent: "Không giống như các cặp khác, các góc trong cùng phía không bằng nhau; tổng của chúng là 180 độ.",
+      dictSent: "Co-interior angles sit on the same side and are always supplementary.",
+      isReal: true
+    }
+  ],
+  fakeWords: [
+    { word: "Acutance", imitating: "Acute Angle", isReal: false },
+    { word: "Obtusity", imitating: "Obtuse Angle", isReal: false },
+    { word: "Complemention", imitating: "Complementary", isReal: false },
+    { word: "Supplementity", imitating: "Supplementary", isReal: false },
+    { word: "Verticality", imitating: "Vertically Opposite", isReal: false },
+    { word: "Parallelism", imitating: "Parallel Lines", isReal: false },
+    { word: "Transversity", imitating: "Transversal", isReal: false },
+    { word: "Alternation", imitating: "Alternate Angles", isReal: false },
+    { word: "Correspondance", imitating: "Corresponding Angles", isReal: false },
+    { word: "Co-interity", imitating: "Co-interior Angles", isReal: false }
+  ],
+  dictation: [
+    { sent: "An acute angle is always smaller than a perfect right angle.", vnSent: "Góc nhọn luôn nhỏ hơn một góc vuông hoàn hảo." },
+    { sent: "An obtuse angle is wider than a right angle but smaller than a straight line.", vnSent: "Góc tù rộng hơn góc vuông nhưng nhỏ hơn một đường thẳng." },
+    { sent: "Complementary angles combine to form a perfect ninety degree corner.", vnSent: "Các góc phụ nhau kết hợp lại tạo thành một góc chín mươi độ hoàn hảo." },
+    { sent: "Supplementary angles always add up to one hundred and eighty degrees.", vnSent: "Các góc bù nhau luôn có tổng bằng một trăm tám mươi độ." },
+    { sent: "Vertically opposite angles sit across from each other and are always equal.", vnSent: "Các góc đối đỉnh nằm đối diện nhau và luôn luôn bằng nhau." },
+    { sent: "Parallel lines stay exactly the same distance apart and never intersect.", vnSent: "Các đường thẳng song song luôn giữ khoảng cách bằng nhau và không bao giờ cắt nhau." },
+    { sent: "A transversal is a single line that cuts across two parallel lines.", vnSent: "Đường cát tuyến là một đường thẳng duy nhất cắt ngang qua hai đường thẳng song song." },
+    { sent: "Alternate angles form a Z shape and are always equal to each other.", vnSent: "Các góc so le trong tạo thành hình chữ Z và luôn bằng nhau." },
+    { sent: "Corresponding angles sit in the exact same position and form an F shape.", vnSent: "Các góc đồng vị nằm ở cùng một vị trí và tạo thành hình chữ F." },
+    { sent: "Co-interior angles sit on the same side and are always supplementary.", vnSent: "Các góc trong cùng phía nằm ở cùng một phía và luôn bù nhau." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Architect's Blueprint",
+      text: "When designing a house, an architect must ensure the walls are perfectly straight. They use {parallel lines} to make sure the ceiling and floor never intersect. If a roof needs a sharp point, they will draw an {acute angle}. If they want a wider, flatter roof, they will use an {obtuse angle}. Sometimes, a single wooden beam, acting as a {transversal}, cuts directly across the frame to add structural strength.",
+      vnTitle: "Bản thiết kế của Kiến trúc sư",
+      vnText: "Khi thiết kế một ngôi nhà, kiến trúc sư phải đảm bảo các bức tường hoàn toàn thẳng. Họ sử dụng các đường thẳng song song để chắc chắn rằng trần và sàn không bao giờ giao nhau. Nếu mái nhà cần một điểm nhọn, họ sẽ vẽ một góc nhọn. Nếu họ muốn một mái nhà phẳng và rộng hơn, họ sẽ sử dụng một góc tù. Đôi khi, một thanh xà ngang bằng gỗ, đóng vai trò như một đường cát tuyến, cắt ngang qua khung để tăng thêm độ cứng cáp cho cấu trúc."
+    },
+    {
+      id: "passage_2",
+      title: "The Bridge of Z and F",
+      text: "When two straight beams cross, they create four distinct angles. The angles facing directly across from each other are {vertically opposite} and are always perfectly equal. When a single long beam crosses two parallel tracks, it creates hidden matching patterns. The {alternate angles} sit on opposite sides of the line, forming a Z-shape. The {corresponding angles} sit in the exact same position at each intersection, forming an F-shape.",
+      vnTitle: "Cây cầu của chữ Z và F",
+      vnText: "Khi hai thanh xà thẳng cắt nhau, chúng tạo ra bốn góc riêng biệt. Các góc nằm trực tiếp đối diện nhau là các góc đối đỉnh và luôn luôn bằng nhau hoàn hảo. Khi một thanh xà dài duy nhất cắt qua hai đường ray song song, nó tạo ra các mẫu hình trùng khớp ẩn giấu. Các góc so le trong nằm ở hai phía đối diện của đường thẳng, tạo thành hình chữ Z. Các góc đồng vị nằm ở cùng một vị trí chính xác tại mỗi giao điểm, tạo thành hình chữ F."
+    },
+    {
+      id: "passage_3",
+      title: "The Rules of the Grid",
+      text: "In mathematics, angles often work together as a team to form reliable shapes. If two angles combine to make a perfect 90-degree corner, they are {complementary}. If they stretch out to form a flat 180-degree straight line, they are {supplementary}. When looking inside the parallel lines, the angles locked inside the C-shape are called {co-interior angles}. They do not match each other, but they are always supplementary.",
+      vnTitle: "Các quy tắc của Lưới tọa độ",
+      vnText: "Trong toán học, các góc thường hoạt động cùng nhau như một đội để tạo thành các hình dạng đáng tin cậy. Nếu hai góc kết hợp với nhau tạo thành một góc 90 độ hoàn hảo, chúng là hai góc phụ nhau. Nếu chúng trải dài để tạo thành một đường thẳng 180 độ, chúng là hai góc bù nhau. Khi nhìn vào bên trong các đường thẳng song song, các góc bị khóa bên trong hình chữ C được gọi là góc trong cùng phía. Chúng không bằng nhau, nhưng chúng luôn là hai góc bù nhau."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Angle Rules & Parallel Lines",
+    vnTitle: "Bài 1A: Các quy tắc về Góc & Đường thẳng song song",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their geometric shapes.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với các hình dạng hình học của chúng.",
+    sections: [
+      {
+        heading: "1. Basic Angle Pairs",
+        vnHeading: "1. Các cặp góc cơ bản",
+        text: "Two angles are **Complementary** if they sum to 90°. They are **Supplementary** if they sum to 180°. When two lines cross, they form an X-shape, creating **Vertically Opposite** angles which are always equal.",
+        vnText: "Hai góc là góc **Phụ nhau** (Complementary) nếu tổng của chúng là 90°. Chúng là góc **Bù nhau** (Supplementary) nếu tổng của chúng là 180°. Khi hai đường thẳng cắt nhau, chúng tạo thành hình chữ X, tạo ra các góc **Đối đỉnh** (Vertically Opposite) luôn luôn bằng nhau."
+      },
+      {
+        heading: "2. The Transversal",
+        vnHeading: "2. Đường cát tuyến",
+        text: "A **Transversal** is a line that cuts across two or more **Parallel Lines**. This intersection creates geometric patterns that allow us to easily calculate missing angles.",
+        vnText: "Một **Đường cát tuyến** (Transversal) là một đường thẳng cắt ngang qua hai hoặc nhiều **Đường thẳng song song** (Parallel Lines). Sự giao cắt này tạo ra các mẫu hình học cho phép chúng ta dễ dàng tính toán các góc còn thiếu."
+      },
+      {
+        heading: "3. Parallel Line Rules",
+        vnHeading: "3. Các quy tắc về đường thẳng song song",
+        text: "**Alternate Angles** form a Z-shape and are equal. **Corresponding Angles** form an F-shape and are also equal. **Co-interior Angles** form a C-shape and are supplementary (they add to 180°).",
+        vnText: "Các **Góc so le trong** (Alternate Angles) tạo thành hình chữ Z và bằng nhau. Các **Góc đồng vị** (Corresponding Angles) tạo thành hình chữ F và cũng bằng nhau. Các **Góc trong cùng phía** (Co-interior Angles) tạo thành hình chữ C và là các góc bù nhau (tổng bằng 180°)."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "Describe the numerical difference between complementary and supplementary angles.",
+      requiredWords: [["90", "ninety"], ["180", "one hundred and eighty", "eighty"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that complementary angles add up to 90 degrees.",
+        "1 mark for stating that supplementary angles add up to 180 degrees."
+      ],
+      modelAnswer: "Complementary angles add up to exactly 90 degrees, while supplementary angles add up to exactly 180 degrees."
+    },
+    {
+      id: "q2",
+      question: "How do you visually identify alternate angles on a set of parallel lines, and what is their mathematical relationship?",
+      requiredWords: [["z", "z-shape", "z shape"], ["equal", "same"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying that they form a 'Z' shape.",
+        "1 mark for stating that the alternate angles are always equal to each other."
+      ],
+      modelAnswer: "You can identify alternate angles by looking for a 'Z' shape along the transversal. These angles are mathematically equal to each other."
+    },
+    {
+      id: "q3",
+      question: "Explain the difference in the relationship between corresponding angles (F-shape) and co-interior angles (C-shape).",
+      requiredWords: [["equal", "same"], ["supplementary", "180", "add"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that corresponding angles are equal.",
+        "1 mark for stating that co-interior angles are not equal, but are supplementary (add up to 180)."
+      ],
+      modelAnswer: "Corresponding angles are exactly equal to each other. However, co-interior angles are not equal; they are supplementary and add up to 180 degrees."
+    }
+  ],
+  diagrams: [
+    {
+      id: "d1",
+      imageUrl: "/images/Y8/transversal_z_shape.png",
+      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick purple line highlights the 'Z' shape formed by the inner segments. The top inner angle and bottom opposite inner angle are marked with matching purple arcs. Minimalist, pure white background, sans-serif font.",
+      promptText: "Analyze the provided diagram. Identify the type of angle pair highlighted by the geometric shape, and state their mathematical relationship.",
+      requiredWords: [["alternate"], ["equal", "same"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying the highlighted angles as Alternate Angles.",
+        "1 mark for stating that they are equal."
+      ],
+      modelAnswer: "The diagram highlights alternate angles forming a Z-shape. These angles are equal to each other."
+    },
+    {
+      id: "d2",
+      imageUrl: "/images/Y8/transversal_c_shape.png",
+      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick blue line highlights the 'C' shape formed by the inner segments on the left side of the transversal. The two inside angles are marked with different colored arcs. Text reads 'Adds to 180°'. Minimalist, pure white background.",
+      promptText: "Examine the second diagram showing the C-shape. Name this angle pair and explain why they are fundamentally different from alternate and corresponding angles.",
+      requiredWords: [["co-interior", "allied"], ["supplementary", "180", "add"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying them as Co-interior angles.",
+        "1 mark for explaining they are supplementary (add to 180°) instead of being equal."
+      ],
+      modelAnswer: "These are co-interior angles. They are different because, unlike alternate and corresponding angles which are equal, co-interior angles are supplementary and add up to 180 degrees."
+    }
+  ],
+  essay: {
+    task: "Explain how to find a missing angle using the properties of parallel lines cut by a transversal. Include descriptions of vertically opposite, corresponding, and co-interior angles in your explanation.",
+    guidelines: [
+      "Define vertically opposite angles and their relationship.",
+      "Define corresponding angles using their visual letter shape.",
+      "Explain how co-interior angles differ from the others when making calculations."
+    ],
+    requiredWords: [
+      ["vertically", "opposite", "x"], 
+      ["corresponding", "f", "f-shape", "equal"],
+      ["co-interior", "supplementary", "180"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for explaining that vertically opposite angles form an X and are equal.",
+      "1 mark for explaining that corresponding angles form an F-shape and are equal.",
+      "1 mark for explaining that co-interior angles are supplementary (add to 180°) to find the missing value."
+    ],
+    modelAnswer: "When a transversal cuts parallel lines, you can calculate missing angles using specific rules. Vertically opposite angles sit across from each other in an X-shape and are always equal. You can also slide down the transversal to find corresponding angles, which sit in the same position, form an F-shape, and are equal. Finally, if angles are trapped on the same inside edge forming a C-shape, they are co-interior. To find a missing co-interior angle, you must subtract the known angle from 180 degrees because they are supplementary."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/data/Y8/Math_1A/notes.js">
+// src/data/Y8/Math_1A/notes.js
+
+export const notes = [
+  {
+    type: "intro",
+    title: "Parallel Lines & Angles",
+    titleVn: "Đường thẳng song song & Góc",
+    subtitle: "Objective: Master the properties of angle pairs, transversals, and parallel lines.",
+    subtitleVn: "Mục tiêu: Nắm vững các tính chất của các cặp góc, đường cát tuyến và đường thẳng song song.",
+    color: "bg-[#8b5cf6]", 
+    borderColor: "border-[#7c3aed]",
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_1.mp3"
+  },
+  {
+    type: "concept",
+    title: "Classifying Basic Angles",
+    titleVn: "Phân loại các góc cơ bản",
+    icon: "Target",
+    color: "bg-[#1cb0f6]",
+    content: "Angles are measured in degrees. Before we look at intersecting lines, we must classify individual angles based on their size.\n\n> An **Acute Angle** is an angle that is greater than 0° but strictly less than 90°.\n> An **Obtuse Angle** is an angle that is greater than 90° but strictly less than 180°.",
+    contentVn: "Góc được đo bằng độ. Trước khi xem xét các đường cắt nhau, chúng ta phải phân loại từng góc dựa trên kích thước của chúng.\n\n> **Góc Nhọn** là góc lớn hơn 0° nhưng nhỏ hơn 90°.\n> **Góc Tù** là góc lớn hơn 90° nhưng nhỏ hơn 180°.",
+    example: "An angle measuring 45° is acute, while an angle measuring 120° is obtuse.",
+    exampleVn: "Góc có số đo 45° là góc nhọn, trong khi góc có số đo 120° là góc tù.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 150 L 200 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 100 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 130 150 A 30 30 0 0 0 113.4 123.2" fill="none" stroke="#1cb0f6" stroke-width="5" stroke-linecap="round"/>
+      <text x="145" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0284c7" text-anchor="middle">Acute (< 90°)</text>
+      
+      <path d="M 250 150 L 350 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 250 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 280 150 A 30 30 0 0 0 228.8 128.8" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <text x="290" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Obtuse (> 90°)</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_2.mp3"
+  },
+  {
+    type: "concept",
+    title: "Angle Pairs",
+    titleVn: "Các cặp góc",
+    icon: "Scale",
+    color: "bg-[#ff9600]",
+    content: "When two adjacent angles sit side-by-side, their combined total gives them a special mathematical name.\n\n> **Complementary Angles** are two angles that add up to exactly 90° (forming a right angle).\n> **Supplementary Angles** are two angles that add up to exactly 180° (forming a straight line).",
+    contentVn: "Khi hai góc kề nhau nằm cạnh nhau, tổng của chúng tạo ra một tên gọi toán học đặc biệt.\n\n> **Góc Phụ nhau** là hai góc có tổng số đo chính xác bằng 90° (tạo thành một góc vuông).\n> **Góc Bù nhau** là hai góc có tổng số đo chính xác bằng 180° (tạo thành một đường thẳng).",
+    example: "If Angle A is 60° and Angle B is 120°, they are supplementary because 60 + 120 = 180.",
+    exampleVn: "Nếu Góc A là 60° và Góc B là 120°, chúng là hai góc bù nhau vì 60 + 120 = 180.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 50 L 50 150 L 150 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M 50 150 L 120 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 90 150 A 40 40 0 0 0 76.3 119.9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 76.3 119.9 A 40 40 0 0 0 50 110" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <rect x="50" y="135" width="15" height="15" fill="none" stroke="#cbd5e1" stroke-width="3"/>
+      <text x="100" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 90°</text>
+      
+      <path d="M 170 150 L 380 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 280 150 L 330 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 320 150 A 40 40 0 0 0 301.2 116" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 301.2 116 A 40 40 0 0 0 240 150" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+      <text x="280" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 180°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_3.mp3"
+  },
+  {
+    type: "concept",
+    title: "Vertically Opposite Angles",
+    titleVn: "Góc đối đỉnh",
+    icon: "ShieldCheck",
+    color: "bg-[#ff4b4b]",
+    content: "When two straight lines cross, they create four angles around a central point. The angles directly facing each other share a strong relationship.\n\n> **Vertically Opposite Angles** sit across from each other, forming an **'X' shape**. They are always equal to each other.",
+    contentVn: "Khi hai đường thẳng cắt nhau, chúng tạo ra bốn góc quanh một điểm trung tâm. Các góc đối diện trực tiếp với nhau chia sẻ một mối quan hệ bền chặt.\n\n> **Góc đối đỉnh** nằm đối diện nhau, tạo thành hình chữ **'X'**. Chúng luôn luôn bằng nhau.",
+    example: "If the top angle in an intersection is 105°, the bottom angle directly across from it is also exactly 105°.",
+    exampleVn: "Nếu góc trên cùng tại một giao điểm là 105°, thì góc dưới cùng đối diện trực tiếp với nó cũng chính xác là 105°.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 100 50 L 300 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 300 50 L 100 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      
+      <path d="M 224 107 A 30 30 0 0 0 176 107" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 176 143 A 30 30 0 0 0 224 143" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 176 107 A 30 30 0 0 0 176 143" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 224 143 A 30 30 0 0 0 224 107" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="200" y="90" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
+      <text x="200" y="175" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_4.mp3"
+  },
+  {
+    type: "concept",
+    title: "Parallel Lines & Transversals",
+    titleVn: "Đường thẳng song song & Đường cát tuyến",
+    icon: "BookOpen",
+    color: "bg-[#14b8a6]",
+    content: "In geometry, lines that never touch are marked with small matching arrows (>).\n\n> **Parallel Lines** are two or more lines that stay exactly the same distance apart and never intersect.\n> A **Transversal** is a single line that cuts across two or more parallel lines.",
+    contentVn: "Trong hình học, các đường thẳng không bao giờ chạm nhau được đánh dấu bằng các mũi tên nhỏ giống nhau (>).\n\n> **Đường thẳng song song** là hai hoặc nhiều đường thẳng luôn giữ nguyên một khoảng cách và không bao giờ cắt nhau.\n> **Đường cát tuyến** là một đường thẳng duy nhất cắt ngang qua hai hoặc nhiều đường thẳng song song.",
+    example: "Think of a set of train tracks as the parallel lines, and a straight road crossing over both tracks as the transversal.",
+    exampleVn: "Hãy tưởng tượng một bộ đường ray xe lửa là các đường thẳng song song, và một con đường thẳng chạy vắt ngang qua cả hai đường ray là đường cát tuyến.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <path d="M 180 70 L 195 80 L 180 90" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 180 160 L 195 170 L 180 180" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <path d="M 130 20 L 270 230" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+      
+      <text x="350" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#2563eb" text-anchor="end">Parallel Lines</text>
+      <text x="280" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="start">Transversal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_5.mp3"
+  },
+  {
+    type: "concept",
+    title: "Alternate Angles",
+    titleVn: "Góc so le trong",
+    icon: "MessageSquare",
+    color: "bg-[#ce82ff]",
+    content: "When a transversal cuts parallel lines, it creates a predictable set of angle patterns hidden inside the intersections.\n\n> **Alternate Angles** sit on opposite sides of the transversal, forming a **'Z' shape**. They are always equal.",
+    contentVn: "Khi một đường cát tuyến cắt các đường thẳng song song, nó tạo ra một tập hợp các mẫu góc có thể đoán trước ẩn bên trong các giao điểm.\n\n> **Góc so le trong** nằm ở hai phía đối diện của đường cát tuyến, tạo thành hình chữ **'Z'**. Chúng luôn luôn bằng nhau.",
+    example: "If you trace a 'Z' along the lines and find the inner top angle is 50°, the opposite inner angle at the bottom of the 'Z' is also 50°.",
+    exampleVn: "Nếu bạn vẽ một chữ 'Z' dọc theo các đường thẳng và thấy góc trong phía trên là 50°, thì góc trong đối diện ở dưới cùng của chữ 'Z' cũng là 50°.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="215" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="start">Equal</text>
+      <text x="185" y="145" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="end">Equal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_6.mp3"
+  },
+  {
+    type: "concept",
+    title: "Corresponding Angles",
+    titleVn: "Góc đồng vị",
+    icon: "Target",
+    color: "bg-[#58cc02]",
+    content: "Imagine sliding the top intersection down the transversal until it perfectly overlaps the bottom intersection.\n\n> **Corresponding Angles** sit in the exact same position at each intersection, forming an **'F' shape**. They are always equal.",
+    contentVn: "Hãy tưởng tượng việc trượt giao điểm trên cùng xuống dọc theo đường cát tuyến cho đến khi nó trùng khít hoàn hảo với giao điểm dưới cùng.\n\n> **Góc đồng vị** nằm ở vị trí chính xác giống nhau tại mỗi giao điểm, tạo thành hình chữ **'F'**. Chúng luôn luôn bằng nhau.",
+    example: "The top-right angle of the upper intersection is corresponding and exactly equal to the top-right angle of the lower intersection.",
+    exampleVn: "Góc trên cùng bên phải của giao điểm trên là đồng vị và hoàn toàn bằng với góc trên cùng bên phải của giao điểm dưới.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 140 35 L 230 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 170 80 L 270 80" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 230 170 L 330 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 0 156.1 59.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="210" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
+      <text x="270" y="155" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_7.mp3"
+  },
+  {
+    type: "concept",
+    title: "Co-interior Angles",
+    titleVn: "Góc trong cùng phía",
+    icon: "BookOpen",
+    color: "bg-[#3b82f6]",
+    content: "Unlike the Z and F shapes, these angles are NOT equal to each other. Instead, they work together as a team.\n\n> **Co-interior Angles** (or Allied Angles) sit on the same side of the transversal, forming a **'C' shape**. They are supplementary (they add up to 180°).",
+    contentVn: "Không giống như hình chữ Z và F, các góc này KHÔNG bằng nhau. Thay vào đó, chúng phối hợp với nhau như một đội.\n\n> **Góc trong cùng phía** (hoặc Góc liên minh) nằm ở cùng một phía của đường cát tuyến, tạo thành hình chữ **'C'**. Chúng bù nhau (tổng của chúng là 180°).",
+    example: "If the top inside angle is 110°, the bottom inside angle right below it must be 70° (because 110 + 70 = 180).",
+    exampleVn: "Nếu góc bên trong phía trên là 110°, góc bên trong phía dưới ngay bên dưới nó phải là 70° (vì 110 + 70 = 180).",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      
+      <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#3b82f6" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+      
+      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
+      
+      <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Add to 180°</text>
+    </svg>`,
+    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_8.mp3"
+  },
+  {
+    type: "summary",
+    title: "Lesson Complete!",
+    titleVn: "Hoàn thành Bài học!",
+    subtitle: "Objective Achieved: You can now identify and calculate geometric angle patterns.",
+    subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể nhận diện và tính toán các mẫu hình góc trong hình học.",
+    color: "bg-[#14b8a6]",
+    borderColor: "border-[#0d9488]"
+  }
+];
+</file>
+
+<file path="src/tasks/Diagrams.jsx">
+import React, { useState, useEffect } from 'react';
+import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FlaskConical, FileEdit, ArrowRight } from 'lucide-react';
+import TopBar from '../components/TopBar';
+
+import { gradeDiagram } from '../utils/aiGrader';
+
+const calculateSimilarity = (str1, str2) => {
+  const clean = (s) => s.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
+  const a = clean(str1);
+  const b = clean(str2);
+  if (a.length === 0) return 0;
+  if (a === b) return 1;
+
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+      }
+    }
+  }
+  const distance = matrix[b.length][a.length];
+  return Math.max(0, 1 - distance / Math.max(a.length, b.length));
+};
+
+const checkRequiredWordGroup = (wordGroup, text) => {
+  if (!text) return false;
+  const group = Array.isArray(wordGroup) ? wordGroup : [wordGroup];
+
+  for (let reqWord of group) {
+    if (text.toLowerCase().includes(reqWord.toLowerCase())) return true;
+    if (!reqWord.includes(' ')) {
+      const words = text.split(/[\s,.-]+/);
+      for (let w of words) {
+        if (calculateSimilarity(reqWord, w) >= 0.85) return true;
+      }
+    }
+  }
+  return false;
+};
+
+export default function Diagrams({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike }) {
+  const questions = pool?.diagrams || [];
+  const [localAnswers, setLocalAnswers] = useState(savedData);
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [gameState, setGameState] = useState('Q'); // Q, LOADING, A, SAVED_PERFECT, SAVED_API_ERROR
+  const [userAnswer, setUserAnswer] = useState('');
+  const [feedback, setFeedback] = useState(null);
+  
+  const [cumulativePoints, setCumulativePoints] = useState(0);
+  const [maxPossiblePoints, setMaxPossiblePoints] = useState(0);
+
+  const currentQ = questions[currentIndex];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const saved = localAnswers[currentIndex];
+    
+    if (saved) {
+      const text = typeof saved === 'string' ? saved : saved.text;
+      const status = typeof saved === 'string' ? 'perfect' : saved.status;
+
+      setUserAnswer(text);
+      setFeedback(null);
+
+      if (status === 'perfect') {
+        setGameState('SAVED_PERFECT');
+      } else if (status === 'api_error') {
+        setGameState('SAVED_API_ERROR');
+      } else if (status === 'strike_fallback') {
+        setGameState('Q'); 
+      } else {
+        setGameState('Q');
+      }
+    } else {
+      setUserAnswer('');
+      setFeedback(null);
+      setGameState('Q');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex]);
+
+  if (!currentQ) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <ImageIcon className="w-16 h-16 text-rose-300 mb-4" />
+        <h2 className="text-3xl font-black text-slate-800 mb-2">Coming Soon</h2>
+        <p className="text-lg text-slate-500 mb-8 max-w-md">Teacher is currently uploading the Diagrams for this unit.</p>
+        <button onClick={onQuit} className="px-8 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all">
+          Return
+        </button>
+      </div>
+    );
+  }
+
+  const handleLocalFallbackGrade = () => {
+    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    
+    const trimmed = userAnswer.trim();
+    const hasCapital = /^[A-Z]/.test(trimmed);
+    const hasPeriod = /[.!?]$/.test(trimmed);
+    const englishScore = (hasCapital && hasPeriod) ? 1 : 0; 
+
+    const pointsEarned = usedWordGroups.length + englishScore;
+    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3;
+
+    setFeedback({
+      originalAnswer: userAnswer.trim(),
+      usedWordGroups,
+      scienceMarks: currentQ.markScheme.map(() => false),
+      scienceScore: 0,
+      englishScore,
+      pointsEarned,
+      maxPoints,
+      isPerfect: false,
+      englishFeedback: englishScore ? "1 point awarded for capital letter and punctuation." : "Missed extra point. Start with a capital and end with a period.",
+      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No Cambridge marks can be awarded.",
+      fixedAnswer: "AI Grader disabled.",
+      isStrikeFallback: true
+    });
+
+    setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'strike_fallback' } }));
+    setGameState('A');
+  };
+
+  const handleGrade = async () => {
+    if (!userAnswer.trim()) return;
+
+    if (strikes >= 3) {
+      handleLocalFallbackGrade();
+      return;
+    }
+
+    setGameState('LOADING');
+
+    const primaryRequiredWords = currentQ.requiredWords.map(w => Array.isArray(w) ? w[0] : w);
+    const payload = {
+      // FIX: Now accepts both 'prompt' and 'promptText' from your data file
+      promptText: currentQ.prompt || currentQ.promptText,
+      studentAnswer: userAnswer.trim(),
+      requiredWords: primaryRequiredWords,
+      expectedAnswer: currentQ.modelAnswer,
+      scienceMaxMarks: currentQ.scienceMaxMarks,
+      markScheme: currentQ.markScheme
+    };
+
+    let aiData;
+
+    try {
+      aiData = await gradeDiagram(payload);
+    } catch (e1) {
+      console.warn("AI Grade Failed, retrying in 3 seconds...");
+      await new Promise(r => setTimeout(r, 3000));
+      try {
+        aiData = await gradeDiagram(payload);
+      } catch (e2) {
+        console.error("AI Grade Failed twice. Entering Error State.");
+        setGameState('SAVED_API_ERROR');
+        setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'api_error' } }));
+        return;
+      }
+    }
+
+    if (aiData.isHarmful || aiData.isGarbage) {
+      const newStrikes = strikes + 1;
+      if (onAddStrike) onAddStrike(newStrikes);
+      
+      if (newStrikes >= 3) {
+        alert("Strike 3! You have submitted too many inappropriate or nonsense answers. The AI Grader is permanently disabled for this unit.");
+        handleLocalFallbackGrade();
+      } else {
+        alert(`Warning! Nonsense or inappropriate answer detected. Strike ${newStrikes}/3.`);
+        setGameState('Q'); 
+      }
+      return;
+    }
+
+    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    const scienceScore = aiData.scienceScore || 0;
+    const englishScore = aiData.englishScore || 0;
+    const scienceMarks = currentQ.markScheme.map((_, i) => i < scienceScore);
+
+    const pointsEarned = usedWordGroups.length + scienceScore + englishScore;
+    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3; 
+    const isPerfect = pointsEarned >= maxPoints;
+
+    setFeedback({
+      originalAnswer: userAnswer.trim(),
+      usedWordGroups,
+      scienceMarks,
+      scienceScore,
+      englishScore,
+      pointsEarned: Math.min(pointsEarned, maxPoints),
+      maxPoints,
+      isPerfect,
+      englishFeedback: aiData.englishFeedback || "No feedback provided.",
+      scienceFeedback: aiData.scienceFeedback || "No feedback provided.",
+      fixedAnswer: aiData.fixedAnswer || aiData.reworkedAnswer || userAnswer.trim(),
+      isStrikeFallback: false
+    });
+
+    if (isPerfect) {
+      setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'perfect' } }));
+    }
+    
+    setGameState('A');
+  };
+
+  const handleNext = () => {
+    let newCumPoints = cumulativePoints;
+    let newMaxPoints = maxPossiblePoints;
+
+    if (gameState === 'SAVED_PERFECT') {
+      const maxP = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3;
+      newCumPoints += maxP;
+      newMaxPoints += maxP;
+    } else if (feedback) {
+      newCumPoints += feedback.pointsEarned;
+      newMaxPoints += feedback.maxPoints;
+    } else if (gameState === 'SAVED_API_ERROR') {
+      newMaxPoints += currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3;
+    }
+
+    setCumulativePoints(newCumPoints);
+    setMaxPossiblePoints(newMaxPoints);
+
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      const finalXP = newMaxPoints === 0 ? 0 : Math.ceil((newCumPoints / newMaxPoints) * 20);
+      onComplete(finalXP, localAnswers); 
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); 
+      if (gameState === 'Q' || gameState === 'SAVED_API_ERROR') {
+        if (userAnswer.trim()) handleGrade();
+      } else if (gameState === 'A' || gameState === 'SAVED_PERFECT') {
+        handleNext();
+      }
+    }
+  };
+
+  let containerClass = "w-full rounded-[1.5rem] shadow-sm border p-6 sm:p-8 mb-6 relative transition-all duration-300 ";
+  let textAreaClass = "w-full h-40 text-lg font-medium bg-transparent focus:outline-none resize-none disabled:bg-transparent ";
+  
+  if (gameState === 'SAVED_API_ERROR') {
+    containerClass += "bg-orange-50 border-orange-300";
+    textAreaClass += "text-orange-900";
+  } else if (strikes >= 3 || (gameState === 'A' && feedback?.isStrikeFallback)) {
+    containerClass += "bg-rose-50 border-rose-400";
+    textAreaClass += "text-rose-900";
+  } else if ((gameState === 'A' && feedback?.isPerfect) || gameState === 'SAVED_PERFECT') {
+    containerClass += "bg-[#ecfccb] border-[#84cc16]";
+    textAreaClass += "text-[#3f6212]";
+  } else {
+    containerClass += "bg-white border-slate-200";
+    textAreaClass += "text-slate-800";
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans pb-32">
+      <TopBar 
+        current={currentIndex} 
+        total={questions.length} 
+        onQuit={() => onComplete(0, localAnswers)} 
+        modeTitle="Diagram Analysis" 
+      />
+
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 mt-2 sm:mt-6">
+        
+        {/* RESPONSIVE LAYOUT: Image on Left/Top, Input on Right/Bottom */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* LEFT: Image Viewer */}
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <div className="bg-white p-4 rounded-[2rem] border border-slate-200 shadow-sm sticky top-24">
+               {currentQ.imageUrl ? (
+                 <img 
+                   // FIX: Appends the base URL so Vite/React always finds the image correctly in the public folder
+                   src={`${import.meta.env.BASE_URL || ''}${currentQ.imageUrl.startsWith('/') ? currentQ.imageUrl.slice(1) : currentQ.imageUrl}`} 
+                   alt="Science Diagram" 
+                   className="w-full h-auto max-h-[500px] object-contain rounded-xl"
+                 />
+               ) : (
+                 <div className="w-full h-64 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
+                   <ImageIcon className="w-12 h-12" />
+                 </div>
+               )}
+            </div>
+          </div>
+
+          {/* RIGHT: Interaction & Feedback */}
+          <div className="w-full lg:w-1/2 flex flex-col">
+            
+            <div className="w-full mb-6 animate-in fade-in duration-300">
+              <h2 className="text-rose-500 font-black text-xl mb-2 uppercase tracking-widest">
+                Analysis {currentIndex + 1}
+              </h2>
+              <p className="text-2xl font-bold text-slate-800 leading-snug">
+                {/* FIX: Now correctly renders 'prompt' from your data index */}
+                {currentQ.prompt || currentQ.promptText}
+              </p>
+            </div>
+
+            <div className={containerClass}>
+              <textarea 
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onPaste={(e) => e.preventDefault()}
+                onCopy={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                disabled={gameState !== 'Q'}
+                placeholder={strikes >= 3 ? "AI Grader disabled. Local fallback grading only." : "Analyze the diagram here..."}
+                className={textAreaClass}
+              />
+            </div>
+
+            {gameState !== 'LOADING' && (
+              <div className="w-full mb-8">
+                <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">
+                  Required Vocabulary
+                </span>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  {currentQ.requiredWords.map((wordGroup, i) => {
+                    const isUsed = feedback 
+                      ? feedback.usedWordGroups.includes(wordGroup) 
+                      : checkRequiredWordGroup(wordGroup, userAnswer);
+                    const displayWord = Array.isArray(wordGroup) ? wordGroup[0] : wordGroup;
+                    
+                    return (
+                      <span 
+                        key={i} 
+                        className={`px-4 py-1.5 rounded-full text-sm font-bold border-2 transition-colors duration-300 ${
+                          isUsed 
+                            ? 'bg-[#d7ffb8] text-[#3e7500] border-[#58a700]' 
+                            : 'bg-white text-[#58a700] border-[#58a700]'
+                        }`}
+                      >
+                        {displayWord}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {gameState === 'SAVED_PERFECT' && (
+              <div className="w-full flex justify-end mb-8 border-t border-slate-200 pt-6 animate-in fade-in">
+                 <button 
+                   onClick={handleNext} 
+                   className="flex items-center px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+                 >
+                   {currentIndex < questions.length - 1 ? 'Continue' : 'Complete Section'} 
+                   <ArrowRight className="w-6 h-6 ml-3" />
+                 </button>
+              </div>
+            )}
+
+            {gameState === 'SAVED_API_ERROR' && (
+              <div className="w-full animate-in fade-in">
+                <div className="bg-orange-50 border border-orange-200 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
+                   <div className="flex items-center mb-4">
+                     <XCircle className="w-8 h-8 text-orange-500 mr-3" />
+                     <h3 className="text-xl font-black text-orange-800">Connection Failed</h3>
+                   </div>
+                   <p className="text-sm font-bold text-orange-700 mt-2">
+                     The AI grader is currently offline. Your answer has been saved. Please continue and resubmit on a future attempt.
+                   </p>
+                </div>
+                <div className="flex justify-end pt-4 border-t border-slate-200 mb-8">
+                   <button onClick={handleNext} className="flex items-center px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-orange-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm">
+                     {currentIndex < questions.length - 1 ? 'Skip Question' : 'Complete Section'} <ArrowRight className="w-6 h-6 ml-3" />
+                   </button>
+                </div>
+              </div>
+            )}
+
+            {(gameState === 'Q' || gameState === 'SAVED_API_ERROR') && (
+              <div className="w-full flex justify-end mb-8 border-t border-slate-200 pt-6">
+                <button 
+                  onClick={handleGrade} 
+                  disabled={!userAnswer.trim()} 
+                  className="px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] disabled:opacity-50 transition-all shadow-sm"
+                >
+                  Submit to {strikes >= 3 ? "Local Grader" : "AI Tutor"}
+                </button>
+              </div>
+            )}
+
+            {gameState === 'LOADING' && (
+              <div className="w-full h-40 flex flex-col items-center justify-center bg-white rounded-[2rem] border border-slate-200 shadow-sm animate-pulse mb-8">
+                 <div className="bg-rose-100 p-3 rounded-full mb-3">
+                   <Bot className="w-8 h-8 text-rose-500 animate-bounce" />
+                 </div>
+                 <h3 className="text-lg font-black text-slate-700">AI Tutor is analyzing your answer...</h3>
+              </div>
+            )}
+
+            {gameState === 'A' && feedback && (
+              <div className="w-full animate-in slide-in-from-bottom-8 duration-500">
+
+                {!feedback.isPerfect && (
+                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">
+                      Your Attempt
+                    </span>
+                    <p className="text-lg text-slate-700 font-medium italic">
+                      "{feedback.originalAnswer}"
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex items-center mb-6 border-b border-slate-200 pb-6">
+                  <div className={`p-3 rounded-full mr-4 flex-shrink-0 ${feedback.isStrikeFallback ? 'bg-rose-500' : 'bg-rose-500'}`}>
+                    <Bot className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800">
+                      {feedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
+                    </h3>
+                    <p className="text-sm font-bold text-slate-500 tracking-widest uppercase mt-1">
+                      Accuracy Score: 
+                      <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600' : 'text-rose-500'}`}>
+                        {feedback.pointsEarned} / {feedback.maxPoints} Pts
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="w-full bg-white p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 shadow-sm mb-6">
+                  <div className="flex items-center justify-between mb-4 text-slate-800">
+                    <div className="flex items-center">
+                      <Award className="w-6 h-6 mr-2 text-amber-500" />
+                      <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
+                    </div>
+                    <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-sm">
+                      {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
+                    </span>
+                  </div>
+                  
+                  <ul className="space-y-3">
+                    {currentQ.markScheme.map((mark, i) => (
+                      <li key={i} className="flex items-start">
+                        {feedback.scienceMarks[i] ? (
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-slate-300 mr-3 mt-0.5 flex-shrink-0" />
+                        )}
+                        <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800' : 'text-slate-400 line-through'}`}>
+                          {mark}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 mb-6">
+                   <div className="bg-[#fff9e6] border border-[#fde68a] p-6 rounded-[1.5rem]">
+                     <div className="flex items-center justify-between mb-3">
+                       <div className="flex items-center text-[#d97706]">
+                         <Type className="w-5 h-5 mr-2" />
+                         <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
+                       </div>
+                       <span className="bg-[#fef3c7] text-[#b45309] font-bold px-2 py-0.5 rounded-md text-xs">
+                         {feedback.englishScore} / 3 Pts
+                       </span>
+                     </div>
+                     <p className="text-slate-700 font-medium leading-relaxed">
+                       {feedback.englishFeedback}
+                     </p>
+                   </div>
+                   
+                   <div className="bg-[#eff6ff] border border-[#bfdbfe] p-6 rounded-[1.5rem]">
+                     <div className="flex items-center text-[#2563eb] mb-3">
+                       <FlaskConical className="w-5 h-5 mr-2" />
+                       <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
+                     </div>
+                     <p className="text-slate-700 font-medium leading-relaxed">
+                       {feedback.scienceFeedback}
+                     </p>
+                   </div>
+                </div>
+
+                <div className="bg-[#ecfccb] border border-[#bbf7d0] p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
+                  <div className="absolute top-4 right-4 bg-[#84cc16] p-2 rounded-full text-white">
+                    <FileEdit className="w-5 h-5" />
+                  </div>
+                  
+                  <h4 className="font-black text-[#3f6212] text-sm uppercase tracking-widest mb-4">
+                    Suggested Notebook Answer
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                        {feedback.isPerfect ? "Your Perfect Analysis:" : "Fixed Version of Your Analysis:"}
+                      </span>
+                      <p className="text-lg font-bold text-[#166534]">
+                        "{feedback.fixedAnswer}"
+                      </p>
+                    </div>
+                    <div className="pt-4 border-t border-[#d9f99d]">
+                      <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                        Official Model Answer:
+                      </span>
+                      <p className="text-lg font-bold text-[#166534]">
+                        "{currentQ.modelAnswer}"
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm font-bold text-[#3f6212] mt-6 bg-[#d9f99d] inline-block px-4 py-2 rounded-lg">
+                    📝 Write one of these down in your notebook for full credit.
+                  </p>
+                </div>
+
+                <div className="flex justify-end pt-4 border-t border-slate-200 mb-8">
+                   <button 
+                     onClick={handleNext} 
+                     className="flex items-center px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+                   >
+                     {currentIndex < questions.length - 1 ? 'Next Diagram' : 'Complete Section'} 
+                     <ArrowRight className="w-6 h-6 ml-3" />
+                   </button>
+                </div>
+
+              </div>
+            )}
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/views/YearDashboard.jsx">
+import React, { useState, lazy, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction } from 'lucide-react';
+
+import { useStudentProgress } from '../hooks/useStudentProgress';
+import UnitCard from '../components/UnitCard';
+
+import { Y8_META, Y8_DATA, Y9_META, Y9_DATA, ESL_META, ESL_DATA, GED_META, GED_DATA } from '../data/index';
+
+const Recognition = lazy(() => import('../tasks/Recognition'));
+const Spell = lazy(() => import('../tasks/Spell'));
+const Dictation = lazy(() => import('../tasks/Dictation'));
+const Reading = lazy(() => import('../tasks/Reading'));
+const ShortAnswers = lazy(() => import('../tasks/ShortAnswers'));
+const Diagrams = lazy(() => import('../tasks/Diagrams'));
+const Essay = lazy(() => import('../tasks/Essay'));
+const Assessment = lazy(() => import('../tasks/Assessment'));
+const Notes = lazy(() => import('../tasks/Notes'));
+const Games = lazy(() => import('../tasks/Games')); // <-- Add this line
+
+const THEMES = {
+  Y8: { bg: 'bg-indigo-50', banner: 'from-indigo-500 via-indigo-600 to-blue-700', iconBg: 'bg-indigo-100', iconText: 'text-indigo-700', accent: 'border-indigo-400' },
+  Y9: { bg: 'bg-emerald-50', banner: 'from-emerald-500 via-emerald-600 to-teal-700', iconBg: 'bg-emerald-100', iconText: 'text-emerald-700', accent: 'border-emerald-400' },
+  ESL: { bg: 'bg-amber-50', banner: 'from-amber-500 via-amber-600 to-orange-700', iconBg: 'bg-amber-100', iconText: 'text-amber-700', accent: 'border-amber-400' },
+  GED: { bg: 'bg-rose-50', banner: 'from-rose-500 via-rose-600 to-red-700', iconBg: 'bg-rose-100', iconText: 'text-rose-700', accent: 'border-rose-400' }
+};
+
+// Generic Fallback view for missing components
+function PlaceholderView({ title, onQuit }) {
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+      <div className="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+        <Construction className="w-12 h-12 text-amber-500" />
+      </div>
+      <h2 className="text-4xl font-black text-slate-800 mb-4 tracking-tight">{title}</h2>
+      <div className="bg-white px-8 py-4 rounded-2xl shadow-sm border border-slate-200 mb-10 text-lg font-bold text-slate-500">
+        Under Construction / Coming Soon
+      </div>
+      <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+        Return to Dashboard
+      </button>
+    </div>
+  );
+}
+
+export default function YearDashboard({ track }) {
+  const navigate = useNavigate();
+  
+  const { user, unitScores = {}, isLoadingDB, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
+
+  const [appState, setAppState] = useState('MENU');
+  const [activeUnit, setActiveUnit] = useState(null);
+  const [currentPool, setCurrentPool] = useState([]);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+
+  if (isLoadingDB) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mb-4" />
+        <p className="text-slate-500 font-bold tracking-widest uppercase animate-pulse">Syncing with Cloud...</p>
+      </div>
+    );
+  }
+
+  let META_DATA = [];
+  let UNIT_DATA = {};
+  let trackTitle = "";
+  const currentTheme = THEMES[track] || THEMES.Y8;
+
+  if (track === 'Y8') { META_DATA = Y8_META || []; UNIT_DATA = Y8_DATA || {}; trackTitle = "Year 8 Science"; }
+  else if (track === 'Y9') { META_DATA = Y9_META || []; UNIT_DATA = Y9_DATA || {}; trackTitle = "Year 9 Science"; }
+  else if (track === 'ESL') { META_DATA = ESL_META || []; UNIT_DATA = ESL_DATA || {}; trackTitle = "ESL Foundation"; }
+  else if (track === 'GED') { META_DATA = GED_META || []; UNIT_DATA = GED_DATA || {}; trackTitle = "English"; }
+
+  let totalTrackXP = 0;
+  let maxTrackXP = META_DATA.length * 100; // Visual standard scale (but true maximum is actually 125 per unit)
+  
+  META_DATA.forEach(unit => {
+    const s = unitScores?.[unit.id] || {};
+    const unitTotal = Object.entries(s)
+      .filter(([key]) => key !== 'strikes')
+      .reduce((sum, [key, val]) => {
+        let max = 10;
+        if (['p1', 'p10', 'p11'].includes(key)) max = 5;
+        if (['p6', 'p7', 'p8'].includes(key)) max = 20;
+        return sum + Math.min(val?.current || 0, max);
+      }, 0);
+    totalTrackXP += unitTotal;
+  });
+
+  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+
+  const startMode = (unitId, mode) => {
+    setActiveUnit(unitId);
+    const data = UNIT_DATA[unitId];
+    if (!data) return;
+
+    // Standardize the arrays
+    const realW = (data.realWords || []).map(w => ({ ...w, isReal: true }));
+
+    if (mode === 'WORD_REC' || mode === 'SPELLING') {
+      setCurrentPool([...realW].sort(() => Math.random() - 0.5));
+    } else if (mode === 'DICTATION') {
+      const dictationData = data.dictation || [];
+      const dictationPool = realW.map((w, i) => ({
+        ...w,
+        dictSent: dictationData[i]?.sent || w.sent,
+        dictVn: dictationData[i]?.vnSent || w.vnSent
+      })).sort(() => Math.random() - 0.5);
+      setCurrentPool(dictationPool);
+    } else if (mode === 'GAMES') {
+      // <-- Add this block to pass both vocab and the level config
+      const gamePool = [...realW].sort(() => Math.random() - 0.5);
+      gamePool.gameConfig = data.games?.gameConfig || null;
+      setCurrentPool(gamePool);
+    } else if (mode === 'READ_COMP') {
+      setCurrentPool(data.passages || []);
+    } else if (mode === 'SHORT_ANSWERS') {
+      setCurrentPool({ shortQA: data.shortQA || [] });
+    } else if (mode === 'DIAGRAMS') {
+      setCurrentPool({ diagrams: data.diagrams || [] });
+    } else if (mode === 'ESSAY') {
+      setCurrentPool({ essay: data.essay || null });
+    } else if (mode === 'ASSESSMENT') {
+      setCurrentPool([]); // Assessment pulls full unit data directly in render
+    } else if (mode === 'NOTES') {
+      setCurrentPool(data.notes || []);
+    }
+    
+    setAppState(mode);
+  };
+
+  const handleTaskComplete = async (section, rawScore, answers = null) => {
+    let finalScore = rawScore;
+
+    // Enforce Capped Boundaries at the DB write stage
+    if (['p1', 'p10', 'p11'].includes(section)) {
+      if (section === 'p10' || section === 'p11') finalScore = 5; 
+      else finalScore = Math.min(5, Math.ceil((rawScore / 10) * 5)); 
+    } else if (['p6', 'p7', 'p8'].includes(section)) {
+      finalScore = rawScore <= 10 ? Math.ceil((rawScore / 10) * 20) : rawScore; 
+      finalScore = Math.min(20, finalScore);
+    } else {
+      finalScore = Math.min(10, finalScore);
+    }
+
+    await saveScore(activeUnit, section, finalScore, answers);
+    setAppState('MENU');
+  };
+
+  return (
+    <div className={`min-h-screen ${currentTheme.bg} selection:bg-indigo-200 selection:text-indigo-900 transition-colors duration-500`}>
+      {appState === 'MENU' && (
+        <div className="animate-in fade-in duration-500 pb-20">
+          
+          <div className={`relative w-full bg-gradient-to-r ${currentTheme.banner} shadow-xl overflow-hidden`}>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute -top-32 -right-32 w-[35rem] h-[35rem] bg-white opacity-20 rounded-full blur-[90px] mix-blend-overlay"></div>
+              <div className="absolute -bottom-24 -left-24 w-[25rem] h-[25rem] bg-black opacity-20 rounded-full blur-[70px] mix-blend-multiply"></div>
+              <div className="absolute top-10 left-1/3 w-64 h-64 bg-white opacity-10 rounded-full blur-[60px] animate-pulse"></div>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.2] mix-blend-overlay"></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 relative z-10">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                
+                <div className="flex items-center space-x-6">
+                  <button onClick={() => navigate('/home')} className="bg-white/10 p-4 rounded-2xl hover:bg-white/25 transition-all text-white backdrop-blur-md active:scale-95 shadow-sm border border-white/20">
+                    <ChevronLeft className="w-7 h-7" />
+                  </button>
+                  <div>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-3 drop-shadow-md">{trackTitle}</h1>
+                    <div className="inline-flex bg-gradient-to-b from-amber-400 to-amber-500 text-amber-900 px-5 py-2.5 rounded-2xl shadow-lg border-b-[4px] border-amber-600 items-center space-x-3 backdrop-blur-md">
+                      <span className="text-2xl drop-shadow-sm">🏆</span>
+                      <span className="text-[13px] font-black uppercase tracking-widest opacity-90 mt-0.5">Total XP</span>
+                      <span className="text-lg font-black bg-white/40 px-3 py-0.5 rounded-xl shadow-inner border border-white/30">{totalTrackXP} / {maxTrackXP}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4 text-white">
+                  <button onClick={() => setShowHowItWorks(true)} className="flex items-center bg-white/10 px-5 py-3.5 rounded-2xl text-sm font-bold hover:bg-white/25 transition-all shadow-sm backdrop-blur-md border border-white/20 active:scale-95">
+                    <Info className="w-5 h-5 mr-2 opacity-90" /> How it Works
+                  </button>
+                  <div className="flex items-center bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 shadow-sm pl-5 pr-3 group transition-all hover:bg-white/15">
+                    <span className="font-black text-sm uppercase tracking-widest text-white mr-4 drop-shadow-sm">{userName}</span>
+                    <button onClick={handleLogout} className="bg-white/20 hover:bg-rose-500 text-white p-2.5 rounded-xl transition-all shadow-sm active:scale-95" title="Logout">
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 space-y-10">
+            {META_DATA.map((metaUnit) => {
+              const contentData = UNIT_DATA[metaUnit.id] || {};
+              const combinedUnitPayload = {
+                ...contentData,
+                id: metaUnit.id,
+                meta: {
+                  id: metaUnit.id,
+                  title: metaUnit.title,
+                  description: metaUnit.desc,
+                  icon: contentData.meta?.icon || 'BookOpen',
+                  thresholds: contentData.meta?.thresholds
+                }
+              };
+
+              return (
+                <UnitCard 
+                  key={metaUnit.id} 
+                  unit={combinedUnitPayload} 
+                  scores={unitScores?.[metaUnit.id] || {}} 
+                  currentTheme={currentTheme} 
+                  startMode={startMode} 
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {showHowItWorks && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full p-8 md:p-10 relative max-h-[90vh] overflow-y-auto">
+             <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                <h2 className="text-3xl font-black text-slate-800 flex items-center tracking-tight"><div className="bg-indigo-100 text-indigo-600 p-2 rounded-full mr-4 shadow-inner"><Info className="w-7 h-7"/></div>How it Works</h2>
+                <button onClick={() => setShowHowItWorks(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><XCircle className="w-8 h-8"/></button>
+             </div>
+             
+             <p className="text-lg text-slate-600 font-medium mb-8 leading-relaxed">
+               Welcome to the <strong className="text-slate-800">Science Lab</strong>! This platform uses <strong className="text-indigo-600">CLIL</strong> (Content and Language Integrated Learning) to help you master English through real scientific concepts. Here is how your learning journey works:
+             </p>
+             
+             <div className="space-y-4 mb-8">
+               <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-start shadow-sm hover:shadow-md transition-all">
+                 <div className="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-1 shadow-inner"><div className="w-3 h-3 bg-indigo-500 rounded-full"></div></div>
+                 <div>
+                   <h3 className="font-bold text-slate-800 text-xl mb-1">Phase 1: Core Practice</h3>
+                   <p className="text-slate-500 font-medium leading-relaxed">Fast-paced language drills inspired by the <strong>DET</strong> (Duolingo English Test) and <strong>PTE</strong> formats. Build your spelling, listening, and reading skills.</p>
+                 </div>
+               </div>
+               
+               <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-start shadow-sm hover:shadow-md transition-all">
+                 <div className="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-1 shadow-inner"><div className="w-3 h-3 bg-indigo-500 rounded-full"></div></div>
+                 <div>
+                   <h3 className="font-bold text-slate-800 text-xl mb-1">Phase 2: AI Graded Writing</h3>
+                   <p className="text-slate-500 font-medium leading-relaxed">Practice short answers and essays. Our AI Tutor grades your work instantly using the official <strong>Cambridge Mark Scheme</strong> to give you personalized feedback.</p>
+                 </div>
+               </div>
+             </div>
+
+             <div className="bg-rose-50 border border-rose-200 p-5 rounded-2xl mb-8 flex items-start shadow-sm">
+               <AlertTriangle className="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
+               <div>
+                 <h4 className="font-black text-rose-800 text-sm uppercase tracking-widest mb-1 opacity-90">AI Monitoring & Safety</h4>
+                 <p className="text-rose-700 text-sm font-medium leading-relaxed">
+                   Student submissions to the AI grader are monitored. Any harmful, inappropriate, or "joke" answers are flagged. <strong>After 3 strikes</strong>, you will be permanently locked out of the AI Tutor for that unit and can only earn partial points.
+                 </p>
+               </div>
+             </div>
+             
+             <div className="flex justify-end">
+               <button onClick={() => setShowHowItWorks(false)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg uppercase tracking-widest px-10 py-4 rounded-2xl border-b-[5px] border-indigo-800 active:border-b-0 active:translate-y-[5px] transition-all shadow-md">
+                 Understood
+               </button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {appState === 'WORKBOOK' && <PlaceholderView title="Extra Workbook Practice" onQuit={() => setAppState('MENU')} />}
+
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50"><Loader2 className="w-12 h-12 animate-spin text-indigo-500" /></div>}>
+        {appState === 'WORD_REC' && <Recognition pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p1', s)} />}
+        {appState === 'SPELLING' && <Spell pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p2', s)} onQuit={() => setAppState('MENU')} />}
+        {appState === 'DICTATION' && <Dictation pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p3', s)} onQuit={() => setAppState('MENU')} />}
+        {appState === 'READ_COMP' && <Reading pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p4', s)} onQuit={() => setAppState('MENU')} />}
+        
+        {appState === 'NOTES' && <Notes slides={currentPool} onComplete={() => handleTaskComplete('p10', 10)} onQuit={() => setAppState('MENU')} />}
+
+        {appState === 'SHORT_ANSWERS' && (
+          <ShortAnswers 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p6?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p6', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        
+        {appState === 'DIAGRAMS' && (
+          <Diagrams 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p7?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p7', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+
+        {appState === 'ESSAY' && (
+          <Essay 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p8?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p8', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+
+        {appState === 'ASSESSMENT' && (
+          <Assessment 
+            unit={UNIT_DATA[activeUnit]} 
+            onComplete={(score) => handleTaskComplete('p9', score)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        {appState === 'GAMES' && (
+          <Games 
+            pool={currentPool} 
+            unitId={activeUnit}
+            scores={unitScores[activeUnit] || {}} 
+            onComplete={(score) => handleTaskComplete('p12', score)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+      </Suspense>
+
+    </div>
+  );
+}
+</file>
+
+</files>

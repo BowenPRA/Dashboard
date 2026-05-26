@@ -1,0 +1,1832 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/data/Y9/Math_1A/**, src/tasks/Assessment.jsx, src/tasks/Notes.jsx
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/data/Y9/Math_1A/assessment.js
+src/data/Y9/Math_1A/data.js
+src/data/Y9/Math_1A/games.js
+src/data/Y9/Math_1A/notes.js
+src/data/Y9/Math_1A/workbook.js
+src/tasks/Assessment.jsx
+src/tasks/Notes.jsx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/data/Y9/Math_1A/assessment.js">
+// src/data/Y9/Math_1A/assessment.js
+export const assessment = {
+  timeLimit: 1800, 
+  passages: [], 
+  questions: [
+    {
+      id: "q1_inline_def",
+      type: "inline",
+      title: "1. Complete the fundamental definitions regarding bivariate data and graphs.",
+      options: [],
+      textParts: [
+        "A scatter graph plots two separate ",
+        " to reveal if there is a mathematical relationship between them. If the data points form an upward trend, this is known as a ",
+        " correlation."
+      ],
+      blanks: {
+        "1": {
+          correct: "variables",
+          options: [
+            { val: "outliers", text: "outliers" },
+            { val: "variables", text: "variables" },
+            { val: "trends", text: "trends" }
+          ]
+        },
+        "2": {
+          correct: "positive",
+          options: [
+            { val: "negative", text: "negative" },
+            { val: "zero", text: "zero" },
+            { val: "positive", text: "positive" }
+          ]
+        }
+      },
+      expEn: "Scatter graphs compare two variables. An upward trend, where both variables increase together, defines a positive correlation.",
+      expVn: "Biểu đồ phân tán so sánh hai biến số. Xu hướng tăng lên, nơi cả hai biến số cùng tăng, xác định một tương quan dương."
+    },
+    {
+      id: "q2_mcq_svg",
+      type: "mcq",
+      title: "2. Analyze the spatial distribution of the data points below. Select the most accurate classification.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="200" y="235" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Variable X</text>
+        <text x="20" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle" transform="rotate(-90 20 110)">Variable Y</text>
+        <circle cx="80" cy="60" r="5" fill="#f43f5e"/><circle cx="95" cy="45" r="5" fill="#f43f5e"/>
+        <circle cx="120" cy="70" r="5" fill="#f43f5e"/><circle cx="130" cy="90" r="5" fill="#f43f5e"/>
+        <circle cx="150" cy="85" r="5" fill="#f43f5e"/><circle cx="170" cy="110" r="5" fill="#f43f5e"/>
+        <circle cx="190" cy="130" r="5" fill="#f43f5e"/><circle cx="210" cy="120" r="5" fill="#f43f5e"/>
+        <circle cx="240" cy="150" r="5" fill="#f43f5e"/><circle cx="260" cy="140" r="5" fill="#f43f5e"/>
+        <circle cx="280" cy="170" r="5" fill="#f43f5e"/><circle cx="310" cy="165" r="5" fill="#f43f5e"/>
+        <circle cx="330" cy="185" r="5" fill="#f43f5e"/>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. Strong Positive Correlation" },
+        { val: "B", text: "B. Weak Positive Correlation" },
+        { val: "C", text: "C. Strong Negative Correlation" },
+        { val: "D", text: "D. Weak Negative Correlation" }
+      ],
+      correct: "C",
+      expEn: "The data points are packed very tightly together (strong) and slope downward from left to right (negative).",
+      expVn: "Các điểm dữ liệu được chụm lại rất chặt chẽ (mạnh) và dốc xuống từ trái sang phải (âm)."
+    },
+    {
+      id: "q3_dnd_coefficients",
+      type: "dnd",
+      title: "3. Drag and drop the mathematical correlation coefficient (r) to its correct textual description.",
+      options: [],
+      bank: [
+        { id: "b1", val: "1.0", text: "r = 1.0" },
+        { id: "b2", val: "-1.0", text: "r = -1.0" },
+        { id: "b3", val: "0", text: "r = 0" },
+        { id: "b4", val: "0.8", text: "r = 0.8" },
+        { id: "b5", val: "-0.8", text: "r = -0.8" }
+      ],
+      targets: [
+        { id: "perf_pos", title: "Perfect Positive" },
+        { id: "perf_neg", title: "Perfect Negative" },
+        { id: "no_corr", title: "No Correlation" }
+      ],
+      correctSets: {
+        "perf_pos": ["1.0"],
+        "perf_neg": ["-1.0"],
+        "no_corr": ["0"]
+      },
+      expEn: "An 'r' value of 1.0 is a perfect positive line. An 'r' value of -1.0 is a perfect negative line. An 'r' value of 0 means there is absolutely no mathematical correlation.",
+      expVn: "Giá trị 'r' bằng 1.0 là một đường dương hoàn hảo. Giá trị 'r' bằng -1.0 là một đường âm hoàn hảo. Giá trị 'r' bằng 0 có nghĩa là hoàn toàn không có tương quan toán học."
+    },
+    {
+      id: "q4_inline_outlier",
+      type: "inline",
+      title: "4. Complete the statement regarding abnormal data points.",
+      options: [],
+      textParts: [
+        "A data point that does not follow the general trend of the scatter graph is called an ",
+        ". When drawing a Line of Best Fit, we should generally ",
+        " this point so it does not skew our mathematical prediction."
+      ],
+      blanks: {
+        "1": {
+          correct: "outlier",
+          options: [
+            { val: "intercept", text: "intercept" },
+            { val: "outlier", text: "outlier" },
+            { val: "variable", text: "variable" }
+          ]
+        },
+        "2": {
+          correct: "ignore",
+          options: [
+            { val: "include", text: "include" },
+            { val: "ignore", text: "ignore" }
+          ]
+        }
+      },
+      expEn: "Outliers are abnormal points that break the trend. They are usually ignored when drawing the line of best fit to keep predictions accurate.",
+      expVn: "Giá trị ngoại lai là những điểm bất thường phá vỡ xu hướng. Chúng thường bị bỏ qua khi vẽ đường phù hợp nhất để giữ cho các dự đoán chính xác."
+    },
+    {
+      id: "q5_mcq_interpolation",
+      type: "mcq",
+      title: "5. Using the Line of Best Fit provided, calculate the predicted Value Y when Value X is 30.",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+        <text x="200" y="235" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Value X</text>
+        <text x="20" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle" transform="rotate(-90 20 110)">Value Y</text>
+        
+        <text x="140" y="215" font-family="sans-serif" font-weight="bold" font-size="12" fill="#94a3b8" text-anchor="middle">30</text>
+        <text x="35" y="115" font-family="sans-serif" font-weight="bold" font-size="12" fill="#94a3b8" text-anchor="end">40</text>
+        
+        <path d="M 50 190 L 320 40" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round"/>
+        
+        <path d="M 140 200 L 140 110" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6,6"/>
+        <path d="M 140 110 L 50 110" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6,6"/>
+        
+        <circle cx="140" cy="110" r="5" fill="#ea580c"/>
+      </svg>`,
+      options: [
+        { val: "A", text: "A. 30" },
+        { val: "B", text: "B. 40" },
+        { val: "C", text: "C. 50" },
+        { val: "D", text: "D. 60" }
+      ],
+      correct: "B",
+      expEn: "By tracing a line up from X=30 to the Line of Best Fit, and then tracing horizontally to the Y-axis, the predicted value is 40. This is interpolation.",
+      expVn: "Bằng cách gióng một đường từ X=30 lên Đường Phù hợp nhất, và sau đó gióng ngang sang trục Y, giá trị dự đoán là 40. Đây là phép nội suy."
+    },
+    {
+      id: "q6_dnd_scenarios",
+      type: "dnd",
+      title: "6. Classify the following real-world scenarios by dragging them into their expected correlation type.",
+      options: [],
+      bank: [
+        { id: "s1", val: "pos", text: "Hours Studied vs. Test Score" },
+        { id: "s2", val: "pos", text: "Temperature vs. Ice Cream Sales" },
+        { id: "s3", val: "neg", text: "Age of Car vs. Value of Car" },
+        { id: "s4", val: "neg", text: "Time Running vs. Energy Left" }
+      ],
+      targets: [
+        { id: "pos_targ", title: "Expected Positive Correlation" },
+        { id: "neg_targ", title: "Expected Negative Correlation" }
+      ],
+      correctSets: {
+        "pos_targ": ["pos", "pos"],
+        "neg_targ": ["neg", "neg"]
+      },
+      expEn: "Test scores and ice cream sales increase as study time and temperature increase (Positive). Car value and energy decrease as age and run time increase (Negative).",
+      expVn: "Điểm kiểm tra và doanh số bán kem tăng khi thời gian học và nhiệt độ tăng (Dương). Giá trị ô tô và năng lượng giảm khi tuổi xe và thời gian chạy tăng (Âm)."
+    },
+    {
+      id: "q7_mcq_causation",
+      type: "mcq",
+      title: "7. In a town, ice cream sales and sunburn cases have a strong positive correlation. Which of the following is the mathematically correct conclusion?",
+      options: [
+        { val: "A", text: "A. Eating ice cream causes humans to sunburn easily." },
+        { val: "B", text: "B. Getting a sunburn makes humans crave ice cream." },
+        { val: "C", text: "C. Both variables are increasing because of a third factor (hot weather)." },
+        { val: "D", text: "D. The data is entirely fabricated because correlation always equals causation." }
+      ],
+      correct: "C",
+      expEn: "A golden rule in statistics is that correlation does not equal causation. Both factors are rising together simply because it is summer (hot weather).",
+      expVn: "Một quy tắc vàng trong thống kê là tương quan không có nghĩa là nhân quả. Cả hai yếu tố cùng tăng đơn giản vì đang là mùa hè (thời tiết nóng)."
+    },
+    {
+      id: "q8_inline_best_fit",
+      type: "inline",
+      title: "8. Complete the final summary regarding correlation graph mechanics.",
+      options: [],
+      textParts: [
+        "A proper line of best fit must be a perfectly ",
+        " line that balances the data. Using it to predict a value inside your known data range is known as ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "straight",
+          options: [
+            { val: "curved", text: "curved" },
+            { val: "straight", text: "straight" }
+          ]
+        },
+        "2": {
+          correct: "interpolation",
+          options: [
+            { val: "interpolation", text: "interpolation" },
+            { val: "extrapolation", text: "extrapolation" }
+          ]
+        }
+      },
+      expEn: "Lines of best fit must be straight to map linear correlation. Predicting inside the known data range is interpolation, which is generally reliable.",
+      expVn: "Các đường phù hợp nhất phải thẳng để lập bản đồ tương quan tuyến tính. Việc dự đoán bên trong phạm vi dữ liệu đã biết là phép nội suy, thường đáng tin cậy."
+    }
+  ]
+};
+</file>
+
+<file path="src/data/Y9/Math_1A/data.js">
+// src/data/Y9/Math_1A/data.js
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const MATH_1A_DATA = {
+  meta: {
+    id: "MATH_1A",
+    title: "Correlation & Scatter Graphs",
+    desc: "Introduction to bivariate data, scatter graphs, and identifying correlation trends in scientific data.",
+    track: "Y9",
+    icon: "ScatterChart"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    { word: "Correlation", vn: "Sự tương quan", def: "A connection or relationship between two things.", vnDef: "Sự kết nối hoặc mối quan hệ giữa hai sự vật.", sent: "There is a strong correlation between heavy rain and flooding.", vnSent: "Có một sự tương quan mạnh mẽ giữa mưa lớn và ngập lụt.", dictSent: "Correlation does not always mean that one thing causes another.", isReal: true },
+    { word: "Variable", vn: "Biến số", def: "Something that can change or be measured, like temperature or height.", vnDef: "Một thứ gì đó có thể thay đổi hoặc được đo lường, như nhiệt độ hoặc chiều cao.", sent: "In this experiment, the amount of sunlight is the independent variable.", vnSent: "Trong thí nghiệm này, lượng ánh sáng mặt trời là biến độc lập.", dictSent: "A scatter graph shows the relationship between two variables.", isReal: true },
+    { word: "Scatter Graph", vn: "Biểu đồ phân tán", def: "A graph that uses dots to show the relationship between two variables.", vnDef: "Một biểu đồ sử dụng các dấu chấm để thể hiện mối quan hệ giữa hai biến số.", sent: "We plotted the data on a scatter graph to look for a pattern.", vnSent: "Chúng tôi đã vẽ dữ liệu trên một biểu đồ phân tán để tìm kiếm một quy luật.", dictSent: "A scatter graph shows the relationship between two variables.", isReal: true },
+    { word: "Axis", vn: "Trục", def: "The horizontal (X) and vertical (Y) lines used to measure data on a graph.", vnDef: "Các đường ngang (X) và dọc (Y) được sử dụng để đo lường dữ liệu trên một biểu đồ.", sent: "Make sure you label the x-axis and the y-axis clearly.", vnSent: "Hãy chắc chắn rằng bạn dán nhãn trục x và trục y rõ ràng.", dictSent: "We use the x-axis and y-axis to graph our data.", isReal: true },
+    { word: "Coordinate", vn: "Tọa độ", def: "A pair of numbers that shows exactly where a point belongs on a grid.", vnDef: "Một cặp số cho thấy chính xác vị trí của một điểm trên lưới.", sent: "Plot the coordinate (4, 5) on your graph paper.", vnSent: "Hãy vẽ tọa độ (4, 5) trên giấy vẽ đồ thị của bạn.", dictSent: "An outlier is a point that does not fit the pattern.", isReal: true },
+    { word: "Positive Correlation", vn: "Tương quan dương", def: "A relationship where both variables increase together.", vnDef: "Một mối quan hệ trong đó cả hai biến số cùng tăng.", sent: "There is a positive correlation between studying and high test scores.", vnSent: "Có một sự tương quan dương giữa việc học hành và điểm thi cao.", dictSent: "Positive correlation means both variables increase at the same time.", isReal: true },
+    { word: "Negative Correlation", vn: "Tương quan âm", def: "A relationship where one variable increases while the other decreases.", vnDef: "Một mối quan hệ trong đó một biến số tăng trong khi biến số kia giảm.", sent: "The graph showed a negative correlation between temperature and coat sales.", vnSent: "Biểu đồ cho thấy sự tương quan âm giữa nhiệt độ và doanh số bán áo khoác.", dictSent: "Negative correlation occurs when one variable decreases as the other increases.", isReal: true },
+    { word: "Strong Correlation", vn: "Tương quan mạnh", def: "When the data points on a graph are packed closely together in a clear line.", vnDef: "Khi các điểm dữ liệu trên biểu đồ được xếp chặt chẽ với nhau thành một đường rõ ràng.", sent: "The dots form a straight line, indicating a very strong correlation.", vnSent: "Các dấu chấm tạo thành một đường thẳng, cho thấy một sự tương quan rất mạnh.", dictSent: "If the points are closely packed, the correlation is very strong.", isReal: true },
+    { word: "Weak Correlation", vn: "Tương quan yếu", def: "When the data points follow a general direction but are spread far apart.", vnDef: "Khi các điểm dữ liệu đi theo một hướng chung nhưng nằm cách xa nhau.", sent: "Because the dots are scattered widely, it is only a weak correlation.", vnSent: "Bởi vì các dấu chấm bị phân tán rộng, nó chỉ là một sự tương quan yếu.", dictSent: "A weak correlation has data points that are widely spread out.", isReal: true },
+    { word: "Trend", vn: "Xu hướng", def: "The general direction in which the data points are moving.", vnDef: "Hướng đi chung mà các điểm dữ liệu đang di chuyển.", sent: "By looking at the trend on the graph, we can predict future results.", vnSent: "Bằng cách nhìn vào xu hướng trên biểu đồ, chúng ta có thể dự đoán kết quả trong tương lai.", dictSent: "Scientists look for trends in the data to make accurate predictions.", isReal: true }
+  ],
+  fakeWords: [
+    { word: "Correlance", imitating: "Correlation", isReal: false },
+    { word: "Variate", imitating: "Variable", isReal: false },
+    { word: "Scatterment", imitating: "Scatter Graph", isReal: false },
+    { word: "Axises", imitating: "Axis", isReal: false },
+    { word: "Coordinance", imitating: "Coordinate", isReal: false },
+    { word: "Positivity", imitating: "Positive Correlation", isReal: false },
+    { word: "Negativity", imitating: "Negative Correlation", isReal: false },
+    { word: "Strongness", imitating: "Strong Correlation", isReal: false },
+    { word: "Weakity", imitating: "Weak Correlation", isReal: false },
+    { word: "Trendency", imitating: "Trend", isReal: false }
+  ],
+  dictation: [
+    { sent: "A scatter graph shows the relationship between two variables.", vnSent: "Biểu đồ phân tán cho thấy mối quan hệ giữa hai biến số." },
+    { sent: "We use the x-axis and y-axis to graph our data.", vnSent: "Chúng tôi sử dụng trục x và trục y để vẽ biểu đồ dữ liệu của mình." },
+    { sent: "Positive correlation means both variables increase at the same time.", vnSent: "Tương quan dương có nghĩa là cả hai biến số cùng tăng." },
+    { sent: "Negative correlation occurs when one variable decreases as the other increases.", vnSent: "Tương quan âm xảy ra khi một biến số giảm trong khi biến số kia tăng." },
+    { sent: "If the points are closely packed, the correlation is very strong.", vnSent: "Nếu các điểm được xếp chặt chẽ, sự tương quan là rất mạnh." },
+    { sent: "A weak correlation has data points that are widely spread out.", vnSent: "Một sự tương quan yếu có các điểm dữ liệu nằm cách xa nhau." },
+    { sent: "Zero correlation means there is no pattern on the graph.", vnSent: "Không có sự tương quan có nghĩa là không có quy luật nào trên biểu đồ." },
+    { sent: "Scientists look for trends in the data to make accurate predictions.", vnSent: "Các nhà khoa học tìm kiếm các xu hướng trong dữ liệu để đưa ra các dự đoán chính xác." },
+    { sent: "An outlier is a point that does not fit the pattern.", vnSent: "Một giá trị ngoại lai là một điểm không phù hợp với quy luật." },
+    { sent: "Correlation does not always mean that one thing causes another.", vnSent: "Sự tương quan không phải lúc nào cũng có nghĩa là một điều gây ra điều kia." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Taller, The Faster?",
+      text: "In science and mathematics, we often want to know if two things are connected. These things are called variables. For example, is there a {correlation} between a student's height and how fast they can run? To find out, a scientist would measure the height of fifty students and then time how fast they can sprint. By looking at these two {variables} together, we can discover if being taller actually makes you a faster runner.",
+      vnTitle: "Càng cao thì càng nhanh?",
+      vnText: "Trong khoa học và toán học, chúng ta thường muốn biết liệu hai sự vật có liên quan với nhau hay không. Những thứ này được gọi là biến số. Ví dụ, có sự tương quan nào giữa chiều cao của một học sinh và tốc độ họ có thể chạy không? Để tìm hiểu, một nhà khoa học sẽ đo chiều cao của năm mươi học sinh và sau đó bấm giờ xem họ có thể chạy nước rút nhanh như thế nào. Bằng cách xem xét hai biến số này cùng nhau, chúng ta có thể khám phá ra liệu việc cao hơn có thực sự khiến bạn trở thành một người chạy nhanh hơn hay không."
+    },
+    {
+      id: "passage_2",
+      title: "Plotting the Dots",
+      text: "Once we have collected our data, reading a list of numbers can be very confusing. This is why mathematicians use a {scatter} graph. By drawing an X-axis and a Y-axis, we create a mathematical grid. Every student becomes a single {coordinate} on this grid. When we plot all fifty dots, a visual {trend} appears, making it incredibly easy for our brains to see the relationship.",
+      vnTitle: "Vẽ các dấu chấm",
+      vnText: "Sau khi chúng ta đã thu thập dữ liệu của mình, việc đọc một danh sách các con số có thể rất khó hiểu. Đây là lý do tại sao các nhà toán học sử dụng biểu đồ phân tán. Bằng cách vẽ một trục X và một trục Y, chúng ta tạo ra một lưới toán học. Mỗi học sinh trở thành một tọa độ duy nhất trên lưới này. Khi chúng ta vẽ tất cả năm mươi dấu chấm, một xu hướng hình ảnh xuất hiện, khiến bộ não của chúng ta vô cùng dễ dàng nhìn thấy mối quan hệ."
+    },
+    {
+      id: "passage_3",
+      title: "The Trap of Coincidence",
+      text: "It is easy to spot a {positive} correlation on a graph, but we must be careful. Just because two things grow at the same time does not mean one causes the other. For instance, in the summer, ice cream sales go up. At the same time, the number of sunburns goes up. This is a {strong} correlation. However, eating ice cream does not cause sunburns! Both variables are simply caused by the hot weather.",
+      vnTitle: "Cạm bẫy của Sự trùng hợp",
+      vnText: "Thật dễ dàng để phát hiện ra một sự tương quan dương trên biểu đồ, nhưng chúng ta phải cẩn thận. Chỉ vì hai thứ cùng phát triển không có nghĩa là cái này gây ra cái kia. Ví dụ, vào mùa hè, doanh số bán kem tăng lên. Đồng thời, số lượng người bị cháy nắng cũng tăng lên. Đây là một sự tương quan mạnh mẽ. Tuy nhiên, ăn kem không gây ra cháy nắng! Cả hai biến số đơn giản chỉ là do thời tiết nắng nóng gây ra."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Correlation & Scatter Graphs",
+    vnTitle: "Bài 1A: Tương quan & Biểu đồ phân tán",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their definitions.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với định nghĩa của chúng.",
+    sections: [
+      {
+        heading: "1. The Coordinate Grid",
+        vnHeading: "1. Lưới Tọa độ",
+        text: "We use a **Scatter Graph** to plot data points. The horizontal line is the X-**Axis** and the vertical line is the Y-**Axis**. Each point is a single **Coordinate** that represents two **Variables**.",
+        vnText: "Chúng ta sử dụng Biểu đồ phân tán (**Scatter Graph**) để vẽ các điểm dữ liệu. Đường ngang là Trục (**Axis**) X và đường dọc là Trục (**Axis**) Y. Mỗi điểm là một Tọa độ (**Coordinate**) duy nhất đại diện cho hai Biến số (**Variables**)."
+      },
+      {
+        heading: "2. Types of Correlation",
+        vnHeading: "2. Các loại Tương quan",
+        text: "When comparing data, a **Positive Correlation** means both variables go up together. A **Negative Correlation** means one goes up while the other goes down.",
+        vnText: "Khi so sánh dữ liệu, Tương quan dương (**Positive Correlation**) có nghĩa là cả hai biến số cùng tăng. Tương quan âm (**Negative Correlation**) có nghĩa là một biến số tăng trong khi biến số kia giảm."
+      },
+      {
+        heading: "3. Identifying Trends",
+        vnHeading: "3. Xác định Xu hướng",
+        text: "If the dots are packed tightly together, the **Correlation** is **Strong**. If the dots are spread far apart, it is **Weak**. Following this **Trend** helps scientists make accurate predictions.",
+        vnText: "Nếu các dấu chấm được xếp chặt chẽ với nhau, Sự tương quan (**Correlation**) là Mạnh (**Strong**). Nếu các dấu chấm nằm cách xa nhau, nó là Yếu (**Weak**). Theo dõi Xu hướng (**Trend**) này giúp các nhà khoa học đưa ra những dự đoán chính xác."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "Describe the visual difference between a positive correlation and a negative correlation on a scatter graph.",
+      requiredWords: [["upward", "up", "increase", "increases"], ["downward", "down", "decrease", "decreases"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that a positive correlation slopes upward (from left to right) or that both variables increase together.",
+        "1 mark for stating that a negative correlation slopes downward (from left to right) or that one variable decreases as the other increases."
+      ],
+      modelAnswer: "A positive correlation visually slopes upward from left to right, while a negative correlation visually slopes downward."
+    },
+    {
+      id: "q2",
+      question: "Look at a scatter graph. How can you tell if the correlation between two variables is strong or weak?",
+      requiredWords: [["close", "closely", "packed", "tight"], ["spread", "scattered", "far", "apart"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that strong correlation means the data points are packed closely together.",
+        "1 mark for stating that weak correlation means the data points are spread further apart."
+      ],
+      modelAnswer: "A strong correlation has data points that are packed closely together. A weak correlation has data points that are spread far apart."
+    },
+    {
+      id: "q3",
+      question: "Why do mathematicians plot bivariate data (two variables) on a coordinate grid instead of just reading a table of numbers?",
+      requiredWords: [["visual", "see", "easier", "picture"], ["trend", "pattern", "relationship", "trends"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying that graphing makes the data visual or easier to see.",
+        "1 mark for explaining that it allows us to quickly identify trends, patterns, or relationships between the two variables."
+      ],
+      modelAnswer: "Graphing makes the data highly visual, allowing mathematicians to quickly identify trends or patterns that are hidden in a table of numbers."
+    }
+  ],
+  diagrams: [
+    {
+      id: "d1",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="200" y="235" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Outside Temperature (°C)</text>
+        <text x="20" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle" transform="rotate(-90 20 110)">Soup Sales ($)</text>
+        <circle cx="80" cy="50" r="6" fill="#0ea5e9"/>
+        <circle cx="95" cy="40" r="6" fill="#0ea5e9"/>
+        <circle cx="110" cy="65" r="6" fill="#0ea5e9"/>
+        <circle cx="130" cy="80" r="6" fill="#0ea5e9"/>
+        <circle cx="150" cy="70" r="6" fill="#0ea5e9"/>
+        <circle cx="160" cy="95" r="6" fill="#0ea5e9"/>
+        <circle cx="180" cy="110" r="6" fill="#0ea5e9"/>
+        <circle cx="190" cy="125" r="6" fill="#0ea5e9"/>
+        <circle cx="210" cy="100" r="6" fill="#0ea5e9"/>
+        <circle cx="230" cy="140" r="6" fill="#0ea5e9"/>
+        <circle cx="250" cy="130" r="6" fill="#0ea5e9"/>
+        <circle cx="270" cy="165" r="6" fill="#0ea5e9"/>
+        <circle cx="290" cy="155" r="6" fill="#0ea5e9"/>
+        <circle cx="310" cy="180" r="6" fill="#0ea5e9"/>
+        <circle cx="320" cy="170" r="6" fill="#0ea5e9"/>
+        <path d="M 70 35 L 330 185" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6, 6" stroke-linecap="round"/>
+      </svg>`,
+      promptText: "Analyze the provided scatter graph. Describe the direction and strength of the correlation shown between the two variables.",
+      requiredWords: [["negative", "downward"], ["strong", "tight", "close"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying the direction as a negative correlation.",
+        "1 mark for correctly identifying the strength as a strong correlation."
+      ],
+      modelAnswer: "The scatter graph shows a strong negative correlation between the outside temperature and soup sales."
+    },
+    {
+      id: "d2",
+      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+        <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="200" y="235" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Hours of Sleep</text>
+        <text x="20" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle" transform="rotate(-90 20 110)">Test Score (%)</text>
+        <circle cx="90" cy="170" r="6" fill="#fb923c"/>
+        <circle cx="110" cy="120" r="6" fill="#fb923c"/>
+        <circle cx="130" cy="190" r="6" fill="#fb923c"/>
+        <circle cx="140" cy="100" r="6" fill="#fb923c"/>
+        <circle cx="160" cy="150" r="6" fill="#fb923c"/>
+        <circle cx="180" cy="80" r="6" fill="#fb923c"/>
+        <circle cx="210" cy="160" r="6" fill="#fb923c"/>
+        <circle cx="230" cy="60" r="6" fill="#fb923c"/>
+        <circle cx="250" cy="110" r="6" fill="#fb923c"/>
+        <circle cx="270" cy="180" r="6" fill="#fb923c"/>
+        <circle cx="290" cy="70" r="6" fill="#fb923c"/>
+        <circle cx="310" cy="130" r="6" fill="#fb923c"/>
+        <circle cx="330" cy="50" r="6" fill="#fb923c"/>
+      </svg>`,
+      promptText: "Examine the second scatter graph. Describe the direction and strength of the correlation shown, and explain how you know the strength.",
+      requiredWords: [["positive", "upward"], ["weak", "spread", "scattered", "apart"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly identifying it as a weak positive correlation.",
+        "1 mark for explaining that it is weak because the data points are spread far apart."
+      ],
+      modelAnswer: "This graph shows a weak positive correlation. We know it is weak because the data points are spread widely apart rather than forming a tight line."
+    }
+  ],
+  essay: {
+    task: "Explain how to determine the strength and direction of a correlation on a scatter graph, and provide one real-world example of a positive correlation.",
+    guidelines: [
+      "Define what makes a correlation positive or negative.",
+      "Explain the difference between a strong and weak correlation visually.",
+      "Provide a logical real-world example."
+    ],
+    requiredWords: [
+      ["direction", "positive", "negative"], 
+      ["strength", "strong", "weak", "spread", "tight"],
+      ["example", "instance"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for explaining direction (positive goes up, negative goes down).",
+      "1 mark for explaining strength (strong is closely packed, weak is spread apart).",
+      "1 mark for providing a valid real-world example of a positive correlation."
+    ],
+    modelAnswer: "To determine direction, look at the slope; a positive correlation slopes upward, while a negative correlation slopes downward. Strength is determined by how closely packed the dots are; tightly packed dots mean a strong correlation, while widely spread dots mean a weak correlation. A real-world example of a positive correlation is the relationship between the amount of time spent studying and the score received on a math test."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/data/Y9/Math_1A/games.js">
+// src/data/GED/ENG_1A/games.js
+import { WAVE_PRESETS } from '../../../components/towerdefense/wavePresets';
+
+export const games = {
+  gameConfig: {
+    themeId: 'RANDOM', // Option 5: Triggers the randomized map selector
+    layout: {
+      rows: 10,
+      cols: 15,
+      path: [
+        [2, 0], [2, 3], [7, 3], [7, 7], [2, 7], [2, 11], [7, 11], [7, 14]
+      ]
+    },
+    allowedTowers: ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN'],
+    waves: WAVE_PRESETS.SET_1,
+    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR
+  }
+};
+</file>
+
+<file path="src/data/Y9/Math_1A/notes.js">
+// src/data/Y9/Math_1A/notes.js
+
+export const notes = [
+  {
+    type: "intro",
+    title: "Correlation & Scatter Graphs",
+    titleVn: "Tương quan & Biểu đồ phân tán",
+    subtitle: "Objective: Understand bivariate data, scatter graphs, and the mathematical measurement of correlation.",
+    subtitleVn: "Mục tiêu: Hiểu về dữ liệu hai biến, biểu đồ phân tán và phép đo lường toán học của sự tương quan.",
+    color: "bg-[#8b5cf6]", 
+    borderColor: "border-[#7c3aed]"
+  },
+  {
+    type: "concept",
+    title: "What is Correlation?",
+    titleVn: "Sự tương quan là gì?",
+    icon: "Link",
+    color: "bg-[#14b8a6]",
+    content: "In science and mathematics, we don't just guess if two things are connected. We measure exactly *how* they are connected using data.\n\n> A **Correlation** is a mathematical connection or relationship between two variables. It helps us predict how one thing affects another.",
+    contentVn: "Trong khoa học và toán học, chúng ta không chỉ đoán xem hai sự vật có liên kết với nhau hay không. Chúng ta đo lường chính xác *cách* chúng kết nối bằng dữ liệu.\n\n> **Sự tương quan** là một sự kết nối hoặc mối quan hệ toán học giữa hai biến số. Nó giúp chúng ta dự đoán cách một sự vật ảnh hưởng đến sự vật khác.",
+    example: "There is a correlation between how long you sleep (Variable 1) and how much energy you have the next day (Variable 2).",
+    exampleVn: "Có một sự tương quan giữa việc bạn ngủ bao lâu (Biến số 1) và mức năng lượng bạn có vào ngày hôm sau (Biến số 2).",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <defs>
+        <linearGradient id="linkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#38bdf8" />
+          <stop offset="100%" stop-color="#34d399" />
+        </linearGradient>
+      </defs>
+      <circle cx="120" cy="125" r="45" fill="#e0f2fe" stroke="#38bdf8" stroke-width="6"/>
+      <text x="120" y="132" fill="#0284c7" font-size="20" font-weight="900" text-anchor="middle" font-family="sans-serif">Thing A</text>
+      <circle cx="280" cy="125" r="45" fill="#d1fae5" stroke="#34d399" stroke-width="6"/>
+      <text x="280" y="132" fill="#059669" font-size="20" font-weight="900" text-anchor="middle" font-family="sans-serif">Thing B</text>
+      <path d="M 165 125 L 235 125" stroke="url(#linkGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="10 10"/>
+      <path d="M 180 105 L 220 105" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+      <path d="M 180 145 L 220 145" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Variables & The Grid",
+    titleVn: "Biến số & Lưới Tọa độ",
+    icon: "Target",
+    color: "bg-[#3b82f6]",
+    content: "To measure a connection mathematically, we need two **Variables** (things we can measure, like height and weight). We plot these on a coordinate grid.\n\n> **The X-Axis:** The horizontal line, usually representing the independent variable (the cause).\n> **The Y-Axis:** The vertical line, usually representing the dependent variable (the effect).",
+    contentVn: "Để đo lường một sự kết nối về mặt toán học, chúng ta cần hai **Biến số** (những thứ có thể đo lường, như chiều cao và cân nặng). Chúng ta vẽ chúng trên một lưới tọa độ.\n\n> **Trục X:** Đường nằm ngang, thường đại diện cho biến độc lập (nguyên nhân).\n> **Trục Y:** Đường thẳng đứng, thường đại diện cho biến phụ thuộc (kết quả).",
+    example: "If tracking plant growth, 'Time' goes on the X-Axis, and the 'Plant's Height' goes on the Y-Axis.",
+    exampleVn: "Nếu theo dõi sự phát triển của cây, 'Thời gian' nằm trên Trục X, và 'Chiều cao của cây' nằm trên Trục Y.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <g stroke="#f1f5f9" stroke-width="2">
+        <line x1="50" y1="50" x2="350" y2="50"/>
+        <line x1="50" y1="100" x2="350" y2="100"/>
+        <line x1="50" y1="150" x2="350" y2="150"/>
+        <line x1="100" y1="20" x2="100" y2="200"/>
+        <line x1="150" y1="20" x2="150" y2="200"/>
+        <line x1="200" y1="20" x2="200" y2="200"/>
+        <line x1="250" y1="20" x2="250" y2="200"/>
+        <line x1="300" y1="20" x2="300" y2="200"/>
+      </g>
+      <line x1="50" y1="200" x2="360" y2="200" stroke="#1e293b" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow)"/>
+      <line x1="50" y1="200" x2="50" y2="20" stroke="#1e293b" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow)"/>
+      <rect x="180" y="215" width="80" height="25" rx="6" fill="#3b82f6" />
+      <text x="220" y="233" fill="white" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif">X-Axis</text>
+      <rect x="5" y="80" width="80" height="25" rx="6" fill="#3b82f6" transform="rotate(-90 45 92)" />
+      <text x="45" y="97" fill="white" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 45 92)">Y-Axis</text>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e293b" />
+        </marker>
+      </defs>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Positive Correlation",
+    titleVn: "Tương quan Dương",
+    icon: "ChevronRight",
+    color: "bg-[#10b981]",
+    content: "When we plot data, the dots might form an upward pattern. This tells us the two variables are moving in the same direction.\n\n> A **Positive Correlation** occurs when both variables increase together.\n> **Rule:** As X gets bigger, Y gets bigger.",
+    contentVn: "Khi vẽ biểu đồ dữ liệu, các dấu chấm có thể tạo thành một dải hướng lên. Điều này cho chúng ta biết hai biến số đang di chuyển cùng chiều.\n\n> Một **Tương quan Dương** xảy ra khi cả hai biến số cùng tăng.\n> **Quy tắc:** Khi X lớn hơn, Y cũng lớn hơn.",
+    example: "There is a positive correlation between 'Hours Spent Studying' (X) and 'Math Test Score' (Y). The more you study, the higher your score.",
+    exampleVn: "Có một sự tương quan dương giữa 'Số giờ học' (X) và 'Điểm bài kiểm tra' (Y). Bạn càng học nhiều, điểm càng cao.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="50" y1="200" x2="350" y2="200" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <line x1="50" y1="200" x2="50" y2="30" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <text x="200" y="230" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif">Hours Studying (X)</text>
+      <text x="20" y="115" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 20 115)">Test Score (Y)</text>
+      <line x1="60" y1="190" x2="330" y2="50" stroke="#d1fae5" stroke-width="20" stroke-linecap="round"/>
+      <circle cx="80" cy="180" r="7" fill="#10b981"/>
+      <circle cx="100" cy="170" r="7" fill="#10b981"/>
+      <circle cx="130" cy="160" r="7" fill="#10b981"/>
+      <circle cx="140" cy="140" r="7" fill="#10b981"/>
+      <circle cx="180" cy="135" r="7" fill="#10b981"/>
+      <circle cx="210" cy="110" r="7" fill="#10b981"/>
+      <circle cx="240" cy="100" r="7" fill="#10b981"/>
+      <circle cx="270" cy="80" r="7" fill="#10b981"/>
+      <circle cx="290" cy="90" r="7" fill="#10b981"/>
+      <circle cx="320" cy="60" r="7" fill="#10b981"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Negative Correlation",
+    titleVn: "Tương quan Âm",
+    icon: "ChevronLeft",
+    color: "bg-[#f43f5e]",
+    content: "Sometimes, variables move in opposite directions, acting like a mathematical seesaw.\n\n> A **Negative Correlation** occurs when one variable decreases while the other increases.\n> **Rule:** As X gets bigger, Y gets smaller.",
+    contentVn: "Đôi khi, các biến số di chuyển theo hướng ngược nhau, hoạt động giống như một chiếc bập bênh toán học.\n\n> Một **Tương quan Âm** xảy ra khi một biến số giảm trong khi biến số kia tăng.\n> **Quy tắc:** Khi X lớn hơn, Y nhỏ đi.",
+    example: "There is a negative correlation between 'Age of a Car' (X) and 'Value of the Car' (Y). As the car gets older, its price goes down.",
+    exampleVn: "Có một sự tương quan âm giữa 'Tuổi của Ô tô' (X) và 'Giá trị của Ô tô' (Y). Xe càng cũ, giá của nó càng giảm.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="50" y1="200" x2="350" y2="200" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <line x1="50" y1="200" x2="50" y2="30" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+      <text x="200" y="230" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif">Age of Car in Years (X)</text>
+      <text x="20" y="115" fill="#64748b" font-size="14" font-weight="bold" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 20 115)">Value in Dollars (Y)</text>
+      <line x1="70" y1="50" x2="330" y2="180" stroke="#ffe4e6" stroke-width="20" stroke-linecap="round"/>
+      <circle cx="70" cy="60" r="7" fill="#f43f5e"/>
+      <circle cx="90" cy="75" r="7" fill="#f43f5e"/>
+      <circle cx="120" cy="85" r="7" fill="#f43f5e"/>
+      <circle cx="150" cy="110" r="7" fill="#f43f5e"/>
+      <circle cx="180" cy="100" r="7" fill="#f43f5e"/>
+      <circle cx="210" cy="130" r="7" fill="#f43f5e"/>
+      <circle cx="240" cy="140" r="7" fill="#f43f5e"/>
+      <circle cx="280" cy="155" r="7" fill="#f43f5e"/>
+      <circle cx="300" cy="170" r="7" fill="#f43f5e"/>
+      <circle cx="320" cy="165" r="7" fill="#f43f5e"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Strong vs. Weak",
+    titleVn: "Mạnh và Yếu",
+    icon: "Scale",
+    color: "bg-[#f59e0b]",
+    content: "We also measure the **Strength** of the correlation by looking at how closely the dots are grouped together.\n\n> **Strong Correlation:** The dots are packed tightly into a clear line. Predictions are highly accurate.\n> **Weak Correlation:** The dots follow a general direction but are spread apart like a cloud. Predictions are less certain.",
+    contentVn: "Chúng ta cũng đo lường **Độ mạnh** của sự tương quan bằng cách nhìn vào mức độ chụm lại của các dấu chấm.\n\n> **Tương quan Mạnh:** Các dấu chấm xếp chặt chẽ thành một đường rõ ràng. Dự đoán rất chính xác.\n> **Tương quan Yếu:** Các dấu chấm đi theo hướng chung nhưng phân tán như một đám mây. Dự đoán ít chắc chắn hơn.",
+    example: "A person's height and their shoe size have a Strong Correlation. A person's height and their hair length have No Correlation.",
+    exampleVn: "Chiều cao và cỡ giày của một người có Tương quan Mạnh. Chiều cao và độ dài tóc của họ Không có Tương quan.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <line x1="200" y1="20" x2="200" y2="230" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="8 8"/>
+      
+      <text x="100" y="30" fill="#d97706" font-size="16" font-weight="900" text-anchor="middle" font-family="sans-serif">STRONG</text>
+      <line x1="20" y1="200" x2="180" y2="200" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="20" y1="200" x2="20" y2="50" stroke="#94a3b8" stroke-width="3"/>
+      <circle cx="40" cy="180" r="5" fill="#f59e0b"/>
+      <circle cx="60" cy="155" r="5" fill="#f59e0b"/>
+      <circle cx="75" cy="140" r="5" fill="#f59e0b"/>
+      <circle cx="95" cy="120" r="5" fill="#f59e0b"/>
+      <circle cx="110" cy="105" r="5" fill="#f59e0b"/>
+      <circle cx="130" cy="85" r="5" fill="#f59e0b"/>
+      <circle cx="150" cy="65" r="5" fill="#f59e0b"/>
+      <circle cx="165" cy="50" r="5" fill="#f59e0b"/>
+
+      <text x="300" y="30" fill="#d97706" font-size="16" font-weight="900" text-anchor="middle" font-family="sans-serif">WEAK</text>
+      <line x1="220" y1="200" x2="380" y2="200" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="220" y1="200" x2="220" y2="50" stroke="#94a3b8" stroke-width="3"/>
+      <circle cx="240" cy="190" r="5" fill="#fcd34d"/>
+      <circle cx="270" cy="140" r="5" fill="#fcd34d"/>
+      <circle cx="250" cy="120" r="5" fill="#fcd34d"/>
+      <circle cx="300" cy="160" r="5" fill="#fcd34d"/>
+      <circle cx="290" cy="90" r="5" fill="#fcd34d"/>
+      <circle cx="320" cy="120" r="5" fill="#fcd34d"/>
+      <circle cx="340" cy="70" r="5" fill="#fcd34d"/>
+      <circle cx="360" cy="100" r="5" fill="#fcd34d"/>
+      <circle cx="370" cy="50" r="5" fill="#fcd34d"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "The Correlation Coefficient",
+    titleVn: "Hệ số Tương quan",
+    icon: "BookOpen",
+    color: "bg-[#6366f1]",
+    content: "Mathematicians use a specific number to measure this relationship, called the **Correlation Coefficient (r)**.\n\n> The value of **r** is always between **-1** and **1**.\n> **1:** A perfect positive line.\n> **-1:** A perfect negative line.\n> **0:** No correlation at all (random dots).",
+    contentVn: "Các nhà toán học sử dụng một con số cụ thể để đo lường mối quan hệ này, gọi là **Hệ số Tương quan (r)**.\n\n> Giá trị của **r** luôn nằm trong khoảng từ **-1** đến **1**.\n> **1:** Một đường thẳng dương hoàn hảo.\n> **-1:** Một đường thẳng âm hoàn hảo.\n> **0:** Không có sự tương quan (các dấu chấm ngẫu nhiên).",
+    example: "If r = 0.95, the correlation is strong and positive. If r = -0.1, there is basically no correlation.",
+    exampleVn: "Nếu r = 0.95, tương quan là mạnh và dương. Nếu r = -0.1, về cơ bản là không có sự tương quan.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md">
+      <line x1="50" y1="150" x2="450" y2="150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+      
+      <circle cx="50" cy="150" r="8" fill="#f43f5e"/>
+      <text x="50" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#e11d48" text-anchor="middle">-1</text>
+      <rect x="25" y="40" width="50" height="50" fill="none" stroke="#e11d48" stroke-width="2" rx="4"/>
+      <line x1="30" y1="45" x2="70" y2="85" stroke="#f43f5e" stroke-width="4" stroke-dasharray="2 4" stroke-linecap="round"/>
+
+      <circle cx="250" cy="150" r="8" fill="#94a3b8"/>
+      <text x="250" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#64748b" text-anchor="middle">0</text>
+      <rect x="225" y="40" width="50" height="50" fill="none" stroke="#64748b" stroke-width="2" rx="4"/>
+      <circle cx="235" cy="50" r="3" fill="#94a3b8"/><circle cx="260" cy="45" r="3" fill="#94a3b8"/>
+      <circle cx="240" cy="70" r="3" fill="#94a3b8"/><circle cx="265" cy="65" r="3" fill="#94a3b8"/>
+      <circle cx="250" cy="80" r="3" fill="#94a3b8"/><circle cx="245" cy="55" r="3" fill="#94a3b8"/>
+
+      <circle cx="450" cy="150" r="8" fill="#10b981"/>
+      <text x="450" y="180" font-family="sans-serif" font-weight="900" font-size="16" fill="#059669" text-anchor="middle">1</text>
+      <rect x="425" y="40" width="50" height="50" fill="none" stroke="#059669" stroke-width="2" rx="4"/>
+      <line x1="430" y1="85" x2="470" y2="45" stroke="#10b981" stroke-width="4" stroke-dasharray="2 4" stroke-linecap="round"/>
+
+      <path d="M 230 150 L 70 150" stroke="#f43f5e" stroke-width="4" fill="none" marker-end="url(#arrowNeg)"/>
+      <path d="M 270 150 L 430 150" stroke="#10b981" stroke-width="4" fill="none" marker-end="url(#arrowPos)"/>
+      
+      <text x="150" y="140" font-family="sans-serif" font-weight="bold" font-size="12" fill="#f43f5e" text-anchor="middle">Stronger Negative</text>
+      <text x="350" y="140" font-family="sans-serif" font-weight="bold" font-size="12" fill="#10b981" text-anchor="middle">Stronger Positive</text>
+
+      <defs>
+        <marker id="arrowNeg" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
+        </marker>
+        <marker id="arrowPos" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+        </marker>
+      </defs>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Think About It: Variable Matching",
+    titleVn: "Hãy suy nghĩ: Nối các Biến số",
+    icon: "MessageSquare",
+    color: "bg-[#ec4899]",
+    content: "Take a look at the variable bank in the image. In your head or with a partner, try to link two blocks together.\n\n> **Task:** Identify the relationship between two variables.\n> Ask yourself: Is it Positive, Negative, or Zero? Is it Strong or Weak?",
+    contentVn: "Hãy xem ngân hàng biến số trong hình ảnh. Cùng với bạn học, hãy thử liên kết hai khối lại với nhau.\n\n> **Nhiệm vụ:** Xác định mối quan hệ giữa hai biến số.\n> Hãy tự hỏi: Nó là Dương, Âm, hay Không có? Nó Mạnh hay Yếu?",
+    example: "Linking 'Amount of Rain' and 'Umbrella Sales' would create a Strong Positive Correlation.",
+    exampleVn: "Liên kết 'Lượng mưa' và 'Doanh số bán Ô' sẽ tạo ra một Tương quan Dương Mạnh.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300" class="w-full h-full drop-shadow-md">
+      <rect x="10" y="10" width="480" height="280" rx="16" fill="#fdf2f8" stroke="#fbcfe8" stroke-width="4"/>
+      <text x="250" y="45" font-family="sans-serif" font-weight="900" font-size="18" fill="#db2777" text-anchor="middle">THE VARIABLE BANK</text>
+      
+      <rect x="40" y="70" width="130" height="80" rx="12" fill="#bae6fd" stroke="#7dd3fc" stroke-width="3"/>
+      <text x="105" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0369a1" text-anchor="middle">Amount of Rain</text>
+      
+      <rect x="185" y="70" width="130" height="80" rx="12" fill="#fed7aa" stroke="#fdba74" stroke-width="3"/>
+      <text x="250" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#c2410c" text-anchor="middle">Outdoor</text>
+      <text x="250" y="125" font-family="sans-serif" font-weight="bold" font-size="14" fill="#c2410c" text-anchor="middle">Temperature</text>
+      
+      <rect x="330" y="70" width="130" height="80" rx="12" fill="#bbf7d0" stroke="#86efac" stroke-width="3"/>
+      <text x="395" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="middle">Umbrella</text>
+      <text x="395" y="125" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="middle">Sales</text>
+
+      <rect x="40" y="170" width="130" height="80" rx="12" fill="#e9d5ff" stroke="#d8b4fe" stroke-width="3"/>
+      <text x="105" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="middle">Ice Cream</text>
+      <text x="105" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="middle">Sales</text>
+
+      <rect x="185" y="170" width="130" height="80" rx="12" fill="#fecaca" stroke="#fca5a5" stroke-width="3"/>
+      <text x="250" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#b91c1c" text-anchor="middle">Distance</text>
+      <text x="250" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#b91c1c" text-anchor="middle">Driven</text>
+
+      <rect x="330" y="170" width="130" height="80" rx="12" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="3"/>
+      <text x="395" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#475569" text-anchor="middle">Fuel Left</text>
+      <text x="395" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#475569" text-anchor="middle">in Tank</text>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Example 1: Line of Best Fit",
+    titleVn: "Ví dụ 1: Đường Phù hợp nhất",
+    icon: "TrendingUp",
+    color: "bg-[#8b5cf6]",
+    content: "A **Line of Best Fit** is a straight line drawn through the center of the data points that best represents the trend.\n\n> Draw the line so it passes through as many points as possible.\n> Try to keep an equal number of points above and below the line.",
+    contentVn: "Một **Đường Phù hợp nhất** là một đường thẳng được vẽ qua trung tâm của các điểm dữ liệu đại diện tốt nhất cho xu hướng.\n\n> Vẽ đường thẳng sao cho nó đi qua càng nhiều điểm càng tốt.\n> Cố gắng giữ một số lượng điểm bằng nhau ở trên và dưới đường thẳng.",
+    example: "Notice how the purple line cuts straight through the middle of the positive trend, balancing the scatter.",
+    exampleVn: "Lưu ý cách đường màu tím cắt thẳng qua giữa xu hướng dương, cân bằng sự phân tán.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="80" cy="180" r="5" fill="#a78bfa"/><circle cx="100" cy="160" r="5" fill="#a78bfa"/>
+      <circle cx="120" cy="170" r="5" fill="#a78bfa"/><circle cx="140" cy="140" r="5" fill="#a78bfa"/>
+      <circle cx="160" cy="150" r="5" fill="#a78bfa"/><circle cx="180" cy="120" r="5" fill="#a78bfa"/>
+      <circle cx="210" cy="110" r="5" fill="#a78bfa"/><circle cx="230" cy="125" r="5" fill="#a78bfa"/>
+      <circle cx="250" cy="95" r="5" fill="#a78bfa"/><circle cx="270" cy="80" r="5" fill="#a78bfa"/>
+      <circle cx="290" cy="90" r="5" fill="#a78bfa"/><circle cx="310" cy="65" r="5" fill="#a78bfa"/>
+      <path d="M 60 190 L 320 60" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Example 2: Interpolation",
+    titleVn: "Ví dụ 2: Nội suy",
+    icon: "Crosshair",
+    color: "bg-[#0ea5e9]",
+    content: "We can use the line of best fit to predict missing values. This is called **Interpolation** when it is inside our data range.\n\n> 1. Find the known value on the X-axis.\n> 2. Draw a straight line up to hit the Line of Best Fit.\n> 3. Draw a horizontal line across to read the prediction on the Y-axis.",
+    contentVn: "Chúng ta có thể sử dụng đường phù hợp nhất để dự đoán các giá trị còn thiếu. Điều này được gọi là **Nội suy** khi nó nằm trong phạm vi dữ liệu của chúng ta.\n\n> 1. Tìm giá trị đã biết trên trục X.\n> 2. Vẽ một đường thẳng lên chạm vào Đường Phù hợp nhất.\n> 3. Vẽ một đường ngang sang để đọc dự đoán trên trục Y.",
+    example: "If a student studied for 4 hours (X-axis), the line of best fit predicts they will score 70% (Y-axis).",
+    exampleVn: "Nếu một học sinh học trong 4 giờ (Trục X), đường phù hợp nhất dự đoán họ sẽ đạt 70% (Trục Y).",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <text x="200" y="235" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Hours Studied</text>
+      <text x="20" y="110" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle" transform="rotate(-90 20 110)">Test Score</text>
+      <path d="M 60 190 L 320 60" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+      <path d="M 200 200 L 200 120" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6,6"/>
+      <path d="M 200 120 L 50 120" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6,6"/>
+      <circle cx="200" cy="120" r="6" fill="#ea580c"/>
+      <text x="200" y="215" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ea580c" text-anchor="middle">4 Hrs</text>
+      <text x="40" y="125" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ea580c" text-anchor="end">70%</text>
+    </svg>`
+  },
+  {
+    type: "concept",
+    title: "Example 3: Spotting Outliers",
+    titleVn: "Ví dụ 3: Phát hiện Giá trị Ngoại lai",
+    icon: "AlertTriangle",
+    color: "bg-[#f43f5e]",
+    content: "Sometimes a data point does not fit the trend at all. This is called an **Outlier**.\n\n> Outliers can be caused by mistakes in measuring or recording data.\n> They sit far away from the line of best fit and the rest of the cluster.",
+    contentVn: "Đôi khi một điểm dữ liệu hoàn toàn không phù hợp với xu hướng. Đây được gọi là **Giá trị Ngoại lai**.\n\n> Giá trị ngoại lai có thể do sai sót trong việc đo lường hoặc ghi lại dữ liệu.\n> Chúng nằm cách xa đường phù hợp nhất và phần còn lại của cụm.",
+    example: "The red point is an outlier. This student studied very little but still scored perfectly on the test.",
+    exampleVn: "Điểm màu đỏ là một giá trị ngoại lai. Học sinh này học rất ít nhưng vẫn đạt điểm tối đa trong bài kiểm tra.",
+    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+      <path d="M 50 20 L 50 200 L 350 200" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 60 190 L 320 60" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="100" cy="160" r="5" fill="#a78bfa"/><circle cx="120" cy="170" r="5" fill="#a78bfa"/>
+      <circle cx="140" cy="140" r="5" fill="#a78bfa"/><circle cx="160" cy="150" r="5" fill="#a78bfa"/>
+      <circle cx="180" cy="120" r="5" fill="#a78bfa"/><circle cx="210" cy="110" r="5" fill="#a78bfa"/>
+      <circle cx="230" cy="125" r="5" fill="#a78bfa"/><circle cx="250" cy="95" r="5" fill="#a78bfa"/>
+      
+      <circle cx="90" cy="50" r="8" fill="#e11d48"/>
+      <text x="110" y="55" font-family="sans-serif" font-weight="bold" font-size="14" fill="#e11d48">Outlier</text>
+    </svg>`
+  },
+  {
+    type: "summary",
+    title: "Lesson Complete!",
+    titleVn: "Hoàn thành Bài học!",
+    subtitle: "Objective Achieved: You can now identify and measure correlation in scatter graphs.",
+    subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể xác định và đo lường sự tương quan trong các biểu đồ phân tán.",
+    color: "bg-[#14b8a6]",
+    borderColor: "border-[#0d9488]"
+  }
+];
+</file>
+
+<file path="src/data/Y9/Math_1A/workbook.js">
+// src/data/GED/ENG_1A/workbook.js
+export const workbook = null;
+</file>
+
+<file path="src/tasks/Assessment.jsx">
+// src/tasks/Assessment.jsx
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, XCircle, GripVertical, CornerDownRight, Clock, AlertTriangle, Construction, FileQuestion, ArrowRight } from 'lucide-react';
+import TopBar from '../components/TopBar';
+import Feedback from '../components/Feedback';
+
+export default function Assessment({ unit, onComplete, onQuit }) {
+  const assessmentData = unit?.assessment;
+  
+  if (!assessmentData || !assessmentData.questions || !Array.isArray(assessmentData.questions) || assessmentData.questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+        <div className="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+          <Construction className="w-12 h-12 text-amber-500" />
+        </div>
+        <h2 className="text-4xl font-black text-slate-800 mb-4 tracking-tight">Assessment Unavailable</h2>
+        <div className="bg-white px-8 py-4 rounded-2xl shadow-sm border border-slate-200 mb-10 text-lg font-bold text-slate-500">
+          No assessment data is currently configured for this unit.
+        </div>
+        <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  const questions = assessmentData.questions;
+  const passages = assessmentData.passages || [];
+  const totalQuestions = questions.length;
+
+  const [testPhase, setTestPhase] = useState('testing'); 
+  const [answers, setAnswers] = useState({}); 
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  
+  const [timeLeft, setTimeLeft] = useState(assessmentData.timeLimit || 1800); 
+  const [isTimeUp, setIsTimeUp] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
+
+  const [activeGlossaryTerm, setActiveGlossaryTerm] = useState(null);
+  const [draggedItem, setDraggedItem] = useState(null); // Now stores the unique 'id' of the bank item
+
+  const currentQuestion = questions[currentQIndex] || null;
+  const currentPassage = currentQuestion ? passages.find(p => p.id === currentQuestion.passageId) : null;
+
+  const isDND = currentQuestion?.type === 'dnd' || currentQuestion?.type === 'order';
+  const isInline = currentQuestion?.type === 'inline' || currentQuestion?.type === 'scrollBox';
+  const isMCQ = !isDND && !isInline;
+
+  const hasGraphic = currentQuestion?.inlineSvg || currentQuestion?.imageUrl || currentQuestion?.imageFile;
+  const hasPassage = !!currentPassage;
+  const hasLHS = hasGraphic || hasPassage;
+
+  const currentAns = answers[currentQIndex] || {};
+
+  useEffect(() => {
+    if (testPhase !== 'testing') return;
+    if (timeLeft <= 0 && !isTimeUp) {
+      setIsTimeUp(true);
+      finishTest();
+      return;
+    }
+    const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    return () => clearInterval(timerId);
+  }, [timeLeft, testPhase, isTimeUp]);
+
+  const formatTime = (seconds) => {
+    if (seconds < 0) seconds = 0;
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  useEffect(() => { 
+    setActiveGlossaryTerm(null); 
+  }, [currentQIndex, testPhase]);
+
+  const updateAnswer = (payload) => {
+    setAnswers(prev => {
+      const currentAnsObj = prev[currentQIndex] || {};
+      return { ...prev, [currentQIndex]: { ...currentAnsObj, ...payload } };
+    });
+  };
+
+  const handleSelectOption = (val) => {
+    if (testPhase !== 'testing') return;
+    updateAnswer({ selectedOption: val });
+  };
+
+  const handleDragStart = (e, itemId) => {
+    if (testPhase !== 'testing') return;
+    setDraggedItem(itemId);
+    e.dataTransfer.setData('text/plain', itemId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDrop = (e, slotId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (testPhase !== 'testing' || !draggedItem) return;
+    
+    const currentDrops = currentAns.droppedItems || {};
+    const newDrops = { ...currentDrops };
+    
+    // Prevent same ID existing in multiple slots
+    for (const key in newDrops) { 
+      if (newDrops[key] === draggedItem) delete newDrops[key]; 
+    }
+    
+    newDrops[slotId] = draggedItem;
+    updateAnswer({ droppedItems: newDrops });
+    setDraggedItem(null);
+  };
+
+  const removeDroppedItem = (slotId) => {
+    if (testPhase !== 'testing') return;
+    const currentDrops = currentAns.droppedItems || {};
+    const newDrops = { ...currentDrops };
+    delete newDrops[slotId];
+    updateAnswer({ droppedItems: newDrops });
+  };
+
+  const handleInlineChange = (blankIndex, val) => {
+    if (testPhase !== 'testing') return;
+    const currentInline = currentAns.inlineAnswers || {};
+    updateAnswer({ inlineAnswers: { ...currentInline, [blankIndex]: val } });
+  };
+
+  let isCurrentAnswered = false;
+  if (currentQuestion) {
+    if (isMCQ) isCurrentAnswered = !!currentAns.selectedOption;
+    if (isInline) isCurrentAnswered = Object.keys(currentAns.inlineAnswers || {}).length === Object.keys(currentQuestion.blanks || {}).length;
+    if (isDND) {
+      let totalSlots = 0;
+      (currentQuestion.targets || []).forEach(t => totalSlots += (currentQuestion.correctSets?.[t.id]?.length || 1));
+      isCurrentAnswered = Object.keys(currentAns.droppedItems || {}).length === totalSlots;
+    }
+  }
+
+  const checkQuestionCorrect = (qIndex) => {
+    const q = questions[qIndex];
+    const ans = answers[qIndex] || {};
+    
+    if (q.type === 'mcq') return ans.selectedOption === q.correct;
+    
+    if (q.type === 'inline' || q.type === 'scrollBox') {
+      const userInline = ans.inlineAnswers || {};
+      const blanks = q.blanks || {};
+      for (const blankId of Object.keys(blanks)) {
+        if (userInline[blankId] !== blanks[blankId].correct) return false;
+      }
+      return true;
+    }
+    
+    if (q.type === 'dnd' || q.type === 'order') {
+      const dropped = ans.droppedItems || {};
+      let allCorrect = true;
+      for (const target of (q.targets || [])) {
+        const expectedArr = q.correctSets?.[target.id] || [];
+        const userDroppedVals = [];
+        
+        for (let i = 0; i < expectedArr.length; i++) {
+          const dId = dropped[`${target.id}_${i}`];
+          const bankItem = (q.bank || []).find(b => b.id === dId);
+          if (bankItem) userDroppedVals.push(bankItem.val);
+        }
+
+        if (q.type === 'order') {
+          if (JSON.stringify(userDroppedVals) !== JSON.stringify(expectedArr)) allCorrect = false;
+        } else {
+          if (userDroppedVals.length !== expectedArr.length) allCorrect = false;
+          const unmatchedExpected = [...expectedArr];
+          for (const val of userDroppedVals) {
+             const idx = unmatchedExpected.indexOf(val);
+             if (idx !== -1) {
+                unmatchedExpected.splice(idx, 1);
+             } else {
+                allCorrect = false;
+             }
+          }
+        }
+      }
+      return allCorrect;
+    }
+    return false;
+  };
+
+  const finishTest = () => {
+    let totalPossible = 0;
+    let totalEarned = 0;
+
+    for (let i = 0; i < totalQuestions; i++) {
+      const q = questions[i];
+      const ans = answers[i] || {};
+
+      if (q.type === 'mcq') {
+        totalPossible += 1;
+        if (ans.selectedOption === q.correct) totalEarned += 1;
+      } else if (q.type === 'inline' || q.type === 'scrollBox') {
+        const blanks = q.blanks || {};
+        const userInline = ans.inlineAnswers || {};
+        for (const blankId of Object.keys(blanks)) {
+          totalPossible += 1;
+          if (userInline[blankId] === blanks[blankId].correct) totalEarned += 1;
+        }
+      } else if (q.type === 'dnd' || q.type === 'order') {
+        const dropped = ans.droppedItems || {};
+        for (const target of (q.targets || [])) {
+          const expectedArr = q.correctSets?.[target.id] || [];
+          totalPossible += expectedArr.length;
+
+          const userDroppedVals = [];
+          for (let s = 0; s < expectedArr.length; s++) {
+             const dId = dropped[`${target.id}_${s}`];
+             const bankItem = (q.bank || []).find(b => b.id === dId);
+             if (bankItem) userDroppedVals.push(bankItem.val);
+          }
+
+          if (q.type === 'order') {
+            for (let s = 0; s < expectedArr.length; s++) {
+              if (userDroppedVals[s] === expectedArr[s]) totalEarned += 1;
+            }
+          } else {
+            const unmatchedExpected = [...expectedArr];
+            for (const val of userDroppedVals) {
+               const idx = unmatchedExpected.indexOf(val);
+               if (idx !== -1) {
+                 totalEarned += 1;
+                 unmatchedExpected.splice(idx, 1);
+               }
+            }
+          }
+        }
+      }
+    }
+
+    const calculatedScore = totalPossible === 0 ? 0 : Math.ceil((totalEarned / totalPossible) * 10);
+    setFinalScore(calculatedScore);
+    setTestPhase('intermission');
+  };
+
+  const handleNextTest = () => {
+    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
+    else finishTest();
+  };
+
+  const handlePrevTest = () => {
+    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  };
+
+  const handleNextReview = () => {
+    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
+    else {
+      if (typeof onComplete === 'function') onComplete(finalScore);
+    }
+  };
+
+  const handlePrevReview = () => {
+    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  };
+
+  const renderPassageWithGlossary = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const parts = text.split(/\{([^}]+)\}/g);
+    return parts.map((part, i) => {
+      if (i % 2 !== 0) {
+        const cleanWord = part.toLowerCase();
+        const termData = currentPassage?.glossary?.[cleanWord];
+        if (!termData) return <span key={i} className="font-bold text-slate-800">{part}</span>;
+        return (
+          <button 
+            key={i} 
+            onClick={() => { setActiveGlossaryTerm({ word: part, ...termData }); }}
+            className="text-emerald-600 font-bold border-b-2 border-dashed border-emerald-600 hover:bg-emerald-50 transition-colors mx-0.5 rounded px-1"
+          >
+            {part}
+          </button>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
+  if (testPhase === 'intermission') {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-indigo-100 relative overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200 opacity-40 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-200 opacity-40 blur-[120px] pointer-events-none" />
+        
+        <TopBar onQuit={onQuit} current={totalQuestions} total={totalQuestions} modeTitle="Assessment Module" />
+        
+        <div className="flex-1 flex flex-col items-center justify-center p-6 z-10 animate-in zoom-in-95 duration-500">
+          <div className="bg-white p-12 md:p-16 rounded-[2.5rem] shadow-2xl border border-slate-200 text-center max-w-2xl w-full">
+             <div className="w-32 h-32 mx-auto bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-8 shadow-inner">
+               <CheckCircle2 className="w-16 h-16" strokeWidth={3} />
+             </div>
+             <h1 className="text-5xl font-black text-slate-800 tracking-tight mb-4">Assessment Complete</h1>
+             <p className="text-2xl font-bold text-slate-500 mb-8">Let's see how you did.</p>
+             
+             <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl py-8 mb-10 shadow-sm">
+                <span className="block text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Normalized XP</span>
+                <div className="text-6xl font-black text-emerald-500">
+                  {finalScore} <span className="text-4xl text-slate-300">/ 10</span>
+                </div>
+             </div>
+
+             <button 
+                onClick={() => { setCurrentQIndex(0); setTestPhase('reviewing'); }}
+                className="w-full py-5 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all bg-[#1CB0F6] border-b-[6px] border-[#1899D6] hover:bg-[#1899D6] active:border-b-0 active:translate-y-[6px] shadow-lg flex items-center justify-center"
+             >
+                Review Answers <ArrowRight className="w-6 h-6 ml-3" strokeWidth={3} />
+             </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isCurrentlyCorrect = testPhase === 'reviewing' ? checkQuestionCorrect(currentQIndex) : null;
+
+  return (
+    <div className="flex flex-col h-screen bg-slate-50 font-sans relative">
+      
+      <TopBar 
+        onQuit={onQuit} 
+        current={currentQIndex + 1} 
+        total={totalQuestions} 
+        modeTitle={testPhase === 'testing' ? "Assessment Module" : "Assessment Review"} 
+      />
+
+      {isTimeUp && testPhase === 'testing' && (
+        <div className="bg-red-600 text-white p-3 text-center font-bold text-lg uppercase tracking-widest flex justify-center items-center shadow-md z-30 animate-in slide-in-from-top-2">
+          <AlertTriangle className="mr-2" /> Time is up! Submitting answers...
+        </div>
+      )}
+
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative z-10">
+        
+        {/* Left Hand Side (Passage & Graphics) - Only renders if they exist */}
+        {hasLHS && (
+          <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto border-b md:border-b-0 md:border-r border-slate-200 bg-white z-10 pb-32">
+            {hasPassage && (
+              <div className={`animate-in fade-in duration-300 ${hasGraphic ? 'mb-8 border-b-2 border-slate-100 pb-8' : ''}`}>
+                <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-6 leading-tight">{currentPassage.title}</h2>
+                <div className="mb-6">
+                  {currentPassage.meta && (
+                    <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 mb-4 gap-3">
+                      <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">{currentPassage.meta}</h3>
+                    </div>
+                  )}
+                  <div className="space-y-4 text-slate-700 text-lg leading-relaxed font-medium">
+                    {(currentPassage.text || []).map((p, i) => (
+                      <p key={i}>{renderPassageWithGlossary(p)}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {hasGraphic && (
+              <div className="w-full animate-in fade-in duration-300">
+                {currentQuestion.inlineSvg ? (
+                  <div 
+                    className="w-full h-auto flex items-center justify-center p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-inner"
+                    dangerouslySetInnerHTML={{ __html: currentQuestion.inlineSvg }}
+                  />
+                ) : (
+                  <img 
+                    src={`${import.meta.env.BASE_URL || ''}images/${unit?.id || 'MATH_1A'}/${(currentQuestion.imageFile || currentQuestion.imageUrl).split('/').pop()}`} 
+                    alt="Assessment Diagram" 
+                    className="w-full h-auto object-contain rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-inner p-6"
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Right Hand Side (Questions & Controls) */}
+        <div className={`w-full ${hasLHS ? 'md:w-1/2 bg-slate-50' : 'max-w-4xl mx-auto bg-white border-x border-slate-200'} flex flex-col relative overflow-hidden pb-48`}>
+          
+          {testPhase === 'testing' && !isTimeUp && (
+            <div className="absolute top-4 right-4 z-30 flex items-center font-black text-lg px-4 py-2 rounded-xl bg-white border-2 border-slate-200 shadow-sm text-slate-700">
+               <Clock className="w-5 h-5 mr-2" />
+               {formatTime(timeLeft)}
+            </div>
+          )}
+
+          <div className="p-6 md:p-8 overflow-y-auto h-full relative animate-in fade-in slide-in-from-right-4 duration-300 pt-16 md:pt-10">
+            <h3 className="text-xl font-black text-slate-800 leading-snug tracking-tight mb-8 pr-20">{currentQuestion.title}</h3>
+            
+            {isMCQ && (
+              <div className="space-y-3">
+                {(currentQuestion.options || []).map((opt) => {
+                  const isSelected = currentAns.selectedOption === opt.val;
+                  const isCorrectAnswer = opt.val === currentQuestion.correct;
+                  let btnStyle = "bg-white border-slate-200 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 shadow-sm hover:shadow-md";
+                  
+                  if (testPhase === 'reviewing') {
+                    if (isCorrectAnswer) btnStyle = "bg-[#D7FFD7] border-[#58A700] text-[#3E7500] shadow-sm";
+                    else if (isSelected && !isCorrectAnswer) btnStyle = "bg-[#FFE5E5] border-[#EA4335] text-[#A32D23] shadow-sm";
+                    else btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                  } else if (isSelected) {
+                    btnStyle = "bg-emerald-50 border-emerald-500 border-b-4 text-emerald-800 translate-y-[-2px] shadow-md";
+                  }
+
+                  return (
+                    <button 
+                      key={opt.val}
+                      onClick={() => handleSelectOption(opt.val)}
+                      disabled={testPhase !== 'testing'}
+                      className={`w-full text-left p-4 rounded-2xl border-2 font-medium text-lg transition-all ${btnStyle}`}
+                    >
+                      {opt.text}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {isDND && (
+              <div className="space-y-8">
+                <div className="sticky top-0 z-30 pt-1 pb-4 bg-slate-50/90 backdrop-blur-md shadow-[0_15px_15px_-15px_rgba(0,0,0,0.1)] -mt-2">
+                  <div className="bg-white border-2 border-dashed border-slate-300 rounded-3xl p-5 shadow-sm">
+                    <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Options Bank</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {(currentQuestion.bank || []).map((opt) => {
+                        // Check if the unique ID is already used
+                        const isUsed = Object.values(currentAns.droppedItems || {}).includes(opt.id);
+                        if (isUsed) return null;
+                        return (
+                          <div
+                            key={opt.id}
+                            draggable={testPhase === 'testing'}
+                            onDragStart={(e) => handleDragStart(e, opt.id)}
+                            className={`flex items-center px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-medium text-slate-700 shadow-sm transition-all ${testPhase === 'testing' ? 'cursor-grab active:cursor-grabbing hover:border-emerald-400 hover:shadow-md' : 'opacity-50'}`}
+                          >
+                            <GripVertical className="w-5 h-5 mr-2 text-slate-400" />
+                            {opt.text}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Targets</h4>
+                  <div className={`grid gap-4 ${(currentQuestion.targets || []).length > 1 && currentQuestion.type !== 'order' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'}`}>
+                    {(currentQuestion.targets || []).map((target) => {
+                      const requiredCount = currentQuestion.correctSets?.[target.id]?.length || 1;
+                      return (
+                        <div key={target.id} className="flex flex-col bg-white p-4 rounded-3xl border-2 border-slate-200 shadow-sm">
+                          <div className="font-bold text-slate-800 mb-3 text-[15px] leading-tight text-center border-b-2 border-slate-100 pb-3">{target.title}</div>
+                          <div className="flex flex-col gap-2">
+                            {Array.from({ length: requiredCount }).map((_, slotIndex) => {
+                              const slotId = `${target.id}_${slotIndex}`;
+                              const droppedId = (currentAns.droppedItems || {})[slotId];
+                              const droppedObj = (currentQuestion.bank || []).find(b => b.id === droppedId);
+                              
+                              let slotStyle = "bg-slate-50 border-dashed border-slate-300 text-slate-400";
+                              
+                              if (testPhase === 'reviewing') {
+                                const expectedArr = currentQuestion.correctSets?.[target.id] || [];
+                                // For evaluation, compare the 'val' property, not the 'id'
+                                const droppedVal = droppedObj ? droppedObj.val : null;
+                                let isCorrectInSlot = currentQuestion.type === 'order' ? expectedArr[slotIndex] === droppedVal : expectedArr.includes(droppedVal);
+                                
+                                if (!droppedId) slotStyle = "bg-[#FFE5E5] border-[#EA4335] border-solid text-[#A32D23] shadow-sm";
+                                else if (isCorrectInSlot) slotStyle = "bg-[#D7FFD7] border-[#58A700] border-solid text-[#3E7500] shadow-sm";
+                                else slotStyle = "bg-[#FFE5E5] border-[#EA4335] border-solid text-[#A32D23] shadow-sm";
+                              } else if (droppedObj) {
+                                slotStyle = "bg-emerald-50 border-emerald-400 border-solid text-emerald-800 shadow-sm";
+                              }
+
+                              return (
+                                <div 
+                                  key={slotId}
+                                  onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }}
+                                  onDrop={(e) => handleDrop(e, slotId)}
+                                  onClick={() => droppedObj && removeDroppedItem(slotId)}
+                                  className={`min-h-[70px] flex items-center p-3 rounded-2xl border-2 transition-all ${slotStyle} ${testPhase === 'testing' && droppedObj ? 'cursor-pointer hover:bg-rose-50 hover:border-rose-300' : ''}`}
+                                >
+                                  {!droppedObj ? (
+                                    <div className="flex items-center justify-center w-full">
+                                      <CornerDownRight className="w-5 h-5 mr-2 opacity-50" />
+                                      <span className="font-medium text-sm">{testPhase === 'reviewing' ? 'Left Blank' : 'Drop Item Here'}</span>
+                                    </div>
+                                  ) : (
+                                    <div className="font-bold flex items-center justify-between w-full text-[15px]">
+                                      <span>{droppedObj.text}</span>
+                                      {testPhase === 'testing' && <XCircle className="w-5 h-5 text-slate-400 hover:text-rose-500 ml-2 flex-shrink-0 transition-colors" />}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isInline && (
+              <div className="text-lg leading-loose text-slate-700 bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm">
+                {(currentQuestion.textParts || []).map((part, i) => {
+                  const blankIndex = i + 1;
+                  const blankData = currentQuestion.blanks?.[blankIndex];
+                  const selectedVal = (currentAns.inlineAnswers || {})[blankIndex];
+                  
+                  let selectStyle = 'bg-emerald-50 border-emerald-400 text-emerald-800 hover:bg-emerald-100 hover:shadow-md';
+                  let showCorrection = false;
+
+                  if (testPhase === 'reviewing') {
+                    const isCorrect = selectedVal === blankData?.correct;
+                    if (isCorrect) selectStyle = 'bg-[#D7FFD7] border-[#58A700] text-[#3E7500]';
+                    else {
+                      selectStyle = 'bg-[#FFE5E5] border-[#EA4335] text-[#A32D23]';
+                      showCorrection = true;
+                    }
+                  }
+
+                  return (
+                    <React.Fragment key={i}>
+                      {part}
+                      {blankData && (
+                        <span className="inline-flex items-center">
+                          <select
+                            value={selectedVal || ""}
+                            onChange={(e) => handleInlineChange(blankIndex, e.target.value)}
+                            disabled={testPhase !== 'testing'}
+                            className={`mx-2 p-2 border-b-4 border-2 rounded-xl font-bold cursor-pointer transition-all outline-none appearance-none pr-8 bg-no-repeat shadow-sm ${selectStyle}`}
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundSize: '1.5em 1.5em' }}
+                          >
+                            <option value="" disabled>{testPhase === 'reviewing' ? 'Blank' : 'Select...'}</option>
+                            {(blankData.options || []).map(opt => <option key={opt.val} value={opt.val}>{opt.text}</option>)}
+                          </select>
+                          {showCorrection && (
+                            <span className="text-[#3E7500] bg-[#D7FFD7] border border-[#58A700] px-2 py-1 rounded-lg ml-1 text-sm font-bold shadow-sm">
+                              {blankData.options.find(o => o.val === blankData.correct)?.text}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {testPhase === 'testing' && (
+        <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-2">
+            <button 
+              onClick={handlePrevTest} 
+              disabled={currentQIndex === 0}
+              className="px-6 py-3 rounded-xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30"
+            >
+              Previous
+            </button>
+            <button 
+              onClick={handleNextTest}
+              disabled={!isCurrentAnswered}
+              className="px-10 py-4 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md bg-[#1CB0F6] border-[#1899D6] hover:bg-[#159bd9] disabled:opacity-50 disabled:bg-slate-300 disabled:border-slate-400 disabled:text-slate-500"
+            >
+              {currentQIndex === totalQuestions - 1 ? 'Submit Test' : 'Next Question'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {testPhase === 'reviewing' && (
+        <Feedback 
+          isCorrect={isCurrentlyCorrect}
+          expEn={currentQuestion.expEn}
+          expVn={currentQuestion.expVn}
+          onPrev={handlePrevReview}
+          onNext={handleNextReview}
+          isFirst={currentQIndex === 0}
+          isLast={currentQIndex === totalQuestions - 1}
+        />
+      )}
+
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/Notes.jsx">
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  ChevronRight, ChevronLeft, BookOpen, Scale, Target, 
+  MessageSquare, ShieldCheck, CheckCircle2, Construction, 
+  PlayCircle, PauseCircle, Maximize2, X, Pencil
+} from 'lucide-react';
+import TopBar from '../components/TopBar';
+
+const IconMap = { BookOpen, Scale, Target, MessageSquare, ShieldCheck };
+
+const getAssetUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+};
+
+export default function Notes({ slides, onComplete, onQuit }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState(null);
+  const [lang, setLang] = useState('en');
+  
+  const audioRef = useRef(null);
+  const activeAudioUrl = useRef(null); 
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      try {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      } catch(e) {
+        console.warn("Audio cleanup error:", e);
+      }
+    }
+    setIsPlayingAudio(false);
+  };
+
+  useEffect(() => {
+    return () => stopAudio();
+  }, []);
+
+  useEffect(() => {
+    stopAudio();
+  }, [currentIndex]);
+
+  const handleQuit = () => {
+    stopAudio();
+    if (typeof onQuit === 'function') onQuit();
+  };
+
+  const handleComplete = () => {
+    stopAudio();
+    if (typeof onComplete === 'function') onComplete();
+  };
+
+  if (!slides || !Array.isArray(slides) || slides.length === 0) {
+    return (
+      <div className="h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+          <Construction className="w-8 h-8 text-indigo-500" />
+        </div>
+        <h2 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Notes Unavailable</h2>
+        <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-200 mb-6 text-sm font-bold text-slate-500">
+          No lecture slides have been configured for this module yet.
+        </div>
+        <button onClick={handleQuit} className="px-6 py-3 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-xl font-black text-base uppercase tracking-widest border-b-[4px] border-[#1899D6] active:border-b-0 active:translate-y-[4px] transition-all">
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
+  
+  const currentSlide = slides[currentIndex];
+
+  const slideTitle = lang === 'vn' ? (currentSlide.titleVn || currentSlide.title) : currentSlide.title;
+  const slideSubtitle = lang === 'vn' ? (currentSlide.subtitleVn || currentSlide.subtitle) : currentSlide.subtitle;
+  const slideContent = lang === 'vn' ? (currentSlide.contentVn || currentSlide.content) : currentSlide.content;
+  const slideExample = lang === 'vn' ? (currentSlide.exampleVn || currentSlide.example) : currentSlide.example;
+
+  const toggleAudio = (rawUrl) => {
+    if (!rawUrl) return;
+    const resolvedUrl = getAssetUrl(rawUrl);
+
+    try {
+      if (isPlayingAudio && audioRef.current) {
+        audioRef.current.pause();
+        setIsPlayingAudio(false);
+      } else {
+        if (!audioRef.current || activeAudioUrl.current !== resolvedUrl) {
+          if (audioRef.current) audioRef.current.pause();
+          audioRef.current = new Audio(resolvedUrl);
+          activeAudioUrl.current = resolvedUrl;
+          audioRef.current.onended = () => setIsPlayingAudio(false);
+        }
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => setIsPlayingAudio(true)).catch(error => {
+            console.warn("Audio playback prevented by browser:", error);
+            setIsPlayingAudio(false);
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("Audio interaction failed:", e);
+      setIsPlayingAudio(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < slides.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      handleComplete();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
+  };
+
+  const parseBold = (text) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} className="font-black text-slate-900">{part.slice(2, -2)}</strong>;
+      }
+      return <span key={j}>{part}</span>;
+    });
+  };
+
+  const renderContent = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const lines = text.split('\n');
+    const elements = [];
+    let groupedBumpers = [];
+
+    const flushBumpers = () => {
+      if (groupedBumpers.length > 0) {
+        elements.push(
+          <div key={`bumper-${elements.length}`} className="my-4 bg-amber-50/60 border-l-[4px] border-amber-400 p-4 rounded-r-xl relative animate-in fade-in transition-all">
+            <div className="absolute -left-[14px] top-4 bg-amber-400 text-amber-900 p-1.5 rounded-full shadow-sm border-[2px] border-white z-10">
+              <Pencil className="w-3.5 h-3.5" strokeWidth={3} />
+            </div>
+            <div className="space-y-2 ml-3">
+              {groupedBumpers.map((line, idx) => (
+                <p key={idx} className="text-amber-900 font-medium text-base lg:text-lg leading-relaxed">
+                  {parseBold(line)}
+                </p>
+              ))}
+            </div>
+          </div>
+        );
+        groupedBumpers = [];
+      }
+    };
+
+    lines.forEach((line, i) => {
+      if (!line.trim()) {
+        flushBumpers();
+        elements.push(<div key={`space-${i}`} className="h-2" />);
+      } else if (line.trim().startsWith('>')) {
+        groupedBumpers.push(line.replace('>', '').trim());
+      } else {
+        flushBumpers();
+        elements.push(
+          <p key={`p-${i}`} className="mb-3 text-slate-700 text-base lg:text-lg leading-relaxed font-medium">
+            {parseBold(line)}
+          </p>
+        );
+      }
+    });
+    flushBumpers(); 
+    return elements;
+  };
+
+  const hasDiagram = !!currentSlide.image || !!currentSlide.inlineSvg;
+
+  return (
+    <div className="h-screen flex flex-col bg-slate-100 font-sans selection:bg-indigo-100 overflow-hidden relative">
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200 opacity-40 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-200 opacity-40 blur-[120px] pointer-events-none" />
+
+      <TopBar 
+        onQuit={handleQuit} 
+        current={currentIndex + 1} 
+        total={slides.length} 
+        modeTitle="Lesson Notes Module" 
+      />
+
+      <div className="flex-1 flex justify-center items-center p-4 sm:p-6 lg:p-8 z-10 overflow-hidden relative">
+        <div className={`w-full max-h-full flex flex-col bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden transition-all duration-500 ${hasDiagram ? 'max-w-7xl' : 'max-w-4xl'}`}>
+          
+          {currentSlide.type === 'intro' && (
+            <div className={`flex-1 flex flex-col items-center justify-center p-8 sm:p-12 text-center text-white ${currentSlide.color || 'bg-[#1cb0f6]'} animate-in zoom-in-95 duration-500 overflow-y-auto`}>
+              <div className="bg-white/20 w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 backdrop-blur-sm shadow-inner border border-white/30">
+                <BookOpen className="w-12 h-12 opacity-100" strokeWidth={2.5} />
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-black tracking-tight mb-4 drop-shadow-md leading-tight">{slideTitle || 'Introduction'}</h1>
+              <p className="text-xl lg:text-2xl font-bold opacity-90 drop-shadow-sm max-w-2xl mx-auto">{slideSubtitle}</p>
+              
+              {currentSlide.audio && (
+                 <button onClick={() => toggleAudio(currentSlide.audio)} className="mt-8 mx-auto flex items-center bg-white text-slate-800 px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md">
+                   {isPlayingAudio ? <PauseCircle className="w-5 h-5 mr-2 text-slate-800" /> : <PlayCircle className="w-5 h-5 mr-2 text-slate-800" />}
+                   {isPlayingAudio ? "Stop Audio" : "Listen"}
+                 </button>
+              )}
+            </div>
+          )}
+
+          {currentSlide.type === 'concept' && (() => {
+            const SlideIcon = IconMap[currentSlide.icon] || BookOpen;
+            const themeColor = currentSlide.color || 'bg-indigo-500';
+
+            return (
+              <>
+                <div className={`${themeColor} p-5 lg:p-6 text-white flex items-center relative overflow-hidden flex-shrink-0`}>
+                  <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-white opacity-10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+                  <div className="bg-white/20 p-3 rounded-xl mr-4 backdrop-blur-sm shadow-inner border border-white/30 z-10">
+                    <SlideIcon className="w-6 h-6 lg:w-8 lg:h-8" strokeWidth={2.5} />
+                  </div>
+                  <h2 className="text-2xl lg:text-4xl font-black tracking-tight z-10 relative drop-shadow-md">{slideTitle || 'Concept'}</h2>
+                  
+                  {currentSlide.audio && (
+                    <button 
+                      onClick={() => toggleAudio(currentSlide.audio)} 
+                      className="ml-auto z-10 bg-white/20 hover:bg-white/30 transition-colors p-2.5 rounded-full backdrop-blur-md shadow-md border border-white/30 active:scale-95"
+                    >
+                      {isPlayingAudio ? <PauseCircle className="w-6 h-6" /> : <PlayCircle className="w-6 h-6" />}
+                    </button>
+                  )}
+                </div>
+                
+                <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto min-h-0">
+                  <div className={`p-6 lg:p-10 flex-1 flex flex-col justify-center ${hasDiagram ? 'lg:border-r border-slate-100 lg:w-[45%]' : ''}`}>
+                    <div>{renderContent(slideContent)}</div>
+                    
+                    {slideExample && (
+                      <div className={`${themeColor.replace('bg-', 'bg-').replace('500', '50').replace('400', '50')} bg-opacity-50 border-2 ${themeColor.replace('bg-', 'border-').replace('500', '200').replace('400', '200')} rounded-2xl p-5 relative mt-8 shadow-sm`}>
+                        <div className={`absolute -top-3 left-6 ${themeColor} text-white text-[10px] lg:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-sm border border-white/20`}>
+                          {lang === 'vn' ? 'Ví Dụ' : 'Example'}
+                        </div>
+                        <div className="text-base lg:text-xl font-bold text-slate-800 whitespace-pre-wrap mt-2 leading-relaxed">
+                          {slideExample}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {hasDiagram && (
+                    <div className="w-full lg:w-[55%] bg-slate-50/40 p-4 lg:p-8 flex flex-col items-center justify-center flex-shrink-0">
+                      <div className="relative w-full h-full min-h-[300px] lg:min-h-[400px] bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden group">
+                        
+                        {currentSlide.inlineSvg ? (
+                          <div 
+                            className="w-full h-full flex items-center justify-center p-4"
+                            dangerouslySetInnerHTML={{ __html: currentSlide.inlineSvg }} 
+                          />
+                        ) : (
+                          <iframe 
+                            src={getAssetUrl(currentSlide.image)} 
+                            title={slideTitle || "Educational Diagram"}
+                            className="absolute inset-0 w-full h-full pointer-events-none select-none"
+                            scrolling="no"
+                            frameBorder="0"
+                          />
+                        )}
+                        
+                        <button 
+                          onClick={() => setZoomedImage(
+                            currentSlide.inlineSvg 
+                              ? { type: 'svg', content: currentSlide.inlineSvg } 
+                              : { type: 'url', src: getAssetUrl(currentSlide.image) }
+                          )}
+                          className="absolute top-4 right-4 p-3 bg-white/95 hover:bg-white text-slate-600 hover:text-indigo-600 rounded-xl shadow-lg border border-slate-200 opacity-0 group-hover:opacity-100 transition-all z-10 scale-95 hover:scale-100 active:scale-95"
+                          title="Expand Image"
+                        >
+                          <Maximize2 className="w-6 h-6" strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+
+          {currentSlide.type === 'summary' && (
+            <div className={`flex-1 flex flex-col items-center justify-center p-8 sm:p-12 text-center text-white ${currentSlide.color || 'bg-[#14b8a6]'} animate-in zoom-in-95 duration-500 overflow-y-auto`}>
+              <div className="bg-white/20 w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 backdrop-blur-sm shadow-inner border border-white/30">
+                <CheckCircle2 className="w-12 h-12 opacity-100" strokeWidth={3} />
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-black tracking-tight mb-4 drop-shadow-md leading-tight">{slideTitle || "Complete"}</h1>
+              <p className="text-xl lg:text-2xl font-bold opacity-90 drop-shadow-sm max-w-2xl mx-auto">{slideSubtitle}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="bg-white/90 backdrop-blur-xl border-t border-slate-200 p-3 sm:p-4 z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] flex-shrink-0">
+        <div className="max-w-5xl mx-auto flex items-center justify-between px-2 gap-4">
+          
+          <button 
+            onClick={handlePrev} 
+            disabled={currentIndex === 0}
+            className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl border-[2px] border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-600 active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm bg-white"
+          >
+            <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={3} />
+          </button>
+          
+          <div className="flex bg-slate-100 rounded-full shadow-inner border border-slate-200/60 p-1.5 flex-shrink-0 mx-auto">
+            <button 
+               onClick={() => setLang('en')} 
+               className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${lang === 'en' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              EN
+            </button>
+            <button 
+               onClick={() => setLang('vn')} 
+               className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${lang === 'vn' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              VN
+            </button>
+          </div>
+
+          <button 
+            onClick={handleNext}
+            className={`flex items-center px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg tracking-widest uppercase transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md
+              ${currentIndex === slides.length - 1 
+                ? 'bg-[#58cc02] border-[#58a700] text-white hover:bg-[#46a802]' 
+                : 'bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159bd9]'}`}
+          >
+            <span className="hidden sm:inline">{currentIndex === slides.length - 1 ? 'Finish' : 'Continue'}</span>
+            <span className="sm:hidden">{currentIndex === slides.length - 1 ? 'End' : 'Next'}</span>
+            {currentIndex !== slides.length - 1 && <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 -mr-1" strokeWidth={3} />}
+          </button>
+
+        </div>
+      </div>
+
+      {zoomedImage && (
+        <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-200">
+          <button 
+            onClick={() => setZoomedImage(null)} 
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-rose-500 text-white rounded-full transition-colors shadow-xl border border-white/20 active:scale-95 z-50"
+          >
+            <X className="w-8 h-8" strokeWidth={2.5} />
+          </button>
+          <div className="relative w-full h-full max-w-7xl max-h-[90vh] flex items-center justify-center bg-white rounded-[2rem] shadow-2xl overflow-hidden p-6 animate-in zoom-in-95 duration-300">
+             {zoomedImage.type === 'svg' ? (
+               <div 
+                 className="w-full h-full flex items-center justify-center"
+                 dangerouslySetInnerHTML={{ __html: zoomedImage.content }} 
+               />
+             ) : (
+               <iframe 
+                 src={zoomedImage.src} 
+                 title="Expanded Diagram"
+                 className="w-full h-full pointer-events-none select-none"
+                 scrolling="no"
+                 frameBorder="0"
+               />
+             )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+</files>
