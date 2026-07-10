@@ -1,4 +1,5 @@
-// src/data/Y8/Math_1A/notes.js
+// src/data/Y8/MATH_1A/notes.js
+import { DIAGRAMS } from './diagrams.js';
 
 export const notes = [
   {
@@ -21,17 +22,7 @@ export const notes = [
     contentVn: "Góc được đo bằng độ. Trước khi xem xét các đường cắt nhau, chúng ta phải phân loại từng góc dựa trên kích thước của chúng.\n\n> **Góc Nhọn** là góc lớn hơn 0° nhưng nhỏ hơn 90°.\n> **Góc Tù** là góc lớn hơn 90° nhưng nhỏ hơn 180°.",
     example: "An angle measuring 45° is acute, while an angle measuring 120° is obtuse.",
     exampleVn: "Góc có số đo 45° là góc nhọn, trong khi góc có số đo 120° là góc tù.",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 100 150 L 200 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 100 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 130 150 A 30 30 0 0 0 113.4 123.2" fill="none" stroke="#1cb0f6" stroke-width="5" stroke-linecap="round"/>
-      <text x="145" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0284c7" text-anchor="middle">Acute (< 90°)</text>
-      
-      <path d="M 250 150 L 350 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 250 150 L 150 50" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 280 150 A 30 30 0 0 0 228.8 128.8" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
-      <text x="290" y="180" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Obtuse (> 90°)</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_ACUTE_OBTUSE,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_2.mp3"
   },
   {
@@ -44,20 +35,7 @@ export const notes = [
     contentVn: "Khi hai góc kề nhau nằm cạnh nhau, tổng của chúng tạo ra một tên gọi toán học đặc biệt.\n\n> **Góc Phụ nhau** là hai góc có tổng số đo chính xác bằng 90° (tạo thành một góc vuông).\n> **Góc Bù nhau** là hai góc có tổng số đo chính xác bằng 180° (tạo thành một đường thẳng).",
     example: "If Angle A is 60° and Angle B is 120°, they are supplementary because 60 + 120 = 180.",
     exampleVn: "Nếu Góc A là 60° và Góc B là 120°, chúng là hai góc bù nhau vì 60 + 120 = 180.",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 50 50 L 50 150 L 150 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <path d="M 50 150 L 120 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 90 150 A 40 40 0 0 0 76.3 119.9" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 76.3 119.9 A 40 40 0 0 0 50 110" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
-      <rect x="50" y="135" width="15" height="15" fill="none" stroke="#cbd5e1" stroke-width="3"/>
-      <text x="100" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 90°</text>
-      
-      <path d="M 170 150 L 380 150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 280 150 L 330 70" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 320 150 A 40 40 0 0 0 301.2 116" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 301.2 116 A 40 40 0 0 0 240 150" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
-      <text x="280" y="185" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="middle">Sum = 180°</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_COMPLEMENTARY_SUPPLEMENTARY,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_3.mp3"
   },
   {
@@ -70,19 +48,7 @@ export const notes = [
     contentVn: "Khi hai đường thẳng cắt nhau, chúng tạo ra bốn góc quanh một điểm trung tâm. Các góc đối diện trực tiếp với nhau chia sẻ một mối quan hệ bền chặt.\n\n> **Góc đối đỉnh** nằm đối diện nhau, tạo thành hình chữ **'X'**. Chúng luôn luôn bằng nhau.",
     example: "If the top angle in an intersection is 105°, the bottom angle directly across from it is also exactly 105°.",
     exampleVn: "Nếu góc trên cùng tại một giao điểm là 105°, thì góc dưới cùng đối diện trực tiếp với nó cũng chính xác là 105°.",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 100 50 L 300 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 300 50 L 100 200" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-      
-      <path d="M 224 107 A 30 30 0 0 0 176 107" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 176 143 A 30 30 0 0 0 224 143" fill="none" stroke="#ff4b4b" stroke-width="5" stroke-linecap="round"/>
-      
-      <path d="M 176 107 A 30 30 0 0 0 176 143" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 224 143 A 30 30 0 0 0 224 107" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-      
-      <text x="200" y="90" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
-      <text x="200" y="175" font-family="sans-serif" font-weight="bold" font-size="16" fill="#b91c1c" text-anchor="middle">105°</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_VERTICALLY_OPPOSITE,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_4.mp3"
   },
   {
@@ -95,17 +61,7 @@ export const notes = [
     contentVn: "Trong hình học, các đường thẳng không bao giờ chạm nhau được đánh dấu bằng các mũi tên nhỏ giống nhau (>).\n\n> **Đường thẳng song song** là hai hoặc nhiều đường thẳng luôn giữ nguyên một khoảng cách và không bao giờ cắt nhau.\n> **Đường cát tuyến** là một đường thẳng duy nhất cắt ngang qua hai hoặc nhiều đường thẳng song song.",
     example: "Think of a set of train tracks as the parallel lines, and a straight road crossing over both tracks as the transversal.",
     exampleVn: "Hãy tưởng tượng một bộ đường ray xe lửa là các đường thẳng song song, và một con đường thẳng chạy vắt ngang qua cả hai đường ray là đường cát tuyến.",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
-      <path d="M 180 70 L 195 80 L 180 90" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M 180 160 L 195 170 L 180 180" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      
-      <path d="M 130 20 L 270 230" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
-      
-      <text x="350" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#2563eb" text-anchor="end">Parallel Lines</text>
-      <text x="280" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#d97706" text-anchor="start">Transversal</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_PARALLEL_TRANSVERSAL,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_5.mp3"
   },
   {
@@ -118,19 +74,7 @@ export const notes = [
     contentVn: "Khi một đường cát tuyến cắt các đường thẳng song song, nó tạo ra một tập hợp các mẫu góc có thể đoán trước ẩn bên trong các giao điểm.\n\n> **Góc so le trong** nằm ở hai phía đối diện của đường cát tuyến, tạo thành hình chữ **'Z'**. Chúng luôn luôn bằng nhau.",
     example: "If you trace a 'Z' along the lines and find the inner top angle is 50°, the opposite inner angle at the bottom of the 'Z' is also 50°.",
     exampleVn: "Nếu bạn vẽ một chữ 'Z' dọc theo các đường thẳng và thấy góc trong phía trên là 50°, thì góc trong đối diện ở dưới cùng của chữ 'Z' cũng là 50°.",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      
-      <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
-      
-      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#7e22ce" stroke-width="5" stroke-linecap="round"/>
-      
-      <text x="215" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="start">Equal</text>
-      <text x="185" y="145" font-family="sans-serif" font-weight="bold" font-size="14" fill="#7e22ce" text-anchor="end">Equal</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_ALTERNATE_ANGLES,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_6.mp3"
   },
   {
@@ -143,21 +87,7 @@ export const notes = [
     contentVn: "Hãy tưởng tượng việc trượt giao điểm trên cùng xuống dọc theo đường cát tuyến cho đến khi nó trùng khít hoàn hảo với giao điểm dưới cùng.\n\n> **Góc đồng vị** nằm ở vị trí chính xác giống nhau tại mỗi giao điểm, tạo thành hình chữ **'F'**. Chúng luôn luôn bằng nhau.",
     example: "The top-right angle of the upper intersection is corresponding and exactly equal to the top-right angle of the lower intersection.",
     exampleVn: "Góc trên cùng bên phải của giao điểm trên là đồng vị và hoàn toàn bằng với góc trên cùng bên phải của giao điểm dưới.",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      
-      <path d="M 140 35 L 230 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
-      <path d="M 170 80 L 270 80" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
-      <path d="M 230 170 L 330 170" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round"/>
-      
-      <path d="M 195 80 A 25 25 0 0 0 156.1 59.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#15803d" stroke-width="5" stroke-linecap="round"/>
-      
-      <text x="210" y="65" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
-      <text x="270" y="155" font-family="sans-serif" font-weight="bold" font-size="14" fill="#15803d" text-anchor="start">Equal</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_CORRESPONDING_ANGLES,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_7.mp3"
   },
   {
@@ -170,18 +100,7 @@ export const notes = [
     contentVn: "Không giống như hình chữ Z và F, các góc này KHÔNG bằng nhau. Thay vào đó, chúng phối hợp với nhau như một đội.\n\n> **Góc trong cùng phía** (hoặc Góc liên minh) nằm ở cùng một phía của đường cát tuyến, tạo thành hình chữ **'C'**. Chúng bù nhau (tổng của chúng là 180°).",
     example: "If the top inside angle is 110°, the bottom inside angle right below it must be 70° (because 110 + 70 = 180).",
     exampleVn: "Nếu góc bên trong phía trên là 110°, góc bên trong phía dưới ngay bên dưới nó phải là 70° (vì 110 + 70 = 180).",
-    inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-      <path d="M 50 80 L 350 80" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 50 170 L 350 170" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 130 20 L 270 230" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
-      
-      <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#3b82f6" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
-      
-      <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
-      <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"/>
-      
-      <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Add to 180°</text>
-    </svg>`,
+    inlineSvg: DIAGRAMS.NOTES_COINTERIOR_ANGLES,
     audio: "/audio/Y8/MATH_1A/slide_MATH_1A_8.mp3"
   },
   {

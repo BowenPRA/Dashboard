@@ -105,7 +105,8 @@ export default function TowerDefense({
       decorations: generateDecorations(layout, pathSet),
       waveInProgress: false, spawnQueue: [], spawnTimer: 0,
       fireCooldowns: {}, nextId: 1, challengeTimer: Infinity, wave5ChallengeSpawned: false,
-      usedVocab: [], autoPlayDelay: 0, triggerNextWave: false
+      usedVocab: {}, // Changed from [] to {} to track usage per mode
+      autoPlayDelay: 0, triggerNextWave: false
     };
   }
   const g = gRef.current;
@@ -165,27 +166,41 @@ export default function TowerDefense({
 
   function buildChallengeTrigger() {
     if (!vocab || vocab.length === 0) return;
-    let available = vocab.filter(v => !g.usedVocab.includes(v.word));
     
+    // 1. Compile a list of all available specific questions (Word + Mode)
+    let available = [];
+    vocab.forEach(v => {
+      const usage = g.usedVocab[v.word] || { TYPE: false, CHOICE: false };
+      if (!usage.TYPE) available.push({ item: v, mode: 'TYPE' });
+      if (!usage.CHOICE) available.push({ item: v, mode: 'CHOICE' });
+    });
+    
+    // 2. Endless looping - if all specific questions are used, reset the tracker to ensure endless play
     if (available.length === 0) {
-      g.usedVocab = [];
-      available = vocab;
+      g.usedVocab = {};
+      vocab.forEach(v => {
+        available.push({ item: v, mode: 'TYPE' });
+        available.push({ item: v, mode: 'CHOICE' });
+      });
     }
 
-    const v = available[Math.floor(Math.random() * available.length)];
-    g.usedVocab.push(v.word); 
+    // 3. Pick one specific challenge at random
+    const { item, mode } = available[Math.floor(Math.random() * available.length)];
 
-    const mode = Math.random() < 0.5 ? 'TYPE' : 'CHOICE';
+    // 4. Mark exactly that mode as used for that word so it gets removed from the bank
+    if (!g.usedVocab[item.word]) g.usedVocab[item.word] = { TYPE: false, CHOICE: false };
+    g.usedVocab[item.word][mode] = true;
+
+    // 5. Generate distractors if CHOICE
     let choices = null;
-    
     if (mode === 'CHOICE') {
-      const others = vocab.filter(x => x.word.toLowerCase() !== v.word.toLowerCase());
+      const others = vocab.filter(x => x.word.toLowerCase() !== item.word.toLowerCase());
       const distractors = shuffle(others).slice(0, 3).map(x => x.word);
-      choices = shuffle([v.word, ...distractors]);
+      choices = shuffle([item.word, ...distractors]);
     }
     
     challengeActiveRef.current = true;
-    setChallenge({ mode, word: v.word, def: v.def, choices });
+    setChallenge({ mode, word: item.word, def: item.def, choices });
     setChallengeInput('');
     setChallengeTimeLeft(CHALLENGE_DURATION);
   }
@@ -328,7 +343,9 @@ export default function TowerDefense({
     Object.assign(g, {
       credits: startingCredits, lives: gameConfig.lives, maxLives: gameConfig.lives, wave: 0, score: 0, bolts: 0,
       gameState: 'PLAYING', towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
-      waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false, usedVocab: [], autoPlayDelay: 0
+      waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false, 
+      usedVocab: {}, // Reset the tracker dictionary entirely
+      autoPlayDelay: 0
     });
     challengeActiveRef.current = false;
     setSelectedTowerId(null);

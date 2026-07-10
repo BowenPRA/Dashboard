@@ -1,84 +1,118 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Atom, Leaf, Languages, GraduationCap, ChevronRight, BookOpen } from 'lucide-react';
+import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2 } from 'lucide-react';
+import { TRACK_REGISTRY } from '../components/trackRegistry';
+import { supabase } from '../utils/supabaseClient';
 
 export default function Home() {
   const navigate = useNavigate();
+  const [isDark, setIsDark] = useState(false);
+  const [visibleTracks, setVisibleTracks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mapping themes to perfectly match the YearDashboard.jsx configurations
-  const tracks = [
-    { 
-      id: 'Y8', title: 'Year 8 Science', desc: 'Biology & Chemistry', icon: Atom, 
-      theme: { banner: 'from-indigo-500 via-indigo-600 to-blue-700', border: 'border-indigo-800', hover: 'hover:bg-indigo-600' }
-    },
-    { 
-      id: 'Y9', title: 'Year 9 Science', desc: 'Ecology & Physics', icon: Leaf, 
-      theme: { banner: 'from-emerald-500 via-emerald-600 to-teal-700', border: 'border-teal-800', hover: 'hover:bg-emerald-600' }
-    },
-    { 
-      id: 'ESL', title: 'ESL Foundation', desc: 'Core Vocab & Phonics', icon: Languages, 
-      theme: { banner: 'from-amber-500 via-amber-600 to-orange-700', border: 'border-orange-800', hover: 'hover:bg-amber-600' }
-    },
-    { 
-      id: 'GED', title: 'English', desc: 'Reading & Language', icon: GraduationCap, 
-      theme: { banner: 'from-rose-500 via-rose-600 to-red-700', border: 'border-red-800', hover: 'hover:bg-rose-600' }
+  useEffect(() => {
+    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setIsDark(isDarkMode);
+    if (isDarkMode) document.documentElement.classList.add('dark');
+
+    const fetchUserAndTracks = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const enrolled = session.user.user_metadata?.enrolled_tracks;
+        if (enrolled && Array.isArray(enrolled) && enrolled.length > 0) {
+          // RBAC: Only show enrolled tracks
+          setVisibleTracks(TRACK_REGISTRY.filter(t => enrolled.includes(t.id)));
+        } else {
+          // Fallback: Default directly to GED Mathematics and GED English
+          setVisibleTracks(TRACK_REGISTRY.filter(t => ['GED_MATH', 'GED_ENG'].includes(t.id)));
+        }
+      } else {
+        // Fallback for unauthenticated/error states
+        setVisibleTracks(TRACK_REGISTRY.filter(t => ['GED_MATH', 'GED_ENG'].includes(t.id)));
+      }
+      setLoading(false);
+    };
+
+    fetchUserAndTracks();
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+        <Loader2 className="w-10 h-10 animate-spin text-[#1cb0f6] mb-6" strokeWidth={3} />
+      </div>
+    );
+  }
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden font-sans selection:bg-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       
-      {/* Vibrant Ambient Blurs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-400 opacity-20 blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-400 opacity-20 blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '10s' }} />
-      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-purple-400 opacity-15 blur-[100px] pointer-events-none" />
-      <div className="absolute inset-0 z-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+      <button 
+        onClick={toggleDarkMode}
+        className="absolute top-6 right-6 p-3 rounded-2xl text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 shadow-sm z-50"
+        title="Toggle Dark Mode"
+      >
+        {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
+      </button>
 
       <div className="relative z-10 w-full max-w-5xl">
         
-        <div className="mb-12 text-center animate-in fade-in slide-in-from-top-8 duration-500">
-          <div className="inline-flex items-center justify-center p-4 bg-white/60 rounded-3xl shadow-md border border-white/80 backdrop-blur-md mb-6 transform hover:scale-105 transition-transform">
-             <BookOpen className="w-10 h-10 text-indigo-600" strokeWidth={2.5} />
+        <div className="mb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="inline-flex items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 mb-8 border-b-[6px] transform hover:-translate-y-1 transition-transform">
+             <LayoutDashboard className="w-10 h-10 text-slate-800 dark:text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 drop-shadow-sm">
-            Learning Dashboard
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-4 text-slate-800 dark:text-white drop-shadow-sm">
+            Curriculum
           </h1>
-          <p className="text-lg md:text-xl text-slate-600 font-bold bg-white/80 inline-block px-8 py-3 rounded-full border border-slate-200/80 backdrop-blur-md shadow-sm">
-            Select your learning track to begin
+          <p className="text-sm font-black tracking-widest uppercase text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 inline-block px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
+            Select Learning Track
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {tracks.map((t, index) => (
-            <button 
-              key={t.id}
-              onClick={() => navigate(`/${t.id}`)}
-              className={`group relative w-full text-left flex flex-col p-8 sm:p-10 rounded-[2.5rem] shadow-xl border-b-[8px] transition-all duration-300 transform active:translate-y-[8px] active:border-b-0 bg-gradient-to-br ${t.theme.banner} ${t.theme.border} hover:shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-8`}
-              style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
-            >
-              
-              {/* Internal Glare Effect */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl transform translate-x-20 -translate-y-20 pointer-events-none"></div>
-
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex flex-col">
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md border border-white/30 shadow-inner group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
-                    <t.icon className="w-8 h-8 text-white" strokeWidth={2.5} />
+          {visibleTracks.map((t, index) => {
+            const Icon = t.icon;
+            return (
+              <button 
+                key={t.id}
+                onClick={() => navigate(`/${t.id}`)}
+                className="group relative w-full text-left flex flex-col p-8 sm:p-10 rounded-[2.5rem] border-2 border-slate-200 dark:border-slate-800 transition-all duration-200 active:translate-y-[8px] active:border-b-2 bg-white dark:bg-slate-900 border-b-[8px] hover:border-slate-300 dark:hover:border-slate-700 overflow-hidden animate-in fade-in slide-in-from-bottom-8"
+                style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex flex-col">
+                    <div className={`w-16 h-16 ${t.theme.bg} rounded-2xl flex items-center justify-center mb-6 shadow-sm border-b-[4px] ${t.theme.border} group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300`}>
+                      <Icon className={`w-8 h-8 text-white ${t.id === 'ESL' ? 'text-amber-950' : ''} drop-shadow-sm`} strokeWidth={2.5} />
+                    </div>
+                    
+                    <h2 className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-white mb-2 tracking-tight group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
+                      {t.title}
+                    </h2>
+                    <p className="text-slate-500 dark:text-slate-400 font-bold text-base tracking-wide">
+                      {t.desc}
+                    </p>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight drop-shadow-md">
-                    {t.title}
-                  </h2>
-                  <p className="text-white/80 font-bold text-base sm:text-lg tracking-wide drop-shadow-sm">
-                    {t.desc}
-                  </p>
-                </div>
 
-                <div className="hidden sm:flex w-14 h-14 rounded-full bg-white/20 items-center justify-center text-white backdrop-blur-md border border-white/30 shadow-sm group-hover:bg-white group-hover:text-slate-800 transition-colors transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 duration-300">
-                  <ChevronRight className="w-7 h-7" strokeWidth={3} />
+                  <div className="hidden sm:flex w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:bg-[#1cb0f6] group-hover:border-[#1899d6] group-hover:text-white transition-all transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 duration-300 border-b-[4px] group-hover:border-b-[4px]">
+                    <ChevronRight className="w-7 h-7" strokeWidth={3} />
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -10,7 +10,9 @@ export const MATH_1A_DATA = {
     title: "Correlation & Scatter Graphs",
     desc: "Introduction to bivariate data, scatter graphs, and identifying correlation trends in scientific data.",
     track: "Y9",
-    icon: "ScatterChart"
+    themeColor: "bg-fuchsia-500 border-fuchsia-700",
+    glowColor: "hover:border-fuchsia-400 dark:hover:border-fuchsia-600",
+    icon: "Calculator",
   },
   phases: {
     phase1: {

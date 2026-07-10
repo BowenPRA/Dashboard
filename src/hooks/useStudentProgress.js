@@ -1,69 +1,33 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { TRACK_REGISTRY } from '../components/trackRegistry';
 
-// Ensure this matches how you initialize Supabase in your project!
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// --- UPDATED LEADERBOARD SERVICE ---
-// Queries all students, parses JSONB progress for the unit, and ranks the Top 5.
 export const getGlobalGameLeaderboard = async (unitId, limit = 5) => {
   try {
-    const { data, error } = await supabase
-      .from('students')
-      .select('id, display_name, progress');
-      
-    if (error) {
-      console.error("DEBUG - Supabase Error:", error);
-      throw error;
-    }
-
-    let parsedScores = [];
-    
-    data.forEach(student => {
-      const name = student.display_name || 'Anonymous Agent';
-      let maxScore = 0;
-      
-      ['Y8', 'Y9', 'ESL', 'GED'].forEach(track => {
-        const unitData = student.progress?.[track]?.[unitId];
-        if (unitData) {
-          // Check standard game keys
-          const gameScore = unitData.GAMES?.current || 0;
-          const gameLowerScore = unitData.games?.current || 0;
-          
-          // Only use p12 if it's over 100 (meaning it was genuinely used for an arcade score, not a 10-pt quiz)
-          const p12Score = (unitData.p12?.current > 100) ? unitData.p12.current : 0;
-          
-          maxScore = Math.max(maxScore, gameScore, gameLowerScore, p12Score);
-        }
-      });
-
-      if (maxScore > 0) {
-        parsedScores.push({ 
-          id: student.id,
-          name, 
-          score: maxScore
-        });
-      }
+    const { data, error } = await supabase.rpc('get_unit_leaderboard', { 
+      target_unit_id: unitId 
     });
+      
+    if (error) throw error;
 
-    parsedScores.sort((a, b) => b.score - a.score);
-    return { data: parsedScores.slice(0, limit), error: null };
+    const sortedData = (data || []).sort((a, b) => b.score - a.score).slice(0, limit);
+    return { data: sortedData, error: null };
   } catch (err) {
     console.error('Failed to parse leaderboard profiles:', err);
     return { data: null, error: err.message };
   }
 };
 
-export function useStudentProgress(navigate, track = 'Y9') {
+export function useStudentProgress(navigate, track = 'GED_MATH') {
   const [user, setUser] = useState(null);
-  const [allProgress, setAllProgress] = useState({
-    Y8: {},
-    Y9: {},
-    ESL: {},
-    GED: {}
-  });
+  
+  const initialProgress = {};
+  TRACK_REGISTRY.forEach(t => { initialProgress[t.id] = {}; });
+  const [allProgress, setAllProgress] = useState(initialProgress);
   const [isLoadingDB, setIsLoadingDB] = useState(true);
 
   useEffect(() => {
@@ -83,26 +47,38 @@ export function useStudentProgress(navigate, track = 'Y9') {
         .eq('id', session.user.id)
         .single();
 
-      if (data && data.progress) {
-        let dbProgress = data.progress;
-        const validTracks = ['Y8', 'Y9', 'ESL', 'GED'];
+      const validTracks = TRACK_REGISTRY.map(t => t.id);
+      let dbProgress = data?.progress || {};
+      let needsUpdate = false;
+      const newFormat = {};
 
-        const isOldFormat = Object.keys(dbProgress).some(key => !validTracks.includes(key));
-        if (isOldFormat) {
-          dbProgress = {
-            Y8: {},
-            Y9: dbProgress,
-            ESL: {},
-            GED: {}
-          };
-          await supabase.from('students').update({ progress: dbProgress }).eq('id', session.user.id);
+      validTracks.forEach(t => {
+        newFormat[t] = dbProgress[t] || {};
+      });
+
+      const isSuperOldFormat = !Object.keys(dbProgress).some(key => ['Y8', 'Y9', 'ESL', 'GED', 'GED_MATH', 'GED_ENG', 'ADD_MATH'].includes(key)) && Object.keys(dbProgress).length > 0;
+
+      if (isSuperOldFormat) {
+        newFormat['GED_MATH'] = dbProgress; 
+        needsUpdate = true;
+      } else {
+        const hasInvalidKeys = Object.keys(dbProgress).some(key => !validTracks.includes(key));
+        if (hasInvalidKeys) {
+           if (dbProgress['GED'] && Object.keys(newFormat['GED_ENG']).length === 0) {
+             newFormat['GED_ENG'] = dbProgress['GED'];
+           }
+           needsUpdate = true;
         } else {
-          validTracks.forEach(t => {
-            if (!dbProgress[t]) dbProgress[t] = {};
-          });
+           validTracks.forEach(t => {
+             if (!dbProgress[t]) needsUpdate = true;
+           });
         }
+      }
 
-        setAllProgress(dbProgress);
+      setAllProgress(newFormat);
+
+      if (needsUpdate) {
+        await supabase.from('students').update({ progress: newFormat }).eq('id', session.user.id);
       }
       
       setIsLoadingDB(false);
@@ -112,35 +88,41 @@ export function useStudentProgress(navigate, track = 'Y9') {
   }, [navigate]);
 
   const saveScore = async (unitId, section, score, answers = null) => {
-    const newProgress = { ...allProgress };
-    
-    if (!newProgress[track]) newProgress[track] = {};
-    if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
+    // FIX: Functional update with deep clone entirely prevents stale closures
+    setAllProgress(prev => {
+      const newProgress = JSON.parse(JSON.stringify(prev));
+      
+      if (!newProgress[track]) newProgress[track] = {};
+      if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
 
-    const existingScore = newProgress[track][unitId][section]?.current || 0;
-
-    newProgress[track][unitId] = {
-      ...newProgress[track][unitId],
-      [section]: {
-        current: Math.max(existingScore, score),
+      const existingScore = newProgress[track][unitId][section]?.current || 0;
+      
+      // Ensure score is strictly parsed as a number so threshold logic doesn't fail
+      newProgress[track][unitId][section] = {
+        current: Math.max(existingScore, Number(score) || 0),
         answers: answers || newProgress[track][unitId][section]?.answers || null
-      }
-    };
+      };
 
-    setAllProgress(newProgress);
-    await supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
+      // Fire and forget DB update to ensure the UI doesn't lag
+      supabase.from('students').update({ progress: newProgress }).eq('id', user.id)
+        .then(({error}) => { if (error) console.error("Supabase Save Error:", error); });
+
+      return newProgress;
+    });
   };
 
   const addStrike = async (unitId, newStrikes) => {
-    const newProgress = { ...allProgress };
-    
-    if (!newProgress[track]) newProgress[track] = {};
-    if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
+    setAllProgress(prev => {
+      const newProgress = JSON.parse(JSON.stringify(prev));
+      
+      if (!newProgress[track]) newProgress[track] = {};
+      if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
 
-    newProgress[track][unitId].strikes = newStrikes;
+      newProgress[track][unitId].strikes = newStrikes;
 
-    setAllProgress(newProgress);
-    await supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
+      supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
+      return newProgress;
+    });
   };
 
   const handleLogout = async () => {

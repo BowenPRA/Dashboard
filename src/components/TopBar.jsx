@@ -1,49 +1,81 @@
-import React from 'react';
-import { BookOpen, X as XIcon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { BookOpen, X as XIcon, Sun, Moon } from 'lucide-react';
 
 export default function TopBar({ onQuit, current, total, progress, modeTitle }) {
-  // Gracefully handle props from both the old app and the new app
   const displayScore = current !== undefined ? current : 0;
   const displayTotal = total !== undefined ? total : 0;
   const displayProgress = progress !== undefined ? progress : (displayTotal > 0 ? (displayScore / displayTotal) * 100 : 0);
 
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setIsDark(isDarkMode);
+    if (isDarkMode) document.documentElement.classList.add('dark');
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
+
   return (
-    <div className="flex justify-between items-center p-4 border-b border-slate-200 bg-white shadow-sm z-20 relative h-16">
+    <div className="flex justify-between items-center p-4 border-b-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm z-20 relative h-16 transition-colors duration-300">
       
-      <div className="flex items-center text-slate-700 font-bold text-lg w-1/4">
+      <div className="flex items-center text-slate-700 dark:text-slate-200 font-black text-lg w-1/4">
         <div className="flex items-center text-[#1CB0F6]">
-          <BookOpen className="w-6 h-6 mr-2" />
-          <span className="hidden sm:inline whitespace-nowrap">{modeTitle || 'Science Vocab'}</span>
+          <BookOpen className="w-6 h-6 mr-2 drop-shadow-sm" strokeWidth={2.5} />
+          <span className="hidden sm:inline whitespace-nowrap tracking-wide">{modeTitle || 'Science Vocab'}</span>
         </div>
       </div>
 
-      {/* Progress Bar */}
+      {/* Gamified 3D Progress Bar */}
       <div className="flex-1 mx-4 max-w-md hidden md:block">
-        <div className="w-full bg-slate-100 rounded-full h-3 border border-slate-200 overflow-hidden">
+        <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-4 shadow-inner border border-slate-300 dark:border-slate-700 overflow-hidden relative">
           <div 
-            className="bg-[#58A700] h-full transition-all duration-500 ease-out rounded-full" 
+            className="bg-[#58cc02] h-full transition-all duration-500 ease-out rounded-full relative overflow-hidden" 
             style={{ width: `${displayProgress}%` }}
-          />
+          >
+            {/* White light gleam for 3D effect */}
+            <div className="absolute top-1 left-2 right-2 h-1 bg-white/30 rounded-full"></div>
+          </div>
         </div>
       </div>
 
       <div className="flex items-center justify-end w-1/4 min-w-[140px]">
+        {/* Dark Mode Toggle */}
+        <button 
+          onClick={toggleDarkMode}
+          className="mr-4 p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+          title="Toggle Dark Mode"
+        >
+          {isDark ? <Sun className="w-5 h-5 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-5 h-5" strokeWidth={2.5} />}
+        </button>
+
         {/* Fraction Score Visual */}
         {displayTotal > 0 && (
-          <div className="flex items-center space-x-1.5 font-black text-sm px-4 py-1.5 rounded-full border border-slate-200 bg-slate-50 uppercase tracking-widest mr-4">
-            <span className="text-[#58A700]">{displayScore}</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-500">{displayTotal}</span>
+          <div className="flex items-center space-x-1.5 font-black text-sm px-4 py-1.5 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 uppercase tracking-widest mr-4 shadow-sm">
+            <span className="text-[#58cc02]">{displayScore}</span>
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-slate-500 dark:text-slate-400">{displayTotal}</span>
           </div>
         )}
 
         <button 
           onClick={onQuit} 
-          className="flex items-center text-slate-400 hover:text-slate-600 font-bold text-sm uppercase tracking-wider transition-colors active:scale-95"
+          className="flex items-center text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 font-black text-sm uppercase tracking-wider transition-colors active:scale-95 group"
           title="Save & Quit"
         >
-          <span className="hidden sm:inline mr-1">Quit</span>
-          <XIcon className="w-6 h-6" strokeWidth={2.5} />
+          <span className="hidden sm:inline mr-1 group-hover:opacity-100 opacity-70 transition-opacity">Quit</span>
+          <XIcon className="w-7 h-7" strokeWidth={3} />
         </button>
       </div>
     </div>

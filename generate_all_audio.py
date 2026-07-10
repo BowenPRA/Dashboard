@@ -24,11 +24,43 @@ async def generate_audio(text, output_dir, filename, voice):
     except Exception as e:
         print(f"  ❌ Failed to generate {filename}: {e}")
 
+def extract_objects(block_text):
+    """
+    A robust state-machine that extracts JSON-like JS objects from a string,
+    ignoring nested braces (e.g. LaTeX \frac{1}{2}) and braces inside strings.
+    """
+    objects = []
+    depth = 0
+    start = -1
+    in_string = False
+    string_char = ''
+    escape = False
+    
+    for i, char in enumerate(block_text):
+        # Handle string state to ignore braces inside text
+        if not escape and char in ['"', "'", '`']:
+            if not in_string:
+                in_string = True
+                string_char = char
+            elif char == string_char:
+                in_string = False
+        
+        escape = (char == '\\' and not escape)
+
+        # Only track braces if we are NOT inside a string
+        if not in_string:
+            if char == '{':
+                if depth == 0:
+                    start = i
+                depth += 1
+            elif char == '}':
+                if depth > 0:
+                    depth -= 1
+                    if depth == 0 and start != -1:
+                        objects.append(block_text[start:i+1])
+    return objects
+
 def parse_js_to_dict(filepath):
-    """
-    Safely parses JS objects using regex capture groups to properly 
-    extract full strings containing apostrophes.
-    """
     data = {
         "realWords": [],
         "dictation": [],
@@ -52,11 +84,11 @@ def parse_js_to_dict(filepath):
         # 2. Extract realWords 
         rw_block = extract_array_block("realWords")
         if rw_block:
-            blocks = re.findall(r'\{(.*?)\}', rw_block, re.DOTALL)
+            blocks = extract_objects(rw_block)
             for block in blocks:
-                word_m = re.search(r'word\s*:\s*(["\'])(.*?)\1', block)
-                def_m = re.search(r'def\s*:\s*(["\'])(.*?)\1', block)
-                sent_m = re.search(r'sent\s*:\s*(["\'])(.*?)\1', block)
+                word_m = re.search(r'word\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
+                def_m = re.search(r'def\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
+                sent_m = re.search(r'sent\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
                 
                 if word_m:
                     data["realWords"].append({
@@ -68,9 +100,9 @@ def parse_js_to_dict(filepath):
         # 3. Extract dictation
         dict_block = extract_array_block("dictation")
         if dict_block:
-            blocks = re.findall(r'\{(.*?)\}', dict_block, re.DOTALL)
+            blocks = extract_objects(dict_block)
             for block in blocks:
-                sent_m = re.search(r'sent\s*:\s*(["\'])(.*?)\1', block)
+                sent_m = re.search(r'sent\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
                 if sent_m:
                     data["dictation"].append({
                         "sent": sent_m.group(2).strip()
@@ -79,9 +111,9 @@ def parse_js_to_dict(filepath):
         # 4. Extract passages
         pass_block = extract_array_block("passages")
         if pass_block:
-            blocks = re.findall(r'\{(.*?)\}', pass_block, re.DOTALL)
+            blocks = extract_objects(pass_block)
             for block in blocks:
-                text_m = re.search(r'text\s*:\s*(["\'])(.*?)\1', block, re.DOTALL)
+                text_m = re.search(r'text\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
                 if text_m:
                     data["passages"].append({
                         "text": text_m.group(2).strip()
@@ -89,25 +121,33 @@ def parse_js_to_dict(filepath):
 
         # 5. Extract notes directly from notes.js
         if 'notes.js' in filepath:
-            notes_match = re.search(r'export const notes\s*=\s*\[(.*)\];', content, re.DOTALL)
+            # FIX: Removed the strict trailing semicolon requirement which caused silent failures
+            notes_match = re.search(r'export const notes\s*=\s*\[(.*)', content, re.DOTALL)
             if notes_match:
-                slides = re.split(r'(?=type\s*:)', notes_match.group(1))
-                for slide in slides:
-                    if not slide.strip(): continue
+                notes_array_content = notes_match.group(1)
+                slide_blocks = extract_objects(notes_array_content)
+                
+                for slide in slide_blocks:
+                    # FIX: Upgraded all quotes to include backticks (`) for modern JS strings
+                    type_m = re.search(r'type\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
+                    title_m = re.search(r'title\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
+                    sub_m = re.search(r'subtitle\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     
-                    type_m = re.search(r'type\s*:\s*(["\'])(.*?)\1', slide)
-                    title_m = re.search(r'title\s*:\s*(["\'])(.*?)\1', slide)
-                    sub_m = re.search(r'subtitle\s*:\s*(["\'])(.*?)\1', slide)
-                    content_m = re.search(r'content\s*:\s*(["\'])(.*?)\1', slide, re.DOTALL)
-                    ex_m = re.search(r'example\s*:\s*(["\'])(.*?)\1', slide)
+                    # Core visual content fields
+                    content_m = re.search(r'content\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
+                    ex_m = re.search(r'example\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
+                    
+                    # Dedicated audio script fields 
+                    spoken_m = re.search(r'spoken\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
+                    spoken_ex_m = re.search(r'spokenExample\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     
                     if type_m:
                         data["notes"].append({
                             "type": type_m.group(2).strip(),
                             "title": title_m.group(2).strip() if title_m else "",
                             "subtitle": sub_m.group(2).strip() if sub_m else "",
-                            "content": content_m.group(2).strip() if content_m else "",
-                            "example": ex_m.group(2).strip() if ex_m else ""
+                            "content": spoken_m.group(2).strip() if spoken_m else (content_m.group(2).strip() if content_m else ""),
+                            "example": spoken_ex_m.group(2).strip() if spoken_ex_m else (ex_m.group(2).strip() if ex_m else "")
                         })
 
         return data
@@ -133,7 +173,6 @@ async def main():
             continue
             
         # FORCE UPPERCASE: Aggressively separate by slash and upper() every part
-        # This completely negates Windows case-preservation faults 
         subfolder_parts = [p.upper() for p in subfolder_raw.split('/') if p]
         subfolder = "/".join(subfolder_parts)
         unit_id = subfolder_parts[-1]
@@ -193,17 +232,19 @@ async def main():
                     if note.get("subtitle"): parts.append(note["subtitle"])
                 else:
                     if note.get("content"):
-                        # CLEANUP FIX: Replaces both literal \n strings and actual newlines with periods
                         clean_content = note["content"].replace('\\n', '. ').replace('\n', '. ')
-                        # Strip out markdown bolding
                         clean_content = re.sub(r'\*\*', '', clean_content)
-                        # Strip out blockquotes
                         clean_content = re.sub(r'>\s*', '', clean_content)
+                        # FIX: Strip out MathJax/KaTeX syntax ($ and $$) so TTS doesn't read "dollar dollar"
+                        clean_content = re.sub(r'\$\$?', '', clean_content)
+                        # FIX: Collapse multiple spaces left over from string operations
+                        clean_content = re.sub(r'\s+', ' ', clean_content).strip()
                         parts.append(clean_content)
                         
                     if note.get("example"):
-                        # Apply the same line break fix to examples
                         clean_example = note["example"].replace('\\n', '. ').replace('\n', '. ')
+                        clean_example = re.sub(r'\$\$?', '', clean_example)
+                        clean_example = re.sub(r'\s+', ' ', clean_example).strip()
                         parts.append("For example: " + clean_example)
                     
                 text_to_read = ". ".join(parts)
@@ -232,10 +273,11 @@ async def main():
                 
     if global_tasks:
         print(f"\n✅ Queued {len(global_tasks)} total missing tracks. Processing...")
-        chunk_size = 15
+        # FIX: Lowered chunk size to 5 and increased sleep to prevent Edge TTS Websocket connection bans
+        chunk_size = 5
         for i in range(0, len(global_tasks), chunk_size):
             await asyncio.gather(*global_tasks[i:i+chunk_size])
-            await asyncio.sleep(1) 
+            await asyncio.sleep(2) 
         print("\n🎉 All missing audio generation complete!")
     else:
         print("\n🎉 All units are 100% synced! No new audio needed.")

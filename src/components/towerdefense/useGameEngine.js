@@ -1,3 +1,4 @@
+// src/components/towerdefense/useGameEngine.js
 import { useEffect } from 'react';
 import { TOWERS, ENEMIES, getEffectiveStats } from './gameData';
 
@@ -281,14 +282,34 @@ export function useGameEngine({
       if (g.gameState !== 'PLAYING') { render(); return; }
       const dt = FIXED_DT * g.speed;
 
+      // ==========================================
+      // OVERHAULED SIMULTANEOUS SPAWN LOGIC
+      // ==========================================
       if (g.waveInProgress && g.spawnQueue.length > 0) {
-        g.spawnTimer += dt;
-        const next = g.spawnQueue[0];
-        if (g.spawnTimer >= next.interval) {
-          spawnCreep(next.type);
-          next.count--;
-          g.spawnTimer = 0;
-          if (next.count <= 0) g.spawnQueue.shift();
+        // We iterate backwards so we can safely splice empty groups out of the queue
+        for (let i = g.spawnQueue.length - 1; i >= 0; i--) {
+          const group = g.spawnQueue[i];
+          
+          // Initialize an independent timer for this enemy group if it doesn't have one yet.
+          if (group.timer === undefined) {
+            // Setting it to 'interval' forces an immediate spawn on frame 1.
+            // Subtracting (i * 200) slightly staggers the groups so 4 enemies don't perfectly overlap on the exact same pixel.
+            // Subtracting 'delay' allows you to hold back certain spawns natively in wavePresets.js if you ever want to.
+            group.timer = group.interval - (i * 200) - (group.delay || 0);
+          }
+          
+          group.timer += dt;
+          
+          if (group.timer >= group.interval) {
+            spawnCreep(group.type);
+            group.count--;
+            group.timer = 0;
+            
+            // If this specific enemy group is exhausted, remove it from the active queue
+            if (group.count <= 0) {
+              g.spawnQueue.splice(i, 1);
+            }
+          }
         }
       }
 

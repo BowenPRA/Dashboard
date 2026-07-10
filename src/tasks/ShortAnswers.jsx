@@ -48,7 +48,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
   const [localAnswers, setLocalAnswers] = useState(savedData);
   
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [gameState, setGameState] = useState('Q'); // Q, LOADING, A, SAVED_PERFECT, SAVED_API_ERROR
+  const [gameState, setGameState] = useState('Q'); 
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   
@@ -73,7 +73,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       } else if (status === 'api_error') {
         setGameState('SAVED_API_ERROR');
       } else if (status === 'strike_fallback') {
-        setGameState('Q'); // Keeps it open so they can edit and submit to local grader again
+        setGameState('Q'); 
       } else {
         setGameState('Q');
       }
@@ -84,19 +84,6 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
-
-  if (!currentQ) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-        <PenTool className="w-16 h-16 text-teal-300 mb-4" />
-        <h2 className="text-3xl font-black text-slate-800 mb-2">Coming Soon</h2>
-        <p className="text-lg text-slate-500 mb-8 max-w-md">Teacher is currently writing the Short Answer questions for this unit.</p>
-        <button onClick={onQuit} className="px-8 py-4 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black uppercase tracking-widest border-b-[5px] border-[#1899D6] active:border-b-0 active:translate-y-[5px] transition-all">
-          Return
-        </button>
-      </div>
-    );
-  }
 
   const handleLocalFallbackGrade = () => {
     const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
@@ -247,25 +234,56 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     }
   };
 
+  // Global Keyboard Accessibility (Ignoring TEXTAREA)
+  useEffect(() => {
+    const handleGlobalNav = (e) => {
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
+
+      if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        e.preventDefault();
+        if (gameState === 'A' || gameState === 'SAVED_PERFECT' || gameState === 'SAVED_API_ERROR') {
+          handleNext();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleGlobalNav);
+    return () => window.removeEventListener('keydown', handleGlobalNav);
+  }, [gameState, handleNext]);
+
+
+  if (!currentQ) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center transition-colors duration-300">
+        <PenTool className="w-16 h-16 text-teal-300 dark:text-teal-500 mb-4" />
+        <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-2">Coming Soon</h2>
+        <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 max-w-md">Teacher is currently writing the Short Answer questions for this unit.</p>
+        <button onClick={onQuit} className="px-8 py-4 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black uppercase tracking-widest border-b-[5px] border-[#1899D6] active:border-b-0 active:translate-y-[5px] transition-all">
+          Return
+        </button>
+      </div>
+    );
+  }
+
   let containerClass = "w-full rounded-[1.5rem] shadow-sm border p-6 sm:p-8 mb-6 relative transition-all duration-300 ";
   let textAreaClass = "w-full h-40 text-lg font-medium bg-transparent focus:outline-none resize-none disabled:bg-transparent ";
   
   if (gameState === 'SAVED_API_ERROR') {
-    containerClass += "bg-orange-50 border-orange-300";
-    textAreaClass += "text-orange-900";
+    containerClass += "bg-orange-50 dark:bg-orange-950/30 border-orange-300 dark:border-orange-800/50";
+    textAreaClass += "text-orange-900 dark:text-orange-100";
   } else if (strikes >= 3 || (gameState === 'A' && feedback?.isStrikeFallback)) {
-    containerClass += "bg-rose-50 border-rose-400";
-    textAreaClass += "text-rose-900";
+    containerClass += "bg-rose-50 dark:bg-rose-950/30 border-rose-400 dark:border-rose-800/50";
+    textAreaClass += "text-rose-900 dark:text-rose-100";
   } else if ((gameState === 'A' && feedback?.isPerfect) || gameState === 'SAVED_PERFECT') {
-    containerClass += "bg-[#ecfccb] border-[#84cc16]";
-    textAreaClass += "text-[#3f6212]";
+    containerClass += "bg-[#ecfccb] dark:bg-[#3f6212]/20 border-[#84cc16] dark:border-[#4d7c0f]";
+    textAreaClass += "text-[#3f6212] dark:text-[#a3e635]";
   } else {
-    containerClass += "bg-white border-slate-200";
-    textAreaClass += "text-slate-800";
+    containerClass += "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700";
+    textAreaClass += "text-slate-800 dark:text-slate-100";
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-32">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans pb-32 transition-colors duration-300">
       <TopBar 
         current={currentIndex} 
         total={questions.length} 
@@ -279,7 +297,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
           <h2 className="text-[#14b8a6] font-black text-xl mb-3 uppercase tracking-widest">
             Question {currentIndex + 1}
           </h2>
-          <p className="text-2xl font-bold text-slate-800 leading-snug">
+          <p className="text-2xl font-bold text-slate-800 dark:text-slate-200 leading-snug">
             {currentQ.question}
           </p>
         </div>
@@ -300,7 +318,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
         {gameState !== 'LOADING' && (
           <div className="w-full mb-10">
-            <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">
+            <span className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-3">
               Required Vocabulary
             </span>
             <div className="flex flex-wrap gap-2 sm:gap-3">
@@ -315,8 +333,8 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
                     key={i} 
                     className={`px-4 py-1.5 rounded-full text-sm font-bold border-2 transition-colors duration-300 ${
                       isUsed 
-                        ? 'bg-[#d7ffb8] text-[#3e7500] border-[#58a700]' 
-                        : 'bg-white text-[#58a700] border-[#58a700]'
+                        ? 'bg-[#d7ffb8] dark:bg-[#d7ffb8]/20 text-[#3e7500] dark:text-[#a3e635] border-[#58a700]' 
+                        : 'bg-white dark:bg-slate-800 text-[#58a700] dark:text-[#84cc16] border-[#58a700] dark:border-[#84cc16]'
                     }`}
                   >
                     {displayWord}
@@ -328,7 +346,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
         )}
 
         {gameState === 'SAVED_PERFECT' && (
-          <div className="w-full flex justify-end mt-2 mb-8 border-t border-slate-200 pt-6 animate-in fade-in">
+          <div className="w-full flex justify-end mt-2 mb-8 border-t border-slate-200 dark:border-slate-800 pt-6 animate-in fade-in">
              <button 
                onClick={handleNext} 
                className="flex items-center px-10 py-4 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-[#0d9488] active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
@@ -341,16 +359,16 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
         {gameState === 'SAVED_API_ERROR' && (
           <div className="w-full mt-2 animate-in fade-in">
-            <div className="bg-orange-50 border border-orange-200 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
+            <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/50 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
                <div className="flex items-center mb-4">
                  <XCircle className="w-8 h-8 text-orange-500 mr-3" />
-                 <h3 className="text-xl font-black text-orange-800">Connection Failed</h3>
+                 <h3 className="text-xl font-black text-orange-800 dark:text-orange-400">Connection Failed</h3>
                </div>
-               <p className="text-sm font-bold text-orange-700 mt-2">
+               <p className="text-sm font-bold text-orange-700 dark:text-orange-300 mt-2">
                  The AI grader is currently offline. Your answer has been saved. Please continue and resubmit on a future attempt.
                </p>
             </div>
-            <div className="flex justify-end pt-4 border-t border-slate-200 mb-8">
+            <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
                <button onClick={handleNext} className="flex items-center px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-orange-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm">
                  {currentIndex < questions.length - 1 ? 'Skip Question' : 'Complete Section'} <ArrowRight className="w-6 h-6 ml-3" />
                </button>
@@ -359,7 +377,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
         )}
 
         {(gameState === 'Q' || gameState === 'SAVED_API_ERROR') && (
-          <div className="w-full flex justify-end mt-2 mb-8 border-t border-slate-200 pt-6">
+          <div className="w-full flex justify-end mt-2 mb-8 border-t border-slate-200 dark:border-slate-800 pt-6">
             <button 
               onClick={handleGrade} 
               disabled={!userAnswer.trim()} 
@@ -371,11 +389,11 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
         )}
 
         {gameState === 'LOADING' && (
-          <div className="w-full h-40 flex flex-col items-center justify-center bg-white rounded-[2rem] border border-slate-200 shadow-sm animate-pulse mt-8">
-             <div className="bg-teal-100 p-3 rounded-full mb-3">
-               <Bot className="w-8 h-8 text-teal-600 animate-bounce" />
+          <div className="w-full h-40 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm animate-pulse mt-8">
+             <div className="bg-teal-100 dark:bg-teal-900/40 p-3 rounded-full mb-3">
+               <Bot className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-bounce" />
              </div>
-             <h3 className="text-lg font-black text-slate-700">AI Tutor is analyzing your answer...</h3>
+             <h3 className="text-lg font-black text-slate-700 dark:text-slate-300">AI Tutor is analyzing your answer...</h3>
           </div>
         )}
 
@@ -383,40 +401,40 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
           <div className="w-full mt-2 animate-in slide-in-from-bottom-8 duration-500">
 
             {!feedback.isPerfect && (
-              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
                 <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">
                   Your Attempt
                 </span>
-                <p className="text-lg text-slate-700 font-medium italic">
+                <p className="text-lg text-slate-700 dark:text-slate-300 font-medium italic">
                   "{feedback.originalAnswer}"
                 </p>
               </div>
             )}
 
-            <div className="flex items-center mb-8 border-b border-slate-200 pb-6">
+            <div className="flex items-center mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
               <div className={`p-3 rounded-full mr-4 flex-shrink-0 ${feedback.isStrikeFallback ? 'bg-rose-500' : 'bg-[#14b8a6]'}`}>
                 <Bot className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-black text-slate-800">
+                <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
                   {feedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
                 </h3>
-                <p className="text-sm font-bold text-slate-500 tracking-widest uppercase mt-1">
+                <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">
                   Accuracy Score: 
-                  <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600' : 'text-rose-500'}`}>
+                  <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}`}>
                     {feedback.pointsEarned} / {feedback.maxPoints} Pts
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="w-full bg-white p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 shadow-sm mb-8">
-              <div className="flex items-center justify-between mb-4 text-slate-800">
+            <div className="w-full bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
+              <div className="flex items-center justify-between mb-4 text-slate-800 dark:text-slate-200">
                 <div className="flex items-center">
                   <Award className="w-6 h-6 mr-2 text-amber-500" />
                   <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
                 </div>
-                <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-sm">
+                <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold px-3 py-1 rounded-lg text-sm">
                   {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
                 </span>
               </div>
@@ -427,9 +445,9 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
                     {feedback.scienceMarks[i] ? (
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
                     ) : (
-                      <XCircle className="w-5 h-5 text-slate-300 mr-3 mt-0.5 flex-shrink-0" />
+                      <XCircle className="w-5 h-5 text-slate-300 dark:text-slate-600 mr-3 mt-0.5 flex-shrink-0" />
                     )}
-                    <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800' : 'text-slate-400 line-through'}`}>
+                    <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 dark:text-slate-600 line-through'}`}>
                       {mark}
                     </span>
                   </li>
@@ -438,66 +456,66 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-               <div className="bg-[#fff9e6] border border-[#fde68a] p-6 rounded-[1.5rem]">
+               <div className="bg-[#fff9e6] dark:bg-[#fff9e6]/10 border border-[#fde68a] dark:border-[#fde68a]/20 p-6 rounded-[1.5rem]">
                  <div className="flex items-center justify-between mb-3">
-                   <div className="flex items-center text-[#d97706]">
+                   <div className="flex items-center text-[#d97706] dark:text-[#fbbf24]">
                      <Type className="w-5 h-5 mr-2" />
                      <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
                    </div>
-                   <span className="bg-[#fef3c7] text-[#b45309] font-bold px-2 py-0.5 rounded-md text-xs">
+                   <span className="bg-[#fef3c7] dark:bg-[#fef3c7]/20 text-[#b45309] dark:text-[#fcd34d] font-bold px-2 py-0.5 rounded-md text-xs">
                      {feedback.englishScore} / 2 Pts
                    </span>
                  </div>
-                 <p className="text-slate-700 font-medium leading-relaxed">
+                 <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                    {feedback.englishFeedback}
                  </p>
                </div>
                
-               <div className="bg-[#eff6ff] border border-[#bfdbfe] p-6 rounded-[1.5rem]">
-                 <div className="flex items-center text-[#2563eb] mb-3">
+               <div className="bg-[#eff6ff] dark:bg-[#eff6ff]/10 border border-[#bfdbfe] dark:border-[#bfdbfe]/20 p-6 rounded-[1.5rem]">
+                 <div className="flex items-center text-[#2563eb] dark:text-[#60a5fa] mb-3">
                    <FlaskConical className="w-5 h-5 mr-2" />
                    <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
                  </div>
-                 <p className="text-slate-700 font-medium leading-relaxed">
+                 <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                    {feedback.scienceFeedback}
                  </p>
                </div>
             </div>
 
-            <div className="bg-[#ecfccb] border border-[#bbf7d0] p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
+            <div className="bg-[#ecfccb] dark:bg-[#3f6212]/20 border border-[#bbf7d0] dark:border-[#4d7c0f] p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
               <div className="absolute top-4 right-4 bg-[#84cc16] p-2 rounded-full text-white">
                 <FileEdit className="w-5 h-5" />
               </div>
               
-              <h4 className="font-black text-[#3f6212] text-sm uppercase tracking-widest mb-4">
+              <h4 className="font-black text-[#3f6212] dark:text-[#a3e635] text-sm uppercase tracking-widest mb-4">
                 Suggested Notebook Answer
               </h4>
               
               <div className="space-y-4">
                 <div>
-                  <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                  <span className="block text-xs font-bold text-[#65a30d] dark:text-[#bef264] uppercase mb-1">
                     {feedback.isPerfect ? "Your Perfect Sentence:" : "Fixed Version of Your Sentence:"}
                   </span>
-                  <p className="text-lg font-bold text-[#166534]">
+                  <p className="text-lg font-bold text-[#166534] dark:text-[#ecfccb]">
                     "{feedback.fixedAnswer}"
                   </p>
                 </div>
-                <div className="pt-4 border-t border-[#d9f99d]">
-                  <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                <div className="pt-4 border-t border-[#d9f99d] dark:border-[#65a30d]">
+                  <span className="block text-xs font-bold text-[#65a30d] dark:text-[#bef264] uppercase mb-1">
                     Official Model Answer:
                   </span>
-                  <p className="text-lg font-bold text-[#166534]">
+                  <p className="text-lg font-bold text-[#166534] dark:text-[#ecfccb]">
                     "{currentQ.modelAnswer}"
                   </p>
                 </div>
               </div>
               
-              <p className="text-sm font-bold text-[#3f6212] mt-6 bg-[#d9f99d] inline-block px-4 py-2 rounded-lg">
+              <p className="text-sm font-bold text-[#3f6212] dark:text-[#a3e635] mt-6 bg-[#d9f99d] dark:bg-[#3f6212]/50 inline-block px-4 py-2 rounded-lg">
                 📝 Write one of these down in your notebook for full credit.
               </p>
             </div>
 
-            <div className="flex justify-end pt-4 border-t border-slate-200">
+            <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800">
                <button 
                  onClick={handleNext} 
                  className="flex items-center px-10 py-4 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-[#0d9488] active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"

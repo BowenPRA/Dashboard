@@ -1,0 +1,3504 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files and files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/components/TopBar.jsx, src/components/Feedback.jsx, src/components/UnitCard.jsx, src/tasks/Notes.jsx, src/tasks/ShortAnswers.jsx, src/tasks/Assessment.jsx, src/tasks/Dictation.jsx, src/tasks/Reading.jsx, src/tasks/Recognition.jsx, src/data/Y8/SCIENCE_1A/data.js, src/App.jsx, src/views/YearDashboard.jsx
+- Files matching these patterns are excluded: node_modules/**, dist/**, public/**, *.png, *.jpg, src/tasks/games/**, src/tasks/Games.jsx, src/tasks/VocabWriting.jsx
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/App.jsx
+src/components/Feedback.jsx
+src/components/TopBar.jsx
+src/components/UnitCard.jsx
+src/data/Y8/SCIENCE_1A/data.js
+src/tasks/Assessment.jsx
+src/tasks/Dictation.jsx
+src/tasks/Notes.jsx
+src/tasks/Reading.jsx
+src/tasks/Recognition.jsx
+src/tasks/ShortAnswers.jsx
+src/views/YearDashboard.jsx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/data/Y8/SCIENCE_1A/data.js">
+// src/data/Y8/SCIENCE_1A/data.js
+import { DIAGRAMS } from './diagrams.js';
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const SCIENCE_1A_DATA = {
+  meta: {
+    id: "SCIENCE_1A",
+    title: "Light & Colour",
+    desc: "Explore the laws of reflection, refraction, dispersion, and how coloured light behaves.",
+    track: "Y8",
+    icon: "Sun"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    { word: "Reflection", vn: "Phản xạ", def: "The bouncing of light rays off a surface like a mirror.", vnDef: "Sự bật lại của các tia sáng khi chạm vào một bề mặt như gương.", sent: "The law of reflection states that the angle of incidence equals the angle of reflection.", vnSent: "Định luật phản xạ phát biểu rằng góc tới bằng góc phản xạ.", dictSent: "Reflection happens when light bounces off a smooth surface.", isReal: true },
+    { word: "Medium", vn: "Môi trường", def: "A material or substance that light travels through, such as air, water, or glass.", vnDef: "Vật liệu hoặc chất mà ánh sáng truyền qua, chẳng hạn như không khí, nước hoặc thủy tinh.", sent: "Light slows down when it enters a denser medium like a block of solid glass.", vnSent: "Ánh sáng đi chậm lại khi đi vào một môi trường đặc hơn như một khối thủy tinh đặc.", dictSent: "A medium is any substance that light can travel through.", isReal: true },
+    { word: "Refraction", vn: "Khúc xạ", def: "The bending of light as it changes speed when passing from one medium to another.", vnDef: "Sự bẻ cong của ánh sáng do thay đổi tốc độ khi truyền từ môi trường này sang môi trường khác.", sent: "Refraction causes a pencil sitting in a glass of water to look completely broken.", vnSent: "Khúc xạ khiến một chiếc bút chì cắm trong cốc nước trông như bị gãy hoàn toàn.", dictSent: "Refraction is the bending of light as it changes speed.", isReal: true },
+    { word: "Dispersion", vn: "Tán sắc", def: "The splitting of white light into its continuous spectrum of colours.", vnDef: "Sự phân tách của ánh sáng trắng thành một dải quang phổ màu liên tục.", sent: "Dispersion of sunlight through a glass prism creates a beautiful rainbow effect.", vnSent: "Sự tán sắc của ánh sáng mặt trời qua lăng kính thủy tinh tạo ra hiệu ứng cầu vồng tuyệt đẹp.", dictSent: "Dispersion splits white light into a spectrum of colours.", isReal: true },
+    { word: "Normal Line", vn: "Pháp tuyến", def: "An imaginary dashed line drawn exactly at 90 degrees to a reflecting surface.", vnDef: "Một đường đứt nét tưởng tượng được vẽ vuông góc chính xác 90 độ với bề mặt phản xạ.", sent: "In physics, we always measure the angle of a light ray starting from the normal line.", vnSent: "Trong vật lý, chúng ta luôn đo góc của tia sáng bắt đầu từ đường pháp tuyến.", dictSent: "The normal line is drawn at ninety degrees to the mirror.", isReal: true },
+    { word: "Incident Ray", vn: "Tia tới", def: "The incoming ray of light that strikes a surface.", vnDef: "Tia sáng đi tới đập vào một bề mặt.", sent: "The incident ray travels towards the glass block before it hits the surface and bends.", vnSent: "Tia tới truyền về phía khối thủy tinh trước khi nó chạm vào bề mặt và bị bẻ cong.", dictSent: "The incident ray travels directly toward the surface.", isReal: true },
+    { word: "Spectrum", vn: "Quang phổ", def: "The band of colours produced when light is separated, such as by a prism.", vnDef: "Dải màu được tạo ra khi ánh sáng bị tách ra, chẳng hạn như bởi lăng kính.", sent: "Red, green, and violet are all colours found naturally in the visible spectrum.", vnSent: "Đỏ, lục và tím đều là những màu được tìm thấy trong tự nhiên trong quang phổ nhìn thấy được.", dictSent: "A rainbow is a natural example of the visible light spectrum.", isReal: true },
+    { word: "Prism", vn: "Lăng kính", def: "A transparent, triangular piece of glass used to disperse white light.", vnDef: "Một khối thủy tinh trong suốt, hình tam giác được sử dụng để tán sắc ánh sáng trắng.", sent: "When white light enters the prism, the dense glass splits it into seven distinct colours.", vnSent: "Khi ánh sáng trắng đi vào lăng kính, lớp thủy tinh đặc sẽ phân tách nó thành bảy màu riêng biệt.", dictSent: "A glass prism can bend and separate white light.", isReal: true },
+    { word: "Primary Colours", vn: "Màu cơ bản", def: "The three colours of light (red, green, blue) that can be mixed to make white light.", vnDef: "Ba màu của ánh sáng (đỏ, lục, lam) có thể được pha trộn để tạo ra ánh sáng trắng.", sent: "By adding the three primary colours of light together, you get pure white.", vnSent: "Bằng cách cộng ba màu cơ bản của ánh sáng lại với nhau, bạn sẽ có màu trắng tinh khiết.", dictSent: "Red, green, and blue are the primary colours of light.", isReal: true },
+    { word: "Secondary Colours", vn: "Màu thứ cấp", def: "Colours of light created by mixing two primary colours together (cyan, magenta, and yellow).", vnDef: "Các màu của ánh sáng được tạo ra bằng cách trộn hai màu cơ bản với nhau (xanh lơ, đỏ thắm và vàng).", sent: "Cyan is a secondary colour created by adding green and blue light together.", vnSent: "Xanh lơ là một màu thứ cấp được tạo ra bằng cách cộng ánh sáng lục và lam lại với nhau.", dictSent: "Adding two primary colours creates a secondary colour.", isReal: true },
+    { word: "Filter", vn: "Kính lọc", def: "A transparent material that absorbs certain colours and lets others pass through.", vnDef: "Một vật liệu trong suốt hấp thụ một số màu nhất định và cho phép những màu khác đi qua.", sent: "A red filter will absorb green and blue light, but let red light pass safely through.", vnSent: "Kính lọc đỏ sẽ hấp thụ ánh sáng lục và lam, nhưng cho phép ánh sáng đỏ đi qua một cách an toàn.", dictSent: "A filter absorbs unwanted colours and passes its own colour.", isReal: true }
+  ],
+  fakeWords: [
+    { word: "Reflectation", imitating: "Reflection", isReal: false },
+    { word: "Mediumate", imitating: "Medium", isReal: false },
+    { word: "Refractance", imitating: "Refraction", isReal: false },
+    { word: "Dispersity", imitating: "Dispersion", isReal: false },
+    { word: "Normalizer", imitating: "Normal Line", isReal: false },
+    { word: "Incidentor", imitating: "Incident Ray", isReal: false },
+    { word: "Spectron", imitating: "Spectrum", isReal: false },
+    { word: "Prismate", imitating: "Prism", isReal: false },
+    { word: "Primer Colours", imitating: "Primary Colours", isReal: false },
+    { word: "Second Colours", imitating: "Secondary Colours", isReal: false },
+    { word: "Filteration", imitating: "Filter", isReal: false }
+  ],
+  dictation: [
+    { sent: "Reflection happens when light bounces off a smooth surface.", vnSent: "Phản xạ xảy ra khi ánh sáng bật ra khỏi một bề mặt nhẵn." },
+    { sent: "A medium is any substance that light can travel through.", vnSent: "Môi trường là bất kỳ chất nào mà ánh sáng có thể truyền qua." },
+    { sent: "Refraction is the bending of light as it changes speed.", vnSent: "Khúc xạ là sự bẻ cong của ánh sáng khi nó thay đổi tốc độ." },
+    { sent: "Dispersion splits white light into a spectrum of colours.", vnSent: "Sự tán sắc chia ánh sáng trắng thành một quang phổ màu." },
+    { sent: "The normal line is drawn at ninety degrees to the mirror.", vnSent: "Đường pháp tuyến được vẽ vuông góc chín mươi độ với gương." },
+    { sent: "The incident ray travels directly toward the surface.", vnSent: "Tia tới truyền trực tiếp về phía bề mặt." },
+    { sent: "A rainbow is a natural example of the visible light spectrum.", vnSent: "Cầu vồng là một ví dụ tự nhiên về quang phổ ánh sáng nhìn thấy được." },
+    { sent: "A glass prism can bend and separate white light.", vnSent: "Một lăng kính thủy tinh có thể bẻ cong và phân tách ánh sáng trắng." },
+    { sent: "Red, green, and blue are the primary colours of light.", vnSent: "Đỏ, lục và lam là những màu cơ bản của ánh sáng." },
+    { sent: "Adding two primary colours creates a secondary colour.", vnSent: "Việc cộng hai màu cơ bản tạo ra một màu thứ cấp." },
+    { sent: "A filter absorbs unwanted colours and passes its own colour.", vnSent: "Kính lọc hấp thụ những màu không mong muốn và cho phép màu của chính nó đi qua." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Law of the Mirror",
+      text: "When an {incident ray} of light strikes a perfectly flat mirror, it bounces off in a very predictable way. To calculate this bounce, scientists draw a {normal line} exactly at 90 degrees to the surface. The law of {reflection} states that the angle at which the light hits the normal will always perfectly match the angle at which it leaves. This is why mirrors create such accurate images.",
+      vnTitle: "Định luật của Gương",
+      vnText: "Khi một {incident ray} của ánh sáng đập vào một chiếc gương phẳng hoàn hảo, nó bật lại theo một cách rất dễ đoán. Để tính toán độ bật này, các nhà khoa học vẽ một {normal line} vuông góc chính xác 90 độ với bề mặt. Định luật {reflection} phát biểu rằng góc mà ánh sáng đập vào pháp tuyến sẽ luôn khớp hoàn hảo với góc mà nó rời đi. Đây là lý do tại sao gương tạo ra những hình ảnh chính xác như vậy."
+    },
+    {
+      id: "passage_2",
+      title: "The Bending Illusion",
+      text: "Have you ever noticed that your legs look shorter when you stand in a swimming pool? This optical illusion is caused by {refraction}. When light leaves the water and enters the air, it moves into a different {medium}. Because air is less dense than water, the light speeds up and bends away from the normal. This bending makes our eyes believe the object is in a different location than it actually is.",
+      vnTitle: "Ảo giác Bẻ cong",
+      vnText: "Bạn đã bao giờ nhận thấy chân mình trông ngắn hơn khi đứng trong hồ bơi chưa? Ảo giác quang học này được gây ra bởi {refraction}. Khi ánh sáng rời khỏi mặt nước và đi vào không khí, nó di chuyển vào một {medium} khác. Vì không khí ít đặc hơn nước, ánh sáng tăng tốc và uốn cong ra xa pháp tuyến. Sự bẻ cong này làm cho mắt chúng ta tin rằng vật thể đang ở một vị trí khác với thực tế."
+    },
+    {
+      id: "passage_3",
+      title: "Splitting the Rainbow",
+      text: "White light is a trick played on our eyes. It is actually a mixture of many different colours. When white light passes through a {prism}, the glass slows each colour down by a slightly different amount. Red light slows down the least, so it bends the least. Violet light slows down the most. This causes the light to fan out into a beautiful {spectrum}, a process known to scientists as {dispersion}.",
+      vnTitle: "Phân tách Cầu vồng",
+      vnText: "Ánh sáng trắng là một trò đánh lừa đôi mắt của chúng ta. Nó thực chất là một hỗn hợp của nhiều màu sắc khác nhau. Khi ánh sáng trắng đi qua một {prism}, thủy tinh làm chậm mỗi màu lại với một mức độ hơi khác nhau. Ánh sáng đỏ chậm lại ít nhất, nên nó bẻ cong ít nhất. Ánh sáng tím chậm lại nhiều nhất. Điều này khiến ánh sáng xòe ra thành một {spectrum} tuyệt đẹp, một quá trình được các nhà khoa học gọi là {dispersion}."
+    },
+    {
+      id: "passage_4",
+      title: "Painting with Light",
+      text: "When an artist paints, mixing all the colours together creates a dark, muddy brown. However, light behaves completely differently. In physics, the {Primary Colours} of light are red, green, and blue. If you shine all three of these lights together, they combine to create pure white light! By mixing just two primary colours, you can create bright {Secondary Colours}. For example, mixing red and green light creates yellow, while blue and red create magenta.",
+      vnTitle: "Vẽ tranh bằng Ánh sáng",
+      vnText: "Khi một họa sĩ vẽ tranh, việc trộn tất cả các màu lại với nhau sẽ tạo ra một màu nâu tối và đục. Tuy nhiên, ánh sáng hoạt động hoàn toàn khác. Trong vật lý, các {Primary Colours} của ánh sáng là đỏ, lục và lam. Nếu bạn chiếu cả ba ánh sáng này cùng nhau, chúng sẽ kết hợp để tạo ra ánh sáng trắng tinh khiết! Bằng cách trộn chỉ hai màu cơ bản, bạn có thể tạo ra các {Secondary Colours} rực rỡ. Ví dụ, trộn ánh sáng đỏ và lục tạo ra màu vàng, trong khi ánh sáng lam và đỏ tạo ra màu đỏ thắm."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Light & Colour Rules",
+    vnTitle: "Bài 1A: Các Quy tắc về Ánh sáng & Màu sắc",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập của bạn.",
+    sections: [
+      {
+        heading: "1. Reflection & Refraction",
+        vnHeading: "1. Phản xạ & Khúc xạ",
+        text: "**Reflection** happens when light bounces off a surface. The angle of the **Incident Ray** always equals the angle of reflection. **Refraction** happens when light changes speed because it enters a different **Medium** (like glass), causing the ray to bend.",
+        vnText: "**Phản xạ** xảy ra khi ánh sáng bật ra khỏi một bề mặt. Góc của **Tia tới** luôn bằng góc phản xạ. **Khúc xạ** xảy ra khi ánh sáng thay đổi tốc độ vì nó đi vào một **Môi trường** khác (như thủy tinh), khiến tia sáng bị bẻ cong."
+      },
+      {
+        heading: "2. Dispersion",
+        vnHeading: "2. Tán sắc",
+        text: "White light is a mix of colours. A **Prism** causes **Dispersion**, splitting white light into a continuous **Spectrum**. Red bends the least, while violet bends the most.",
+        vnText: "Ánh sáng trắng là một hỗn hợp các màu. Một **Lăng kính** gây ra sự **Tán sắc**, phân tách ánh sáng trắng thành một **Quang phổ** liên tục. Màu đỏ bẻ cong ít nhất, trong khi màu tím bẻ cong nhiều nhất."
+      },
+      {
+        heading: "3. Mixing & Filtering Colour",
+        vnHeading: "3. Pha trộn & Lọc Màu",
+        text: "The **Primary Colours** of light are Red, Green, and Blue. Mixing them creates **Secondary Colours** like Cyan, Magenta, and Yellow. A **Filter** only allows its own colour to pass through, absorbing all other colours.",
+        vnText: "**Màu cơ bản** của ánh sáng là Đỏ, Lục và Lam. Trộn chúng tạo ra các **Màu thứ cấp** như Xanh lơ, Đỏ thắm và Vàng. Một **Kính lọc** chỉ cho phép màu của chính nó đi qua, hấp thụ tất cả các màu khác."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "According to the Law of Reflection, what is the relationship between the angle of incidence and the angle of reflection?",
+      requiredWords: [["equal", "same"]],
+      scienceMaxMarks: 1,
+      markScheme: [
+        "1 mark for stating that the angles are always equal to each other."
+      ],
+      modelAnswer: "The angle of incidence is exactly equal to the angle of reflection."
+    },
+    {
+      id: "q2",
+      question: "Explain what happens to the speed and direction of a light ray when it enters a glass block from the air.",
+      requiredWords: [["slow", "slower", "slows down"], ["towards", "closer"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that the light slows down.",
+        "1 mark for stating that it bends towards the normal line."
+      ],
+      modelAnswer: "When light enters the denser glass block, it slows down. This change in speed causes the light to bend towards the normal line."
+    },
+    {
+      id: "q3",
+      question: "When white light passes through a prism, why does violet light appear at the bottom of the spectrum while red light is at the top?",
+      requiredWords: [["red", "least"], ["violet", "most"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for explaining that red light bends (or slows down) the least.",
+        "1 mark for explaining that violet light bends (or slows down) the most."
+      ],
+      modelAnswer: "Violet light bends the most when it enters the prism, pushing it to the bottom. Red light bends the least, keeping it near the top."
+    }
+  ],
+  diagrams: [
+    {
+      id: "d1",
+      inlineSvg: DIAGRAMS.DATA_REFLECTION_55,
+      promptText: "Look at the diagram showing an incident ray hitting a mirror. Calculate the angle of the missing reflected ray and state the law that proves your answer.",
+      requiredWords: [["equal", "same", "reflection"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly stating the angle is 55 degrees.",
+        "1 mark for referencing the Law of Reflection (angle of incidence equals angle of reflection)."
+      ],
+      modelAnswer: "The reflected ray will be exactly 55 degrees. This is because the Law of Reflection states that the angle of incidence is always equal to the angle of reflection."
+    },
+    {
+      id: "d2",
+      inlineSvg: DIAGRAMS.DATA_REFRACTION_GLASS_BLOCK,
+      promptText: "The diagram shows refraction through a glass block. Compare what is happening to the light ray at point A (inside the glass) and point B (exiting the glass). Based on this bending, what can you infer about the glass block compared to the air?",
+      requiredWords: [["towards", "closer"], ["away", "further"], ["medium"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "1 mark for stating that at A, the light bends towards the normal.",
+        "1 mark for stating that at B, the light bends away from the normal.",
+        "1 mark for inferring that the glass block is a denser medium than the air (causing the light to change speed)."
+      ],
+      modelAnswer: "At point A, the light bends towards the normal line. At point B, it bends away from the normal. Because the light bends towards the normal when entering the block, we can infer that the glass is a denser medium than the air."
+    },
+    {
+      id: "d3",
+      inlineSvg: DIAGRAMS.FILTER_DOUBLE_EXPERIMENT,
+      promptText: "Lily sets up an experiment shining white light through a red filter, and then a green filter. Predict what she will see on the screen. Explain your reasoning using the words 'absorb' and 'pass'.",
+      requiredWords: [["black", "nothing", "no light", "dark"], ["absorb", "absorbs", "absorbed"], ["pass", "passes"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "1 mark for predicting that the screen will be dark/black (no light).",
+        "1 mark for explaining that the red filter lets only red light pass (absorbing the rest).",
+        "1 mark for explaining that the green filter absorbs the red light, letting nothing pass."
+      ],
+      modelAnswer: "Lily will see no light (black) on the screen. The first filter lets only red light pass through and absorbs the rest. When that red light hits the green filter, the green filter absorbs it completely, leaving total darkness."
+    }
+  ],
+  essay: {
+    task: "Explain the process of Dispersion. In your answer, describe what happens when white light passes through a glass prism, explain why the colours separate, and list the colours of the visible spectrum in the correct order.",
+    guidelines: [
+      "Define what white light is made of.",
+      "Explain the role of the prism in changing the speed of different colours.",
+      "List the 7 colours of the spectrum in order from least bent to most bent."
+    ],
+    requiredWords: [
+      ["prism"], 
+      ["speed", "slow", "bend", "refract"], 
+      ["spectrum", "dispersion"], 
+      ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for explaining that a prism separates white light because different colours slow down/bend by different amounts.",
+      "1 mark for using the correct scientific terms (dispersion and spectrum).",
+      "1 mark for listing the colours in the correct order (ROYGBIV)."
+    ],
+    modelAnswer: "Dispersion is the process of splitting white light into its continuous spectrum. White light is actually a mixture of all visible colours. When it passes through a glass prism, the glass causes the light to slow down and bend (refract). However, each colour slows down by a slightly different amount. Red light slows down the least, so it bends the least, while violet slows down and bends the most. This causes the light to fan out into the visible spectrum in this exact order: Red, Orange, Yellow, Green, Blue, Indigo, and Violet."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/components/Feedback.jsx">
+import React, { useEffect, useRef, useState } from 'react';
+import { Volume2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { playChime } from '../utils/sound';
+
+export default function Feedback({ 
+  // Core / Vocab Props
+  isCorrect, 
+  currentWord, 
+  isWordRecognition, 
+  track, 
+  unitId,
+  onNext,
+  // Assessment Review Props
+  expEn, 
+  expVn, 
+  onPrev, 
+  isFirst, 
+  isLast 
+}) {
+  const isAssessmentMode = !currentWord;
+  const audioState = useRef({ isCancelled: false, currentAudio: null });
+  const [btnCooldown, setBtnCooldown] = useState(false);
+  const [enterActive, setEnterActive] = useState(false);
+
+  // 1. Enter Key Listener
+  useEffect(() => {
+    if (isAssessmentMode) return;
+    
+    const timer = setTimeout(() => setEnterActive(true), 400);
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' && enterActive && !btnCooldown) {
+        e.preventDefault(); 
+        setBtnCooldown(true);
+        onNext();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => { clearTimeout(timer); window.removeEventListener('keydown', handleKeyDown); };
+  }, [onNext, enterActive, btnCooldown, isAssessmentMode]);
+
+  // 2. Audio Sequences & Chimes
+  useEffect(() => {
+    if (isAssessmentMode) return;
+
+    playChime(isCorrect ? 'correct' : 'incorrect');
+    if (!currentWord?.isReal) return;
+
+    const state = audioState.current;
+    state.isCancelled = false;
+
+    // Trust the dashboard injection FIRST to guarantee perfect absolute routes
+    const aWord = new Audio(currentWord.audio);
+    const aDef = new Audio(currentWord.defAudio);
+    const aSent = new Audio(currentWord.sentAudio);
+
+    const playAudioObj = (audioObj) => new Promise((resolve) => {
+      state.currentAudio = audioObj;
+      audioObj.onended = resolve;
+      audioObj.onerror = resolve; 
+      audioObj.play().catch(() => resolve()); 
+    });
+
+    const playSequence = async () => {
+      try {
+        if (state.isCancelled) return;
+        if (isWordRecognition) {
+          await playAudioObj(aWord);
+          if (state.isCancelled) return; await new Promise(r => setTimeout(r, 300));
+          if (state.isCancelled) return; await playAudioObj(aDef);
+          if (state.isCancelled) return; await new Promise(r => setTimeout(r, 400));
+          if (state.isCancelled) return; await playAudioObj(aSent);
+        } else {
+          await playAudioObj(aSent);
+        }
+      } catch (err) { console.warn(`Spoken audio skipped for ${track}`); }
+    };
+
+    if (currentWord.isReal) playSequence();
+
+    return () => {
+      state.isCancelled = true;
+      if (state.currentAudio) { state.currentAudio.pause(); state.currentAudio.currentTime = 0; }
+    };
+  }, [isCorrect, currentWord, isWordRecognition, track, unitId, isAssessmentMode]);
+
+  const handleManualAudio = () => {
+    if (isAssessmentMode || !currentWord?.isReal || btnCooldown) return;
+    setBtnCooldown(true); setTimeout(() => setBtnCooldown(false), 500);
+    if (audioState.current.currentAudio) { audioState.current.currentAudio.pause(); audioState.current.currentAudio.currentTime = 0; }
+    
+    // Blindly trust the absolute URL injected by YearDashboard.jsx
+    const audio = new Audio(currentWord.sentAudio);
+    audioState.current.currentAudio = audio;
+    audio.play().catch(() => console.warn("Manual audio failed"));
+  };
+
+  const handleNextClick = () => {
+    if (btnCooldown) return;
+    setBtnCooldown(true);
+    onNext();
+  };
+
+  if (isAssessmentMode) {
+    return (
+      <div className="fixed bottom-0 left-0 w-full z-50 animate-in slide-in-from-bottom-8 duration-300 shadow-[0_-10px_30px_rgba(0,0,0,0.15)] flex flex-col">
+        <div className={`p-6 md:p-8 flex flex-col border-t-4 ${isCorrect ? 'bg-[#D7FFD7] border-[#58A700]' : 'bg-[#FFE5E5] border-[#EA4335]'}`}>
+          <div className="max-w-7xl mx-auto w-full">
+             <div className={`font-black text-2xl flex items-center mb-3 tracking-tight ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>
+                {isCorrect ? (
+                  <><CheckCircle2 className="w-7 h-7 mr-2" strokeWidth={2.5} /> Correct Answer</>
+                ) : (
+                  <><XCircle className="w-7 h-7 mr-2" strokeWidth={2.5} /> Incorrect Answer</>
+                )}
+             </div>
+             {(expEn || expVn) && (
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 pt-3 border-t border-black/10">
+                 <div>
+                   <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>Explanation</span>
+                   <p className={`text-[15px] font-medium leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{expEn}</p>
+                 </div>
+                 <div>
+                   <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>Giải thích</span>
+                   <p className={`text-[15px] font-medium italic leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{expVn}</p>
+                 </div>
+               </div>
+             )}
+          </div>
+        </div>
+        
+        <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-slate-200">
+          <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+            <button 
+              onClick={onPrev} 
+              disabled={isFirst} 
+              className="px-6 py-3 rounded-xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30"
+            >
+              Previous
+            </button>
+            <button 
+              onClick={onNext} 
+              className="px-10 py-4 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md bg-[#58cc02] border-[#58a700] hover:bg-[#46a802]"
+            >
+              {isLast ? 'Finish Review' : 'Next Review'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const bgClass = isCorrect ? 'bg-[#D7FFB8]' : 'bg-[#FFDFE0]';
+  const textClass = isCorrect ? 'text-[#468500]' : 'text-[#C9362A]';
+  const borderClass = isCorrect ? 'border-[#58A700]' : 'border-[#EA2B2B]';
+  
+  return (
+    <div className={`fixed bottom-0 left-0 w-full ${bgClass} border-t-[6px] ${borderClass} p-6 md:p-8 animate-in slide-in-from-bottom-10 shadow-[0_-15px_50px_-15px_rgba(0,0,0,0.2)] z-50`}>
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
+        <div className="flex-1 w-full overflow-hidden">
+          {currentWord?.isReal ? (
+            <div className="flex flex-col md:flex-row items-start gap-6 w-full">
+              <div className="flex flex-row md:flex-col items-center md:items-start gap-4 md:w-1/5 flex-shrink-0">
+                <div className={`flex items-center ${isCorrect ? 'text-[#58A700]' : 'text-[#EA2B2B]'} mb-0 flex-shrink-0`}>
+                  {isCorrect ? <CheckCircle2 className="w-12 h-12 mr-3 bg-white rounded-full" /> : <XCircle className="w-12 h-12 mr-3 bg-white rounded-full" />}
+                  <span className="text-3xl font-black tracking-wide hidden sm:inline">{isCorrect ? 'Correct!' : 'Incorrect'}</span>
+                </div>
+              </div>
+              <div className="flex-1 min-w-0 w-full bg-white/50 p-5 md:p-6 rounded-[2rem] border border-white/60 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-black/5">
+                  <div><h3 className="text-3xl font-black text-slate-800 capitalize">{currentWord.word}</h3><p className="text-xl font-bold text-slate-500 mt-1">{currentWord.vn}</p></div>
+                  <button disabled={btnCooldown} onClick={handleManualAudio} className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl shadow-md transition-all active:scale-95 disabled:opacity-70">
+                    <Volume2 className="w-6 h-6 mr-2" /><span className="font-bold text-sm uppercase tracking-widest">Play Audio</span>
+                  </button>
+                </div>
+                <div className="mb-4">
+                  <p className="text-lg font-bold text-slate-800 leading-snug">{currentWord.def}</p>
+                  <p className={`text-md font-medium mt-1 ${isCorrect ? 'text-[#3E7500]/80' : 'text-[#A32D23]/80'}`}>{currentWord.vnDef}</p>
+                </div>
+                <div className={`pt-4 border-t ${isCorrect ? 'border-[#58A700]/20' : 'border-[#EA2B2B]/20'}`}>
+                  <span className={`font-black text-xs uppercase tracking-widest block mb-2 ${textClass}`}>Sample Sentence</span>
+                  <p className="text-xl font-medium italic leading-relaxed text-slate-800">
+                    {currentWord.sent.split(new RegExp(`(${currentWord.word})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${isCorrect ? 'bg-[#58A700]/20 text-[#3E7500]' : 'bg-[#EA2B2B]/20 text-[#A32D23]'}`}>{part}</strong> : part)}
+                  </p>
+                  <p className={`text-lg font-medium italic mt-1 ${isCorrect ? 'text-[#3E7500]/80' : 'text-[#A32D23]/80'}`}>"{currentWord.vnSent}"</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col md:flex-row items-start gap-6 w-full">
+              <div className="flex flex-row md:flex-col items-center md:items-start gap-4 md:w-1/4 flex-shrink-0">
+                <div className={`flex items-center ${isCorrect ? 'text-[#58A700]' : 'text-[#EA2B2B]'} mb-0 flex-shrink-0`}>
+                  {isCorrect ? <CheckCircle2 className="w-12 h-12 mr-3 bg-white rounded-full" /> : <XCircle className="w-12 h-12 mr-3 bg-white rounded-full" />}
+                  <span className="text-3xl font-black tracking-wide hidden sm:inline">{isCorrect ? 'Correct!' : 'Incorrect'}</span>
+                </div>
+              </div>
+              <div className={`flex-1 min-w-0 w-full p-5 md:p-6 rounded-[2rem] border shadow-sm ${isCorrect ? 'bg-white/50 border-[#58A700]/30' : 'bg-white/50 border-[#EA2B2B]/30'}`}>
+                 <h3 className={`text-2xl font-black mb-2 ${isCorrect ? 'text-[#468500]' : 'text-[#C9362A]'}`}>{isCorrect ? "You spotted it!" : "Watch out!"}</h3>
+                 <p className="text-xl font-medium text-slate-800 flex items-center"><span className="font-bold uppercase tracking-widest text-sm bg-white px-3 py-1 rounded-lg shadow-sm mr-3">Fake Word</span> <strong>{currentWord.word}</strong></p>
+                 {currentWord?.imitating && (
+                  <div className="mt-4 pt-4 border-t border-black/5">
+                    <p className="flex items-center text-lg text-slate-700 font-medium"><AlertCircle className="w-5 h-5 mr-2 text-slate-400" />This was trying to imitate: <strong className="ml-2 font-black text-xl text-slate-900">{currentWord.imitating}</strong></p>
+                  </div>
+                 )}
+              </div>
+            </div>
+          )}
+        </div>
+        <button disabled={btnCooldown} onClick={handleNextClick} className={`w-full md:w-auto px-12 py-6 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all flex-shrink-0 border-b-[6px] active:border-b-0 active:translate-y-[6px] mt-2 md:mt-0 ${isCorrect ? 'bg-[#58A700] hover:bg-[#468500] border-[#468500]' : 'bg-[#EA2B2B] hover:bg-[#C9362A] border-[#C9362A]'} disabled:opacity-80`}>Continue</button>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/TopBar.jsx">
+import React from 'react';
+import { BookOpen, X as XIcon } from 'lucide-react';
+
+export default function TopBar({ onQuit, current, total, progress, modeTitle }) {
+  // Gracefully handle props from both the old app and the new app
+  const displayScore = current !== undefined ? current : 0;
+  const displayTotal = total !== undefined ? total : 0;
+  const displayProgress = progress !== undefined ? progress : (displayTotal > 0 ? (displayScore / displayTotal) * 100 : 0);
+
+  return (
+    <div className="flex justify-between items-center p-4 border-b border-slate-200 bg-white shadow-sm z-20 relative h-16">
+      
+      <div className="flex items-center text-slate-700 font-bold text-lg w-1/4">
+        <div className="flex items-center text-[#1CB0F6]">
+          <BookOpen className="w-6 h-6 mr-2" />
+          <span className="hidden sm:inline whitespace-nowrap">{modeTitle || 'Science Vocab'}</span>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="flex-1 mx-4 max-w-md hidden md:block">
+        <div className="w-full bg-slate-100 rounded-full h-3 border border-slate-200 overflow-hidden">
+          <div 
+            className="bg-[#58A700] h-full transition-all duration-500 ease-out rounded-full" 
+            style={{ width: `${displayProgress}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-end w-1/4 min-w-[140px]">
+        {/* Fraction Score Visual */}
+        {displayTotal > 0 && (
+          <div className="flex items-center space-x-1.5 font-black text-sm px-4 py-1.5 rounded-full border border-slate-200 bg-slate-50 uppercase tracking-widest mr-4">
+            <span className="text-[#58A700]">{displayScore}</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-500">{displayTotal}</span>
+          </div>
+        )}
+
+        <button 
+          onClick={onQuit} 
+          className="flex items-center text-slate-400 hover:text-slate-600 font-bold text-sm uppercase tracking-wider transition-colors active:scale-95"
+          title="Save & Quit"
+        >
+          <span className="hidden sm:inline mr-1">Quit</span>
+          <XIcon className="w-6 h-6" strokeWidth={2.5} />
+        </button>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/UnitCard.jsx">
+import React from 'react';
+import { 
+  Languages, Keyboard, BookOpen, Headphones, FileText, 
+  Image as ImageIcon, Lock, Award, AlertCircle, 
+  ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil
+} from 'lucide-react';
+
+const IconMap = {
+  "Award": Award,
+  "GraduationCap": Award,
+  "BookOpen": BookOpen
+};
+
+const TaskUIConfig = {
+  "WORD_REC":      { label: "Vocab", icon: Languages, bg: "bg-[#58cc02]", border: "border-[#58a700]", text: "text-[#58cc02]" },
+  "NOTES":         { label: "Notes", icon: FileText, bg: "bg-[#94a3b8]", border: "border-[#64748b]", text: "text-[#94a3b8]" },
+  "WORKBOOK":      { label: "Extra", icon: FileBox, bg: "bg-[#ec4899]", border: "border-[#be185d]", text: "text-[#ec4899]" },
+  
+  "SPELLING":      { label: "Spelling", icon: Keyboard, bg: "bg-[#1cb0f6]", border: "border-[#1899d6]", text: "text-[#1cb0f6]" },
+  "READ_COMP":     { label: "Reading", icon: BookOpen, bg: "bg-[#ff9600]", border: "border-[#cc7800]", text: "text-[#ff9600]" },
+  "DICTATION":     { label: "Listening", icon: Headphones, bg: "bg-[#ce82ff]", border: "border-[#a567cc]", text: "text-[#ce82ff]" },
+  
+  "SHORT_ANSWERS": { label: "Questions", icon: HelpCircle, bg: "bg-[#ffc800]", border: "border-[#cca000]", text: "text-[#ffc800]" },
+  "DIAGRAMS":      { label: "Diagram", icon: ImageIcon, bg: "bg-[#ff4b4b]", border: "border-[#cc3c3c]", text: "text-[#ff4b4b]" },
+  "ESSAY":         { label: "Essay", icon: Pencil, bg: "bg-[#14b8a6]", border: "border-[#0d9488]", text: "text-[#14b8a6]" },
+  
+  "ASSESSMENT":    { label: "Assessment", icon: ClipboardCheck, bg: "bg-[#2563eb]", border: "border-[#1d4ed8]", text: "text-[#2563eb]" },
+  "GAMES":         { label: "Game", icon: Gamepad2, bg: "bg-[#6366f1]", border: "border-[#4f46e5]", text: "text-[#6366f1]" }
+};
+
+const getMaxXP = (taskId) => {
+  if (['WORD_REC', 'NOTES', 'WORKBOOK'].includes(taskId)) return 5;
+  if (['SHORT_ANSWERS', 'DIAGRAMS', 'ESSAY'].includes(taskId)) return 20;
+  return 10;
+};
+
+const getDbKeyMax = (dbKey) => {
+  if (['p1', 'p10', 'p11'].includes(dbKey)) return 5;
+  if (['p6', 'p7', 'p8'].includes(dbKey)) return 20;
+  return 10;
+};
+
+export default function UnitCard({ unit, scores = {}, currentTheme, startMode }) {
+  if (!unit) return null;
+
+  const { title, description, icon } = unit.meta || {};
+  const HeaderIcon = IconMap[icon] || BookOpen;
+
+  const phases = {
+    resources: [
+      { id: "NOTES", dbKey: "p10" },
+      { id: "WORD_REC", dbKey: "p1" },
+      { id: "WORKBOOK", dbKey: "p11" }
+    ],
+    practice: [
+      { id: "SPELLING", dbKey: "p2" },
+      { id: "READ_COMP", dbKey: "p4" },
+      { id: "DICTATION", dbKey: "p3" }
+    ],
+    application: [
+      { id: "SHORT_ANSWERS", dbKey: "p6" },
+      { id: "DIAGRAMS", dbKey: "p7" },
+      { id: "ESSAY", dbKey: "p8" }
+    ],
+    mastery: [
+      { id: "ASSESSMENT", dbKey: "p9" },
+      { id: "GAMES", dbKey: "p12" }
+    ]
+  };
+
+  // Strictly enforce max boundaries on read calculation
+  const unitXP = Object.entries(scores)
+    .filter(([key]) => key !== 'strikes')
+    .reduce((sum, [key, val]) => sum + Math.min(val?.current || 0, getDbKeyMax(key)), 0);
+
+  const strikes = scores.strikes || 0;
+  const isAILocked = strikes >= 3;
+
+  const thresholds = unit.meta?.thresholds || { p1: 10, p2: 30, p3: 35 };
+  const practiceLocked = unitXP < (thresholds.p1 || 0); 
+  const applicationLocked = unitXP < (thresholds.p2 || 30);
+  const masteryLocked = unitXP < (thresholds.p3 || 35);
+
+  let trophyStyle = "bg-orange-50 text-orange-800 border-orange-200"; 
+  if (unitXP > 100) {
+    trophyStyle = "bg-gradient-to-r from-red-500 via-yellow-400 via-green-400 via-blue-500 to-purple-500 text-white border-transparent shadow-[0_0_25px_rgba(250,204,21,0.8)] animate-pulse";
+  } else if (unitXP === 100) {
+    trophyStyle = "bg-yellow-400 text-yellow-900 border-yellow-500 shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-pulse";
+  } else if (unitXP >= 50) {
+    trophyStyle = "bg-slate-200 text-slate-800 border-slate-300 shadow-sm";
+  }
+
+  const checkIsEmpty = (taskId) => {
+    if (taskId === 'NOTES' && (!unit.notes || !Array.isArray(unit.notes) || unit.notes.length === 0)) return true;
+    if (taskId === 'WORKBOOK' && (!unit.workbook || unit.workbook.length === 0)) return true;
+    if (taskId === 'GAMES' && (!unit.games || unit.games.length === 0)) return true;
+    if (taskId === 'ASSESSMENT' && (!unit.assessment || !unit.assessment.questions || unit.assessment.questions.length === 0)) return true;
+    return false;
+  };
+
+  const renderTaskButton = (task, isLocked = false) => {
+    const config = TaskUIConfig[task.id];
+    if (!config) return null;
+    
+    const TaskIcon = config.icon;
+    const isEmpty = checkIsEmpty(task.id);
+    
+    const maxTaskXP = getMaxXP(task.id);
+    const rawScore = scores[task.dbKey]?.current || 0;
+    const taskScore = Math.min(rawScore, maxTaskXP);
+
+    if (isEmpty) {
+      return (
+        <div key={task.id} className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border-[3px] border-dashed border-slate-200 bg-slate-50 text-slate-400 w-full h-36 sm:h-44 opacity-70 transition-all hover:opacity-90">
+          <TaskIcon className={`w-8 h-8 sm:w-10 sm:h-10 mb-2 opacity-40 ${config.text}`} strokeWidth={2} />
+          <h4 className="font-black text-sm sm:text-base tracking-wide leading-tight text-center px-2">
+            No {config.label}
+          </h4>
+        </div>
+      );
+    }
+
+    return (
+      <button 
+        key={task.id}
+        disabled={isLocked}
+        onClick={() => startMode(unit.id, task.id)} 
+        className={`relative flex flex-col items-center justify-between p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border-b-[6px] transition-all text-white w-full h-36 sm:h-44 shadow-sm hover:shadow-md
+          ${isLocked 
+            ? 'bg-slate-200 border-slate-300 opacity-60 cursor-not-allowed grayscale' 
+            : `${config.bg} ${config.border} active:border-b-0 active:translate-y-[6px] hover:brightness-110 cursor-pointer`
+          }`}
+      >
+        <div className="flex flex-col items-center mt-1 sm:mt-2">
+          {isLocked ? <Lock className="w-8 h-8 sm:w-10 sm:h-10 mb-2 opacity-80" /> : <TaskIcon className="w-8 h-8 sm:w-10 sm:h-10 mb-2 drop-shadow-sm" strokeWidth={2.5} />}
+          <h4 className="font-black text-lg sm:text-xl tracking-wide leading-tight drop-shadow-sm">
+            {config.label}
+          </h4>
+        </div>
+        
+        <div className="w-full bg-black/15 rounded-xl py-1.5 sm:py-2 mt-auto flex items-center justify-center backdrop-blur-sm border border-white/10">
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest opacity-95">
+            {taskScore} / {maxTaskXP} XP
+          </span>
+        </div>
+      </button>
+    );
+  };
+
+  return (
+    <div className="w-full bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden mb-8 transition-all hover:shadow-2xl">
+      
+      <div className={`p-6 sm:p-8 bg-gradient-to-br ${currentTheme.banner} relative overflow-hidden`}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl transform translate-x-20 -translate-y-20"></div>
+        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+          <div className="flex items-center mb-4 sm:mb-0">
+            <div className="p-4 bg-white/20 rounded-2xl mr-5 backdrop-blur-md text-white border border-white/30 shadow-sm flex-shrink-0">
+              <HeaderIcon className="w-8 h-8 sm:w-10 sm:h-10 opacity-90" />
+            </div>
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-md">{title || 'Unit Title'}</h2>
+              <p className="text-white/80 font-medium text-sm sm:text-base mt-1 max-w-xl drop-shadow-sm">{description || 'Complete the tasks below.'}</p>
+            </div>
+          </div>
+          <div className={`flex flex-col items-center justify-center px-6 py-3 rounded-2xl border-2 shadow-sm flex-shrink-0 min-w-[120px] backdrop-blur-sm ${trophyStyle}`}>
+            <span className="text-xs font-black uppercase tracking-widest opacity-80 mb-0.5">Total XP</span>
+            <span className="text-2xl sm:text-3xl font-black">{unitXP}</span>
+          </div>
+        </div>
+      </div>
+
+      {isAILocked && (
+        <div className="bg-rose-50 border-b border-rose-200 p-4 flex items-start animate-in slide-in-from-top-2">
+          <AlertCircle className="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-bold text-rose-800">AI Safety Lock Engaged</h4>
+            <p className="text-rose-600 text-sm font-medium">Due to repeated inappropriate inputs, AI grading has been disabled for this unit.</p>
+          </div>
+        </div>
+      )}
+
+      <div className="p-6 sm:p-8 space-y-10">
+        
+        <div>
+          <div className="flex items-center mb-5 border-b-2 border-slate-100 pb-2">
+            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Resources</h3>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+            {phases.resources.map(task => renderTaskButton(task, false))}
+          </div>
+        </div>
+
+        <div className="relative">
+          {practiceLocked && (
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-[3px] z-10 flex items-center justify-center rounded-[2rem] border-2 border-slate-100/50">
+              <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl border border-slate-200 flex items-center">
+                <Lock className="w-6 h-6 text-slate-400 mr-3" />
+                <span className="font-bold text-slate-600">Earn {thresholds.p1} XP to unlock.</span>
+              </div>
+            </div>
+          )}
+          <div className={`transition-all ${practiceLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+            <div className="flex justify-between items-end mb-5 border-b-2 border-slate-100 pb-2">
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Phase 1: Practice</h3>
+              <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">{thresholds.p2} XP to Unlock Phase 2</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+              {phases.practice.map(task => renderTaskButton(task, practiceLocked))}
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          {applicationLocked && (
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-[3px] z-10 flex items-center justify-center rounded-[2rem] border-2 border-slate-100/50">
+              <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl border border-slate-200 flex items-center">
+                <Lock className="w-6 h-6 text-slate-400 mr-3" />
+                <span className="font-bold text-slate-600">Earn {thresholds.p2} XP in Phase 1 to unlock.</span>
+              </div>
+            </div>
+          )}
+          <div className={`transition-all ${applicationLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+            <div className="flex justify-between items-end mb-5 border-b-2 border-slate-100 pb-2">
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Phase 2: Understanding</h3>
+              <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">{thresholds.p3} XP to Unlock Mastery</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+              {phases.application.map(task => renderTaskButton(task, applicationLocked))}
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          {masteryLocked && (
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-[3px] z-10 flex items-center justify-center rounded-[2rem] border-2 border-slate-100/50">
+              <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl border border-slate-200 flex items-center">
+                <Lock className="w-6 h-6 text-slate-400 mr-3" />
+                <span className="font-bold text-slate-600">Complete Phase 2 to unlock.</span>
+              </div>
+            </div>
+          )}
+          <div className={`transition-all ${masteryLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+            <div className="flex items-center mb-5 border-b-2 border-slate-100 pb-2">
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Phase 3: Assessment</h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+              {phases.mastery.map(task => renderTaskButton(task, masteryLocked))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/Assessment.jsx">
+// src/tasks/Assessment.jsx
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, XCircle, GripVertical, CornerDownRight, Clock, AlertTriangle, Construction, FileQuestion, ArrowRight } from 'lucide-react';
+import TopBar from '../components/TopBar';
+import Feedback from '../components/Feedback';
+
+export default function Assessment({ unit, onComplete, onQuit }) {
+  const assessmentData = unit?.assessment;
+  
+  if (!assessmentData || !assessmentData.questions || !Array.isArray(assessmentData.questions) || assessmentData.questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+        <div className="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+          <Construction className="w-12 h-12 text-amber-500" />
+        </div>
+        <h2 className="text-4xl font-black text-slate-800 mb-4 tracking-tight">Assessment Unavailable</h2>
+        <div className="bg-white px-8 py-4 rounded-2xl shadow-sm border border-slate-200 mb-10 text-lg font-bold text-slate-500">
+          No assessment data is currently configured for this unit.
+        </div>
+        <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  const questions = assessmentData.questions;
+  const passages = assessmentData.passages || [];
+  const totalQuestions = questions.length;
+
+  const [testPhase, setTestPhase] = useState('testing'); 
+  const [answers, setAnswers] = useState({}); 
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  
+  const [timeLeft, setTimeLeft] = useState(assessmentData.timeLimit || 1800); 
+  const [isTimeUp, setIsTimeUp] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
+
+  const [activeGlossaryTerm, setActiveGlossaryTerm] = useState(null);
+  const [draggedItem, setDraggedItem] = useState(null); // Now stores the unique 'id' of the bank item
+
+  const currentQuestion = questions[currentQIndex] || null;
+  const currentPassage = currentQuestion ? passages.find(p => p.id === currentQuestion.passageId) : null;
+
+  const isDND = currentQuestion?.type === 'dnd' || currentQuestion?.type === 'order';
+  const isInline = currentQuestion?.type === 'inline' || currentQuestion?.type === 'scrollBox';
+  const isMCQ = !isDND && !isInline;
+
+  const hasGraphic = currentQuestion?.inlineSvg || currentQuestion?.imageUrl || currentQuestion?.imageFile;
+  const hasPassage = !!currentPassage;
+  const hasLHS = hasGraphic || hasPassage;
+
+  const currentAns = answers[currentQIndex] || {};
+
+  useEffect(() => {
+    if (testPhase !== 'testing') return;
+    if (timeLeft <= 0 && !isTimeUp) {
+      setIsTimeUp(true);
+      finishTest();
+      return;
+    }
+    const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    return () => clearInterval(timerId);
+  }, [timeLeft, testPhase, isTimeUp]);
+
+  const formatTime = (seconds) => {
+    if (seconds < 0) seconds = 0;
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  useEffect(() => { 
+    setActiveGlossaryTerm(null); 
+  }, [currentQIndex, testPhase]);
+
+  const updateAnswer = (payload) => {
+    setAnswers(prev => {
+      const currentAnsObj = prev[currentQIndex] || {};
+      return { ...prev, [currentQIndex]: { ...currentAnsObj, ...payload } };
+    });
+  };
+
+  const handleSelectOption = (val) => {
+    if (testPhase !== 'testing') return;
+    updateAnswer({ selectedOption: val });
+  };
+
+  const handleDragStart = (e, itemId) => {
+    if (testPhase !== 'testing') return;
+    setDraggedItem(itemId);
+    e.dataTransfer.setData('text/plain', itemId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDrop = (e, slotId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (testPhase !== 'testing' || !draggedItem) return;
+    
+    const currentDrops = currentAns.droppedItems || {};
+    const newDrops = { ...currentDrops };
+    
+    // Prevent same ID existing in multiple slots
+    for (const key in newDrops) { 
+      if (newDrops[key] === draggedItem) delete newDrops[key]; 
+    }
+    
+    newDrops[slotId] = draggedItem;
+    updateAnswer({ droppedItems: newDrops });
+    setDraggedItem(null);
+  };
+
+  const removeDroppedItem = (slotId) => {
+    if (testPhase !== 'testing') return;
+    const currentDrops = currentAns.droppedItems || {};
+    const newDrops = { ...currentDrops };
+    delete newDrops[slotId];
+    updateAnswer({ droppedItems: newDrops });
+  };
+
+  const handleInlineChange = (blankIndex, val) => {
+    if (testPhase !== 'testing') return;
+    const currentInline = currentAns.inlineAnswers || {};
+    updateAnswer({ inlineAnswers: { ...currentInline, [blankIndex]: val } });
+  };
+
+  let isCurrentAnswered = false;
+  if (currentQuestion) {
+    if (isMCQ) isCurrentAnswered = !!currentAns.selectedOption;
+    if (isInline) isCurrentAnswered = Object.keys(currentAns.inlineAnswers || {}).length === Object.keys(currentQuestion.blanks || {}).length;
+    if (isDND) {
+      let totalSlots = 0;
+      (currentQuestion.targets || []).forEach(t => totalSlots += (currentQuestion.correctSets?.[t.id]?.length || 1));
+      isCurrentAnswered = Object.keys(currentAns.droppedItems || {}).length === totalSlots;
+    }
+  }
+
+  const checkQuestionCorrect = (qIndex) => {
+    const q = questions[qIndex];
+    const ans = answers[qIndex] || {};
+    
+    if (q.type === 'mcq') return ans.selectedOption === q.correct;
+    
+    if (q.type === 'inline' || q.type === 'scrollBox') {
+      const userInline = ans.inlineAnswers || {};
+      const blanks = q.blanks || {};
+      for (const blankId of Object.keys(blanks)) {
+        if (userInline[blankId] !== blanks[blankId].correct) return false;
+      }
+      return true;
+    }
+    
+    if (q.type === 'dnd' || q.type === 'order') {
+      const dropped = ans.droppedItems || {};
+      let allCorrect = true;
+      for (const target of (q.targets || [])) {
+        const expectedArr = q.correctSets?.[target.id] || [];
+        const userDroppedVals = [];
+        
+        for (let i = 0; i < expectedArr.length; i++) {
+          const dId = dropped[`${target.id}_${i}`];
+          const bankItem = (q.bank || []).find(b => b.id === dId);
+          if (bankItem) userDroppedVals.push(bankItem.val);
+        }
+
+        if (q.type === 'order') {
+          if (JSON.stringify(userDroppedVals) !== JSON.stringify(expectedArr)) allCorrect = false;
+        } else {
+          if (userDroppedVals.length !== expectedArr.length) allCorrect = false;
+          const unmatchedExpected = [...expectedArr];
+          for (const val of userDroppedVals) {
+             const idx = unmatchedExpected.indexOf(val);
+             if (idx !== -1) {
+                unmatchedExpected.splice(idx, 1);
+             } else {
+                allCorrect = false;
+             }
+          }
+        }
+      }
+      return allCorrect;
+    }
+    return false;
+  };
+
+  const finishTest = () => {
+    let totalPossible = 0;
+    let totalEarned = 0;
+
+    for (let i = 0; i < totalQuestions; i++) {
+      const q = questions[i];
+      const ans = answers[i] || {};
+
+      if (q.type === 'mcq') {
+        totalPossible += 1;
+        if (ans.selectedOption === q.correct) totalEarned += 1;
+      } else if (q.type === 'inline' || q.type === 'scrollBox') {
+        const blanks = q.blanks || {};
+        const userInline = ans.inlineAnswers || {};
+        for (const blankId of Object.keys(blanks)) {
+          totalPossible += 1;
+          if (userInline[blankId] === blanks[blankId].correct) totalEarned += 1;
+        }
+      } else if (q.type === 'dnd' || q.type === 'order') {
+        const dropped = ans.droppedItems || {};
+        for (const target of (q.targets || [])) {
+          const expectedArr = q.correctSets?.[target.id] || [];
+          totalPossible += expectedArr.length;
+
+          const userDroppedVals = [];
+          for (let s = 0; s < expectedArr.length; s++) {
+             const dId = dropped[`${target.id}_${s}`];
+             const bankItem = (q.bank || []).find(b => b.id === dId);
+             if (bankItem) userDroppedVals.push(bankItem.val);
+          }
+
+          if (q.type === 'order') {
+            for (let s = 0; s < expectedArr.length; s++) {
+              if (userDroppedVals[s] === expectedArr[s]) totalEarned += 1;
+            }
+          } else {
+            const unmatchedExpected = [...expectedArr];
+            for (const val of userDroppedVals) {
+               const idx = unmatchedExpected.indexOf(val);
+               if (idx !== -1) {
+                 totalEarned += 1;
+                 unmatchedExpected.splice(idx, 1);
+               }
+            }
+          }
+        }
+      }
+    }
+
+    const calculatedScore = totalPossible === 0 ? 0 : Math.ceil((totalEarned / totalPossible) * 10);
+    setFinalScore(calculatedScore);
+    setTestPhase('intermission');
+  };
+
+  const handleNextTest = () => {
+    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
+    else finishTest();
+  };
+
+  const handlePrevTest = () => {
+    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  };
+
+  const handleNextReview = () => {
+    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
+    else {
+      if (typeof onComplete === 'function') onComplete(finalScore);
+    }
+  };
+
+  const handlePrevReview = () => {
+    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  };
+
+  const renderPassageWithGlossary = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const parts = text.split(/\{([^}]+)\}/g);
+    return parts.map((part, i) => {
+      if (i % 2 !== 0) {
+        const cleanWord = part.toLowerCase();
+        const termData = currentPassage?.glossary?.[cleanWord];
+        if (!termData) return <span key={i} className="font-bold text-slate-800">{part}</span>;
+        return (
+          <button 
+            key={i} 
+            onClick={() => { setActiveGlossaryTerm({ word: part, ...termData }); }}
+            className="text-emerald-600 font-bold border-b-2 border-dashed border-emerald-600 hover:bg-emerald-50 transition-colors mx-0.5 rounded px-1"
+          >
+            {part}
+          </button>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
+  if (testPhase === 'intermission') {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-indigo-100 relative overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200 opacity-40 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-200 opacity-40 blur-[120px] pointer-events-none" />
+        
+        <TopBar onQuit={onQuit} current={totalQuestions} total={totalQuestions} modeTitle="Assessment Module" />
+        
+        <div className="flex-1 flex flex-col items-center justify-center p-6 z-10 animate-in zoom-in-95 duration-500">
+          <div className="bg-white p-12 md:p-16 rounded-[2.5rem] shadow-2xl border border-slate-200 text-center max-w-2xl w-full">
+             <div className="w-32 h-32 mx-auto bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-8 shadow-inner">
+               <CheckCircle2 className="w-16 h-16" strokeWidth={3} />
+             </div>
+             <h1 className="text-5xl font-black text-slate-800 tracking-tight mb-4">Assessment Complete</h1>
+             <p className="text-2xl font-bold text-slate-500 mb-8">Let's see how you did.</p>
+             
+             <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl py-8 mb-10 shadow-sm">
+                <span className="block text-sm font-black text-slate-400 uppercase tracking-widest mb-2">Normalized XP</span>
+                <div className="text-6xl font-black text-emerald-500">
+                  {finalScore} <span className="text-4xl text-slate-300">/ 10</span>
+                </div>
+             </div>
+
+             <button 
+                onClick={() => { setCurrentQIndex(0); setTestPhase('reviewing'); }}
+                className="w-full py-5 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all bg-[#1CB0F6] border-b-[6px] border-[#1899D6] hover:bg-[#1899D6] active:border-b-0 active:translate-y-[6px] shadow-lg flex items-center justify-center"
+             >
+                Review Answers <ArrowRight className="w-6 h-6 ml-3" strokeWidth={3} />
+             </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isCurrentlyCorrect = testPhase === 'reviewing' ? checkQuestionCorrect(currentQIndex) : null;
+
+  return (
+    <div className="flex flex-col h-screen bg-slate-50 font-sans relative">
+      
+      <TopBar 
+        onQuit={onQuit} 
+        current={currentQIndex + 1} 
+        total={totalQuestions} 
+        modeTitle={testPhase === 'testing' ? "Assessment Module" : "Assessment Review"} 
+      />
+
+      {isTimeUp && testPhase === 'testing' && (
+        <div className="bg-red-600 text-white p-3 text-center font-bold text-lg uppercase tracking-widest flex justify-center items-center shadow-md z-30 animate-in slide-in-from-top-2">
+          <AlertTriangle className="mr-2" /> Time is up! Submitting answers...
+        </div>
+      )}
+
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative z-10">
+        
+        {/* Left Hand Side (Passage & Graphics) - Only renders if they exist */}
+        {hasLHS && (
+          <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto border-b md:border-b-0 md:border-r border-slate-200 bg-white z-10 pb-32">
+            {hasPassage && (
+              <div className={`animate-in fade-in duration-300 ${hasGraphic ? 'mb-8 border-b-2 border-slate-100 pb-8' : ''}`}>
+                <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-6 leading-tight">{currentPassage.title}</h2>
+                <div className="mb-6">
+                  {currentPassage.meta && (
+                    <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 mb-4 gap-3">
+                      <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">{currentPassage.meta}</h3>
+                    </div>
+                  )}
+                  <div className="space-y-4 text-slate-700 text-lg leading-relaxed font-medium">
+                    {(currentPassage.text || []).map((p, i) => (
+                      <p key={i}>{renderPassageWithGlossary(p)}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {hasGraphic && (
+              <div className="w-full animate-in fade-in duration-300">
+                {currentQuestion.inlineSvg ? (
+                  <div 
+                    className="w-full h-auto flex items-center justify-center p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-inner"
+                    dangerouslySetInnerHTML={{ __html: currentQuestion.inlineSvg }}
+                  />
+                ) : (
+                  <img 
+                    src={`${import.meta.env.BASE_URL || ''}images/${unit?.id || 'MATH_1A'}/${(currentQuestion.imageFile || currentQuestion.imageUrl).split('/').pop()}`} 
+                    alt="Assessment Diagram" 
+                    className="w-full h-auto object-contain rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-inner p-6"
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Right Hand Side (Questions & Controls) */}
+        <div className={`w-full ${hasLHS ? 'md:w-1/2 bg-slate-50' : 'max-w-4xl mx-auto bg-white border-x border-slate-200'} flex flex-col relative overflow-hidden pb-48`}>
+          
+          {testPhase === 'testing' && !isTimeUp && (
+            <div className="absolute top-4 right-4 z-30 flex items-center font-black text-lg px-4 py-2 rounded-xl bg-white border-2 border-slate-200 shadow-sm text-slate-700">
+               <Clock className="w-5 h-5 mr-2" />
+               {formatTime(timeLeft)}
+            </div>
+          )}
+
+          <div className="p-6 md:p-8 overflow-y-auto h-full relative animate-in fade-in slide-in-from-right-4 duration-300 pt-16 md:pt-10">
+            <h3 className="text-xl font-black text-slate-800 leading-snug tracking-tight mb-8 pr-20">{currentQuestion.title}</h3>
+            
+            {isMCQ && (
+              <div className="space-y-3">
+                {(currentQuestion.options || []).map((opt) => {
+                  const isSelected = currentAns.selectedOption === opt.val;
+                  const isCorrectAnswer = opt.val === currentQuestion.correct;
+                  let btnStyle = "bg-white border-slate-200 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 shadow-sm hover:shadow-md";
+                  
+                  if (testPhase === 'reviewing') {
+                    if (isCorrectAnswer) btnStyle = "bg-[#D7FFD7] border-[#58A700] text-[#3E7500] shadow-sm";
+                    else if (isSelected && !isCorrectAnswer) btnStyle = "bg-[#FFE5E5] border-[#EA4335] text-[#A32D23] shadow-sm";
+                    else btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                  } else if (isSelected) {
+                    btnStyle = "bg-emerald-50 border-emerald-500 border-b-4 text-emerald-800 translate-y-[-2px] shadow-md";
+                  }
+
+                  return (
+                    <button 
+                      key={opt.val}
+                      onClick={() => handleSelectOption(opt.val)}
+                      disabled={testPhase !== 'testing'}
+                      className={`w-full text-left p-4 rounded-2xl border-2 font-medium text-lg transition-all ${btnStyle}`}
+                    >
+                      {opt.text}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {isDND && (
+              <div className="space-y-8">
+                <div className="sticky top-0 z-30 pt-1 pb-4 bg-slate-50/90 backdrop-blur-md shadow-[0_15px_15px_-15px_rgba(0,0,0,0.1)] -mt-2">
+                  <div className="bg-white border-2 border-dashed border-slate-300 rounded-3xl p-5 shadow-sm">
+                    <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Options Bank</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {(currentQuestion.bank || []).map((opt) => {
+                        // Check if the unique ID is already used
+                        const isUsed = Object.values(currentAns.droppedItems || {}).includes(opt.id);
+                        if (isUsed) return null;
+                        return (
+                          <div
+                            key={opt.id}
+                            draggable={testPhase === 'testing'}
+                            onDragStart={(e) => handleDragStart(e, opt.id)}
+                            className={`flex items-center px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-medium text-slate-700 shadow-sm transition-all ${testPhase === 'testing' ? 'cursor-grab active:cursor-grabbing hover:border-emerald-400 hover:shadow-md' : 'opacity-50'}`}
+                          >
+                            <GripVertical className="w-5 h-5 mr-2 text-slate-400" />
+                            {opt.text}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Targets</h4>
+                  <div className={`grid gap-4 ${(currentQuestion.targets || []).length > 1 && currentQuestion.type !== 'order' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'}`}>
+                    {(currentQuestion.targets || []).map((target) => {
+                      const requiredCount = currentQuestion.correctSets?.[target.id]?.length || 1;
+                      return (
+                        <div key={target.id} className="flex flex-col bg-white p-4 rounded-3xl border-2 border-slate-200 shadow-sm">
+                          <div className="font-bold text-slate-800 mb-3 text-[15px] leading-tight text-center border-b-2 border-slate-100 pb-3">{target.title}</div>
+                          <div className="flex flex-col gap-2">
+                            {Array.from({ length: requiredCount }).map((_, slotIndex) => {
+                              const slotId = `${target.id}_${slotIndex}`;
+                              const droppedId = (currentAns.droppedItems || {})[slotId];
+                              const droppedObj = (currentQuestion.bank || []).find(b => b.id === droppedId);
+                              
+                              let slotStyle = "bg-slate-50 border-dashed border-slate-300 text-slate-400";
+                              
+                              if (testPhase === 'reviewing') {
+                                const expectedArr = currentQuestion.correctSets?.[target.id] || [];
+                                // For evaluation, compare the 'val' property, not the 'id'
+                                const droppedVal = droppedObj ? droppedObj.val : null;
+                                let isCorrectInSlot = currentQuestion.type === 'order' ? expectedArr[slotIndex] === droppedVal : expectedArr.includes(droppedVal);
+                                
+                                if (!droppedId) slotStyle = "bg-[#FFE5E5] border-[#EA4335] border-solid text-[#A32D23] shadow-sm";
+                                else if (isCorrectInSlot) slotStyle = "bg-[#D7FFD7] border-[#58A700] border-solid text-[#3E7500] shadow-sm";
+                                else slotStyle = "bg-[#FFE5E5] border-[#EA4335] border-solid text-[#A32D23] shadow-sm";
+                              } else if (droppedObj) {
+                                slotStyle = "bg-emerald-50 border-emerald-400 border-solid text-emerald-800 shadow-sm";
+                              }
+
+                              return (
+                                <div 
+                                  key={slotId}
+                                  onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }}
+                                  onDrop={(e) => handleDrop(e, slotId)}
+                                  onClick={() => droppedObj && removeDroppedItem(slotId)}
+                                  className={`min-h-[70px] flex items-center p-3 rounded-2xl border-2 transition-all ${slotStyle} ${testPhase === 'testing' && droppedObj ? 'cursor-pointer hover:bg-rose-50 hover:border-rose-300' : ''}`}
+                                >
+                                  {!droppedObj ? (
+                                    <div className="flex items-center justify-center w-full">
+                                      <CornerDownRight className="w-5 h-5 mr-2 opacity-50" />
+                                      <span className="font-medium text-sm">{testPhase === 'reviewing' ? 'Left Blank' : 'Drop Item Here'}</span>
+                                    </div>
+                                  ) : (
+                                    <div className="font-bold flex items-center justify-between w-full text-[15px]">
+                                      <span>{droppedObj.text}</span>
+                                      {testPhase === 'testing' && <XCircle className="w-5 h-5 text-slate-400 hover:text-rose-500 ml-2 flex-shrink-0 transition-colors" />}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isInline && (
+              <div className="text-lg leading-loose text-slate-700 bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm">
+                {(currentQuestion.textParts || []).map((part, i) => {
+                  const blankIndex = i + 1;
+                  const blankData = currentQuestion.blanks?.[blankIndex];
+                  const selectedVal = (currentAns.inlineAnswers || {})[blankIndex];
+                  
+                  let selectStyle = 'bg-emerald-50 border-emerald-400 text-emerald-800 hover:bg-emerald-100 hover:shadow-md';
+                  let showCorrection = false;
+
+                  if (testPhase === 'reviewing') {
+                    const isCorrect = selectedVal === blankData?.correct;
+                    if (isCorrect) selectStyle = 'bg-[#D7FFD7] border-[#58A700] text-[#3E7500]';
+                    else {
+                      selectStyle = 'bg-[#FFE5E5] border-[#EA4335] text-[#A32D23]';
+                      showCorrection = true;
+                    }
+                  }
+
+                  return (
+                    <React.Fragment key={i}>
+                      {part}
+                      {blankData && (
+                        <span className="inline-flex items-center">
+                          <select
+                            value={selectedVal || ""}
+                            onChange={(e) => handleInlineChange(blankIndex, e.target.value)}
+                            disabled={testPhase !== 'testing'}
+                            className={`mx-2 p-2 border-b-4 border-2 rounded-xl font-bold cursor-pointer transition-all outline-none appearance-none pr-8 bg-no-repeat shadow-sm ${selectStyle}`}
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundSize: '1.5em 1.5em' }}
+                          >
+                            <option value="" disabled>{testPhase === 'reviewing' ? 'Blank' : 'Select...'}</option>
+                            {(blankData.options || []).map(opt => <option key={opt.val} value={opt.val}>{opt.text}</option>)}
+                          </select>
+                          {showCorrection && (
+                            <span className="text-[#3E7500] bg-[#D7FFD7] border border-[#58A700] px-2 py-1 rounded-lg ml-1 text-sm font-bold shadow-sm">
+                              {blankData.options.find(o => o.val === blankData.correct)?.text}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {testPhase === 'testing' && (
+        <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-2">
+            <button 
+              onClick={handlePrevTest} 
+              disabled={currentQIndex === 0}
+              className="px-6 py-3 rounded-xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30"
+            >
+              Previous
+            </button>
+            <button 
+              onClick={handleNextTest}
+              disabled={!isCurrentAnswered}
+              className="px-10 py-4 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md bg-[#1CB0F6] border-[#1899D6] hover:bg-[#159bd9] disabled:opacity-50 disabled:bg-slate-300 disabled:border-slate-400 disabled:text-slate-500"
+            >
+              {currentQIndex === totalQuestions - 1 ? 'Submit Test' : 'Next Question'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {testPhase === 'reviewing' && (
+        <Feedback 
+          isCorrect={isCurrentlyCorrect}
+          expEn={currentQuestion.expEn}
+          expVn={currentQuestion.expVn}
+          onPrev={handlePrevReview}
+          onNext={handleNextReview}
+          isFirst={currentQIndex === 0}
+          isLast={currentQIndex === totalQuestions - 1}
+        />
+      )}
+
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/Dictation.jsx">
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Volume2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import TopBar from '../components/TopBar';
+import { playChime } from '../utils/sound';
+
+const calculateSimilarity = (str1, str2) => {
+  const clean = (s) => s.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
+  const a = clean(str1);
+  const b = clean(str2);
+  if (a.length === 0) return 0;
+  if (a === b) return 1;
+
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+      }
+    }
+  }
+  const distance = matrix[b.length][a.length];
+  return Math.max(0, 1 - distance / Math.max(a.length, b.length));
+};
+
+const checkFormatting = (text) => {
+  const trimmed = text.trim();
+  if (!trimmed) return { hasCapital: false, hasPunctuation: false };
+  const firstChar = trimmed.charAt(0);
+  const hasCapital = /^[A-Z]/.test(firstChar); 
+  const hasPunctuation = trimmed.endsWith('.');
+  return { hasCapital, hasPunctuation };
+};
+
+export default function Dictation({ pool, track, unitId, savedData = {}, onComplete }) {
+  const realWords = useMemo(() => (pool || []).filter(w => w.isReal !== false), [pool]);
+  const [wordIndex, setWordIndex] = useState(0);
+  
+  const [localAnswers, setLocalAnswers] = useState(savedData);
+  const initialSaved = savedData[0];
+  
+  const [gameState, setGameState] = useState(initialSaved?.status === 'perfect' ? 'SAVED_PERFECT' : 'Q'); 
+  const [userInput, setUserInput] = useState(initialSaved?.status === 'perfect' ? initialSaved.text : '');
+  const [score, setScore] = useState(initialSaved?.status === 'perfect' ? 1 : 0);
+  const [userAnswer, setUserAnswer] = useState(initialSaved?.status === 'perfect' ? { isPass: true, percentage: 100, formattingPenalty: false, hasCapital: true, hasPunctuation: true } : null);
+  
+  const audioState = useRef(null);
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const btnCooldown = useRef(false);
+  
+  // FIX: Added a cooldown state to prevent the "Enter" key from instantly skipping the feedback panel
+  const [canAdvance, setCanAdvance] = useState(false);
+
+  const currentWordObj = realWords[wordIndex];
+
+  const calculateXP = (currentScore) => {
+    if (!realWords || realWords.length === 0) return 0;
+    return Math.floor((currentScore / realWords.length) * 10);
+  };
+
+  const playAudioSequence = useCallback((isManual = false) => {
+    if (!currentWordObj) return;
+
+    if (isManual) {
+      if (btnCooldown.current) return;
+      btnCooldown.current = true;
+      setIsBtnDisabled(true);
+      setTimeout(() => {
+        btnCooldown.current = false;
+        setIsBtnDisabled(false);
+      }, 500); 
+    }
+
+    if (audioState.current) {
+      audioState.current.isCancelled = true;
+      if (audioState.current.currentAudio) {
+        audioState.current.currentAudio.pause();
+        audioState.current.currentAudio.currentTime = 0;
+      }
+    }
+
+    const state = { isCancelled: false, currentAudio: null };
+    audioState.current = state;
+    const basePath = import.meta.env.BASE_URL || '/';
+
+    const aDict = new Audio(`${basePath}audio/${track}/${unitId}/dictation_${currentWordObj.word.toLowerCase()}.mp3`);
+    // FIX: Removed the 0.85x slowdown to make the audio sound natural
+
+    const playAudioObj = (audioObj) => new Promise((resolve) => {
+      state.currentAudio = audioObj;
+      audioObj.onended = resolve;
+      audioObj.onerror = resolve; 
+      audioObj.play().catch(() => resolve());
+    });
+
+    const runSequence = async () => {
+      if (state.isCancelled) return;
+      await playAudioObj(aDict);
+    };
+
+    runSequence();
+  }, [currentWordObj, track, unitId]); 
+
+  useEffect(() => {
+    if (gameState === 'Q') {
+      const timer = setTimeout(() => playAudioSequence(false), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [gameState, playAudioSequence]);
+
+  useEffect(() => {
+    if (wordIndex === 0) return; 
+
+    const saved = localAnswers[wordIndex];
+    if (saved && saved.status === 'perfect') {
+      setUserInput(saved.text);
+      setUserAnswer({ isPass: true, percentage: 100, formattingPenalty: false, hasCapital: true, hasPunctuation: true });
+      setGameState('SAVED_PERFECT');
+      setScore(s => s + 1);
+    } else {
+      setUserInput('');
+      setGameState('Q');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wordIndex]);
+
+  // FIX: Cooldown manager for the global Enter key to ensure feedback panels are seen
+  useEffect(() => {
+    if (gameState === 'SAVED_PERFECT') {
+       setCanAdvance(true); // Instant skip allowed for previously perfected sentences
+    } else if (gameState !== 'Q') {
+      setCanAdvance(false);
+      const timer = setTimeout(() => setCanAdvance(true), 600); // 600ms reading window
+      return () => clearTimeout(timer);
+    }
+  }, [gameState]);
+
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (gameState !== 'Q' || !userInput.trim()) return;
+
+    const sim = calculateSimilarity(userInput, currentWordObj.dictSent);
+    let percentage = Math.round(sim * 20) * 5; 
+
+    const { hasCapital, hasPunctuation } = checkFormatting(userInput);
+    let formattingPenalty = false;
+
+    if (!hasCapital || !hasPunctuation) {
+      percentage = Math.max(0, percentage - 5);
+      formattingPenalty = true;
+    }
+
+    const isPass = percentage >= 85;
+    
+    if (isPass) {
+      setScore(s => s + 1);
+      // Only First-Attempt 100% scores get saved permanently
+      if (percentage === 100 && !formattingPenalty) {
+        setLocalAnswers(prev => ({ ...prev, [wordIndex]: { text: userInput.trim(), status: 'perfect' } }));
+      }
+    }
+    playChime(isPass ? 'correct' : 'incorrect');
+
+    setUserAnswer({ isPass, percentage, formattingPenalty, hasCapital, hasPunctuation });
+    setGameState(isPass ? 'A_PASS' : 'A_FAIL');
+  };
+
+  const handleNext = (overrideScore) => {
+    if (audioState.current) {
+      audioState.current.isCancelled = true;
+      if (audioState.current.currentAudio) {
+        audioState.current.currentAudio.pause();
+      }
+    }
+    
+    const finalScore = overrideScore !== undefined ? overrideScore : score;
+
+    if (wordIndex < realWords.length - 1) {
+      setWordIndex(w => w + 1);
+    } else {
+      onComplete(calculateXP(finalScore), localAnswers);
+    }
+  };
+
+  const checkRetry = () => {
+    if (gameState !== 'A_FAIL') return false;
+    const { hasCapital, hasPunctuation } = checkFormatting(userInput);
+    const sim = calculateSimilarity(userInput, currentWordObj?.dictSent || "");
+    let percentage = Math.round(sim * 20) * 5;
+    if (!hasCapital || !hasPunctuation) percentage = Math.max(0, percentage - 5);
+    return percentage >= 85 && hasCapital && hasPunctuation;
+  };
+
+  const isRetryCorrect = checkRetry();
+  const isPassState = gameState === 'A_PASS' || gameState === 'SAVED_PERFECT';
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Global continue listener (only works if canAdvance cooldown has passed)
+      if (e.key === 'Enter' && !e.shiftKey && canAdvance) {
+        if (isPassState || (gameState === 'A_FAIL' && isRetryCorrect)) {
+          e.preventDefault();
+          document.getElementById('continue-btn')?.click(); 
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPassState, gameState, isRetryCorrect, canAdvance]);
+
+  if (!currentWordObj) return null;
+
+  return (
+    <div className={`min-h-screen flex flex-col font-sans pb-56 lg:pb-40 transition-colors duration-500
+      ${isPassState ? 'bg-[#F0FDE6]' : gameState === 'A_FAIL' ? 'bg-[#FFF0F0]' : 'bg-slate-50'}`}>
+      
+      <TopBar current={wordIndex} total={realWords.length} onQuit={() => onComplete(calculateXP(score), localAnswers)} modeTitle="Dictation" />
+
+      <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-6 w-full max-w-4xl mx-auto mt-2 sm:mt-6">
+        
+        <p className="text-slate-400 font-bold uppercase tracking-widest text-sm sm:text-base mb-4 text-center">
+          {gameState === 'Q' ? 'Type the sentence you hear' : gameState === 'SAVED_PERFECT' ? 'Perfect Score Saved!' : isPassState ? 'Excellent Listening!' : 'Review & Correct'}
+        </p>
+
+        <form onSubmit={handleSubmit} className="w-full flex flex-col mb-8">
+          <div className="relative">
+            <textarea 
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              disabled={isPassState}
+              autoFocus
+              
+              spellCheck={false}
+              autoComplete="off"
+              autoCorrect="off"
+              onPaste={(e) => e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
+              onCut={(e) => e.preventDefault()}
+              
+              /* FIX: Blocks newlines entirely and routes the Enter key straight to Submit */
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault(); 
+                  e.stopPropagation(); 
+                  if (gameState === 'Q' && userInput.trim().length > 0) {
+                    handleSubmit(e);
+                  }
+                }
+              }}
+
+              placeholder={gameState === 'SAVED_PERFECT' ? '' : "Type what you hear..."}
+              
+              /* Renders the green-tinted box if the answer was perfected on a previous attempt */
+              className={`w-full h-32 sm:h-40 p-5 text-xl sm:text-2xl font-medium text-slate-800 bg-white border-2 rounded-3xl focus:outline-none resize-none transition-all shadow-sm
+                ${isPassState ? 'border-[#58A700] text-[#3E7500] disabled:bg-[#F0FDE6]' 
+                : gameState === 'A_FAIL' ? (isRetryCorrect ? 'border-[#58A700] focus:border-[#58A700] bg-[#F0FDE6]' : 'border-[#EA2B2B] focus:border-[#EA2B2B] bg-[#FFF0F0]') 
+                : 'border-slate-200 focus:border-[#1CB0F6]'}`}
+            />
+          </div>
+
+          {gameState === 'Q' && (
+            <div className="flex justify-center mt-6">
+              <button 
+                type="submit"
+                disabled={!userInput.trim()}
+                className="w-full sm:w-auto min-w-[250px] px-8 py-4 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl tracking-wide border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] disabled:opacity-50 transition-all shadow-sm"
+              >
+                Check Answer
+              </button>
+            </div>
+          )}
+        </form>
+
+        <div className="text-center">
+          <button 
+            disabled={isBtnDisabled}
+            onClick={() => playAudioSequence(true)}
+            className={`w-24 h-24 sm:w-28 sm:h-28 rounded-[2rem] flex items-center justify-center shadow-xl transition-all active:scale-95 mx-auto disabled:opacity-80
+              ${isPassState ? 'bg-[#58A700] shadow-[#58A700]/30' : gameState === 'A_FAIL' ? 'bg-[#EA2B2B] shadow-[#EA2B2B]/30' : 'bg-[#1CB0F6] hover:bg-[#1899D6] shadow-[#1CB0F6]/30'}`}
+          >
+            <Volume2 className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+          </button>
+          <p className="mt-3 font-bold text-slate-400 uppercase tracking-widest text-xs">Replay Audio</p>
+        </div>
+
+      </div>
+
+      {gameState !== 'Q' && (
+        <div className={`fixed bottom-0 left-0 w-full border-t-[6px] p-4 md:p-6 animate-in slide-in-from-bottom-10 shadow-[0_-15px_50px_-15px_rgba(0,0,0,0.2)] z-50
+          ${isPassState ? 'bg-[#D7FFB8] border-[#58A700]' : 'bg-[#FFDFE0] border-[#EA2B2B]'}`}>
+          
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-6">
+
+            <div className="flex items-center gap-3 w-full lg:w-auto justify-center lg:justify-start flex-shrink-0">
+              <div className={`flex items-center ${isPassState ? 'text-[#58A700]' : 'text-[#EA2B2B]'} mb-0`}>
+                {isPassState ? <CheckCircle2 className="w-10 h-10 mr-2 bg-white rounded-full" /> : <XCircle className="w-10 h-10 mr-2 bg-white rounded-full" />}
+                <span className="text-2xl font-black tracking-wide">{gameState === 'SAVED_PERFECT' ? 'Saved!' : isPassState ? 'Great!' : 'Review'}</span>
+              </div>
+            </div>
+
+            <div className="flex-1 w-full bg-white/50 p-4 rounded-xl border border-white/60 shadow-sm flex flex-col md:flex-row gap-4 md:gap-6">
+              
+              <div className="flex-1">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className={`font-black text-[10px] sm:text-xs uppercase tracking-widest ${isPassState ? 'text-[#468500]' : 'text-[#C9362A]'}`}>
+                    Target Sentence
+                  </span>
+                  <span className={`font-black text-[10px] sm:text-xs uppercase tracking-widest bg-white/50 px-2.5 py-0.5 rounded-md ${isPassState ? 'text-[#468500]' : 'text-[#C9362A]'}`}>
+                    Accuracy: {userAnswer?.percentage}%
+                  </span>
+                </div>
+                <p className="font-bold text-base sm:text-lg text-slate-800 leading-tight">
+                  {currentWordObj.dictSent}
+                </p>
+
+                {gameState === 'A_FAIL' && (
+                  <div className="mt-2 flex flex-wrap gap-2 items-center">
+                    {userAnswer?.formattingPenalty && (
+                      <span className="bg-[#EA2B2B] text-white px-2 py-1 rounded-md text-[10px] sm:text-xs font-bold flex items-center shadow-sm">
+                        <AlertCircle className="w-3 h-3 mr-1" /> Missing Capital/Period (-5%)
+                      </span>
+                    )}
+                    <span className="text-[#C9362A] font-bold text-[11px] sm:text-xs bg-[#FFCCCC]/50 px-2 py-1 rounded-md border border-[#EA2B2B]/20">
+                      {(!userAnswer?.hasCapital || !userAnswer?.hasPunctuation) ? "Fix formatting to continue!" : "Retype exactly to continue."}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="hidden md:block w-px bg-black/10"></div>
+
+              <div className="flex-1 border-t md:border-t-0 border-black/5 pt-3 md:pt-0">
+                <span className={`font-black text-[10px] sm:text-xs uppercase tracking-widest block mb-1.5 ${isPassState ? 'text-[#468500]' : 'text-[#C9362A]'}`}>
+                  Vietnamese Translation
+                </span>
+                <p className="font-medium text-sm sm:text-base text-slate-700 italic leading-tight">
+                  "{currentWordObj.dictVn}"
+                </p>
+              </div>
+
+            </div>
+
+            <button
+              id="continue-btn"
+              disabled={gameState === 'A_FAIL' && !isRetryCorrect}
+              onClick={() => {
+                if (gameState === 'A_FAIL') {
+                  const newScore = score + 1;
+                  setScore(newScore);
+                  // FIX: We do NOT save it to LocalAnswers here because retries shouldn't be permanent perfects!
+                  handleNext(newScore);
+                } else {
+                  handleNext();
+                }
+              }}
+              className={`w-full lg:w-auto px-10 py-5 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all flex-shrink-0 border-b-[5px] active:border-b-0 active:translate-y-[5px] mt-2 lg:mt-0 
+                ${(gameState === 'A_FAIL' && !isRetryCorrect) ? 'bg-slate-300 border-slate-400 cursor-not-allowed opacity-50 text-slate-500' : 'bg-[#58A700] hover:bg-[#468500] border-[#468500]'}`}
+            >
+              {(gameState === 'A_FAIL' && !isRetryCorrect) ? 'Fix It First' : 'Continue'}
+            </button>
+
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/Notes.jsx">
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  ChevronRight, ChevronLeft, BookOpen, Scale, Target, 
+  MessageSquare, ShieldCheck, CheckCircle2, Construction, 
+  PlayCircle, PauseCircle, Maximize2, X, Pencil
+} from 'lucide-react';
+import TopBar from '../components/TopBar';
+
+const IconMap = { BookOpen, Scale, Target, MessageSquare, ShieldCheck };
+
+export default function Notes({ slides, onComplete, onQuit }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState(null);
+  const [lang, setLang] = useState('en');
+  
+  const audioRef = useRef(null);
+  const activeAudioUrl = useRef(null); 
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      try {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      } catch(e) {
+        console.warn("Audio cleanup error:", e);
+      }
+    }
+    setIsPlayingAudio(false);
+  };
+
+  useEffect(() => {
+    return () => stopAudio();
+  }, []);
+
+  useEffect(() => {
+    stopAudio();
+  }, [currentIndex]);
+
+  const handleQuit = () => {
+    stopAudio();
+    if (typeof onQuit === 'function') onQuit();
+  };
+
+  const handleComplete = () => {
+    stopAudio();
+    if (typeof onComplete === 'function') onComplete();
+  };
+
+  if (!slides || !Array.isArray(slides) || slides.length === 0) {
+    return (
+      <div className="h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+          <Construction className="w-8 h-8 text-indigo-500" />
+        </div>
+        <h2 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Notes Unavailable</h2>
+        <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-200 mb-6 text-sm font-bold text-slate-500">
+          No lecture slides have been configured for this module yet.
+        </div>
+        <button onClick={handleQuit} className="px-6 py-3 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-xl font-black text-base uppercase tracking-widest border-b-[4px] border-[#1899D6] active:border-b-0 active:translate-y-[4px] transition-all">
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
+  
+  const currentSlide = slides[currentIndex];
+
+  const slideTitle = lang === 'vn' ? (currentSlide.titleVn || currentSlide.title) : currentSlide.title;
+  const slideSubtitle = lang === 'vn' ? (currentSlide.subtitleVn || currentSlide.subtitle) : currentSlide.subtitle;
+  const slideContent = lang === 'vn' ? (currentSlide.contentVn || currentSlide.content) : currentSlide.content;
+  const slideExample = lang === 'vn' ? (currentSlide.exampleVn || currentSlide.example) : currentSlide.example;
+  
+  // Custom label logic (Defaults to "Example" or "Ví Dụ" for backward compatibility)
+  const labelEn = currentSlide.exampleLabel || 'Example';
+  const labelVn = currentSlide.exampleLabelVn || currentSlide.exampleLabel || 'Ví Dụ';
+  const displayLabel = lang === 'vn' ? labelVn : labelEn;
+
+  const toggleAudio = (audioUrl) => {
+    if (!audioUrl) return;
+
+    try {
+      if (isPlayingAudio && audioRef.current) {
+        audioRef.current.pause();
+        setIsPlayingAudio(false);
+      } else {
+        if (!audioRef.current || activeAudioUrl.current !== audioUrl) {
+          if (audioRef.current) audioRef.current.pause();
+          audioRef.current = new Audio(audioUrl);
+          activeAudioUrl.current = audioUrl;
+          audioRef.current.onended = () => setIsPlayingAudio(false);
+        }
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => setIsPlayingAudio(true)).catch(error => {
+            console.warn("Audio playback prevented by browser:", error);
+            setIsPlayingAudio(false);
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("Audio interaction failed:", e);
+      setIsPlayingAudio(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < slides.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      handleComplete();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
+  };
+
+  const parseBold = (text) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} className="font-black text-slate-900">{part.slice(2, -2)}</strong>;
+      }
+      return <span key={j}>{part}</span>;
+    });
+  };
+
+  const renderContent = (text) => {
+    if (!text || typeof text !== 'string') return null;
+    const lines = text.split('\n');
+    const elements = [];
+    let groupedBumpers = [];
+
+    const flushBumpers = () => {
+      if (groupedBumpers.length > 0) {
+        elements.push(
+          <div key={`bumper-${elements.length}`} className="my-4 bg-amber-50/60 border-l-[4px] border-amber-400 p-4 rounded-r-xl relative animate-in fade-in transition-all">
+            <div className="absolute -left-[14px] top-4 bg-amber-400 text-amber-900 p-1.5 rounded-full shadow-sm border-[2px] border-white z-10">
+              <Pencil className="w-3.5 h-3.5" strokeWidth={3} />
+            </div>
+            <div className="space-y-2 ml-3">
+              {groupedBumpers.map((line, idx) => (
+                <p key={idx} className="text-amber-900 font-medium text-base lg:text-lg leading-relaxed">
+                  {parseBold(line)}
+                </p>
+              ))}
+            </div>
+          </div>
+        );
+        groupedBumpers = [];
+      }
+    };
+
+    lines.forEach((line, i) => {
+      if (!line.trim()) {
+        flushBumpers();
+        elements.push(<div key={`space-${i}`} className="h-2" />);
+      } else if (line.trim().startsWith('>')) {
+        groupedBumpers.push(line.replace('>', '').trim());
+      } else {
+        flushBumpers();
+        elements.push(
+          <p key={`p-${i}`} className="mb-3 text-slate-700 text-base lg:text-lg leading-relaxed font-medium">
+            {parseBold(line)}
+          </p>
+        );
+      }
+    });
+    flushBumpers(); 
+    return elements;
+  };
+
+  const hasDiagram = !!currentSlide.image || !!currentSlide.inlineSvg;
+
+  return (
+    <div className="h-screen flex flex-col bg-slate-100 font-sans selection:bg-indigo-100 overflow-hidden relative">
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200 opacity-40 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-200 opacity-40 blur-[120px] pointer-events-none" />
+
+      <TopBar 
+        onQuit={handleQuit} 
+        current={currentIndex + 1} 
+        total={slides.length} 
+        modeTitle="Lesson Notes Module" 
+      />
+
+      <div className="flex-1 flex justify-center items-center p-4 sm:p-6 lg:p-8 z-10 overflow-hidden relative">
+        <div className={`w-full max-h-full flex flex-col bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden transition-all duration-500 ${hasDiagram ? 'max-w-7xl' : 'max-w-4xl'}`}>
+          
+          {currentSlide.type === 'intro' && (
+            <div className={`flex-1 flex flex-col items-center justify-center p-8 sm:p-12 text-center text-white ${currentSlide.color || 'bg-[#1cb0f6]'} animate-in zoom-in-95 duration-500 overflow-y-auto`}>
+              <div className="bg-white/20 w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 backdrop-blur-sm shadow-inner border border-white/30">
+                <BookOpen className="w-12 h-12 opacity-100" strokeWidth={2.5} />
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-black tracking-tight mb-4 drop-shadow-md leading-tight">{slideTitle || 'Introduction'}</h1>
+              <p className="text-xl lg:text-2xl font-bold opacity-90 drop-shadow-sm max-w-2xl mx-auto">{slideSubtitle}</p>
+              
+              {currentSlide.audio && (
+                 <button onClick={() => toggleAudio(currentSlide.audio)} className="mt-8 mx-auto flex items-center bg-white text-slate-800 px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md">
+                   {isPlayingAudio ? <PauseCircle className="w-5 h-5 mr-2 text-slate-800" /> : <PlayCircle className="w-5 h-5 mr-2 text-slate-800" />}
+                   {isPlayingAudio ? "Stop Audio" : "Listen"}
+                 </button>
+              )}
+            </div>
+          )}
+
+          {currentSlide.type === 'concept' && (() => {
+            const SlideIcon = IconMap[currentSlide.icon] || BookOpen;
+            const themeColor = currentSlide.color || 'bg-indigo-500';
+
+            return (
+              <>
+                <div className={`${themeColor} p-5 lg:p-6 text-white flex items-center relative overflow-hidden flex-shrink-0`}>
+                  <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-white opacity-10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+                  <div className="bg-white/20 p-3 rounded-xl mr-4 backdrop-blur-sm shadow-inner border border-white/30 z-10">
+                    <SlideIcon className="w-6 h-6 lg:w-8 lg:h-8" strokeWidth={2.5} />
+                  </div>
+                  <h2 className="text-2xl lg:text-4xl font-black tracking-tight z-10 relative drop-shadow-md">{slideTitle || 'Concept'}</h2>
+                  
+                  {currentSlide.audio && (
+                    <button 
+                      onClick={() => toggleAudio(currentSlide.audio)} 
+                      className="ml-auto z-10 bg-white/20 hover:bg-white/30 transition-colors p-2.5 rounded-full backdrop-blur-md shadow-md border border-white/30 active:scale-95"
+                    >
+                      {isPlayingAudio ? <PauseCircle className="w-6 h-6" /> : <PlayCircle className="w-6 h-6" />}
+                    </button>
+                  )}
+                </div>
+                
+                <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto min-h-0">
+                  <div className={`p-6 lg:p-10 flex-1 flex flex-col justify-center ${hasDiagram ? 'lg:border-r border-slate-100 lg:w-[45%]' : ''}`}>
+                    <div>{renderContent(slideContent)}</div>
+                    
+                    {slideExample && (
+                      <div className={`${themeColor.replace('bg-', 'bg-').replace('500', '50').replace('400', '50')} bg-opacity-50 border-2 ${themeColor.replace('bg-', 'border-').replace('500', '200').replace('400', '200')} rounded-2xl p-5 relative mt-8 shadow-sm`}>
+                        <div className={`absolute -top-3 left-6 ${themeColor} text-white text-[10px] lg:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-sm border border-white/20`}>
+                          {displayLabel}
+                        </div>
+                        <div className="text-base lg:text-xl font-bold text-slate-800 whitespace-pre-wrap mt-2 leading-relaxed">
+                          {slideExample}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {hasDiagram && (
+                    <div className="w-full lg:w-[55%] bg-slate-50/40 p-4 lg:p-8 flex flex-col items-center justify-center flex-shrink-0">
+                      
+                      <div className={`relative w-full h-full min-h-[300px] lg:min-h-[400px] bg-white rounded-2xl shadow-sm flex items-center justify-center overflow-hidden group transition-all duration-300 ${currentSlide.drawThis ? 'border-[4px] border-amber-400' : 'border border-slate-200'}`}>
+                        
+                        {currentSlide.drawThis && (
+                          <div className="absolute top-0 right-0 bg-amber-400 text-amber-900 text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-2 rounded-bl-2xl z-20 shadow-sm flex items-center">
+                            <Pencil className="w-3.5 h-3.5 mr-2" strokeWidth={3} />
+                            {lang === 'vn' ? 'Vẽ Hình Này' : 'Draw This'}
+                          </div>
+                        )}
+
+                        {currentSlide.inlineSvg ? (
+                          <div 
+                            className="w-full h-full flex items-center justify-center p-4"
+                            dangerouslySetInnerHTML={{ __html: currentSlide.inlineSvg }} 
+                          />
+                        ) : (
+                          <iframe 
+                            src={currentSlide.image} 
+                            title={slideTitle || "Educational Diagram"}
+                            className="absolute inset-0 w-full h-full pointer-events-none select-none"
+                            scrolling="no"
+                            frameBorder="0"
+                          />
+                        )}
+                        
+                        <button 
+                          onClick={() => setZoomedImage(
+                            currentSlide.inlineSvg 
+                              ? { type: 'svg', content: currentSlide.inlineSvg } 
+                              : { type: 'url', src: currentSlide.image }
+                          )}
+                          className="absolute top-4 right-4 p-3 bg-white/95 hover:bg-white text-slate-600 hover:text-indigo-600 rounded-xl shadow-lg border border-slate-200 opacity-0 group-hover:opacity-100 transition-all z-10 scale-95 hover:scale-100 active:scale-95"
+                          title="Expand Image"
+                        >
+                          <Maximize2 className="w-6 h-6" strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+
+          {currentSlide.type === 'summary' && (
+            <div className={`flex-1 flex flex-col items-center justify-center p-8 sm:p-12 text-center text-white ${currentSlide.color || 'bg-[#14b8a6]'} animate-in zoom-in-95 duration-500 overflow-y-auto`}>
+              <div className="bg-white/20 w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 backdrop-blur-sm shadow-inner border border-white/30">
+                <CheckCircle2 className="w-12 h-12 opacity-100" strokeWidth={3} />
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-black tracking-tight mb-4 drop-shadow-md leading-tight">{slideTitle || "Complete"}</h1>
+              <p className="text-xl lg:text-2xl font-bold opacity-90 drop-shadow-sm max-w-2xl mx-auto">{slideSubtitle}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="bg-white/90 backdrop-blur-xl border-t border-slate-200 p-3 sm:p-4 z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] flex-shrink-0">
+        <div className="max-w-5xl mx-auto flex items-center justify-between px-2 gap-4">
+          
+          <button 
+            onClick={handlePrev} 
+            disabled={currentIndex === 0}
+            className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl border-[2px] border-slate-200 text-slate-400 hover:bg-slate-50 hover:text-slate-600 active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm bg-white"
+          >
+            <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={3} />
+          </button>
+          
+          <div className="flex bg-slate-100 rounded-full shadow-inner border border-slate-200/60 p-1.5 flex-shrink-0 mx-auto">
+            <button 
+               onClick={() => setLang('en')} 
+               className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${lang === 'en' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              EN
+            </button>
+            <button 
+               onClick={() => setLang('vn')} 
+               className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${lang === 'vn' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              VN
+            </button>
+          </div>
+
+          <button 
+            onClick={handleNext}
+            className={`flex items-center px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg tracking-widest uppercase transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md
+              ${currentIndex === slides.length - 1 
+                ? 'bg-[#58cc02] border-[#58a700] text-white hover:bg-[#46a802]' 
+                : 'bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159bd9]'}`}
+          >
+            <span className="hidden sm:inline">{currentIndex === slides.length - 1 ? 'Finish' : 'Continue'}</span>
+            <span className="sm:hidden">{currentIndex === slides.length - 1 ? 'End' : 'Next'}</span>
+            {currentIndex !== slides.length - 1 && <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 ml-2 -mr-1" strokeWidth={3} />}
+          </button>
+
+        </div>
+      </div>
+
+      {zoomedImage && (
+        <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-200">
+          <button 
+            onClick={() => setZoomedImage(null)} 
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-rose-500 text-white rounded-full transition-colors shadow-xl border border-white/20 active:scale-95 z-50"
+          >
+            <X className="w-8 h-8" strokeWidth={2.5} />
+          </button>
+          <div className="relative w-full h-full max-w-7xl max-h-[90vh] flex items-center justify-center bg-white rounded-[2rem] shadow-2xl overflow-hidden p-6 animate-in zoom-in-95 duration-300">
+             {zoomedImage.type === 'svg' ? (
+               <div 
+                 className="w-full h-full flex items-center justify-center"
+                 dangerouslySetInnerHTML={{ __html: zoomedImage.content }} 
+               />
+             ) : (
+               <iframe 
+                 src={zoomedImage.src} 
+                 title="Expanded Diagram"
+                 className="w-full h-full pointer-events-none select-none"
+                 scrolling="no"
+                 frameBorder="0"
+               />
+             )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/Reading.jsx">
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { CheckCircle2, BookOpen, Volume2, VolumeX, XCircle } from 'lucide-react';
+import TopBar from '../components/TopBar';
+import { playChime } from '../utils/sound';
+
+export default function Reading({ pool, track, unitId, onComplete, onQuit }) {
+  const passages = useMemo(() => pool || [], [pool]);
+  const [passageIndex, setPassageIndex] = useState(0);
+  const [gameState, setGameState] = useState('Q'); 
+  const [inputs, setInputs] = useState({});
+  const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
+  const [btnCooldown, setBtnCooldown] = useState(false);
+  
+  const inputRefs = useRef([]);
+  const audioState = useRef({ currentAudio: null });
+
+  const currentPassage = passages[passageIndex];
+  
+  const blankWords = useMemo(() => {
+    if (!currentPassage) return [];
+    return currentPassage.text.match(/\{.*?\}/g)?.map(w => w.slice(1, -1)) || [];
+  }, [currentPassage]);
+
+  const calculateXP = (correct) => {
+    let totalBlanks = 0;
+    passages.forEach(p => {
+      totalBlanks += (p.text.match(/\{.*?\}/g) || []).length;
+    });
+    if (totalBlanks === 0) return 0;
+    return Math.floor((correct / totalBlanks) * 10);
+  };
+
+  const getPrefixLength = (word) => {
+    if (!word) return 1;
+    if (word.length <= 4) return 1;
+    if (word.length <= 8) return 2;
+    return 3;
+  };
+
+  const playPassageAudio = () => {
+    if (audioState.current.currentAudio) {
+      audioState.current.currentAudio.pause();
+      audioState.current.currentAudio.currentTime = 0;
+    }
+    
+    const basePath = import.meta.env.BASE_URL || '/';
+    const audio = new Audio(`${basePath}audio/${track}/${unitId}/passage_${unitId}_${passageIndex + 1}.mp3`);
+    audioState.current.currentAudio = audio;
+    audio.play().catch(err => console.warn(`Could not play passage audio for ${unitId}`, err));
+  };
+
+  const stopAudio = () => {
+    if (audioState.current && audioState.current.currentAudio) {
+      audioState.current.currentAudio.pause();
+    }
+  };
+
+  useEffect(() => {
+    if (gameState === 'Q') {
+      const initialInputs = {};
+      blankWords.forEach((word, idx) => {
+        const targetLetters = word.replace(/[^a-zA-Z]/g, '');
+        initialInputs[idx] = targetLetters.substring(0, getPrefixLength(targetLetters));
+      });
+      setInputs(initialInputs);
+      setTimeout(() => { if (inputRefs.current[0]) inputRefs.current[0].focus(); }, 100);
+    } else if (gameState === 'A') {
+      let currentScore = 0;
+      blankWords.forEach((word, idx) => {
+        const targetLetters = word.replace(/[^a-zA-Z]/g, '');
+        if ((inputs[idx] || '').toLowerCase() === targetLetters.toLowerCase()) currentScore++;
+      });
+      
+      const isPerfect = currentScore === blankWords.length;
+      playChime(isPerfect ? 'correct' : 'incorrect');
+
+      setTimeout(() => playPassageAudio(), 600);
+    }
+
+    return stopAudio;
+  }, [gameState, blankWords, passageIndex]);
+
+  const handleInputChange = (idx, val) => {
+    setInputs(prev => ({ ...prev, [idx]: val }));
+  };
+
+  const checkAnswers = () => {
+    if (btnCooldown) return;
+    setBtnCooldown(true);
+    setTimeout(() => setBtnCooldown(false), 500);
+
+    let currentScore = 0;
+    blankWords.forEach((word, idx) => {
+      const targetLetters = word.replace(/[^a-zA-Z]/g, '');
+      if ((inputs[idx] || '').toLowerCase() === targetLetters.toLowerCase()) currentScore++;
+    });
+    setCumulativeCorrect(prev => prev + currentScore);
+    setGameState('A');
+  };
+
+  const handleNext = () => {
+    if (btnCooldown) return;
+    setBtnCooldown(true);
+    setTimeout(() => setBtnCooldown(false), 500);
+    
+    stopAudio();
+
+    if (passageIndex < passages.length - 1) {
+      setPassageIndex(prev => prev + 1);
+      setGameState('Q');
+    } else {
+      onComplete(calculateXP(cumulativeCorrect));
+    }
+  };
+
+  const renderPassage = () => {
+    if (!currentPassage) return null;
+    const parts = currentPassage.text.split(/(\{.*?\})/g);
+    let wordIdx = 0;
+
+    return parts.map((part, i) => {
+      if (part.startsWith('{') && part.endsWith('}')) {
+        const targetWord = part.slice(1, -1);
+        const targetLetters = targetWord.replace(/[^a-zA-Z]/g, '');
+        const currentIndex = wordIdx++;
+        const value = inputs[currentIndex] || '';
+        const prefixLen = getPrefixLength(targetLetters);
+        const prefix = targetLetters.substring(0, prefixLen);
+
+        if (gameState === 'A') {
+          const isCorrect = value.toLowerCase() === targetLetters.toLowerCase();
+          return (
+            <span key={i} className={`inline-flex items-center px-3 py-1 mx-1 rounded-xl border-2 font-bold shadow-sm transition-all ${isCorrect ? 'bg-[#F0FDE6] border-[#58A700] text-[#3E7500]' : 'bg-[#FFDFE0] border-[#EA2B2B] text-[#A32D23]'}`}>
+              {isCorrect ? targetWord : <span className="line-through opacity-70 mr-2">{value}</span>}
+              {!isCorrect && <span>{targetWord}</span>}
+            </span>
+          );
+        }
+
+        let inputIdx = 0;
+
+        return (
+          <span key={i} className="inline-flex relative align-middle mx-[4px] top-[-2px]">
+            <input
+              ref={el => inputRefs.current[currentIndex] = el}
+              type="text"
+              value={value}
+              maxLength={targetLetters.length} 
+              autoComplete="off"
+              spellCheck="false"
+              onChange={(e) => {
+                let val = e.target.value.replace(/[^a-zA-Z]/g, ''); 
+                if (val.length < prefixLen) {
+                  val = prefix;
+                } else if (!val.toLowerCase().startsWith(prefix.toLowerCase())) {
+                  val = prefix + val.substring(prefixLen);
+                }
+                handleInputChange(currentIndex, val);
+
+                if (val.length === targetLetters.length) {
+                  setTimeout(() => {
+                    if (inputRefs.current[currentIndex + 1]) {
+                      inputRefs.current[currentIndex + 1].focus();
+                    }
+                  }, 50); 
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  if (inputRefs.current[currentIndex + 1]) {
+                    inputRefs.current[currentIndex + 1].focus();
+                  } else {
+                     checkAnswers();
+                  }
+                }
+              }}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-text z-10"
+            />
+            <div className="flex gap-[3px] sm:gap-[4px] pointer-events-none items-center">
+              {Array.from(targetWord).map((char, charIdx) => {
+                // FIX: Render space/hyphen visually, skip over it structurally
+                if (!/[a-zA-Z]/.test(char)) {
+                  return <div key={charIdx} className="w-2 sm:w-3 flex items-center justify-center text-slate-300 font-bold">-</div>;
+                }
+
+                const letter = value[inputIdx] || '';
+                const isPrefix = inputIdx < prefixLen;
+                const isFilled = inputIdx < value.length;
+                inputIdx++;
+                
+                let borderClass = 'border-slate-300 text-transparent shadow-[0_2px_0_0_#e2e8f0]';
+                if (isPrefix) borderClass = 'border-transparent text-slate-800 bg-slate-100 shadow-none';
+                else if (isFilled) borderClass = 'border-[#1CB0F6] text-[#1CB0F6] bg-[#1CB0F6]/10 shadow-[0_2px_0_0_#1CB0F6]';
+
+                return (
+                  <div key={charIdx} className={`w-[24px] h-[32px] sm:w-[28px] sm:h-[38px] border-[2px] flex items-center justify-center font-bold text-[16px] sm:text-[18px] uppercase transition-all rounded-[6px] ${borderClass}`}>
+                    {letter}
+                  </div>
+                );
+              })}
+            </div>
+          </span>
+        );
+      }
+      return <span key={i} className="leading-[2.8]">{part}</span>;
+    });
+  };
+
+  if (!currentPassage) return null;
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans pb-56 lg:pb-40">
+      <TopBar 
+        current={passageIndex} 
+        total={passages.length} 
+        onQuit={() => { stopAudio(); onQuit(); }} 
+        modeTitle="Reading" 
+      />
+      
+      <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-6 w-full max-w-4xl mx-auto mt-2 sm:mt-6">
+        
+        <div className="w-full text-center mb-6">
+          <div className="inline-flex items-center justify-center bg-indigo-100 text-indigo-700 px-4 py-2 rounded-2xl mb-3 font-bold tracking-widest uppercase text-sm">
+            <BookOpen className="w-5 h-5 mr-2" /> {currentPassage.title}
+          </div>
+          <p className="text-lg text-slate-500 font-medium">Complete the text with the correct words</p>
+        </div>
+
+        <div className="bg-white rounded-[2rem] shadow-lg shadow-slate-200 border-2 border-slate-100 overflow-hidden w-full mb-8">
+          <div className="p-6 sm:p-8 md:p-12">
+            <div className="text-xl sm:text-2xl text-slate-800 font-medium">
+              {renderPassage()}
+            </div>
+          </div>
+        </div>
+
+        {gameState === 'Q' && (
+          <button 
+            disabled={btnCooldown}
+            onClick={checkAnswers}
+            className="w-full sm:w-auto min-w-[250px] px-8 py-4 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl tracking-wide border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all shadow-sm disabled:opacity-70"
+          >
+            Check Answers
+          </button>
+        )}
+
+        {gameState === 'A' && (() => {
+          let currentScore = 0;
+          blankWords.forEach((word, idx) => {
+            const targetLetters = word.replace(/[^a-zA-Z]/g, '');
+            if ((inputs[idx] || '').toLowerCase() === targetLetters.toLowerCase()) currentScore++;
+          });
+          const isPerfect = currentScore === blankWords.length;
+
+          return (
+            <div className={`fixed bottom-0 left-0 w-full border-t-[6px] p-4 md:p-6 animate-in slide-in-from-bottom-10 shadow-[0_-15px_50px_-15px_rgba(0,0,0,0.2)] z-50
+              ${isPerfect ? 'bg-[#D7FFB8] border-[#58A700]' : 'bg-[#FFDFE0] border-[#EA2B2B]'}`}>
+              
+              <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-6">
+                
+                {/* Status Indicator */}
+                <div className="flex items-center gap-3 w-full lg:w-auto justify-center lg:justify-start flex-shrink-0">
+                  <div className={`flex items-center ${isPerfect ? 'text-[#58A700]' : 'text-[#EA2B2B]'} mb-0`}>
+                    {isPerfect ? <CheckCircle2 className="w-10 h-10 mr-2 bg-white rounded-full" /> : <XCircle className="w-10 h-10 mr-2 bg-white rounded-full" />}
+                    <span className="text-2xl font-black tracking-wide">{isPerfect ? 'Perfect!' : 'Review'}</span>
+                  </div>
+                </div>
+
+                {/* Banner Middle Section: Audio Controls & Translation */}
+                <div className="flex-1 w-full bg-white/50 p-4 rounded-xl border border-white/60 shadow-sm flex flex-col md:flex-row gap-4 md:gap-6">
+                  
+                  {/* Left Half: Audio Playback */}
+                  <div className="flex-1 flex flex-col justify-center">
+                    <span className={`font-black text-[10px] sm:text-xs uppercase tracking-widest block mb-2 ${isPerfect ? 'text-[#468500]' : 'text-[#C9362A]'}`}>
+                      Passage Audio
+                    </span>
+                    <div className="flex items-center space-x-3">
+                       <button onClick={() => { stopAudio(); playPassageAudio(); }} className="flex-1 flex items-center justify-center bg-[#1CB0F6] hover:bg-[#1899D6] text-white py-2.5 rounded-xl font-bold text-sm uppercase tracking-wider shadow-sm transition-all active:scale-95">
+                         <Volume2 className="w-4 h-4 mr-2" /> Replay
+                       </button>
+                       <button onClick={stopAudio} className="flex-1 flex items-center justify-center bg-white text-slate-500 hover:text-[#EA2B2B] border-2 border-slate-200 py-2.5 rounded-xl font-bold text-sm uppercase tracking-wider shadow-sm transition-all active:scale-95">
+                         <VolumeX className="w-4 h-4 mr-2" /> Stop
+                       </button>
+                    </div>
+                  </div>
+
+                  <div className="hidden md:block w-px bg-black/10"></div>
+
+                  {/* Right Half: Vietnamese Translation (Scrollable) */}
+                  <div className="flex-[2] max-h-[100px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent">
+                    <span className={`font-black text-[10px] sm:text-xs uppercase tracking-widest block mb-1 ${isPerfect ? 'text-[#468500]' : 'text-[#C9362A]'}`}>
+                      {currentPassage.vnTitle}
+                    </span>
+                    <p className="font-medium text-sm text-slate-700 italic leading-snug">
+                      "{currentPassage.vnText}"
+                    </p>
+                  </div>
+                </div>
+
+                {/* Continue Button */}
+                <button 
+                  disabled={btnCooldown}
+                  onClick={handleNext}
+                  className={`w-full lg:w-auto px-10 py-5 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all flex-shrink-0 border-b-[5px] active:border-b-0 active:translate-y-[5px] mt-2 lg:mt-0 
+                    ${isPerfect ? 'bg-[#58A700] hover:bg-[#468500] border-[#468500]' : 'bg-[#EA2B2B] hover:bg-[#C9362A] border-[#C9362A]'}`}
+                >
+                  Continue
+                </button>
+
+              </div>
+            </div>
+          );
+        })()}
+
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/Recognition.jsx">
+// src/tasks/Recognition.jsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { Check, BookOpen } from 'lucide-react';
+import TopBar from '../components/TopBar';
+import Feedback from '../components/Feedback';
+
+export default function Recognition({ pool, track, unitId, onComplete }) {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [gameState, setGameState] = useState('Q');
+  const [userAnswer, setUserAnswer] = useState(null);
+  const [score, setScore] = useState(0);
+
+  const currentWord = pool[wordIndex];
+
+  const calculateXP = (currentScore) => {
+    if (!pool || pool.length === 0) return 0;
+    return Math.floor((currentScore / pool.length) * 10);
+  };
+
+  const handleAnswer = useCallback((choice) => {
+    if (gameState !== 'Q') return;
+    
+    // With fake words removed, this becomes an honest self-assessment flashcard intro.
+    // Both choices yield a point to encourage the user to review the vocabulary list.
+    setScore(s => s + 1);
+    setUserAnswer({ choice, isCorrect: true });
+    setGameState('A');
+  }, [gameState]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (gameState !== 'Q') return;
+      const key = e.key.toLowerCase();
+      if (key === 'y') handleAnswer('yes');
+      if (key === 'n') handleAnswer('no');
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [gameState, handleAnswer]);
+
+  const handleNext = useCallback(() => {
+    if (gameState !== 'A') return;
+    if (wordIndex + 1 < pool.length) {
+      setWordIndex(w => w + 1);
+      setGameState('Q');
+    } else {
+      onComplete(calculateXP(score));
+    }
+  }, [gameState, wordIndex, pool.length, onComplete, score]);
+
+  if (!currentWord) return null;
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-[#1CB0F6]/20 selection:text-[#1CB0F6] pb-32">
+      <TopBar 
+        current={wordIndex} 
+        total={pool.length} 
+        onQuit={() => onComplete(calculateXP(score))} 
+        modeTitle="Word Recognition"
+      />
+
+      <div className="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto">
+        <p className="text-slate-400 font-bold uppercase tracking-widest text-sm sm:text-base mb-8 text-center">
+          Write this word and definition in your notebook. Listen to how it is pronounced.
+        </p>
+
+        <div className="w-full flex items-center justify-center mb-12 min-h-[120px]">
+          <h1 className="text-5xl sm:text-7xl font-black text-slate-800 tracking-tight text-center break-words px-4 capitalize">
+            {currentWord.word}
+          </h1>
+        </div>
+
+        <div className="flex flex-row justify-center gap-6 sm:gap-12 w-full max-w-2xl">
+          <button
+            disabled={gameState === 'A'}
+            onClick={() => handleAnswer('yes')}
+            className={`group flex flex-col items-center justify-center w-40 h-40 sm:w-52 sm:h-52 border-2 rounded-[2rem] transition-all bg-white flex-shrink-0
+              ${gameState === 'A' && userAnswer?.choice !== 'yes' ? 'opacity-40 border-slate-200 bg-slate-50 cursor-not-allowed' 
+              : 'border-slate-300 border-b-[8px] hover:bg-slate-50 active:border-b-2 active:translate-y-[6px]'}`}
+          >
+            <Check className={`w-16 h-16 sm:w-20 sm:h-20 mb-3 transition-colors ${gameState === 'A' && userAnswer?.choice !== 'yes' ? 'text-slate-400' : 'text-[#58A700] group-hover:scale-110'}`} strokeWidth={4} />
+            <span className={`font-black text-lg sm:text-xl uppercase tracking-widest text-center px-2 ${gameState === 'A' && userAnswer?.choice !== 'yes' ? 'text-slate-400' : 'text-[#58A700]'}`}>Yes, I know it<br/><span className="text-sm opacity-70">(Y)</span></span>
+          </button>
+          
+          <button
+            disabled={gameState === 'A'}
+            onClick={() => handleAnswer('no')}
+            className={`group flex flex-col items-center justify-center w-40 h-40 sm:w-52 sm:h-52 border-2 rounded-[2rem] transition-all bg-white flex-shrink-0
+              ${gameState === 'A' && userAnswer?.choice !== 'no' ? 'opacity-40 border-slate-200 bg-slate-50 cursor-not-allowed' 
+              : 'border-slate-300 border-b-[8px] hover:bg-slate-50 active:border-b-2 active:translate-y-[6px]'}`}
+          >
+            <BookOpen className={`w-16 h-16 sm:w-20 sm:h-20 mb-3 transition-colors ${gameState === 'A' && userAnswer?.choice !== 'no' ? 'text-slate-400' : 'text-[#1CB0F6] group-hover:scale-110'}`} strokeWidth={4} />
+            <span className={`font-black text-lg sm:text-xl uppercase tracking-widest text-center px-2 ${gameState === 'A' && userAnswer?.choice !== 'no' ? 'text-slate-400' : 'text-[#1CB0F6]'}`}>No, teach me<br/><span className="text-sm opacity-70">(N)</span></span>
+          </button>
+        </div>
+      </div>
+
+      {gameState === 'A' && (
+        <Feedback 
+          isCorrect={userAnswer?.isCorrect} 
+          currentWord={currentWord} 
+          isWordRecognition={true} 
+          track={track}
+          unitId={unitId}
+          onNext={handleNext} 
+        />
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/tasks/ShortAnswers.jsx">
+import React, { useState, useEffect } from 'react';
+import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FlaskConical, FileEdit, ArrowRight } from 'lucide-react';
+import TopBar from '../components/TopBar';
+
+import { gradeShortAnswer } from '../utils/aiGrader';
+
+const calculateSimilarity = (str1, str2) => {
+  const clean = (s) => s.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
+  const a = clean(str1);
+  const b = clean(str2);
+  if (a.length === 0) return 0;
+  if (a === b) return 1;
+
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+      }
+    }
+  }
+  const distance = matrix[b.length][a.length];
+  return Math.max(0, 1 - distance / Math.max(a.length, b.length));
+};
+
+const checkRequiredWordGroup = (wordGroup, text) => {
+  if (!text) return false;
+  const group = Array.isArray(wordGroup) ? wordGroup : [wordGroup];
+
+  for (let reqWord of group) {
+    if (text.toLowerCase().includes(reqWord.toLowerCase())) return true;
+    if (!reqWord.includes(' ')) {
+      const words = text.split(/[\s,.-]+/);
+      for (let w of words) {
+        if (calculateSimilarity(reqWord, w) >= 0.85) return true;
+      }
+    }
+  }
+  return false;
+};
+
+export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike }) {
+  const questions = pool?.shortQA || [];
+  const [localAnswers, setLocalAnswers] = useState(savedData);
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [gameState, setGameState] = useState('Q'); // Q, LOADING, A, SAVED_PERFECT, SAVED_API_ERROR
+  const [userAnswer, setUserAnswer] = useState('');
+  const [feedback, setFeedback] = useState(null);
+  
+  const [cumulativePoints, setCumulativePoints] = useState(0);
+  const [maxPossiblePoints, setMaxPossiblePoints] = useState(0);
+
+  const currentQ = questions[currentIndex];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const saved = localAnswers[currentIndex];
+    
+    if (saved) {
+      const text = typeof saved === 'string' ? saved : saved.text;
+      const status = typeof saved === 'string' ? 'perfect' : saved.status;
+
+      setUserAnswer(text);
+      setFeedback(null);
+
+      if (status === 'perfect') {
+        setGameState('SAVED_PERFECT');
+      } else if (status === 'api_error') {
+        setGameState('SAVED_API_ERROR');
+      } else if (status === 'strike_fallback') {
+        setGameState('Q'); // Keeps it open so they can edit and submit to local grader again
+      } else {
+        setGameState('Q');
+      }
+    } else {
+      setUserAnswer('');
+      setFeedback(null);
+      setGameState('Q');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex]);
+
+  if (!currentQ) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <PenTool className="w-16 h-16 text-teal-300 mb-4" />
+        <h2 className="text-3xl font-black text-slate-800 mb-2">Coming Soon</h2>
+        <p className="text-lg text-slate-500 mb-8 max-w-md">Teacher is currently writing the Short Answer questions for this unit.</p>
+        <button onClick={onQuit} className="px-8 py-4 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black uppercase tracking-widest border-b-[5px] border-[#1899D6] active:border-b-0 active:translate-y-[5px] transition-all">
+          Return
+        </button>
+      </div>
+    );
+  }
+
+  const handleLocalFallbackGrade = () => {
+    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    
+    const trimmed = userAnswer.trim();
+    const hasCapital = /^[A-Z]/.test(trimmed);
+    const hasPeriod = /[.!?]$/.test(trimmed);
+    const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
+
+    const pointsEarned = usedWordGroups.length + englishScore;
+    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2; 
+
+    setFeedback({
+      originalAnswer: userAnswer.trim(),
+      usedWordGroups,
+      scienceMarks: currentQ.markScheme.map(() => false),
+      scienceScore: 0,
+      englishScore,
+      pointsEarned,
+      maxPoints,
+      isPerfect: false,
+      englishFeedback: englishScore ? "1 point awarded for capital letter and punctuation." : "Missed extra point. Start with a capital and end with a period.",
+      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No Cambridge marks can be awarded.",
+      fixedAnswer: "AI Grader disabled.",
+      isStrikeFallback: true
+    });
+
+    setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'strike_fallback' } }));
+    setGameState('A');
+  };
+
+  const handleGrade = async () => {
+    if (!userAnswer.trim()) return;
+
+    if (strikes >= 3) {
+      handleLocalFallbackGrade();
+      return;
+    }
+
+    setGameState('LOADING');
+
+    const primaryRequiredWords = currentQ.requiredWords.map(w => Array.isArray(w) ? w[0] : w);
+    const payload = {
+      question: currentQ.question,
+      studentAnswer: userAnswer.trim(),
+      requiredWords: primaryRequiredWords,
+      expectedAnswer: currentQ.modelAnswer,
+      scienceMaxMarks: currentQ.scienceMaxMarks,
+      markScheme: currentQ.markScheme
+    };
+
+    let aiData;
+
+    try {
+      aiData = await gradeShortAnswer(payload);
+    } catch (e1) {
+      console.warn("AI Grade Failed, retrying in 3 seconds...");
+      await new Promise(r => setTimeout(r, 3000));
+      try {
+        aiData = await gradeShortAnswer(payload);
+      } catch (e2) {
+        console.error("AI Grade Failed twice. Entering Error State.");
+        setGameState('SAVED_API_ERROR');
+        setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'api_error' } }));
+        return;
+      }
+    }
+
+    if (aiData.isHarmful || aiData.isGarbage) {
+      const newStrikes = strikes + 1;
+      if (onAddStrike) onAddStrike(newStrikes);
+      
+      if (newStrikes >= 3) {
+        alert("Strike 3! You have submitted too many inappropriate or nonsense answers. The AI Grader is permanently disabled for this unit.");
+        handleLocalFallbackGrade();
+      } else {
+        alert(`Warning! Nonsense or inappropriate answer detected. Strike ${newStrikes}/3.`);
+        setGameState('Q'); 
+      }
+      return;
+    }
+
+    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    const scienceScore = aiData.scienceScore || 0;
+    const englishScore = aiData.englishScore || 0;
+    const scienceMarks = currentQ.markScheme.map((_, i) => i < scienceScore);
+
+    const pointsEarned = usedWordGroups.length + scienceScore + englishScore;
+    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2; 
+    const isPerfect = pointsEarned >= maxPoints;
+
+    setFeedback({
+      originalAnswer: userAnswer.trim(),
+      usedWordGroups,
+      scienceMarks,
+      scienceScore,
+      englishScore,
+      pointsEarned: Math.min(pointsEarned, maxPoints),
+      maxPoints,
+      isPerfect,
+      englishFeedback: aiData.englishFeedback || "No feedback provided.",
+      scienceFeedback: aiData.scienceFeedback || "No feedback provided.",
+      fixedAnswer: aiData.reworkedAnswer || userAnswer.trim(),
+      isStrikeFallback: false
+    });
+
+    if (isPerfect) {
+      setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'perfect' } }));
+    }
+    
+    setGameState('A');
+  };
+
+  const handleNext = () => {
+    let newCumPoints = cumulativePoints;
+    let newMaxPoints = maxPossiblePoints;
+
+    if (gameState === 'SAVED_PERFECT') {
+      const maxP = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2;
+      newCumPoints += maxP;
+      newMaxPoints += maxP;
+    } else if (feedback) {
+      newCumPoints += feedback.pointsEarned;
+      newMaxPoints += feedback.maxPoints;
+    } else if (gameState === 'SAVED_API_ERROR') {
+      newMaxPoints += currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2;
+    }
+
+    setCumulativePoints(newCumPoints);
+    setMaxPossiblePoints(newMaxPoints);
+
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      const finalXP = newMaxPoints === 0 ? 0 : Math.ceil((newCumPoints / newMaxPoints) * 20);
+      onComplete(finalXP, localAnswers); 
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); 
+      if (gameState === 'Q' || gameState === 'SAVED_API_ERROR') {
+        if (userAnswer.trim()) handleGrade();
+      } else if (gameState === 'A' || gameState === 'SAVED_PERFECT') {
+        handleNext();
+      }
+    }
+  };
+
+  let containerClass = "w-full rounded-[1.5rem] shadow-sm border p-6 sm:p-8 mb-6 relative transition-all duration-300 ";
+  let textAreaClass = "w-full h-40 text-lg font-medium bg-transparent focus:outline-none resize-none disabled:bg-transparent ";
+  
+  if (gameState === 'SAVED_API_ERROR') {
+    containerClass += "bg-orange-50 border-orange-300";
+    textAreaClass += "text-orange-900";
+  } else if (strikes >= 3 || (gameState === 'A' && feedback?.isStrikeFallback)) {
+    containerClass += "bg-rose-50 border-rose-400";
+    textAreaClass += "text-rose-900";
+  } else if ((gameState === 'A' && feedback?.isPerfect) || gameState === 'SAVED_PERFECT') {
+    containerClass += "bg-[#ecfccb] border-[#84cc16]";
+    textAreaClass += "text-[#3f6212]";
+  } else {
+    containerClass += "bg-white border-slate-200";
+    textAreaClass += "text-slate-800";
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans pb-32">
+      <TopBar 
+        current={currentIndex} 
+        total={questions.length} 
+        onQuit={() => onComplete(0, localAnswers)} 
+        modeTitle="Short Answers" 
+      />
+
+      <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-6 w-full max-w-4xl mx-auto mt-2 sm:mt-6">
+        
+        <div className="w-full mb-8 animate-in fade-in duration-300">
+          <h2 className="text-[#14b8a6] font-black text-xl mb-3 uppercase tracking-widest">
+            Question {currentIndex + 1}
+          </h2>
+          <p className="text-2xl font-bold text-slate-800 leading-snug">
+            {currentQ.question}
+          </p>
+        </div>
+
+        <div className={containerClass}>
+          <textarea 
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onPaste={(e) => e.preventDefault()}
+            onCopy={(e) => e.preventDefault()}
+            onCut={(e) => e.preventDefault()}
+            disabled={gameState !== 'Q'}
+            placeholder={strikes >= 3 ? "AI Grader disabled. Local fallback grading only." : "Type your answer here..."}
+            className={textAreaClass}
+          />
+        </div>
+
+        {gameState !== 'LOADING' && (
+          <div className="w-full mb-10">
+            <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">
+              Required Vocabulary
+            </span>
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              {currentQ.requiredWords.map((wordGroup, i) => {
+                const isUsed = feedback 
+                  ? feedback.usedWordGroups.includes(wordGroup) 
+                  : checkRequiredWordGroup(wordGroup, userAnswer);
+                const displayWord = Array.isArray(wordGroup) ? wordGroup[0] : wordGroup;
+                
+                return (
+                  <span 
+                    key={i} 
+                    className={`px-4 py-1.5 rounded-full text-sm font-bold border-2 transition-colors duration-300 ${
+                      isUsed 
+                        ? 'bg-[#d7ffb8] text-[#3e7500] border-[#58a700]' 
+                        : 'bg-white text-[#58a700] border-[#58a700]'
+                    }`}
+                  >
+                    {displayWord}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {gameState === 'SAVED_PERFECT' && (
+          <div className="w-full flex justify-end mt-2 mb-8 border-t border-slate-200 pt-6 animate-in fade-in">
+             <button 
+               onClick={handleNext} 
+               className="flex items-center px-10 py-4 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-[#0d9488] active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+             >
+               {currentIndex < questions.length - 1 ? 'Continue' : 'Complete Section'} 
+               <ArrowRight className="w-6 h-6 ml-3" />
+             </button>
+          </div>
+        )}
+
+        {gameState === 'SAVED_API_ERROR' && (
+          <div className="w-full mt-2 animate-in fade-in">
+            <div className="bg-orange-50 border border-orange-200 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
+               <div className="flex items-center mb-4">
+                 <XCircle className="w-8 h-8 text-orange-500 mr-3" />
+                 <h3 className="text-xl font-black text-orange-800">Connection Failed</h3>
+               </div>
+               <p className="text-sm font-bold text-orange-700 mt-2">
+                 The AI grader is currently offline. Your answer has been saved. Please continue and resubmit on a future attempt.
+               </p>
+            </div>
+            <div className="flex justify-end pt-4 border-t border-slate-200 mb-8">
+               <button onClick={handleNext} className="flex items-center px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-orange-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm">
+                 {currentIndex < questions.length - 1 ? 'Skip Question' : 'Complete Section'} <ArrowRight className="w-6 h-6 ml-3" />
+               </button>
+            </div>
+          </div>
+        )}
+
+        {(gameState === 'Q' || gameState === 'SAVED_API_ERROR') && (
+          <div className="w-full flex justify-end mt-2 mb-8 border-t border-slate-200 pt-6">
+            <button 
+              onClick={handleGrade} 
+              disabled={!userAnswer.trim()} 
+              className="px-10 py-4 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-[#0d9488] active:border-b-0 active:translate-y-[5px] disabled:opacity-50 transition-all shadow-sm"
+            >
+              Submit to {strikes >= 3 ? "Local Grader" : "AI Tutor"}
+            </button>
+          </div>
+        )}
+
+        {gameState === 'LOADING' && (
+          <div className="w-full h-40 flex flex-col items-center justify-center bg-white rounded-[2rem] border border-slate-200 shadow-sm animate-pulse mt-8">
+             <div className="bg-teal-100 p-3 rounded-full mb-3">
+               <Bot className="w-8 h-8 text-teal-600 animate-bounce" />
+             </div>
+             <h3 className="text-lg font-black text-slate-700">AI Tutor is analyzing your answer...</h3>
+          </div>
+        )}
+
+        {gameState === 'A' && feedback && (
+          <div className="w-full mt-2 animate-in slide-in-from-bottom-8 duration-500">
+
+            {!feedback.isPerfect && (
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+                <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">
+                  Your Attempt
+                </span>
+                <p className="text-lg text-slate-700 font-medium italic">
+                  "{feedback.originalAnswer}"
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center mb-8 border-b border-slate-200 pb-6">
+              <div className={`p-3 rounded-full mr-4 flex-shrink-0 ${feedback.isStrikeFallback ? 'bg-rose-500' : 'bg-[#14b8a6]'}`}>
+                <Bot className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-slate-800">
+                  {feedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
+                </h3>
+                <p className="text-sm font-bold text-slate-500 tracking-widest uppercase mt-1">
+                  Accuracy Score: 
+                  <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600' : 'text-rose-500'}`}>
+                    {feedback.pointsEarned} / {feedback.maxPoints} Pts
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full bg-white p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 shadow-sm mb-8">
+              <div className="flex items-center justify-between mb-4 text-slate-800">
+                <div className="flex items-center">
+                  <Award className="w-6 h-6 mr-2 text-amber-500" />
+                  <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
+                </div>
+                <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-sm">
+                  {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
+                </span>
+              </div>
+              
+              <ul className="space-y-3">
+                {currentQ.markScheme.map((mark, i) => (
+                  <li key={i} className="flex items-start">
+                    {feedback.scienceMarks[i] ? (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="w-5 h-5 text-slate-300 mr-3 mt-0.5 flex-shrink-0" />
+                    )}
+                    <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800' : 'text-slate-400 line-through'}`}>
+                      {mark}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+               <div className="bg-[#fff9e6] border border-[#fde68a] p-6 rounded-[1.5rem]">
+                 <div className="flex items-center justify-between mb-3">
+                   <div className="flex items-center text-[#d97706]">
+                     <Type className="w-5 h-5 mr-2" />
+                     <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
+                   </div>
+                   <span className="bg-[#fef3c7] text-[#b45309] font-bold px-2 py-0.5 rounded-md text-xs">
+                     {feedback.englishScore} / 2 Pts
+                   </span>
+                 </div>
+                 <p className="text-slate-700 font-medium leading-relaxed">
+                   {feedback.englishFeedback}
+                 </p>
+               </div>
+               
+               <div className="bg-[#eff6ff] border border-[#bfdbfe] p-6 rounded-[1.5rem]">
+                 <div className="flex items-center text-[#2563eb] mb-3">
+                   <FlaskConical className="w-5 h-5 mr-2" />
+                   <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
+                 </div>
+                 <p className="text-slate-700 font-medium leading-relaxed">
+                   {feedback.scienceFeedback}
+                 </p>
+               </div>
+            </div>
+
+            <div className="bg-[#ecfccb] border border-[#bbf7d0] p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
+              <div className="absolute top-4 right-4 bg-[#84cc16] p-2 rounded-full text-white">
+                <FileEdit className="w-5 h-5" />
+              </div>
+              
+              <h4 className="font-black text-[#3f6212] text-sm uppercase tracking-widest mb-4">
+                Suggested Notebook Answer
+              </h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                    {feedback.isPerfect ? "Your Perfect Sentence:" : "Fixed Version of Your Sentence:"}
+                  </span>
+                  <p className="text-lg font-bold text-[#166534]">
+                    "{feedback.fixedAnswer}"
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-[#d9f99d]">
+                  <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                    Official Model Answer:
+                  </span>
+                  <p className="text-lg font-bold text-[#166534]">
+                    "{currentQ.modelAnswer}"
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-sm font-bold text-[#3f6212] mt-6 bg-[#d9f99d] inline-block px-4 py-2 rounded-lg">
+                📝 Write one of these down in your notebook for full credit.
+              </p>
+            </div>
+
+            <div className="flex justify-end pt-4 border-t border-slate-200">
+               <button 
+                 onClick={handleNext} 
+                 className="flex items-center px-10 py-4 bg-[#14b8a6] hover:bg-[#0d9488] text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-[#0d9488] active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+               >
+                 {currentIndex < questions.length - 1 ? 'Next Question' : 'Complete Section'} 
+                 <ArrowRight className="w-6 h-6 ml-3" />
+               </button>
+            </div>
+
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/views/YearDashboard.jsx">
+import React, { useState, lazy, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction } from 'lucide-react';
+
+import { useStudentProgress } from '../hooks/useStudentProgress';
+import UnitCard from '../components/UnitCard';
+
+import { Y8_META, Y8_DATA, Y9_META, Y9_DATA, ESL_META, ESL_DATA, GED_META, GED_DATA } from '../data/index';
+
+const Recognition = lazy(() => import('../tasks/Recognition'));
+const Spell = lazy(() => import('../tasks/Spell'));
+const Dictation = lazy(() => import('../tasks/Dictation'));
+const Reading = lazy(() => import('../tasks/Reading'));
+const ShortAnswers = lazy(() => import('../tasks/ShortAnswers'));
+const Diagrams = lazy(() => import('../tasks/Diagrams'));
+const Essay = lazy(() => import('../tasks/Essay'));
+const Assessment = lazy(() => import('../tasks/Assessment'));
+const Notes = lazy(() => import('../tasks/Notes'));
+const Games = lazy(() => import('../tasks/Games'));
+
+const THEMES = {
+  Y8: { bg: 'bg-indigo-50', banner: 'from-indigo-500 via-indigo-600 to-blue-700', iconBg: 'bg-indigo-100', iconText: 'text-indigo-700', accent: 'border-indigo-400' },
+  Y9: { bg: 'bg-emerald-50', banner: 'from-emerald-500 via-emerald-600 to-teal-700', iconBg: 'bg-emerald-100', iconText: 'text-emerald-700', accent: 'border-emerald-400' },
+  ESL: { bg: 'bg-amber-50', banner: 'from-amber-500 via-amber-600 to-orange-700', iconBg: 'bg-amber-100', iconText: 'text-amber-700', accent: 'border-amber-400' },
+  GED: { bg: 'bg-rose-50', banner: 'from-rose-500 via-rose-600 to-red-700', iconBg: 'bg-rose-100', iconText: 'text-rose-700', accent: 'border-rose-400' }
+};
+
+function PlaceholderView({ title, onQuit }) {
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+      <div className="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+        <Construction className="w-12 h-12 text-amber-500" />
+      </div>
+      <h2 className="text-4xl font-black text-slate-800 mb-4 tracking-tight">{title}</h2>
+      <div className="bg-white px-8 py-4 rounded-2xl shadow-sm border border-slate-200 mb-10 text-lg font-bold text-slate-500">
+        Under Construction / Coming Soon
+      </div>
+      <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+        Return to Dashboard
+      </button>
+    </div>
+  );
+}
+
+export default function YearDashboard({ track }) {
+  const navigate = useNavigate();
+  
+  const { user, unitScores = {}, isLoadingDB, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
+
+  const [appState, setAppState] = useState('MENU');
+  const [activeUnit, setActiveUnit] = useState(null);
+  const [currentPool, setCurrentPool] = useState([]);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+
+  if (isLoadingDB) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mb-4" />
+        <p className="text-slate-500 font-bold tracking-widest uppercase animate-pulse">Syncing with Cloud...</p>
+      </div>
+    );
+  }
+
+  let META_DATA = [];
+  let UNIT_DATA = {};
+  let trackTitle = "";
+  const currentTheme = THEMES[track] || THEMES.Y8;
+
+  if (track === 'Y8') { META_DATA = Y8_META || []; UNIT_DATA = Y8_DATA || {}; trackTitle = "Year 8 Science"; }
+  else if (track === 'Y9') { META_DATA = Y9_META || []; UNIT_DATA = Y9_DATA || {}; trackTitle = "Year 9 Science"; }
+  else if (track === 'ESL') { META_DATA = ESL_META || []; UNIT_DATA = ESL_DATA || {}; trackTitle = "ESL Foundation"; }
+  else if (track === 'GED') { META_DATA = GED_META || []; UNIT_DATA = GED_DATA || {}; trackTitle = "English"; }
+
+  let totalTrackXP = 0;
+  let maxTrackXP = META_DATA.length * 100;
+  
+  META_DATA.forEach(unit => {
+    const s = unitScores?.[unit.id] || {};
+    const unitTotal = Object.entries(s)
+      .filter(([key]) => key !== 'strikes')
+      .reduce((sum, [key, val]) => {
+        let max = 10;
+        if (['p1', 'p10', 'p11'].includes(key)) max = 5;
+        if (['p6', 'p7', 'p8'].includes(key)) max = 20;
+        return sum + Math.min(val?.current || 0, max);
+      }, 0);
+    totalTrackXP += unitTotal;
+  });
+
+  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+
+  const startMode = (unitId, mode) => {
+    setActiveUnit(unitId);
+    const data = UNIT_DATA[unitId];
+    if (!data) return;
+
+    // Single source of truth for constructing absolute paths natively mapped off BASE_URL
+    const basePath = import.meta.env.BASE_URL === '/' ? '' : (import.meta.env.BASE_URL || '').replace(/\/$/, '');
+
+    const realW = (data.realWords || []).map(w => ({ 
+      ...w, 
+      isReal: true,
+      audio: `${basePath}/audio/${track}/${unitId}/word_${w.word.toLowerCase()}.mp3`,
+      defAudio: `${basePath}/audio/${track}/${unitId}/def_${w.word.toLowerCase()}.mp3`,
+      sentAudio: `${basePath}/audio/${track}/${unitId}/sentence_${w.word.toLowerCase()}.mp3`
+    }));
+
+    if (mode === 'WORD_REC' || mode === 'SPELLING') {
+      setCurrentPool([...realW].sort(() => Math.random() - 0.5));
+    } else if (mode === 'DICTATION') {
+      const dictationData = data.dictation || [];
+      const dictationPool = realW.map((w, i) => ({
+        ...w,
+        dictSent: dictationData[i]?.sent || w.sent,
+        dictVn: dictationData[i]?.vnSent || w.vnSent
+      })).sort(() => Math.random() - 0.5);
+      setCurrentPool(dictationPool);
+    } else if (mode === 'GAMES') {
+      const gamePool = [...realW].sort(() => Math.random() - 0.5);
+      gamePool.gameConfig = data.games?.gameConfig || null;
+      setCurrentPool(gamePool);
+    } else if (mode === 'READ_COMP') {
+      setCurrentPool(data.passages || []);
+    } else if (mode === 'SHORT_ANSWERS') {
+      setCurrentPool({ shortQA: data.shortQA || [] });
+    } else if (mode === 'DIAGRAMS') {
+      setCurrentPool({ diagrams: data.diagrams || [] });
+    } else if (mode === 'ESSAY') {
+      setCurrentPool({ essay: data.essay || null });
+    } else if (mode === 'ASSESSMENT') {
+      setCurrentPool([]);
+    } else if (mode === 'NOTES') {
+      // Clean injection of absolute paths ensures Notes.jsx doesn't have to guess or append
+      const fixedNotes = (data.notes || []).map(note => {
+        const newNote = { ...note };
+        if (note.audio) {
+          const cleanAudio = note.audio.replace(/^\//, '');
+          newNote.audio = `${basePath}/${cleanAudio}`;
+        }
+        if (note.image) {
+          const cleanImage = note.image.replace(/^\//, '');
+          newNote.image = `${basePath}/${cleanImage}`;
+        }
+        return newNote;
+      });
+      setCurrentPool(fixedNotes);
+    }
+    
+    setAppState(mode);
+  };
+
+  const handleTaskComplete = async (section, rawScore, answers = null) => {
+    let finalScore = rawScore;
+
+    if (['p1', 'p10', 'p11'].includes(section)) {
+      if (section === 'p10' || section === 'p11') finalScore = 5; 
+      else finalScore = Math.min(5, Math.ceil((rawScore / 10) * 5)); 
+    } else if (['p6', 'p7', 'p8'].includes(section)) {
+      finalScore = rawScore <= 10 ? Math.ceil((rawScore / 10) * 20) : rawScore; 
+      finalScore = Math.min(20, finalScore);
+    } else {
+      finalScore = Math.min(10, finalScore);
+    }
+
+    await saveScore(activeUnit, section, finalScore, answers);
+    setAppState('MENU');
+  };
+
+  return (
+    <div className={`min-h-screen ${currentTheme.bg} selection:bg-indigo-200 selection:text-indigo-900 transition-colors duration-500`}>
+      {appState === 'MENU' && (
+        <div className="animate-in fade-in duration-500 pb-20">
+          
+          <div className={`relative w-full bg-gradient-to-r ${currentTheme.banner} shadow-xl overflow-hidden`}>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute -top-32 -right-32 w-[35rem] h-[35rem] bg-white opacity-20 rounded-full blur-[90px] mix-blend-overlay"></div>
+              <div className="absolute -bottom-24 -left-24 w-[25rem] h-[25rem] bg-black opacity-20 rounded-full blur-[70px] mix-blend-multiply"></div>
+              <div className="absolute top-10 left-1/3 w-64 h-64 bg-white opacity-10 rounded-full blur-[60px] animate-pulse"></div>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.2] mix-blend-overlay"></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 relative z-10">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                
+                <div className="flex items-center space-x-6">
+                  <button onClick={() => navigate('/home')} className="bg-white/10 p-4 rounded-2xl hover:bg-white/25 transition-all text-white backdrop-blur-md active:scale-95 shadow-sm border border-white/20">
+                    <ChevronLeft className="w-7 h-7" />
+                  </button>
+                  <div>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-3 drop-shadow-md">{trackTitle}</h1>
+                    <div className="inline-flex bg-gradient-to-b from-amber-400 to-amber-500 text-amber-900 px-5 py-2.5 rounded-2xl shadow-lg border-b-[4px] border-amber-600 items-center space-x-3 backdrop-blur-md">
+                      <span className="text-2xl drop-shadow-sm">🏆</span>
+                      <span className="text-[13px] font-black uppercase tracking-widest opacity-90 mt-0.5">Total XP</span>
+                      <span className="text-lg font-black bg-white/40 px-3 py-0.5 rounded-xl shadow-inner border border-white/30">{totalTrackXP} / {maxTrackXP}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4 text-white">
+                  <button onClick={() => setShowHowItWorks(true)} className="flex items-center bg-white/10 px-5 py-3.5 rounded-2xl text-sm font-bold hover:bg-white/25 transition-all shadow-sm backdrop-blur-md border border-white/20 active:scale-95">
+                    <Info className="w-5 h-5 mr-2 opacity-90" /> How it Works
+                  </button>
+                  <div className="flex items-center bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 shadow-sm pl-5 pr-3 group transition-all hover:bg-white/15">
+                    <span className="font-black text-sm uppercase tracking-widest text-white mr-4 drop-shadow-sm">{userName}</span>
+                    <button onClick={handleLogout} className="bg-white/20 hover:bg-rose-500 text-white p-2.5 rounded-xl transition-all shadow-sm active:scale-95" title="Logout">
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 space-y-10">
+            {META_DATA.map((metaUnit) => {
+              const contentData = UNIT_DATA[metaUnit.id] || {};
+              const combinedUnitPayload = {
+                ...contentData,
+                id: metaUnit.id,
+                meta: {
+                  id: metaUnit.id,
+                  title: metaUnit.title,
+                  description: metaUnit.desc,
+                  icon: contentData.meta?.icon || 'BookOpen',
+                  thresholds: contentData.meta?.thresholds
+                }
+              };
+
+              return (
+                <UnitCard 
+                  key={metaUnit.id} 
+                  unit={combinedUnitPayload} 
+                  scores={unitScores?.[metaUnit.id] || {}} 
+                  currentTheme={currentTheme} 
+                  startMode={startMode} 
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {showHowItWorks && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full p-8 md:p-10 relative max-h-[90vh] overflow-y-auto">
+             <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                <h2 className="text-3xl font-black text-slate-800 flex items-center tracking-tight"><div className="bg-indigo-100 text-indigo-600 p-2 rounded-full mr-4 shadow-inner"><Info className="w-7 h-7"/></div>How it Works</h2>
+                <button onClick={() => setShowHowItWorks(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><XCircle className="w-8 h-8"/></button>
+             </div>
+             
+             <p className="text-lg text-slate-600 font-medium mb-8 leading-relaxed">
+               Welcome to the <strong className="text-slate-800">Science Lab</strong>! This platform uses <strong className="text-indigo-600">CLIL</strong> (Content and Language Integrated Learning) to help you master English through real scientific concepts. Here is how your learning journey works:
+             </p>
+             
+             <div className="space-y-4 mb-8">
+               <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-start shadow-sm hover:shadow-md transition-all">
+                 <div className="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-1 shadow-inner"><div className="w-3 h-3 bg-indigo-500 rounded-full"></div></div>
+                 <div>
+                   <h3 className="font-bold text-slate-800 text-xl mb-1">Phase 1: Core Practice</h3>
+                   <p className="text-slate-500 font-medium leading-relaxed">Fast-paced language drills inspired by the <strong>DET</strong> (Duolingo English Test) and <strong>PTE</strong> formats. Build your spelling, listening, and reading skills.</p>
+                 </div>
+               </div>
+               
+               <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex items-start shadow-sm hover:shadow-md transition-all">
+                 <div className="bg-indigo-100 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-1 shadow-inner"><div className="w-3 h-3 bg-indigo-500 rounded-full"></div></div>
+                 <div>
+                   <h3 className="font-bold text-slate-800 text-xl mb-1">Phase 2: AI Graded Writing</h3>
+                   <p className="text-slate-500 font-medium leading-relaxed">Practice short answers and essays. Our AI Tutor grades your work instantly using the official <strong>Cambridge Mark Scheme</strong> to give you personalized feedback.</p>
+                 </div>
+               </div>
+             </div>
+
+             <div className="bg-rose-50 border border-rose-200 p-5 rounded-2xl mb-8 flex items-start shadow-sm">
+               <AlertTriangle className="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
+               <div>
+                 <h4 className="font-black text-rose-800 text-sm uppercase tracking-widest mb-1 opacity-90">AI Monitoring & Safety</h4>
+                 <p className="text-rose-700 text-sm font-medium leading-relaxed">
+                   Student submissions to the AI grader are monitored. Any harmful, inappropriate, or "joke" answers are flagged. <strong>After 3 strikes</strong>, you will be permanently locked out of the AI Tutor for that unit and can only earn partial points.
+                 </p>
+               </div>
+             </div>
+             
+             <div className="flex justify-end">
+               <button onClick={() => setShowHowItWorks(false)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg uppercase tracking-widest px-10 py-4 rounded-2xl border-b-[5px] border-indigo-800 active:border-b-0 active:translate-y-[5px] transition-all shadow-md">
+                 Understood
+               </button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {appState === 'WORKBOOK' && <PlaceholderView title="Extra Workbook Practice" onQuit={() => setAppState('MENU')} />}
+
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50"><Loader2 className="w-12 h-12 animate-spin text-indigo-500" /></div>}>
+        {appState === 'WORD_REC' && <Recognition pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p1', s)} />}
+        {appState === 'SPELLING' && <Spell pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p2', s)} onQuit={() => setAppState('MENU')} />}
+        {appState === 'DICTATION' && <Dictation pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p3', s)} onQuit={() => setAppState('MENU')} />}
+        {appState === 'READ_COMP' && <Reading pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p4', s)} onQuit={() => setAppState('MENU')} />}
+        
+        {appState === 'NOTES' && <Notes slides={currentPool} onComplete={() => handleTaskComplete('p10', 10)} onQuit={() => setAppState('MENU')} />}
+
+        {appState === 'SHORT_ANSWERS' && (
+          <ShortAnswers 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p6?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p6', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        
+        {appState === 'DIAGRAMS' && (
+          <Diagrams 
+            pool={currentPool} 
+            unitId={activeUnit}
+            savedData={unitScores[activeUnit]?.p7?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p7', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+
+        {appState === 'ESSAY' && (
+          <Essay 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p8?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p8', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+
+        {appState === 'ASSESSMENT' && (
+          <Assessment 
+            unit={UNIT_DATA[activeUnit]} 
+            onComplete={(score) => handleTaskComplete('p9', score)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        {appState === 'GAMES' && (
+          <Games 
+            pool={currentPool} 
+            unitId={activeUnit}
+            scores={unitScores[activeUnit] || {}} 
+            onComplete={(score) => handleTaskComplete('p12', score)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+      </Suspense>
+
+    </div>
+  );
+}
+</file>
+
+<file path="src/App.jsx">
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Home from './views/Home';
+import YearDashboard from './views/YearDashboard';
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* 1. The Gatekeeper */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* 2. The Main Menu */}
+        <Route path="/home" element={<Home />} />
+        
+        {/* 3. The Curricular Tracks */}
+        <Route path="/Y8" element={<YearDashboard track="Y8" />} />
+        <Route path="/Y9" element={<YearDashboard track="Y9" />} />
+        <Route path="/ESL" element={<YearDashboard track="ESL" />} />
+        <Route path="/GED" element={<YearDashboard track="GED" />} />
+        
+        {/* Default Fallback: Force everyone to login first */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
+  );
+}
+</file>
+
+</files>

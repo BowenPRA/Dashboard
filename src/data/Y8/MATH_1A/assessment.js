@@ -1,4 +1,6 @@
-// src/data/Y8/Math_1A/assessment.js
+// src/data/Y8/MATH_1A/assessment.js
+import { DIAGRAMS } from './diagrams.js';
+
 export const assessment = {
   timeLimit: 1800, // 30 minutes
   passages: [], // No text passages needed for this Math assessment
@@ -7,15 +9,7 @@ export const assessment = {
       id: "q1_comp_inline",
       type: "inline",
       title: "1. Look at the right angle below split into two adjacent angles. Select the correct relationship.",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 120 50 L 120 200 L 270 200" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 120 170 L 150 170 L 150 200" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 120 200 L 240 106" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-        <path d="M 180 200 A 60 60 0 0 0 170 161" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <text x="195" y="185" font-family="sans-serif" font-weight="bold" font-size="20" fill="#1d4ed8" text-anchor="middle">a</text>
-        <path d="M 170 161 A 60 60 0 0 0 120 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
-        <text x="145" y="135" font-family="sans-serif" font-weight="bold" font-size="20" fill="#b91c1c" text-anchor="middle">b</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.RIGHT_ANGLE_COMPLEMENTARY_AB,
       options: [],
       textParts: [
         "Because the two angles form a perfect right corner, they are known as ",
@@ -47,15 +41,7 @@ export const assessment = {
       id: "q2_comp_mcq",
       type: "mcq",
       title: "2. The angle marked with a square is a right angle. If angle 'a' measures 38°, what is the exact measurement of angle 'b'?",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 120 50 L 120 200 L 270 200" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 120 170 L 150 170 L 150 200" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 120 200 L 240 106" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-        <path d="M 180 200 A 60 60 0 0 0 170 161" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <text x="200" y="185" font-family="sans-serif" font-weight="bold" font-size="20" fill="#1d4ed8" text-anchor="middle">38°</text>
-        <path d="M 170 161 A 60 60 0 0 0 120 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
-        <text x="145" y="135" font-family="sans-serif" font-weight="bold" font-size="20" fill="#b91c1c" text-anchor="middle">b</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.RIGHT_ANGLE_COMPLEMENTARY_38,
       options: [
         { val: "A", text: "A. 142°" },
         { val: "B", text: "B. 52°" },
@@ -94,15 +80,7 @@ export const assessment = {
       id: "q4_math_inline",
       type: "inline",
       title: "4. Identify the relationship to calculate the missing angle 'y'.",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
-        <text x="160" y="115" font-family="sans-serif" font-weight="bold" font-size="18" fill="#9333ea">72°</text>
-        <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
-        <text x="230" y="150" font-family="sans-serif" font-weight="bold" font-size="18" fill="#9333ea">y</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.TRANSVERSAL_ALTERNATE_72_Y,
       options: [],
       textParts: [
         "Because the horizontal lines are parallel, the angle marked 'y' is ",
@@ -133,15 +111,7 @@ export const assessment = {
       id: "q5_math_mcq",
       type: "mcq",
       title: "5. Examine the C-shape highlight. Calculate the value of angle z.",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
-        <text x="160" y="115" font-family="sans-serif" font-weight="bold" font-size="18" fill="#ef4444">105°</text>
-        <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
-        <text x="245" y="145" font-family="sans-serif" font-weight="bold" font-size="18" fill="#22c55e">z</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.TRANSVERSAL_COINT_105_Z,
       options: [
         { val: "A", text: "A. 105°" },
         { val: "B", text: "B. 90°" },
@@ -156,18 +126,7 @@ export const assessment = {
       id: "q6_x_intersect_dnd",
       type: "dnd",
       title: "6. Analyze the intersecting system below. Drag the correct numerical values to identify angles d, e, and f.",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 125 L 350 125" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-        <path d="M 120 225 L 280 25" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
-        <path d="M 160 125 A 40 40 0 0 1 225 94" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
-        <text x="185" y="90" font-family="sans-serif" font-weight="bold" font-size="18" fill="#b91c1c" text-anchor="middle">130°</text>
-        <path d="M 240 125 A 40 40 0 0 1 175 156" fill="none" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <text x="215" y="175" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8" text-anchor="middle">d</text>
-        <path d="M 225 94 A 40 40 0 0 1 240 125" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
-        <text x="245" y="110" font-family="sans-serif" font-weight="bold" font-size="18" fill="#d97706" text-anchor="middle">f</text>
-        <path d="M 175 156 A 40 40 0 0 1 160 125" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
-        <text x="155" y="150" font-family="sans-serif" font-weight="bold" font-size="18" fill="#059669" text-anchor="middle">e</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.INTERSECTING_LINES_130_DEF,
       options: [],
       bank: [
         { id: "n1", val: "130", text: "130°" },
@@ -192,17 +151,7 @@ export const assessment = {
       id: "q7_complex_dnd",
       type: "dnd",
       title: "7. Drag the correct numerical values to complete the calculations for angles a, b, c, and d.",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
-        
-        <text x="185" y="70" font-family="sans-serif" font-weight="bold" font-size="18" fill="#334155">65°</text>
-        <text x="150" y="105" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">a</text>
-        <text x="200" y="105" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">b</text>
-        <text x="210" y="155" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">c</text>
-        <text x="255" y="155" font-family="sans-serif" font-weight="bold" font-size="18" fill="#1d4ed8">d</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.TRANSVERSAL_COMPLEX_65_ABCD,
       options: [],
       bank: [
         { id: "x1", val: "65", text: "65°" },

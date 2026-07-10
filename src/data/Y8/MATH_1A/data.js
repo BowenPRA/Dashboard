@@ -1,4 +1,5 @@
-// src/data/Y8/Math_1A/data.js
+// src/data/Y8/MATH_1A/data.js
+import { DIAGRAMS } from './diagrams.js';
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
@@ -236,21 +237,13 @@ export const MATH_1A_DATA = {
       modelAnswer: "Corresponding angles are exactly equal to each other. However, co-interior angles are not equal; they are supplementary and add up to 180 degrees."
     }
   ],
-diagrams: [
+  diagrams: [
     {
       id: "d1",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 290 80 L 170 80 L 230 170 L 110 170" fill="none" stroke="#a855f7" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
-        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 205 170 A 25 25 0 0 1 216.1 149.2" fill="none" stroke="#9333ea" stroke-width="5" stroke-linecap="round"/>
-      </svg>`,
+      inlineSvg: DIAGRAMS.DIAGRAM_TRANSVERSAL_Z_SHAPE,
       imageFile: "transversal_z_shape.png", 
       imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick purple line highlights the 'Z' shape formed by the inner segments. The top inner angle and bottom opposite inner angle are marked with matching purple arcs. Minimalist, pure white background, sans-serif font.",
       promptText: "Analyze the provided diagram. Identify the type of angle pair highlighted by the geometric shape, and state their mathematical relationship.",
-      // Changed required words to prevent spoiling the exact term "alternate"
       requiredWords: [["z-shape", "z shape", "shape"], ["equal", "same"]],
       scienceMaxMarks: 2,
       markScheme: [
@@ -261,19 +254,10 @@ diagrams: [
     },
     {
       id: "d2",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 270 80 L 170 80 L 230 170 L 330 170" fill="none" stroke="#1d4ed8" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
-        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 255 170 A 25 25 0 0 0 216.1 149.2" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
-        <text x="240" y="130" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a" text-anchor="middle">Adds to 180°</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.DIAGRAM_TRANSVERSAL_C_SHAPE,
       imageFile: "transversal_c_shape.png",
       imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick blue line highlights the 'C' shape formed by the inner segments on the left side of the transversal. The two inside angles are marked with different colored arcs. Text reads 'Adds to 180°'. Minimalist, pure white background.",
       promptText: "Examine the second diagram showing the C-shape. Name this angle pair and explain why they are fundamentally different from alternate and corresponding angles.",
-      // Changed required words to prevent spoiling "co-interior"
       requiredWords: [["c-shape", "c shape", "shape"], ["supplementary", "180", "add"]],
       scienceMaxMarks: 2,
       markScheme: [
@@ -284,23 +268,7 @@ diagrams: [
     },
     {
       id: "d3",
-      inlineSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
-        <path d="M 50 80 L 350 80" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 50 170 L 350 170" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-        <path d="M 130 20 L 270 230" stroke="#f97316" stroke-width="5" stroke-linecap="round"/>
-        
-        <path d="M 145 80 A 25 25 0 0 1 156.1 59.2" fill="none" stroke="#1e3a8a" stroke-width="4" stroke-linecap="round"/>
-        <text x="135" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e3a8a">60°</text>
-        
-        <path d="M 195 80 A 25 25 0 0 1 183.9 100.8" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
-        <text x="190" y="105" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ef4444">x</text>
-        
-        <path d="M 255 170 A 25 25 0 0 1 243.9 190.8" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
-        <text x="250" y="195" font-family="sans-serif" font-weight="bold" font-size="16" fill="#22c55e">y</text>
-        
-        <path d="M 205 170 A 25 25 0 0 0 216.1 190.8" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round"/>
-        <text x="200" y="195" font-family="sans-serif" font-weight="bold" font-size="16" fill="#a855f7">z</text>
-      </svg>`,
+      inlineSvg: DIAGRAMS.DIAGRAM_TRANSVERSAL_FOUR_ANGLES,
       imageFile: "transversal_four_angles.png",
       promptText: "In the diagram, one angle is given as 60°. Calculate the values of angles x, y, and z. State the geometric reason for each calculation based on the properties discussed in class.",
       requiredWords: [["60", "60°"], ["120", "120°"], ["vertically", "corresponding", "alternate", "co-interior", "opposite"]],
@@ -313,7 +281,7 @@ diagrams: [
       modelAnswer: "Angle x is 60° because it is vertically opposite to the given 60° angle. Angle y is also 60° because it is corresponding to angle x. Finally, angle z is 120° because it sits on a straight line with y, making them supplementary (180 - 60 = 120)."
     }
   ],
-essay: {
+  essay: {
     task: "When a transversal line cuts through two parallel lines, how many total angles are created at the intersections? Of those angles, what is the minimum number of angle measurements you need to be given to calculate the exact degrees of all the rest? Explain your reasoning.",
     guidelines: [
       "State the total number of angles formed by the intersection.",

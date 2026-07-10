@@ -1,0 +1,1022 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/views/YearDashboard.jsx, src/components/UnitCard.jsx, src/components/TopBar.jsx, src/data/Y8/SCIENCE_1A/data.js, tailwind.config.js
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/components/TopBar.jsx
+src/components/UnitCard.jsx
+src/data/Y8/SCIENCE_1A/data.js
+src/views/YearDashboard.jsx
+tailwind.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/data/Y8/SCIENCE_1A/data.js">
+// src/data/Y8/SCIENCE_1A/data.js
+import { DIAGRAMS } from './diagrams.js';
+import { assessment } from './assessment.js';
+import { notes } from './notes.js';
+import { workbook } from './workbook.js';
+import { games } from './games.js';
+
+export const SCIENCE_1A_DATA = {
+  meta: {
+    id: "SCIENCE_1A",
+    title: "Light & Colour",
+    desc: "Explore the laws of reflection, refraction, dispersion, and how coloured light behaves.",
+    track: "Y8",
+    icon: "Sun"
+  },
+  phases: {
+    phase1: {
+      unlocked: true,
+      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+    },
+    phase2: {
+      unlocked: false,
+      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    },
+    phase3: {
+      unlocked: false,
+      tasks: ["ASSESSMENT", "ESSAY"]
+    }
+  },
+  realWords: [
+    { word: "Reflection", vn: "Phản xạ", def: "The bouncing of light rays off a surface like a mirror.", vnDef: "Sự bật lại của các tia sáng khi chạm vào một bề mặt như gương.", sent: "The law of reflection states that the angle of incidence equals the angle of reflection.", vnSent: "Định luật phản xạ phát biểu rằng góc tới bằng góc phản xạ.", dictSent: "Reflection happens when light bounces off a smooth surface.", isReal: true },
+    { word: "Medium", vn: "Môi trường", def: "A material or substance that light travels through, such as air, water, or glass.", vnDef: "Vật liệu hoặc chất mà ánh sáng truyền qua, chẳng hạn như không khí, nước hoặc thủy tinh.", sent: "Light slows down when it enters a denser medium like a block of solid glass.", vnSent: "Ánh sáng đi chậm lại khi đi vào một môi trường đặc hơn như một khối thủy tinh đặc.", dictSent: "A medium is any substance that light can travel through.", isReal: true },
+    { word: "Refraction", vn: "Khúc xạ", def: "The bending of light as it changes speed when passing from one medium to another.", vnDef: "Sự bẻ cong của ánh sáng do thay đổi tốc độ khi truyền từ môi trường này sang môi trường khác.", sent: "Refraction causes a pencil sitting in a glass of water to look completely broken.", vnSent: "Khúc xạ khiến một chiếc bút chì cắm trong cốc nước trông như bị gãy hoàn toàn.", dictSent: "Refraction is the bending of light as it changes speed.", isReal: true },
+    { word: "Dispersion", vn: "Tán sắc", def: "The splitting of white light into its continuous spectrum of colours.", vnDef: "Sự phân tách của ánh sáng trắng thành một dải quang phổ màu liên tục.", sent: "Dispersion of sunlight through a glass prism creates a beautiful rainbow effect.", vnSent: "Sự tán sắc của ánh sáng mặt trời qua lăng kính thủy tinh tạo ra hiệu ứng cầu vồng tuyệt đẹp.", dictSent: "Dispersion splits white light into a spectrum of colours.", isReal: true },
+    { word: "Normal Line", vn: "Pháp tuyến", def: "An imaginary dashed line drawn exactly at 90 degrees to a reflecting surface.", vnDef: "Một đường đứt nét tưởng tượng được vẽ vuông góc chính xác 90 độ với bề mặt phản xạ.", sent: "In physics, we always measure the angle of a light ray starting from the normal line.", vnSent: "Trong vật lý, chúng ta luôn đo góc của tia sáng bắt đầu từ đường pháp tuyến.", dictSent: "The normal line is drawn at ninety degrees to the mirror.", isReal: true },
+    { word: "Incident Ray", vn: "Tia tới", def: "The incoming ray of light that strikes a surface.", vnDef: "Tia sáng đi tới đập vào một bề mặt.", sent: "The incident ray travels towards the glass block before it hits the surface and bends.", vnSent: "Tia tới truyền về phía khối thủy tinh trước khi nó chạm vào bề mặt và bị bẻ cong.", dictSent: "The incident ray travels directly toward the surface.", isReal: true },
+    { word: "Spectrum", vn: "Quang phổ", def: "The band of colours produced when light is separated, such as by a prism.", vnDef: "Dải màu được tạo ra khi ánh sáng bị tách ra, chẳng hạn như bởi lăng kính.", sent: "Red, green, and violet are all colours found naturally in the visible spectrum.", vnSent: "Đỏ, lục và tím đều là những màu được tìm thấy trong tự nhiên trong quang phổ nhìn thấy được.", dictSent: "A rainbow is a natural example of the visible light spectrum.", isReal: true },
+    { word: "Prism", vn: "Lăng kính", def: "A transparent, triangular piece of glass used to disperse white light.", vnDef: "Một khối thủy tinh trong suốt, hình tam giác được sử dụng để tán sắc ánh sáng trắng.", sent: "When white light enters the prism, the dense glass splits it into seven distinct colours.", vnSent: "Khi ánh sáng trắng đi vào lăng kính, lớp thủy tinh đặc sẽ phân tách nó thành bảy màu riêng biệt.", dictSent: "A glass prism can bend and separate white light.", isReal: true },
+    { word: "Primary Colours", vn: "Màu cơ bản", def: "The three colours of light (red, green, blue) that can be mixed to make white light.", vnDef: "Ba màu của ánh sáng (đỏ, lục, lam) có thể được pha trộn để tạo ra ánh sáng trắng.", sent: "By adding the three primary colours of light together, you get pure white.", vnSent: "Bằng cách cộng ba màu cơ bản của ánh sáng lại với nhau, bạn sẽ có màu trắng tinh khiết.", dictSent: "Red, green, and blue are the primary colours of light.", isReal: true },
+    { word: "Secondary Colours", vn: "Màu thứ cấp", def: "Colours of light created by mixing two primary colours together (cyan, magenta, and yellow).", vnDef: "Các màu của ánh sáng được tạo ra bằng cách trộn hai màu cơ bản với nhau (xanh lơ, đỏ thắm và vàng).", sent: "Cyan is a secondary colour created by adding green and blue light together.", vnSent: "Xanh lơ là một màu thứ cấp được tạo ra bằng cách cộng ánh sáng lục và lam lại với nhau.", dictSent: "Adding two primary colours creates a secondary colour.", isReal: true },
+    { word: "Filter", vn: "Kính lọc", def: "A transparent material that absorbs certain colours and lets others pass through.", vnDef: "Một vật liệu trong suốt hấp thụ một số màu nhất định và cho phép những màu khác đi qua.", sent: "A red filter will absorb green and blue light, but let red light pass safely through.", vnSent: "Kính lọc đỏ sẽ hấp thụ ánh sáng lục và lam, nhưng cho phép ánh sáng đỏ đi qua một cách an toàn.", dictSent: "A filter absorbs unwanted colours and passes its own colour.", isReal: true }
+  ],
+  fakeWords: [
+    { word: "Reflectation", imitating: "Reflection", isReal: false },
+    { word: "Mediumate", imitating: "Medium", isReal: false },
+    { word: "Refractance", imitating: "Refraction", isReal: false },
+    { word: "Dispersity", imitating: "Dispersion", isReal: false },
+    { word: "Normalizer", imitating: "Normal Line", isReal: false },
+    { word: "Incidentor", imitating: "Incident Ray", isReal: false },
+    { word: "Spectron", imitating: "Spectrum", isReal: false },
+    { word: "Prismate", imitating: "Prism", isReal: false },
+    { word: "Primer Colours", imitating: "Primary Colours", isReal: false },
+    { word: "Second Colours", imitating: "Secondary Colours", isReal: false },
+    { word: "Filteration", imitating: "Filter", isReal: false }
+  ],
+  dictation: [
+    { sent: "Reflection happens when light bounces off a smooth surface.", vnSent: "Phản xạ xảy ra khi ánh sáng bật ra khỏi một bề mặt nhẵn." },
+    { sent: "A medium is any substance that light can travel through.", vnSent: "Môi trường là bất kỳ chất nào mà ánh sáng có thể truyền qua." },
+    { sent: "Refraction is the bending of light as it changes speed.", vnSent: "Khúc xạ là sự bẻ cong của ánh sáng khi nó thay đổi tốc độ." },
+    { sent: "Dispersion splits white light into a spectrum of colours.", vnSent: "Sự tán sắc chia ánh sáng trắng thành một quang phổ màu." },
+    { sent: "The normal line is drawn at ninety degrees to the mirror.", vnSent: "Đường pháp tuyến được vẽ vuông góc chín mươi độ với gương." },
+    { sent: "The incident ray travels directly toward the surface.", vnSent: "Tia tới truyền trực tiếp về phía bề mặt." },
+    { sent: "A rainbow is a natural example of the visible light spectrum.", vnSent: "Cầu vồng là một ví dụ tự nhiên về quang phổ ánh sáng nhìn thấy được." },
+    { sent: "A glass prism can bend and separate white light.", vnSent: "Một lăng kính thủy tinh có thể bẻ cong và phân tách ánh sáng trắng." },
+    { sent: "Red, green, and blue are the primary colours of light.", vnSent: "Đỏ, lục và lam là những màu cơ bản của ánh sáng." },
+    { sent: "Adding two primary colours creates a secondary colour.", vnSent: "Việc cộng hai màu cơ bản tạo ra một màu thứ cấp." },
+    { sent: "A filter absorbs unwanted colours and passes its own colour.", vnSent: "Kính lọc hấp thụ những màu không mong muốn và cho phép màu của chính nó đi qua." }
+  ],
+  passages: [
+    {
+      id: "passage_1",
+      title: "The Law of the Mirror",
+      text: "When an {incident ray} of light strikes a perfectly flat mirror, it bounces off in a very predictable way. To calculate this bounce, scientists draw a {normal line} exactly at 90 degrees to the surface. The law of {reflection} states that the angle at which the light hits the normal will always perfectly match the angle at which it leaves. This is why mirrors create such accurate images.",
+      vnTitle: "Định luật của Gương",
+      vnText: "Khi một {incident ray} của ánh sáng đập vào một chiếc gương phẳng hoàn hảo, nó bật lại theo một cách rất dễ đoán. Để tính toán độ bật này, các nhà khoa học vẽ một {normal line} vuông góc chính xác 90 độ với bề mặt. Định luật {reflection} phát biểu rằng góc mà ánh sáng đập vào pháp tuyến sẽ luôn khớp hoàn hảo với góc mà nó rời đi. Đây là lý do tại sao gương tạo ra những hình ảnh chính xác như vậy."
+    },
+    {
+      id: "passage_2",
+      title: "The Bending Illusion",
+      text: "Have you ever noticed that your legs look shorter when you stand in a swimming pool? This optical illusion is caused by {refraction}. When light leaves the water and enters the air, it moves into a different {medium}. Because air is less dense than water, the light speeds up and bends away from the normal. This bending makes our eyes believe the object is in a different location than it actually is.",
+      vnTitle: "Ảo giác Bẻ cong",
+      vnText: "Bạn đã bao giờ nhận thấy chân mình trông ngắn hơn khi đứng trong hồ bơi chưa? Ảo giác quang học này được gây ra bởi {refraction}. Khi ánh sáng rời khỏi mặt nước và đi vào không khí, nó di chuyển vào một {medium} khác. Vì không khí ít đặc hơn nước, ánh sáng tăng tốc và uốn cong ra xa pháp tuyến. Sự bẻ cong này làm cho mắt chúng ta tin rằng vật thể đang ở một vị trí khác với thực tế."
+    },
+    {
+      id: "passage_3",
+      title: "Splitting the Rainbow",
+      text: "White light is a trick played on our eyes. It is actually a mixture of many different colours. When white light passes through a {prism}, the glass slows each colour down by a slightly different amount. Red light slows down the least, so it bends the least. Violet light slows down the most. This causes the light to fan out into a beautiful {spectrum}, a process known to scientists as {dispersion}.",
+      vnTitle: "Phân tách Cầu vồng",
+      vnText: "Ánh sáng trắng là một trò đánh lừa đôi mắt của chúng ta. Nó thực chất là một hỗn hợp của nhiều màu sắc khác nhau. Khi ánh sáng trắng đi qua một {prism}, thủy tinh làm chậm mỗi màu lại với một mức độ hơi khác nhau. Ánh sáng đỏ chậm lại ít nhất, nên nó bẻ cong ít nhất. Ánh sáng tím chậm lại nhiều nhất. Điều này khiến ánh sáng xòe ra thành một {spectrum} tuyệt đẹp, một quá trình được các nhà khoa học gọi là {dispersion}."
+    },
+    {
+      id: "passage_4",
+      title: "Painting with Light",
+      text: "When an artist paints, mixing all the colours together creates a dark, muddy brown. However, light behaves completely differently. In physics, the {Primary Colours} of light are red, green, and blue. If you shine all three of these lights together, they combine to create pure white light! By mixing just two primary colours, you can create bright {Secondary Colours}. For example, mixing red and green light creates yellow, while blue and red create magenta.",
+      vnTitle: "Vẽ tranh bằng Ánh sáng",
+      vnText: "Khi một họa sĩ vẽ tranh, việc trộn tất cả các màu lại với nhau sẽ tạo ra một màu nâu tối và đục. Tuy nhiên, ánh sáng hoạt động hoàn toàn khác. Trong vật lý, các {Primary Colours} của ánh sáng là đỏ, lục và lam. Nếu bạn chiếu cả ba ánh sáng này cùng nhau, chúng sẽ kết hợp để tạo ra ánh sáng trắng tinh khiết! Bằng cách trộn chỉ hai màu cơ bản, bạn có thể tạo ra các {Secondary Colours} rực rỡ. Ví dụ, trộn ánh sáng đỏ và lục tạo ra màu vàng, trong khi ánh sáng lam và đỏ tạo ra màu đỏ thắm."
+    }
+  ],
+  notebookArticle: {
+    title: "Unit 1A: Light & Colour Rules",
+    vnTitle: "Bài 1A: Các Quy tắc về Ánh sáng & Màu sắc",
+    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook.",
+    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập của bạn.",
+    sections: [
+      {
+        heading: "1. Reflection & Refraction",
+        vnHeading: "1. Phản xạ & Khúc xạ",
+        text: "**Reflection** happens when light bounces off a surface. The angle of the **Incident Ray** always equals the angle of reflection. **Refraction** happens when light changes speed because it enters a different **Medium** (like glass), causing the ray to bend.",
+        vnText: "**Phản xạ** xảy ra khi ánh sáng bật ra khỏi một bề mặt. Góc của **Tia tới** luôn bằng góc phản xạ. **Khúc xạ** xảy ra khi ánh sáng thay đổi tốc độ vì nó đi vào một **Môi trường** khác (như thủy tinh), khiến tia sáng bị bẻ cong."
+      },
+      {
+        heading: "2. Dispersion",
+        vnHeading: "2. Tán sắc",
+        text: "White light is a mix of colours. A **Prism** causes **Dispersion**, splitting white light into a continuous **Spectrum**. Red bends the least, while violet bends the most.",
+        vnText: "Ánh sáng trắng là một hỗn hợp các màu. Một **Lăng kính** gây ra sự **Tán sắc**, phân tách ánh sáng trắng thành một **Quang phổ** liên tục. Màu đỏ bẻ cong ít nhất, trong khi màu tím bẻ cong nhiều nhất."
+      },
+      {
+        heading: "3. Mixing & Filtering Colour",
+        vnHeading: "3. Pha trộn & Lọc Màu",
+        text: "The **Primary Colours** of light are Red, Green, and Blue. Mixing them creates **Secondary Colours** like Cyan, Magenta, and Yellow. A **Filter** only allows its own colour to pass through, absorbing all other colours.",
+        vnText: "**Màu cơ bản** của ánh sáng là Đỏ, Lục và Lam. Trộn chúng tạo ra các **Màu thứ cấp** như Xanh lơ, Đỏ thắm và Vàng. Một **Kính lọc** chỉ cho phép màu của chính nó đi qua, hấp thụ tất cả các màu khác."
+      }
+    ]
+  },
+  shortQA: [
+    {
+      id: "q1",
+      question: "According to the Law of Reflection, what is the relationship between the angle of incidence and the angle of reflection?",
+      requiredWords: [["equal", "same"]],
+      scienceMaxMarks: 1,
+      markScheme: [
+        "1 mark for stating that the angles are always equal to each other."
+      ],
+      modelAnswer: "The angle of incidence is exactly equal to the angle of reflection."
+    },
+    {
+      id: "q2",
+      question: "Explain what happens to the speed and direction of a light ray when it enters a glass block from the air.",
+      requiredWords: [["slow", "slower", "slows down"], ["towards", "closer"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for stating that the light slows down.",
+        "1 mark for stating that it bends towards the normal line."
+      ],
+      modelAnswer: "When light enters the denser glass block, it slows down. This change in speed causes the light to bend towards the normal line."
+    },
+    {
+      id: "q3",
+      question: "When white light passes through a prism, why does violet light appear at the bottom of the spectrum while red light is at the top?",
+      requiredWords: [["red", "least"], ["violet", "most"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for explaining that red light bends (or slows down) the least.",
+        "1 mark for explaining that violet light bends (or slows down) the most."
+      ],
+      modelAnswer: "Violet light bends the most when it enters the prism, pushing it to the bottom. Red light bends the least, keeping it near the top."
+    }
+  ],
+  diagrams: [
+    {
+      id: "d1",
+      inlineSvg: DIAGRAMS.DATA_REFLECTION_55,
+      promptText: "Look at the diagram showing an incident ray hitting a mirror. Calculate the angle of the missing reflected ray and state the law that proves your answer.",
+      requiredWords: [["equal", "same", "reflection"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for correctly stating the angle is 55 degrees.",
+        "1 mark for referencing the Law of Reflection (angle of incidence equals angle of reflection)."
+      ],
+      modelAnswer: "The reflected ray will be exactly 55 degrees. This is because the Law of Reflection states that the angle of incidence is always equal to the angle of reflection."
+    },
+    {
+      id: "d2",
+      inlineSvg: DIAGRAMS.DATA_REFRACTION_GLASS_BLOCK,
+      promptText: "The diagram shows refraction through a glass block. Compare what is happening to the light ray at point A (inside the glass) and point B (exiting the glass). Based on this bending, what can you infer about the glass block compared to the air?",
+      requiredWords: [["towards", "closer"], ["away", "further"], ["medium"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "1 mark for stating that at A, the light bends towards the normal.",
+        "1 mark for stating that at B, the light bends away from the normal.",
+        "1 mark for inferring that the glass block is a denser medium than the air (causing the light to change speed)."
+      ],
+      modelAnswer: "At point A, the light bends towards the normal line. At point B, it bends away from the normal. Because the light bends towards the normal when entering the block, we can infer that the glass is a denser medium than the air."
+    },
+    {
+      id: "d3",
+      inlineSvg: DIAGRAMS.FILTER_DOUBLE_EXPERIMENT,
+      promptText: "Lily sets up an experiment shining white light through a red filter, and then a green filter. Predict what she will see on the screen. Explain your reasoning using the words 'absorb' and 'pass'.",
+      requiredWords: [["black", "nothing", "no light", "dark"], ["absorb", "absorbs", "absorbed"], ["pass", "passes"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "1 mark for predicting that the screen will be dark/black (no light).",
+        "1 mark for explaining that the red filter lets only red light pass (absorbing the rest).",
+        "1 mark for explaining that the green filter absorbs the red light, letting nothing pass."
+      ],
+      modelAnswer: "Lily will see no light (black) on the screen. The first filter lets only red light pass through and absorbs the rest. When that red light hits the green filter, the green filter absorbs it completely, leaving total darkness."
+    }
+  ],
+  essay: {
+    task: "Explain the process of Dispersion. In your answer, describe what happens when white light passes through a glass prism, explain why the colours separate, and list the colours of the visible spectrum in the correct order.",
+    guidelines: [
+      "Define what white light is made of.",
+      "Explain the role of the prism in changing the speed of different colours.",
+      "List the 7 colours of the spectrum in order from least bent to most bent."
+    ],
+    requiredWords: [
+      ["prism"], 
+      ["speed", "slow", "bend", "refract"], 
+      ["spectrum", "dispersion"], 
+      ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+    ],
+    scienceMaxMarks: 3,
+    markScheme: [
+      "1 mark for explaining that a prism separates white light because different colours slow down/bend by different amounts.",
+      "1 mark for using the correct scientific terms (dispersion and spectrum).",
+      "1 mark for listing the colours in the correct order (ROYGBIV)."
+    ],
+    modelAnswer: "Dispersion is the process of splitting white light into its continuous spectrum. White light is actually a mixture of all visible colours. When it passes through a glass prism, the glass causes the light to slow down and bend (refract). However, each colour slows down by a slightly different amount. Red light slows down the least, so it bends the least, while violet slows down and bends the most. This causes the light to fan out into the visible spectrum in this exact order: Red, Orange, Yellow, Green, Blue, Indigo, and Violet."
+  },
+  assessment,
+  notes,
+  workbook,
+  games
+};
+</file>
+
+<file path="src/components/TopBar.jsx">
+import React, { useEffect, useState } from 'react';
+import { BookOpen, X as XIcon, Sun, Moon } from 'lucide-react';
+
+export default function TopBar({ onQuit, current, total, progress, modeTitle }) {
+  const displayScore = current !== undefined ? current : 0;
+  const displayTotal = total !== undefined ? total : 0;
+  const displayProgress = progress !== undefined ? progress : (displayTotal > 0 ? (displayScore / displayTotal) * 100 : 0);
+
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
+      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setIsDark(isDarkMode);
+    if (isDarkMode) document.documentElement.classList.add('dark');
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
+
+  return (
+    <div className="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm z-20 relative h-16 transition-colors duration-300">
+      
+      <div className="flex items-center text-slate-700 dark:text-slate-200 font-bold text-lg w-1/4">
+        <div className="flex items-center text-[#1CB0F6]">
+          <BookOpen className="w-6 h-6 mr-2" />
+          <span className="hidden sm:inline whitespace-nowrap">{modeTitle || 'Science Vocab'}</span>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="flex-1 mx-4 max-w-md hidden md:block">
+        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div 
+            className="bg-[#58A700] h-full transition-all duration-500 ease-out rounded-full" 
+            style={{ width: `${displayProgress}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-end w-1/4 min-w-[140px]">
+        {/* Dark Mode Toggle */}
+        <button 
+          onClick={toggleDarkMode}
+          className="mr-4 p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          title="Toggle Dark Mode"
+        >
+          {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+        </button>
+
+        {/* Fraction Score Visual */}
+        {displayTotal > 0 && (
+          <div className="flex items-center space-x-1.5 font-black text-sm px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 uppercase tracking-widest mr-4">
+            <span className="text-[#58A700]">{displayScore}</span>
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-slate-500 dark:text-slate-400">{displayTotal}</span>
+          </div>
+        )}
+
+        <button 
+          onClick={onQuit} 
+          className="flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold text-sm uppercase tracking-wider transition-colors active:scale-95"
+          title="Save & Quit"
+        >
+          <span className="hidden sm:inline mr-1">Quit</span>
+          <XIcon className="w-6 h-6" strokeWidth={2.5} />
+        </button>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/UnitCard.jsx">
+import React from 'react';
+import { 
+  Languages, Keyboard, BookOpen, Headphones, FileText, 
+  Image as ImageIcon, Lock, Award, AlertCircle, 
+  ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil,
+  ChevronDown, ChevronUp
+} from 'lucide-react';
+
+const IconMap = {
+  "Award": Award,
+  "GraduationCap": Award,
+  "BookOpen": BookOpen
+};
+
+const TaskUIConfig = {
+  "WORD_REC":      { label: "Vocab", icon: Languages, bg: "bg-[#58cc02]", border: "border-[#58a700]", text: "text-[#58cc02] dark:text-[#74e81c]" },
+  "NOTES":         { label: "Notes", icon: FileText, bg: "bg-[#94a3b8]", border: "border-[#64748b]", text: "text-[#94a3b8] dark:text-[#cbd5e1]" },
+  "WORKBOOK":      { label: "Extra", icon: FileBox, bg: "bg-[#ec4899]", border: "border-[#be185d]", text: "text-[#ec4899] dark:text-[#f472b6]" },
+  
+  "SPELLING":      { label: "Spelling", icon: Keyboard, bg: "bg-[#1cb0f6]", border: "border-[#1899d6]", text: "text-[#1cb0f6] dark:text-[#38bdf8]" },
+  "READ_COMP":     { label: "Reading", icon: BookOpen, bg: "bg-[#ff9600]", border: "border-[#cc7800]", text: "text-[#ff9600] dark:text-[#fbbf24]" },
+  "DICTATION":     { label: "Listening", icon: Headphones, bg: "bg-[#ce82ff]", border: "border-[#a567cc]", text: "text-[#ce82ff] dark:text-[#d8b4fe]" },
+  
+  "SHORT_ANSWERS": { label: "Questions", icon: HelpCircle, bg: "bg-[#ffc800]", border: "border-[#cca000]", text: "text-[#ffc800] dark:text-[#fde047]" },
+  "DIAGRAMS":      { label: "Diagram", icon: ImageIcon, bg: "bg-[#ff4b4b]", border: "border-[#cc3c3c]", text: "text-[#ff4b4b] dark:text-[#f87171]" },
+  "ESSAY":         { label: "Essay", icon: Pencil, bg: "bg-[#14b8a6]", border: "border-[#0d9488]", text: "text-[#14b8a6] dark:text-[#2dd4bf]" },
+  
+  "ASSESSMENT":    { label: "Assessment", icon: ClipboardCheck, bg: "bg-[#2563eb]", border: "border-[#1d4ed8]", text: "text-[#2563eb] dark:text-[#60a5fa]" },
+  "GAMES":         { label: "Game", icon: Gamepad2, bg: "bg-[#6366f1]", border: "border-[#4f46e5]", text: "text-[#6366f1] dark:text-[#818cf8]" }
+};
+
+const getMaxXP = (taskId) => {
+  if (['WORD_REC', 'NOTES', 'WORKBOOK'].includes(taskId)) return 5;
+  if (['SHORT_ANSWERS', 'DIAGRAMS', 'ESSAY'].includes(taskId)) return 20;
+  return 10;
+};
+
+const getDbKeyMax = (dbKey) => {
+  if (['p1', 'p10', 'p11'].includes(dbKey)) return 5;
+  if (['p6', 'p7', 'p8'].includes(dbKey)) return 20;
+  return 10;
+};
+
+export default function UnitCard({ unit, scores = {}, currentTheme, startMode, isExpanded, onToggle }) {
+  if (!unit) return null;
+
+  const { title, description, icon } = unit.meta || {};
+  const HeaderIcon = IconMap[icon] || BookOpen;
+
+  const phases = {
+    resources: [
+      { id: "NOTES", dbKey: "p10" },
+      { id: "WORD_REC", dbKey: "p1" },
+      { id: "WORKBOOK", dbKey: "p11" }
+    ],
+    practice: [
+      { id: "SPELLING", dbKey: "p2" },
+      { id: "READ_COMP", dbKey: "p4" },
+      { id: "DICTATION", dbKey: "p3" }
+    ],
+    application: [
+      { id: "SHORT_ANSWERS", dbKey: "p6" },
+      { id: "DIAGRAMS", dbKey: "p7" },
+      { id: "ESSAY", dbKey: "p8" }
+    ],
+    mastery: [
+      { id: "ASSESSMENT", dbKey: "p9" },
+      { id: "GAMES", dbKey: "p12" }
+    ]
+  };
+
+  const unitXP = Object.entries(scores)
+    .filter(([key]) => key !== 'strikes')
+    .reduce((sum, [key, val]) => sum + Math.min(val?.current || 0, getDbKeyMax(key)), 0);
+
+  const strikes = scores.strikes || 0;
+  const isAILocked = strikes >= 3;
+
+  const thresholds = unit.meta?.thresholds || { p1: 10, p2: 30, p3: 35 };
+  const practiceLocked = unitXP < (thresholds.p1 || 0); 
+  const applicationLocked = unitXP < (thresholds.p2 || 30);
+  const masteryLocked = unitXP < (thresholds.p3 || 35);
+
+  let trophyStyle = "bg-orange-50 dark:bg-orange-950/40 text-orange-800 dark:text-orange-200 border-orange-200 dark:border-orange-800/50"; 
+  if (unitXP > 100) {
+    trophyStyle = "bg-gradient-to-r from-red-500 via-yellow-400 via-green-400 via-blue-500 to-purple-500 text-white border-transparent shadow-[0_0_25px_rgba(250,204,21,0.8)] animate-pulse";
+  } else if (unitXP === 100) {
+    trophyStyle = "bg-yellow-400 text-yellow-900 border-yellow-500 shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-pulse";
+  } else if (unitXP >= 50) {
+    trophyStyle = "bg-slate-200 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border-slate-300 dark:border-slate-600 shadow-sm";
+  }
+
+  const checkIsEmpty = (taskId) => {
+    if (taskId === 'NOTES' && (!unit.notes || !Array.isArray(unit.notes) || unit.notes.length === 0)) return true;
+    if (taskId === 'WORKBOOK' && (!unit.workbook || unit.workbook.length === 0)) return true;
+    if (taskId === 'GAMES' && (!unit.games || unit.games.length === 0)) return true;
+    if (taskId === 'ASSESSMENT' && (!unit.assessment || !unit.assessment.questions || unit.assessment.questions.length === 0)) return true;
+    return false;
+  };
+
+  const renderTaskButton = (task, isLocked = false) => {
+    const config = TaskUIConfig[task.id];
+    if (!config) return null;
+    
+    const TaskIcon = config.icon;
+    const isEmpty = checkIsEmpty(task.id);
+    
+    const maxTaskXP = getMaxXP(task.id);
+    const rawScore = scores[task.dbKey]?.current || 0;
+    const taskScore = Math.min(rawScore, maxTaskXP);
+
+    if (isEmpty) {
+      return (
+        <div key={task.id} className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border-[3px] border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30 text-slate-400 dark:text-slate-500 w-full h-36 sm:h-44 opacity-70 transition-all hover:opacity-90">
+          <TaskIcon className={`w-8 h-8 sm:w-10 sm:h-10 mb-2 opacity-40 ${config.text}`} strokeWidth={2} />
+          <h4 className="font-black text-sm sm:text-base tracking-wide leading-tight text-center px-2">
+            No {config.label}
+          </h4>
+        </div>
+      );
+    }
+
+    return (
+      <button 
+        key={task.id}
+        disabled={isLocked}
+        onClick={() => startMode(unit.id, task.id)} 
+        className={`relative flex flex-col items-center justify-between p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border-b-[6px] transition-all text-white w-full h-36 sm:h-44 shadow-sm hover:shadow-md
+          ${isLocked 
+            ? 'bg-slate-200 dark:bg-slate-800/80 border-slate-300 dark:border-slate-700 opacity-60 cursor-not-allowed grayscale' 
+            : `${config.bg} ${config.border} active:border-b-0 active:translate-y-[6px] hover:brightness-110 cursor-pointer`
+          }`}
+      >
+        <div className="flex flex-col items-center mt-1 sm:mt-2">
+          {isLocked ? <Lock className="w-8 h-8 sm:w-10 sm:h-10 mb-2 opacity-80" /> : <TaskIcon className="w-8 h-8 sm:w-10 sm:h-10 mb-2 drop-shadow-sm" strokeWidth={2.5} />}
+          <h4 className="font-black text-lg sm:text-xl tracking-wide leading-tight drop-shadow-sm">
+            {config.label}
+          </h4>
+        </div>
+        
+        <div className="w-full bg-black/15 dark:bg-black/30 rounded-xl py-1.5 sm:py-2 mt-auto flex items-center justify-center backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest opacity-95">
+            {taskScore} / {maxTaskXP} XP
+          </span>
+        </div>
+      </button>
+    );
+  };
+
+  return (
+    <div className={`w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-8 transition-all duration-300 ${isExpanded ? 'ring-4 ring-indigo-500/20 dark:ring-indigo-500/40' : 'hover:scale-[1.01] hover:shadow-2xl cursor-pointer'}`}>
+      
+      {/* Clickable Header for Accordion */}
+      <div onClick={onToggle} className={`p-6 sm:p-8 bg-gradient-to-br ${currentTheme.banner} relative overflow-hidden group transition-colors`}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl transform translate-x-20 -translate-y-20"></div>
+        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center pr-12 sm:pr-16">
+          <div className="flex items-center mb-4 sm:mb-0">
+            <div className="p-4 bg-white/20 rounded-2xl mr-5 backdrop-blur-md text-white border border-white/30 shadow-sm flex-shrink-0">
+              <HeaderIcon className="w-8 h-8 sm:w-10 sm:h-10 opacity-90" />
+            </div>
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-md">{title || 'Unit Title'}</h2>
+              <p className="text-white/80 font-medium text-sm sm:text-base mt-1 max-w-xl drop-shadow-sm">{description || 'Complete the tasks below.'}</p>
+            </div>
+          </div>
+          <div className={`flex flex-col items-center justify-center px-6 py-3 rounded-2xl border-2 shadow-sm flex-shrink-0 min-w-[120px] backdrop-blur-sm ${trophyStyle}`}>
+            <span className="text-xs font-black uppercase tracking-widest opacity-80 mb-0.5">Total XP</span>
+            <span className="text-2xl sm:text-3xl font-black">{unitXP}</span>
+          </div>
+        </div>
+
+        <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 bg-black/10 dark:bg-black/20 p-2 sm:p-3 rounded-full text-white backdrop-blur-sm group-hover:bg-black/20 transition-all border border-white/20">
+          {isExpanded ? <ChevronUp className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={3} /> : <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={3} />}
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div className="animate-in slide-in-from-top-4 duration-300 pb-2">
+          {isAILocked && (
+            <div className="bg-rose-50 dark:bg-rose-950/40 border-b border-rose-200 dark:border-rose-900/50 p-4 flex items-start">
+              <AlertCircle className="w-6 h-6 text-rose-500 dark:text-rose-400 mr-3 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-bold text-rose-800 dark:text-rose-300">AI Safety Lock Engaged</h4>
+                <p className="text-rose-600 dark:text-rose-400 text-sm font-medium">Due to repeated inappropriate inputs, AI grading has been disabled for this unit.</p>
+              </div>
+            </div>
+          )}
+
+          <div className="p-6 sm:p-8 space-y-10">
+            
+            <div>
+              <div className="flex items-center mb-5 border-b-2 border-slate-100 dark:border-slate-800 pb-2">
+                <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Resources</h3>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+                {phases.resources.map(task => renderTaskButton(task, false))}
+              </div>
+            </div>
+
+            <div className="relative">
+              {practiceLocked && (
+                <div className="absolute inset-0 bg-white/20 dark:bg-slate-900/40 backdrop-blur-md z-10 flex items-center justify-center rounded-[2rem] border border-white/40 dark:border-slate-700/50">
+                  <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 flex items-center">
+                    <Lock className="w-6 h-6 text-slate-500 dark:text-slate-400 mr-3" />
+                    <span className="font-bold text-slate-700 dark:text-slate-200">Earn {thresholds.p1} XP to unlock.</span>
+                  </div>
+                </div>
+              )}
+              <div className={`transition-all ${practiceLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+                <div className="flex justify-between items-end mb-5 border-b-2 border-slate-100 dark:border-slate-800 pb-2">
+                  <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Phase 1: Practice</h3>
+                  <span className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest hidden sm:block">{thresholds.p2} XP to Unlock Phase 2</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+                  {phases.practice.map(task => renderTaskButton(task, practiceLocked))}
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              {applicationLocked && (
+                <div className="absolute inset-0 bg-white/20 dark:bg-slate-900/40 backdrop-blur-md z-10 flex items-center justify-center rounded-[2rem] border border-white/40 dark:border-slate-700/50">
+                  <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 flex items-center">
+                    <Lock className="w-6 h-6 text-slate-500 dark:text-slate-400 mr-3" />
+                    <span className="font-bold text-slate-700 dark:text-slate-200">Earn {thresholds.p2} XP in Phase 1 to unlock.</span>
+                  </div>
+                </div>
+              )}
+              <div className={`transition-all ${applicationLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+                <div className="flex justify-between items-end mb-5 border-b-2 border-slate-100 dark:border-slate-800 pb-2">
+                  <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Phase 2: Understanding</h3>
+                  <span className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest hidden sm:block">{thresholds.p3} XP to Unlock Mastery</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+                  {phases.application.map(task => renderTaskButton(task, applicationLocked))}
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              {masteryLocked && (
+                <div className="absolute inset-0 bg-white/20 dark:bg-slate-900/40 backdrop-blur-md z-10 flex items-center justify-center rounded-[2rem] border border-white/40 dark:border-slate-700/50">
+                  <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 flex items-center">
+                    <Lock className="w-6 h-6 text-slate-500 dark:text-slate-400 mr-3" />
+                    <span className="font-bold text-slate-700 dark:text-slate-200">Complete Phase 2 to unlock.</span>
+                  </div>
+                </div>
+              )}
+              <div className={`transition-all ${masteryLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+                <div className="flex items-center mb-5 border-b-2 border-slate-100 dark:border-slate-800 pb-2">
+                  <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Phase 3: Assessment</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+                  {phases.mastery.map(task => renderTaskButton(task, masteryLocked))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="tailwind.config.js">
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: 'class',
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+</file>
+
+<file path="src/views/YearDashboard.jsx">
+import React, { useState, lazy, Suspense, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction } from 'lucide-react';
+
+import { useStudentProgress } from '../hooks/useStudentProgress';
+import UnitCard from '../components/UnitCard';
+
+import { Y8_META, Y8_DATA, Y9_META, Y9_DATA, ESL_META, ESL_DATA, GED_META, GED_DATA } from '../data/index';
+
+const Recognition = lazy(() => import('../tasks/Recognition'));
+const Spell = lazy(() => import('../tasks/Spell'));
+const Dictation = lazy(() => import('../tasks/Dictation'));
+const Reading = lazy(() => import('../tasks/Reading'));
+const ShortAnswers = lazy(() => import('../tasks/ShortAnswers'));
+const Diagrams = lazy(() => import('../tasks/Diagrams'));
+const Essay = lazy(() => import('../tasks/Essay'));
+const Assessment = lazy(() => import('../tasks/Assessment'));
+const Notes = lazy(() => import('../tasks/Notes'));
+const Games = lazy(() => import('../tasks/Games'));
+
+const THEMES = {
+  Y8: { bg: 'bg-indigo-50', banner: 'from-indigo-500 via-indigo-600 to-blue-700', iconBg: 'bg-indigo-100', iconText: 'text-indigo-700', accent: 'border-indigo-400' },
+  Y9: { bg: 'bg-emerald-50', banner: 'from-emerald-500 via-emerald-600 to-teal-700', iconBg: 'bg-emerald-100', iconText: 'text-emerald-700', accent: 'border-emerald-400' },
+  ESL: { bg: 'bg-amber-50', banner: 'from-amber-500 via-amber-600 to-orange-700', iconBg: 'bg-amber-100', iconText: 'text-amber-700', accent: 'border-amber-400' },
+  GED: { bg: 'bg-rose-50', banner: 'from-rose-500 via-rose-600 to-red-700', iconBg: 'bg-rose-100', iconText: 'text-rose-700', accent: 'border-rose-400' }
+};
+
+function PlaceholderView({ title, onQuit }) {
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500 transition-colors">
+      <div className="w-24 h-24 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6 shadow-inner">
+        <Construction className="w-12 h-12 text-amber-500" />
+      </div>
+      <h2 className="text-4xl font-black text-slate-800 dark:text-slate-100 mb-4 tracking-tight">{title}</h2>
+      <div className="bg-white dark:bg-slate-900 px-8 py-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 mb-10 text-lg font-bold text-slate-500 dark:text-slate-400">
+        Under Construction / Coming Soon
+      </div>
+      <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+        Return to Dashboard
+      </button>
+    </div>
+  );
+}
+
+export default function YearDashboard({ track }) {
+  const navigate = useNavigate();
+  
+  const { user, unitScores = {}, isLoadingDB, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
+
+  const [appState, setAppState] = useState('MENU');
+  const [activeUnit, setActiveUnit] = useState(null);
+  const [currentPool, setCurrentPool] = useState([]);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [expandedUnit, setExpandedUnit] = useState(null); // NEW: Accordion State
+
+  let META_DATA = [];
+  let UNIT_DATA = {};
+  let trackTitle = "";
+  const currentTheme = THEMES[track] || THEMES.Y8;
+
+  if (track === 'Y8') { META_DATA = Y8_META || []; UNIT_DATA = Y8_DATA || {}; trackTitle = "Year 8 Science"; }
+  else if (track === 'Y9') { META_DATA = Y9_META || []; UNIT_DATA = Y9_DATA || {}; trackTitle = "Year 9 Science"; }
+  else if (track === 'ESL') { META_DATA = ESL_META || []; UNIT_DATA = ESL_DATA || {}; trackTitle = "ESL Foundation"; }
+  else if (track === 'GED') { META_DATA = GED_META || []; UNIT_DATA = GED_DATA || {}; trackTitle = "English"; }
+
+  // Set the first unit to be expanded by default on initial load
+  const activeExpandedUnit = expandedUnit !== null ? expandedUnit : (META_DATA[0]?.id || 'NONE');
+
+  if (isLoadingDB) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center transition-colors">
+        <Loader2 className="w-12 h-12 animate-spin text-indigo-600 dark:text-indigo-400 mb-4" />
+        <p className="text-slate-500 dark:text-slate-400 font-bold tracking-widest uppercase animate-pulse">Syncing with Cloud...</p>
+      </div>
+    );
+  }
+
+  let totalTrackXP = 0;
+  let maxTrackXP = META_DATA.length * 100;
+  
+  META_DATA.forEach(unit => {
+    const s = unitScores?.[unit.id] || {};
+    const unitTotal = Object.entries(s)
+      .filter(([key]) => key !== 'strikes')
+      .reduce((sum, [key, val]) => {
+        let max = 10;
+        if (['p1', 'p10', 'p11'].includes(key)) max = 5;
+        if (['p6', 'p7', 'p8'].includes(key)) max = 20;
+        return sum + Math.min(val?.current || 0, max);
+      }, 0);
+    totalTrackXP += unitTotal;
+  });
+
+  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+
+  const startMode = (unitId, mode) => {
+    setActiveUnit(unitId);
+    const data = UNIT_DATA[unitId];
+    if (!data) return;
+
+    const basePath = import.meta.env.BASE_URL === '/' ? '' : (import.meta.env.BASE_URL || '').replace(/\/$/, '');
+
+    const realW = (data.realWords || []).map(w => ({ 
+      ...w, 
+      isReal: true,
+      audio: `${basePath}/audio/${track}/${unitId}/word_${w.word.toLowerCase()}.mp3`,
+      defAudio: `${basePath}/audio/${track}/${unitId}/def_${w.word.toLowerCase()}.mp3`,
+      sentAudio: `${basePath}/audio/${track}/${unitId}/sentence_${w.word.toLowerCase()}.mp3`
+    }));
+
+    if (mode === 'WORD_REC') {
+      setCurrentPool([...realW]);
+    } else if (mode === 'SPELLING') {
+      setCurrentPool([...realW].sort(() => Math.random() - 0.5));
+    } else if (mode === 'DICTATION') {
+      const dictationData = data.dictation || [];
+      const dictationPool = realW.map((w, i) => ({
+        ...w,
+        dictSent: dictationData[i]?.sent || w.sent,
+        dictVn: dictationData[i]?.vnSent || w.vnSent
+      })).sort(() => Math.random() - 0.5);
+      setCurrentPool(dictationPool);
+    } else if (mode === 'GAMES') {
+      const gamePool = [...realW].sort(() => Math.random() - 0.5);
+      gamePool.gameConfig = data.games?.gameConfig || null;
+      setCurrentPool(gamePool);
+    } else if (mode === 'READ_COMP') {
+      setCurrentPool(data.passages || []);
+    } else if (mode === 'SHORT_ANSWERS') {
+      setCurrentPool({ shortQA: data.shortQA || [] });
+    } else if (mode === 'DIAGRAMS') {
+      setCurrentPool({ diagrams: data.diagrams || [] });
+    } else if (mode === 'ESSAY') {
+      setCurrentPool({ essay: data.essay || null });
+    } else if (mode === 'ASSESSMENT') {
+      setCurrentPool([]);
+    } else if (mode === 'NOTES') {
+      const fixedNotes = (data.notes || []).map(note => {
+        const newNote = { ...note };
+        if (note.audio) {
+          const cleanAudio = note.audio.replace(/^\//, '');
+          newNote.audio = `${basePath}/${cleanAudio}`;
+        }
+        if (note.image) {
+          const cleanImage = note.image.replace(/^\//, '');
+          newNote.image = `${basePath}/${cleanImage}`;
+        }
+        return newNote;
+      });
+      setCurrentPool(fixedNotes);
+    }
+    
+    setAppState(mode);
+  };
+
+  const handleTaskComplete = async (section, rawScore, answers = null) => {
+    let finalScore = rawScore;
+
+    if (['p1', 'p10', 'p11'].includes(section)) {
+      if (section === 'p10' || section === 'p11') finalScore = 5; 
+      else finalScore = Math.min(5, Math.ceil((rawScore / 10) * 5)); 
+    } else if (['p6', 'p7', 'p8'].includes(section)) {
+      finalScore = rawScore <= 10 ? Math.ceil((rawScore / 10) * 20) : rawScore; 
+      finalScore = Math.min(20, finalScore);
+    } else {
+      finalScore = Math.min(10, finalScore);
+    }
+
+    await saveScore(activeUnit, section, finalScore, answers);
+    setAppState('MENU');
+  };
+
+  return (
+    <div className={`min-h-screen ${currentTheme.bg} dark:bg-slate-950 selection:bg-indigo-200 selection:text-indigo-900 transition-colors duration-500`}>
+      {appState === 'MENU' && (
+        <div className="animate-in fade-in duration-500 pb-20">
+          
+          <div className={`relative w-full bg-gradient-to-r ${currentTheme.banner} shadow-xl overflow-hidden`}>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute -top-32 -right-32 w-[35rem] h-[35rem] bg-white opacity-20 rounded-full blur-[90px] mix-blend-overlay"></div>
+              <div className="absolute -bottom-24 -left-24 w-[25rem] h-[25rem] bg-black opacity-20 rounded-full blur-[70px] mix-blend-multiply"></div>
+              <div className="absolute top-10 left-1/3 w-64 h-64 bg-white opacity-10 rounded-full blur-[60px] animate-pulse"></div>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.2] mix-blend-overlay"></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10 relative z-10">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                
+                <div className="flex items-center space-x-6">
+                  <button onClick={() => navigate('/home')} className="bg-white/10 p-4 rounded-2xl hover:bg-white/25 transition-all text-white backdrop-blur-md active:scale-95 shadow-sm border border-white/20">
+                    <ChevronLeft className="w-7 h-7" />
+                  </button>
+                  <div>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-3 drop-shadow-md">{trackTitle}</h1>
+                    <div className="inline-flex bg-gradient-to-b from-amber-400 to-amber-500 text-amber-900 px-5 py-2.5 rounded-2xl shadow-lg border-b-[4px] border-amber-600 items-center space-x-3 backdrop-blur-md">
+                      <span className="text-2xl drop-shadow-sm">🏆</span>
+                      <span className="text-[13px] font-black uppercase tracking-widest opacity-90 mt-0.5">Total XP</span>
+                      <span className="text-lg font-black bg-white/40 px-3 py-0.5 rounded-xl shadow-inner border border-white/30">{totalTrackXP} / {maxTrackXP}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4 text-white">
+                  <button onClick={() => setShowHowItWorks(true)} className="flex items-center bg-white/10 px-5 py-3.5 rounded-2xl text-sm font-bold hover:bg-white/25 transition-all shadow-sm backdrop-blur-md border border-white/20 active:scale-95">
+                    <Info className="w-5 h-5 mr-2 opacity-90" /> How it Works
+                  </button>
+                  <div className="flex items-center bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 shadow-sm pl-5 pr-3 group transition-all hover:bg-white/15">
+                    <span className="font-black text-sm uppercase tracking-widest text-white mr-4 drop-shadow-sm">{userName}</span>
+                    <button onClick={handleLogout} className="bg-white/20 hover:bg-rose-500 text-white p-2.5 rounded-xl transition-all shadow-sm active:scale-95" title="Logout">
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-10">
+            {META_DATA.map((metaUnit) => {
+              const contentData = UNIT_DATA[metaUnit.id] || {};
+              const combinedUnitPayload = {
+                ...contentData,
+                id: metaUnit.id,
+                meta: {
+                  id: metaUnit.id,
+                  title: metaUnit.title,
+                  description: metaUnit.desc,
+                  icon: contentData.meta?.icon || 'BookOpen',
+                  thresholds: contentData.meta?.thresholds
+                }
+              };
+
+              return (
+                <UnitCard 
+                  key={metaUnit.id} 
+                  unit={combinedUnitPayload} 
+                  scores={unitScores?.[metaUnit.id] || {}} 
+                  currentTheme={currentTheme} 
+                  startMode={startMode} 
+                  isExpanded={activeExpandedUnit === metaUnit.id}
+                  onToggle={() => setExpandedUnit(activeExpandedUnit === metaUnit.id ? 'NONE' : metaUnit.id)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {showHowItWorks && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl max-w-2xl w-full p-8 md:p-10 relative max-h-[90vh] overflow-y-auto">
+             <div className="flex items-center justify-between mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center tracking-tight"><div className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 p-2 rounded-full mr-4 shadow-inner"><Info className="w-7 h-7"/></div>How it Works</h2>
+                <button onClick={() => setShowHowItWorks(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><XCircle className="w-8 h-8"/></button>
+             </div>
+             
+             <p className="text-lg text-slate-600 dark:text-slate-300 font-medium mb-8 leading-relaxed">
+               Welcome to the <strong className="text-slate-800 dark:text-slate-100">Science Lab</strong>! This platform uses <strong className="text-indigo-600 dark:text-indigo-400">CLIL</strong> (Content and Language Integrated Learning) to help you master English through real scientific concepts. Here is how your learning journey works:
+             </p>
+             
+             <div className="space-y-4 mb-8">
+               <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-start shadow-sm hover:shadow-md transition-all">
+                 <div className="bg-indigo-100 dark:bg-indigo-900/30 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-1 shadow-inner"><div className="w-3 h-3 bg-indigo-500 rounded-full"></div></div>
+                 <div>
+                   <h3 className="font-bold text-slate-800 dark:text-slate-100 text-xl mb-1">Phase 1: Core Practice</h3>
+                   <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Fast-paced language drills inspired by the <strong>DET</strong> (Duolingo English Test) and <strong>PTE</strong> formats. Build your spelling, listening, and reading skills.</p>
+                 </div>
+               </div>
+               
+               <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-start shadow-sm hover:shadow-md transition-all">
+                 <div className="bg-indigo-100 dark:bg-indigo-900/30 w-8 h-8 rounded-full flex items-center justify-center mr-4 flex-shrink-0 mt-1 shadow-inner"><div className="w-3 h-3 bg-indigo-500 rounded-full"></div></div>
+                 <div>
+                   <h3 className="font-bold text-slate-800 dark:text-slate-100 text-xl mb-1">Phase 2: AI Graded Writing</h3>
+                   <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Practice short answers and essays. Our AI Tutor grades your work instantly using the official <strong>Cambridge Mark Scheme</strong> to give you personalized feedback.</p>
+                 </div>
+               </div>
+             </div>
+
+             <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 p-5 rounded-2xl mb-8 flex items-start shadow-sm">
+               <AlertTriangle className="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
+               <div>
+                 <h4 className="font-black text-rose-800 dark:text-rose-400 text-sm uppercase tracking-widest mb-1 opacity-90">AI Monitoring & Safety</h4>
+                 <p className="text-rose-700 dark:text-rose-300 text-sm font-medium leading-relaxed">
+                   Student submissions to the AI grader are monitored. Any harmful, inappropriate, or "joke" answers are flagged. <strong>After 3 strikes</strong>, you will be permanently locked out of the AI Tutor for that unit and can only earn partial points.
+                 </p>
+               </div>
+             </div>
+             
+             <div className="flex justify-end">
+               <button onClick={() => setShowHowItWorks(false)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg uppercase tracking-widest px-10 py-4 rounded-2xl border-b-[5px] border-indigo-800 active:border-b-0 active:translate-y-[5px] transition-all shadow-md">
+                 Understood
+               </button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {appState === 'WORKBOOK' && <PlaceholderView title="Extra Workbook Practice" onQuit={() => setAppState('MENU')} />}
+
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors"><Loader2 className="w-12 h-12 animate-spin text-indigo-500" /></div>}>
+        {appState === 'WORD_REC' && <Recognition pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p1', s)} />}
+        {appState === 'SPELLING' && <Spell pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p2', s)} onQuit={() => setAppState('MENU')} />}
+        {appState === 'DICTATION' && <Dictation pool={currentPool} track={track} unitId={activeUnit} onComplete={(s) => handleTaskComplete('p3', s)} onQuit={() => setAppState('MENU')} />}
+        
+        {appState === 'READ_COMP' && (
+          <Reading 
+            pool={currentPool} 
+            track={track} 
+            unitId={activeUnit} 
+            savedData={unitScores[activeUnit]?.p4?.answers || {}} 
+            onComplete={(s, answers) => handleTaskComplete('p4', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        
+        {appState === 'NOTES' && <Notes slides={currentPool} onComplete={() => handleTaskComplete('p10', 10)} onQuit={() => setAppState('MENU')} />}
+
+        {appState === 'SHORT_ANSWERS' && (
+          <ShortAnswers 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p6?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p6', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        
+        {appState === 'DIAGRAMS' && (
+          <Diagrams 
+            pool={currentPool} 
+            unitId={activeUnit}
+            savedData={unitScores[activeUnit]?.p7?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p7', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+
+        {appState === 'ESSAY' && (
+          <Essay 
+            pool={currentPool} 
+            savedData={unitScores[activeUnit]?.p8?.answers || {}} 
+            strikes={unitScores[activeUnit]?.strikes || 0}
+            onAddStrike={(newStrikes) => addStrike(activeUnit, newStrikes)}
+            onComplete={(s, answers) => handleTaskComplete('p8', s, answers)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+
+        {appState === 'ASSESSMENT' && (
+          <Assessment 
+            unit={UNIT_DATA[activeUnit]} 
+            onComplete={(score) => handleTaskComplete('p9', score)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+        {appState === 'GAMES' && (
+          <Games 
+            pool={currentPool} 
+            unitId={activeUnit}
+            scores={unitScores[activeUnit] || {}} 
+            onComplete={(score) => handleTaskComplete('p12', score)} 
+            onQuit={() => setAppState('MENU')} 
+          />
+        )}
+      </Suspense>
+
+    </div>
+  );
+}
+</file>
+
+</files>

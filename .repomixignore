@@ -1,0 +1,25 @@
+# ==========================================
+# 1. Prevent Recursive Context Bloat
+# ==========================================
+# Ignore all previous repomix/context files
+*.xml
+*.md
+!README.md
+*codebase*.md
+
+# ==========================================
+# 2. Ignore Media & Assets
+# ==========================================
+public/audio/
+public/images/
+**/*.mp3
+**/*.svg
+**/*.png
+**/*.jpg
+**/*.jpeg
+
+# ==========================================
+# 3. Ignore Build/Config Artifacts (Optional)
+# ==========================================
+package-lock.json
+yarn.lock

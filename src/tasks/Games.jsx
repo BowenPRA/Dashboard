@@ -1,3 +1,4 @@
+import { TRACK_REGISTRY } from '../components/trackRegistry'; // <-- ADD THIS IMPORT AT THE TOP
 import React, { useState, useMemo } from 'react';
 import { 
   X, Shield, Trophy, Lock, Loader2, Users, Award, ChevronLeft, 
@@ -75,7 +76,7 @@ export default function Games({ pool, unitId, scores, onComplete, onQuit }) {
     }
   };
 
-  const handleGameComplete = async (score) => {
+const handleGameComplete = async (score) => {
     if (onComplete) onComplete(score);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -85,7 +86,9 @@ export default function Games({ pool, unitId, scores, onComplete, onQuit }) {
           let prog = data.progress;
           let updated = false;
           
-          ['Y8', 'Y9', 'ESL', 'GED'].forEach(t => {
+          // MAP OVER REGISTRY INSTEAD OF HARDCODED ARRAY
+          TRACK_REGISTRY.forEach(trackObj => {
+            const t = trackObj.id;
             if (prog[t] && prog[t][unitId]) {
               if (!prog[t][unitId].GAMES) prog[t][unitId].GAMES = { current: 0 };
               if (score > (prog[t][unitId].GAMES.current || 0)) {
@@ -104,7 +107,7 @@ export default function Games({ pool, unitId, scores, onComplete, onQuit }) {
       console.error("Backup DB save failed", err);
     }
   };
-
+  
   if (view === 'TD') {
     return (
       <TowerDefense 

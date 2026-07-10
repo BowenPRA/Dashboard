@@ -2,93 +2,73 @@ import React from 'react';
 import { 
   Languages, Keyboard, BookOpen, Headphones, FileText, 
   Image as ImageIcon, Lock, Award, AlertCircle, 
-  ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil
+  ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil,
+  ChevronDown, ChevronUp, Trophy, Globe, Atom, Leaf, GraduationCap,
+  Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
+  Compass, Lightbulb, Activity, Zap
 } from 'lucide-react';
 
 const IconMap = {
-  "Award": Award,
-  "GraduationCap": Award,
-  "BookOpen": BookOpen
+  "Award": Award, "GraduationCap": GraduationCap, "BookOpen": BookOpen,
+  "Globe": Globe, "Atom": Atom, "Leaf": Leaf, "Languages": Languages,
+  "Microscope": Microscope, "Telescope": Telescope, "Brain": Brain,
+  "Rocket": Rocket, "Calculator": Calculator, "Dna": Dna, "FlaskConical": FlaskConical,
+  "Compass": Compass, "Lightbulb": Lightbulb, "Activity": Activity, "Zap": Zap
 };
 
 const TaskUIConfig = {
-  "WORD_REC":      { label: "Vocab", icon: Languages, bg: "bg-[#58cc02]", border: "border-[#58a700]", text: "text-[#58cc02]" },
-  "NOTES":         { label: "Notes", icon: FileText, bg: "bg-[#94a3b8]", border: "border-[#64748b]", text: "text-[#94a3b8]" },
-  "WORKBOOK":      { label: "Extra", icon: FileBox, bg: "bg-[#ec4899]", border: "border-[#be185d]", text: "text-[#ec4899]" },
+  "WORD_REC":      { label: "Vocab", icon: Languages, bg: "bg-[#58cc02]", border: "border-[#58a700]", text: "text-white" },
+  "NOTES":         { label: "Notes", icon: FileText, bg: "bg-[#94a3b8]", border: "border-[#64748b]", text: "text-white" },
+  "WORKBOOK":      { label: "Extra", icon: FileBox, bg: "bg-[#ec4899]", border: "border-[#be185d]", text: "text-white" },
   
-  "SPELLING":      { label: "Spelling", icon: Keyboard, bg: "bg-[#1cb0f6]", border: "border-[#1899d6]", text: "text-[#1cb0f6]" },
-  "READ_COMP":     { label: "Reading", icon: BookOpen, bg: "bg-[#ff9600]", border: "border-[#cc7800]", text: "text-[#ff9600]" },
-  "DICTATION":     { label: "Listening", icon: Headphones, bg: "bg-[#ce82ff]", border: "border-[#a567cc]", text: "text-[#ce82ff]" },
+  "SPELLING":      { label: "Spelling", icon: Keyboard, bg: "bg-[#1cb0f6]", border: "border-[#1899d6]", text: "text-white" },
+  "READ_COMP":     { label: "Reading", icon: BookOpen, bg: "bg-[#ff9600]", border: "border-[#cc7800]", text: "text-white" },
+  "DICTATION":     { label: "Listening", icon: Headphones, bg: "bg-[#ce82ff]", border: "border-[#a567cc]", text: "text-white" },
   
-  "SHORT_ANSWERS": { label: "Questions", icon: HelpCircle, bg: "bg-[#ffc800]", border: "border-[#cca000]", text: "text-[#ffc800]" },
-  "DIAGRAMS":      { label: "Diagram", icon: ImageIcon, bg: "bg-[#ff4b4b]", border: "border-[#cc3c3c]", text: "text-[#ff4b4b]" },
-  "ESSAY":         { label: "Essay", icon: Pencil, bg: "bg-[#14b8a6]", border: "border-[#0d9488]", text: "text-[#14b8a6]" },
+  "SHORT_ANSWERS": { label: "Questions", icon: HelpCircle, bg: "bg-[#ffc800]", border: "border-[#cca000]", text: "text-white" },
+  "DIAGRAMS":      { label: "Diagram", icon: ImageIcon, bg: "bg-[#ff4b4b]", border: "border-[#cc3c3c]", text: "text-white" },
+  "ESSAY":         { label: "Essay", icon: Pencil, bg: "bg-[#14b8a6]", border: "border-[#0d9488]", text: "text-white" },
   
-  "ASSESSMENT":    { label: "Assessment", icon: ClipboardCheck, bg: "bg-[#2563eb]", border: "border-[#1d4ed8]", text: "text-[#2563eb]" },
-  "GAMES":         { label: "Game", icon: Gamepad2, bg: "bg-[#6366f1]", border: "border-[#4f46e5]", text: "text-[#6366f1]" }
+  "ASSESSMENT":    { label: "Assessment", icon: ClipboardCheck, bg: "bg-[#2563eb]", border: "border-[#1d4ed8]", text: "text-white" },
+  "GAMES":         { label: "Game", icon: Gamepad2, bg: "bg-[#6366f1]", border: "border-[#4f46e5]", text: "text-white" }
 };
 
-const getMaxXP = (taskId) => {
-  if (['WORD_REC', 'NOTES', 'WORKBOOK'].includes(taskId)) return 5;
-  if (['SHORT_ANSWERS', 'DIAGRAMS', 'ESSAY'].includes(taskId)) return 20;
-  return 10;
-};
-
-const getDbKeyMax = (dbKey) => {
-  if (['p1', 'p10', 'p11'].includes(dbKey)) return 5;
-  if (['p6', 'p7', 'p8'].includes(dbKey)) return 20;
-  return 10;
-};
-
-export default function UnitCard({ unit, scores = {}, currentTheme, startMode }) {
+export default function UnitCard({ unit, scores = {}, currentTheme, startMode, isExpanded, onToggle, needsWork }) {
   if (!unit) return null;
 
   const { title, description, icon } = unit.meta || {};
   const HeaderIcon = IconMap[icon] || BookOpen;
+  
+  // Directly pull the color strictly from the unit's meta data
+  const unitThemeColor = unit.meta?.themeColor || currentTheme.banner || 'bg-indigo-500 border-indigo-700';
+  const unitPhases = unit.phases || [];
 
-  const phases = {
-    resources: [
-      { id: "NOTES", dbKey: "p10" },
-      { id: "WORD_REC", dbKey: "p1" },
-      { id: "WORKBOOK", dbKey: "p11" }
-    ],
-    practice: [
-      { id: "SPELLING", dbKey: "p2" },
-      { id: "READ_COMP", dbKey: "p4" },
-      { id: "DICTATION", dbKey: "p3" }
-    ],
-    application: [
-      { id: "SHORT_ANSWERS", dbKey: "p6" },
-      { id: "DIAGRAMS", dbKey: "p7" },
-      { id: "ESSAY", dbKey: "p8" }
-    ],
-    mastery: [
-      { id: "ASSESSMENT", dbKey: "p9" },
-      { id: "GAMES", dbKey: "p12" }
-    ]
-  };
-
-  // Strictly enforce max boundaries on read calculation
-  const unitXP = Object.entries(scores)
-    .filter(([key]) => key !== 'strikes')
-    .reduce((sum, [key, val]) => sum + Math.min(val?.current || 0, getDbKeyMax(key)), 0);
+  // 1. Dynamically calculate Unit XP
+  let rawUnitXP = 0;
+  unitPhases.forEach(phase => {
+    (phase.tasks || []).forEach(task => {
+      const score = scores[task.dbKey]?.current || 0;
+      rawUnitXP += Math.min(score, task.maxXP);
+    });
+  });
+  const unitXP = Math.min(rawUnitXP, 100);
 
   const strikes = scores.strikes || 0;
   const isAILocked = strikes >= 3;
 
-  const thresholds = unit.meta?.thresholds || { p1: 10, p2: 30, p3: 60 };
-  const practiceLocked = unitXP < (thresholds.p1 || 0); 
-  const applicationLocked = unitXP < (thresholds.p2 || 30);
-  const masteryLocked = unitXP < (thresholds.p3 || 60);
+  const getTrophyStyles = (xp) => {
+    if (xp === 100) return { 
+      container: "bg-amber-400 text-amber-950 border-b-[4px] border-amber-600", 
+      icon: "text-amber-950",
+      aura: "absolute -inset-[3px] bg-gradient-to-r from-rose-400 via-amber-300 to-fuchsia-500 rounded-2xl opacity-80 blur-[6px] animate-pulse"
+    };
+    if (xp >= 90) return { container: "bg-amber-400 text-amber-950 border-b-[4px] border-amber-600", icon: "text-amber-950" };
+    if (xp >= 75) return { container: "bg-slate-300 text-slate-800 border-b-[4px] border-slate-400", icon: "text-slate-700" };
+    if (xp >= 60) return { container: "bg-orange-700 text-white border-b-[4px] border-orange-900", icon: "text-orange-200" };
+    return { container: "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-b-[4px] border-slate-200 dark:border-slate-700", icon: "text-slate-400 dark:text-slate-500" };
+  };
 
-  let trophyStyle = "bg-orange-50 text-orange-800 border-orange-200"; 
-  if (unitXP > 100) {
-    trophyStyle = "bg-gradient-to-r from-red-500 via-yellow-400 via-green-400 via-blue-500 to-purple-500 text-white border-transparent shadow-[0_0_25px_rgba(250,204,21,0.8)] animate-pulse";
-  } else if (unitXP === 100) {
-    trophyStyle = "bg-yellow-400 text-yellow-900 border-yellow-500 shadow-[0_0_20px_rgba(250,204,21,0.8)] animate-pulse";
-  } else if (unitXP >= 50) {
-    trophyStyle = "bg-slate-200 text-slate-800 border-slate-300 shadow-sm";
-  }
+  const trophy = getTrophyStyles(unitXP);
 
   const checkIsEmpty = (taskId) => {
     if (taskId === 'NOTES' && (!unit.notes || !Array.isArray(unit.notes) || unit.notes.length === 0)) return true;
@@ -98,24 +78,40 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode })
     return false;
   };
 
+  // 2. Dynamically compile Needs Work
+  const allTasks = [];
+  unitPhases.forEach(phase => {
+    const isPhaseLocked = unitXP < phase.threshold;
+    (phase.tasks || []).forEach(task => {
+      allTasks.push({ ...task, locked: isPhaseLocked });
+    });
+  });
+
+  const needsWorkTasks = allTasks.filter(t => {
+    if (t.id === 'GAMES') return false; 
+    if (t.locked) return false;
+    if (checkIsEmpty(t.id)) return false;
+    
+    const current = scores[t.dbKey]?.current || 0;
+    return current < t.maxXP; 
+  }).slice(0, 3); 
+
+  const showNeedsWork = needsWork && needsWorkTasks.length > 0;
+
   const renderTaskButton = (task, isLocked = false) => {
     const config = TaskUIConfig[task.id];
     if (!config) return null;
     
     const TaskIcon = config.icon;
     const isEmpty = checkIsEmpty(task.id);
-    
-    const maxTaskXP = getMaxXP(task.id);
     const rawScore = scores[task.dbKey]?.current || 0;
-    const taskScore = Math.min(rawScore, maxTaskXP);
+    const taskScore = Math.min(rawScore, task.maxXP);
 
     if (isEmpty) {
       return (
-        <div key={task.id} className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border-[3px] border-dashed border-slate-200 bg-slate-50 text-slate-400 w-full h-36 sm:h-44 opacity-70 transition-all hover:opacity-90">
-          <TaskIcon className={`w-8 h-8 sm:w-10 sm:h-10 mb-2 opacity-40 ${config.text}`} strokeWidth={2} />
-          <h4 className="font-black text-sm sm:text-base tracking-wide leading-tight text-center px-2">
-            No {config.label}
-          </h4>
+        <div key={task.id} className="relative flex flex-col items-center justify-center p-5 rounded-[1.5rem] border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-800/30 text-slate-400 w-full h-36 opacity-70">
+          <TaskIcon className="w-8 h-8 mb-2 opacity-40" strokeWidth={2} />
+          <h4 className="font-bold text-xs tracking-widest uppercase">No {config.label}</h4>
         </div>
       );
     }
@@ -125,22 +121,23 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode })
         key={task.id}
         disabled={isLocked}
         onClick={() => startMode(unit.id, task.id)} 
-        className={`relative flex flex-col items-center justify-between p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border-b-[6px] transition-all text-white w-full h-36 sm:h-44 shadow-sm hover:shadow-md
+        className={`relative flex flex-col items-center justify-between p-4 rounded-[1.5rem] transition-all duration-200 w-full h-36
           ${isLocked 
-            ? 'bg-slate-200 border-slate-300 opacity-60 cursor-not-allowed grayscale' 
-            : `${config.bg} ${config.border} active:border-b-0 active:translate-y-[6px] hover:brightness-110 cursor-pointer`
+            ? `${config.bg} border-b-[6px] ${config.border} ${config.text} opacity-80 cursor-not-allowed saturate-[0.85]` 
+            : `${config.bg} border-b-[6px] ${config.border} ${config.text} hover:brightness-110 active:border-b-0 active:translate-y-[6px] cursor-pointer`
           }`}
       >
-        <div className="flex flex-col items-center mt-1 sm:mt-2">
-          {isLocked ? <Lock className="w-8 h-8 sm:w-10 sm:h-10 mb-2 opacity-80" /> : <TaskIcon className="w-8 h-8 sm:w-10 sm:h-10 mb-2 drop-shadow-sm" strokeWidth={2.5} />}
-          <h4 className="font-black text-lg sm:text-xl tracking-wide leading-tight drop-shadow-sm">
+        {isLocked && <Lock className="absolute top-4 right-4 w-5 h-5 text-white/80 drop-shadow-sm" strokeWidth={3} />}
+        <div className="flex flex-col items-center mt-1">
+          <TaskIcon className="w-8 h-8 mb-2 drop-shadow-sm" strokeWidth={2.5} />
+          <h4 className="font-black text-lg tracking-wide drop-shadow-sm">
             {config.label}
           </h4>
         </div>
         
-        <div className="w-full bg-black/15 rounded-xl py-1.5 sm:py-2 mt-auto flex items-center justify-center backdrop-blur-sm border border-white/10">
-          <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest opacity-95">
-            {taskScore} / {maxTaskXP} XP
+        <div className="w-full bg-black/15 rounded-xl py-1.5 mt-auto flex items-center justify-center">
+          <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white/90">
+            {taskScore} / {task.maxXP} XP
           </span>
         </div>
       </button>
@@ -148,107 +145,136 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode })
   };
 
   return (
-    <div className="w-full bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden mb-8 transition-all hover:shadow-2xl">
+    <div className={`relative w-full rounded-[2.5rem] mb-8 transition-all duration-300 z-10 hover:z-50
+      ${unitXP === 100 ? 'bg-gradient-to-r from-rose-400 via-amber-300 to-fuchsia-500 p-[3px] pb-[8px] shadow-lg shadow-fuchsia-500/20' : ''}
+      ${showNeedsWork && unitXP !== 100 ? 'shadow-[0_0_15px_rgba(244,63,94,0.15)]' : 'shadow-sm'}
+    `}>
       
-      <div className={`p-6 sm:p-8 bg-gradient-to-br ${currentTheme.banner} relative overflow-hidden`}>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl transform translate-x-20 -translate-y-20"></div>
-        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-          <div className="flex items-center mb-4 sm:mb-0">
-            <div className="p-4 bg-white/20 rounded-2xl mr-5 backdrop-blur-md text-white border border-white/30 shadow-sm flex-shrink-0">
-              <HeaderIcon className="w-8 h-8 sm:w-10 sm:h-10 opacity-90" />
-            </div>
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-md">{title || 'Unit Title'}</h2>
-              <p className="text-white/80 font-medium text-sm sm:text-base mt-1 max-w-xl drop-shadow-sm">{description || 'Complete the tasks below.'}</p>
-            </div>
-          </div>
-          <div className={`flex flex-col items-center justify-center px-6 py-3 rounded-2xl border-2 shadow-sm flex-shrink-0 min-w-[120px] backdrop-blur-sm ${trophyStyle}`}>
-            <span className="text-xs font-black uppercase tracking-widest opacity-80 mb-0.5">Total XP</span>
-            <span className="text-2xl sm:text-3xl font-black">{unitXP}</span>
-          </div>
-        </div>
-      </div>
-
-      {isAILocked && (
-        <div className="bg-rose-50 border-b border-rose-200 p-4 flex items-start animate-in slide-in-from-top-2">
-          <AlertCircle className="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-bold text-rose-800">AI Safety Lock Engaged</h4>
-            <p className="text-rose-600 text-sm font-medium">Due to repeated inappropriate inputs, AI grading has been disabled for this unit.</p>
-          </div>
-        </div>
-      )}
-
-      <div className="p-6 sm:p-8 space-y-10">
+      <div className={`w-full bg-white dark:bg-slate-900 transition-all duration-300 relative
+        ${unitXP === 100 ? 'rounded-[2.35rem] h-full overflow-hidden' : 'rounded-[2.5rem] border-2 border-b-[8px] hover:border-slate-300 dark:hover:border-slate-700'}
+        ${unitXP >= 90 && unitXP < 100 ? 'border-amber-400 dark:border-amber-500 hover:border-amber-500 dark:hover:border-amber-400' : ''}
+        ${unitXP >= 75 && unitXP < 90 ? 'border-slate-400 dark:border-slate-500 hover:border-slate-500 dark:hover:border-slate-400' : ''}
+        ${unitXP >= 60 && unitXP < 75 ? 'border-orange-700 dark:border-orange-900 hover:border-orange-800 dark:hover:border-orange-800' : ''}
+        ${unitXP < 60 && unitXP !== 100 ? 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700' : ''}
+      `}>
         
-        <div>
-          <div className="flex items-center mb-5 border-b-2 border-slate-100 pb-2">
-            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Resources</h3>
+        <div onClick={onToggle} className={`p-6 sm:p-8 relative group flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer`}>
+          
+          <div className="relative z-10 flex items-center w-full md:w-auto">
+            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] ${unitThemeColor} group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 flex-shrink-0`}>
+              <HeaderIcon className={`w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-sm`} strokeWidth={2.5} />
+            </div>
+            
+            <div className="ml-4 sm:ml-6">
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-1 flex items-center flex-wrap gap-3 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
+                {title || 'Unit Title'}
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm sm:text-base tracking-wide">{description || 'Complete the tasks below.'}</p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-            {phases.resources.map(task => renderTaskButton(task, false))}
-          </div>
-        </div>
-
-        <div className="relative">
-          {practiceLocked && (
-            <div className="absolute inset-0 bg-white/60 backdrop-blur-[3px] z-10 flex items-center justify-center rounded-[2rem] border-2 border-slate-100/50">
-              <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl border border-slate-200 flex items-center">
-                <Lock className="w-6 h-6 text-slate-400 mr-3" />
-                <span className="font-bold text-slate-600">Earn {thresholds.p1} XP to unlock.</span>
+          
+          <div className="relative z-10 flex items-center gap-4 self-end md:self-auto w-full md:w-auto justify-end md:justify-start mt-4 md:mt-0">
+            
+            <div className="flex flex-col items-center gap-2 relative z-50">
+              <div className="relative flex items-center justify-center">
+                {trophy.aura && <div className={trophy.aura}></div>}
+                <div className={`relative z-10 flex items-center justify-center px-4 py-2 rounded-xl transition-all shadow-sm font-black ${trophy.container}`}>
+                  <Trophy className={`w-5 h-5 mr-2 ${trophy.icon}`} strokeWidth={2.5} />
+                  <span className="text-xl tracking-tight">{unitXP}</span>
+                </div>
               </div>
+
+              {showNeedsWork && (
+                <div className="relative group/badge">
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400 rounded-full text-[10px] uppercase tracking-widest border border-rose-300/50 dark:border-rose-700/50 shadow-sm cursor-help transition-all group-hover/badge:bg-rose-200 dark:group-hover/badge:bg-rose-800/50">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                    </span>
+                    Needs Work
+                  </span>
+
+                  <div className="absolute top-full right-1/2 translate-x-1/2 mt-3 w-[13rem] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-2 border-slate-200 dark:border-slate-700 p-3 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 scale-95 group-hover/badge:scale-100 pointer-events-none z-[100]">
+                    <div className="absolute -top-[13px] left-1/2 -translate-x-1/2 border-[6px] border-transparent border-b-slate-200 dark:border-b-slate-700">
+                      <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-white dark:border-b-slate-800"></div>
+                    </div>
+                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 px-1 text-center">Tasks to attempt</p>
+                    <div className="space-y-2">
+                      {needsWorkTasks.map(t => {
+                        const config = TaskUIConfig[t.id];
+                        const Icon = config.icon;
+                        return (
+                          <div key={t.id} className="flex items-center p-2 rounded-xl border-b-2 border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/50">
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${config.bg} ${config.text} border-b-[3px] ${config.border} mr-2.5 shrink-0`}>
+                              <Icon className="w-4 h-4" strokeWidth={2.5} />
+                            </div>
+                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate tracking-wide">{config.label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-          <div className={`transition-all ${practiceLocked ? 'opacity-40 pointer-events-none' : ''}`}>
-            <div className="flex justify-between items-end mb-5 border-b-2 border-slate-100 pb-2">
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Phase 1: Practice</h3>
-              <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">{thresholds.p2} XP to Unlock Phase 2</span>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-              {phases.practice.map(task => renderTaskButton(task, practiceLocked))}
+
+            <div className={`flex w-10 h-10 sm:w-14 sm:h-14 rounded-full items-center justify-center border-2 shadow-sm transition-all duration-300 border-b-[4px]
+              ${isExpanded 
+                ? 'bg-[#1cb0f6] border-[#1899d6] text-white translate-x-0 opacity-100'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 sm:translate-x-4 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-hover:bg-[#1cb0f6] sm:group-hover:border-[#1899d6] sm:group-hover:text-white'
+              }`}>
+              {isExpanded ? <ChevronUp className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} /> : <ChevronDown className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} />}
             </div>
           </div>
         </div>
 
-        <div className="relative">
-          {applicationLocked && (
-            <div className="absolute inset-0 bg-white/60 backdrop-blur-[3px] z-10 flex items-center justify-center rounded-[2rem] border-2 border-slate-100/50">
-              <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl border border-slate-200 flex items-center">
-                <Lock className="w-6 h-6 text-slate-400 mr-3" />
-                <span className="font-bold text-slate-600">Earn {thresholds.p2} XP in Phase 1 to unlock.</span>
+        {isExpanded && (
+          <div className="animate-in slide-in-from-top-4 duration-300 border-t-2 border-slate-100 dark:border-slate-800 pb-4">
+            {isAILocked && (
+              <div className="mx-6 sm:mx-8 mt-8 bg-rose-100 dark:bg-rose-900/40 border-2 border-rose-300 dark:border-rose-800 p-4 rounded-[1.5rem] flex items-start shadow-sm">
+                <AlertCircle className="w-6 h-6 text-rose-600 dark:text-rose-400 mr-3 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-black text-rose-800 dark:text-rose-300">AI Safety Lock Engaged</h4>
+                  <p className="text-rose-600 dark:text-rose-400 text-sm font-bold mt-1">Due to repeated inappropriate inputs, AI grading has been disabled for this unit.</p>
+                </div>
               </div>
-            </div>
-          )}
-          <div className={`transition-all ${applicationLocked ? 'opacity-40 pointer-events-none' : ''}`}>
-            <div className="flex justify-between items-end mb-5 border-b-2 border-slate-100 pb-2">
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Phase 2: Understanding</h3>
-              <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">{thresholds.p3} XP to Unlock Mastery</span>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-              {phases.application.map(task => renderTaskButton(task, applicationLocked))}
+            )}
+
+            <div className="p-6 sm:p-8 space-y-10">
+              {/* 3. Dynamically Loop Over Phases */}
+              {unitPhases.map(phase => {
+                const isPhaseLocked = unitXP < phase.threshold;
+                
+                return (
+                  <div key={phase.id} className="relative group">
+                    {/* Locking Overlay */}
+                    {isPhaseLocked && (
+                      <div className="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-[2rem] transition-all duration-300 border-2 border-dashed border-slate-300 dark:border-slate-700">
+                        <div className="bg-white dark:bg-slate-800 px-6 py-4 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 flex items-center transform transition-transform group-hover:scale-105">
+                           <Lock className="w-5 h-5 text-slate-400 mr-3" strokeWidth={2.5} />
+                          <span className="font-black text-slate-700 dark:text-slate-200 uppercase tracking-wide">Earn {phase.threshold} XP to unlock</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className={`transition-all ${isPhaseLocked ? 'pointer-events-none opacity-50' : ''}`}>
+                      <div className="mb-4 flex items-center justify-between border-b-2 border-slate-100 dark:border-slate-800 pb-2">
+                        <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">{phase.title}</h3>
+                        {phase.threshold > 0 && (
+                          <span className="text-xs font-black uppercase tracking-widest text-slate-400">{phase.threshold} XP to Unlock</span>
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+                        {phase.tasks.map(task => renderTaskButton(task, isPhaseLocked))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
-
-        <div className="relative">
-          {masteryLocked && (
-            <div className="absolute inset-0 bg-white/60 backdrop-blur-[3px] z-10 flex items-center justify-center rounded-[2rem] border-2 border-slate-100/50">
-              <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-xl border border-slate-200 flex items-center">
-                <Lock className="w-6 h-6 text-slate-400 mr-3" />
-                <span className="font-bold text-slate-600">Complete Phase 2 to unlock.</span>
-              </div>
-            </div>
-          )}
-          <div className={`transition-all ${masteryLocked ? 'opacity-40 pointer-events-none' : ''}`}>
-            <div className="flex items-center mb-5 border-b-2 border-slate-100 pb-2">
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Phase 3: Assessment</h3>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-              {phases.mastery.map(task => renderTaskButton(task, masteryLocked))}
-            </div>
-          </div>
-        </div>
-
+        )}
       </div>
     </div>
   );

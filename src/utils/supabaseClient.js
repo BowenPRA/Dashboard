@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { TRACK_REGISTRY } from '../components/trackRegistry';
 
-// Ensure this matches how you initialize Supabase in your project!
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// --- NEW LEADERBOARD SERVICE ---
-// Queries all students, parses JSONB progress for the unit, and ranks the Top 10.
 export const getGlobalGameLeaderboard = async (unitId, limit = 10) => {
   try {
-    // Note: Fetching 'updated_at' to act as a fallback timestamp since individual scores lack dates in the current JSONB schema.
     const { data, error } = await supabase
       .from('students')
       .select('id, raw_user_meta_data, email, progress, updated_at');
@@ -23,8 +20,8 @@ export const getGlobalGameLeaderboard = async (unitId, limit = 10) => {
       const name = student.raw_user_meta_data?.name || student.email?.split('@')[0] || 'Unknown Agent';
       let maxScore = 0;
       
-      // Safely parse across all potential tracks to extract the high score for this unit
-      ['Y8', 'Y9', 'ESL', 'GED'].forEach(track => {
+      TRACK_REGISTRY.forEach(trackObj => {
+        const track = trackObj.id;
         if (student.progress?.[track]?.[unitId]?.p12?.current) {
           maxScore = Math.max(maxScore, student.progress[track][unitId].p12.current);
         }
@@ -40,9 +37,7 @@ export const getGlobalGameLeaderboard = async (unitId, limit = 10) => {
       }
     });
 
-    // Sort descending by score
     parsedScores.sort((a, b) => b.score - a.score);
-    
     return { data: parsedScores.slice(0, limit), error: null };
   } catch (err) {
     console.error('Failed to parse leaderboard profiles:', err);
@@ -52,12 +47,11 @@ export const getGlobalGameLeaderboard = async (unitId, limit = 10) => {
 
 export function useStudentProgress(navigate, track = 'Y9') {
   const [user, setUser] = useState(null);
-  const [allProgress, setAllProgress] = useState({
-    Y8: {},
-    Y9: {},
-    ESL: {},
-    GED: {}
-  });
+  
+  const initialProgress = {};
+  TRACK_REGISTRY.forEach(t => { initialProgress[t.id] = {}; });
+  const [allProgress, setAllProgress] = useState(initialProgress);
+  
   const [isLoadingDB, setIsLoadingDB] = useState(true);
 
   useEffect(() => {
@@ -77,26 +71,30 @@ export function useStudentProgress(navigate, track = 'Y9') {
         .eq('id', session.user.id)
         .single();
 
-      if (data && data.progress) {
-        let dbProgress = data.progress;
-        const validTracks = ['Y8', 'Y9', 'ESL', 'GED'];
+      const validTracks = TRACK_REGISTRY.map(t => t.id);
+      let dbProgress = data?.progress || {};
+      let needsUpdate = false;
 
-        const isOldFormat = Object.keys(dbProgress).some(key => !validTracks.includes(key));
-        if (isOldFormat) {
-          dbProgress = {
-            Y8: {},
-            Y9: dbProgress,
-            ESL: {},
-            GED: {}
-          };
-          await supabase.from('students').update({ progress: dbProgress }).eq('id', session.user.id);
-        } else {
-          validTracks.forEach(t => {
-            if (!dbProgress[t]) dbProgress[t] = {};
-          });
-        }
+      const isOldFormat = Object.keys(dbProgress).some(key => !validTracks.includes(key));
+      if (isOldFormat) {
+        const newFormat = {};
+        validTracks.forEach(t => { newFormat[t] = {}; });
+        newFormat['Y9'] = dbProgress; 
+        dbProgress = newFormat;
+        needsUpdate = true;
+      } else {
+        validTracks.forEach(t => {
+          if (!dbProgress[t]) {
+            dbProgress[t] = {};
+            needsUpdate = true;
+          }
+        });
+      }
 
-        setAllProgress(dbProgress);
+      setAllProgress(dbProgress);
+
+      if (needsUpdate) {
+        await supabase.from('students').update({ progress: dbProgress }).eq('id', session.user.id);
       }
       
       setIsLoadingDB(false);
