@@ -92,5 +92,92 @@ export const DIAGRAMS = {
     <rect x="580" y="50" width="160" height="60" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
     <text x="660" y="75" font-family="sans-serif" font-weight="bold" font-size="14" fill="#166534" text-anchor="middle">Boston Tea Party</text>
     <text x="660" y="95" font-family="sans-serif" font-size="12" fill="#15803d" text-anchor="middle">Sons of Liberty protest</text>
+  </svg>`,
+
+  NOTES_WAR_TO_TAXES: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 220" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <defs>
+      <marker id="ha1arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+      </marker>
+    </defs>
+    <text x="270" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">Why victory made things worse</text>
+
+    <rect x="20" y="66" width="112" height="78" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="3"/>
+    <text x="76" y="96" font-family="sans-serif" font-weight="900" font-size="13" fill="#1e3a8a" text-anchor="middle">1754-1763</text>
+    <text x="76" y="118" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">Britain wins</text>
+    <text x="76" y="134" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">the war</text>
+
+    <line x1="138" y1="105" x2="164" y2="105" stroke="#64748b" stroke-width="3" marker-end="url(#ha1arrow)"/>
+
+    <rect x="172" y="66" width="112" height="78" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="228" y="96" font-family="sans-serif" font-weight="900" font-size="13" fill="#78350f" text-anchor="middle">HUGE DEBT</text>
+    <text x="228" y="118" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">wars cost</text>
+    <text x="228" y="134" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">money</text>
+
+    <line x1="290" y1="105" x2="316" y2="105" stroke="#64748b" stroke-width="3" marker-end="url(#ha1arrow)"/>
+
+    <rect x="324" y="66" width="112" height="78" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/>
+    <text x="380" y="96" font-family="sans-serif" font-weight="900" font-size="13" fill="#991b1b" text-anchor="middle">NEW TAXES</text>
+    <text x="380" y="118" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">Salutary Neglect</text>
+    <text x="380" y="134" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">ends</text>
+
+    <line x1="442" y1="105" x2="468" y2="105" stroke="#64748b" stroke-width="3" marker-end="url(#ha1arrow)"/>
+
+    <rect x="476" y="66" width="56" height="78" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="4"/>
+    <text x="504" y="100" font-family="sans-serif" font-weight="900" font-size="12" fill="#831843" text-anchor="middle">ANGER</text>
+    <text x="504" y="122" font-family="sans-serif" font-size="10" fill="#334155" text-anchor="middle">in the</text>
+    <text x="504" y="136" font-family="sans-serif" font-size="10" fill="#334155" text-anchor="middle">colonies</text>
+
+    <text x="270" y="182" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">The colonists were asked to pay for a war debt</text>
+    <text x="270" y="202" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">they had no vote on.</text>
+  </svg>`,
+
+  NOTES_NO_REPRESENTATION: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="260" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">"No taxation without representation"</text>
+
+    <rect x="30" y="50" width="215" height="150" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="4"/>
+    <text x="137" y="76" font-family="sans-serif" font-weight="900" font-size="14" fill="#1e3a8a" text-anchor="middle">BRITISH PARLIAMENT</text>
+    <circle cx="70" cy="106" r="9" fill="#3b82f6"/><circle cx="98" cy="106" r="9" fill="#3b82f6"/>
+    <circle cx="126" cy="106" r="9" fill="#3b82f6"/><circle cx="154" cy="106" r="9" fill="#3b82f6"/>
+    <circle cx="182" cy="106" r="9" fill="#3b82f6"/><circle cx="210" cy="106" r="9" fill="#3b82f6"/>
+    <circle cx="70" cy="134" r="9" fill="#3b82f6"/><circle cx="98" cy="134" r="9" fill="#3b82f6"/>
+    <circle cx="126" cy="134" r="9" fill="#3b82f6"/><circle cx="154" cy="134" r="9" fill="#3b82f6"/>
+    <circle cx="182" cy="134" r="9" fill="#3b82f6"/><circle cx="210" cy="134" r="9" fill="#3b82f6"/>
+    <text x="137" y="170" font-family="sans-serif" font-weight="bold" font-size="12" fill="#1e40af" text-anchor="middle">members vote on the taxes</text>
+    <text x="137" y="188" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">every seat is British</text>
+
+    <rect x="275" y="50" width="215" height="150" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="4" stroke-dasharray="8 5"/>
+    <text x="382" y="76" font-family="sans-serif" font-weight="900" font-size="14" fill="#991b1b" text-anchor="middle">THE 13 COLONIES</text>
+    <circle cx="315" cy="120" r="9" fill="none" stroke="#fca5a5" stroke-width="3"/>
+    <circle cx="343" cy="120" r="9" fill="none" stroke="#fca5a5" stroke-width="3"/>
+    <circle cx="371" cy="120" r="9" fill="none" stroke="#fca5a5" stroke-width="3"/>
+    <circle cx="399" cy="120" r="9" fill="none" stroke="#fca5a5" stroke-width="3"/>
+    <circle cx="427" cy="120" r="9" fill="none" stroke="#fca5a5" stroke-width="3"/>
+    <text x="382" y="160" font-family="sans-serif" font-weight="900" font-size="15" fill="#991b1b" text-anchor="middle">ZERO SEATS</text>
+    <text x="382" y="184" font-family="sans-serif" font-weight="bold" font-size="12" fill="#b91c1c" text-anchor="middle">taxed, but no vote</text>
+
+    <text x="260" y="228" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">The objection was never the money. It was having no say.</text>
+  </svg>`,
+
+  NOTES_PATRIOT_LOYALIST: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="260" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">One colony, two answers</text>
+
+    <rect x="25" y="48" width="220" height="160" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="4"/>
+    <text x="135" y="78" font-family="sans-serif" font-weight="900" font-size="18" fill="#166534" text-anchor="middle">PATRIOT</text>
+    <line x1="50" y1="90" x2="220" y2="90" stroke="#16a34a" stroke-width="2"/>
+    <text x="135" y="116" font-family="sans-serif" font-weight="bold" font-size="13" fill="#15803d" text-anchor="middle">"We must be free."</text>
+    <text x="135" y="146" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">rejects British rule</text>
+    <text x="135" y="168" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">wants independence</text>
+    <text x="135" y="192" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">joined militias</text>
+
+    <rect x="275" y="48" width="220" height="160" rx="14" fill="#fdf2f8" stroke="#db2777" stroke-width="4"/>
+    <text x="385" y="78" font-family="sans-serif" font-weight="900" font-size="18" fill="#831843" text-anchor="middle">LOYALIST</text>
+    <line x1="300" y1="90" x2="470" y2="90" stroke="#db2777" stroke-width="2"/>
+    <text x="385" y="116" font-family="sans-serif" font-weight="bold" font-size="13" fill="#9d174d" text-anchor="middle">"Rebellion is a crime."</text>
+    <text x="385" y="146" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">stays loyal to the King</text>
+    <text x="385" y="168" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">fears war and chaos</text>
+    <text x="385" y="192" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">often merchants, officials</text>
+
+    <text x="260" y="234" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">Neighbours, families and towns split over this question.</text>
   </svg>`
 };

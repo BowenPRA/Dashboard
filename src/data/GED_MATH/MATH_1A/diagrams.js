@@ -215,5 +215,125 @@ export const DIAGRAMS = {
     <path d="M 140 75 L 250 95" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
     <path d="M 140 125 L 250 155" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
     <path d="M 140 175 L 250 160" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+  </svg>`,
+
+  NOTES_VARIABLE_BOX: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 230" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="250" y="30" font-family="sans-serif" font-weight="900" font-size="17" fill="#0f172a" text-anchor="middle">A variable is a closed box</text>
+
+    <rect x="60" y="60" width="120" height="100" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="4"/>
+    <path d="M 60 88 L 180 88" stroke="#94a3b8" stroke-width="4"/>
+    <text x="120" y="134" font-family="monospace" font-weight="bold" font-size="44" fill="#cbd5e1" text-anchor="middle">?</text>
+    <text x="120" y="184" font-family="sans-serif" font-weight="bold" font-size="13" fill="#64748b" text-anchor="middle">a number is inside</text>
+    <text x="120" y="203" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">you cannot see it</text>
+
+    <text x="228" y="125" font-family="sans-serif" font-weight="900" font-size="28" fill="#334155" text-anchor="middle">=</text>
+
+    <rect x="275" y="60" width="120" height="100" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="4"/>
+    <text x="335" y="134" font-family="monospace" font-weight="bold" font-size="50" fill="#1e3a8a" text-anchor="middle">x</text>
+    <text x="335" y="184" font-family="sans-serif" font-weight="bold" font-size="13" fill="#1e40af" text-anchor="middle">we call it a variable</text>
+    <text x="335" y="203" font-family="sans-serif" font-size="12" fill="#64748b" text-anchor="middle">a letter stands in</text>
+
+    <text x="443" y="118" font-family="sans-serif" font-weight="bold" font-size="12" fill="#16a34a" text-anchor="middle">solving</text>
+    <text x="443" y="136" font-family="sans-serif" font-weight="bold" font-size="12" fill="#16a34a" text-anchor="middle">opens it</text>
+  </svg>`,
+
+  NOTES_WORDS_TO_SYMBOLS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="260" y="26" font-family="sans-serif" font-weight="900" font-size="15" fill="#0f172a" text-anchor="middle">English words are maths symbols in disguise</text>
+
+    <rect x="25" y="42" width="110" height="142" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+    <text x="80" y="72" font-family="monospace" font-weight="bold" font-size="24" fill="#166534" text-anchor="middle">+</text>
+    <text x="80" y="100" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">sum</text>
+    <text x="80" y="122" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">total</text>
+    <text x="80" y="144" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">more than</text>
+    <text x="80" y="166" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">increased by</text>
+
+    <rect x="147" y="42" width="110" height="142" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="3"/>
+    <text x="202" y="72" font-family="monospace" font-weight="bold" font-size="24" fill="#991b1b" text-anchor="middle">-</text>
+    <text x="202" y="100" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">difference</text>
+    <text x="202" y="122" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">less than</text>
+    <text x="202" y="144" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">decreased by</text>
+    <text x="202" y="166" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">fewer</text>
+
+    <rect x="269" y="42" width="110" height="142" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="3"/>
+    <text x="324" y="72" font-family="monospace" font-weight="bold" font-size="22" fill="#1e3a8a" text-anchor="middle">&#215;</text>
+    <text x="324" y="100" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">product</text>
+    <text x="324" y="122" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">times</text>
+    <text x="324" y="144" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">twice</text>
+    <text x="324" y="166" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">of</text>
+
+    <rect x="391" y="42" width="110" height="142" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="3"/>
+    <text x="446" y="72" font-family="monospace" font-weight="bold" font-size="22" fill="#78350f" text-anchor="middle">&#247;</text>
+    <text x="446" y="100" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">quotient</text>
+    <text x="446" y="122" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">per</text>
+    <text x="446" y="144" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">half</text>
+    <text x="446" y="166" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">split</text>
+
+    <text x="260" y="212" font-family="sans-serif" font-weight="900" font-size="13" fill="#991b1b" text-anchor="middle">Careful: "5 less than x" means x - 5, not 5 - x</text>
+    <text x="260" y="234" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">The order flips. Exams test this every time.</text>
+  </svg>`,
+
+  NOTES_SUBSTITUTE_STEPS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 210" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <defs>
+      <marker id="ma1arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+      </marker>
+    </defs>
+    <text x="260" y="26" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">Evaluate 4x when x = 3</text>
+    <text x="260" y="52" font-family="sans-serif" font-weight="bold" font-size="12" fill="#16a34a" text-anchor="middle">Always put brackets round the number you substitute</text>
+
+    <rect x="30" y="76" width="115" height="56" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+    <text x="87" y="112" font-family="monospace" font-weight="bold" font-size="22" fill="#0f172a" text-anchor="middle">4x</text>
+
+    <line x1="152" y1="104" x2="180" y2="104" stroke="#64748b" stroke-width="3" marker-end="url(#ma1arrow)"/>
+    <text x="166" y="92" font-family="sans-serif" font-weight="bold" font-size="11" fill="#16a34a" text-anchor="middle">put 3 in</text>
+
+    <rect x="192" y="76" width="130" height="56" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+    <text x="257" y="112" font-family="monospace" font-weight="bold" font-size="22" fill="#166534" text-anchor="middle">4(3)</text>
+
+    <line x1="330" y1="104" x2="358" y2="104" stroke="#64748b" stroke-width="3" marker-end="url(#ma1arrow)"/>
+    <text x="344" y="92" font-family="sans-serif" font-weight="bold" font-size="11" fill="#334155" text-anchor="middle">work out</text>
+
+    <rect x="370" y="76" width="115" height="56" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="4"/>
+    <text x="427" y="112" font-family="monospace" font-weight="bold" font-size="22" fill="#78350f" text-anchor="middle">12</text>
+
+    <text x="260" y="168" font-family="sans-serif" font-weight="900" font-size="13" fill="#991b1b" text-anchor="middle">Without brackets, 4x reads as "43" not 4 times 3.</text>
+    <text x="260" y="192" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">This is the most common slip on the whole paper.</text>
+  </svg>`,
+
+  NOTES_ONE_STEP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="250" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">One step: undo what was done to x</text>
+
+    <text x="250" y="78" font-family="monospace" font-weight="bold" font-size="26" fill="#0f172a" text-anchor="middle">x + 7 = 12</text>
+
+    <text x="130" y="114" font-family="sans-serif" font-weight="bold" font-size="14" fill="#dc2626" text-anchor="middle">- 7</text>
+    <text x="370" y="114" font-family="sans-serif" font-weight="bold" font-size="14" fill="#dc2626" text-anchor="middle">- 7</text>
+    <path d="M 152 108 L 208 108" stroke="#dc2626" stroke-width="3" stroke-dasharray="5 4"/>
+    <path d="M 292 108 L 348 108" stroke="#dc2626" stroke-width="3" stroke-dasharray="5 4"/>
+    <text x="250" y="113" font-family="sans-serif" font-weight="bold" font-size="12" fill="#64748b" text-anchor="middle">both sides</text>
+
+    <text x="250" y="154" font-family="monospace" font-weight="bold" font-size="26" fill="#166534" text-anchor="middle">x = 5</text>
+    <text x="250" y="184" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">Check: 5 + 7 = 12</text>
+  </svg>`,
+
+  NOTES_TWO_STEP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 230" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="260" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">Two steps: undo in reverse order</text>
+
+    <rect x="25" y="54" width="140" height="46" rx="9" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+    <text x="95" y="84" font-family="monospace" font-weight="bold" font-size="19" fill="#0f172a" text-anchor="middle">3x + 4 = 19</text>
+
+    <rect x="196" y="54" width="128" height="46" rx="9" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="260" y="84" font-family="monospace" font-weight="bold" font-size="19" fill="#78350f" text-anchor="middle">3x = 15</text>
+
+    <rect x="355" y="54" width="128" height="46" rx="9" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+    <text x="419" y="84" font-family="monospace" font-weight="bold" font-size="19" fill="#166534" text-anchor="middle">x = 5</text>
+
+    <text x="180" y="84" font-family="sans-serif" font-weight="bold" font-size="18" fill="#64748b" text-anchor="middle">&#8594;</text>
+    <text x="339" y="84" font-family="sans-serif" font-weight="bold" font-size="18" fill="#64748b" text-anchor="middle">&#8594;</text>
+    <text x="180" y="120" font-family="sans-serif" font-weight="bold" font-size="12" fill="#dc2626" text-anchor="middle">- 4</text>
+    <text x="339" y="120" font-family="sans-serif" font-weight="bold" font-size="12" fill="#dc2626" text-anchor="middle">&#247; 3</text>
+
+    <rect x="55" y="148" width="410" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="3"/>
+    <text x="260" y="174" font-family="sans-serif" font-weight="900" font-size="14" fill="#1e3a8a" text-anchor="middle">Undo + and - first, then &#215; and &#247;</text>
+    <text x="260" y="196" font-family="sans-serif" font-size="12" fill="#334155" text-anchor="middle">The opposite of the order you would use to build it.</text>
   </svg>`
 };

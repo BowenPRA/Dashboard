@@ -25,6 +25,7 @@ export const notes = [
     example: "The Declaration lists the King's abuses as evidence.\n\nIt was written as an argument, not just an announcement: here is what he did, therefore we are justified in leaving.",
     exampleVn: "Bản Tuyên ngôn liệt kê những hành vi lạm quyền của Nhà vua làm bằng chứng.\n\nNó được viết như một lập luận, không chỉ là một thông báo: đây là những gì ông ta đã làm, do đó chúng tôi có lý do chính đáng để ra đi.",
     spokenExample: "For example. The Declaration lists the King's abuses as evidence. It was written as an argument, not just an announcement. Here is what he did, therefore we are justified in leaving.",
+    inlineSvg: DIAGRAMS.NOTES_DECLARATION_LOGIC,
     drawThis: false,
     audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_2.mp3"
   },
@@ -112,6 +113,7 @@ export const notes = [
     content: "Writing the Constitution was only half the battle. It had to be approved.\n\n> **Write This Down:**\n> **Ratify:** To formally approve something so that it becomes official.\n\nNine of the thirteen states had to ratify it before it could take effect. Many citizens resisted, fearing the strong new national government would threaten their liberties.",
     contentVn: "Viết ra Hiến pháp mới chỉ là một nửa cuộc chiến. Nó phải được chấp thuận.\n\n> **Hãy ghi chép lại:**\n> **Phê chuẩn (Ratify):** Chính thức chấp thuận điều gì đó để nó có hiệu lực.\n\nChín trong số mười ba tiểu bang phải phê chuẩn trước khi nó có hiệu lực. Nhiều công dân phản đối, lo sợ chính quyền quốc gia mới mạnh mẽ sẽ đe dọa quyền tự do của họ.",
     spoken: "Writing the Constitution was only half the battle. It had to be approved. Please write this down. To Ratify means to formally approve something so that it becomes official. Nine of the thirteen states had to ratify it before it could take effect. Many citizens resisted, fearing the strong new national government would threaten their liberties.",
+    inlineSvg: DIAGRAMS.NOTES_RATIFY_NINE,
     drawThis: false,
     audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_8.mp3"
   },
@@ -129,6 +131,7 @@ export const notes = [
     example: "Several states agreed to ratify **only** on the promise that a Bill of Rights would follow immediately.\n\nThat promise was kept, and it is why the first ten amendments exist.",
     exampleVn: "Một số tiểu bang chỉ đồng ý phê chuẩn **với điều kiện** Đạo luật Nhân quyền sẽ được bổ sung ngay lập tức.\n\nLời hứa đó đã được giữ, và đó là lý do mười tu chính án đầu tiên tồn tại.",
     spokenExample: "For example. Several states agreed to ratify only on the promise that a Bill of Rights would follow immediately. That promise was kept, and it is why the first ten amendments exist.",
+    inlineSvg: DIAGRAMS.NOTES_BILL_OF_RIGHTS,
     drawThis: false,
     audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_9.mp3"
   },

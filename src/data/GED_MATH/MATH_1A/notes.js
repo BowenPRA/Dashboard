@@ -25,6 +25,7 @@ export const notes = [
     example: "Imagine you have $3$ apples on a table. A friend gives you a closed bag of apples. Now you have $3 + x$ apples in total.\n\nThe letter $x$ represents the unknown number of apples inside the bag.",
     exampleVn: "Hãy tưởng tượng bạn có $3$ quả táo trên bàn. Một người bạn đưa cho bạn một túi táo đóng kín. Bây giờ bạn có tổng cộng $3 + x$ quả táo.\n\nChữ $x$ đại diện cho số lượng táo chưa biết bên trong túi.",
     spokenExample: "For example. Imagine you have 3 apples on a table. A friend gives you a closed bag of apples. Now you have 3 plus x apples in total. The letter x represents the unknown number of apples inside the bag.",
+    inlineSvg: DIAGRAMS.NOTES_VARIABLE_BOX,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_2.mp3"
   },
@@ -68,6 +69,7 @@ export const notes = [
     example: "**English Sentence:** A worker earns $15$ dollars an hour, increased by a $50$ dollar bonus.\n\n**Math Translation:**\n$$15h + 50$$\n(Let $h$ represent the number of hours worked).",
     exampleVn: "**Câu Tiếng Anh:** Một công nhân kiếm được $15$ đô la một giờ, tăng thêm một khoản tiền thưởng $50$ đô la.\n\n**Bản dịch Toán học:**\n$$15h + 50$$\n(Gọi $h$ là số giờ đã làm việc).",
     spokenExample: "For example. The English sentence 'A worker earns 15 dollars an hour, increased by a 50 dollar bonus' translates to the math expression 15 h plus 50. Here, h represents the unknown number of hours worked.",
+    inlineSvg: DIAGRAMS.NOTES_WORDS_TO_SYMBOLS,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_5.mp3"
   },
@@ -85,6 +87,7 @@ export const notes = [
     example: "Find the total cost of the expression $5x - 3$ if $x = 4$.\n\n**Step 1: Substitute (Use parentheses)**\n$5(4) - 3$\n\n**Step 2: Multiply**\n$20 - 3$\n\n**Step 3: Subtract**\n$\\mathbf{17}$",
     exampleVn: "Tìm tổng chi phí của biểu thức $5x - 3$ nếu $x = 4$.\n\n**Bước 1: Thay thế (Sử dụng dấu ngoặc đơn)**\n$5(4) - 3$\n\n**Bước 2: Nhân**\n$20 - 3$\n\n**Bước 3: Trừ**\n$\\mathbf{17}$",
     spokenExample: "Let's look at an example. Find the total cost of the expression 5 x minus 3 if x equals 4. Step 1: Substitute the 4 in parentheses. Step 2: Multiply 5 times 4 to get 20. Step 3: Subtract 3. The final answer is 17.",
+    inlineSvg: DIAGRAMS.NOTES_SUBSTITUTE_STEPS,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_6.mp3"
   },
@@ -141,6 +144,7 @@ export const notes = [
     example: "**Solve for $x$:**\n$$4x = 24$$\n\nThe $4$ and the $x$ are connected by multiplication. To do the inverse, we divide both sides by $4$.\n\n$$\\frac{4x}{4} = \\frac{24}{4}$$\n\n$$x = 6$$",
     exampleVn: "**Giải tìm $x$:**\n$$4x = 24$$\n\nSố $4$ và chữ $x$ được kết nối với nhau bằng phép nhân. Để làm phép nghịch đảo, chúng ta chia cả hai vế cho $4$.\n\n$$\\frac{4x}{4} = \\frac{24}{4}$$\n\n$$x = 6$$",
     spokenExample: "Let's solve for x in the equation 4 x equals 24. The 4 and the x are connected by multiplication. To do the inverse, we divide both sides by 4. 24 divided by 4 leaves us with x equals 6.",
+    inlineSvg: DIAGRAMS.NOTES_ONE_STEP,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_10.mp3"
   },
@@ -158,6 +162,7 @@ export const notes = [
     example: "**Solve:** $2x + 5 = 15$\n\n**Step 1:** Subtract $5$ from both sides.\n$2x = 10$\n\n**Step 2:** Divide both sides by $2$.\n$x = 5$",
     exampleVn: "**Giải:** $2x + 5 = 15$\n\n**Bước 1:** Trừ $5$ cho cả hai vế.\n$2x = 10$\n\n**Bước 2:** Chia cả hai vế cho $2$.\n$x = 5$",
     spokenExample: "Let's solve the equation 2 x plus 5 equals 15. Step 1: Subtract the constant 5 from both sides. This leaves 2 x equals 10. Step 2: Divide both sides by the coefficient 2. The final answer is x equals 5.",
+    inlineSvg: DIAGRAMS.NOTES_TWO_STEP,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_11.mp3"
   },

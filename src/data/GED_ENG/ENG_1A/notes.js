@@ -1,3 +1,4 @@
+import { DIAGRAMS } from './diagrams.js';
 // src/data/GED/ENG_1A/notes.js
 
 export const notes = [
@@ -20,6 +21,7 @@ export const notes = [
     contentVn: "Mỗi văn bản đều được viết với một **Mục đích** cụ thể. Trước khi có thể phân tích văn bản, bạn phải hiểu tại sao tác giả lại viết nó.\n\n> Ba mục đích phổ biến nhất là:\n> **Thuyết phục:** Để thuyết phục bạn đồng ý.\n> **Thông tin:** Để dạy bạn những sự thật khách quan.\n> **Giải trí:** Để làm bạn vui hoặc kể một câu chuyện.",
     example: "A newspaper editorial arguing that the city needs more parks is written to Persuade.",
     exampleVn: "Một bài xã luận trên báo lập luận rằng thành phố cần nhiều công viên hơn được viết để Thuyết phục.",
+    inlineSvg: DIAGRAMS.AUTHORS_PURPOSE,
     audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_1.mp3"
   },
   {
@@ -46,6 +48,7 @@ export const notes = [
     example: "Claim: Daily reading improves vocabulary.\nEvidence: A university study showed that students who read for 20 minutes a day learned 1,800,000 new words a year.",
     exampleVn: "Luận điểm: Đọc sách hàng ngày cải thiện vốn từ vựng.\nBằng chứng: Một nghiên cứu đại học cho thấy những sinh viên đọc 20 phút mỗi ngày học được 1.800.000 từ mới một năm.",
     image: "/images/GED/reading_map1.svg",
+    inlineSvg: DIAGRAMS.CLAIM_EVIDENCE_REASONING,
     audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_3.mp3"
   },
   {
@@ -58,6 +61,7 @@ export const notes = [
     contentVn: "Vì bạn không thể nghe được giọng của tác giả khi đọc, bạn phải tìm kiếm các manh mối cảm xúc trong văn bản.\n\n> **Giọng điệu** là thái độ hoặc cảm xúc cơ bản của tác giả đối với chủ đề mà họ đang viết.\n\nBạn thường có thể xác định giọng điệu bằng cách xem xét các tính từ và động từ miêu tả mà tác giả chọn sử dụng.",
     example: "Using words like 'devastating', 'tragic', and 'heartbreaking' creates a serious, sorrowful tone.\nUsing words like 'ridiculous', 'absurd', and 'nonsense' creates a sarcastic or critical tone.",
     exampleVn: "Sử dụng các từ như 'tàn phá', 'bi thảm' và 'đau lòng' tạo ra một giọng điệu nghiêm túc, buồn bã.\nSử dụng các từ như 'lố bịch', 'vô lý' và 'vô nghĩa' tạo ra một giọng điệu mỉa mai hoặc chỉ trích.",
+    inlineSvg: DIAGRAMS.TONE_SPECTRUM,
     audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_4.mp3"
   },
   {

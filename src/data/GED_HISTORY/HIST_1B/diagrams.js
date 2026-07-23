@@ -221,5 +221,80 @@ export const DIAGRAMS = {
     <text x="375" y="58" font-family="sans-serif" font-weight="900" font-size="14" fill="#831843" text-anchor="middle">Courts</text>
     <text x="375" y="92" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155" text-anchor="middle">INTERPRET</text>
     <text x="375" y="112" font-family="sans-serif" font-size="12" fill="#64748b" text-anchor="middle">the laws</text>
+  </svg>`,
+
+  NOTES_DECLARATION_LOGIC: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 240" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <defs>
+      <marker id="hd1arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+      </marker>
+    </defs>
+    <text x="260" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">The Declaration is an argument, not an announcement</text>
+
+    <rect x="28" y="58" width="140" height="72" rx="11" fill="#eff6ff" stroke="#3b82f6" stroke-width="3"/>
+    <text x="98" y="86" font-family="sans-serif" font-weight="900" font-size="13" fill="#1e3a8a" text-anchor="middle">CLAIM</text>
+    <text x="98" y="106" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">power comes</text>
+    <text x="98" y="121" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">from the people</text>
+
+    <line x1="174" y1="94" x2="200" y2="94" stroke="#64748b" stroke-width="3" marker-end="url(#hd1arrow)"/>
+
+    <rect x="208" y="58" width="140" height="72" rx="11" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="278" y="86" font-family="sans-serif" font-weight="900" font-size="13" fill="#78350f" text-anchor="middle">EVIDENCE</text>
+    <text x="278" y="106" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">a long list of</text>
+    <text x="278" y="121" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">the King's abuses</text>
+
+    <line x1="354" y1="94" x2="380" y2="94" stroke="#64748b" stroke-width="3" marker-end="url(#hd1arrow)"/>
+
+    <rect x="388" y="58" width="106" height="72" rx="11" fill="#dcfce7" stroke="#16a34a" stroke-width="4"/>
+    <text x="441" y="86" font-family="sans-serif" font-weight="900" font-size="13" fill="#166534" text-anchor="middle">THEREFORE</text>
+    <text x="441" y="106" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">we may</text>
+    <text x="441" y="121" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">replace it</text>
+
+    <rect x="60" y="158" width="400" height="60" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
+    <text x="260" y="182" font-family="sans-serif" font-weight="bold" font-size="13" fill="#0f172a" text-anchor="middle">4 July 1776</text>
+    <text x="260" y="204" font-family="sans-serif" font-size="11" fill="#475569" text-anchor="middle">The same claim-evidence structure the GED asks you to write.</text>
+  </svg>`,
+
+  NOTES_RATIFY_NINE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 230" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="260" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">Nine of thirteen states had to say yes</text>
+
+    <g>
+      <rect x="60" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="122" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="184" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="246" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="308" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="370" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="432" y="54" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="122" y="116" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="184" y="116" width="52" height="52" rx="8" fill="#16a34a" stroke="#166534" stroke-width="3"/>
+      <rect x="246" y="116" width="52" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 4"/>
+      <rect x="308" y="116" width="52" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 4"/>
+      <rect x="370" y="116" width="52" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 4"/>
+      <rect x="432" y="116" width="52" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6 4"/>
+    </g>
+    <text x="86" y="196" font-family="sans-serif" font-weight="900" font-size="13" fill="#166534" text-anchor="middle">9 needed</text>
+    <text x="380" y="196" font-family="sans-serif" font-weight="bold" font-size="13" fill="#64748b" text-anchor="middle">4 could still refuse</text>
+    <text x="260" y="220" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">To ratify means to approve formally.</text>
+  </svg>`,
+
+  NOTES_BILL_OF_RIGHTS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 240" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+    <text x="260" y="28" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">What the Constitution did not say</text>
+
+    <rect x="28" y="52" width="216" height="150" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="4"/>
+    <text x="136" y="80" font-family="sans-serif" font-weight="900" font-size="14" fill="#1e3a8a" text-anchor="middle">THE CONSTITUTION</text>
+    <text x="136" y="112" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155" text-anchor="middle">how government</text>
+    <text x="136" y="132" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155" text-anchor="middle">WORKS</text>
+    <text x="136" y="164" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">branches, powers, elections</text>
+    <text x="136" y="184" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">1787</text>
+
+    <rect x="276" y="52" width="216" height="150" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/>
+    <text x="384" y="80" font-family="sans-serif" font-weight="900" font-size="14" fill="#5b21b6" text-anchor="middle">BILL OF RIGHTS</text>
+    <text x="384" y="112" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155" text-anchor="middle">what it may NEVER</text>
+    <text x="384" y="132" font-family="sans-serif" font-weight="bold" font-size="13" fill="#334155" text-anchor="middle">do to you</text>
+    <text x="384" y="164" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">speech, religion, fair trial</text>
+    <text x="384" y="184" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">first 10 amendments, 1791</text>
+
+    <text x="260" y="228" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">States refused to approve until the second half was promised.</text>
   </svg>`
 };

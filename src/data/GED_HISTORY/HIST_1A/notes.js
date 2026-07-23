@@ -51,6 +51,7 @@ export const notes = [
     example: "**Cause:** Britain gains a massive debt from the French and Indian War.\n\n**Effect:** Britain ends Salutary Neglect and begins heavily taxing the colonies to pay off the debt.",
     exampleVn: "**Nguyên nhân:** Anh gánh một khoản nợ khổng lồ từ Chiến tranh Pháp và Người Da đỏ.\n\n**Kết quả:** Anh chấm dứt Sự Bỏ mặc Hữu ích và bắt đầu đánh thuế nặng nề lên các thuộc địa để trả nợ.",
     spokenExample: "Let's look at the Cause and Effect. The cause: Britain gains a massive debt from the French and Indian War. The effect: Britain ends Salutary Neglect and begins heavily taxing the colonies to pay off the debt.",
+    inlineSvg: DIAGRAMS.NOTES_WAR_TO_TAXES,
     drawThis: false,
     audio: "/audio/GED_HISTORY/HIST_1A/slide_HIST_1A_4.mp3"
   },
@@ -63,6 +64,7 @@ export const notes = [
     content: "Britain passed new taxes on the colonies, such as the Stamp Act (a tax on paper goods). \n\n> **Write This Down:**\n> * **Parliament:** The legislative (law-making) body of Great Britain.\n> * **Grievance:** A formal complaint over something believed to be wrong or unfair.\n\nThe colonists' biggest grievance was that they had no representatives in Parliament. They believed it was unfair to be taxed by a government where they had no voice. Their rallying cry became: **\"No taxation without representation!\"**",
     contentVn: "Anh đã thông qua các loại thuế mới đối với các thuộc địa, chẳng hạn như Đạo luật Tem (thuế đánh vào các mặt hàng bằng giấy).\n\n> **Hãy ghi chép lại:**\n> * **Nghị viện (Parliament):** Cơ quan lập pháp (làm luật) của Vương quốc Anh.\n> * **Khiếu nại (Grievance):** Một lời phàn nàn chính thức về một điều gì đó được cho là sai trái hoặc bất công.\n\nKhiếu nại lớn nhất của những người dân thuộc địa là họ không có người đại diện trong Nghị viện. Họ cho rằng thật bất công khi bị đánh thuế bởi một chính phủ mà họ không có tiếng nói. Khẩu hiệu tập hợp của họ trở thành: **\"Không đóng thuế nếu không có đại diện!\"**",
     spoken: "Britain passed new taxes on the colonies, such as the Stamp Act. Please write this down: Parliament is the legislative body of Great Britain. A Grievance is a formal complaint over something believed to be wrong. The colonists' biggest grievance was that they had no representatives in Parliament. They believed it was unfair to be taxed by a government where they had no voice.",
+    inlineSvg: DIAGRAMS.NOTES_NO_REPRESENTATION,
     drawThis: false,
     audio: "/audio/GED_HISTORY/HIST_1A/slide_HIST_1A_5.mp3"
   },
@@ -93,6 +95,7 @@ export const notes = [
     example: "**Patriot Perspective:** \"We are being treated like slaves! We must fight for our freedom from British tyranny!\"\n\n**Loyalist Perspective:** \"We are British subjects. It is our duty to obey the King and pay our fair share.\"",
     exampleVn: "**Góc nhìn của Người Yêu nước:** \"Chúng ta đang bị đối xử như nô lệ! Chúng ta phải chiến đấu cho sự tự do của mình khỏi sự bạo ngược của Anh!\"\n\n**Góc nhìn của Người Trung thành:** \"Chúng ta là thần dân của Anh. Nghĩa vụ của chúng ta là tuân lệnh Nhà vua và đóng góp phần công bằng của mình.\"",
     spokenExample: "Consider these two perspectives. A Patriot might say: We must fight for our freedom from British tyranny! But a Loyalist might say: We are British subjects. It is our duty to obey the King and pay our fair share.",
+    inlineSvg: DIAGRAMS.NOTES_PATRIOT_LOYALIST,
     drawThis: false,
     audio: "/audio/GED_HISTORY/HIST_1A/slide_HIST_1A_7.mp3"
   },

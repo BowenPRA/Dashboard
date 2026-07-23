@@ -61,6 +61,7 @@ export const notes = [
     example: "Original: $2x + 3 = 11$.\n\nSubstitute $4$: $2(4) + 3 = 8 + 3 = 11$.\n\nThe left side equals the right side, so $x = 4$ is confirmed.",
     exampleVn: "Ban đầu: $2x + 3 = 11$.\n\nThay $4$ vào: $2(4) + 3 = 8 + 3 = 11$.\n\nVế trái bằng vế phải, vậy $x = 4$ đã được xác nhận.",
     spokenExample: "For example. The original equation is two x plus three equals eleven. Substitute four. Two times four plus three equals eight plus three, which equals eleven. The left side equals the right side, so x equals four is confirmed.",
+    inlineSvg: DIAGRAMS.DIAGRAM_CHECK_SOLUTION,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_4.mp3"
   },
@@ -73,6 +74,7 @@ export const notes = [
     content: "An equation has one answer. An **inequality** can have thousands.\n\nThe statement $x > 5$ is true for $6$, for $5.1$, and for $900$. All of those numbers are **solutions**.\n\n> **Write This Down:**\n> **Inequality:** A statement showing two sides are not equal, using $<$, $>$, $\\le$ or $\\ge$.\n\nBecause we cannot list every answer, we draw them instead.",
     contentVn: "Một phương trình có một đáp án. Một **bất đẳng thức** có thể có hàng nghìn đáp án.\n\nMệnh đề $x > 5$ đúng với $6$, với $5,1$, và với $900$. Tất cả những số đó đều là **nghiệm**.\n\n> **Hãy ghi chép lại:**\n> **Bất đẳng thức (Inequality):** Mệnh đề cho thấy hai vế không bằng nhau, dùng $<$, $>$, $\\le$ hoặc $\\ge$.\n\nVì chúng ta không thể liệt kê mọi đáp án, thay vào đó chúng ta vẽ chúng.",
     spoken: "An equation has one answer. An inequality can have thousands. The statement x is greater than five is true for six, for five point one, and for nine hundred. All of those numbers are solutions. Please write this down. An Inequality is a statement showing two sides are not equal, using the less than, greater than, less than or equal to, or greater than or equal to signs. Because we cannot list every answer, we draw them instead.",
+    inlineSvg: DIAGRAMS.NOTES_OPEN_CLOSED_CIRCLE,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_5.mp3"
   },
@@ -139,6 +141,7 @@ export const notes = [
     example: "A fridge must stay between $2°C$ and $8°C$.\n\nThat is written $2 \\le t \\le 8$. Both circles are filled, because exactly $2°$ and exactly $8°$ are still safe.",
     exampleVn: "Một tủ lạnh phải giữ nhiệt độ trong khoảng $2°C$ đến $8°C$.\n\nĐiều đó được viết là $2 \\le t \\le 8$. Cả hai vòng tròn đều được tô đặc, vì đúng $2°$ và đúng $8°$ vẫn an toàn.",
     spokenExample: "For example. A fridge must stay between two degrees and eight degrees Celsius. That is written as two is less than or equal to t is less than or equal to eight. Both circles are filled in, because exactly two degrees and exactly eight degrees are still safe.",
+    inlineSvg: DIAGRAMS.DIAGRAM_COMPOUND_RANGE,
     drawThis: true,
     audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_9.mp3"
   },
