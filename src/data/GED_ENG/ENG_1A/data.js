@@ -267,24 +267,45 @@ export const ENGLISH_1A_DATA = {
     }
   ],
   essay: {
-    task: "Explain why it is important for a reader to be able to distinguish between an author's objective facts and personal opinions when reading the news.",
+    // Modelled on the GED Reasoning Through Language Arts Extended Response:
+    // two opposing sources, and the student argues which is BETTER SUPPORTED --
+    // not which they personally agree with. 45 minutes, unaided.
+    minutesAllowed: 45,
+    sources: [
+      {
+        title: "Label the Opinions",
+        text:
+          "News websites should mark every opinion article with a large, clear label. A study by the Media Insight Project found that 43% of readers could not tell the difference between a news report and an opinion column on the same site. When a reader believes a columnist's personal view is a verified fact, they may repeat it as truth. Newspapers already separate these pieces in print, where the opinion pages sit in their own section. Online, that separation disappears, and every article looks identical in a search result. Clear labelling costs a publisher nothing and removes the confusion entirely.",
+      },
+      {
+        title: "Teach the Reader Instead",
+        text:
+          "Labels treat adults like children. A reader who relies on a coloured tag to know what to think has not learned anything; they have simply moved their trust from the writer to the label. Skilled readers already spot opinion by looking at the language: words such as 'should', 'terrible' or 'best' signal judgement, while a fact can be checked against a source. Schools and libraries that run short media-literacy courses report large gains in readers' ability to identify unsupported claims. Those gains last a lifetime and work on any website, including the ones that will never add a label at all.",
+      },
+    ],
+    task:
+      "Both sources argue about how readers should be protected from confusing opinion with fact. In your response, analyse both positions to determine which one is better supported. Use specific evidence from the sources to support your answer.",
     guidelines: [
-      "Define what makes a statement a fact.",
-      "Define what makes a statement an opinion.",
-      "Explain the danger of confusing the two when reading news."
+      "State clearly which position is better supported.",
+      "Quote or refer to specific evidence from BOTH sources.",
+      "Explain why that evidence is strong or weak — do not just repeat it.",
+      "Organise your answer with an introduction, body paragraphs and a conclusion.",
     ],
     requiredWords: [
-      ["Fact", "facts"], 
-      ["Opinion", "opinions", "beliefs"],
-      ["Evidence", "prove", "proof"]
+      ["Evidence", "prove", "proof"],
+      ["Claim", "argues", "argument", "position"],
+      ["Fact", "facts"],
+      ["Opinion", "opinions", "judgement"],
     ],
-    scienceMaxMarks: 3,
+    scienceMaxMarks: 4,
     markScheme: [
-      "1 mark for accurately defining a fact (can be proven).",
-      "1 mark for accurately defining an opinion (personal belief).",
-      "1 mark for explaining that confusing them can lead to misinformation or biased thinking."
+      "States clearly which position is better supported, rather than only which the writer personally prefers.",
+      "Refers to specific evidence from Source 1 (for example the 43% statistic or the print/online comparison).",
+      "Refers to specific evidence from Source 2 (for example the signal words or the media-literacy course results).",
+      "Evaluates the quality of the evidence rather than simply restating it, for example noting that a statistic is stronger than an assertion.",
     ],
-    modelAnswer: "It is important to distinguish between the two because a fact can be proven with objective evidence, while an opinion is just a personal belief. When reading the news, if a reader cannot tell the difference, they might mistake a writer's biased opinion for the absolute truth, leading to misinformation and a lack of critical thinking."
+    modelAnswer:
+      "Source 1 is better supported because it offers measurable evidence while Source 2 relies mostly on assertion. Source 1 cites a specific finding, that 43% of readers could not distinguish a news report from an opinion column, which is a fact that can be checked. It also gives a concrete comparison: print newspapers separate opinion into its own section, and that separation is lost online. Source 2 makes a reasonable claim that readers should be taught to spot judgement words such as 'should' or 'best', and it mentions that media-literacy courses report large gains. However, it never says how large those gains were or who measured them, so that evidence is much weaker. Source 2 also makes an emotional appeal by saying labels 'treat adults like children', which is an opinion rather than proof. Both positions want readers to avoid confusing fact with opinion, but only Source 1 supports its argument with verifiable evidence, so its position is the better supported of the two.",
   },
   assessment,
   notes,

@@ -172,8 +172,10 @@ export const TASKS = [
     component: lazy(() => import('./Essay.jsx')),
     hasContent: (u) => !!u.essay,
     buildPool: (u) => ({ essay: u.essay || null }),
-    props: ({ pool, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
-      ({ pool, savedData, strikes, onAddStrike, onComplete, onQuit }),
+    // track/unitTitle let the grader pick the right examiner and rubric instead
+    // of assuming Cambridge Year 8 Science for every subject.
+    props: ({ pool, unit, unitId, track, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
+      ({ pool, unitId, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onQuit }),
   },
   {
     id: 'ASSESSMENT',

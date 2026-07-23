@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, Type, FlaskConical, FileEdit, ArrowRight } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, Award, Type, FlaskConical, FileEdit, ArrowRight, Clock } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeEssay } from '../utils/aiGrader';
@@ -45,13 +45,19 @@ const checkRequiredWordGroup = (wordGroup, text) => {
 
 const MIN_CHARS = 100; 
 
-export default function Essay({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike }) {
+export default function Essay({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const currentQ = pool?.essay || pool;
+
+  // The GED Extended Response is a timed, unaided piece of writing. Units may
+  // override the limit; 45 minutes matches the real test.
+  const minutesAllowed = currentQ?.minutesAllowed ?? 45;
   
   const [localAnswers, setLocalAnswers] = useState(savedData);
   const [gameState, setGameState] = useState('Q'); 
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const [secondsLeft, setSecondsLeft] = useState(minutesAllowed * 60);
+  const [timeUp, setTimeUp] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -80,6 +86,21 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool]);
+
+  // Counts down only while the student is actually writing. Declared before the
+  // early return below so hook order stays identical on every render.
+  useEffect(() => {
+    if (gameState !== 'Q' || timeUp) return undefined;
+    const id = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) { clearInterval(id); setTimeUp(true); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [gameState, timeUp]);
+
+  const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`;
 
   // Safe check to prevent crashing if the unit has no essay
   if (!currentQ || !currentQ.task) {
@@ -144,7 +165,11 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       requiredWords: primaryRequiredWords,
       expectedAnswer: currentQ.modelAnswer,
       scienceMaxMarks: currentQ.scienceMaxMarks,
-      markScheme: currentQ.markScheme
+      markScheme: currentQ.markScheme,
+      guidelines: currentQ.guidelines || [],
+      track,
+      unitTitle,
+      minutesAllowed
     };
 
     let aiData;
@@ -259,14 +284,29 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
           
           {/* LEFT: Guidelines & Task */}
           <div className="w-full lg:w-1/3 flex flex-col">
-            <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 shadow-sm sticky top-24">
+            <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 shadow-sm sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
               <div className="inline-flex items-center justify-center bg-indigo-100 text-indigo-700 px-4 py-2 rounded-2xl mb-6 font-bold tracking-widest uppercase text-sm">
                 <FileEdit className="w-5 h-5 mr-2" /> Essay Prompt
               </div>
+
+              {/* GED Extended Response supplies opposing sources to analyse. */}
+              {(currentQ.sources || []).length > 0 && (
+                <div className="space-y-4 mb-6">
+                  {currentQ.sources.map((s, i) => (
+                    <div key={i} className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4">
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-2">
+                        Source {i + 1}{s.title ? ` — ${s.title}` : ''}
+                      </h4>
+                      <p className="text-sm text-slate-700 font-medium leading-relaxed whitespace-pre-line">{s.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <h2 className="text-2xl font-black text-slate-800 leading-snug mb-6">
                 {currentQ.task}
               </h2>
-              
+
               <div className="pt-6 border-t border-slate-100">
                 <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Writing Guidelines</h3>
                 <ul className="space-y-3">
@@ -285,13 +325,44 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
           <div className="w-full lg:w-2/3 flex flex-col">
             
             <div className={containerClass}>
-              <textarea 
+              {gameState === 'Q' && (
+                <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-slate-100 dark:border-slate-800">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Exam conditions &middot; no spell check &middot; no copy &amp; paste
+                  </span>
+                  <div className={`flex items-center px-3 py-1.5 rounded-xl border-2 font-black text-sm tabular-nums tracking-wider
+                    ${timeUp
+                      ? 'bg-rose-100 dark:bg-rose-900/30 border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400'
+                      : secondsLeft <= 300
+                        ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400'
+                        : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}
+                  >
+                    <Clock className="w-4 h-4 mr-2" strokeWidth={3} />
+                    {timeUp ? "TIME" : mmss}
+                  </div>
+                </div>
+              )}
+
+              {timeUp && gameState === 'Q' && (
+                <div className="mb-4 px-4 py-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border-2 border-rose-200 dark:border-rose-800">
+                  <p className="text-sm font-bold text-rose-700 dark:text-rose-300 leading-relaxed">
+                    Time is up, just like the real test. Submit what you have written &mdash; a
+                    finished-enough response always scores better than an unfinished perfect one.
+                  </p>
+                </div>
+              )}
+
+              <textarea
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 onPaste={(e) => e.preventDefault()}
                 onCopy={(e) => e.preventDefault()}
                 onCut={(e) => e.preventDefault()}
-                disabled={gameState !== 'Q'}
+                disabled={gameState !== 'Q' || timeUp}
+                spellCheck={false}
+                autoCorrect="off"
+                autoCapitalize="sentences"
+                autoComplete="off"
                 placeholder={strikes >= 3 ? "AI Grader disabled. Local fallback grading only." : "Start writing your essay here..."}
                 className={textAreaClass}
               />
