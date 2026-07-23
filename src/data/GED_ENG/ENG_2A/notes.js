@@ -9,7 +9,7 @@ export const notes = [
     subtitleVn: "Mục tiêu: Nắm vững các kỹ năng về giọng nói, cách phát âm và nhịp độ cần thiết để trình bày một bài diễn văn tự nhiên như một cuộc trò chuyện.",
     color: "bg-[#1cb0f6]",
     borderColor: "border-[#1899d6]",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_1.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_1.mp3"
   },
   {
     type: "concept",
@@ -23,7 +23,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng",
     example: "Good posture opens your airway. This allows your voice to resonate fully, making you sound relaxed and conversational rather than nervous and out of breath.",
     exampleVn: "Tư thế tốt sẽ mở rộng đường thở của bạn. Điều này cho phép giọng nói của bạn vang lên trọn vẹn, giúp bạn nghe có vẻ thoải mái và như đang trò chuyện, thay vì căng thẳng và hụt hơi.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_2.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_2.mp3"
   },
   {
     type: "concept",
@@ -37,7 +37,7 @@ export const notes = [
     exampleLabelVn: "Sự kết nối Cơ thể - Giọng nói",
     example: "Your voice follows your body. If you freeze your body stiff, your voice will sound robotic. Gesturing naturally forces your vocal intonation to go up and down naturally.",
     exampleVn: "Giọng nói đi theo cơ thể bạn. Nếu bạn giữ cơ thể cứng đờ, giọng nói của bạn sẽ nghe như robot. Việc ra điệu bộ một cách tự nhiên buộc ngữ điệu giọng nói của bạn phải lên xuống một cách tự nhiên.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_3.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_3.mp3"
   },
   {
     type: "concept",
@@ -51,7 +51,7 @@ export const notes = [
     exampleLabelVn: "Kỹ thuật Đọc",
     example: "Instead of reading: 'I [pause] went [pause] to [pause] the [pause] store', read it as one smooth chunk: 'I-went-to-the-store'.",
     exampleVn: "Thay vì đọc: 'I [nghỉ] went [nghỉ] to [nghỉ] the [nghỉ] store', hãy đọc nó thành một cụm trôi chảy: 'I-went-to-the-store'.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_4.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_4.mp3"
   },
   {
     type: "concept",
@@ -65,7 +65,7 @@ export const notes = [
     exampleLabelVn: "Khoảng không để Thở",
     example: "Pausing gives your mouth a millisecond to prepare for a difficult English pronunciation. Never be afraid of a moment of silence.",
     exampleVn: "Việc tạm dừng cho miệng bạn một phần nghìn giây để chuẩn bị cho một phát âm tiếng Anh khó. Đừng bao giờ sợ một khoảnh khắc im lặng.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_5.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_5.mp3"
   },
   {
     type: "concept",
@@ -79,7 +79,7 @@ export const notes = [
     exampleLabelVn: "Hướng dẫn",
     example: "Read the speeches aloud. Use the 'Delivery Tips' provided on each slide to coach yourself on how to pronounce specific words and where to breathe.",
     exampleVn: "Hãy đọc to các bài diễn văn. Sử dụng 'Mẹo Luyện giọng' được cung cấp trên mỗi trang để tự huấn luyện cách phát âm các từ cụ thể và vị trí cần lấy hơi.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_6.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_6.mp3"
   },
   {
     type: "concept",
@@ -93,7 +93,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Bắt đầu Tự nhiên",
     example: "Start with a warm smile so your voice sounds friendly. Pause slightly after 'fear' to create anticipation before dropping the word 'failure'. Pronounce 'Achievements' with a clear 'ch' sound: /əˈtʃiːvmənts/.",
     exampleVn: "Bắt đầu với một nụ cười ấm áp để giọng bạn nghe thật thân thiện. Dừng lại một chút sau từ 'fear' để tạo sự mong đợi trước khi nói từ 'failure'. Phát âm từ 'Achievements' với âm 'ch' rõ ràng: /əˈtʃiːvmənts/.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_7.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_7.mp3"
   },
   {
     type: "concept",
@@ -107,7 +107,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Đuôi -ED",
     example: "Pay attention to word endings! Because 'Frustrate' ends with a 'T', the '-ed' ending must be pronounced as a separate syllable: /ɪd/. Say it out loud: Frus-tray-TID.",
     exampleVn: "Hãy chú ý đến phần âm cuối của từ! Vì 'Frustrate' kết thúc bằng chữ 'T', nên đuôi '-ed' phải được phát âm thành một âm tiết riêng biệt: /ɪd/. Hãy nói to: Frus-tray-TID.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_8.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_8.mp3"
   },
   {
     type: "concept",
@@ -121,7 +121,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Đổi Ngữ điệu",
     example: "Raise the pitch of your voice slightly on the word 'hopeful' to sound positive. Then, take a breath and drop your pitch when you say 'another Challenge' to signify bad news.",
     exampleVn: "Nâng nhẹ cao độ giọng nói của bạn ở từ 'hopeful' để nghe thật tích cực. Sau đó, hít một hơi và hạ thấp giọng khi bạn nói 'another Challenge' để báo hiệu tin xấu.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_9.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_9.mp3"
   },
   {
     type: "concept",
@@ -135,7 +135,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Nhấn mạnh Tương phản",
     example: "To make this sound natural, you must strongly stress the contrasting words. Hit the word 'opposite' hard, pause slightly, and then emphasize the word 'part'.",
     exampleVn: "Để câu này nghe tự nhiên, bạn phải nhấn mạnh rõ ràng vào các từ tương phản. Nhấn mạnh từ 'opposite', dừng lại một chút, và sau đó nhấn mạnh từ 'part'.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_10.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_10.mp3"
   },
   {
     type: "concept",
@@ -149,7 +149,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Ngữ điệu Liệt kê",
     example: "When reading a list, let your pitch go slightly up on the first two items (Perseverance ↗, courage ↗), and drop down on the final item (Resilience ↘) to show the list is finished.",
     exampleVn: "Khi đọc một danh sách, hãy để cao độ của bạn hơi đi lên ở hai mục đầu tiên (Perseverance ↗, courage ↗), và hạ thấp ở mục cuối cùng (Resilience ↘) để cho thấy danh sách đã kết thúc.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_11.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_11.mp3"
   },
   {
     type: "concept",
@@ -163,7 +163,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Nối Âm",
     example: "Practice connecting your words smoothly. Instead of stopping, link the 'y' and 'f' in 'apply for' (/əˈplaɪ-fɔːr/) so it sounds like one continuous, natural breath.",
     exampleVn: "Hãy thực hành nối các từ của bạn một cách trôi chảy. Thay vì dừng lại, hãy nối chữ 'y' và 'f' trong 'apply for' (/əˈplaɪ-fɔːr/) để nó nghe như một hơi thở liên tục, tự nhiên.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_12.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_12.mp3"
   },
   {
     type: "concept",
@@ -177,7 +177,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Hạ Giọng Cuối Câu",
     example: "On the phrase 'it will come', firmly lower your pitch. Downward inflection projects absolute confidence and tells the audience that the speech is definitively over.",
     exampleVn: "Ở cụm từ 'it will come', hãy dứt khoát hạ thấp cao độ giọng của bạn. Việc hạ giọng truyền tải sự tự tin tuyệt đối và nói cho khán giả biết rằng bài diễn văn đã thực sự kết thúc.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_13.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_13.mp3"
   },
   {
     type: "concept",
@@ -191,7 +191,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Âm lượng và Sự đồng cảm",
     example: "To express grief naturally, do not yell. Physically lower the volume of your voice and read these lines slowly. Make sure to articulate the 'v' in 'Motivation' clearly (/ˌmoʊtɪˈveɪʃn/).",
     exampleVn: "Để bày tỏ sự đau buồn một cách tự nhiên, đừng nói lớn tiếng. Hãy hạ thấp âm lượng giọng nói của bạn một cách vật lý và đọc những dòng này thật chậm. Đảm bảo phát âm rõ chữ 'v' trong từ 'Motivation' (/ˌmoʊtɪˈveɪʃn/).",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_14.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_14.mp3"
   },
   {
     type: "concept",
@@ -205,7 +205,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Điều chỉnh Giọng nói",
     example: "As Khoi finds his strength, your voice should change too. Start softly, but gradually increase your volume and speak slightly faster as you say 'I still had my mother.'",
     exampleVn: "Khi Khôi tìm lại được sức mạnh, giọng nói của bạn cũng nên thay đổi theo. Bắt đầu nhẹ nhàng, nhưng tăng dần âm lượng và nói nhanh hơn một chút khi bạn nói 'I still had my mother.'",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_15.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_15.mp3"
   },
   {
     type: "concept",
@@ -219,7 +219,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Nhấn mạnh Động từ",
     example: "To sound conversational, put verbal stress on the action words. Lean your voice into 'made', 'keep going', and 'kept studying' to highlight the actions he took.",
     exampleVn: "Để nghe giống như đang nói chuyện, hãy đặt trọng âm vào các từ chỉ hành động. Nhấn giọng vào các từ 'made', 'keep going', và 'kept studying' để làm nổi bật những hành động cậu ấy đã thực hiện.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_16.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_16.mp3"
   },
   {
     type: "concept",
@@ -233,7 +233,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Một Quy tắc đuôi -ED khác",
     example: "Notice the word 'Trapped'. Because the base word ends in a 'P' sound, the '-ed' ending is pronounced as a quick /t/ sound. Say: Trap-t.",
     exampleVn: "Hãy chú ý đến từ 'Trapped'. Vì từ gốc kết thúc bằng âm 'P', nên đuôi '-ed' được phát âm thành một âm /t/ nhanh. Hãy nói: Trap-t.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_17.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_17.mp3"
   },
   {
     type: "concept",
@@ -247,7 +247,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Giọng 'Người bạn'",
     example: "Do not read this like an academic essay. Relax your shoulders, look up, and read this line exactly as if you were giving advice to a close friend over dinner.",
     exampleVn: "Đừng đọc phần này như một bài luận học thuật. Hãy thả lỏng vai, ngước nhìn lên và đọc câu này y hệt như thể bạn đang đưa ra lời khuyên cho một người bạn thân trong bữa tối.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_18.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_18.mp3"
   },
   {
     type: "concept",
@@ -261,7 +261,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Phát âm Rõ ràng",
     example: "Slow down significantly for the phrase 'change everything'. Open your mouth slightly wider than normal to ensure every vowel sound is crystal clear and inspiring.",
     exampleVn: "Nói chậm lại đáng kể ở cụm từ 'change everything'. Hãy mở miệng to hơn bình thường một chút để đảm bảo mọi nguyên âm đều được phát ra rõ ràng và đầy cảm hứng.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_19.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_19.mp3"
   },
   {
     type: "concept",
@@ -275,7 +275,7 @@ export const notes = [
     exampleLabelVn: "Tiếp tục Trải nghiệm",
     example: "Click continue to practice your delivery on speeches about surfing and the dangers of smoking.",
     exampleVn: "Nhấp vào tiếp tục để thực hành trình bày các bài diễn văn về lướt sóng và tác hại của việc hút thuốc.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_20.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_20.mp3"
   },
   {
     type: "concept",
@@ -289,7 +289,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Giọng điệu Hào hứng",
     example: "Since surfing is a fun, physical activity, your voice should sound energetic. Stress the action words like 'movement', 'balance', and 'strengthens'.",
     exampleVn: "Vì lướt sóng là một hoạt động thể chất thú vị, giọng nói của bạn nên nghe tràn đầy năng lượng. Nhấn mạnh các từ chỉ hành động như 'movement', 'balance', và 'strengthens'.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_21.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_21.mp3"
   },
   {
     type: "concept",
@@ -303,7 +303,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Giọng êm dịu",
     example: "Shift your tone to match the words. When saying 'reduce stress' and 'relaxed', physically slow down your speaking pace and lower your volume slightly to sound peaceful.",
     exampleVn: "Hãy thay đổi giọng điệu để phù hợp với ngôn từ. Khi nói 'reduce stress' và 'relaxed', hãy chủ động nói chậm lại và giảm nhẹ âm lượng để nghe thật bình yên.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_22.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_22.mp3"
   },
   {
     type: "concept",
@@ -317,7 +317,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Nhấn mạnh Cảm hứng",
     example: "Pause before the word 'perseverance' to highlight it. On the final phrase 'proud of themselves', use a downward inflection to show absolute certainty.",
     exampleVn: "Dừng lại trước từ 'perseverance' để làm nổi bật nó. Ở cụm từ cuối cùng 'proud of themselves', hãy hạ giọng xuống để thể hiện sự chắc chắn tuyệt đối.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_23.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_23.mp3"
   },
   {
     type: "concept",
@@ -331,7 +331,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Giọng điệu Uy quyền",
     example: "This is a very strong, serious claim. Stand up straight and speak with a firm, steady voice. Emphasize the word 'ban' to show your conviction.",
     exampleVn: "Đây là một lập luận rất mạnh mẽ và nghiêm túc. Đứng thẳng và nói với một giọng điệu vững vàng, kiên định. Nhấn mạnh từ 'ban' để thể hiện sự quả quyết của bạn.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_24.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_24.mp3"
   },
   {
     type: "concept",
@@ -345,7 +345,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Phát âm các Phụ âm mạnh",
     example: "When saying negative words like 'bad stuff', 'tar', and 'damages', hit the hard consonants (T, D, K sounds) sharply to make the words sound dangerous.",
     exampleVn: "Khi nói những từ ngữ tiêu cực như 'bad stuff', 'tar', và 'damages', hãy nhấn mạnh các phụ âm cứng (âm T, D, K) thật sắc bén để làm cho các từ này nghe có vẻ nguy hiểm.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_25.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_25.mp3"
   },
   {
     type: "concept",
@@ -359,7 +359,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Sự Đồng cảm",
     example: "The speaker is talking about innocent people getting hurt. Soften your voice slightly and read this with genuine concern for 'the person next to them'.",
     exampleVn: "Người nói đang nhắc đến những người vô tội bị tổn thương. Hãy làm dịu giọng nói của bạn một chút và đọc phần này với sự quan tâm chân thành dành cho 'the person next to them'.",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_26.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_26.mp3"
   },
   {
     type: "concept",
@@ -373,7 +373,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Nhấn mạnh Tương phản",
     example: "Emphasize the contrast between reality and what kids 'think'. Stress the word 'think' heavily: '...because they *think* smoke makes them look cool...'",
     exampleVn: "Nhấn mạnh sự đối lập giữa thực tế và những gì trẻ em 'nghĩ'. Nhấn mạnh nhiều vào từ 'think': '...because they *think* smoke makes them look cool...'",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_27.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_27.mp3"
   },
   {
     type: "concept",
@@ -387,7 +387,7 @@ export const notes = [
     exampleLabelVn: "Mẹo Luyện giọng: Quy tắc Số Ba",
     example: "When reading a list of three bad things, raise your pitch on the first two ('bad for their lungs ↗', 'bad for the person next to them ↗'), and drop it on the final point ('young people will copy ↘').",
     exampleVn: "Khi đọc một danh sách gồm ba điều tồi tệ, hãy nâng cao độ của bạn ở hai điều đầu tiên ('bad for their lungs ↗', 'bad for the person next to them ↗'), và hạ giọng ở điểm cuối cùng ('young people will copy ↘').",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_28.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_28.mp3"
   },
   {
     type: "summary",
@@ -397,6 +397,6 @@ export const notes = [
     subtitleVn: "Đạt được mục tiêu: Bạn đã áp dụng các kỹ năng trình bày vào nhiều bài diễn văn, nắm vững nhịp độ, cảm xúc và cách phát âm.",
     color: "bg-[#58cc02]",
     borderColor: "border-[#46a802]",
-    audio: "/audio/GED/ENG_2A/slide_ENG_2A_29.mp3"
+    audio: "/audio/GED_ENG/ENG_2A/slide_ENG_2A_29.mp3"
   }
 ];

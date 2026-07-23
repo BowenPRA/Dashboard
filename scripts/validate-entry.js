@@ -235,6 +235,21 @@ for (const trackId of TRACK_IDS) {
       }
       if (missing.length) warn(`${label}: ${missing.length} audio file(s) not generated yet, e.g. ${missing[0]}`);
     }
+
+    // -- slide narration paths are hardcoded in notes.js, so a folder rename or a
+    //    naming-convention drift silently 404s every slide. Check them explicitly.
+    const notesPath = path.join(dir, 'notes.js');
+    if (fs.existsSync(notesPath)) {
+      const src = fs.readFileSync(notesPath, 'utf8');
+      const dead = [];
+      for (const m of src.matchAll(/["'](\/audio\/[^"']+)["']/g)) {
+        const rel = m[1].replace(/^\/+/, '');
+        if (!fs.existsSync(path.join(ROOT, 'public', rel))) dead.push(m[1]);
+      }
+      if (dead.length) {
+        err(`${label}: ${dead.length} slide audio path(s) do not exist, e.g. ${dead[0]}`);
+      }
+    }
   }
 }
 

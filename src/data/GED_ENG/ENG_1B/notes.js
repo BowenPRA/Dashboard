@@ -34,7 +34,7 @@ export const notes = [
         </marker>
       </defs>
     </svg>`,
-    audio: "/audio/GED/ENG_1B/slide_ENG_1B_1.mp3"
+    audio: "/audio/GED_ENG/ENG_1B/slide_ENG_1B_1.mp3"
   },
   {
     type: "concept",
@@ -61,7 +61,7 @@ export const notes = [
       </g>
       <line x1="200" y1="15" x2="200" y2="235" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
     </svg>`,
-    audio: "/audio/GED/ENG_1B/slide_ENG_1B_2.mp3"
+    audio: "/audio/GED_ENG/ENG_1B/slide_ENG_1B_2.mp3"
   },
   {
     type: "concept",
@@ -81,7 +81,7 @@ export const notes = [
       <path d="M 190 170 h 20 v 10 h -20 z" fill="#eab308" />
       <path d="M 195 180 h 10 v 5 h -10 z" fill="#ca8a04" />
     </svg>`,
-    audio: "/audio/GED/ENG_1B/slide_ENG_1B_3.mp3"
+    audio: "/audio/GED_ENG/ENG_1B/slide_ENG_1B_3.mp3"
   },
   {
     type: "concept",
@@ -93,7 +93,7 @@ export const notes = [
     contentVn: "Khi đọc nhiều văn bản lịch sử hoặc báo cáo khoa học, bạn không thể chỉ liệt kê các sự kiện. Bạn phải thực hiện sự **Tổng hợp**.\n\n> **Tổng hợp** có nghĩa là kết hợp thông tin từ các nguồn khác nhau để tạo ra một kết luận mới, thống nhất.\n> **Mạch lạc** là mức độ trơn tru mà các ý tưởng này được gắn kết với nhau bằng cách sử dụng các chuyển tiếp logic.",
     example: "By synthesizing the data from Text A and Text B, we can clearly see that the economy is improving.",
     exampleVn: "Bằng cách tổng hợp dữ liệu từ Văn bản A và Văn bản B, chúng ta có thể thấy rõ rằng nền kinh tế đang được cải thiện.",
-    audio: "/audio/GED/ENG_1B/slide_ENG_1B_4.mp3"
+    audio: "/audio/GED_ENG/ENG_1B/slide_ENG_1B_4.mp3"
   },
   {
     type: "summary",
