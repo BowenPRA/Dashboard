@@ -3,6 +3,7 @@ import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
 import { games } from './games.js';
+import { DIAGRAMS } from './diagrams.js';
 
 export const ENGLISH_2A_DATA = {
   meta: {
@@ -246,7 +247,7 @@ export const ENGLISH_2A_DATA = {
   diagrams: [
     {
       id: "d1",
-      imageUrl: "/images/GED/stance_diagram.png", // Assuming a generic path for the app to render
+      inlineSvg: DIAGRAMS.SPEAKER_STANCE,
       promptText: "Look at the diagram showing correct posture and stance. Why is it important to keep your feet planted shoulder-width apart rather than shifting your weight back and forth?",
       requiredWords: [["nervous", "nervousness", "distracting", "confidence"]],
       scienceMaxMarks: 2,
@@ -258,7 +259,7 @@ export const ENGLISH_2A_DATA = {
     },
     {
       id: "d2",
-      imageUrl: "/images/GED/speech_structure.png",
+      inlineSvg: DIAGRAMS.SPEECH_STRUCTURE,
       promptText: "Review the graphic showing the structure of an argument. According to the lesson, how does a speaker's 'Tone' influence how the audience receives the 'Evidence'?",
       requiredWords: [["emotion", "feelings", "attitude", "serious"]],
       scienceMaxMarks: 2,

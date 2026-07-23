@@ -3,6 +3,7 @@ import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
 import { games } from './games.js';
+import { DIAGRAMS } from './diagrams.js';
 
 export const ENGLISH_1B_DATA = {
   meta: {
@@ -258,7 +259,7 @@ export const ENGLISH_1B_DATA = {
   diagrams: [
     {
       id: "d1",
-      imageUrl: "/images/GED/sentence_structure_chart.png",
+      inlineSvg: DIAGRAMS.SENTENCE_STRUCTURE_CHART,
       imagePrompt: "A clean, minimalist academic bar chart titled 'Sentence Structures in Persuasive Essays'. The y-axis shows 'Frequency of Use (%)' and the x-axis shows three categories: 'Simple Sentences', 'Compound Sentences', and 'Complex Sentences (Subordination)'. The bar for 'Complex Sentences (Subordination)' is the tallest at 65%, 'Simple Sentences' is at 15%, and 'Compound Sentences' is at 20%. Use a modern color palette of teal, navy, and coral on a white background. No 3D effects, highly legible sans-serif fonts, flat graphic design style suitable for an English language test.",
       promptText: "Analyze the provided chart. What does the data suggest about the preferred sentence structure in persuasive writing?",
       requiredWords: [["complex", "subordination"], ["highest", "majority", "most", "preferred"]],
@@ -271,7 +272,7 @@ export const ENGLISH_1B_DATA = {
     },
     {
       id: "d2",
-      imageUrl: "/images/GED/argument_architecture_flow.png",
+      inlineSvg: DIAGRAMS.ARGUMENT_ARCHITECTURE,
       imagePrompt: "A flat vector infographic showing the 'Architecture of an Argument'. It features three interconnected blocks flowing upwards. The bottom block is blue and labeled '1. Evidence Synthesis'. A prominent arrow points up to a middle orange block labeled '2. Concession to Opponent'. A final arrow points up to the top green block labeled '3. Primary Claim'. The design should be sleek, corporate, and highly legible, using standard sans-serif fonts, placed on a clean white background.",
       promptText: "Examine the flowchart detailing the Architecture of an Argument. Describe the sequence of steps a writer must take before reaching the Primary Claim.",
       requiredWords: [["synthesis", "synthesize"], ["concession", "concede"]],

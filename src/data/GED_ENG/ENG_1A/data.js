@@ -3,6 +3,7 @@ import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
 import { games } from './games.js';
+import { DIAGRAMS } from './diagrams.js';
 
 export const ENGLISH_1A_DATA = {
   meta: {
@@ -243,7 +244,7 @@ export const ENGLISH_1A_DATA = {
   diagrams: [
     {
       id: "d1",
-      imageUrl: "/images/GED/reading_map1.png",
+      inlineSvg: DIAGRAMS.PARAGRAPH_STRUCTURE,
       promptText: "Look at the basic paragraph structure chart. In which section does the author usually introduce their main claim?",
       requiredWords: [["beginning", "start", "first"]],
       scienceMaxMarks: 2,
@@ -255,7 +256,7 @@ export const ENGLISH_1A_DATA = {
     },
     {
       id: "d2",
-      imageUrl: "/images/GED/fact_opinion1.png",
+      inlineSvg: DIAGRAMS.FACT_VS_OPINION,
       promptText: "Review the graphic sorting statements. What is the key feature that separates the statements in the 'Fact' column from the 'Opinion' column?",
       requiredWords: [["proof", "proven", "prove"], ["objective", "evidence"]],
       scienceMaxMarks: 2,

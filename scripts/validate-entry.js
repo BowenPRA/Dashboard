@@ -208,6 +208,19 @@ for (const trackId of TRACK_IDS) {
       }
     }
 
+    // -- referenced images must exist. A missing PNG renders as a broken image
+    //    inside a task that asks the student to analyse it.
+    for (const f of fs.existsSync(dir) ? fs.readdirSync(dir) : []) {
+      if (!f.endsWith('.js')) continue;
+      const src = fs.readFileSync(path.join(dir, f), 'utf8');
+      for (const m of src.matchAll(/(?:imageUrl|image):\s*["']([^"']+)["']/g)) {
+        const rel = m[1].replace(/^\/+/, '');
+        if (!fs.existsSync(path.join(ROOT, 'public', rel))) {
+          err(`${label}: ${f} references ${m[1]}, which does not exist in public/`);
+        }
+      }
+    }
+
     // -- audio the app will actually request
     const adir = path.join(AUDIO, trackId, m.id);
     if (!fs.existsSync(adir)) {
