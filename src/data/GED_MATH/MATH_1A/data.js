@@ -139,30 +139,8 @@ export const GED_MATH_1A_DATA = {
       modelAnswer: "An expression is a math phrase with no equal sign, while an equation has an equal sign showing that two sides are balanced.",
       vnTranslation: "Sự khác biệt chính giữa biểu thức và phương trình là gì?"
     },
-    {
-      id: "qa2",
-      question: "In the mathematical term '5y', what do we call the number 5, and what do we call the letter y?",
-      requiredWords: [["coefficient"], ["variable"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Identifies 5 as the coefficient.",
-        "Identifies y as the variable."
-      ],
-      modelAnswer: "The number 5 is the coefficient, and the letter y is the variable.",
-      vnTranslation: "Trong hạng tử toán học '5y', chúng ta gọi số 5 là gì, và gọi chữ y là gì?"
-    },
-    {
-      id: "qa3",
-      question: "If you are asked to 'isolate the variable' when solving an equation, what exactly are you trying to do?",
-      requiredWords: [["isolate", "by itself", "alone", "on its own"], ["one side", "side"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Explains that the goal is to get the variable completely alone on one side of the equal sign.",
-        "Refers to using inverse (opposite) operations, or to doing the same thing to both sides."
-      ],
-      modelAnswer: "You are trying to use inverse operations on both sides of the equation until the letter is completely by itself on one side of the equal sign.",
-      vnTranslation: "Nếu bạn được yêu cầu 'cô lập biến số' khi giải phương trình, chính xác thì bạn đang cố gắng làm gì?"
-    },
+
+
     {
       id: "qa4",
       question: "Why is it important to only combine 'like terms' in an expression?",
@@ -175,18 +153,7 @@ export const GED_MATH_1A_DATA = {
       modelAnswer: "Like terms have exactly the same variable, so they count the same kind of thing. Terms with different variables represent entirely different things, like apples and bananas, so they cannot be added together.",
       vnTranslation: "Tại sao việc chỉ kết hợp 'các hạng tử đồng dạng' trong một biểu thức lại quan trọng?"
     },
-    {
-      id: "qa5",
-      question: "What does it mean to 'substitute' a number in algebra?",
-      requiredWords: [["substitute", "replace", "plug in"], ["variable", "letter"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "States that substitution means replacing the variable with a given number.",
-        "Notes that the expression is then evaluated or calculated to find its value."
-      ],
-      modelAnswer: "It means replacing the variable with a specific number wherever that letter appears, and then evaluating the expression to find its value.",
-      vnTranslation: "Việc 'thay thế' một số trong đại số có nghĩa là gì?"
-    },
+
     {
       id: "qa6",
       question: "A plumber charges a $50 flat service fee plus $25 per hour of work. If the total bill was $150, which equation can be used to find the number of hours (h) he worked?",
@@ -213,19 +180,7 @@ export const GED_MATH_1A_DATA = {
       modelAnswer: "Substitute the values to get 4(3)² - 3(5). Calculate the exponent first: 3² = 9. Then multiply: 4 × 9 = 36 and 3 × 5 = 15. Finally subtract: 36 - 15 = 21.",
       vnTranslation: "Tính giá trị biểu thức đại số 4x² - 3y khi x = 3 và y = 5."
     },
-    {
-      id: "qa8",
-      question: "A rectangular garden has a length of 2x + 4 and a width of x - 1. Write a simplified expression for the perimeter of the garden.",
-      requiredWords: [["perimeter"], ["6x + 6", "6x+6"]],
-      scienceMaxMarks: 3,
-      markScheme: [
-        "Sets up the perimeter as 2(2x + 4) + 2(x - 1), or adds all four sides.",
-        "Distributes correctly to get 4x + 8 + 2x - 2.",
-        "Combines like terms to reach the simplified answer 6x + 6."
-      ],
-      modelAnswer: "The perimeter is twice the length plus twice the width: 2(2x + 4) + 2(x - 1). Distributing gives 4x + 8 + 2x - 2. Combining like terms gives 6x + 6.",
-      vnTranslation: "Một khu vườn hình chữ nhật có chiều dài là 2x + 4 và chiều rộng là x - 1. Hãy viết một biểu thức rút gọn cho chu vi của khu vườn."
-    },
+
     {
       id: "qa9",
       question: "Solve the equation for x: 3x - 12 = 24. What are the steps?",
@@ -293,31 +248,8 @@ export const GED_MATH_1A_DATA = {
         "Explains that the left-pointing arrow indicates values less than 4."
       ]
     },
-    {
-      id: "diag_4_system",
-      promptText: "Look at the graphed system of linear equations. Identify the solution to the system and explain how you determined it from the graph.",
-      inlineSvg: DIAGRAMS.DIAGRAM_SYSTEM,
-      requiredWords: [["solution", "nghiệm"], ["intersect", "intersection", "cắt nhau", "giao điểm"], "point", ["coordinate", "tọa độ"]],
-      modelAnswer: "The solution to a graphed system of equations is the exact point where the two lines intersect. On this graph, the lines cross at the coordinates (2, 1), so the solution is x = 2 and y = 1.",
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Explains that the solution is the point of intersection between the two lines.",
-        "Correctly identifies the intersection point as (2, 1)."
-      ]
-    },
-    {
-      id: "diag_5_function",
-      promptText: "Analyze the provided mapping diagram. Determine whether this relation represents a mathematical function and justify your reasoning based on the inputs and outputs.",
-      inlineSvg: DIAGRAMS.DIAGRAM_MAPPING,
-      requiredWords: [["function", "hàm số"], ["input", "đầu vào", "domain"], ["output", "đầu ra", "range"], "exactly one"],
-      modelAnswer: "Yes, this mapping diagram represents a valid mathematical function. By definition, a function must have exactly one output for every input. Even though inputs 2 and 3 both map to the output 5, no single input points to more than one output.",
-      scienceMaxMarks: 3,
-      markScheme: [
-        "Correctly states that the relation is a function.",
-        "Explains the rule that each input must map to exactly one output.",
-        "Clarifies that multiple inputs pointing to the same output is allowed."
-      ]
-    }
+
+
   ],
 
   assessment,

@@ -129,30 +129,8 @@ export const GED_MATH_1B_DATA = {
   ],
 
   shortQA: [
-    {
-      id: "qa1",
-      question: "Why must you do the same operation to both sides of an equation?",
-      requiredWords: [["balance", "balanced", "equal"], ["both sides", "other side"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "States that the two sides must stay equal or balanced.",
-        "Explains that changing only one side would make the equation untrue."
-      ],
-      modelAnswer: "An equation says both sides are equal, like a balanced scale. If you change only one side, the two sides are no longer equal and the equation becomes untrue, so the same operation must be applied to both sides.",
-      vnTranslation: "Tại sao bạn phải thực hiện cùng một phép tính ở cả hai vế của phương trình?"
-    },
-    {
-      id: "qa2",
-      question: "What is an inverse operation, and which operation would you use to undo 'multiply by 7'?",
-      requiredWords: [["inverse", "opposite"], ["divide", "division"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Defines an inverse operation as the opposite operation that undoes another.",
-        "States that dividing by 7 undoes multiplying by 7."
-      ],
-      modelAnswer: "An inverse operation is the opposite operation, used to undo something. To undo multiplying by 7 you divide by 7.",
-      vnTranslation: "Phép tính ngược là gì, và bạn sẽ dùng phép tính nào để khử 'nhân với 7'?"
-    },
+
+
     {
       id: "qa3",
       question: "Solve 4x + 5 = 29 and describe each step you took.",
@@ -203,18 +181,7 @@ export const GED_MATH_1B_DATA = {
       modelAnswer: "Divide both sides by -3. Because -3 is negative, the sign reverses from < to >. The solution is x > -4.",
       vnTranslation: "Giải bất đẳng thức -3x < 12 và giải thích điều gì xảy ra với dấu."
     },
-    {
-      id: "qa7",
-      question: "A phrase in a word problem says a worker can lift 'at most 25 kilograms'. Which inequality sign does this describe, and why?",
-      requiredWords: [["at most", "no more than"], ["25"], ["less than or equal", "≤", "<="]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Identifies the sign as ≤ (less than or equal to).",
-        "Explains that 'at most' allows exactly 25 as well as anything below it."
-      ],
-      modelAnswer: "'At most' means less than or equal to, so the sign is ≤ and the inequality is w ≤ 25. The worker is allowed to lift exactly 25 kilograms, so the boundary value is included.",
-      vnTranslation: "Một cụm từ trong bài toán đố nói rằng một công nhân có thể nâng 'nhiều nhất 25 ki-lô-gam'. Cụm từ này mô tả dấu bất đẳng thức nào, và tại sao?"
-    },
+
     {
       id: "qa8",
       question: "Mai has $60. A bus pass costs $15 and each lunch costs $6. Write an inequality for the number of lunches (L) she can buy, then solve it.",
@@ -228,18 +195,7 @@ export const GED_MATH_1B_DATA = {
       modelAnswer: "The inequality is 15 + 6L ≤ 60. Subtracting 15 from both sides gives 6L ≤ 45, and dividing by 6 gives L ≤ 7.5. Because she cannot buy part of a lunch, she can buy at most 7 lunches.",
       vnTranslation: "Mai có 60 đô la. Một vé xe buýt giá 15 đô la và mỗi bữa trưa giá 6 đô la. Hãy viết một bất đẳng thức cho số bữa trưa (L) cô ấy có thể mua, sau đó giải nó."
     },
-    {
-      id: "qa9",
-      question: "What does the compound inequality 2 < x < 9 tell you about x?",
-      requiredWords: [["between"], ["2"], ["9"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "States that x lies between 2 and 9.",
-        "Notes that neither 2 nor 9 is included, because both signs are strict."
-      ],
-      modelAnswer: "It tells you that x is between 2 and 9. Because both signs are strict less-than signs, x cannot equal 2 and cannot equal 9; it must be strictly inside that range.",
-      vnTranslation: "Bất đẳng thức kép 2 < x < 9 cho bạn biết điều gì về x?"
-    },
+
     {
       id: "qa10",
       question: "Why is it useful to verify your solution by substituting it back into the original equation?",
@@ -294,19 +250,7 @@ export const GED_MATH_1B_DATA = {
         "Rounds down and states the final answer of 7 lunches."
       ]
     },
-    {
-      id: "diag_4_check_solution",
-      promptText: "The diagram shows a student's working and their check. Explain what the check proves, and why checking is worth doing on the exam.",
-      inlineSvg: DIAGRAMS.DIAGRAM_CHECK_SOLUTION,
-      requiredWords: [["substitute", "put back", "plug in"], ["verify", "check"], ["equal", "both sides", "21"]],
-      modelAnswer: "The student put x = 5 back into the original equation and worked out 5(5) - 4, which gives 21. Because that matches the right-hand side, both sides are equal and the solution is verified as correct. Checking is worth doing because it catches arithmetic slips before you submit the answer.",
-      scienceMaxMarks: 3,
-      markScheme: [
-        "Explains that the value was substituted back into the original equation.",
-        "States that both sides came out equal to 21, so the answer is correct.",
-        "Gives a reason why checking is useful, such as catching mistakes."
-      ]
-    }
+
   ],
 
   assessment,

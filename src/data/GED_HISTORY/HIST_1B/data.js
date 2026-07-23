@@ -127,18 +127,7 @@ export const GED_HIST_1B_DATA = {
   ],
 
   shortQA: [
-    {
-      id: "qa1",
-      question: "Why did the Articles of Confederation create a deliberately weak central government?",
-      requiredWords: [["king", "tyranny", "monarch"], ["states"], ["weak", "afraid", "feared"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Explains that Americans feared recreating a king or tyranny after fighting Britain.",
-        "States that power was therefore given mostly to the individual states."
-      ],
-      modelAnswer: "Having just fought a war against a king, Americans were afraid of creating another all-powerful ruler. To prevent that, the Articles gave almost all the power to the individual states and left the central government deliberately weak.",
-      vnTranslation: "Tại sao Các Điều khoản Hợp bang lại cố ý tạo ra một chính quyền trung ương yếu ớt?"
-    },
+
     {
       id: "qa2",
       question: "Give two specific weaknesses of the Articles of Confederation and explain why each caused problems.",
@@ -165,18 +154,7 @@ export const GED_HIST_1B_DATA = {
       modelAnswer: "The legislative branch is Congress, and it makes the laws. The executive branch is led by the President, and it carries out and enforces the laws. The judicial branch is the courts, and it interprets the laws and decides what they mean.",
       vnTranslation: "Hãy nêu tên ba nhánh của chính quyền và cho biết mỗi nhánh làm gì với luật pháp."
     },
-    {
-      id: "qa4",
-      question: "What is the purpose of 'checks and balances'?",
-      requiredWords: [["checks and balances", "checks"], ["power"], ["branch", "branches"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Explains that each branch can limit or restrain the other branches.",
-        "States the purpose: stopping any one branch from becoming too powerful."
-      ],
-      modelAnswer: "Checks and balances give each branch tools to limit the others. The purpose is to make sure no single branch can become too powerful, because each one can be restrained by the other two.",
-      vnTranslation: "Mục đích của 'kiểm soát và cân bằng' là gì?"
-    },
+
     {
       id: "qa5",
       question: "Explain what a veto is and how Congress can respond to one.",
@@ -203,18 +181,7 @@ export const GED_HIST_1B_DATA = {
       modelAnswer: "Federalism is a system in which power is shared between the national government and the state governments. The federal government alone can print money and declare war, while individual states run public schools and issue drivers' licences.",
       vnTranslation: "Chủ nghĩa liên bang là gì, và hãy nêu một quyền thuộc về chính quyền liên bang và một quyền thuộc về các tiểu bang."
     },
-    {
-      id: "qa7",
-      question: "What does it mean to 'ratify' the Constitution, and how many states were needed?",
-      requiredWords: [["ratify", "approve"], ["nine", "9"], ["states"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Defines ratify as formally approving something so it becomes official.",
-        "States that nine of the thirteen states were required."
-      ],
-      modelAnswer: "To ratify means to formally approve something so that it becomes official. Nine of the thirteen states had to ratify the Constitution before it could take effect.",
-      vnTranslation: "'Phê chuẩn' Hiến pháp có nghĩa là gì, và cần bao nhiêu tiểu bang?"
-    },
+
     {
       id: "qa8",
       question: "Why did several states refuse to approve the Constitution until a Bill of Rights was promised?",
@@ -227,19 +194,7 @@ export const GED_HIST_1B_DATA = {
       modelAnswer: "The original Constitution explained how the government would work but said almost nothing about what it could never do to ordinary people. Many citizens feared the strong new national government might take away their freedoms, so they demanded written protections before agreeing to approve it.",
       vnTranslation: "Tại sao một số tiểu bang từ chối thông qua Hiến pháp cho đến khi Đạo luật Nhân quyền được hứa hẹn?"
     },
-    {
-      id: "qa9",
-      question: "Describe the two steps required to add an amendment to the Constitution.",
-      requiredWords: [["propose", "proposed"], ["ratify", "approve"], ["three-quarters", "3/4", "two-thirds", "2/3"]],
-      scienceMaxMarks: 3,
-      markScheme: [
-        "States that an amendment must first be proposed by two-thirds of both houses of Congress.",
-        "States that it must then be ratified by three-quarters of the states.",
-        "Notes that this makes changing the Constitution deliberately difficult."
-      ],
-      modelAnswer: "First, an amendment must be proposed by a two-thirds vote in both houses of Congress. Second, it must be ratified by three-quarters of the states. This two-step process was made deliberately difficult, which is why only twenty-seven amendments have ever passed.",
-      vnTranslation: "Hãy mô tả hai bước cần thiết để bổ sung một tu chính án vào Hiến pháp."
-    },
+
     {
       id: "qa10",
       question: "The Supreme Court can strike down a law passed by Congress and signed by the President. Explain how this is an example of checks and balances.",
@@ -282,19 +237,7 @@ export const GED_HIST_1B_DATA = {
         "States that Congress can override the veto with a two-thirds vote."
       ]
     },
-    {
-      id: "diag_3_amendment",
-      promptText: "Examine the amendment process shown. Describe both steps, and explain why the Framers made changing the Constitution so difficult.",
-      inlineSvg: DIAGRAMS.DIAGRAM_AMENDMENT_PROCESS,
-      requiredWords: [["propose"], ["ratify", "approve"], ["difficult", "hard", "stable"]],
-      modelAnswer: "First an amendment must be proposed by two-thirds of both houses of Congress. Then it must be ratified by three-quarters of the states. The Framers made this deliberately difficult so that the nation's basic rules could not be changed by a temporary majority or a passing mood, which keeps the government stable.",
-      scienceMaxMarks: 3,
-      markScheme: [
-        "Describes step one: proposal by two-thirds of Congress.",
-        "Describes step two: ratification by three-quarters of the states.",
-        "Explains that difficulty protects the Constitution from hasty or temporary change."
-      ]
-    },
+
     {
       id: "diag_4_federalism",
       promptText: "Look at how powers are divided in the diagram. Explain what federalism means, and why taxation appears on both the federal and state lists.",

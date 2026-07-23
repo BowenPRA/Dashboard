@@ -149,18 +149,7 @@ export const HIST_1A_DATA = {
       modelAnswer: "Mercantilism is an economic system in which a mother country builds up wealth by controlling trade with its colonies. Britain bought cheap raw materials such as timber and tobacco from the colonies, then sold manufactured goods back to them at high prices. The colonies were not allowed to trade freely with other nations, so the wealth flowed to Britain.",
       vnTranslation: "Hãy giải thích chính sách kinh tế của chủ nghĩa trọng thương và cách nó ảnh hưởng đến các thuộc địa."
     },
-    {
-      id: "qa3",
-      question: "What does the historical term 'Salutary Neglect' refer to?",
-      requiredWords: [["salutary neglect", "neglect"], ["ignored", "did not enforce", "loosely"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Explains that Britain largely left the colonies alone and did not strictly enforce trade laws.",
-        "Notes the consequence that colonists gained experience governing themselves."
-      ],
-      modelAnswer: "Salutary Neglect refers to a long period in which the British government largely ignored the colonies and did not strictly enforce its trade laws. Because of this, the colonists grew used to running their own affairs and gained experience governing themselves.",
-      vnTranslation: "Thuật ngữ lịch sử 'Bỏ mặc Hữu ích' (Salutary Neglect) đề cập đến điều gì?"
-    },
+
     {
       id: "qa4",
       question: "How did the end of the French and Indian War change the relationship between Great Britain and the colonies?",
@@ -186,18 +175,7 @@ export const HIST_1A_DATA = {
       modelAnswer: "They meant that Parliament had no right to tax them because the colonists were not allowed to elect any representatives to speak for them in that Parliament. Without a voice in the government imposing the tax, they viewed the taxation as unfair and without their consent.",
       vnTranslation: "Những người dân thuộc địa có ý gì khi họ hô vang 'Không đóng thuế nếu không có đại diện'?"
     },
-    {
-      id: "qa6",
-      question: "What is a boycott, and why did the American colonists use this tactic?",
-      requiredWords: [["boycott"], ["refuse", "refusal", "stop buying"], ["protest"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Defines a boycott as refusing to buy certain goods as a form of protest.",
-        "Explains the aim was to damage British trade and force the taxes to be cancelled."
-      ],
-      modelAnswer: "A boycott is a refusal to buy certain goods as a form of protest. The colonists boycotted British products to damage Britain's economy, hoping that pressure from British merchants losing money would force Parliament to cancel the unfair taxes.",
-      vnTranslation: "Tẩy chay là gì, và tại sao những người dân thuộc địa Mỹ lại sử dụng chiến thuật này?"
-    },
+
     {
       id: "qa7",
       question: "Why did the British Parliament eventually decide to repeal the Stamp Act?",
@@ -210,19 +188,7 @@ export const HIST_1A_DATA = {
       modelAnswer: "Parliament repealed the Stamp Act because the widespread colonial boycotts of British goods caused British merchants to lose a great deal of money. Those merchants then pressured their own government to cancel the tax so that trade could return to normal.",
       vnTranslation: "Tại sao Nghị viện Anh cuối cùng đã quyết định bãi bỏ Đạo luật Tem?"
     },
-    {
-      id: "qa8",
-      question: "Describe the events that took place during the Boston Tea Party in 1773.",
-      requiredWords: [["tea"], ["ships", "harbor", "harbour"], ["protest", "Tea Act"]],
-      scienceMaxMarks: 3,
-      markScheme: [
-        "States that colonial protesters disguised themselves and boarded ships in Boston harbour.",
-        "States that they threw chests of tea into the water.",
-        "Links the action to a protest against the Tea Act or British taxation."
-      ],
-      modelAnswer: "In 1773 a group of colonial protesters disguised themselves, boarded British merchant ships in Boston harbour, and dumped 342 chests of tea into the water. They did this to protest the Tea Act, which they saw as another attempt by Parliament to tax them without their consent.",
-      vnTranslation: "Hãy mô tả các sự kiện diễn ra trong Bữa tiệc Trà Boston vào năm 1773."
-    },
+
     {
       id: "qa9",
       question: "What was the primary difference between a Patriot and a Loyalist?",
@@ -235,18 +201,7 @@ export const HIST_1A_DATA = {
       modelAnswer: "A Patriot was a colonist who rejected British rule and wanted the colonies to become an independent country. A Loyalist was a colonist who believed they should remain faithful subjects of the British King and stay part of the empire.",
       vnTranslation: "Sự khác biệt chính giữa Người Yêu nước và Người Trung thành là gì?"
     },
-    {
-      id: "qa10",
-      question: "As tensions with Britain increased, why did Patriots begin forming local militias?",
-      requiredWords: [["militia", "militias"], ["defend", "protect"], ["citizens", "ordinary people"]],
-      scienceMaxMarks: 2,
-      markScheme: [
-        "Defines a militia as an army of ordinary citizens rather than professional soldiers.",
-        "Explains they formed to defend their towns and rights against the British military threat."
-      ],
-      modelAnswer: "Patriots formed local militias, which were armies made up of ordinary citizens rather than professional soldiers. They organised them so they could defend their towns, weapons and rights against what they saw as the growing tyranny and military threat of the British government.",
-      vnTranslation: "Khi căng thẳng với Anh gia tăng, tại sao những Người Yêu nước lại bắt đầu thành lập các lực lượng dân quân địa phương?"
-    }
+
   ],
 
   assessment,
