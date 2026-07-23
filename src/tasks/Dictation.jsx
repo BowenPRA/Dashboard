@@ -85,7 +85,7 @@ export default function Dictation({ pool, track, unitId, savedData = {}, onCompl
     audioState.current = state;
     const basePath = import.meta.env.BASE_URL || '/';
 
-    const aDict = new Audio(`${basePath}audio/${track}/${unitId}/dictation_${currentWordObj.word.toLowerCase()}.mp3`);
+    const aDict = new Audio(`${basePath}audio/${track}/${unitId}/${encodeURIComponent(`dictation_${currentWordObj.word.toLowerCase()}.mp3`)}`);
 
     const playAudioObj = (audioObj) => new Promise((resolve) => {
       state.currentAudio = audioObj;

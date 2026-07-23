@@ -1,57 +1,34 @@
 import React from 'react';
-import { 
-  Languages, Keyboard, BookOpen, Headphones, FileText, 
-  Image as ImageIcon, Lock, Award, AlertCircle, 
-  ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil,
+import {
+  Languages, BookOpen, Lock, Award, AlertCircle,
   ChevronDown, ChevronUp, Trophy, Globe, Atom, Leaf, GraduationCap,
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
-  Compass, Lightbulb, Activity, Zap
+  Compass, Lightbulb, Activity, Zap, Landmark
 } from 'lucide-react';
+import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 
 const IconMap = {
   "Award": Award, "GraduationCap": GraduationCap, "BookOpen": BookOpen,
   "Globe": Globe, "Atom": Atom, "Leaf": Leaf, "Languages": Languages,
   "Microscope": Microscope, "Telescope": Telescope, "Brain": Brain,
   "Rocket": Rocket, "Calculator": Calculator, "Dna": Dna, "FlaskConical": FlaskConical,
-  "Compass": Compass, "Lightbulb": Lightbulb, "Activity": Activity, "Zap": Zap
+  "Compass": Compass, "Lightbulb": Lightbulb, "Activity": Activity, "Zap": Zap,
+  "Landmark": Landmark
 };
 
-const TaskUIConfig = {
-  "WORD_REC":      { label: "Vocab", icon: Languages, bg: "bg-[#58cc02]", border: "border-[#58a700]", text: "text-white" },
-  "NOTES":         { label: "Notes", icon: FileText, bg: "bg-[#94a3b8]", border: "border-[#64748b]", text: "text-white" },
-  "WORKBOOK":      { label: "Extra", icon: FileBox, bg: "bg-[#ec4899]", border: "border-[#be185d]", text: "text-white" },
-  
-  "SPELLING":      { label: "Spelling", icon: Keyboard, bg: "bg-[#1cb0f6]", border: "border-[#1899d6]", text: "text-white" },
-  "READ_COMP":     { label: "Reading", icon: BookOpen, bg: "bg-[#ff9600]", border: "border-[#cc7800]", text: "text-white" },
-  "DICTATION":     { label: "Listening", icon: Headphones, bg: "bg-[#ce82ff]", border: "border-[#a567cc]", text: "text-white" },
-  
-  "SHORT_ANSWERS": { label: "Questions", icon: HelpCircle, bg: "bg-[#ffc800]", border: "border-[#cca000]", text: "text-white" },
-  "DIAGRAMS":      { label: "Diagram", icon: ImageIcon, bg: "bg-[#ff4b4b]", border: "border-[#cc3c3c]", text: "text-white" },
-  "ESSAY":         { label: "Essay", icon: Pencil, bg: "bg-[#14b8a6]", border: "border-[#0d9488]", text: "text-white" },
-  
-  "ASSESSMENT":    { label: "Assessment", icon: ClipboardCheck, bg: "bg-[#2563eb]", border: "border-[#1d4ed8]", text: "text-white" },
-  "GAMES":         { label: "Game", icon: Gamepad2, bg: "bg-[#6366f1]", border: "border-[#4f46e5]", text: "text-white" }
-};
+// Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card
+// and the launcher cannot drift apart.
 
-export default function UnitCard({ unit, scores = {}, currentTheme, startMode, isExpanded, onToggle, needsWork }) {
+export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork }) {
   if (!unit) return null;
 
   const { title, description, icon } = unit.meta || {};
   const HeaderIcon = IconMap[icon] || BookOpen;
   
-  // Directly pull the color strictly from the unit's meta data
-  const unitThemeColor = unit.meta?.themeColor || currentTheme.banner || 'bg-indigo-500 border-indigo-700';
+  const unitThemeColor = unit.meta?.themeColor || currentTheme?.banner || 'bg-indigo-500 border-indigo-700';
   const unitPhases = unit.phases || [];
 
-  // 1. Dynamically calculate Unit XP
-  let rawUnitXP = 0;
-  unitPhases.forEach(phase => {
-    (phase.tasks || []).forEach(task => {
-      const score = scores[task.dbKey]?.current || 0;
-      rawUnitXP += Math.min(score, task.maxXP);
-    });
-  });
-  const unitXP = Math.min(rawUnitXP, 100);
+  const unitXP = unitXPOf(unit, scores);
 
   const strikes = scores.strikes || 0;
   const isAILocked = strikes >= 3;
@@ -70,48 +47,31 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode, i
 
   const trophy = getTrophyStyles(unitXP);
 
-  const checkIsEmpty = (taskId) => {
-    if (taskId === 'NOTES' && (!unit.notes || !Array.isArray(unit.notes) || unit.notes.length === 0)) return true;
-    if (taskId === 'WORKBOOK' && (!unit.workbook || unit.workbook.length === 0)) return true;
-    if (taskId === 'GAMES' && (!unit.games || unit.games.length === 0)) return true;
-    if (taskId === 'ASSESSMENT' && (!unit.assessment || !unit.assessment.questions || unit.assessment.questions.length === 0)) return true;
-    return false;
-  };
-
-  // 2. Dynamically compile Needs Work
-  const allTasks = [];
-  unitPhases.forEach(phase => {
-    const isPhaseLocked = unitXP < phase.threshold;
-    (phase.tasks || []).forEach(task => {
-      allTasks.push({ ...task, locked: isPhaseLocked });
-    });
-  });
+  // Resolved against the registry: carries label/icon/colour/dbKey/maxXP plus
+  // `locked` (phase threshold not met) and `empty` (unit has no data for it).
+  const allTasks = resolveUnitTasks(unit, unitXP);
 
   const needsWorkTasks = allTasks.filter(t => {
-    if (t.id === 'GAMES') return false; 
-    if (t.locked) return false;
-    if (checkIsEmpty(t.id)) return false;
-    
-    const current = scores[t.dbKey]?.current || 0;
-    return current < t.maxXP; 
-  }).slice(0, 3); 
+    if (t.id === 'GAMES') return false;
+    if (t.locked || t.empty) return false;
+    return (scores[t.dbKey]?.current || 0) < t.maxXP;
+  }).slice(0, 3);
 
   const showNeedsWork = needsWork && needsWorkTasks.length > 0;
 
   const renderTaskButton = (task, isLocked = false) => {
-    const config = TaskUIConfig[task.id];
-    if (!config) return null;
-    
-    const TaskIcon = config.icon;
-    const isEmpty = checkIsEmpty(task.id);
-    const rawScore = scores[task.dbKey]?.current || 0;
-    const taskScore = Math.min(rawScore, task.maxXP);
+    if (!task) return null;
 
-    if (isEmpty) {
+    const config = task.color;
+    const TaskIcon = task.icon;
+    const taskMaxXP = task.maxXP;
+    const taskScore = Math.min(scores[task.dbKey]?.current || 0, taskMaxXP);
+
+    if (task.empty) {
       return (
         <div key={task.id} className="relative flex flex-col items-center justify-center p-5 rounded-[1.5rem] border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-800/30 text-slate-400 w-full h-36 opacity-70">
           <TaskIcon className="w-8 h-8 mb-2 opacity-40" strokeWidth={2} />
-          <h4 className="font-bold text-xs tracking-widest uppercase">No {config.label}</h4>
+          <h4 className="font-bold text-xs tracking-widest uppercase">No {task.label}</h4>
         </div>
       );
     }
@@ -131,13 +91,13 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode, i
         <div className="flex flex-col items-center mt-1">
           <TaskIcon className="w-8 h-8 mb-2 drop-shadow-sm" strokeWidth={2.5} />
           <h4 className="font-black text-lg tracking-wide drop-shadow-sm">
-            {config.label}
+            {task.label}
           </h4>
         </div>
         
         <div className="w-full bg-black/15 rounded-xl py-1.5 mt-auto flex items-center justify-center">
           <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white/90">
-            {taskScore} / {task.maxXP} XP
+            {taskScore} / {taskMaxXP} XP
           </span>
         </div>
       </button>
@@ -201,14 +161,13 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode, i
                     <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 px-1 text-center">Tasks to attempt</p>
                     <div className="space-y-2">
                       {needsWorkTasks.map(t => {
-                        const config = TaskUIConfig[t.id];
-                        const Icon = config.icon;
+                        const Icon = t.icon;
                         return (
                           <div key={t.id} className="flex items-center p-2 rounded-xl border-b-2 border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/50">
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${config.bg} ${config.text} border-b-[3px] ${config.border} mr-2.5 shrink-0`}>
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${t.color.bg} ${t.color.text} border-b-[3px] ${t.color.border} mr-2.5 shrink-0`}>
                               <Icon className="w-4 h-4" strokeWidth={2.5} />
                             </div>
-                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate tracking-wide">{config.label}</span>
+                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate tracking-wide">{t.label}</span>
                           </div>
                         );
                       })}
@@ -241,7 +200,6 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode, i
             )}
 
             <div className="p-6 sm:p-8 space-y-10">
-              {/* 3. Dynamically Loop Over Phases */}
               {unitPhases.map(phase => {
                 const isPhaseLocked = unitXP < phase.threshold;
                 
@@ -266,7 +224,9 @@ export default function UnitCard({ unit, scores = {}, currentTheme, startMode, i
                       </div>
                       
                       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-                        {phase.tasks.map(task => renderTaskButton(task, isPhaseLocked))}
+                        {allTasks
+                          .filter(t => t.phaseId === phase.id)
+                          .map(task => renderTaskButton(task, isPhaseLocked))}
                       </div>
                     </div>
                   </div>

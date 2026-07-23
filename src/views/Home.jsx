@@ -16,20 +16,18 @@ export default function Home() {
     setIsDark(isDarkMode);
     if (isDarkMode) document.documentElement.classList.add('dark');
 
+    // Students with no explicit enrolment see the full GED programme.
+    const defaultTracks = TRACK_REGISTRY.filter(t => t.group === 'GED');
+
     const fetchUserAndTracks = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const enrolled = session.user.user_metadata?.enrolled_tracks;
-        if (enrolled && Array.isArray(enrolled) && enrolled.length > 0) {
-          // RBAC: Only show enrolled tracks
-          setVisibleTracks(TRACK_REGISTRY.filter(t => enrolled.includes(t.id)));
-        } else {
-          // Fallback: Default directly to GED Mathematics and GED English
-          setVisibleTracks(TRACK_REGISTRY.filter(t => ['GED_MATH', 'GED_ENG'].includes(t.id)));
-        }
+      const enrolled = session?.user?.user_metadata?.enrolled_tracks;
+
+      if (Array.isArray(enrolled) && enrolled.length > 0) {
+        // RBAC: only show enrolled tracks
+        setVisibleTracks(TRACK_REGISTRY.filter(t => enrolled.includes(t.id)));
       } else {
-        // Fallback for unauthenticated/error states
-        setVisibleTracks(TRACK_REGISTRY.filter(t => ['GED_MATH', 'GED_ENG'].includes(t.id)));
+        setVisibleTracks(defaultTracks);
       }
       setLoading(false);
     };

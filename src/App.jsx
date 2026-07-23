@@ -5,7 +5,8 @@ import YearDashboard from './views/YearDashboard';
 
 // NEW IMPORTS
 import TeacherRoute from './components/TeacherRoute';
-import TeacherDashboard from './views/TeacherDashboard'; 
+import TeacherDashboard from './views/TeacherDashboard';
+import { TRACK_IDS } from './components/trackRegistry';
 
 export default function App() {
   return (
@@ -17,13 +18,11 @@ export default function App() {
         {/* 2. The Main Menu */}
         <Route path="/home" element={<Home />} />
         
-        {/* 3. The Curricular Tracks */}
-        <Route path="/GED_MATH" element={<YearDashboard track="GED_MATH" />} />
-        <Route path="/GED_ENG" element={<YearDashboard track="GED_ENG" />} />
-        <Route path="/Y8" element={<YearDashboard track="Y8" />} />
-        <Route path="/Y9" element={<YearDashboard track="Y9" />} />
-        <Route path="/ESL" element={<YearDashboard track="ESL" />} />
-        <Route path="/ADD_MATH" element={<YearDashboard track="ADD_MATH" />} />
+        {/* 3. The Curricular Tracks — generated from TRACK_REGISTRY, so adding a
+            track there is all that is needed for it to route. */}
+        {TRACK_IDS.map(id => (
+          <Route key={id} path={`/${id}`} element={<YearDashboard track={id} />} />
+        ))}
         
         {/* NEW: Protected Teacher Route */}
         <Route 

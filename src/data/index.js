@@ -1,47 +1,63 @@
 // src/data/index.js
+//
+// Discovers every unit under src/data/<TRACK>/<UNIT>/data.js and groups it by the
+// `meta.track` the unit declares.
+//
+// Units are keyed by whatever track they declare, NOT by a hardcoded branch list.
+// A unit that declares an unregistered track used to vanish silently — that is how
+// the entire GED English track sat invisible. It now warns loudly in dev instead.
 
-export const Y8_META = []; export const Y8_DATA = {};
-export const Y9_META = []; export const Y9_DATA = {};
-export const ESL_META = []; export const ESL_DATA = {};
-export const GED_MATH_META = []; export const GED_MATH_DATA = {};
-export const GED_ENG_META = []; export const GED_ENG_DATA = {};
-export const ADD_MATH_META = []; export const ADD_MATH_DATA = {};
+import { TRACK_IDS } from '../components/trackRegistry';
 
-// Automatically pulls all .js files in these folders
 const modules = import.meta.glob('./**/*.js', { eager: true });
 
+/** @type {Record<string, { meta: object[], data: Record<string, object> }>} */
+export const TRACKS = Object.fromEntries(TRACK_IDS.map((id) => [id, { meta: [], data: {} }]));
+
+const problems = [];
+
 for (const path in modules) {
-  if (path.includes('index.js')) continue;
+  if (path.endsWith('/index.js')) continue;
 
-  const module = modules[path];
-  
-  let data = null;
-  for (const key in module) {
-    const exp = module[key];
-    if (exp && typeof exp === 'object' && exp.meta && exp.meta.id) {
-      data = exp;
-      break;
-    }
+  const mod = modules[path];
+  const unit = Object.values(mod).find((exp) => exp && typeof exp === 'object' && exp.meta?.id);
+  if (!unit) continue;
+
+  const { id, track } = unit.meta;
+
+  if (!track) {
+    problems.push(`${path} — unit "${id}" declares no meta.track`);
+    continue;
   }
-  
-  if (!data) continue;
+  if (!TRACKS[track]) {
+    problems.push(
+      `${path} — unit "${id}" declares track "${track}", which is not in TRACK_REGISTRY. ` +
+        `Valid tracks: ${TRACK_IDS.join(', ')}. This unit will not appear anywhere.`
+    );
+    continue;
+  }
+  if (TRACKS[track].data[id]) {
+    problems.push(`${path} — duplicate unit id "${id}" in track "${track}"; keeping the first one found`);
+    continue;
+  }
+  if (!Array.isArray(unit.phases)) {
+    problems.push(`${path} — unit "${id}" has no phases array, so it can never award XP`);
+  }
 
-  const id = data.meta.id;
-  const track = data.meta.track?.toUpperCase() || 'Y8';
-
-  // Strict deduplication: Only push if the ID isn't already registered
-  if (track === 'Y8' && !Y8_DATA[id]) { Y8_DATA[id] = data; Y8_META.push(data.meta); }
-  else if (track === 'Y9' && !Y9_DATA[id]) { Y9_DATA[id] = data; Y9_META.push(data.meta); }
-  else if (track === 'ESL' && !ESL_DATA[id]) { ESL_DATA[id] = data; ESL_META.push(data.meta); }
-  else if (track === 'GED_MATH' && !GED_MATH_DATA[id]) { GED_MATH_DATA[id] = data; GED_MATH_META.push(data.meta); }
-  else if (track === 'GED_ENG' && !GED_ENG_DATA[id]) { GED_ENG_DATA[id] = data; GED_ENG_META.push(data.meta); }
-  else if (track === 'ADD_MATH' && !ADD_MATH_DATA[id]) { ADD_MATH_DATA[id] = data; ADD_MATH_META.push(data.meta); }
+  TRACKS[track].data[id] = unit;
+  TRACKS[track].meta.push(unit.meta);
 }
 
-const sortById = (a, b) => a.id.localeCompare(b.id);
-Y8_META.sort(sortById);
-Y9_META.sort(sortById);
-ESL_META.sort(sortById);
-GED_MATH_META.sort(sortById);
-GED_ENG_META.sort(sortById);
-ADD_MATH_META.sort(sortById);
+for (const t of Object.values(TRACKS)) {
+  t.meta.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+if (problems.length && import.meta.env.DEV) {
+  console.warn(`[content] ${problems.length} problem(s) loading unit data:\n  ${problems.join('\n  ')}`);
+}
+
+/** Content for a track. Always returns a shape, never undefined. */
+export const getTrack = (id) => TRACKS[id] || { meta: [], data: {} };
+
+/** Problems found while loading, for a diagnostics view or a test. */
+export const contentProblems = problems;

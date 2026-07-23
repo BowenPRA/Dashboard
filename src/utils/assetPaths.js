@@ -1,0 +1,25 @@
+// Single source of truth for public/ asset URLs.
+//
+// Vocabulary like "Acute Angle" generates files named "word_acute angle.mp3".
+// The space is legal on disk but must be percent-encoded in a URL, so every
+// filename goes through encodeURIComponent — never interpolate one directly.
+
+/** Base path with no trailing slash. '' at the domain root, '/Dashboard' on gh-pages. */
+export const basePath = (() => {
+  const raw = import.meta.env.BASE_URL || '/';
+  return raw === '/' ? '' : raw.replace(/\/$/, '');
+})();
+
+/** URL for a public/ asset given a path that may or may not start with a slash. */
+export const assetUrl = (p) => (p ? `${basePath}/${String(p).replace(/^\/+/, '')}` : p);
+
+/**
+ * URL for a vocabulary audio clip.
+ * @param {'word'|'def'|'sentence'|'dictation'} kind
+ */
+export const audioUrl = (track, unitId, kind, word) =>
+  `${basePath}/audio/${track}/${unitId}/${encodeURIComponent(`${kind}_${String(word).toLowerCase()}.mp3`)}`;
+
+/** URL for a reading-passage audio clip (1-indexed). */
+export const passageAudioUrl = (track, unitId, index) =>
+  `${basePath}/audio/${track}/${unitId}/${encodeURIComponent(`passage_${unitId}_${index}.mp3`)}`;

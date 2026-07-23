@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabaseClient';
-import { Y8_META, Y9_META, ESL_META, GED_MATH_META, GED_ENG_META, ADD_MATH_META } from '../data/index';
+import { getTrack } from '../data/index';
+import { TRACK_IDS } from './trackRegistry';
 import { 
   X, Loader2, Trophy, Edit2, Check, XCircle, Gamepad2, BookOpen
 } from 'lucide-react';
@@ -20,17 +21,8 @@ const TASK_MAP = {
 };
 
 // Helper function to grab the human-readable unit data
-const getUnitMeta = (trackId, unitId) => {
-  let metaArray = [];
-  if (trackId === 'Y8') metaArray = Y8_META;
-  else if (trackId === 'Y9') metaArray = Y9_META;
-  else if (trackId === 'ESL') metaArray = ESL_META;
-  else if (trackId === 'GED_MATH') metaArray = GED_MATH_META;
-  else if (trackId === 'GED_ENG') metaArray = GED_ENG_META;
-  else if (trackId === 'ADD_MATH') metaArray = ADD_MATH_META;
-
-  return metaArray?.find(u => u.id === unitId) || { title: 'Unknown Unit', desc: '' };
-};
+const getUnitMeta = (trackId, unitId) =>
+  getTrack(trackId).meta.find(u => u.id === unitId) || { title: 'Unknown Unit', desc: '' };
 
 export default function StudentProfileDrawer({ isOpen, onClose, studentId, studentName }) {
   const [progressData, setProgressData] = useState(null);
@@ -141,7 +133,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
               <p className="text-sm font-black tracking-widest uppercase text-slate-400">Loading Records...</p>
             </div>
           ) : progressData ? (
-            ['GED_MATH', 'GED_ENG', 'Y8', 'Y9', 'ESL', 'ADD_MATH'].map(trackId => {
+            TRACK_IDS.map(trackId => {
               const trackData = progressData[trackId];
               if (!trackData || Object.keys(trackData).length === 0) return null;
 
