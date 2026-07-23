@@ -2,6 +2,7 @@
 import { DIAGRAMS } from './diagrams.js';
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
+import { games } from './games.js';
 
 export const SCIENCE_2A_DATA = {
   meta: {
@@ -11,20 +12,39 @@ export const SCIENCE_2A_DATA = {
     track: "Y9",
     icon: "Globe"
   },
-  phases: {
-    phase1: {
-      unlocked: true,
-      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+  phases: [
+    {
+      id: "concept",
+      title: "Phase 0: Core Concepts",
+      threshold: 0,
+      tasks: [
+        { id: "NOTES", dbKey: "p10", maxXP: 5 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 5 }
+      ]
     },
-    phase2: {
-      unlocked: false,
-      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    {
+      id: "practice",
+      title: "Phase 1: Practice",
+      threshold: 5,
+      tasks: [
+        { id: "SPELLING", dbKey: "p2", maxXP: 5 },
+        { id: "DICTATION", dbKey: "p3", maxXP: 5 },
+        { id: "READ_COMP", dbKey: "p4", maxXP: 5 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 15 }
+      ]
     },
-    phase3: {
-      unlocked: false,
-      tasks: ["ASSESSMENT", "ESSAY"]
+    {
+      id: "mastery",
+      title: "Phase 2: Mastery",
+      threshold: 30,
+      tasks: [
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
+        { id: "ESSAY", dbKey: "p8", maxXP: 15 },
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
+        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+      ]
     }
-  },
+  ],
   realWords: [
     { word: "Crust", vn: "Lớp vỏ", def: "The thin, hard, solid outer layer of the Earth.", vnDef: "Lớp ngoài cùng mỏng, cứng, ở thể rắn của Trái đất.", sent: "The oceanic crust is much thinner than the continental crust.", vnSent: "Lớp vỏ đại dương mỏng hơn nhiều so với lớp vỏ lục địa.", dictSent: "The crust is the thin outer layer of the Earth.", isReal: true },
     { word: "Mantle", vn: "Lớp phủ", def: "The thick layer of hot, semi-solid rock beneath the Earth's crust.", vnDef: "Lớp đá dày, nóng, bán rắn bên dưới lớp vỏ Trái đất.", sent: "Extreme heat from the core causes the rock in the mantle to slowly move.", vnSent: "Nhiệt độ cực cao từ lõi khiến đá trong lớp phủ di chuyển từ từ.", dictSent: "The mantle is made of hot, flowing rock.", isReal: true },
@@ -197,5 +217,6 @@ export const SCIENCE_2A_DATA = {
     modelAnswer: "The theory of Continental Drift states that the Earth's continents are not fixed, but slowly move across the surface over millions of years. Scientists believe that all land was originally joined together in one massive supercontinent called Pangea. There are two strong pieces of evidence to prove this. First is the jigsaw fit; the coastlines of continents like South America and Africa look like puzzle pieces that fit perfectly together. Second is fossil evidence. Scientists have found identical fossils of plants and animals on these separate continents, which proves they must have been connected in the past because those organisms could not have crossed massive oceans."
   },
   assessment,
-  notes
+  notes,
+  games
 };

@@ -1,6 +1,8 @@
 // src/data/ESL/CAMP_1A/data.js
 
 import { notes } from './notes.js';
+import { assessment } from './assessment.js';
+import { games } from './games.js';
 
 export const CAMP_1A_DATA = {
   meta: {
@@ -10,20 +12,36 @@ export const CAMP_1A_DATA = {
     track: "ESL",
     icon: "Search"
   },
-  phases: {
-    phase1: {
-      unlocked: true,
-      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+  phases: [
+    {
+      id: "concept",
+      title: "Phase 0: Core Concepts",
+      threshold: 0,
+      tasks: [
+        { id: "NOTES", dbKey: "p10", maxXP: 15 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 15 }
+      ]
     },
-    phase2: {
-      unlocked: false,
-      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    {
+      id: "practice",
+      title: "Phase 1: Practice",
+      threshold: 20,
+      tasks: [
+        { id: "SPELLING", dbKey: "p2", maxXP: 15 },
+        { id: "DICTATION", dbKey: "p3", maxXP: 15 },
+        { id: "READ_COMP", dbKey: "p4", maxXP: 15 }
+      ]
     },
-    phase3: {
-      unlocked: false,
-      tasks: ["ASSESSMENT", "ESSAY"]
+    {
+      id: "mastery",
+      title: "Phase 2: Mastery",
+      threshold: 55,
+      tasks: [
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 },
+        { id: "GAMES", dbKey: "p12", maxXP: 5 }
+      ]
     }
-  },
+  ],
   realWords: [
     {
       word: "Hypothesis",
@@ -202,8 +220,8 @@ export const CAMP_1A_DATA = {
   shortQA: [],
   diagrams: [],
   essay: null,
-  assessment: null,
+  assessment,
   notes,
   workbook: null,
-  games: null
+  games
 };

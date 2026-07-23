@@ -12,20 +12,39 @@ export const MATH_2A_DATA = {
     track: "Y9",
     icon: "Box"
   },
-  phases: {
-    phase1: {
-      unlocked: true,
-      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+  phases: [
+    {
+      id: "concept",
+      title: "Phase 0: Core Concepts",
+      threshold: 0,
+      tasks: [
+        { id: "NOTES", dbKey: "p10", maxXP: 5 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 5 }
+      ]
     },
-    phase2: {
-      unlocked: false,
-      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    {
+      id: "practice",
+      title: "Phase 1: Practice",
+      threshold: 5,
+      tasks: [
+        { id: "SPELLING", dbKey: "p2", maxXP: 5 },
+        { id: "DICTATION", dbKey: "p3", maxXP: 5 },
+        { id: "READ_COMP", dbKey: "p4", maxXP: 5 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 15 }
+      ]
     },
-    phase3: {
-      unlocked: false,
-      tasks: ["ASSESSMENT", "ESSAY"]
+    {
+      id: "mastery",
+      title: "Phase 2: Mastery",
+      threshold: 30,
+      tasks: [
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
+        { id: "ESSAY", dbKey: "p8", maxXP: 15 },
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
+        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+      ]
     }
-  },
+  ],
   realWords: [
     {
       word: "Cross-section",

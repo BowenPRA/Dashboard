@@ -14,20 +14,39 @@ export const MATH_1A_DATA = {
     glowColor: "hover:border-fuchsia-400 dark:hover:border-fuchsia-600",
     icon: "Calculator",
   },
-  phases: {
-    phase1: {
-      unlocked: true,
-      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+  phases: [
+    {
+      id: "concept",
+      title: "Phase 0: Core Concepts",
+      threshold: 0,
+      tasks: [
+        { id: "NOTES", dbKey: "p10", maxXP: 5 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 5 }
+      ]
     },
-    phase2: {
-      unlocked: false,
-      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    {
+      id: "practice",
+      title: "Phase 1: Practice",
+      threshold: 5,
+      tasks: [
+        { id: "SPELLING", dbKey: "p2", maxXP: 5 },
+        { id: "DICTATION", dbKey: "p3", maxXP: 5 },
+        { id: "READ_COMP", dbKey: "p4", maxXP: 5 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 15 }
+      ]
     },
-    phase3: {
-      unlocked: false,
-      tasks: ["ASSESSMENT", "ESSAY"]
+    {
+      id: "mastery",
+      title: "Phase 2: Mastery",
+      threshold: 30,
+      tasks: [
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
+        { id: "ESSAY", dbKey: "p8", maxXP: 15 },
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
+        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+      ]
     }
-  },
+  ],
   realWords: [
     { word: "Correlation", vn: "Sự tương quan", def: "A connection or relationship between two things.", vnDef: "Sự kết nối hoặc mối quan hệ giữa hai sự vật.", sent: "There is a strong correlation between heavy rain and flooding.", vnSent: "Có một sự tương quan mạnh mẽ giữa mưa lớn và ngập lụt.", dictSent: "Correlation does not always mean that one thing causes another.", isReal: true },
     { word: "Variable", vn: "Biến số", def: "Something that can change or be measured, like temperature or height.", vnDef: "Một thứ gì đó có thể thay đổi hoặc được đo lường, như nhiệt độ hoặc chiều cao.", sent: "In this experiment, the amount of sunlight is the independent variable.", vnSent: "Trong thí nghiệm này, lượng ánh sáng mặt trời là biến độc lập.", dictSent: "A scatter graph shows the relationship between two variables.", isReal: true },

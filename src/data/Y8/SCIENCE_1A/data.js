@@ -13,20 +13,39 @@ export const SCIENCE_1A_DATA = {
     track: "Y8",
     icon: "Sun"
   },
-  phases: {
-    phase1: {
-      unlocked: true,
-      tasks: ["WORD_REC", "SPELLING", "READ_COMP", "DICTATION"]
+  phases: [
+    {
+      id: "concept",
+      title: "Phase 0: Core Concepts",
+      threshold: 0,
+      tasks: [
+        { id: "NOTES", dbKey: "p10", maxXP: 5 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 5 }
+      ]
     },
-    phase2: {
-      unlocked: false,
-      tasks: ["VOCAB_WRITING", "SHORT_ANSWERS", "DIAGRAMS"]
+    {
+      id: "practice",
+      title: "Phase 1: Practice",
+      threshold: 5,
+      tasks: [
+        { id: "SPELLING", dbKey: "p2", maxXP: 5 },
+        { id: "DICTATION", dbKey: "p3", maxXP: 5 },
+        { id: "READ_COMP", dbKey: "p4", maxXP: 5 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 15 }
+      ]
     },
-    phase3: {
-      unlocked: false,
-      tasks: ["ASSESSMENT", "ESSAY"]
+    {
+      id: "mastery",
+      title: "Phase 2: Mastery",
+      threshold: 30,
+      tasks: [
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
+        { id: "ESSAY", dbKey: "p8", maxXP: 15 },
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
+        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+      ]
     }
-  },
+  ],
   realWords: [
     { word: "Reflection", vn: "Phản xạ", def: "The bouncing of light rays off a surface like a mirror.", vnDef: "Sự bật lại của các tia sáng khi chạm vào một bề mặt như gương.", sent: "The law of reflection states that the angle of incidence equals the angle of reflection.", vnSent: "Định luật phản xạ phát biểu rằng góc tới bằng góc phản xạ.", dictSent: "Reflection happens when light bounces off a smooth surface.", isReal: true },
     { word: "Medium", vn: "Môi trường", def: "A material or substance that light travels through, such as air, water, or glass.", vnDef: "Vật liệu hoặc chất mà ánh sáng truyền qua, chẳng hạn như không khí, nước hoặc thủy tinh.", sent: "Light slows down when it enters a denser medium like a block of solid glass.", vnSent: "Ánh sáng đi chậm lại khi đi vào một môi trường đặc hơn như một khối thủy tinh đặc.", dictSent: "A medium is any substance that light can travel through.", isReal: true },

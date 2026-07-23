@@ -1,10 +1,12 @@
-// src/data/GED_MATH/MATH_1A/data.js
-
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { DIAGRAMS } from './diagrams.js';
 
-export const ADD_MATH_1A_DATA = {
+// VALID TASK IDS FOR AI CONTEXT: 
+// WORD_REC, NOTES, WORKBOOK, SPELLING, READ_COMP, DICTATION, SHORT_ANSWERS, DIAGRAMS, ESSAY, ASSESSMENT, GAMES
+
+export const GED_MATH_1A_DATA = {
   meta: {
     id: "MATH_1A",
     title: "Algebraic Expressions & Equations",
@@ -14,32 +16,33 @@ export const ADD_MATH_1A_DATA = {
     themeColor: "bg-emerald-500 border-emerald-700"
   },
   
-  // --- CORRECTED XP PIPELINE ---
   phases: [
     {
       id: "concept",
-      title: "Core Concepts",
+      title: "Phase 0: Core Concepts",
       threshold: 0,
       tasks: [
-        { id: "NOTES", dbKey: "p10", maxXP: 10 } 
+        { id: "NOTES", dbKey: "p10", maxXP: 10 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 10 }
       ]
     },
     {
       id: "practice",
       title: "Phase 1: Practice",
-      threshold: 5, // Unlocks after completing Notes
+      threshold: 20, 
       tasks: [
-        { id: "WORD_REC", dbKey: "p1", maxXP: 10 },
+        { id: "SPELLING", dbKey: "p2", maxXP: 10 },   
+        { id: "READ_COMP", dbKey: "p4", maxXP: 10 },
         { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
       ]
     },
     {
       id: "mastery",
       title: "Phase 2: Mastery",
-      threshold: 40, // Unlocks after getting 10 (Notes) + 10 (Word Rec) + 20 (Short Answers)
+      threshold: 40, 
       tasks: [
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 10 }, // Fixed to 10 to match Assessment.jsx scaling
-        { id: "GAMES", dbKey: "p12", maxXP: 20 }
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 20 }, 
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 }
       ]
     }
   ],
@@ -57,27 +60,22 @@ export const ADD_MATH_1A_DATA = {
     { word: "Combine", vn: "Kết hợp", def: "To add or subtract terms that have the exact same variables.", vnDef: "Cộng hoặc trừ các hạng tử có chính xác các biến số giống nhau.", sent: "Combine the like terms to simplify the problem.", vnSent: "Kết hợp các hạng tử đồng dạng để rút gọn bài toán.", isReal: true }
   ],
 
-  fakeWords: [
-    { word: "Variabal", isReal: false },
-    { word: "Coeficient", isReal: false },
-    { word: "Equasion", isReal: false },
-    { word: "Substitoot", isReal: false },
-    { word: "Izolate", isReal: false },
-    { word: "Distriboot", isReal: false },
-    { word: "Expresion", isReal: false },
-    { word: "Evalueight", isReal: false }
-  ],
-
   passages: [
     {
       id: "passage_1",
       title: "Algebra at the Coffee Shop",
+      vnTitle: "Đại số tại Quán Cà phê",
       meta: "Real-World Application",
       text: [
         "Many people use algebra every day without realizing it. Imagine you are working at a local coffee shop. A regular black coffee costs $3. If a customer comes in and orders a certain number of coffees for their office, you can use an {expression} to quickly calculate the total price.",
         "In math, we use a {variable}, like the letter 'c', to represent the unknown number of coffees. The math phrase becomes 3c. In this phrase, the number 3 is the {coefficient}.",
         "If a customer orders 4 coffees, you simply {substitute} the number 4 into the place of 'c'. Finally, you {evaluate} the cost: 3 times 4 equals $12."
-      ],
+      ].join(" "),
+      vnText: [
+        "Nhiều người sử dụng đại số mỗi ngày mà không nhận ra. Hãy tưởng tượng bạn đang làm việc tại một quán cà phê địa phương. Một ly cà phê đen bình thường có giá 3 đô la. Nếu một khách hàng bước vào và đặt một số lượng cà phê nhất định cho văn phòng của họ, bạn có thể sử dụng một biểu thức để nhanh chóng tính tổng giá.",
+        "Trong toán học, chúng ta sử dụng một biến số, giống như chữ 'c', để đại diện cho số lượng cà phê chưa biết. Cụm từ toán học trở thành 3c. Trong cụm từ này, số 3 là hệ số.",
+        "Nếu một khách hàng đặt 4 ly cà phê, bạn chỉ cần thay thế số 4 vào vị trí của 'c'. Cuối cùng, bạn tính giá trị chi phí: 3 nhân 4 bằng 12 đô la."
+      ].join(" "),
       glossary: {
         "expression": { vn: "Biểu thức", def: "A math phrase combining numbers and variables." },
         "variable": { vn: "Biến số", def: "A letter representing an unknown amount." },
@@ -89,12 +87,18 @@ export const ADD_MATH_1A_DATA = {
     {
       id: "passage_2",
       title: "The Golden Rule of Balance",
+      vnTitle: "Quy tắc Vàng của Sự Cân bằng",
       meta: "Understanding Equations",
       text: [
         "While an expression is just a phrase, an {equation} is a complete mathematical sentence. The most important part is the equal sign. Think of an equal sign like a perfectly balanced scale.",
         "Your main goal is to {isolate} the unknown variable so it sits all by itself on one side of the scale. To do this, you have to move numbers away from it using inverse (opposite) operations.",
         "However, you must follow the Golden Rule: Whatever you do to the left side, you must also do to the right side. If you add 5 pounds to the left, you must add 5 pounds to the right to keep the balance."
-      ],
+      ].join(" "),
+      vnText: [
+        "Trong khi biểu thức chỉ là một cụm từ, phương trình là một câu toán học hoàn chỉnh. Phần quan trọng nhất là dấu bằng. Hãy coi dấu bằng như một chiếc cân cân bằng hoàn hảo.",
+        "Mục tiêu chính của bạn là cô lập biến số chưa biết để nó nằm một mình ở một bên của chiếc cân. Để làm điều này, bạn phải di chuyển các con số ra khỏi nó bằng cách sử dụng các phép toán nghịch đảo (ngược lại).",
+        "Tuy nhiên, bạn phải tuân theo Quy tắc Vàng: Bất cứ điều gì bạn làm với vế trái, bạn cũng phải làm với vế phải. Nếu bạn thêm 5 pound vào bên trái, bạn phải thêm 5 pound vào bên phải để giữ thăng bằng."
+      ].join(" "),
       glossary: {
         "equation": { vn: "Phương trình", def: "A math statement showing two equal sides." },
         "isolate": { vn: "Cô lập", def: "To get a variable completely by itself." }
@@ -103,12 +107,18 @@ export const ADD_MATH_1A_DATA = {
     {
       id: "passage_3",
       title: "Organizing the Warehouse",
+      vnTitle: "Sắp xếp Nhà kho",
       meta: "Simplifying Math",
       text: [
         "Imagine you manage a large fruit warehouse. You have boxes of apples and boxes of bananas. If someone asks for your inventory, you wouldn't say, 'I have 2 boxes of apples, 3 boxes of bananas, and 4 more boxes of apples.' That is too confusing.",
         "Instead, you would {combine} the apples together. You now have 6 boxes of apples and 3 boxes of bananas.",
         "In algebra, this is called combining like terms. You can only group a {term} with another term if they have the exact same variable. You can add 'x' with 'x', but you can never add 'x' with 'y'."
-      ],
+      ].join(" "),
+      vnText: [
+        "Hãy tưởng tượng bạn quản lý một kho trái cây lớn. Bạn có những hộp táo và những hộp chuối. Nếu ai đó hỏi về hàng tồn kho của bạn, bạn sẽ không nói, 'Tôi có 2 hộp táo, 3 hộp chuối và thêm 4 hộp táo nữa.' Điều đó quá khó hiểu.",
+        "Thay vào đó, bạn sẽ kết hợp những quả táo lại với nhau. Bây giờ bạn có 6 hộp táo và 3 hộp chuối.",
+        "Trong đại số, điều này được gọi là kết hợp các hạng tử đồng dạng. Bạn chỉ có thể nhóm một hạng tử với một hạng tử khác nếu chúng có chính xác cùng một biến số. Bạn có thể cộng 'x' với 'x', nhưng bạn không bao giờ có thể cộng 'x' với 'y'."
+      ].join(" "),
       glossary: {
         "combine": { vn: "Kết hợp", def: "To add or subtract similar items together." },
         "term": { vn: "Hạng tử", def: "A single mathematical block (like 2x or 5y)." }
@@ -120,32 +130,193 @@ export const ADD_MATH_1A_DATA = {
     {
       id: "qa1",
       question: "What is the primary difference between an expression and an equation?",
-      sampleAnswer: "An expression is a math phrase with no equal sign, while an equation has an equal sign showing that two sides are balanced.",
+      requiredWords: [["expression"], ["equation"], ["equal sign", "equals sign", "equal"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "States that an expression is a maths phrase with no equal sign.",
+        "States that an equation contains an equal sign showing the two sides are equal or balanced."
+      ],
+      modelAnswer: "An expression is a math phrase with no equal sign, while an equation has an equal sign showing that two sides are balanced.",
       vnTranslation: "Sự khác biệt chính giữa biểu thức và phương trình là gì?"
     },
     {
       id: "qa2",
       question: "In the mathematical term '5y', what do we call the number 5, and what do we call the letter y?",
-      sampleAnswer: "The number 5 is the coefficient, and the letter y is the variable.",
+      requiredWords: [["coefficient"], ["variable"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "Identifies 5 as the coefficient.",
+        "Identifies y as the variable."
+      ],
+      modelAnswer: "The number 5 is the coefficient, and the letter y is the variable.",
       vnTranslation: "Trong hạng tử toán học '5y', chúng ta gọi số 5 là gì, và gọi chữ y là gì?"
     },
     {
       id: "qa3",
       question: "If you are asked to 'isolate the variable' when solving an equation, what exactly are you trying to do?",
-      sampleAnswer: "You are trying to use math operations to get the letter completely by itself on one side of the equal sign.",
+      requiredWords: [["isolate", "by itself", "alone", "on its own"], ["one side", "side"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "Explains that the goal is to get the variable completely alone on one side of the equal sign.",
+        "Refers to using inverse (opposite) operations, or to doing the same thing to both sides."
+      ],
+      modelAnswer: "You are trying to use inverse operations on both sides of the equation until the letter is completely by itself on one side of the equal sign.",
       vnTranslation: "Nếu bạn được yêu cầu 'cô lập biến số' khi giải phương trình, chính xác thì bạn đang cố gắng làm gì?"
     },
     {
       id: "qa4",
       question: "Why is it important to only combine 'like terms' in an expression?",
-      sampleAnswer: "Because terms with different variables represent entirely different things (like apples and bananas), so they cannot be added together.",
+      requiredWords: [["like terms", "same variable"], ["different", "unlike", "cannot"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "States that like terms share the same variable (and the same exponent).",
+        "Explains that terms with different variables represent different quantities, so they cannot be added together."
+      ],
+      modelAnswer: "Like terms have exactly the same variable, so they count the same kind of thing. Terms with different variables represent entirely different things, like apples and bananas, so they cannot be added together.",
       vnTranslation: "Tại sao việc chỉ kết hợp 'các hạng tử đồng dạng' trong một biểu thức lại quan trọng?"
     },
     {
       id: "qa5",
       question: "What does it mean to 'substitute' a number in algebra?",
-      sampleAnswer: "It means to take a specific number and plug it into the expression wherever the variable (letter) is.",
+      requiredWords: [["substitute", "replace", "plug in"], ["variable", "letter"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "States that substitution means replacing the variable with a given number.",
+        "Notes that the expression is then evaluated or calculated to find its value."
+      ],
+      modelAnswer: "It means replacing the variable with a specific number wherever that letter appears, and then evaluating the expression to find its value.",
       vnTranslation: "Việc 'thay thế' một số trong đại số có nghĩa là gì?"
+    },
+    {
+      id: "qa6",
+      question: "A plumber charges a $50 flat service fee plus $25 per hour of work. If the total bill was $150, which equation can be used to find the number of hours (h) he worked?",
+      requiredWords: [["50"], ["25"], ["150"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Uses 50 as a constant flat fee that is added once.",
+        "Uses 25h (the hourly rate multiplied by the number of hours).",
+        "Sets the whole expression equal to the total of 150."
+      ],
+      modelAnswer: "The equation is 50 + 25h = 150. You start with the flat fee of $50, then add $25 multiplied by the number of hours (h), and set it equal to the total bill of $150.",
+      vnTranslation: "Một thợ sửa ống nước tính phí dịch vụ cố định là 50 đô la cộng với 25 đô la cho mỗi giờ làm việc. Nếu tổng hóa đơn là 150 đô la, phương trình nào có thể được sử dụng để tìm số giờ (h) anh ta đã làm việc?"
+    },
+    {
+      id: "qa7",
+      question: "Evaluate the algebraic expression 4x² - 3y when x = 3 and y = 5.",
+      requiredWords: [["substitute", "replace", "plug in"], ["21"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Substitutes x = 3 and y = 5 into the expression correctly.",
+        "Applies the exponent before multiplying, so 3² = 9 and 4 × 9 = 36.",
+        "Reaches the correct final answer of 21."
+      ],
+      modelAnswer: "Substitute the values to get 4(3)² - 3(5). Calculate the exponent first: 3² = 9. Then multiply: 4 × 9 = 36 and 3 × 5 = 15. Finally subtract: 36 - 15 = 21.",
+      vnTranslation: "Tính giá trị biểu thức đại số 4x² - 3y khi x = 3 và y = 5."
+    },
+    {
+      id: "qa8",
+      question: "A rectangular garden has a length of 2x + 4 and a width of x - 1. Write a simplified expression for the perimeter of the garden.",
+      requiredWords: [["perimeter"], ["6x + 6", "6x+6"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Sets up the perimeter as 2(2x + 4) + 2(x - 1), or adds all four sides.",
+        "Distributes correctly to get 4x + 8 + 2x - 2.",
+        "Combines like terms to reach the simplified answer 6x + 6."
+      ],
+      modelAnswer: "The perimeter is twice the length plus twice the width: 2(2x + 4) + 2(x - 1). Distributing gives 4x + 8 + 2x - 2. Combining like terms gives 6x + 6.",
+      vnTranslation: "Một khu vườn hình chữ nhật có chiều dài là 2x + 4 và chiều rộng là x - 1. Hãy viết một biểu thức rút gọn cho chu vi của khu vườn."
+    },
+    {
+      id: "qa9",
+      question: "Solve the equation for x: 3x - 12 = 24. What are the steps?",
+      requiredWords: [["inverse", "opposite", "both sides"], ["12"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Adds 12 to both sides to get 3x = 36.",
+        "Divides both sides by 3 to undo the multiplication.",
+        "States the final answer x = 12."
+      ],
+      modelAnswer: "First use the inverse of subtraction by adding 12 to both sides, which gives 3x = 36. Then use the inverse of multiplication by dividing both sides by 3. The final answer is x = 12.",
+      vnTranslation: "Giải phương trình tìm x: 3x - 12 = 24. Các bước thực hiện là gì?"
+    },
+    {
+      id: "qa10",
+      question: "Simplify the expression by using the distributive property: -4(2x - 5).",
+      requiredWords: [["distribute", "distributive"], ["-8x + 20", "-8x+20"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Multiplies -4 by 2x to get -8x.",
+        "Multiplies -4 by -5 and recognises that a negative times a negative gives positive 20.",
+        "Writes the fully simplified expression -8x + 20."
+      ],
+      modelAnswer: "Multiply the outside term (-4) by each term inside the parentheses. -4 times 2x is -8x. -4 times -5 is +20, because a negative times a negative is a positive. The simplified expression is -8x + 20.",
+      vnTranslation: "Rút gọn biểu thức bằng cách sử dụng tính chất phân phối: -4(2x - 5)."
+    }
+  ],
+  
+  diagrams: [
+    {
+      id: "diag_1_number_line",
+      promptText: "Analyze the number line provided. Identify the coordinates of Point A and Point B, and calculate the exact distance between them. Explain your steps.",
+      inlineSvg: DIAGRAMS.DIAGRAM_NUMBER_LINE,
+      requiredWords: [["distance", "khoảng cách"], ["absolute value", "giá trị tuyệt đối"], ["subtract", "trừ"], "five"],
+      modelAnswer: "Point A is located at -2 and Point B is located at 3. To find the distance between them, we can subtract the coordinates and take the absolute value: |3 - (-2)| = |5| = 5. The distance is 5 units.",
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Identifies Point A is at -2.",
+        "Identifies Point B is at 3.",
+        "Calculates the correct distance of 5 units."
+      ]
+    },
+    {
+      id: "diag_2_coordinate_plane",
+      promptText: "Examine the coordinate plane. Identify the y-intercept of the graphed line and explain what the y-intercept represents in a coordinate system.",
+      inlineSvg: DIAGRAMS.DIAGRAM_COORDINATE_PLANE,
+      requiredWords: [["y-intercept", "tung độ gốc"], ["axis", "trục"], "crosses", "zero"],
+      modelAnswer: "The y-intercept is the point where the line crosses the vertical y-axis. Looking at the graph, the line crosses the y-axis at the point (0, 2), making the y-intercept 2.",
+      scienceMaxMarks: 2,
+      markScheme: [
+        "States that the y-intercept is where the line crosses the y-axis.",
+        "Correctly identifies the y-intercept value as 2 or the point as (0, 2)."
+      ]
+    },
+    {
+      id: "diag_3_inequality",
+      promptText: "Analyze the inequality graphed on the number line. Determine the inequality expression it represents and explain the significance of the open circle and the direction of the arrow.",
+      inlineSvg: DIAGRAMS.DIAGRAM_INEQUALITY,
+      requiredWords: [["inequality", "bất phương trình"], ["open circle", "vòng tròn mở"], "less than", "four"],
+      modelAnswer: "The graph represents the inequality x < 4. The open circle at 4 indicates that the number 4 is not included in the solution. The shaded arrow points to the left, meaning all numbers less than 4 are solutions.",
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Identifies the correct inequality as x < 4.",
+        "Explains that the open circle means 4 is not included.",
+        "Explains that the left-pointing arrow indicates values less than 4."
+      ]
+    },
+    {
+      id: "diag_4_system",
+      promptText: "Look at the graphed system of linear equations. Identify the solution to the system and explain how you determined it from the graph.",
+      inlineSvg: DIAGRAMS.DIAGRAM_SYSTEM,
+      requiredWords: [["solution", "nghiệm"], ["intersect", "intersection", "cắt nhau", "giao điểm"], "point", ["coordinate", "tọa độ"]],
+      modelAnswer: "The solution to a graphed system of equations is the exact point where the two lines intersect. On this graph, the lines cross at the coordinates (2, 1), so the solution is x = 2 and y = 1.",
+      scienceMaxMarks: 2,
+      markScheme: [
+        "Explains that the solution is the point of intersection between the two lines.",
+        "Correctly identifies the intersection point as (2, 1)."
+      ]
+    },
+    {
+      id: "diag_5_function",
+      promptText: "Analyze the provided mapping diagram. Determine whether this relation represents a mathematical function and justify your reasoning based on the inputs and outputs.",
+      inlineSvg: DIAGRAMS.DIAGRAM_MAPPING,
+      requiredWords: [["function", "hàm số"], ["input", "đầu vào", "domain"], ["output", "đầu ra", "range"], "exactly one"],
+      modelAnswer: "Yes, this mapping diagram represents a valid mathematical function. By definition, a function must have exactly one output for every input. Even though inputs 2 and 3 both map to the output 5, no single input points to more than one output.",
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Correctly states that the relation is a function.",
+        "Explains the rule that each input must map to exactly one output.",
+        "Clarifies that multiple inputs pointing to the same output is allowed."
+      ]
     }
   ],
 
