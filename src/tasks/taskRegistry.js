@@ -142,8 +142,8 @@ export const TASKS = [
     component: lazy(() => import('./ShortAnswers.jsx')),
     hasContent: (u) => notEmpty(u.shortQA),
     buildPool: (u) => ({ shortQA: u.shortQA || [] }),
-    props: ({ pool, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
-      ({ pool, savedData, strikes, onAddStrike, onComplete, onQuit }),
+    props: ({ pool, unit, track, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
+      ({ pool, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onQuit }),
   },
   {
     id: 'DIAGRAMS',
@@ -157,8 +157,8 @@ export const TASKS = [
     component: lazy(() => import('./Diagrams.jsx')),
     hasContent: (u) => notEmpty(u.diagrams),
     buildPool: (u) => ({ diagrams: u.diagrams || [] }),
-    props: ({ pool, unitId, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
-      ({ pool, unitId, savedData, strikes, onAddStrike, onComplete, onQuit }),
+    props: ({ pool, unit, unitId, track, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
+      ({ pool, unitId, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onQuit }),
   },
   {
     id: 'ESSAY',

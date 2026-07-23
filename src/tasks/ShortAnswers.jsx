@@ -43,7 +43,7 @@ const checkRequiredWordGroup = (wordGroup, text) => {
   return false;
 };
 
-export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike }) {
+export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const questions = pool?.shortQA || [];
   const [localAnswers, setLocalAnswers] = useState(savedData);
   
@@ -141,7 +141,9 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       requiredWords: primaryRequiredWords,
       expectedAnswer: modelAnswer,
       scienceMaxMarks: scienceMaxMarks,
-      markScheme: markScheme
+      markScheme: markScheme,
+      track,
+      unitTitle
     };
 
     let aiData;

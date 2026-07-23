@@ -3,7 +3,7 @@ import { CheckCircle2, BookOpen, Volume2, VolumeX, XCircle } from 'lucide-react'
 import TopBar from '../components/TopBar';
 import { playChime } from '../utils/sound';
 
-export default function Reading({ pool, track, unitId, savedData = {}, onComplete, onQuit }) {
+export default function Reading({ pool, track, unitId, savedData = {}, onComplete }) {
   const passages = useMemo(() => pool || [], [pool]);
   const [passageIndex, setPassageIndex] = useState(0);
   const [gameState, setGameState] = useState('Q'); 
@@ -114,6 +114,13 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
     });
     setCumulativeCorrect(prev => prev + currentScore);
     setGameState('A');
+  };
+
+  // Save on quit like every other task. A student who finishes two of three
+  // passages and leaves keeps that work, and it pre-fills on the next attempt.
+  const handleQuit = () => {
+    stopAudio();
+    onComplete(calculateXP(cumulativeCorrect), localAnswers);
   };
 
   const handleNext = () => {
@@ -246,8 +253,8 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans pb-56 lg:pb-40 transition-colors duration-300">
       <TopBar 
         current={passageIndex} 
-        total={passages.length} 
-        onQuit={() => { stopAudio(); onQuit(); }} 
+        total={passages.length}
+        onQuit={handleQuit}
         modeTitle="Reading" 
       />
       

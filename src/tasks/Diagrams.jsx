@@ -43,7 +43,7 @@ const checkRequiredWordGroup = (wordGroup, text) => {
   return false;
 };
 
-export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike }) {
+export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const questions = pool?.diagrams || [];
   const [localAnswers, setLocalAnswers] = useState(savedData);
   
@@ -145,7 +145,9 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       requiredWords: primaryRequiredWords,
       expectedAnswer: currentQ.modelAnswer,
       scienceMaxMarks: currentQ.scienceMaxMarks,
-      markScheme: currentQ.markScheme
+      markScheme: currentQ.markScheme,
+      track,
+      unitTitle
     };
 
     let aiData;
