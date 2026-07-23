@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FlaskConical, FileEdit, ArrowRight } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FlaskConical, FileEdit, ArrowRight, Languages } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeShortAnswer } from '../utils/aiGrader';
@@ -51,15 +51,24 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
   const [gameState, setGameState] = useState('Q'); 
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const [showTranslation, setShowTranslation] = useState(false);
   
   const [cumulativePoints, setCumulativePoints] = useState(0);
   const [maxPossiblePoints, setMaxPossiblePoints] = useState(0);
 
   const currentQ = questions[currentIndex];
 
+  // --- SAFE FALLBACKS FOR COMPONENT STABILITY ---
+  const requiredWords = currentQ?.requiredWords || [];
+  const scienceMaxMarks = currentQ?.scienceMaxMarks || 2;
+  const markScheme = currentQ?.markScheme || ['Provides a correct explanation or calculation.', 'Addresses the specific prompt.'];
+  const modelAnswer = currentQ?.modelAnswer || currentQ?.sampleAnswer || "No model answer provided.";
+  const vnTranslation = currentQ?.vnTranslation || null;
+
   useEffect(() => {
     window.scrollTo(0, 0);
     const saved = localAnswers[currentIndex];
+    setShowTranslation(false); 
     
     if (saved) {
       const text = typeof saved === 'string' ? saved : saved.text;
@@ -86,7 +95,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
   }, [currentIndex]);
 
   const handleLocalFallbackGrade = () => {
-    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    const usedWordGroups = requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
     
     const trimmed = userAnswer.trim();
     const hasCapital = /^[A-Z]/.test(trimmed);
@@ -94,19 +103,19 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
 
     const pointsEarned = usedWordGroups.length + englishScore;
-    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2; 
+    const maxPoints = requiredWords.length + scienceMaxMarks + 2; 
 
     setFeedback({
       originalAnswer: userAnswer.trim(),
       usedWordGroups,
-      scienceMarks: currentQ.markScheme.map(() => false),
+      scienceMarks: markScheme.map(() => false),
       scienceScore: 0,
       englishScore,
       pointsEarned,
       maxPoints,
       isPerfect: false,
       englishFeedback: englishScore ? "1 point awarded for capital letter and punctuation." : "Missed extra point. Start with a capital and end with a period.",
-      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No Cambridge marks can be awarded.",
+      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No marks can be awarded.",
       fixedAnswer: "AI Grader disabled.",
       isStrikeFallback: true
     });
@@ -125,14 +134,14 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
     setGameState('LOADING');
 
-    const primaryRequiredWords = currentQ.requiredWords.map(w => Array.isArray(w) ? w[0] : w);
+    const primaryRequiredWords = requiredWords.map(w => Array.isArray(w) ? w[0] : w);
     const payload = {
       question: currentQ.question,
       studentAnswer: userAnswer.trim(),
       requiredWords: primaryRequiredWords,
-      expectedAnswer: currentQ.modelAnswer,
-      scienceMaxMarks: currentQ.scienceMaxMarks,
-      markScheme: currentQ.markScheme
+      expectedAnswer: modelAnswer,
+      scienceMaxMarks: scienceMaxMarks,
+      markScheme: markScheme
     };
 
     let aiData;
@@ -166,19 +175,19 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       return;
     }
 
-    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    const usedWordGroups = requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
     const scienceScore = aiData.scienceScore || 0;
     const englishScore = aiData.englishScore || 0;
-    const scienceMarks = currentQ.markScheme.map((_, i) => i < scienceScore);
+    const marksScored = markScheme.map((_, i) => i < scienceScore);
 
     const pointsEarned = usedWordGroups.length + scienceScore + englishScore;
-    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2; 
+    const maxPoints = requiredWords.length + scienceMaxMarks + 2; 
     const isPerfect = pointsEarned >= maxPoints;
 
     setFeedback({
       originalAnswer: userAnswer.trim(),
       usedWordGroups,
-      scienceMarks,
+      scienceMarks: marksScored,
       scienceScore,
       englishScore,
       pointsEarned: Math.min(pointsEarned, maxPoints),
@@ -202,14 +211,14 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     let newMaxPoints = maxPossiblePoints;
 
     if (gameState === 'SAVED_PERFECT') {
-      const maxP = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2;
+      const maxP = requiredWords.length + scienceMaxMarks + 2;
       newCumPoints += maxP;
       newMaxPoints += maxP;
     } else if (feedback) {
       newCumPoints += feedback.pointsEarned;
       newMaxPoints += feedback.maxPoints;
     } else if (gameState === 'SAVED_API_ERROR') {
-      newMaxPoints += currentQ.requiredWords.length + currentQ.scienceMaxMarks + 2;
+      newMaxPoints += requiredWords.length + scienceMaxMarks + 2;
     }
 
     setCumulativePoints(newCumPoints);
@@ -294,12 +303,32 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-6 w-full max-w-4xl mx-auto mt-2 sm:mt-6">
         
         <div className="w-full mb-8 animate-in fade-in duration-300">
-          <h2 className="text-[#14b8a6] font-black text-xl mb-3 uppercase tracking-widest">
-            Question {currentIndex + 1}
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+             <h2 className="text-[#14b8a6] font-black text-xl uppercase tracking-widest">
+               Question {currentIndex + 1}
+             </h2>
+             {vnTranslation && (
+               <button 
+                 onClick={() => setShowTranslation(!showTranslation)}
+                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-[#14b8a6] hover:bg-teal-50 dark:hover:bg-teal-900/30 transition-colors text-xs font-bold uppercase tracking-widest"
+               >
+                 <Languages className="w-4 h-4" />
+                 {showTranslation ? 'Hide Translation' : 'View Translation'}
+               </button>
+             )}
+          </div>
+          
           <p className="text-2xl font-bold text-slate-800 dark:text-slate-200 leading-snug">
             {currentQ.question}
           </p>
+          
+          {showTranslation && vnTranslation && (
+            <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-xl border-l-4 border-[#14b8a6] animate-in slide-in-from-top-2 duration-200">
+              <p className="text-slate-600 dark:text-slate-400 font-medium italic">
+                "{vnTranslation}"
+              </p>
+            </div>
+          )}
         </div>
 
         <div className={containerClass}>
@@ -316,13 +345,13 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
           />
         </div>
 
-        {gameState !== 'LOADING' && (
+        {gameState !== 'LOADING' && requiredWords.length > 0 && (
           <div className="w-full mb-10">
             <span className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-3">
               Required Vocabulary
             </span>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {currentQ.requiredWords.map((wordGroup, i) => {
+              {requiredWords.map((wordGroup, i) => {
                 const isUsed = feedback 
                   ? feedback.usedWordGroups.includes(wordGroup) 
                   : checkRequiredWordGroup(wordGroup, userAnswer);
@@ -432,15 +461,15 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
               <div className="flex items-center justify-between mb-4 text-slate-800 dark:text-slate-200">
                 <div className="flex items-center">
                   <Award className="w-6 h-6 mr-2 text-amber-500" />
-                  <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
+                  <h3 className="text-lg font-black">Mark Scheme Breakdown</h3>
                 </div>
                 <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold px-3 py-1 rounded-lg text-sm">
-                  {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
+                  {feedback.scienceScore} / {scienceMaxMarks} Pts
                 </span>
               </div>
               
               <ul className="space-y-3">
-                {currentQ.markScheme.map((mark, i) => (
+                {markScheme.map((mark, i) => (
                   <li key={i} className="flex items-start">
                     {feedback.scienceMarks[i] ? (
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
@@ -474,7 +503,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
                <div className="bg-[#eff6ff] dark:bg-[#eff6ff]/10 border border-[#bfdbfe] dark:border-[#bfdbfe]/20 p-6 rounded-[1.5rem]">
                  <div className="flex items-center text-[#2563eb] dark:text-[#60a5fa] mb-3">
                    <FlaskConical className="w-5 h-5 mr-2" />
-                   <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
+                   <h4 className="font-black text-sm uppercase tracking-widest">Academic Feedback</h4>
                  </div>
                  <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                    {feedback.scienceFeedback}
@@ -488,7 +517,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
               </div>
               
               <h4 className="font-black text-[#3f6212] dark:text-[#a3e635] text-sm uppercase tracking-widest mb-4">
-                Suggested Notebook Answer
+                Suggested Answer
               </h4>
               
               <div className="space-y-4">
@@ -505,13 +534,13 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
                     Official Model Answer:
                   </span>
                   <p className="text-lg font-bold text-[#166534] dark:text-[#ecfccb]">
-                    "{currentQ.modelAnswer}"
+                    "{modelAnswer}"
                   </p>
                 </div>
               </div>
               
               <p className="text-sm font-bold text-[#3f6212] dark:text-[#a3e635] mt-6 bg-[#d9f99d] dark:bg-[#3f6212]/50 inline-block px-4 py-2 rounded-lg">
-                📝 Write one of these down in your notebook for full credit.
+                📝 Note how this model answer directly answers the prompt.
               </p>
             </div>
 

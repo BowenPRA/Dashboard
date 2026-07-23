@@ -56,7 +56,7 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
         newFormat[t] = dbProgress[t] || {};
       });
 
-      const isSuperOldFormat = !Object.keys(dbProgress).some(key => ['Y8', 'Y9', 'ESL', 'GED', 'GED_MATH', 'GED_ENG', 'ADD_MATH'].includes(key)) && Object.keys(dbProgress).length > 0;
+      const isSuperOldFormat = !Object.keys(dbProgress).some(key => ['Y8', 'Y9', 'ESL', 'GED', 'GED_MATH', 'GED_ENG', 'ADD_MATH', 'GED_HISTORY'].includes(key)) && Object.keys(dbProgress).length > 0;
 
       if (isSuperOldFormat) {
         newFormat['GED_MATH'] = dbProgress; 

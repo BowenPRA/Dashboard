@@ -32,7 +32,7 @@ The content is organized as follows:
 <notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Only files matching these patterns are included: src/data/GED_MATH/MATH_1A/**/*.js, src/tasks/Notes.jsx, src/tasks/Assessment.jsx, src/pages/YearView.jsx, src/components/UnitDashboard.jsx, src/pages/UnitDashboard.jsx, src/context/**/*.jsx, src/hooks/**/*.js, src/App.jsx
+- Only files matching these patterns are included: src/data/GED_MATH/MATH_1A/diagrams.js, src/data/GED_MATH/MATH_1A/assessment.js, src/tasks/Assessment.jsx, src/data/GED_MATH/MATH_1A/notes.js, src/tasks/Notes.jsx, srd/data/GED_MATH/MATH_1A/data.js
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
@@ -41,16 +41,16 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-src/App.jsx
-src/data/GED_MATH/MATH_1A/assessment.js
-src/data/GED_MATH/MATH_1A/data.js
-src/data/GED_MATH/MATH_1A/diagrams.js
-src/data/GED_MATH/MATH_1A/games.js
-src/data/GED_MATH/MATH_1A/notes.js
-src/data/GED_MATH/MATH_1A/workbook.js
-src/hooks/useStudentProgress.js
-src/tasks/Assessment.jsx
-src/tasks/Notes.jsx
+src/
+  data/
+    GED_MATH/
+      MATH_1A/
+        assessment.js
+        diagrams.js
+        notes.js
+  tasks/
+    Assessment.jsx
+    Notes.jsx
 </directory_structure>
 
 <files>
@@ -60,7 +60,7 @@ This section contains the contents of the repository's files.
 import { DIAGRAMS } from './diagrams.js';
 
 export const assessment = {
-  timeLimit: 1800,
+  timeLimit: 4000, // 60 minutes
   passages: [],
   questions: [
     {
@@ -266,166 +266,235 @@ export const assessment = {
       correct: "B",
       expEn: "The point of intersection represents the exact (x,y) coordinate pair that acts as a solution for both equations simultaneously.",
       expVn: "Điểm giao cắt đại diện cho cặp tọa độ (x,y) chính xác đóng vai trò là nghiệm cho cả hai phương trình cùng một lúc."
+    },
+    {
+      id: "q11_mcq_translate",
+      type: "mcq",
+      title: "11. An algebraic statement is shown: \"Four less than the product of three and a number x.\" Which expression is equivalent to this?",
+      options: [
+        { val: "A", text: "A. 4 - 3x" },
+        { val: "B", text: "B. 3(x - 4)" },
+        { val: "C", text: "C. 3x - 4" },
+        { val: "D", text: "D. 4x - 3" }
+      ],
+      correct: "C",
+      expEn: "The phrase 'product of three and a number x' translates to $$3x$$. The phrase 'four less than' means you subtract 4 at the end, making it $$3x - 4$$.",
+      expVn: "Cụm từ 'tích của ba và một số x' được dịch thành $$3x$$. Cụm từ 'ít hơn bốn' có nghĩa là bạn trừ đi 4 ở cuối, tạo thành $$3x - 4$$."
+    },
+    {
+      id: "q12_mcq_eval_context",
+      type: "mcq",
+      title: "12. The cost of renting a moving truck is given by the equation $$C = 2.5m + 45$$, where m is the number of miles driven. What is the total cost if you drive 60 miles?",
+      options: [
+        { val: "A", text: "A. $195" },
+        { val: "B", text: "B. $150" },
+        { val: "C", text: "C. $105" },
+        { val: "D", text: "D. $250" }
+      ],
+      correct: "A",
+      expEn: "Substitute 60 for m: $$2.5(60) + 45$$. First multiply to get 150. Then add 45. The total cost is $195.",
+      expVn: "Thay thế 60 cho m: $$2.5(60) + 45$$. Đầu tiên nhân để được 150. Sau đó cộng thêm 45. Tổng chi phí là 195 đô la."
+    },
+    {
+      id: "q13_mcq_perimeter",
+      type: "mcq",
+      title: "13. What is the simplified expression for the perimeter of the rectangle shown below?",
+      inlineSvg: DIAGRAMS.ASSESSMENT_PERIMETER_ALG,
+      options: [
+        { val: "A", text: "A. 4x + 1" },
+        { val: "B", text: "B. 8x + 2" },
+        { val: "C", text: "C. 3x² - x - 2" },
+        { val: "D", text: "D. 6x + 4" }
+      ],
+      correct: "B",
+      expEn: "To find perimeter, add all four sides (or twice the length plus twice the width): $$2(3x + 2) + 2(x - 1)$$. Distribute to get $$6x + 4 + 2x - 2$$. Combine like terms to get $$8x + 2$$.",
+      expVn: "Để tìm chu vi, hãy cộng cả bốn cạnh (hoặc hai lần chiều dài cộng hai lần chiều rộng): $$2(3x + 2) + 2(x - 1)$$. Phân phối để được $$6x + 4 + 2x - 2$$. Kết hợp các hạng tử đồng dạng để được $$8x + 2$$."
+    },
+    {
+      id: "q14_mcq_area",
+      type: "mcq",
+      title: "14. A rectangular garden has the dimensions shown below. Which expression represents the total area?",
+      inlineSvg: DIAGRAMS.ASSESSMENT_AREA_ALG,
+      options: [
+        { val: "A", text: "A. 10x + 4" },
+        { val: "B", text: "B. 10x + 20" },
+        { val: "C", text: "C. 2x + 9" },
+        { val: "D", text: "D. 7x + 9" }
+      ],
+      correct: "B",
+      expEn: "The area of a rectangle is length multiplied by width. You must multiply 5 by the entire expression $$(2x + 4)$$. Using the distributive property, $$5(2x) = 10x$$ and $$5(4) = 20$$, resulting in $$10x + 20$$.",
+      expVn: "Diện tích hình chữ nhật bằng chiều dài nhân với chiều rộng. Bạn phải nhân 5 với toàn bộ biểu thức $$(2x + 4)$$. Sử dụng tính chất phân phối, $$5(2x) = 10x$$ và $$5(4) = 20$$, kết quả là $$10x + 20$$."
+    },
+    {
+      id: "q15_mcq_word_eq",
+      type: "mcq",
+      title: "15. A plumber charges $15 per hour of work plus a flat travel bonus of $25. If the plumber's total pay for the day was $130, how many hours did they work?",
+      options: [
+        { val: "A", text: "A. 5" },
+        { val: "B", text: "B. 8" },
+        { val: "C", text: "C. 10" },
+        { val: "D", text: "D. 7" }
+      ],
+      correct: "D",
+      expEn: "Set up the equation: $$15h + 25 = 130$$. Subtract 25 from both sides to get $$15h = 105$$. Divide by 15 to find $$h = 7$$.",
+      expVn: "Thiết lập phương trình: $$15h + 25 = 130$$. Trừ 25 cho cả hai vế để được $$15h = 105$$. Chia cho 15 để tìm ra $$h = 7$$."
+    },
+    {
+      id: "q16_mcq_distributive_neg",
+      type: "mcq",
+      title: "16. Simplify the following expression by distributing and combining like terms: $$-2(3x - 4) + 5x$$",
+      options: [
+        { val: "A", text: "A. -x - 8" },
+        { val: "B", text: "B. -x + 8" },
+        { val: "C", text: "C. 11x - 8" },
+        { val: "D", text: "D. -6x + 8" }
+      ],
+      correct: "B",
+      expEn: "First, distribute the -2: $$-2(3x) = -6x$$ and $$-2(-4) = +8$$. Now the expression is $$-6x + 8 + 5x$$. Finally, combine the like terms (-6x and +5x) to get $$-x + 8$$.",
+      expVn: "Đầu tiên, phân phối số -2: $$-2(3x) = -6x$$ và $$-2(-4) = +8$$. Bây giờ biểu thức là $$-6x + 8 + 5x$$. Cuối cùng, kết hợp các hạng tử đồng dạng (-6x và +5x) để được $$-x + 8$$."
+    },
+    {
+      id: "q17_inline_anatomy",
+      type: "inline",
+      title: "17. Identify the mathematical parts of the expression: $$7y - 4$$",
+      options: [],
+      textParts: [
+        "In this expression, the number 7 is the ",
+        ", the letter y is the ",
+        ", and the number -4 is the ",
+        "."
+      ],
+      blanks: {
+        "1": {
+          correct: "coefficient",
+          options: [
+            { val: "coefficient", text: "coefficient" },
+            { val: "variable", text: "variable" },
+            { val: "constant", text: "constant" }
+          ]
+        },
+        "2": {
+          correct: "variable",
+          options: [
+            { val: "coefficient", text: "coefficient" },
+            { val: "variable", text: "variable" },
+            { val: "constant", text: "constant" }
+          ]
+        },
+        "3": {
+          correct: "constant",
+          options: [
+            { val: "coefficient", text: "coefficient" },
+            { val: "variable", text: "variable" },
+            { val: "constant", text: "constant" }
+          ]
+        }
+      },
+      expEn: "The coefficient is the number attached to a letter. The variable is the letter representing an unknown. The constant is the normal number standing alone.",
+      expVn: "Hệ số là con số gắn với một chữ cái. Biến số là chữ cái đại diện cho một ẩn số. Hằng số là con số bình thường đứng một mình."
+    },
+    {
+      id: "q18_dnd_phrases",
+      type: "dnd",
+      title: "18. Match the English phrases to their correct algebraic expressions.",
+      options: [],
+      bank: [
+        { id: "e1", val: "2x+5", text: "2x + 5" },
+        { id: "e2", val: "2x-5", text: "2x - 5" },
+        { id: "e3", val: "5x", text: "5x" }
+      ],
+      targets: [
+        { id: "p1", title: "Five less than twice a number" },
+        { id: "p2", title: "Twice a number increased by five" },
+        { id: "p3", title: "The product of five and a number" }
+      ],
+      correctSets: {
+        "p1": ["2x-5"],
+        "p2": ["2x+5"],
+        "p3": ["5x"]
+      },
+      expEn: "Remember that 'less than' works backwards, so 'five less than' means you subtract 5 at the end. 'Increased by' means addition, and 'product' means multiplication.",
+      expVn: "Hãy nhớ rằng 'ít hơn' (less than) hoạt động ngược lại, vì vậy 'ít hơn năm' có nghĩa là bạn trừ đi 5 ở cuối. 'Tăng thêm' (increased by) có nghĩa là phép cộng, và 'tích' (product) có nghĩa là phép nhân."
+    },
+    {
+      id: "q19_mcq_fractional_eq",
+      type: "mcq",
+      title: "19. Solve for x: $$\\frac{x}{3} = 12$$",
+      options: [
+        { val: "A", text: "A. 4" },
+        { val: "B", text: "B. 9" },
+        { val: "C", text: "C. 36" },
+        { val: "D", text: "D. 15" }
+      ],
+      correct: "C",
+      expEn: "The variable x is being divided by 3. To isolate x, you must do the inverse operation and multiply both sides by 3. $$12 \\times 3 = 36$$.",
+      expVn: "Biến x đang được chia cho 3. Để cô lập x, bạn phải thực hiện phép toán ngược lại và nhân cả hai vế với 3. $$12 \\times 3 = 36$$."
+    },
+    {
+      id: "q20_mcq_combine_word",
+      type: "mcq",
+      title: "20. You buy x apples for $2 each and x bananas for $1 each. Which expression represents the total cost?",
+      options: [
+        { val: "A", text: "A. 2x + 1" },
+        { val: "B", text: "B. 3x" },
+        { val: "C", text: "C. 3x²" },
+        { val: "D", text: "D. 2x²" }
+      ],
+      correct: "B",
+      expEn: "The cost of the apples is $$2x$$ and the cost of bananas is $$1x$$. Since they share the same variable, you combine like terms: $$2x + 1x = 3x$$.",
+      expVn: "Chi phí mua táo là $$2x$$ và chi phí mua chuối là $$1x$$. Vì chúng có chung một biến số, bạn kết hợp các hạng tử đồng dạng: $$2x + 1x = 3x$$."
+    },
+    {
+      id: "q21_mcq_evaluate_neg",
+      type: "mcq",
+      title: "21. Evaluate the expression $$x^2 - 3x$$ when $$x = -4$$.",
+      options: [
+        { val: "A", text: "A. 4" },
+        { val: "B", text: "B. 28" },
+        { val: "C", text: "C. -4" },
+        { val: "D", text: "D. -28" }
+      ],
+      correct: "B",
+      expEn: "Substitute -4 in parentheses: $$(-4)^2 - 3(-4)$$. A negative times a negative is positive, so $$(-4)^2 = +16$$, and $$-3 \\times -4 = +12$$. Finally, add $$16 + 12 = 28$$.",
+      expVn: "Thay thế -4 trong dấu ngoặc đơn: $$(-4)^2 - 3(-4)$$. Số âm nhân với số âm thành số dương, do đó $$(-4)^2 = +16$$, và $$-3 \\times -4 = +12$$. Cuối cùng, cộng $$16 + 12 = 28$$."
+    },
+    {
+      id: "q22_mcq_solve_distributive",
+      type: "mcq",
+      title: "22. Solve the equation for x: $$3(x + 2) = 21$$",
+      options: [
+        { val: "A", text: "A. 5" },
+        { val: "B", text: "B. 6" },
+        { val: "C", text: "C. 7" },
+        { val: "D", text: "D. 9" }
+      ],
+      correct: "A",
+      expEn: "First distribute the 3 to get $$3x + 6 = 21$$. Next, subtract 6 from both sides to get $$3x = 15$$. Finally, divide by 3 to find $$x = 5$$.",
+      expVn: "Đầu tiên phân phối số 3 để được $$3x + 6 = 21$$. Tiếp theo, trừ 6 cho cả hai vế để được $$3x = 15$$. Cuối cùng, chia cho 3 để tìm ra $$x = 5$$."
+    },
+    {
+      id: "q23_dnd_table_to_eq",
+      type: "dnd",
+      title: "23. Drag the correct algebraic steps in order from top to bottom to solve the equation: $$5x - 10 = 20$$.",
+      options: [],
+      bank: [
+        { id: "b1", val: "Add 10", text: "Add 10 to both sides" },
+        { id: "b2", val: "Subtract 10", text: "Subtract 10 from both sides" },
+        { id: "b3", val: "Divide 5", text: "Divide both sides by 5" },
+        { id: "b4", val: "Multiply 5", text: "Multiply both sides by 5" }
+      ],
+      targets: [
+        { id: "t1", title: "Step 1" },
+        { id: "t2", title: "Step 2" }
+      ],
+      correctSets: {
+        "t1": ["Add 10"],
+        "t2": ["Divide 5"]
+      },
+      expEn: "Always undo addition/subtraction first: add 10 to both sides to get $$5x = 30$$. Then undo multiplication/division: divide by 5 to find $$x = 6$$.",
+      expVn: "Luôn hoàn tác phép cộng/trừ trước: cộng 10 vào cả hai vế để được $$5x = 30$$. Sau đó hoàn tác phép nhân/chia: chia cho 5 để tìm ra $$x = 6$$."
     }
   ]
-};
-</file>
-
-<file path="src/data/GED_MATH/MATH_1A/data.js">
-// src/data/GED_MATH/MATH_1A/data.js
-
-import { notes } from './notes.js';
-import { assessment } from './assessment.js';
-import { games } from './games.js';
-
-export const ADD_MATH_1A_DATA = {
-  meta: {
-    id: "MATH_1A",
-    title: "Algebraic Expressions & Equations",
-    desc: "Master the language of algebra, translate real-world word problems, and solve basic equations.",
-    track: "GED_MATH",
-    icon: "Calculator",
-    themeColor: "bg-emerald-500 border-emerald-700"
-  },
-  
-  // --- CORRECTED XP PIPELINE ---
-  phases: [
-    {
-      id: "concept",
-      title: "Core Concepts",
-      threshold: 0,
-      tasks: [
-        { id: "NOTES", dbKey: "p10", maxXP: 10 } 
-      ]
-    },
-    {
-      id: "practice",
-      title: "Phase 1: Practice",
-      threshold: 10, // Unlocks after completing Notes
-      tasks: [
-        { id: "WORD_REC", dbKey: "p1", maxXP: 10 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
-      ]
-    },
-    {
-      id: "mastery",
-      title: "Phase 2: Mastery",
-      threshold: 40, // Unlocks after getting 10 (Notes) + 10 (Word Rec) + 20 (Short Answers)
-      tasks: [
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 10 }, // Fixed to 10 to match Assessment.jsx scaling
-        { id: "GAMES", dbKey: "p12", maxXP: 20 }
-      ]
-    }
-  ],
-
-  realWords: [
-    { word: "Variable", vn: "Biến số", def: "A letter used to represent an unknown number.", vnDef: "Một chữ cái được sử dụng để đại diện cho một số chưa biết.", sent: "In the expression x + 5, the letter x is the variable.", vnSent: "Trong biểu thức x + 5, chữ cái x là biến số.", isReal: true },
-    { word: "Coefficient", vn: "Hệ số", def: "A number multiplied by a variable.", vnDef: "Một số được nhân với một biến số.", sent: "The coefficient in the term 4y is 4.", vnSent: "Hệ số trong hạng tử 4y là 4.", isReal: true },
-    { word: "Term", vn: "Hạng tử", def: "A single mathematical block separated by plus or minus signs.", vnDef: "Một khối toán học đơn lẻ được phân tách bằng dấu cộng hoặc trừ.", sent: "The expression 2x + 3 has two terms.", vnSent: "Biểu thức 2x + 3 có hai hạng tử.", isReal: true },
-    { word: "Expression", vn: "Biểu thức", def: "A math phrase combining numbers and variables without an equal sign.", vnDef: "Một cụm từ toán học kết hợp các số và biến số không có dấu bằng.", sent: "We can simplify the expression to make it shorter.", vnSent: "Chúng ta có thể rút gọn biểu thức để làm cho nó ngắn hơn.", isReal: true },
-    { word: "Equation", vn: "Phương trình", def: "A mathematical statement showing two sides are equal.", vnDef: "Một phát biểu toán học cho thấy hai vế bằng nhau.", sent: "To solve the equation, you must find the unknown variable.", vnSent: "Để giải phương trình, bạn phải tìm biến số chưa biết.", isReal: true },
-    { word: "Substitute", vn: "Thay thế", def: "To replace a variable with a specific number.", vnDef: "Thay thế một biến số bằng một con số cụ thể.", sent: "Substitute the number 3 for x to solve the problem.", vnSent: "Thay thế số 3 cho x để giải bài toán.", isReal: true },
-    { word: "Evaluate", vn: "Tính giá trị", def: "To calculate the final value.", vnDef: "Tính toán giá trị cuối cùng.", sent: "Evaluate the expression to figure out the total cost.", vnSent: "Tính giá trị biểu thức để tìm ra tổng chi phí.", isReal: true },
-    { word: "Isolate", vn: "Cô lập / Tách riêng", def: "To get a variable by itself on one side of an equal sign.", vnDef: "Để một biến số đứng một mình ở một vế của dấu bằng.", sent: "You need to isolate the y to find the final answer.", vnSent: "Bạn cần cô lập y để tìm câu trả lời cuối cùng.", isReal: true },
-    { word: "Distribute", vn: "Phân phối", def: "To multiply an outside term to everything inside parentheses.", vnDef: "Nhân một hạng tử bên ngoài với mọi thứ bên trong dấu ngoặc đơn.", sent: "Distribute the 2 across the numbers inside the parentheses.", vnSent: "Phân phối số 2 cho các số bên trong dấu ngoặc đơn.", isReal: true },
-    { word: "Combine", vn: "Kết hợp", def: "To add or subtract terms that have the exact same variables.", vnDef: "Cộng hoặc trừ các hạng tử có chính xác các biến số giống nhau.", sent: "Combine the like terms to simplify the problem.", vnSent: "Kết hợp các hạng tử đồng dạng để rút gọn bài toán.", isReal: true }
-  ],
-
-  fakeWords: [
-    { word: "Variabal", isReal: false },
-    { word: "Coeficient", isReal: false },
-    { word: "Equasion", isReal: false },
-    { word: "Substitoot", isReal: false },
-    { word: "Izolate", isReal: false },
-    { word: "Distriboot", isReal: false },
-    { word: "Expresion", isReal: false },
-    { word: "Evalueight", isReal: false }
-  ],
-
-  passages: [
-    {
-      id: "passage_1",
-      title: "Algebra at the Coffee Shop",
-      meta: "Real-World Application",
-      text: [
-        "Many people use algebra every day without realizing it. Imagine you are working at a local coffee shop. A regular black coffee costs $3. If a customer comes in and orders a certain number of coffees for their office, you can use an {expression} to quickly calculate the total price.",
-        "In math, we use a {variable}, like the letter 'c', to represent the unknown number of coffees. The math phrase becomes 3c. In this phrase, the number 3 is the {coefficient}.",
-        "If a customer orders 4 coffees, you simply {substitute} the number 4 into the place of 'c'. Finally, you {evaluate} the cost: 3 times 4 equals $12."
-      ],
-      glossary: {
-        "expression": { vn: "Biểu thức", def: "A math phrase combining numbers and variables." },
-        "variable": { vn: "Biến số", def: "A letter representing an unknown amount." },
-        "coefficient": { vn: "Hệ số", def: "The number multiplied by the variable." },
-        "substitute": { vn: "Thay thế", def: "To replace a letter with a specific number." },
-        "evaluate": { vn: "Tính giá trị", def: "To calculate the final numerical answer." }
-      }
-    },
-    {
-      id: "passage_2",
-      title: "The Golden Rule of Balance",
-      meta: "Understanding Equations",
-      text: [
-        "While an expression is just a phrase, an {equation} is a complete mathematical sentence. The most important part is the equal sign. Think of an equal sign like a perfectly balanced scale.",
-        "Your main goal is to {isolate} the unknown variable so it sits all by itself on one side of the scale. To do this, you have to move numbers away from it using inverse (opposite) operations.",
-        "However, you must follow the Golden Rule: Whatever you do to the left side, you must also do to the right side. If you add 5 pounds to the left, you must add 5 pounds to the right to keep the balance."
-      ],
-      glossary: {
-        "equation": { vn: "Phương trình", def: "A math statement showing two equal sides." },
-        "isolate": { vn: "Cô lập", def: "To get a variable completely by itself." }
-      }
-    },
-    {
-      id: "passage_3",
-      title: "Organizing the Warehouse",
-      meta: "Simplifying Math",
-      text: [
-        "Imagine you manage a large fruit warehouse. You have boxes of apples and boxes of bananas. If someone asks for your inventory, you wouldn't say, 'I have 2 boxes of apples, 3 boxes of bananas, and 4 more boxes of apples.' That is too confusing.",
-        "Instead, you would {combine} the apples together. You now have 6 boxes of apples and 3 boxes of bananas.",
-        "In algebra, this is called combining like terms. You can only group a {term} with another term if they have the exact same variable. You can add 'x' with 'x', but you can never add 'x' with 'y'."
-      ],
-      glossary: {
-        "combine": { vn: "Kết hợp", def: "To add or subtract similar items together." },
-        "term": { vn: "Hạng tử", def: "A single mathematical block (like 2x or 5y)." }
-      }
-    }
-  ],
-
-  shortQA: [
-    {
-      id: "qa1",
-      question: "What is the primary difference between an expression and an equation?",
-      sampleAnswer: "An expression is a math phrase with no equal sign, while an equation has an equal sign showing that two sides are balanced.",
-      vnTranslation: "Sự khác biệt chính giữa biểu thức và phương trình là gì?"
-    },
-    {
-      id: "qa2",
-      question: "In the mathematical term '5y', what do we call the number 5, and what do we call the letter y?",
-      sampleAnswer: "The number 5 is the coefficient, and the letter y is the variable.",
-      vnTranslation: "Trong hạng tử toán học '5y', chúng ta gọi số 5 là gì, và gọi chữ y là gì?"
-    },
-    {
-      id: "qa3",
-      question: "If you are asked to 'isolate the variable' when solving an equation, what exactly are you trying to do?",
-      sampleAnswer: "You are trying to use math operations to get the letter completely by itself on one side of the equal sign.",
-      vnTranslation: "Nếu bạn được yêu cầu 'cô lập biến số' khi giải phương trình, chính xác thì bạn đang cố gắng làm gì?"
-    },
-    {
-      id: "qa4",
-      question: "Why is it important to only combine 'like terms' in an expression?",
-      sampleAnswer: "Because terms with different variables represent entirely different things (like apples and bananas), so they cannot be added together.",
-      vnTranslation: "Tại sao việc chỉ kết hợp 'các hạng tử đồng dạng' trong một biểu thức lại quan trọng?"
-    },
-    {
-      id: "qa5",
-      question: "What does it mean to 'substitute' a number in algebra?",
-      sampleAnswer: "It means to take a specific number and plug it into the expression wherever the variable (letter) is.",
-      vnTranslation: "Việc 'thay thế' một số trong đại số có nghĩa là gì?"
-    }
-  ],
-
-  assessment,
-  games,
-  notes
 };
 </file>
 
@@ -447,6 +516,19 @@ export const DIAGRAMS = {
     <circle cx="240" cy="80" r="6" fill="#ef4444" />
   </svg>`,
 
+  ASSESSMENT_PERIMETER_ALG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+    <rect x="50" y="50" width="300" height="150" fill="#f8fafc" stroke="#3b82f6" stroke-width="4" stroke-dasharray="8 4"/>
+    <text x="200" y="35" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">3x + 2</text>
+    <text x="375" y="130" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">x - 1</text>
+  </svg>`,
+
+  ASSESSMENT_AREA_ALG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" class="w-full h-full drop-shadow-md">
+    <rect x="80" y="40" width="280" height="120" fill="#f0fdf4" stroke="#10b981" stroke-width="4"/>
+    <text x="220" y="105" font-family="sans-serif" font-weight="bold" font-size="24" fill="#10b981" text-anchor="middle">Area = ?</text>
+    <text x="220" y="25" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">2x + 4</text>
+    <text x="50" y="105" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">5</text>
+  </svg>`,
+
   NOTES_SLOPE_TRIANGLE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" class="w-full h-full drop-shadow-md">
     <line x1="50" y1="250" x2="350" y2="50" stroke="#3b82f6" stroke-width="5" stroke-linecap="round" />
     <line x1="150" y1="183" x2="250" y2="183" stroke="#eab308" stroke-width="3" stroke-dasharray="6" />
@@ -455,23 +537,190 @@ export const DIAGRAMS = {
     <text x="265" y="155" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ef4444">Rise</text>
     <circle cx="150" cy="183" r="6" fill="#1e293b" />
     <circle cx="250" cy="116" r="6" fill="#1e293b" />
+  </svg>`,
+
+  NOTES_ANATOMY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 250" class="w-full h-full drop-shadow-md">
+    <defs>
+      <marker id="arrow-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+      </marker>
+    </defs>
+    <rect width="500" height="250" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="135" y="115" font-family="monospace" font-weight="900" font-size="48" fill="#1e293b" text-anchor="middle">4</text>
+    <text x="165" y="115" font-family="monospace" font-weight="900" font-size="48" fill="#1e293b" text-anchor="middle">x</text>
+    <text x="210" y="115" font-family="monospace" font-weight="900" font-size="48" fill="#1e293b" text-anchor="middle">+</text>
+    <text x="250" y="115" font-family="monospace" font-weight="900" font-size="48" fill="#1e293b" text-anchor="middle">7</text>
+    <text x="300" y="115" font-family="monospace" font-weight="900" font-size="48" fill="#1e293b" text-anchor="middle">=</text>
+    <text x="350" y="115" font-family="monospace" font-weight="900" font-size="48" fill="#1e293b" text-anchor="middle">15</text>
+    <rect x="110" y="70" width="75" height="60" rx="8" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>
+    <rect x="230" y="70" width="40" height="60" rx="8" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>
+    <rect x="315" y="70" width="70" height="60" rx="8" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>
+    <text x="65" y="105" font-family="sans-serif" font-weight="bold" font-size="14" fill="#f59e0b" text-anchor="middle">Terms</text>
+    <line x1="85" y1="100" x2="105" y2="100" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-orange)" />
+    <path d="M 165 65 L 165 40 L 210 40" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+    <text x="220" y="45" font-family="sans-serif" font-weight="bold" font-size="16" fill="#3b82f6" text-anchor="start">Variable</text>
+    <path d="M 135 125 L 135 155 L 90 155 L 90 165" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+    <text x="90" y="185" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ef4444" text-anchor="middle">Coefficient</text>
+    <path d="M 250 125 L 250 155" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 350 125 L 350 155" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+    <line x1="250" y1="155" x2="350" y2="155" stroke="#10b981" stroke-width="3" stroke-linecap="round" />
+    <path d="M 300 155 L 300 165" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+    <text x="300" y="185" font-family="sans-serif" font-weight="bold" font-size="16" fill="#10b981" text-anchor="middle">Constants</text>
+  </svg>`,
+
+  NOTES_EXPR_VS_EQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md">
+    <rect x="10" y="10" width="230" height="180" rx="15" fill="#fef2f2" stroke="#fca5a5" stroke-width="3"/>
+    <text x="125" y="45" font-family="sans-serif" font-weight="bold" font-size="20" fill="#ef4444" text-anchor="middle">Expression</text>
+    <text x="125" y="110" font-family="monospace" font-weight="bold" font-size="32" fill="#1e293b" text-anchor="middle">3x + 5</text>
+    <text x="125" y="160" font-family="sans-serif" font-weight="600" font-size="14" fill="#64748b" text-anchor="middle">No equal sign.</text>
+    <rect x="260" y="10" width="230" height="180" rx="15" fill="#f0fdf4" stroke="#86efac" stroke-width="3"/>
+    <text x="375" y="45" font-family="sans-serif" font-weight="bold" font-size="20" fill="#10b981" text-anchor="middle">Equation</text>
+    <text x="320" y="110" font-family="monospace" font-weight="bold" font-size="32" fill="#1e293b" text-anchor="middle">3x + 5</text>
+    <text x="385" y="110" font-family="monospace" font-weight="bold" font-size="32" fill="#10b981" text-anchor="middle">=</text>
+    <text x="435" y="110" font-family="monospace" font-weight="bold" font-size="32" fill="#1e293b" text-anchor="middle">14</text>
+    <circle cx="385" cy="100" r="22" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="4"/>
+    <text x="375" y="160" font-family="sans-serif" font-weight="600" font-size="14" fill="#64748b" text-anchor="middle">Has an equal sign.</text>
+  </svg>`,
+
+  NOTES_LIKE_TERMS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md">
+    <rect width="500" height="200" rx="20" fill="#fffbeb" stroke="#fde68a" stroke-width="3"/>
+    <text x="250" y="40" font-family="sans-serif" font-weight="bold" font-size="18" fill="#d97706" text-anchor="middle">Combine Like Terms</text>
+    <text x="80" y="105" font-family="monospace" font-weight="bold" font-size="36" fill="#ef4444" text-anchor="middle">2a</text>
+    <text x="140" y="105" font-family="monospace" font-weight="bold" font-size="36" fill="#1e293b" text-anchor="middle">+</text>
+    <text x="200" y="105" font-family="monospace" font-weight="bold" font-size="36" fill="#ef4444" text-anchor="middle">3a</text>
+    <text x="260" y="105" font-family="monospace" font-weight="bold" font-size="36" fill="#1e293b" text-anchor="middle">=</text>
+    <text x="350" y="105" font-family="monospace" font-weight="bold" font-size="48" fill="#ef4444" text-anchor="middle">5a</text>
+    <text x="80" y="145" font-family="sans-serif" font-size="14" fill="#64748b" text-anchor="middle">(2 apples)</text>
+    <text x="200" y="145" font-family="sans-serif" font-size="14" fill="#64748b" text-anchor="middle">(3 apples)</text>
+    <text x="350" y="150" font-family="sans-serif" font-weight="bold" font-size="16" fill="#d97706" text-anchor="middle">(5 apples)</text>
+    <path d="M 80 160 L 80 180 L 200 180 L 200 160" fill="none" stroke="#d97706" stroke-width="2"/>
+    <path d="M 140 180 L 140 190 L 330 190 L 330 165" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrow)"/>
+  </svg>`,
+
+  NOTES_DISTRIBUTIVE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md">
+    <defs>
+      <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7" />
+      </marker>
+    </defs>
+    <rect width="500" height="200" rx="20" fill="#f3e8ff" stroke="#d8b4fe" stroke-width="3"/>
+    <text x="140" y="130" font-family="monospace" font-weight="bold" font-size="40" fill="#a855f7" text-anchor="middle">3</text>
+    <text x="175" y="130" font-family="monospace" font-weight="bold" font-size="40" fill="#1e293b" text-anchor="middle">(</text>
+    <text x="210" y="130" font-family="monospace" font-weight="bold" font-size="40" fill="#1e293b" text-anchor="middle">x</text>
+    <text x="250" y="130" font-family="monospace" font-weight="bold" font-size="40" fill="#1e293b" text-anchor="middle">+</text>
+    <text x="290" y="130" font-family="monospace" font-weight="bold" font-size="40" fill="#1e293b" text-anchor="middle">4</text>
+    <text x="325" y="130" font-family="monospace" font-weight="bold" font-size="40" fill="#1e293b" text-anchor="middle">)</text>
+    <text x="370" y="130" font-family="monospace" font-weight="bold" font-size="32" fill="#1e293b" text-anchor="middle">=</text>
+    <text x="440" y="130" font-family="monospace" font-weight="bold" font-size="32" fill="#a855f7" text-anchor="middle">3x + 12</text>
+    <path d="M 140 90 Q 175 45 205 90" fill="none" stroke="#a855f7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+    <path d="M 135 85 Q 212 10 285 90" fill="none" stroke="#a855f7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+    <text x="175" y="42" font-family="sans-serif" font-weight="bold" font-size="14" fill="#a855f7" text-anchor="middle">Multiply</text>
+    <text x="245" y="20" font-family="sans-serif" font-weight="bold" font-size="14" fill="#a855f7" text-anchor="middle">Multiply</text>
+  </svg>`,
+
+  // --- NEW DIAGRAMS ---
+  
+  DIAGRAM_NUMBER_LINE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" class="w-full h-full drop-shadow-md bg-white rounded-lg p-4">
+    <line x1="20" y1="75" x2="480" y2="75" stroke="#1e293b" stroke-width="4" stroke-linecap="round" />
+    <path d="M 480 75 L 470 65 L 470 85 Z" fill="#1e293b" />
+    <path d="M 20 75 L 30 65 L 30 85 Z" fill="#1e293b" />
+    <line x1="50" y1="65" x2="50" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="50" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">-5</text>
+    <line x1="90" y1="65" x2="90" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="90" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">-4</text>
+    <line x1="130" y1="65" x2="130" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="130" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">-3</text>
+    <line x1="170" y1="65" x2="170" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="170" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">-2</text>
+    <line x1="210" y1="65" x2="210" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="210" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">-1</text>
+    <line x1="250" y1="65" x2="250" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="250" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e293b" text-anchor="middle">0</text>
+    <line x1="290" y1="65" x2="290" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="290" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">1</text>
+    <line x1="330" y1="65" x2="330" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="330" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">2</text>
+    <line x1="370" y1="65" x2="370" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="370" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">3</text>
+    <line x1="410" y1="65" x2="410" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="410" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">4</text>
+    <line x1="450" y1="65" x2="450" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="450" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">5</text>
+    <circle cx="170" cy="75" r="8" fill="#ef4444" />
+    <text x="170" y="45" font-family="sans-serif" font-size="18" font-weight="bold" fill="#ef4444" text-anchor="middle">A</text>
+    <circle cx="370" cy="75" r="8" fill="#3b82f6" />
+    <text x="370" y="45" font-family="sans-serif" font-size="18" font-weight="bold" fill="#3b82f6" text-anchor="middle">B</text>
+  </svg>`,
+
+  DIAGRAM_COORDINATE_PLANE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-md bg-white rounded-lg">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="400" height="400" fill="url(#grid)" />
+    <line x1="200" y1="0" x2="200" y2="400" stroke="#1e293b" stroke-width="3" />
+    <line x1="0" y1="200" x2="400" y2="200" stroke="#1e293b" stroke-width="3" />
+    <text x="210" y="215" font-family="sans-serif" font-size="12" fill="#64748b">0</text>
+    <circle cx="200" cy="120" r="6" fill="#10b981" />
+    <circle cx="320" cy="40" r="6" fill="#10b981" />
+    <line x1="100" y1="280" x2="400" y2="-40" stroke="#10b981" stroke-width="4" stroke-dasharray="8 4" opacity="0.6"/>
+  </svg>`,
+
+  DIAGRAM_INEQUALITY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" class="w-full h-full drop-shadow-md bg-white rounded-lg p-4">
+    <line x1="20" y1="75" x2="480" y2="75" stroke="#1e293b" stroke-width="4" stroke-linecap="round" />
+    <path d="M 480 75 L 470 65 L 470 85 Z" fill="#1e293b" />
+    <path d="M 20 75 L 30 65 L 30 85 Z" fill="#1e293b" />
+    <line x1="250" y1="65" x2="250" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="250" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1e293b" text-anchor="middle">0</text>
+    <line x1="410" y1="65" x2="410" y2="85" stroke="#1e293b" stroke-width="2" />
+    <text x="410" y="110" font-family="sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">4</text>
+    <line x1="30" y1="75" x2="400" y2="75" stroke="#f59e0b" stroke-width="8" />
+    <path d="M 20 75 L 35 60 L 35 90 Z" fill="#f59e0b" />
+    <circle cx="410" cy="75" r="8" fill="white" stroke="#f59e0b" stroke-width="4" />
+  </svg>`,
+
+  DIAGRAM_SYSTEM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-md bg-white rounded-lg">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="400" height="400" fill="url(#grid)" />
+    <line x1="200" y1="0" x2="200" y2="400" stroke="#1e293b" stroke-width="3" />
+    <line x1="0" y1="200" x2="400" y2="200" stroke="#1e293b" stroke-width="3" />
+    <text x="210" y="165" font-family="sans-serif" font-size="12" fill="#64748b">1</text>
+    <text x="240" y="215" font-family="sans-serif" font-size="12" fill="#64748b">1</text>
+    <line x1="80" y1="480" x2="320" y2="-40" stroke="#3b82f6" stroke-width="4" />
+    <line x1="40" y1="0" x2="360" y2="400" stroke="#f43f5e" stroke-width="4" />
+    <circle cx="280" cy="160" r="8" fill="#8b5cf6" stroke="#fff" stroke-width="2" />
+  </svg>`,
+
+  DIAGRAM_MAPPING: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-4">
+    <ellipse cx="120" cy="125" rx="60" ry="100" fill="#f0fdf4" stroke="#10b981" stroke-width="3" />
+    <text x="120" y="20" font-family="sans-serif" font-weight="bold" font-size="16" fill="#10b981" text-anchor="middle">Domain (x)</text>
+    <text x="120" y="80" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">1</text>
+    <text x="120" y="130" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">2</text>
+    <text x="120" y="180" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">3</text>
+    
+    <ellipse cx="280" cy="125" rx="60" ry="100" fill="#f3e8ff" stroke="#a855f7" stroke-width="3" />
+    <text x="280" y="20" font-family="sans-serif" font-weight="bold" font-size="16" fill="#a855f7" text-anchor="middle">Range (y)</text>
+    <text x="280" y="100" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">4</text>
+    <text x="280" y="160" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">5</text>
+    
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+      </marker>
+    </defs>
+    <path d="M 140 75 L 250 95" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+    <path d="M 140 125 L 250 155" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
+    <path d="M 140 175 L 250 160" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" />
   </svg>`
 };
 </file>
 
-<file path="src/data/GED_MATH/MATH_1A/games.js">
-// Example for Y8/MATH_1A/games.js
-export const games = {
-  gameConfig: {
-    bannedTowers: [], 
-    lives: 20,
-    mapId: 'STRAIGHT' // Use 'STRAIGHT' for the Science unit
-  }
-};
-</file>
-
 <file path="src/data/GED_MATH/MATH_1A/notes.js">
-// src/data/GED_MATH/MATH_1A/notes.js
 import { DIAGRAMS } from './diagrams.js';
 
 export const notes = [
@@ -491,14 +740,14 @@ export const notes = [
     titleVn: "Chào mừng đến với Đại số",
     icon: "Target",
     color: "bg-[#0ea5e9]",
-    content: "Algebra is simply a way of solving puzzles. Instead of blank spaces or question marks, we use letters to represent numbers we do not know yet.\n\nImagine a locked box. You know there is a number inside, but you can't see it. In math, we call that box a **variable**.\n\n> **The Goal:** The primary goal of basic algebra is to figure out what number is hiding inside that variable.",
-    contentVn: "Đại số đơn giản là một cách giải câu đố. Thay vì khoảng trống hoặc dấu hỏi, chúng ta sử dụng các chữ cái để đại diện cho những con số mà ta chưa biết.\n\nHãy tưởng tượng một chiếc hộp bị khóa. Bạn biết có một con số bên trong, nhưng bạn không thể nhìn thấy nó. Trong toán học, chúng ta gọi chiếc hộp đó là một **biến số**.\n\n> **Mục tiêu:** Mục tiêu chính của đại số cơ bản là tìm ra con số nào đang trốn bên trong biến số đó.",
-    spoken: "Algebra is simply a way of solving puzzles. Instead of blank spaces or question marks, we use letters to represent numbers we do not know yet. Imagine a locked box. You know there is a number inside, but you cannot see it. In math, we call that box a variable. The primary goal of basic algebra is to figure out what number is hiding inside that variable.",
+    content: "Algebra is a way to solve number puzzles. Instead of an empty space for a missing number, we use a letter.\n\nThink of a closed box. You know there is a number inside, but you cannot see it. We use a letter to represent that box.\n\n> **Write This Down:**\n> **Variable:** A letter (like $x$ or $y$) used to represent an unknown number.\n\nThe goal of algebra is to find the hidden number inside the variable.",
+    contentVn: "Đại số là một cách để giải các câu đố về số. Thay vì để một khoảng trống cho một con số bị thiếu, chúng ta sử dụng một chữ cái.\n\nHãy tưởng tượng một chiếc hộp đóng kín. Bạn biết có một con số bên trong, nhưng bạn không thể nhìn thấy nó. Chúng ta dùng một chữ cái để đại diện cho chiếc hộp đó.\n\n> **Hãy ghi chép lại:**\n> **Biến số (Variable):** Một chữ cái (như $x$ hoặc $y$) được dùng để đại diện cho một con số chưa biết.\n\nMục tiêu của đại số là tìm ra con số được giấu bên trong biến số.",
+    spoken: "Welcome to algebra. Algebra is a way to solve number puzzles. Instead of an empty space for a missing number, we use a letter. Think of a closed box. You know there is a number inside, but you cannot see it. We use a letter to represent that box. Please write this down. A Variable is a letter, like x or y, used to represent an unknown number. The goal of algebra is to find the hidden number inside the variable.",
     exampleLabel: "The Unknown",
     exampleLabelVn: "Ẩn số",
-    example: "If you have $3$ apples and someone gives you a bag of apples, you now have $3 + x$ apples.\n\nThe $x$ represents the unknown number of apples in the bag.",
-    exampleVn: "Nếu bạn có $3$ quả táo và ai đó cho bạn một túi táo, bây giờ bạn có $3 + x$ quả táo.\n\nChữ $x$ đại diện cho số lượng táo chưa biết trong túi.",
-    spokenExample: "For example: If you have 3 apples and someone gives you a bag of apples, you now have 3 plus x apples. The x represents the unknown number of apples in the bag.",
+    example: "Imagine you have $3$ apples on a table. A friend gives you a closed bag of apples. Now you have $3 + x$ apples in total.\n\nThe letter $x$ represents the unknown number of apples inside the bag.",
+    exampleVn: "Hãy tưởng tượng bạn có $3$ quả táo trên bàn. Một người bạn đưa cho bạn một túi táo đóng kín. Bây giờ bạn có tổng cộng $3 + x$ quả táo.\n\nChữ $x$ đại diện cho số lượng táo chưa biết bên trong túi.",
+    spokenExample: "For example. Imagine you have 3 apples on a table. A friend gives you a closed bag of apples. Now you have 3 plus x apples in total. The letter x represents the unknown number of apples inside the bag.",
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_2.mp3"
   },
@@ -508,9 +757,9 @@ export const notes = [
     titleVn: "Cấu trúc của Đại số",
     icon: "BookOpen",
     color: "bg-[#8b5cf6]",
-    content: "To speak the language of algebra, you need to know the parts of an expression.\n\n* **Variable:** A letter representing an unknown value (like $x$ or $y$).\n* **Coefficient:** The number stuck directly to a variable. It tells you how many variables you have.\n* **Constant:** A regular, standalone number that never changes.\n* **Term:** A single block of math. Terms are separated by plus ($+$) or minus ($-$) signs.",
-    contentVn: "Để nói ngôn ngữ của đại số, bạn cần biết các phần của một biểu thức.\n\n* **Biến số:** Một chữ cái đại diện cho một giá trị chưa biết (như $x$ hoặc $y$).\n* **Hệ số:** Con số dính trực tiếp vào một biến số. Nó cho bạn biết bạn có bao nhiêu biến số.\n* **Hằng số:** Một con số thông thường, đứng một mình và không bao giờ thay đổi.\n* **Hạng tử:** Một khối toán học đơn lẻ. Các hạng tử được phân tách bằng dấu cộng ($+$) hoặc trừ ($-$).",
-    spoken: "To speak the language of algebra, you need to know the parts of an expression. A Variable is a letter representing an unknown value like x or y. A Coefficient is the number stuck directly to a variable. It tells you how many variables you have. A Constant is a regular, standalone number that never changes. And a Term is a single block of math. Terms are separated by plus or minus signs.",
+    content: "To understand algebra, you must learn the names of its parts. \n\n> **Write This Down:**\n> * **Coefficient:** The number attached directly to a variable. It shows how many of that variable you have (example: the $4$ in $4x$).\n> * **Constant:** A normal number that stands alone. Its value never changes.\n> * **Term:** A single block of math. Terms are separated by plus ($+$) or minus ($-$) signs.",
+    contentVn: "Để hiểu đại số, bạn phải học tên gọi của các thành phần của nó. \n\n> **Hãy ghi chép lại:**\n> * **Hệ số (Coefficient):** Con số gắn trực tiếp với một biến số. Nó cho biết bạn có bao nhiêu biến số đó (ví dụ: số $4$ trong $4x$).\n> * **Hằng số (Constant):** Một con số bình thường đứng một mình. Giá trị của nó không bao giờ thay đổi.\n> * **Hạng tử (Term):** Một khối toán học đơn lẻ. Các hạng tử được phân tách bởi dấu cộng ($+$) hoặc trừ ($-$).",
+    spoken: "To understand algebra, you must learn the names of its parts. Please write these definitions down. First, a Coefficient is the number attached directly to a variable. It shows how many of that variable you have. Next, a Constant is a normal number that stands alone. Its value never changes. Finally, a Term is a single block of math. Terms are separated by plus or minus signs.",
     inlineSvg: DIAGRAMS.NOTES_ANATOMY,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_3.mp3"
@@ -521,9 +770,9 @@ export const notes = [
     titleVn: "Biểu thức so với Phương trình",
     icon: "Scale",
     color: "bg-[#ec4899]",
-    content: "People often confuse expressions and equations, but the difference is very simple: **the equal sign**.\n\nAn **Expression** is like a mathematical phrase. It has numbers and variables, but no equal sign. You can *simplify* it, but you cannot solve it.\n\nAn **Equation** is a full mathematical sentence. It has an equal sign ($=$) showing that the left side balances exactly with the right side. You *can* solve an equation.",
-    contentVn: "Mọi người thường nhầm lẫn giữa biểu thức và phương trình, nhưng sự khác biệt rất đơn giản: **dấu bằng**.\n\nMột **Biểu thức** giống như một cụm từ toán học. Nó có các con số và biến số, nhưng không có dấu bằng. Bạn có thể *rút gọn* nó, nhưng bạn không thể giải nó.\n\nMột **Phương trình** là một câu toán học hoàn chỉnh. Nó có dấu bằng ($=$) cho thấy vế trái cân bằng chính xác với vế phải. Bạn *có thể* giải một phương trình.",
-    spoken: "People often confuse expressions and equations, but the difference is very simple: the equal sign. An Expression is like a mathematical phrase. It has numbers and variables, but no equal sign. You can simplify it, but you cannot solve it. An Equation is a full mathematical sentence. It has an equal sign showing that the left side balances exactly with the right side. You can solve an equation.",
+    content: "It is easy to confuse expressions and equations. To tell the difference, always look for the equal sign ($=$).\n\n> **Write This Down:**\n> * **Expression:** A math phrase with numbers and variables, but **no** equal sign. You can make it shorter, but you cannot solve it.\n> * **Equation:** A complete math sentence with an equal sign. It shows that the left side balances exactly with the right side. You **can** solve it.",
+    contentVn: "Rất dễ nhầm lẫn giữa biểu thức và phương trình. Để phân biệt, hãy luôn tìm dấu bằng ($=$).\n\n> **Hãy ghi chép lại:**\n> * **Biểu thức (Expression):** Một cụm từ toán học có các số và biến số, nhưng **không có** dấu bằng. Bạn có thể làm cho nó ngắn hơn, nhưng bạn không thể giải nó.\n> * **Phương trình (Equation):** Một câu toán học hoàn chỉnh có dấu bằng. Nó cho thấy vế trái cân bằng chính xác với vế phải. Bạn **có thể** giải nó.",
+    spoken: "It is easy to confuse expressions and equations. To tell the difference, always look for the equal sign. Please write this down. An Expression is a math phrase with numbers and variables, but no equal sign. You can make it shorter, but you cannot solve it. An Equation is a complete math sentence with an equal sign. It shows that the left side balances exactly with the right side. You can solve it.",
     inlineSvg: DIAGRAMS.NOTES_EXPR_VS_EQ,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_4.mp3"
@@ -534,14 +783,14 @@ export const notes = [
     titleVn: "Dịch Từ ngữ sang Toán học",
     icon: "MessageSquare",
     color: "bg-[#0ea5e9]",
-    content: "On the GED, you will have to read English word problems and translate them into math symbols. Look for these key words:\n\n* **Addition ($+$):** Sum, increased by, more than, total.\n* **Subtraction ($-$):** Difference, decreased by, less than.\n* **Multiplication ($\\times$):** Product, times, twice ($2\\times$).\n* **Division ($\\div$):** Quotient, half, split.\n\n> **Warning:** \"Less than\" is tricky! \"$5$ less than $x$\" translates to $x - 5$, not $5 - x$.",
-    contentVn: "Trong bài thi GED, bạn sẽ phải đọc các bài toán đố bằng tiếng Anh và dịch chúng sang các ký hiệu toán học. Hãy tìm những từ khóa sau:\n\n* **Phép cộng ($+$):** Tổng (Sum), tăng thêm (increased by), nhiều hơn (more than).\n* **Phép trừ ($-$):** Hiệu (Difference), giảm đi (decreased by), ít hơn (less than).\n* **Phép nhân ($\\times$):** Tích (Product), lần (times), gấp đôi (twice).\n* **Phép chia ($\\div$):** Thương (Quotient), một nửa (half), chia nhỏ (split).\n\n> **Cảnh báo:** \"Less than\" rất dễ nhầm! \"$5$ less than $x$\" dịch thành $x - 5$, chứ không phải $5 - x$.",
-    spoken: "On the GED, you will have to read English word problems and translate them into math symbols. Look for these key words. For addition: sum, increased by, more than, or total. For subtraction: difference, decreased by, or less than. For multiplication: product, times, or twice. For division: quotient, half, or split. Warning: 'Less than' is tricky! '5 less than x' translates to x minus 5, not 5 minus x.",
+    content: "On the GED test, you will read word problems in English. You must translate these English words into math symbols. \n\n> **Write This Down:**\n> * **Addition ($+$):** Sum, increased by, more than, total.\n> * **Subtraction ($-$):** Difference, decreased by, less than.\n> * **Multiplication ($\\times$):** Product, times, twice.\n> * **Division ($\\div$):** Quotient, half, split.\n\n**Warning:** The phrase \"less than\" works backwards. \"$5$ less than $x$\" means $x - 5$.",
+    contentVn: "Trong bài thi GED, bạn sẽ đọc các bài toán đố bằng tiếng Anh. Bạn phải dịch những từ tiếng Anh này sang ký hiệu toán học.\n\n> **Hãy ghi chép lại:**\n> * **Phép cộng ($+$):** Tổng (Sum), tăng thêm (increased by), nhiều hơn (more than), tổng cộng (total).\n> * **Phép trừ ($-$):** Hiệu (Difference), giảm đi (decreased by), ít hơn (less than).\n> * **Phép nhân ($\\times$):** Tích (Product), lần (times), gấp đôi (twice).\n> * **Phép chia ($\\div$):** Thương (Quotient), một nửa (half), chia nhỏ (split).\n\n**Cảnh báo:** Cụm từ \"less than\" hoạt động ngược lại. \"$5$ less than $x$\" có nghĩa là $x - 5$.",
+    spoken: "On the GED test, you will read word problems in English. You must translate these English words into math symbols. Please write down these keywords. For addition look for: sum, increased by, more than, or total. For subtraction look for: difference, decreased by, or less than. For multiplication look for: product, times, or twice. For division look for: quotient, half, or split. Warning. The phrase 'less than' works backwards. 5 less than x means x minus 5.",
     exampleLabel: "Translation Practice",
     exampleLabelVn: "Thực hành Dịch",
-    example: "**Sentence:** The product of $4$ and a number, increased by $10$.\n\n**Math Translation:**\n$$4n + 10$$",
-    exampleVn: "**Câu:** Tích của $4$ và một số, tăng thêm $10$.\n\n**Bản dịch Toán học:**\n$$4n + 10$$",
-    spokenExample: "For example: The product of 4 and a number, increased by 10, translates to the mathematical expression: 4 n plus 10.",
+    example: "**English Sentence:** A worker earns $15$ dollars an hour, increased by a $50$ dollar bonus.\n\n**Math Translation:**\n$$15h + 50$$\n(Let $h$ represent the number of hours worked).",
+    exampleVn: "**Câu Tiếng Anh:** Một công nhân kiếm được $15$ đô la một giờ, tăng thêm một khoản tiền thưởng $50$ đô la.\n\n**Bản dịch Toán học:**\n$$15h + 50$$\n(Gọi $h$ là số giờ đã làm việc).",
+    spokenExample: "For example. The English sentence 'A worker earns 15 dollars an hour, increased by a 50 dollar bonus' translates to the math expression 15 h plus 50. Here, h represents the unknown number of hours worked.",
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_5.mp3"
   },
@@ -551,14 +800,14 @@ export const notes = [
     titleVn: "Tính Giá trị Biểu thức",
     icon: "Target",
     color: "bg-[#10b981]",
-    content: "To **evaluate** an expression means to find its final numerical value. \n\nYou do this by taking a specific number and substituting (plugging) it in wherever you see the variable. \n\n> **Important:** Always put parentheses around the number when you substitute it! This prevents multiplication mistakes.",
-    contentVn: "Để **tính giá trị** một biểu thức có nghĩa là tìm ra giá trị số cuối cùng của nó. \n\nBạn làm điều này bằng cách lấy một con số cụ thể và thay thế (cắm) nó vào bất cứ nơi nào bạn thấy biến số. \n\n> **Quan trọng:** Luôn đặt dấu ngoặc đơn quanh con số khi bạn thay thế nó! Điều này giúp ngăn ngừa sai sót trong phép nhân.",
-    spoken: "To evaluate an expression means to find its final numerical value. You do this by taking a specific number and substituting, or plugging it in, wherever you see the variable. Important: Always put parentheses around the number when you substitute it! This prevents multiplication mistakes.",
-    exampleLabel: "Substitution",
-    exampleLabelVn: "Sự thay thế",
-    example: "Evaluate $5x - 3$ if $x = 4$.\n\n**Step 1: Substitute**\n$5(4) - 3$\n\n**Step 2: Multiply**\n$20 - 3$\n\n**Step 3: Subtract**\n$\\mathbf{17}$",
-    exampleVn: "Tính giá trị $5x - 3$ nếu $x = 4$.\n\n**Bước 1: Thay thế**\n$5(4) - 3$\n\n**Bước 2: Nhân**\n$20 - 3$\n\n**Bước 3: Trừ**\n$\\mathbf{17}$",
-    spokenExample: "For example: Evaluate 5 x minus 3 if x equals 4. Step 1: Substitute the 4 in parentheses. Step 2: Multiply 5 times 4 to get 20. Step 3: Subtract 3. The final answer is 17.",
+    content: "Sometimes, a math problem will tell you the exact number for the variable. When this happens, you can find the final total.\n\n> **Write This Down:**\n> * **Substitute:** To replace a variable (letter) with a specific number.\n> * **Evaluate:** To do the math and find the final answer.\n\n**Important Rule:** Always put parentheses around the number when you substitute it! This stops you from making multiplication mistakes.",
+    contentVn: "Đôi khi, một bài toán sẽ cho bạn biết con số chính xác của biến số. Khi điều này xảy ra, bạn có thể tìm được tổng số cuối cùng.\n\n> **Hãy ghi chép lại:**\n> * **Thay thế (Substitute):** Thay một biến số (chữ cái) bằng một con số cụ thể.\n> * **Tính giá trị (Evaluate):** Thực hiện phép tính và tìm ra đáp án cuối cùng.\n\n**Quy tắc Quan trọng:** Luôn đặt dấu ngoặc đơn quanh con số khi bạn thay thế nó! Điều này giúp bạn không mắc lỗi ở phép nhân.",
+    spoken: "Sometimes, a math problem will tell you the exact number for the variable. When this happens, you can find the final total. Please write this down. To Substitute means to replace a variable with a specific number. To Evaluate means to do the math and find the final answer. Important Rule. Always put parentheses around the number when you substitute it. This stops you from making multiplication mistakes.",
+    exampleLabel: "How to Substitute",
+    exampleLabelVn: "Cách Thay thế",
+    example: "Find the total cost of the expression $5x - 3$ if $x = 4$.\n\n**Step 1: Substitute (Use parentheses)**\n$5(4) - 3$\n\n**Step 2: Multiply**\n$20 - 3$\n\n**Step 3: Subtract**\n$\\mathbf{17}$",
+    exampleVn: "Tìm tổng chi phí của biểu thức $5x - 3$ nếu $x = 4$.\n\n**Bước 1: Thay thế (Sử dụng dấu ngoặc đơn)**\n$5(4) - 3$\n\n**Bước 2: Nhân**\n$20 - 3$\n\n**Bước 3: Trừ**\n$\\mathbf{17}$",
+    spokenExample: "Let's look at an example. Find the total cost of the expression 5 x minus 3 if x equals 4. Step 1: Substitute the 4 in parentheses. Step 2: Multiply 5 times 4 to get 20. Step 3: Subtract 3. The final answer is 17.",
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_6.mp3"
   },
@@ -568,9 +817,9 @@ export const notes = [
     titleVn: "Kết hợp các Hạng tử Đồng dạng",
     icon: "ShieldCheck",
     color: "bg-[#f59e0b]",
-    content: "You can make long expressions shorter by **combining like terms**.\n\nTerms are \"alike\" only if they have the exact same variable. Think of variables like types of fruit. You can add apples to apples, but you cannot add apples to oranges.\n\nIf you have $2x$ and $3x$, you can combine them to make $5x$. You add the coefficients, but the variable stays exactly the same.",
-    contentVn: "Bạn có thể làm cho các biểu thức dài trở nên ngắn hơn bằng cách **kết hợp các hạng tử đồng dạng**.\n\nCác hạng tử được gọi là \"đồng dạng\" chỉ khi chúng có biến số hoàn toàn giống nhau. Hãy coi các biến số như các loại trái cây. Bạn có thể cộng táo với táo, nhưng bạn không thể cộng táo với cam.\n\nNếu bạn có $2x$ và $3x$, bạn có thể kết hợp chúng thành $5x$. Bạn cộng các hệ số, nhưng biến số vẫn giữ nguyên.",
-    spoken: "You can make long expressions shorter by combining like terms. Terms are 'alike' only if they have the exact same variable. Think of variables like types of fruit. You can add apples to apples, but you cannot add apples to oranges. If you have 2 x and 3 x, you can combine them to make 5 x. You add the coefficients, but the variable stays exactly the same.",
+    content: "You can make long math expressions much shorter. We do this by grouping similar parts together. \n\n> **Write This Down:**\n> **Like Terms:** Terms that have the exact same variables. \n\nThink of variables like types of fruit. You can add apples to apples, but you cannot add apples to bananas.\n\nIf you have $2x$ and $3x$, you combine them to make $5x$. You simply add the coefficients (the numbers in front). The variable ($x$) stays exactly the same.",
+    contentVn: "Bạn có thể làm cho các biểu thức toán học dài trở nên ngắn hơn nhiều. Chúng ta làm điều này bằng cách nhóm các phần giống nhau lại. \n\n> **Hãy ghi chép lại:**\n> **Các hạng tử đồng dạng (Like Terms):** Các hạng tử có biến số hoàn toàn giống nhau.\n\nHãy coi các biến số như các loại trái cây. Bạn có thể cộng táo với táo, nhưng bạn không thể cộng táo với chuối.\n\nNếu bạn có $2x$ và $3x$, bạn kết hợp chúng thành $5x$. Bạn chỉ cần cộng các hệ số (các con số phía trước). Biến số ($x$) vẫn giữ nguyên hoàn toàn.",
+    spoken: "You can make long math expressions much shorter. We do this by grouping similar parts together. Please write this down. Like Terms are terms that have the exact same variables. Think of variables like types of fruit. You can add apples to apples, but you cannot add apples to bananas. If you have 2 x and 3 x, you combine them to make 5 x. You simply add the coefficients in front. The variable x stays exactly the same.",
     inlineSvg: DIAGRAMS.NOTES_LIKE_TERMS,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_7.mp3"
@@ -581,9 +830,9 @@ export const notes = [
     titleVn: "Tính chất Phân phối",
     icon: "Activity",
     color: "bg-[#8b5cf6]",
-    content: "When a number is parked right outside a set of parentheses, it means multiplication. \n\nThe **Distributive Property** tells you to take that outside number and multiply it by *everything* inside the parentheses.\n\nThink of it like a mail carrier delivering a package to every single house on the street. Everyone gets multiplied!",
-    contentVn: "Khi một con số nằm ngay ngoài một tập hợp các dấu ngoặc đơn, điều đó có nghĩa là phép nhân. \n\n**Tính chất Phân phối** cho bạn biết phải lấy con số bên ngoài đó và nhân nó với *mọi thứ* bên trong dấu ngoặc đơn.\n\nHãy coi nó giống như một người đưa thư giao bưu kiện cho từng ngôi nhà trên phố. Mọi người đều được nhân!",
-    spoken: "When a number is parked right outside a set of parentheses, it means multiplication. The Distributive Property tells you to take that outside number and multiply it by everything inside the parentheses. Think of it like a mail carrier delivering a package to every single house on the street. Everyone gets multiplied!",
+    content: "When a number is directly outside a set of parentheses, it means you need to multiply. \n\n> **Write This Down:**\n> **Distributive Property:** You must take the outside number and multiply it by *every single term* inside the parentheses.\n\nThink of the outside number like a teacher handing out paper. The teacher must give a paper to every single student inside the classroom. Everyone gets multiplied!",
+    contentVn: "Khi một con số nằm ngay ngoài một tập hợp các dấu ngoặc đơn, điều đó có nghĩa là bạn cần phải nhân. \n\n> **Hãy ghi chép lại:**\n> **Tính chất Phân phối (Distributive Property):** Bạn phải lấy con số bên ngoài và nhân nó với *từng hạng tử một* bên trong dấu ngoặc đơn.\n\nHãy coi con số bên ngoài như một giáo viên đang phát giấy. Giáo viên phải đưa giấy cho từng học sinh bên trong lớp học. Tất cả đều được nhân!",
+    spoken: "When a number is directly outside a set of parentheses, it means you need to multiply. Please write this down. The Distributive Property means you must take the outside number and multiply it by every single term inside the parentheses. Think of the outside number like a teacher handing out paper. The teacher must give a paper to every single student inside the classroom. Everyone gets multiplied!",
     inlineSvg: DIAGRAMS.NOTES_DISTRIBUTIVE,
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_8.mp3"
@@ -594,10 +843,10 @@ export const notes = [
     titleVn: "Quy tắc Vàng của Phương trình",
     icon: "Scale",
     color: "bg-[#0ea5e9]",
-    content: "Now we move from expressions to equations.\n\nAn equation is like a perfectly balanced scale. If you add weight to the left side, the scale tips. To keep it perfectly balanced, you must add the exact same weight to the right side.\n\n> **The Golden Rule:** Whatever mathematical operation you do to one side of the equation, you MUST do to the exact other side.",
-    contentVn: "Bây giờ chúng ta chuyển từ biểu thức sang phương trình.\n\nMột phương trình giống như một chiếc cân bằng hoàn hảo. Nếu bạn thêm sức nặng vào vế trái, chiếc cân sẽ nghiêng. Để giữ cho nó cân bằng hoàn hảo, bạn phải thêm chính xác sức nặng đó vào vế phải.\n\n> **Quy tắc Vàng:** Bất cứ phép toán nào bạn thực hiện ở một vế của phương trình, bạn PHẢI thực hiện chính xác ở vế kia.",
-    spoken: "Now we move from expressions to equations. An equation is like a perfectly balanced scale. If you add weight to the left side, the scale tips. To keep it perfectly balanced, you must add the exact same weight to the right side. The Golden Rule of algebra is: Whatever mathematical operation you do to one side of the equation, you must do to the exact other side.",
-    inlineSvg: DIAGRAMS.NOTES_BALANCE,
+    content: "Now we move from expressions to equations. An equation is like a perfectly balanced scale.\n\nIf you add weight to the left side, the scale tilts. To keep the scale balanced, you must add the exact same weight to the right side.\n\n> **Write This Down:**\n> **The Golden Rule:** Whatever math operation you do to one side of the equation, you MUST do to the exact other side.",
+    contentVn: "Bây giờ chúng ta chuyển từ biểu thức sang phương trình. Một phương trình giống như một chiếc cân bằng hoàn hảo.\n\nNếu bạn thêm sức nặng vào vế trái, chiếc cân sẽ nghiêng. Để giữ cho chiếc cân cân bằng, bạn phải thêm chính xác sức nặng đó vào vế phải.\n\n> **Hãy ghi chép lại:**\n> **Quy tắc Vàng (The Golden Rule):** Bất cứ phép toán nào bạn thực hiện ở một vế của phương trình, bạn PHẢI thực hiện chính xác ở vế kia.",
+    spoken: "Now we move from expressions to equations. An equation is like a perfectly balanced scale. If you add weight to the left side, the scale tilts. To keep the scale balanced, you must add the exact same weight to the right side. Please write this down. The Golden Rule of algebra is: Whatever math operation you do to one side of the equation, you must do to the exact other side.",
+    widget: "BalanceScaleWidget",
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_9.mp3"
   },
@@ -607,14 +856,14 @@ export const notes = [
     titleVn: "Giải Phương trình Một bước",
     icon: "Target",
     color: "bg-[#10b981]",
-    content: "To solve an equation, your goal is to **isolate the variable** (get the letter all by itself on one side of the equal sign).\n\nTo move numbers away from the variable, you use **Inverse Operations** (the opposite math).\n\n* The opposite of Addition is **Subtraction**.\n* The opposite of Multiplication is **Division**.",
-    contentVn: "Để giải một phương trình, mục tiêu của bạn là **cô lập biến số** (để chữ cái đứng một mình ở một vế của dấu bằng).\n\nĐể di chuyển các con số ra khỏi biến số, bạn sử dụng **Các phép toán Nghịch đảo** (toán học ngược lại).\n\n* Ngược lại của Phép cộng là **Phép trừ**.\n* Ngược lại của Phép nhân là **Phép chia**.",
-    spoken: "To solve an equation, your goal is to isolate the variable, which means getting the letter all by itself on one side of the equal sign. To move numbers away from the variable, you use Inverse Operations, or the opposite math. The opposite of Addition is Subtraction. The opposite of Multiplication is Division.",
-    exampleLabel: "Inverse Operations",
-    exampleLabelVn: "Phép toán Nghịch đảo",
-    example: "**Solve for $x$:**\n$$4x = 24$$\n\nThe $4$ and the $x$ are attached by multiplication. To undo this, we divide both sides by $4$.\n\n$$\\frac{4x}{4} = \\frac{24}{4}$$\n\n$$x = 6$$",
-    exampleVn: "**Giải tìm $x$:**\n$$4x = 24$$\n\nSố $4$ và chữ $x$ được gắn với nhau bằng phép nhân. Để hoàn tác điều này, chúng ta chia cả hai vế cho $4$.\n\n$$\\frac{4x}{4} = \\frac{24}{4}$$\n\n$$x = 6$$",
-    spokenExample: "For example: Solve for x in the equation 4 x equals 24. The 4 and the x are attached by multiplication. To undo this, we divide both sides by 4. 24 divided by 4 leaves us with x equals 6.",
+    content: "When solving an equation, your goal is to get the variable all by itself on one side of the equal sign.\n\n> **Write This Down:**\n> * **Isolate:** To get the variable alone.\n> * **Inverse Operations:** Doing the \"opposite\" math to move numbers away from the variable.\n\n* The inverse of Addition is **Subtraction**.\n* The inverse of Multiplication is **Division**.",
+    contentVn: "Khi giải một phương trình, mục tiêu của bạn là làm cho biến số đứng một mình ở một vế của dấu bằng.\n\n> **Hãy ghi chép lại:**\n> * **Cô lập (Isolate):** Làm cho biến số đứng một mình.\n> * **Phép toán Nghịch đảo (Inverse Operations):** Thực hiện phép toán \"ngược lại\" để di chuyển các con số ra khỏi biến số.\n\n* Nghịch đảo của Phép cộng là **Phép trừ**.\n* Nghịch đảo của Phép nhân là **Phép chia**.",
+    spoken: "When solving an equation, your goal is to get the variable all by itself on one side of the equal sign. Please write this down. To Isolate means to get the variable alone. You do this using Inverse Operations, which means doing the opposite math to move numbers away from the variable. The inverse of Addition is Subtraction. The inverse of Multiplication is Division.",
+    exampleLabel: "Using Inverse Operations",
+    exampleLabelVn: "Sử dụng Phép toán Nghịch đảo",
+    example: "**Solve for $x$:**\n$$4x = 24$$\n\nThe $4$ and the $x$ are connected by multiplication. To do the inverse, we divide both sides by $4$.\n\n$$\\frac{4x}{4} = \\frac{24}{4}$$\n\n$$x = 6$$",
+    exampleVn: "**Giải tìm $x$:**\n$$4x = 24$$\n\nSố $4$ và chữ $x$ được kết nối với nhau bằng phép nhân. Để làm phép nghịch đảo, chúng ta chia cả hai vế cho $4$.\n\n$$\\frac{4x}{4} = \\frac{24}{4}$$\n\n$$x = 6$$",
+    spokenExample: "Let's solve for x in the equation 4 x equals 24. The 4 and the x are connected by multiplication. To do the inverse, we divide both sides by 4. 24 divided by 4 leaves us with x equals 6.",
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_10.mp3"
   },
@@ -624,10 +873,14 @@ export const notes = [
     titleVn: "Giải Phương trình Hai bước",
     icon: "Activity",
     color: "bg-[#ec4899]",
-    content: "Often, equations require two steps to solve. When moving numbers away from the variable, you must work in reverse PEMDAS order.\n\n**Step 1:** Undo any Addition or Subtraction first.\n**Step 2:** Undo any Multiplication or Division second.\n\nAlways deal with the number attached directly to the variable (the coefficient) last!",
-    contentVn: "Thường thì các phương trình cần hai bước để giải. Khi di chuyển các con số ra khỏi biến số, bạn phải làm ngược lại thứ tự thực hiện phép tính PEMDAS.\n\n**Bước 1:** Hoàn tác bất kỳ Phép cộng hoặc Phép trừ nào trước.\n**Bước 2:** Hoàn tác bất kỳ Phép nhân hoặc Phép chia nào sau.\n\nLuôn xử lý con số gắn trực tiếp với biến số (hệ số) sau cùng!",
-    spoken: "Often, equations require two steps to solve. When moving numbers away from the variable, you must work in reverse order of operations. Step 1: Undo any Addition or Subtraction first. Step 2: Undo any Multiplication or Division second. Always deal with the number attached directly to the variable, the coefficient, last!",
-    inlineSvg: DIAGRAMS.NOTES_TWO_STEP,
+    content: "Many equations need two steps to solve. When you move numbers away from the variable, you must do your math in reverse order.\n\n> **Write This Down:**\n> **Step 1:** Undo any Addition or Subtraction first.\n> **Step 2:** Undo any Multiplication or Division second.\n\nAlways deal with the coefficient (the number directly touching the variable) last!",
+    contentVn: "Nhiều phương trình cần hai bước để giải. Khi bạn di chuyển các con số ra khỏi biến số, bạn phải thực hiện phép toán theo thứ tự ngược lại.\n\n> **Hãy ghi chép lại:**\n> **Bước 1:** Hoàn tác bất kỳ Phép cộng hoặc Phép trừ nào trước.\n> **Bước 2:** Hoàn tác bất kỳ Phép nhân hoặc Phép chia nào sau.\n\nLuôn xử lý hệ số (con số chạm trực tiếp vào biến số) sau cùng!",
+    spoken: "Many equations need two steps to solve. When you move numbers away from the variable, you must do your math in reverse order. Please write down these steps. Step 1: Undo any Addition or Subtraction first. Step 2: Undo any Multiplication or Division second. Always deal with the coefficient, which is the number directly touching the variable, last!",
+    exampleLabel: "Two-Step Example",
+    exampleLabelVn: "Ví dụ Hai bước",
+    example: "**Solve:** $2x + 5 = 15$\n\n**Step 1:** Subtract $5$ from both sides.\n$2x = 10$\n\n**Step 2:** Divide both sides by $2$.\n$x = 5$",
+    exampleVn: "**Giải:** $2x + 5 = 15$\n\n**Bước 1:** Trừ $5$ cho cả hai vế.\n$2x = 10$\n\n**Bước 2:** Chia cả hai vế cho $2$.\n$x = 5$",
+    spokenExample: "Let's solve the equation 2 x plus 5 equals 15. Step 1: Subtract the constant 5 from both sides. This leaves 2 x equals 10. Step 2: Divide both sides by the coefficient 2. The final answer is x equals 5.",
     drawThis: false,
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_11.mp3"
   },
@@ -635,8 +888,8 @@ export const notes = [
     type: "summary",
     title: "Module Complete",
     titleVn: "Hoàn thành Học phần",
-    subtitle: "You have mastered the foundations of Algebra: Expressions, Translations, and Equation Solving.",
-    subtitleVn: "Bạn đã nắm vững các nền tảng của Đại số: Biểu thức, Phiên dịch, và Giải Phương trình.",
+    subtitle: "You have learned the basics of Algebra: Expressions, Translating Words, and Solving Equations.",
+    subtitleVn: "Bạn đã học được những kiến thức cơ bản của Đại số: Biểu thức, Dịch Từ ngữ, và Giải Phương trình.",
     color: "bg-[#10b981]",
     borderColor: "border-[#059669]",
     audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_12.mp3"
@@ -644,440 +897,559 @@ export const notes = [
 ];
 </file>
 
-<file path="src/data/GED_MATH/MATH_1A/workbook.js">
-// src/data/GED/ENG_1A/workbook.js
-export const workbook = null;
-</file>
+<file path="src/tasks/Assessment.jsx">
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  CheckCircle2, XCircle, Clock, BookOpen, Target,
+  ChevronRight, ChevronDown, ChevronUp, RefreshCcw, 
+  PlayCircle, Award, AlertTriangle, ArrowRight, 
+  Check, MapPin, Edit3, GripVertical, CornerDownRight 
+} from 'lucide-react';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+import TopBar from '../components/TopBar';
 
-<file path="src/hooks/useStudentProgress.js">
-import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { TRACK_REGISTRY } from '../components/trackRegistry';
+// --- MATH & TEXT RENDERING UTILITIES ---
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
-export const getGlobalGameLeaderboard = async (unitId, limit = 5) => {
-  try {
-    const { data, error } = await supabase.rpc('get_unit_leaderboard', { 
-      target_unit_id: unitId 
-    });
-      
-    if (error) {
-      console.error("DEBUG - Supabase Error:", error);
-      throw error;
+const SafeMath = ({ math, block = false, className = "" }) => {
+  const containerRef = useRef(null);
+  
+  useEffect(() => {
+    if (containerRef.current) {
+      try {
+        const cleanMath = math.replace(/[\u200B-\u200D\uFEFF]/g, '');
+        katex.render(cleanMath, containerRef.current, {
+          throwOnError: false,
+          displayMode: block,
+          strict: false,
+          output: 'html'
+        });
+      } catch (err) {
+        containerRef.current.textContent = math;
+        containerRef.current.className = "text-rose-500 font-mono text-sm px-1";
+      }
     }
-
-    const sortedData = (data || []).sort((a, b) => b.score - a.score).slice(0, limit);
-    return { data: sortedData, error: null };
-  } catch (err) {
-    console.error('Failed to parse leaderboard profiles:', err);
-    return { data: null, error: err.message };
-  }
+  }, [math, block]);
+  
+  return (
+    <span 
+      ref={containerRef} 
+      className={`${block ? "my-3 flex justify-center w-full overflow-x-auto custom-scrollbar text-xl sm:text-2xl" : "mx-0.5 inline-block"} ${className}`} 
+    />
+  );
 };
 
-export function useStudentProgress(navigate, track = 'GED_MATH') {
-  const [user, setUser] = useState(null);
+const parseText = (text) => {
+  if (!text || typeof text !== 'string') return null;
+  // strictly match ONLY block-style delimiters ($$) to prevent syntax bleeding 
+  // into standard currency values (e.g., "$20 sign-up fee")
+  const parts = text.split(/(\$\$[\s\S]+?\$\$)/g);
   
-  const initialProgress = {};
-  TRACK_REGISTRY.forEach(t => { initialProgress[t.id] = {}; });
-  const [allProgress, setAllProgress] = useState(initialProgress);
-  
-  const [isLoadingDB, setIsLoadingDB] = useState(true);
+  return parts.map((part, i) => {
+    if (part.startsWith('$$') && part.endsWith('$$')) {
+      return <SafeMath key={i} math={part.slice(2, -2).trim()} block={false} className="text-[1.15em] mx-1" />;
+    }
+    return <span key={i} className="whitespace-pre-line">{part}</span>;
+  });
+};
 
-  useEffect(() => {
-    const fetchProgress = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        navigate('/');
-        return;
-      }
-      
-      setUser(session.user);
+// --- QUESTION TYPE RENDERERS ---
 
-      const { data } = await supabase
-        .from('students')
-        .select('progress')
-        .eq('id', session.user.id)
-        .single();
-
-      const validTracks = TRACK_REGISTRY.map(t => t.id);
-      let dbProgress = data?.progress || {};
-      let needsUpdate = false;
-      const newFormat = {};
-
-      // Safely migrate DB progress so old 'GED' doesn't crash the app.
-      validTracks.forEach(t => {
-        newFormat[t] = dbProgress[t] || {};
-      });
-
-      // Look for ancient un-keyed schemas
-      const isSuperOldFormat = !Object.keys(dbProgress).some(key => ['Y8', 'Y9', 'ESL', 'GED', 'GED_MATH', 'GED_ENG', 'ADD_MATH'].includes(key)) && Object.keys(dbProgress).length > 0;
-
-      if (isSuperOldFormat) {
-        newFormat['GED_MATH'] = dbProgress; 
-        needsUpdate = true;
-      } else {
-        // Check for invalid keys like 'GED' and safely map or drop them
-        const hasInvalidKeys = Object.keys(dbProgress).some(key => !validTracks.includes(key));
+const MCQQuestion = ({ question, value, onChange, isReviewing }) => {
+  return (
+    <div className="flex flex-col gap-3 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {(question.options || []).map((opt) => {
+        const isSelected = value === opt.val;
+        const isCorrectOption = opt.val === question.correct;
         
-        if (hasInvalidKeys) {
-           // Courtesy migration from GED -> GED_ENG if present
-           if (dbProgress['GED'] && Object.keys(newFormat['GED_ENG']).length === 0) {
-             newFormat['GED_ENG'] = dbProgress['GED'];
-           }
-           needsUpdate = true;
-        } else {
-           // Normal check for missing valid track keys
-           validTracks.forEach(t => {
-             if (!dbProgress[t]) needsUpdate = true;
-           });
+        let containerStyle = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-[0_4px_0_0_#e2e8f0] dark:shadow-[0_4px_0_0_#334155] hover:bg-slate-50 dark:hover:bg-slate-700/50 active:translate-y-[4px] active:shadow-none";
+        let markerStyle = "border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 group-hover:border-slate-400";
+        
+        if (isReviewing) {
+          if (isCorrectOption) {
+            containerStyle = "bg-[#D7FFD7] dark:bg-[#D7FFD7]/20 border-[#58A700] shadow-[0_4px_0_0_#46A802]";
+            markerStyle = "border-[#58A700] bg-[#58A700] text-white";
+          } else if (isSelected && !isCorrectOption) {
+            containerStyle = "bg-[#FFE5E5] dark:bg-[#FFE5E5]/10 border-[#EA4335] shadow-[0_4px_0_0_#C5221F]";
+            markerStyle = "border-[#EA4335] bg-[#EA4335] text-white";
+          } else {
+            containerStyle = "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60";
+          }
+        } else if (isSelected) {
+          containerStyle = "bg-[#1CB0F6]/10 border-[#1CB0F6] shadow-[0_4px_0_0_#1899D6] translate-y-0 active:translate-y-[4px] active:shadow-none";
+          markerStyle = "border-[#1CB0F6] bg-[#1CB0F6] text-white";
+        }
+
+        return (
+          <button
+            key={opt.val}
+            onClick={() => !isReviewing && onChange(opt.val)}
+            disabled={isReviewing}
+            className={`relative w-full p-4 sm:p-5 rounded-2xl border-2 text-left transition-all duration-200 ease-out flex items-center group ${containerStyle}`}
+          >
+            <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center mr-4 shrink-0 transition-colors shadow-sm ${markerStyle}`}>
+              <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white transition-transform ${(isSelected || (isReviewing && isCorrectOption)) ? 'scale-100' : 'scale-0'}`} />
+            </div>
+            <div className={`font-bold text-base sm:text-lg lg:text-xl ${isReviewing && isCorrectOption ? 'text-[#3E7500] dark:text-[#a3e635]' : isReviewing && isSelected ? 'text-[#A32D23] dark:text-[#f87171]' : 'text-slate-700 dark:text-slate-200'}`}>
+              {parseText(opt.text.replace(/^[A-D]\.\s*/, ''))}
+            </div>
+            {isReviewing && isCorrectOption && <CheckCircle2 className="w-6 h-6 ml-auto text-[#58A700] shrink-0" strokeWidth={3} />}
+            {isReviewing && isSelected && !isCorrectOption && <XCircle className="w-6 h-6 ml-auto text-[#EA4335] shrink-0" strokeWidth={3} />}
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
+const InlineQuestion = ({ question, value, onChange, isReviewing }) => {
+  const currentAnswers = value || {};
+  
+  const handleSelect = (blankIndex, val) => {
+    onChange({ ...currentAnswers, [blankIndex]: val });
+  };
+
+  return (
+    <div className="text-slate-700 dark:text-slate-200 text-lg sm:text-xl lg:text-2xl font-medium leading-[2.5] sm:leading-[2.5] lg:leading-[2.5] animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white dark:bg-slate-900 p-6 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
+      {(question.textParts || []).map((part, i) => {
+        const blankIndex = (i + 1).toString();
+        const blankDef = question.blanks?.[blankIndex];
+        const selectedVal = currentAnswers[blankIndex] || '';
+
+        let selectStyle = selectedVal 
+          ? 'bg-[#1CB0F6]/10 border-[#1CB0F6] text-[#1CB0F6] shadow-[0_3px_0_0_#1899D6]' 
+          : 'bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-500 shadow-[0_3px_0_0_#cbd5e1] dark:shadow-[0_3px_0_0_#475569] hover:border-slate-400';
+        let showCorrection = false;
+
+        if (isReviewing && blankDef) {
+          const isCorrect = selectedVal === blankDef.correct;
+          if (isCorrect) {
+            selectStyle = 'bg-[#D7FFD7] dark:bg-[#D7FFD7]/20 border-[#58A700] text-[#3E7500] dark:text-[#a3e635] shadow-[0_3px_0_0_#46A802]';
+          } else {
+            selectStyle = 'bg-[#FFE5E5] dark:bg-[#FFE5E5]/10 border-[#EA4335] text-[#A32D23] dark:text-[#f87171] shadow-[0_3px_0_0_#C5221F]';
+            showCorrection = true;
+          }
+        }
+
+        return (
+          <React.Fragment key={i}>
+            {parseText(part)}
+            {blankDef && (
+              <span className="inline-flex items-center mx-2 align-middle -mt-1.5">
+                <div className="relative inline-block">
+                  <select
+                    value={selectedVal}
+                    onChange={(e) => handleSelect(blankIndex, e.target.value)}
+                    disabled={isReviewing}
+                    className={`appearance-none font-bold outline-none cursor-pointer pr-10 pl-4 py-2 rounded-xl border-2 transition-all ${selectStyle}`}
+                  >
+                    <option value="" disabled>{isReviewing ? 'Blank' : '...'}</option>
+                    {(blankDef.options || []).map((opt) => (
+                      <option key={opt.val} value={opt.val}>{opt.text}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className={`absolute right-3 top-[45%] -translate-y-1/2 w-5 h-5 pointer-events-none ${selectedVal ? 'text-current' : 'text-slate-400'}`} strokeWidth={3} />
+                </div>
+                {showCorrection && (
+                  <span className="ml-2 px-3 py-1 rounded-lg text-sm font-black tracking-widest uppercase bg-[#D7FFD7] text-[#3E7500] border-2 border-[#58A700] shadow-sm">
+                    {blankDef.options.find(o => o.val === blankDef.correct)?.text}
+                  </span>
+                )}
+              </span>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
+
+const DndQuestion = ({ question, value, onChange, isReviewing }) => {
+  const [selectedBankItem, setSelectedBankItem] = useState(null);
+  const [draggedItem, setDraggedItem] = useState(null);
+  const placements = value || {}; 
+  
+  const placedItemVals = Object.values(placements).flat();
+  const availableBank = (question.bank || []).filter(item => !placedItemVals.includes(item.val));
+
+  const handleBankClick = (item) => {
+    if (isReviewing) return;
+    if (selectedBankItem?.val === item.val) setSelectedBankItem(null);
+    else setSelectedBankItem(item);
+  };
+
+  const handleTargetClick = (targetId) => {
+    if (isReviewing || !selectedBankItem) return;
+    const currentTargetItems = placements[targetId] || [];
+    onChange({ ...placements, [targetId]: [...currentTargetItems, selectedBankItem.val] });
+    setSelectedBankItem(null);
+  };
+
+  const handleRemoveFromTarget = (targetId, itemVal) => {
+    if (isReviewing) return;
+    const currentTargetItems = placements[targetId] || [];
+    onChange({ ...placements, [targetId]: currentTargetItems.filter(val => val !== itemVal) });
+    if (selectedBankItem?.val === itemVal) setSelectedBankItem(null);
+  };
+
+  const handleDragStart = (e, item) => {
+    if (isReviewing) return;
+    setDraggedItem(item);
+    e.dataTransfer.setData('text/plain', item.val);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDrop = (e, targetId) => {
+    e.preventDefault();
+    if (isReviewing || !draggedItem) return;
+    const newPlacements = { ...placements };
+    Object.keys(newPlacements).forEach(tId => {
+      newPlacements[tId] = newPlacements[tId].filter(val => val !== draggedItem.val);
+    });
+
+    const currentTargetItems = newPlacements[targetId] || [];
+    newPlacements[targetId] = [...currentTargetItems, draggedItem.val];
+    onChange(newPlacements);
+    setDraggedItem(null);
+    setSelectedBankItem(null);
+  };
+
+  return (
+    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {!isReviewing && (
+        <div className="bg-[#1CB0F6]/10 border-2 border-[#1CB0F6]/30 rounded-xl p-3 flex items-center text-[#1899D6] text-xs sm:text-sm font-black uppercase tracking-widest shadow-sm">
+          <Target className="w-5 h-5 mr-3 shrink-0" strokeWidth={2.5} />
+          Drag an item or tap to select, then tap an empty box to place it.
+        </div>
+      )}
+
+      {!isReviewing && (
+        <div className="bg-slate-100 dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700 border-dashed rounded-2xl p-4 sm:p-6 min-h-[120px] flex flex-wrap gap-3 items-center justify-center shadow-inner">
+          {availableBank.length === 0 ? (
+            <span className="text-slate-400 font-bold uppercase tracking-widest text-sm flex items-center">
+              <Check className="w-5 h-5 mr-2" /> All items placed
+            </span>
+          ) : (
+            availableBank.map(item => (
+              <button
+                key={item.id}
+                onClick={() => handleBankClick(item)}
+                draggable={!isReviewing}
+                onDragStart={(e) => handleDragStart(e, item)}
+                className={`
+                  flex items-center px-4 sm:px-5 py-3 rounded-xl border-2 font-bold transition-all duration-200 ease-out cursor-grab active:cursor-grabbing
+                  ${selectedBankItem?.val === item.val 
+                    ? 'bg-[#1CB0F6] border-[#1899D6] text-white shadow-[0_4px_0_0_#1899D6] scale-105' 
+                    : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 shadow-[0_4px_0_0_#cbd5e1] dark:shadow-[0_4px_0_0_#475569] hover:-translate-y-1 hover:shadow-[0_6px_0_0_#cbd5e1] dark:hover:shadow-[0_6px_0_0_#475569] active:translate-y-[4px] active:shadow-none'}
+                `}
+              >
+                <GripVertical className="w-4 h-4 mr-2 opacity-40" strokeWidth={3} />
+                {parseText(item.text)}
+              </button>
+            ))
+          )}
+        </div>
+      )}
+
+      <div className="flex flex-col gap-4">
+        {(question.targets || []).map(target => {
+          const placedVals = placements[target.id] || [];
+          const isTargetActive = !!selectedBankItem && !isReviewing;
+
+          return (
+            <div 
+              key={target.id}
+              onClick={() => handleTargetClick(target.id)}
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }}
+              onDrop={(e) => handleDrop(e, target.id)}
+              className={`
+                relative flex flex-col sm:flex-row items-stretch bg-white dark:bg-slate-800 rounded-2xl border-2 transition-all duration-300 overflow-hidden shadow-sm
+                ${isTargetActive ? 'border-[#1CB0F6] cursor-pointer ring-4 ring-[#1CB0F6]/20 shadow-lg scale-[1.01]' : 'border-slate-200 dark:border-slate-700'}
+              `}
+            >
+              <div className="bg-slate-50 dark:bg-slate-900 border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-slate-700 p-4 flex items-center justify-center sm:w-1/3 shrink-0">
+                <span className="font-black text-slate-500 dark:text-slate-400 text-center uppercase tracking-widest text-sm">
+                  {parseText(target.title)}
+                </span>
+              </div>
+              
+              <div className="flex-1 p-4 min-h-[90px] flex flex-wrap gap-2 items-center bg-slate-50/30 dark:bg-slate-800/30">
+                {placedVals.length === 0 && !isReviewing && (
+                  <div className={`flex items-center justify-center w-full font-black uppercase tracking-widest transition-opacity text-sm ${isTargetActive ? 'text-[#1CB0F6] opacity-100 animate-pulse' : 'text-slate-300 dark:text-slate-600 opacity-50'}`}>
+                    <CornerDownRight className="w-5 h-5 mr-2" />
+                    {isTargetActive ? 'Tap Here To Place' : 'Drop Items Here'}
+                  </div>
+                )}
+                {placedVals.length === 0 && isReviewing && (
+                  <div className="text-rose-400 font-bold text-sm uppercase tracking-widest w-full text-center">Left Blank</div>
+                )}
+                
+                {placedVals.map((val, idx) => {
+                  const bankItem = question.bank.find(b => b.val === val);
+                  
+                  let itemStyle = "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200";
+                  let isCorrectInSlot = false;
+
+                  if (isReviewing) {
+                    const expectedArr = question.correctSets?.[target.id] || [];
+                    isCorrectInSlot = question.type === 'order' ? expectedArr[idx] === val : expectedArr.includes(val);
+                    
+                    if (isCorrectInSlot) {
+                      itemStyle = "bg-[#D7FFD7] border-[#58A700] text-[#3E7500] dark:bg-[#D7FFD7]/20 dark:text-[#a3e635]";
+                    } else {
+                      itemStyle = "bg-[#FFE5E5] border-[#EA4335] text-[#A32D23] dark:bg-[#FFE5E5]/10 dark:text-[#f87171]";
+                    }
+                  }
+
+                  return bankItem ? (
+                    <button
+                      key={val}
+                      onClick={(e) => { e.stopPropagation(); handleRemoveFromTarget(target.id, val); }}
+                      disabled={isReviewing}
+                      className={`group px-4 py-2 rounded-xl border-2 font-bold transition-all shadow-sm flex items-center gap-2 ${itemStyle} ${!isReviewing ? 'hover:border-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600 active:scale-95' : ''}`}
+                    >
+                      {parseText(bankItem.text)}
+                      {!isReviewing && <XCircle className="w-5 h-5 text-rose-400 opacity-50 group-hover:opacity-100 transition-opacity" />}
+                      {isReviewing && isCorrectInSlot && <CheckCircle2 className="w-5 h-5 text-[#58A700]" strokeWidth={3} />}
+                      {isReviewing && !isCorrectInSlot && <XCircle className="w-5 h-5 text-[#EA4335]" strokeWidth={3} />}
+                    </button>
+                  ) : null;
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const FillBlankQuestion = ({ question, value, onChange, isReviewing }) => {
+  const currentAnswers = value || {};
+  return (
+    <div className="text-slate-700 dark:text-slate-200 text-lg sm:text-xl lg:text-2xl font-medium leading-[2.5] bg-white dark:bg-slate-900 p-6 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {(question.textParts || []).map((part, i) => {
+          const blankIndex = (i + 1).toString();
+          const blankDef = question.blanks?.[blankIndex];
+          const selectedVal = currentAnswers[blankIndex] || '';
+
+          let inputStyle = "border-slate-300 dark:border-slate-600 focus:border-[#1CB0F6] bg-slate-50 dark:bg-slate-800";
+          let showCorrection = false;
+
+          if (isReviewing && blankDef) {
+            const isCorrect = selectedVal.trim().toLowerCase() === blankDef.correct.trim().toLowerCase();
+            if (isCorrect) {
+              inputStyle = "border-[#58A700] bg-[#D7FFD7] text-[#3E7500] dark:bg-[#D7FFD7]/20 dark:text-[#a3e635]";
+            } else {
+              inputStyle = "border-[#EA4335] bg-[#FFE5E5] text-[#A32D23] dark:bg-[#FFE5E5]/10 dark:text-[#f87171]";
+              showCorrection = true;
+            }
+          }
+
+          return (
+            <React.Fragment key={i}>
+              {parseText(part)}
+              {blankDef && (
+                <span className="inline-flex items-center">
+                  <input 
+                    type="text"
+                    value={selectedVal}
+                    onChange={(e) => onChange({...currentAnswers, [blankIndex]: e.target.value})}
+                    disabled={isReviewing}
+                    className={`mx-2 w-32 border-b-4 border-t-2 border-x-2 rounded-xl outline-none text-center transition-colors font-bold pb-1 pt-1.5 shadow-sm ${inputStyle}`}
+                    placeholder="..."
+                  />
+                  {showCorrection && (
+                    <span className="ml-1 px-3 py-1 rounded-lg text-sm font-black tracking-widest uppercase bg-[#D7FFD7] text-[#3E7500] border-2 border-[#58A700] shadow-sm">
+                      {blankDef.correct}
+                    </span>
+                  )}
+                </span>
+              )}
+            </React.Fragment>
+          )
+      })}
+    </div>
+  );
+};
+
+const HotSpotQuestion = () => {
+  return (
+    <div className="w-full p-10 border-4 border-dashed border-slate-300 dark:border-slate-700 rounded-[2rem] flex flex-col items-center justify-center text-slate-400 bg-slate-50 dark:bg-slate-800/50 shadow-inner">
+      <MapPin className="w-16 h-16 mb-4 text-slate-300 dark:text-slate-600" strokeWidth={2} />
+      <span className="font-black uppercase tracking-widest text-lg text-slate-500">Interactive Hotspot Map</span>
+      <span className="text-sm text-center mt-2 max-w-xs leading-relaxed font-bold">Vector coordinate selection logic currently requires spatial definitions in the configuration.</span>
+    </div>
+  );
+};
+
+// --- MAIN ASSESSMENT COMPONENT ---
+
+export default function Assessment(props) {
+  const { onComplete, onQuit } = props;
+
+  let extractedQuestions = [];
+  let extractedTimeLimit = 0;
+  let extractedPassages = [];
+
+  if (props.unit?.assessment?.questions && Array.isArray(props.unit.assessment.questions)) {
+    extractedQuestions = props.unit.assessment.questions;
+    extractedTimeLimit = props.unit.assessment.timeLimit || 0;
+    extractedPassages = props.unit.passages || props.unit.assessment.passages || [];
+  } else if (Array.isArray(props.questions)) {
+    extractedQuestions = props.questions;
+    extractedTimeLimit = props.timeLimit || 0;
+    extractedPassages = props.passages || [];
+  } else if (props.assessment?.questions && Array.isArray(props.assessment.questions)) {
+    extractedQuestions = props.assessment.questions;
+    extractedTimeLimit = props.assessment.timeLimit || 0;
+    extractedPassages = props.assessment.passages || props.passages || [];
+  } else {
+    for (const key in props) {
+      if (props[key] && typeof props[key] === 'object') {
+        if (Array.isArray(props[key].questions)) {
+          extractedQuestions = props[key].questions;
+          extractedTimeLimit = props[key].timeLimit || 0;
+          extractedPassages = props[key].passages || [];
+          break;
+        } else if (props[key].assessment && Array.isArray(props[key].assessment.questions)) {
+          extractedQuestions = props[key].assessment.questions;
+          extractedTimeLimit = props[key].assessment.timeLimit || 0;
+          extractedPassages = props[key].assessment.passages || props[key].passages || [];
+          break;
         }
       }
+    }
+  }
 
-      setAllProgress(newFormat);
-
-      if (needsUpdate) {
-        await supabase.from('students').update({ progress: newFormat }).eq('id', session.user.id);
-      }
-      
-      setIsLoadingDB(false);
-    };
-
-    fetchProgress();
-  }, [navigate]);
-
-  const saveScore = async (unitId, section, score, answers = null) => {
-    const newProgress = { ...allProgress };
-    
-    if (!newProgress[track]) newProgress[track] = {};
-    if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
-
-    const existingScore = newProgress[track][unitId][section]?.current || 0;
-
-    newProgress[track][unitId] = {
-      ...newProgress[track][unitId],
-      [section]: {
-        current: Math.max(existingScore, score),
-        answers: answers || newProgress[track][unitId][section]?.answers || null
-      }
-    };
-
-    setAllProgress(newProgress);
-    await supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
-  };
-
-  const addStrike = async (unitId, newStrikes) => {
-    const newProgress = { ...allProgress };
-    
-    if (!newProgress[track]) newProgress[track] = {};
-    if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
-
-    newProgress[track][unitId].strikes = newStrikes;
-
-    setAllProgress(newProgress);
-    await supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/login');
-  };
-
-  return { 
-    user, 
-    allProgress, 
-    unitScores: allProgress[track] || {}, 
-    isLoadingDB, 
-    saveScore, 
-    addStrike, 
-    handleLogout 
-  };
-}
-</file>
-
-<file path="src/tasks/Assessment.jsx">
-// src/tasks/Assessment.jsx
-import React, { useState, useEffect } from 'react';
-import { CheckCircle2, XCircle, GripVertical, CornerDownRight, Clock, AlertTriangle, Construction, FileQuestion, ArrowRight } from 'lucide-react';
-import TopBar from '../components/TopBar';
-import Feedback from '../components/Feedback';
-
-export default function Assessment({ unit, onComplete, onQuit }) {
-  const assessmentData = unit?.assessment;
+  const [phase, setPhase] = useState('setup');
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [timeLeft, setTimeLeft] = useState(extractedTimeLimit);
+  const [lang, setLang] = useState('en');
   
-  if (!assessmentData || !assessmentData.questions || !Array.isArray(assessmentData.questions) || assessmentData.questions.length === 0) {
+  const [scoreData, setScoreData] = useState(null);
+  const [expandedReviewId, setExpandedReviewId] = useState(null);
+  const [activeGlossaryTerm, setActiveGlossaryTerm] = useState(null);
+
+  useEffect(() => {
+    setTimeLeft(extractedTimeLimit);
+  }, [extractedTimeLimit]);
+
+  useEffect(() => {
+    if (phase === 'testing' && timeLeft > 0) {
+      const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timerId);
+    } else if (phase === 'testing' && timeLeft === 0 && extractedTimeLimit > 0) {
+      submitAssessment();
+    }
+  }, [phase, timeLeft, extractedTimeLimit]);
+
+  if (!extractedQuestions || extractedQuestions.length === 0) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500 transition-colors">
-        <div className="w-24 h-24 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6 shadow-inner">
-          <Construction className="w-12 h-12 text-amber-500" />
+      <div className="h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500 font-sans">
+        <div className="w-24 h-24 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-white dark:border-slate-800">
+          <AlertTriangle className="w-12 h-12 text-rose-500 dark:text-rose-400" strokeWidth={2.5} />
         </div>
-        <h2 className="text-4xl font-black text-slate-800 dark:text-slate-100 mb-4 tracking-tight">Assessment Unavailable</h2>
-        <div className="bg-white dark:bg-slate-900 px-8 py-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 mb-10 text-lg font-bold text-slate-500 dark:text-slate-400">
-          No assessment data is currently configured for this unit.
-        </div>
-        <button onClick={onQuit} className="px-10 py-5 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black text-xl uppercase tracking-widest border-b-[6px] border-[#1899D6] active:border-b-0 active:translate-y-[6px] transition-all">
+        <h2 className="text-4xl font-black text-slate-800 dark:text-slate-100 mb-3 tracking-tight">Assessment Unavailable</h2>
+        <p className="text-slate-500 dark:text-slate-400 font-bold mb-8 max-w-sm text-lg leading-relaxed">
+          We could not locate any questions for this specific module format.
+        </p>
+        <button onClick={onQuit} className="px-10 py-5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-2xl font-black uppercase tracking-widest text-lg hover:bg-slate-50 active:translate-y-[4px] border-b-[6px] active:border-b-[2px] shadow-sm transition-all">
           Return to Dashboard
         </button>
       </div>
     );
   }
 
-  const questions = assessmentData.questions;
-  const passages = assessmentData.passages || [];
-  const totalQuestions = questions.length;
+  const totalQuestions = extractedQuestions.length;
+  const currentQ = extractedQuestions[currentIdx];
+  const currentPassage = currentQ ? extractedPassages.find(p => p.id === currentQ.passageId) : null;
 
-  const [testPhase, setTestPhase] = useState('testing'); 
-  const [answers, setAnswers] = useState({}); 
-  const [currentQIndex, setCurrentQIndex] = useState(0);
-  
-  const [timeLeft, setTimeLeft] = useState(assessmentData.timeLimit || 1800); 
-  const [isTimeUp, setIsTimeUp] = useState(false);
-  const [finalScore, setFinalScore] = useState(0);
-
-  const [activeGlossaryTerm, setActiveGlossaryTerm] = useState(null);
-  const [draggedItem, setDraggedItem] = useState(null); 
-
-  const currentQuestion = questions[currentQIndex] || null;
-  const currentPassage = currentQuestion ? passages.find(p => p.id === currentQuestion.passageId) : null;
-
-  const isDND = currentQuestion?.type === 'dnd' || currentQuestion?.type === 'order';
-  const isInline = currentQuestion?.type === 'inline' || currentQuestion?.type === 'scrollBox';
-  const isMCQ = !isDND && !isInline;
-
-  const hasGraphic = currentQuestion?.inlineSvg || currentQuestion?.imageUrl || currentQuestion?.imageFile;
+  const hasGraphic = !!currentQ.inlineSvg || !!currentQ.image || !!currentQ.imageUrl;
   const hasPassage = !!currentPassage;
   const hasLHS = hasGraphic || hasPassage;
 
-  const currentAns = answers[currentQIndex] || {};
-
-  useEffect(() => {
-    if (testPhase !== 'testing') return;
-    if (timeLeft <= 0 && !isTimeUp) {
-      setIsTimeUp(true);
-      finishTest();
-      return;
-    }
-    const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    return () => clearInterval(timerId);
-  }, [timeLeft, testPhase, isTimeUp]);
-
   const formatTime = (seconds) => {
-    if (seconds < 0) seconds = 0;
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
 
-  useEffect(() => { 
-    setActiveGlossaryTerm(null); 
-  }, [currentQIndex, testPhase]);
-
-  const updateAnswer = (payload) => {
-    setAnswers(prev => {
-      const currentAnsObj = prev[currentQIndex] || {};
-      return { ...prev, [currentQIndex]: { ...currentAnsObj, ...payload } };
-    });
-  };
-
-  const handleSelectOption = (val) => {
-    if (testPhase !== 'testing') return;
-    updateAnswer({ selectedOption: val });
-  };
-
-  const handleDragStart = (e, itemId) => {
-    if (testPhase !== 'testing') return;
-    setDraggedItem(itemId);
-    e.dataTransfer.setData('text/plain', itemId);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDrop = (e, slotId) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (testPhase !== 'testing' || !draggedItem) return;
-    
-    const currentDrops = currentAns.droppedItems || {};
-    const newDrops = { ...currentDrops };
-    
-    for (const key in newDrops) { 
-      if (newDrops[key] === draggedItem) delete newDrops[key]; 
+  const handleNext = () => {
+    if (currentIdx < totalQuestions - 1) {
+      setCurrentIdx(prev => prev + 1);
+      setActiveGlossaryTerm(null);
+    } else {
+      submitAssessment();
     }
-    
-    newDrops[slotId] = draggedItem;
-    updateAnswer({ droppedItems: newDrops });
-    setDraggedItem(null);
   };
 
-  const removeDroppedItem = (slotId) => {
-    if (testPhase !== 'testing') return;
-    const currentDrops = currentAns.droppedItems || {};
-    const newDrops = { ...currentDrops };
-    delete newDrops[slotId];
-    updateAnswer({ droppedItems: newDrops });
-  };
-
-  const handleInlineChange = (blankIndex, val) => {
-    if (testPhase !== 'testing') return;
-    const currentInline = currentAns.inlineAnswers || {};
-    updateAnswer({ inlineAnswers: { ...currentInline, [blankIndex]: val } });
-  };
-
-  let isCurrentAnswered = false;
-  if (currentQuestion) {
-    if (isMCQ) isCurrentAnswered = !!currentAns.selectedOption;
-    if (isInline) isCurrentAnswered = Object.keys(currentAns.inlineAnswers || {}).length === Object.keys(currentQuestion.blanks || {}).length;
-    if (isDND) {
-      let totalSlots = 0;
-      (currentQuestion.targets || []).forEach(t => totalSlots += (currentQuestion.correctSets?.[t.id]?.length || 1));
-      isCurrentAnswered = Object.keys(currentAns.droppedItems || {}).length === totalSlots;
+  const handlePrev = () => {
+    if (currentIdx > 0) {
+      setCurrentIdx(prev => prev - 1);
+      setActiveGlossaryTerm(null);
     }
-  }
-
-  // Global Keyboard Navigation
-  useEffect(() => {
-    const handleGlobalNav = (e) => {
-      const activeTag = document.activeElement?.tagName;
-      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
-
-      if (e.key === 'ArrowRight' || e.key === 'Enter') {
-        e.preventDefault();
-        if (testPhase === 'testing' && isCurrentAnswered) handleNextTest();
-        else if (testPhase === 'reviewing') handleNextReview();
-        else if (testPhase === 'intermission') { setCurrentQIndex(0); setTestPhase('reviewing'); }
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        if (testPhase === 'testing') handlePrevTest();
-        else if (testPhase === 'reviewing') handlePrevReview();
-      }
-    };
-    window.addEventListener('keydown', handleGlobalNav);
-    return () => window.removeEventListener('keydown', handleGlobalNav);
-  }, [testPhase, currentQIndex, isCurrentAnswered]);
-
-
-  const checkQuestionCorrect = (qIndex) => {
-    const q = questions[qIndex];
-    const ans = answers[qIndex] || {};
-    
-    if (q.type === 'mcq') return ans.selectedOption === q.correct;
-    
-    if (q.type === 'inline' || q.type === 'scrollBox') {
-      const userInline = ans.inlineAnswers || {};
-      const blanks = q.blanks || {};
-      for (const blankId of Object.keys(blanks)) {
-        if (userInline[blankId] !== blanks[blankId].correct) return false;
-      }
-      return true;
-    }
-    
-    if (q.type === 'dnd' || q.type === 'order') {
-      const dropped = ans.droppedItems || {};
-      let allCorrect = true;
-      for (const target of (q.targets || [])) {
-        const expectedArr = q.correctSets?.[target.id] || [];
-        const userDroppedVals = [];
-        
-        for (let i = 0; i < expectedArr.length; i++) {
-          const dId = dropped[`${target.id}_${i}`];
-          const bankItem = (q.bank || []).find(b => b.id === dId);
-          if (bankItem) userDroppedVals.push(bankItem.val);
-        }
-
-        if (q.type === 'order') {
-          if (JSON.stringify(userDroppedVals) !== JSON.stringify(expectedArr)) allCorrect = false;
-        } else {
-          if (userDroppedVals.length !== expectedArr.length) allCorrect = false;
-          const unmatchedExpected = [...expectedArr];
-          for (const val of userDroppedVals) {
-             const idx = unmatchedExpected.indexOf(val);
-             if (idx !== -1) {
-                unmatchedExpected.splice(idx, 1);
-             } else {
-                allCorrect = false;
-             }
-          }
-        }
-      }
-      return allCorrect;
-    }
-    return false;
   };
 
-  const finishTest = () => {
-    let totalPossible = 0;
-    let totalEarned = 0;
+  const calculateScore = () => {
+    let correctCount = 0;
+    const results = extractedQuestions.map(q => {
+      const userAns = answers[q.id];
+      let isCorrect = false;
 
-    for (let i = 0; i < totalQuestions; i++) {
-      const q = questions[i];
-      const ans = answers[i] || {};
+      if (!userAns) return { ...q, isCorrect: false, userAns: null };
 
       if (q.type === 'mcq') {
-        totalPossible += 1;
-        if (ans.selectedOption === q.correct) totalEarned += 1;
-      } else if (q.type === 'inline' || q.type === 'scrollBox') {
-        const blanks = q.blanks || {};
-        const userInline = ans.inlineAnswers || {};
-        for (const blankId of Object.keys(blanks)) {
-          totalPossible += 1;
-          if (userInline[blankId] === blanks[blankId].correct) totalEarned += 1;
-        }
-      } else if (q.type === 'dnd' || q.type === 'order') {
-        const dropped = ans.droppedItems || {};
-        for (const target of (q.targets || [])) {
-          const expectedArr = q.correctSets?.[target.id] || [];
-          totalPossible += expectedArr.length;
-
-          const userDroppedVals = [];
-          for (let s = 0; s < expectedArr.length; s++) {
-             const dId = dropped[`${target.id}_${s}`];
-             const bankItem = (q.bank || []).find(b => b.id === dId);
-             if (bankItem) userDroppedVals.push(bankItem.val);
-          }
-
-          if (q.type === 'order') {
-            for (let s = 0; s < expectedArr.length; s++) {
-              if (userDroppedVals[s] === expectedArr[s]) totalEarned += 1;
+        isCorrect = userAns === q.correct;
+      } 
+      else if (q.type === 'inline' || q.type === 'fill_blank') {
+        const blankKeys = Object.keys(q.blanks || {});
+        isCorrect = blankKeys.length > 0 && blankKeys.every(k => {
+            if (q.type === 'fill_blank') {
+                return userAns[k]?.trim().toLowerCase() === q.blanks[k].correct.trim().toLowerCase();
             }
-          } else {
-            const unmatchedExpected = [...expectedArr];
-            for (const val of userDroppedVals) {
-               const idx = unmatchedExpected.indexOf(val);
-               if (idx !== -1) {
-                 totalEarned += 1;
-                 unmatchedExpected.splice(idx, 1);
-               }
-            }
-          }
-        }
+            return userAns[k] === q.blanks[k].correct;
+        });
       }
-    }
+      else if (q.type === 'dnd' || q.type === 'order') {
+        const targetKeys = (q.targets || []).map(t => t.id);
+        isCorrect = targetKeys.length > 0 && targetKeys.every(k => {
+          const uArr = userAns[k] || [];
+          const cArr = q.correctSets[k] || [];
+          if (q.type === 'order') {
+            return uArr.length === cArr.length && uArr.every((v, i) => v === cArr[i]);
+          } else {
+            if (uArr.length !== cArr.length) return false;
+            const unmatched = [...cArr];
+            for (const val of uArr) {
+                const idx = unmatched.indexOf(val);
+                if (idx !== -1) unmatched.splice(idx, 1);
+                else return false;
+            }
+            return true;
+          }
+        });
+      }
 
-    const calculatedScore = totalPossible === 0 ? 0 : Math.ceil((totalEarned / totalPossible) * 10);
-    setFinalScore(calculatedScore);
-    setTestPhase('intermission');
+      if (isCorrect) correctCount++;
+      return { ...q, isCorrect, userAns };
+    });
+
+    return { correctCount, results };
   };
 
-  const handleNextTest = () => {
-    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
-    else finishTest();
+  const submitAssessment = () => {
+    setScoreData(calculateScore());
+    setPhase('review');
+    window.scrollTo(0, 0);
   };
 
-  const handlePrevTest = () => {
-    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
-  };
-
-  const handleNextReview = () => {
-    if (currentQIndex + 1 < totalQuestions) setCurrentQIndex(prev => prev + 1);
-    else {
-      if (typeof onComplete === 'function') onComplete(finalScore);
-    }
-  };
-
-  const handlePrevReview = () => {
-    if (currentQIndex > 0) setCurrentQIndex(prev => prev - 1);
+  const finishAndExit = () => {
+    const scorePct = scoreData.correctCount / totalQuestions;
+    const earnedXP = Math.round(scorePct * 20); 
+    if (typeof onComplete === 'function') onComplete(earnedXP);
   };
 
   const renderPassageWithGlossary = (text) => {
@@ -1087,12 +1459,12 @@ export default function Assessment({ unit, onComplete, onQuit }) {
       if (i % 2 !== 0) {
         const cleanWord = part.toLowerCase();
         const termData = currentPassage?.glossary?.[cleanWord];
-        if (!termData) return <span key={i} className="font-bold text-slate-800 dark:text-slate-200">{part}</span>;
+        if (!termData) return <span key={i} className="font-black text-slate-800 dark:text-slate-200">{part}</span>;
         return (
           <button 
             key={i} 
-            onClick={() => { setActiveGlossaryTerm({ word: part, ...termData }); }}
-            className="text-emerald-600 dark:text-emerald-400 font-bold border-b-2 border-dashed border-emerald-600 dark:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors mx-0.5 rounded px-1"
+            onClick={() => setActiveGlossaryTerm({ word: part, ...termData })}
+            className="text-[#1CB0F6] font-black border-b-[3px] border-dotted border-[#1CB0F6] hover:bg-[#1CB0F6]/10 transition-colors mx-0.5 rounded px-1 active:translate-y-[2px]"
           >
             {part}
           </button>
@@ -1102,308 +1474,296 @@ export default function Assessment({ unit, onComplete, onQuit }) {
     });
   };
 
-  if (testPhase === 'intermission') {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans selection:bg-indigo-100 relative overflow-hidden transition-colors">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200 opacity-40 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-200 opacity-40 blur-[120px] pointer-events-none" />
-        
-        <TopBar onQuit={onQuit} current={totalQuestions} total={totalQuestions} modeTitle="Assessment Module" />
-        
-        <div className="flex-1 flex flex-col items-center justify-center p-6 z-10 animate-in zoom-in-95 duration-500">
-          <div className="bg-white dark:bg-slate-900 p-12 md:p-16 rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-800 text-center max-w-2xl w-full">
-             <div className="w-32 h-32 mx-auto bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mb-8 shadow-inner">
-               <CheckCircle2 className="w-16 h-16" strokeWidth={3} />
-             </div>
-             <h1 className="text-5xl font-black text-slate-800 dark:text-slate-100 tracking-tight mb-4">Assessment Complete</h1>
-             <p className="text-2xl font-bold text-slate-500 dark:text-slate-400 mb-8">Let's see how you did.</p>
-             
-             <div className="bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-2xl py-8 mb-10 shadow-sm">
-                <span className="block text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Normalized XP</span>
-                <div className="text-6xl font-black text-emerald-500">
-                  {finalScore} <span className="text-4xl text-slate-300 dark:text-slate-600">/ 10</span>
-                </div>
-             </div>
-
-             <button 
-                onClick={() => { setCurrentQIndex(0); setTestPhase('reviewing'); }}
-                className="w-full py-5 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all bg-[#1CB0F6] border-b-[6px] border-[#1899D6] hover:bg-[#1899D6] active:border-b-0 active:translate-y-[6px] shadow-lg flex items-center justify-center"
-             >
-                Review Answers <ArrowRight className="w-6 h-6 ml-3" strokeWidth={3} />
-             </button>
-          </div>
-        </div>
-      </div>
-    );
+  // --- DERIVE DYNAMIC ANSWERS ---
+  const currentAnswer = answers[currentQ?.id];
+  let isAnswered = false;
+  if (currentQ) {
+    if (currentQ.type === 'mcq') isAnswered = !!currentAnswer;
+    if (currentQ.type === 'inline' || currentQ.type === 'fill_blank') {
+      const totalBlanks = Object.keys(currentQ.blanks || {}).length;
+      isAnswered = currentAnswer && Object.keys(currentAnswer).length === totalBlanks && Object.values(currentAnswer).every(v => String(v).trim() !== '');
+    }
+    if (currentQ.type === 'dnd' || currentQ.type === 'order') {
+      let totalTargets = 0;
+      (currentQ.targets || []).forEach(t => totalTargets += (currentQ.correctSets?.[t.id]?.length || 1));
+      const placedCount = Object.values(currentAnswer || {}).flat().length;
+      isAnswered = placedCount === totalTargets;
+    }
+    if (currentQ.type === 'hot_spot') {
+      isAnswered = !!currentAnswer;
+    }
   }
 
-  const isCurrentlyCorrect = testPhase === 'reviewing' ? checkQuestionCorrect(currentQIndex) : null;
+  const handleAnswerChange = (val) => {
+    setAnswers(prev => ({ ...prev, [currentQ.id]: val }));
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans relative transition-colors">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 overflow-hidden selection:bg-indigo-100">
       
       <TopBar 
-        onQuit={onQuit} 
-        current={currentQIndex + 1} 
-        total={totalQuestions} 
-        modeTitle={testPhase === 'testing' ? "Assessment Module" : "Assessment Review"} 
+        onQuit={phase === 'review' ? finishAndExit : onQuit}
+        modeTitle={phase === 'review' ? (lang === 'vn' ? 'Kết Quả' : 'Results') : (lang === 'vn' ? 'Bài Đánh Giá' : 'Assessment Module')}
+        current={phase === 'review' ? scoreData?.correctCount : (phase === 'testing' ? currentIdx + 1 : undefined)}
+        total={phase === 'setup' ? undefined : totalQuestions}
+        progress={phase === 'testing' ? ((currentIdx) / totalQuestions) * 100 : (phase === 'review' ? 100 : undefined)}
+        timeLeft={phase === 'testing' ? timeLeft : undefined}
+        lang={lang}
+        onLangToggle={() => setLang(prev => prev === 'en' ? 'vn' : 'en')}
       />
 
-      {isTimeUp && testPhase === 'testing' && (
-        <div className="bg-red-600 text-white p-3 text-center font-bold text-lg uppercase tracking-widest flex justify-center items-center shadow-md z-30 animate-in slide-in-from-top-2">
-          <AlertTriangle className="mr-2" /> Time is up! Submitting answers...
-        </div>
-      )}
-
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative z-10">
+      <div className="flex-1 overflow-hidden flex flex-col relative min-h-0 w-full">
         
-        {hasLHS && (
-          <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-10 pb-32 transition-colors">
-            {hasPassage && (
-              <div className={`animate-in fade-in duration-300 ${hasGraphic ? 'mb-8 border-b-2 border-slate-100 dark:border-slate-800 pb-8' : ''}`}>
-                <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight mb-6 leading-tight">{currentPassage.title}</h2>
-                <div className="mb-6">
-                  {currentPassage.meta && (
-                    <div className="flex flex-wrap items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4 gap-3">
-                      <h3 className="text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{currentPassage.meta}</h3>
-                    </div>
-                  )}
-                  <div className="space-y-4 text-slate-700 dark:text-slate-300 text-lg leading-relaxed font-medium">
-                    {(currentPassage.text || []).map((p, i) => (
-                      <p key={i}>{renderPassageWithGlossary(p)}</p>
-                    ))}
+        {phase === 'setup' && (
+          <div className="h-full overflow-y-auto flex flex-col items-center justify-center p-6 max-w-3xl mx-auto w-full text-center">
+            <div className="w-32 h-32 bg-[#1CB0F6]/10 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-inner border-4 border-[#1CB0F6]/20">
+              <Edit3 className="w-16 h-16 text-[#1CB0F6]" strokeWidth={2.5} />
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl font-black mb-4 tracking-tight drop-shadow-sm text-slate-800 dark:text-white">
+              {lang === 'vn' ? 'Sẵn Sàng Chưa?' : 'Module Ready'}
+            </h1>
+            
+            <p className="text-lg sm:text-xl font-bold text-slate-500 dark:text-slate-400 mb-10 max-w-xl leading-relaxed">
+              {lang === 'vn' 
+                ? 'Kiểm tra kiến thức của bạn. Trả lời cẩn thận và xem lại kết quả chi tiết ở cuối bài.' 
+                : 'Test your knowledge on this module. Answer carefully and review your performance at the end.'}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-12 w-full justify-center">
+              <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 flex items-center shadow-sm w-full sm:w-auto">
+                <div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mr-5 shadow-inner">
+                  <Target className="w-7 h-7 text-indigo-500 dark:text-indigo-400" strokeWidth={2.5} />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">
+                    {lang === 'vn' ? 'Tổng câu hỏi' : 'Total Questions'}
+                  </div>
+                  <div className="text-3xl font-black text-slate-700 dark:text-white">{totalQuestions}</div>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 flex items-center shadow-sm w-full sm:w-auto">
+                <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center mr-5 shadow-inner">
+                  <Clock className="w-7 h-7 text-amber-500 dark:text-amber-400" strokeWidth={2.5} />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">
+                    {lang === 'vn' ? 'Thời gian' : 'Time Limit'}
+                  </div>
+                  <div className="text-3xl font-black font-mono text-slate-700 dark:text-white">
+                    {extractedTimeLimit ? formatTime(extractedTimeLimit) : 'None'}
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
-            {hasGraphic && (
-              <div className="w-full animate-in fade-in duration-300">
-                {currentQuestion.inlineSvg ? (
-                  <div 
-                    className="w-full h-auto flex items-center justify-center p-6 rounded-3xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 shadow-inner"
-                    dangerouslySetInnerHTML={{ __html: currentQuestion.inlineSvg }}
-                  />
-                ) : (
-                  <img 
-                    src={`${import.meta.env.BASE_URL || ''}images/${unit?.id || 'MATH_1A'}/${(currentQuestion.imageFile || currentQuestion.imageUrl).split('/').pop()}`} 
-                    alt="Assessment Diagram" 
-                    className="w-full h-auto object-contain rounded-3xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 shadow-inner p-6 dark:opacity-90"
-                  />
-                )}
-              </div>
-            )}
+            <div className="flex flex-col-reverse sm:flex-row gap-4 w-full sm:w-auto mt-4">
+              <button 
+                  onClick={onQuit}
+                  className="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-2xl font-black uppercase tracking-widest text-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border-b-[6px] active:border-b-[2px] active:translate-y-[4px] shadow-sm"
+              >
+                {lang === 'vn' ? 'Thoát' : 'Later'}
+              </button>
+              <button 
+                  onClick={() => setPhase('testing')}
+                  className="px-12 py-4 bg-[#58CC02] border-[#46A802] text-white rounded-2xl font-black uppercase tracking-widest text-lg hover:bg-[#46A802] transition-all border-b-[6px] active:border-b-0 active:translate-y-[6px] shadow-sm flex items-center justify-center"
+              >
+                <PlayCircle className="w-7 h-7 mr-3" />
+                {lang === 'vn' ? 'Bắt Đầu' : 'Start Assessment'}
+              </button>
+            </div>
           </div>
         )}
 
-        <div className={`w-full ${hasLHS ? 'md:w-1/2 bg-slate-50 dark:bg-slate-950' : 'max-w-4xl mx-auto bg-white dark:bg-slate-900 border-x border-slate-200 dark:border-slate-800'} flex flex-col relative overflow-hidden pb-48 transition-colors`}>
-          
-          {testPhase === 'testing' && !isTimeUp && (
-            <div className="absolute top-4 right-4 z-30 flex items-center font-black text-lg px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-sm text-slate-700 dark:text-slate-200">
-               <Clock className="w-5 h-5 mr-2" />
-               {formatTime(timeLeft)}
-            </div>
-          )}
-
-          <div className="p-6 md:p-8 overflow-y-auto h-full relative animate-in fade-in slide-in-from-right-4 duration-300 pt-16 md:pt-10">
-            <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 leading-snug tracking-tight mb-8 pr-20">{currentQuestion.title}</h3>
-            
-            {isMCQ && (
-              <div className="space-y-3">
-                {(currentQuestion.options || []).map((opt) => {
-                  const isSelected = currentAns.selectedOption === opt.val;
-                  const isCorrectAnswer = opt.val === currentQuestion.correct;
-                  let btnStyle = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 shadow-sm hover:shadow-md";
-                  
-                  if (testPhase === 'reviewing') {
-                    if (isCorrectAnswer) btnStyle = "bg-[#D7FFD7] dark:bg-[#D7FFD7]/20 border-[#58A700] text-[#3E7500] dark:text-[#a3e635] shadow-sm";
-                    else if (isSelected && !isCorrectAnswer) btnStyle = "bg-[#FFE5E5] dark:bg-[#FFE5E5]/10 border-[#EA4335] text-[#A32D23] dark:text-[#f87171] shadow-sm";
-                    else btnStyle = "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 opacity-60";
-                  } else if (isSelected) {
-                    btnStyle = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 border-b-4 text-emerald-800 dark:text-emerald-400 translate-y-[-2px] shadow-md";
-                  }
-
-                  return (
-                    <button 
-                      key={opt.val}
-                      onClick={() => handleSelectOption(opt.val)}
-                      disabled={testPhase !== 'testing'}
-                      className={`w-full text-left p-4 rounded-2xl border-2 font-medium text-lg transition-all ${btnStyle}`}
-                    >
-                      {opt.text}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {isDND && (
-              <div className="space-y-8">
-                <div className="sticky top-0 z-30 pt-1 pb-4 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md shadow-[0_15px_15px_-15px_rgba(0,0,0,0.1)] -mt-2">
-                  <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-5 shadow-sm">
-                    <h4 className="text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Options Bank</h4>
-                    <div className="flex flex-wrap gap-3">
-                      {(currentQuestion.bank || []).map((opt) => {
-                        const isUsed = Object.values(currentAns.droppedItems || {}).includes(opt.id);
-                        if (isUsed) return null;
-                        return (
-                          <div
-                            key={opt.id}
-                            draggable={testPhase === 'testing'}
-                            onDragStart={(e) => handleDragStart(e, opt.id)}
-                            className={`flex items-center px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-medium text-slate-700 dark:text-slate-200 shadow-sm transition-all ${testPhase === 'testing' ? 'cursor-grab active:cursor-grabbing hover:border-emerald-400 hover:shadow-md' : 'opacity-50'}`}
-                          >
-                            <GripVertical className="w-5 h-5 mr-2 text-slate-400 dark:text-slate-500" />
-                            {opt.text}
-                          </div>
-                        );
-                      })}
+        {phase === 'testing' && (
+          <div className="h-full flex flex-col">
+            <div className="flex-1 overflow-hidden flex flex-col lg:flex-row min-h-0">
+              {hasLHS && (
+                <div className="flex-none lg:flex-1 w-full lg:w-1/2 h-[40%] min-h-[250px] lg:h-full bg-slate-100 dark:bg-slate-900 border-b-2 lg:border-b-0 lg:border-r-2 border-slate-200 dark:border-slate-800 flex flex-col p-4 sm:p-6 lg:p-10 relative overflow-y-auto custom-scrollbar shrink-0">
+                  {hasPassage && (
+                    <div className={`w-full max-w-2xl mx-auto bg-white dark:bg-slate-800 p-6 sm:p-8 lg:p-10 rounded-3xl shadow-sm border-2 border-slate-200 dark:border-slate-700 mb-6 ${hasGraphic ? 'shrink-0' : ''}`}>
+                      <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight mb-6 leading-tight">
+                        {lang === 'vn' && currentPassage.vnTitle ? currentPassage.vnTitle : currentPassage.title}
+                      </h2>
+                      {currentPassage.meta && (
+                        <div className="inline-block px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-xs mb-6">
+                          {currentPassage.meta}
+                        </div>
+                      )}
+                      <div className="space-y-4 text-slate-700 dark:text-slate-300 text-lg leading-relaxed font-medium">
+                        {((lang === 'vn' && currentPassage.vnText ? currentPassage.vnText : currentPassage.text) || "").split('\n').map((p, i) => (
+                          <p key={i}>{renderPassageWithGlossary(p)}</p>
+                        ))}
+                      </div>
                     </div>
+                  )}
+
+                  {hasGraphic && (
+                    <div className="w-full h-full max-w-2xl mx-auto flex items-center justify-center bg-white dark:bg-slate-800 rounded-3xl shadow-sm border-2 border-slate-200 dark:border-slate-700 p-4 lg:p-8 overflow-hidden min-h-[250px]">
+                      {currentQ.inlineSvg ? (
+                        <div className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full drop-shadow-sm" dangerouslySetInnerHTML={{ __html: currentQ.inlineSvg }} />
+                      ) : (
+                        <img src={currentQ.image || currentQ.imageUrl} alt="Reference" className="max-w-full max-h-full object-contain drop-shadow-sm rounded-xl" />
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className={`flex-1 overflow-y-auto custom-scrollbar flex justify-center bg-white dark:bg-slate-950 ${hasLHS ? 'lg:w-1/2' : 'w-full'}`}>
+                <div className={`w-full max-w-4xl p-6 sm:p-8 lg:p-14 flex flex-col min-h-full`}>
+                  <div className="mb-8 lg:mb-12">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-800 dark:text-white leading-snug tracking-tight">
+                      {parseText(currentQ.title)}
+                    </h2>
+                  </div>
+
+                  <div className="flex-1">
+                    {currentQ.type === 'mcq' && <MCQQuestion question={currentQ} value={currentAnswer} onChange={handleAnswerChange} isReviewing={false} />}
+                    {currentQ.type === 'inline' && <InlineQuestion question={currentQ} value={currentAnswer} onChange={handleAnswerChange} isReviewing={false} />}
+                    {currentQ.type === 'fill_blank' && <FillBlankQuestion question={currentQ} value={currentAnswer} onChange={handleAnswerChange} isReviewing={false} />}
+                    {(currentQ.type === 'dnd' || currentQ.type === 'order') && <DndQuestion question={currentQ} value={currentAnswer} onChange={handleAnswerChange} isReviewing={false} />}
+                    {currentQ.type === 'hot_spot' && <HotSpotQuestion question={currentQ} value={currentAnswer} onChange={handleAnswerChange} isReviewing={false} />}
                   </div>
                 </div>
+              </div>
+            </div>
 
-                <div>
-                  <h4 className="text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Targets</h4>
-                  <div className={`grid gap-4 ${(currentQuestion.targets || []).length > 1 && currentQuestion.type !== 'order' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'}`}>
-                    {(currentQuestion.targets || []).map((target) => {
-                      const requiredCount = currentQuestion.correctSets?.[target.id]?.length || 1;
-                      return (
-                        <div key={target.id} className="flex flex-col bg-white dark:bg-slate-900 p-4 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
-                          <div className="font-bold text-slate-800 dark:text-slate-200 mb-3 text-[15px] leading-tight text-center border-b-2 border-slate-100 dark:border-slate-800 pb-3">{target.title}</div>
-                          <div className="flex flex-col gap-2">
-                            {Array.from({ length: requiredCount }).map((_, slotIndex) => {
-                              const slotId = `${target.id}_${slotIndex}`;
-                              const droppedId = (currentAns.droppedItems || {})[slotId];
-                              const droppedObj = (currentQuestion.bank || []).find(b => b.id === droppedId);
-                              
-                              let slotStyle = "bg-slate-50 dark:bg-slate-950 border-dashed border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-500";
-                              
-                              if (testPhase === 'reviewing') {
-                                const expectedArr = currentQuestion.correctSets?.[target.id] || [];
-                                const droppedVal = droppedObj ? droppedObj.val : null;
-                                let isCorrectInSlot = currentQuestion.type === 'order' ? expectedArr[slotIndex] === droppedVal : expectedArr.includes(droppedVal);
-                                
-                                if (!droppedId) slotStyle = "bg-[#FFE5E5] dark:bg-[#FFE5E5]/10 border-[#EA4335] border-solid text-[#A32D23] dark:text-[#f87171] shadow-sm";
-                                else if (isCorrectInSlot) slotStyle = "bg-[#D7FFD7] dark:bg-[#D7FFD7]/20 border-[#58A700] border-solid text-[#3E7500] dark:text-[#a3e635] shadow-sm";
-                                else slotStyle = "bg-[#FFE5E5] dark:bg-[#FFE5E5]/10 border-[#EA4335] border-solid text-[#A32D23] dark:text-[#f87171] shadow-sm";
-                              } else if (droppedObj) {
-                                slotStyle = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-400 border-solid text-emerald-800 dark:text-emerald-400 shadow-sm";
-                              }
+            <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 p-4 sm:p-6 z-30 shrink-0 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.02)] relative">
+              <button 
+                onClick={handlePrev}
+                disabled={currentIdx === 0}
+                className="px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 font-black text-slate-400 uppercase tracking-widest text-base hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              >
+                {lang === 'vn' ? 'Quay Lại' : 'Previous'}
+              </button>
 
-                              return (
-                                <div 
-                                  key={slotId}
-                                  onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }}
-                                  onDrop={(e) => handleDrop(e, slotId)}
-                                  onClick={() => droppedObj && removeDroppedItem(slotId)}
-                                  className={`min-h-[70px] flex items-center p-3 rounded-2xl border-2 transition-all ${slotStyle} ${testPhase === 'testing' && droppedObj ? 'cursor-pointer hover:bg-rose-50 dark:hover:bg-rose-950 hover:border-rose-300' : ''}`}
-                                >
-                                  {!droppedObj ? (
-                                    <div className="flex items-center justify-center w-full">
-                                      <CornerDownRight className="w-5 h-5 mr-2 opacity-50" />
-                                      <span className="font-medium text-sm">{testPhase === 'reviewing' ? 'Left Blank' : 'Drop Item Here'}</span>
-                                    </div>
-                                  ) : (
-                                    <div className="font-bold flex items-center justify-between w-full text-[15px]">
-                                      <span>{droppedObj.text}</span>
-                                      {testPhase === 'testing' && <XCircle className="w-5 h-5 text-slate-400 dark:text-slate-500 hover:text-rose-500 ml-2 flex-shrink-0 transition-colors" />}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
+              <button 
+                onClick={handleNext}
+                disabled={!isAnswered}
+                className={`
+                  px-10 sm:px-14 py-4 rounded-2xl font-black uppercase tracking-widest text-lg sm:text-xl transition-all border-b-[6px] flex items-center shadow-sm
+                  ${isAnswered 
+                    ? 'bg-[#1CB0F6] border-[#1899D6] text-white hover:bg-[#159BD9] active:border-b-0 active:translate-y-[6px]' 
+                    : 'bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-600 pointer-events-none'}
+                `}
+              >
+                <span className="hidden sm:inline">
+                  {currentIdx === totalQuestions - 1 ? (lang === 'vn' ? 'Nộp Bài' : 'Submit') : (lang === 'vn' ? 'Tiếp Theo' : 'Continue')}
+                </span>
+                <span className="sm:hidden">
+                  {currentIdx === totalQuestions - 1 ? 'Submit' : 'Next'}
+                </span>
+                {currentIdx !== totalQuestions - 1 && <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 ml-2 -mr-2" strokeWidth={3} />}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {phase === 'review' && (
+          <div className="h-full flex flex-col">
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              <div className={`p-8 sm:p-12 border-b-[6px] text-center text-white shrink-0 ${(scoreData.correctCount / totalQuestions) >= 0.7 ? 'bg-[#58CC02] border-[#46A802]' : 'bg-[#FFC800] border-[#CCA000]'}`}>
+                <div className="w-24 h-24 bg-white/20 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 shadow-inner border-[4px] border-white/30">
+                  {(scoreData.correctCount / totalQuestions) >= 0.7 ? <Award className="w-12 h-12" strokeWidth={2.5} /> : <RefreshCcw className="w-12 h-12" strokeWidth={2.5} />}
+                </div>
+                <h1 className="text-4xl sm:text-6xl font-black mb-3 tracking-tight drop-shadow-md">
+                  {(scoreData.correctCount / totalQuestions) >= 0.7 ? (lang === 'vn' ? 'Tuyệt Vời!' : 'Outstanding!') : (lang === 'vn' ? 'Cần Cố Gắng' : 'Keep Practicing')}
+                </h1>
+                <div className="inline-flex items-center bg-black/10 px-6 py-2.5 rounded-2xl font-black text-xl sm:text-3xl mt-2 border border-white/20 shadow-sm">
+                  <span className="opacity-90 mr-3">{lang === 'vn' ? 'Điểm:' : 'Score:'}</span>
+                  <span>{scoreData.correctCount} / {totalQuestions}</span>
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-8 max-w-5xl mx-auto w-full space-y-4">
+                {scoreData.results.map((res, i) => (
+                  <div key={res.id} className={`bg-white dark:bg-slate-900 border-2 rounded-3xl overflow-hidden shadow-sm transition-all ${res.isCorrect ? 'border-slate-200 dark:border-slate-800' : 'border-rose-200 dark:border-rose-900/50'}`}>
+                      <button 
+                        onClick={() => setExpandedReviewId(expandedReviewId === res.id ? null : res.id)}
+                        className={`w-full p-4 sm:p-6 flex items-start gap-4 sm:gap-6 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${expandedReviewId === res.id ? 'bg-slate-50 dark:bg-slate-800/50' : ''}`}
+                      >
+                        <div className={`mt-0.5 shrink-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full border-4 shadow-sm ${res.isCorrect ? 'bg-[#58CC02] border-[#D7FFD7] dark:border-[#58A700]/30 text-white' : 'bg-[#EA4335] border-[#FFE5E5] dark:border-[#C5221F]/30 text-white'}`}>
+                          {res.isCorrect ? <CheckCircle2 className="w-6 h-6" strokeWidth={3} /> : <XCircle className="w-6 h-6" strokeWidth={3} />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-black text-xs sm:text-sm text-slate-400 uppercase tracking-widest mb-1">
+                            {lang === 'vn' ? 'Câu hỏi' : 'Question'} {i + 1}
+                          </div>
+                          <div className="font-bold text-lg sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed">
+                            {parseText(res.title)}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
+                        <div className="shrink-0 text-slate-400 mt-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-full">
+                          {expandedReviewId === res.id ? <ChevronUp className="w-6 h-6" strokeWidth={3} /> : <ChevronDown className="w-6 h-6" strokeWidth={3} />}
+                        </div>
+                      </button>
 
-            {isInline && (
-              <div className="text-lg leading-loose text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-6 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
-                {(currentQuestion.textParts || []).map((part, i) => {
-                  const blankIndex = i + 1;
-                  const blankData = currentQuestion.blanks?.[blankIndex];
-                  const selectedVal = (currentAns.inlineAnswers || {})[blankIndex];
-                  
-                  let selectStyle = 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-400 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-100 hover:shadow-md';
-                  let showCorrection = false;
-
-                  if (testPhase === 'reviewing') {
-                    const isCorrect = selectedVal === blankData?.correct;
-                    if (isCorrect) selectStyle = 'bg-[#D7FFD7] dark:bg-[#D7FFD7]/20 border-[#58A700] text-[#3E7500] dark:text-[#a3e635]';
-                    else {
-                      selectStyle = 'bg-[#FFE5E5] dark:bg-[#FFE5E5]/10 border-[#EA4335] text-[#A32D23] dark:text-[#f87171]';
-                      showCorrection = true;
-                    }
-                  }
-
-                  return (
-                    <React.Fragment key={i}>
-                      {part}
-                      {blankData && (
-                        <span className="inline-flex items-center">
-                          <select
-                            value={selectedVal || ""}
-                            onChange={(e) => handleInlineChange(blankIndex, e.target.value)}
-                            disabled={testPhase !== 'testing'}
-                            className={`mx-2 p-2 border-b-4 border-2 rounded-xl font-bold cursor-pointer transition-all outline-none appearance-none pr-8 bg-no-repeat shadow-sm ${selectStyle}`}
-                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundSize: '1.5em 1.5em' }}
-                          >
-                            <option value="" disabled>{testPhase === 'reviewing' ? 'Blank' : 'Select...'}</option>
-                            {(blankData.options || []).map(opt => <option key={opt.val} value={opt.val}>{opt.text}</option>)}
-                          </select>
-                          {showCorrection && (
-                            <span className="text-[#3E7500] dark:text-[#a3e635] bg-[#D7FFD7] dark:bg-[#D7FFD7]/20 border border-[#58A700] px-2 py-1 rounded-lg ml-1 text-sm font-bold shadow-sm">
-                              {blankData.options.find(o => o.val === blankData.correct)?.text}
-                            </span>
+                      {expandedReviewId === res.id && (
+                        <div className="p-4 sm:p-8 lg:p-10 border-t-2 border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-8 shadow-inner">
+                          {(res.inlineSvg || res.image || res.imageUrl) && (
+                            <div className="w-full max-w-xl mx-auto bg-white dark:bg-slate-800 p-4 sm:p-8 rounded-3xl border-2 border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center">
+                              {res.inlineSvg ? (
+                                <div className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto" dangerouslySetInnerHTML={{__html: res.inlineSvg}} />
+                              ) : (
+                                <img src={res.image || res.imageUrl} alt="Diagram" className="max-w-full h-auto object-contain rounded-xl" />
+                              )}
+                            </div>
                           )}
-                        </span>
+
+                          <div className="max-w-3xl mx-auto">
+                            {res.type === 'mcq' && <MCQQuestion question={res} value={res.userAns} isReviewing={true} />}
+                            {res.type === 'inline' && <InlineQuestion question={res} value={res.userAns} isReviewing={true} />}
+                            {res.type === 'fill_blank' && <FillBlankQuestion question={res} value={res.userAns} isReviewing={true} />}
+                            {(res.type === 'dnd' || res.type === 'order') && <DndQuestion question={res} value={res.userAns} isReviewing={true} />}
+                          </div>
+
+                          {((lang === 'vn' && res.expVn) || res.expEn) && (
+                            <div className="max-w-3xl mx-auto bg-[#1CB0F6]/10 border-2 border-[#1CB0F6]/30 rounded-3xl p-6 sm:p-8 text-[#1899D6] dark:text-[#38bdf8] shadow-sm">
+                              <div className="flex items-center font-black uppercase tracking-widest text-sm mb-4">
+                                <BookOpen className="w-6 h-6 mr-3" strokeWidth={3} />
+                                {lang === 'vn' ? 'Giải Thích' : 'Explanation'}
+                              </div>
+                              <div className="font-bold text-lg sm:text-xl leading-relaxed text-slate-800 dark:text-slate-200">
+                                {parseText((lang === 'vn' && res.expVn) ? res.expVn : res.expEn)}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
-                    </React.Fragment>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
+
+            <div className="p-4 sm:p-6 border-t-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-center z-10 shrink-0 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
+              <button 
+                onClick={finishAndExit}
+                className="w-full sm:w-auto px-12 py-5 bg-[#1CB0F6] border-[#1899D6] text-white rounded-2xl font-black uppercase tracking-widest text-lg sm:text-xl hover:bg-[#159BD9] transition-all border-b-[6px] active:border-b-0 active:translate-y-[6px] shadow-sm flex items-center justify-center"
+              >
+                {lang === 'vn' ? 'Hoàn Thành' : 'Finish & Continue'} <ArrowRight className="w-7 h-7 ml-3" strokeWidth={3} />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {testPhase === 'testing' && (
-        <div className="fixed bottom-0 left-0 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 p-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-2">
-            <button 
-              onClick={handlePrevTest} 
-              disabled={currentQIndex === 0}
-              className="px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition-all disabled:opacity-30"
-            >
-              Previous
-            </button>
-            <button 
-              onClick={handleNextTest}
-              disabled={!isCurrentAnswered}
-              className="px-10 py-4 rounded-xl font-black text-white text-lg uppercase tracking-widest transition-all active:translate-y-[4px] border-b-[4px] active:border-b-0 shadow-md bg-[#1CB0F6] border-[#1899D6] hover:bg-[#159bd9] disabled:opacity-50 disabled:bg-slate-300 disabled:border-slate-400 disabled:text-slate-500"
-            >
-              {currentQIndex === totalQuestions - 1 ? 'Submit Test' : 'Next Question'}
-            </button>
+      {activeGlossaryTerm && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setActiveGlossaryTerm(null)}>
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border-2 border-slate-200 dark:border-slate-700 p-6 sm:p-8 animate-in zoom-in-95 slide-in-from-bottom-8 sm:slide-in-from-bottom-0" onClick={e => e.stopPropagation()}>
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 capitalize">{activeGlossaryTerm.word}</h3>
+              <button onClick={() => setActiveGlossaryTerm(null)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-slate-700">
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+            <p className="text-lg font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+              {lang === 'vn' && activeGlossaryTerm.vnDef ? activeGlossaryTerm.vnDef : activeGlossaryTerm.def}
+            </p>
           </div>
         </div>
       )}
-
-      {testPhase === 'reviewing' && (
-        <Feedback 
-          isCorrect={isCurrentlyCorrect}
-          expEn={currentQuestion.expEn}
-          expVn={currentQuestion.expVn}
-          onPrev={handlePrevReview}
-          onNext={handleNextReview}
-          isFirst={currentQIndex === 0}
-          isLast={currentQIndex === totalQuestions - 1}
-        />
-      )}
-
     </div>
   );
 }
@@ -1583,7 +1943,8 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const handleComplete = () => {
     stopAudio();
     if (document.fullscreenElement) document.exitFullscreen();
-    if (typeof onComplete === 'function') onComplete();
+    // FIX: Force the payload to exactly 10. Dashboard phase calculations rely on this returning >= 10.
+    if (typeof onComplete === 'function') onComplete(10);
   };
 
   const handleNext = () => {
@@ -1648,8 +2009,6 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const hasExample = !!slideExample;
   const hasDiagram = !!currentSlide.widget || !!currentSlide.image || !!currentSlide.inlineSvg;
   
-  // ADAPTIVE LAYOUT LOGIC
-  // If there is an Example but NO Diagram, we render the Example in a beautiful Right-Hand Panel
   const showExampleOnRight = hasExample && !hasDiagram;
   const rightPanelExists = hasDiagram || showExampleOnRight;
 
@@ -1660,26 +2019,51 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const toggleAudio = (audioUrl) => {
     if (!audioUrl) return;
     try {
+      // 1. Force the base to be an absolute path (e.g., "Dashboard/" becomes "/Dashboard/")
+      let base = import.meta.env.BASE_URL || '/';
+      if (!base.startsWith('/')) base = `/${base}`;
+      if (!base.endsWith('/')) base = `${base}/`;
+
+      // 2. Prevent "double-dipping" if the audioUrl somehow already includes the base
+      let path = audioUrl;
+      
+      // Check if path already starts with /Dashboard/ and strip it back to /
+      if (base !== '/' && path.startsWith(base)) {
+        path = path.replace(base, '/');
+      } else if (base !== '/' && path.startsWith(base.slice(0, -1))) {
+        // Catch the edge case where it starts with /Dashboard (no trailing slash)
+        path = path.replace(base.slice(0, -1), '/');
+      }
+
+      // 3. Construct a guaranteed absolute URL
+      const cleanUrl = path.startsWith('/') 
+        ? `${base}${path.slice(1)}`
+        : `${base}${path}`;
+
       if (isPlayingAudio && audioRef.current) {
         audioRef.current.pause();
         setIsPlayingAudio(false);
       } else {
-        if (!audioRef.current || activeAudioUrl.current !== audioUrl) {
-          if (audioRef.current) audioRef.current.pause();
-          audioRef.current = new Audio(audioUrl);
-          activeAudioUrl.current = audioUrl;
+        if (!audioRef.current || activeAudioUrl.current !== cleanUrl) {
+          if (audioRef.current) {
+             audioRef.current.pause();
+             audioRef.current.src = ""; // Hard unload of the old track
+          }
+          audioRef.current = new Audio(cleanUrl);
+          activeAudioUrl.current = cleanUrl;
           audioRef.current.onended = () => setIsPlayingAudio(false);
+          audioRef.current.onerror = (e) => console.error("Audio failed to load from:", cleanUrl, e);
         }
         const playPromise = audioRef.current.play();
         if (playPromise !== undefined) {
           playPromise.then(() => setIsPlayingAudio(true)).catch(error => {
-            console.warn("Audio playback prevented by browser:", error);
+            console.warn("Audio playback prevented by browser autoplay policies.", error);
             setIsPlayingAudio(false);
           });
         }
       }
     } catch (e) {
-      console.warn("Audio interaction failed:", e);
+      console.warn("Audio interaction failed completely:", e);
       setIsPlayingAudio(false);
     }
   };
@@ -1933,7 +2317,6 @@ export default function Notes({ slides, onComplete, onQuit }) {
                         </div>
                       ) : showExampleOnRight ? (
                         
-                        /* ADAPTIVE RHS EXAMPLE PANEL (No messy scrolling!) */
                         <div className={`w-full h-full bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-200 dark:border-slate-700 rounded-2xl lg:rounded-[2rem] relative shadow-inner flex flex-col overflow-hidden`}>
                           <div className={`w-full ${themeColor} text-white font-black uppercase tracking-widest flex items-center shadow-md ${isDisplayMode ? 'text-[clamp(0.9rem,1.3vw,1.3rem)] px-8 py-5' : 'text-xs px-6 py-4'}`}>
                             <Target className="w-5 h-5 mr-3 opacity-80" />
@@ -1959,6 +2342,14 @@ export default function Notes({ slides, onComplete, onQuit }) {
               </div>
               <h1 className={`font-black tracking-tight mb-6 drop-shadow-md leading-tight ${isDisplayMode ? 'text-[clamp(3rem,6vw,7rem)]' : 'text-4xl lg:text-6xl'}`}>{slideTitle || "Complete"}</h1>
               <p className={`font-bold opacity-90 drop-shadow-sm max-w-4xl mx-auto ${isDisplayMode ? 'text-[clamp(1.5rem,3vw,3rem)]' : 'text-xl lg:text-2xl'}`}>{slideSubtitle}</p>
+              
+              {/* FIX: Audio button universally applied to the summary screen */}
+              {!isDisplayMode && currentSlide.audio && (
+                 <button onClick={() => toggleAudio(currentSlide.audio)} className="mt-12 mx-auto flex items-center bg-white text-slate-800 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md border-b-[4px] border-slate-200 active:border-b-0 active:translate-y-[4px] px-6 py-3 text-sm">
+                   {isPlayingAudio ? <PauseCircle className="w-6 h-6 mr-3 text-slate-800" /> : <PlayCircle className="w-6 h-6 mr-3 text-slate-800" />}
+                   {isPlayingAudio ? "Stop Audio" : "Listen"}
+                 </button>
+              )}
             </div>
           )}
         </div>
@@ -2096,53 +2487,6 @@ export default function Notes({ slides, onComplete, onQuit }) {
         </div>
       )}
     </div>
-  );
-}
-</file>
-
-<file path="src/App.jsx">
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Home from './views/Home';
-import YearDashboard from './views/YearDashboard';
-
-// NEW IMPORTS
-import TeacherRoute from './components/TeacherRoute';
-import TeacherDashboard from './views/TeacherDashboard'; 
-
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* 1. The Gatekeeper */}
-        <Route path="/login" element={<Login />} />
-        
-        {/* 2. The Main Menu */}
-        <Route path="/home" element={<Home />} />
-        
-        {/* 3. The Curricular Tracks */}
-        <Route path="/GED_MATH" element={<YearDashboard track="GED_MATH" />} />
-        <Route path="/GED_ENG" element={<YearDashboard track="GED_ENG" />} />
-        <Route path="/Y8" element={<YearDashboard track="Y8" />} />
-        <Route path="/Y9" element={<YearDashboard track="Y9" />} />
-        <Route path="/ESL" element={<YearDashboard track="ESL" />} />
-        <Route path="/ADD_MATH" element={<YearDashboard track="ADD_MATH" />} />
-        
-        {/* NEW: Protected Teacher Route */}
-        <Route 
-          path="/teacher-dashboard" 
-          element={
-            <TeacherRoute>
-              <TeacherDashboard />
-            </TeacherRoute>
-          } 
-        />
-
-        {/* Default Fallback: Force everyone to login first */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </Router>
   );
 }
 </file>
