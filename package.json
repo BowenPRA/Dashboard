@@ -11,7 +11,8 @@
     "validate": "vite build --config vite.validate.config.js && node node_modules/.validate/validate.mjs",
     "predeploy": "npm run validate && npm run build",
     "deploy": "gh-pages -d dist -a",
-    "sync-audio": "python generate_all_audio.py"
+    "sync-audio": "python generate_all_audio.py",
+    "audit:svg": "node scripts/svg-audit.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",

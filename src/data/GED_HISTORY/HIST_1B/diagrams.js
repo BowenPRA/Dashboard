@@ -1,7 +1,7 @@
 export const DIAGRAMS = {
   NOTES_ARTICLES_WEAKNESS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
-    <rect x="150" y="18" width="220" height="46" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="4"/>
-    <text x="260" y="48" font-family="sans-serif" font-weight="900" font-size="19" fill="#991b1b" text-anchor="middle">Articles of Confederation</text>
+    <rect x="105" y="18" width="310" height="46" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="4"/>
+    <text x="260" y="48" font-family="sans-serif" font-weight="900" font-size="18" fill="#991b1b" text-anchor="middle">Articles of Confederation</text>
 
     <rect x="20" y="100" width="150" height="72" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
     <text x="95" y="126" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a" text-anchor="middle">No power to tax</text>
@@ -90,7 +90,7 @@ export const DIAGRAMS = {
     <text x="250" y="278" font-family="sans-serif" font-weight="bold" font-size="11" fill="#0f172a" text-anchor="middle">can rule actions unconstitutional</text>
   </svg>`,
 
-  NOTES_FEDERALISM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
+  NOTES_FEDERALISM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 262" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
     <ellipse cx="165" cy="130" rx="130" ry="92" fill="#dbeafe" stroke="#3b82f6" stroke-width="4" opacity="0.85"/>
     <ellipse cx="335" cy="130" rx="130" ry="92" fill="#dcfce7" stroke="#16a34a" stroke-width="4" opacity="0.7"/>
 
@@ -112,7 +112,8 @@ export const DIAGRAMS = {
     <text x="250" y="152" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">make courts</text>
     <text x="250" y="172" font-family="sans-serif" font-size="11" fill="#334155" text-anchor="middle">borrow money</text>
 
-    <text x="250" y="240" font-family="sans-serif" font-weight="bold" font-size="14" fill="#475569" text-anchor="middle">Federalism: power is shared between national and state governments.</text>
+    <text x="250" y="234" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">Federalism: power is shared between</text>
+    <text x="250" y="250" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">national and state governments.</text>
   </svg>`,
 
   NOTES_BILL_TO_LAW: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 200" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
@@ -149,8 +150,8 @@ export const DIAGRAMS = {
 
   DIAGRAM_BRANCH_IDENTIFY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 220" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
     <rect x="30" y="30" width="440" height="52" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
-    <text x="250" y="52" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a" text-anchor="middle">Congress passes a bill raising the federal minimum wage.</text>
-    <text x="250" y="72" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a" text-anchor="middle">The President refuses to sign it.</text>
+    <text x="250" y="52" font-family="sans-serif" font-weight="bold" font-size="13" fill="#0f172a" text-anchor="middle">Congress passes a bill raising the federal minimum wage.</text>
+    <text x="250" y="72" font-family="sans-serif" font-weight="bold" font-size="13" fill="#0f172a" text-anchor="middle">The President refuses to sign it.</text>
 
     <circle cx="140" cy="140" r="42" fill="#eff6ff" stroke="#3b82f6" stroke-width="4"/>
     <text x="140" y="138" font-family="sans-serif" font-weight="900" font-size="12" fill="#1e3a8a" text-anchor="middle">LEGISLATIVE</text>

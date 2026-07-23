@@ -93,7 +93,7 @@ export const DIAGRAMS = {
       </svg>`,
 
   // --- LECTURE NOTES SLIDES ---
-  NOTES_INCIDENT_RAY_NORMAL: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+  NOTES_INCIDENT_RAY_NORMAL: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-15 0 425 250" class="w-full h-full drop-shadow-md">
       <line x1="100" y1="180" x2="300" y2="180" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
       <path d="M 110 180 L 95 195 M 140 180 L 125 195 M 170 180 L 155 195 M 200 180 L 185 195 M 230 180 L 215 195 M 260 180 L 245 195 M 290 180 L 275 195" stroke="#94a3b8" stroke-width="2"/>
       
@@ -107,7 +107,7 @@ export const DIAGRAMS = {
       <rect x="200" y="165" width="15" height="15" fill="none" stroke="#64748b" stroke-width="2"/>
     </svg>`,
 
-  NOTES_LAW_OF_REFLECTION: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+  NOTES_LAW_OF_REFLECTION: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 425 250" class="w-full h-full drop-shadow-md">
       <line x1="80" y1="180" x2="320" y2="180" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
       <path d="M 90 180 L 75 195 M 130 180 L 115 195 M 170 180 L 155 195 M 210 180 L 195 195 M 250 180 L 235 195 M 290 180 L 275 195" stroke="#94a3b8" stroke-width="2"/>
       
@@ -202,7 +202,7 @@ export const DIAGRAMS = {
       <text x="200" y="80" font-family="sans-serif" font-weight="bold" font-size="18" fill="#64748b" text-anchor="middle">Pure White Light</text>
     </svg>`,
 
-  NOTES_DISPERSION_PRISM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 250" class="w-full h-full drop-shadow-md">
+  NOTES_DISPERSION_PRISM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 250" class="w-full h-full drop-shadow-md">
       <polygon points="200,40 120,200 280,200" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4" stroke-linejoin="round"/>
       
       <line x1="20" y1="140" x2="160" y2="120" stroke="#475569" stroke-width="6"/>

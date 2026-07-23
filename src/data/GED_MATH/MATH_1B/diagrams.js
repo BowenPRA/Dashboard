@@ -22,8 +22,8 @@ export const DIAGRAMS = {
         <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
       </marker>
     </defs>
-    <rect x="20" y="90" width="120" height="60" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
-    <text x="80" y="128" font-family="sans-serif" font-weight="900" font-size="22" fill="#0f172a" text-anchor="middle">2x + 3 = 11</text>
+    <rect x="14" y="90" width="136" height="60" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+    <text x="82" y="127" font-family="sans-serif" font-weight="900" font-size="18" fill="#0f172a" text-anchor="middle">2x + 3 = 11</text>
 
     <line x1="145" y1="120" x2="195" y2="120" stroke="#64748b" stroke-width="3" marker-end="url(#mb1arrow)"/>
     <text x="170" y="105" font-family="sans-serif" font-weight="bold" font-size="13" fill="#dc2626" text-anchor="middle">− 3</text>
@@ -86,13 +86,13 @@ export const DIAGRAMS = {
     <text x="378" y="112" font-family="sans-serif" font-weight="bold" font-size="15" fill="#334155" text-anchor="middle">2</text>
     <text x="390" y="138" font-family="sans-serif" font-size="13" fill="#64748b" text-anchor="middle">2 IS included</text>
 
-    <text x="260" y="190" font-family="sans-serif" font-weight="bold" font-size="15" fill="#0f172a" text-anchor="middle">A filled circle means the boundary number counts as a solution.</text>
+    <text x="260" y="190" font-family="sans-serif" font-weight="bold" font-size="13" fill="#0f172a" text-anchor="middle">A filled circle means the boundary number counts as a solution.</text>
     <text x="260" y="214" font-family="sans-serif" font-size="14" fill="#64748b" text-anchor="middle">An empty circle means it does not.</text>
   </svg>`,
 
   NOTES_FLIP_RULE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
     <rect x="20" y="25" width="460" height="52" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="3"/>
-    <text x="250" y="58" font-family="sans-serif" font-weight="900" font-size="19" fill="#991b1b" text-anchor="middle">Multiply or divide by a NEGATIVE → flip the sign</text>
+    <text x="250" y="58" font-family="sans-serif" font-weight="900" font-size="16" fill="#991b1b" text-anchor="middle">Multiply or divide by a NEGATIVE → flip the sign</text>
 
     <text x="130" y="115" font-family="sans-serif" font-weight="900" font-size="22" fill="#0f172a" text-anchor="middle">−2x &lt; 8</text>
     <line x1="215" y1="108" x2="275" y2="108" stroke="#64748b" stroke-width="3"/>

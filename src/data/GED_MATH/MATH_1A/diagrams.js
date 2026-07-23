@@ -15,7 +15,7 @@ export const DIAGRAMS = {
     <circle cx="240" cy="80" r="6" fill="#ef4444" />
   </svg>`,
 
-  ASSESSMENT_PERIMETER_ALG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" class="w-full h-full drop-shadow-md">
+  ASSESSMENT_PERIMETER_ALG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 250" class="w-full h-full drop-shadow-md">
     <rect x="50" y="50" width="300" height="150" fill="#f8fafc" stroke="#3b82f6" stroke-width="4" stroke-dasharray="8 4"/>
     <text x="200" y="35" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">3x + 2</text>
     <text x="375" y="130" font-family="monospace" font-weight="bold" font-size="20" fill="#1e293b" text-anchor="middle">x - 1</text>
@@ -96,7 +96,7 @@ export const DIAGRAMS = {
     <path d="M 140 180 L 140 190 L 330 190 L 330 165" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrow)"/>
   </svg>`,
 
-  NOTES_DISTRIBUTIVE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" class="w-full h-full drop-shadow-md">
+  NOTES_DISTRIBUTIVE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 200" class="w-full h-full drop-shadow-md">
     <defs>
       <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7" />
