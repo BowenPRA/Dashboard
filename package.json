@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "validate": "vite build --config vite.validate.config.js && node node_modules/.validate/validate.mjs",
+    "predeploy": "npm run validate && npm run build",
     "deploy": "gh-pages -d dist -a",
     "sync-audio": "python generate_all_audio.py"
   },
