@@ -22,7 +22,6 @@ export const notes = [
     example: "Subject (does it): She works here.\nObject (receives it): Call her.\nPossessive (owns it): her book.",
     exampleVn: "Chủ ngữ (thực hiện): Cô ấy làm việc ở đây.\nTân ngữ (nhận hành động): Gọi cô ấy.\nSở hữu (sở hữu): sách của cô ấy.",
     inlineSvg: DIAGRAMS.PRONOUN_CHART,
-    audio: "/audio/GED_ENG/ENG_0A/slide_ENG_0A_1.mp3"
   },
   {
     type: "concept",
@@ -35,7 +34,6 @@ export const notes = [
     example: "The dog wagged its tail. (belongs to it)\nIt's raining outside. (it is raining)",
     exampleVn: "Con chó vẫy đuôi của nó. (thuộc về nó)\nTrời đang mưa. (it is raining)",
     inlineSvg: DIAGRAMS.ITS_VS_ITS,
-    audio: "/audio/GED_ENG/ENG_0A/slide_ENG_0A_2.mp3"
   },
   {
     type: "concept",
@@ -48,7 +46,6 @@ export const notes = [
     example: "✗ The company requires their employees to wear uniforms.\n✓ The company requires its employees to wear uniforms.",
     exampleVn: "✗ Công ty yêu cầu their nhân viên mặc đồng phục.\n✓ Công ty yêu cầu its nhân viên mặc đồng phục.",
     inlineSvg: DIAGRAMS.SINGULAR_TRAP,
-    audio: "/audio/GED_ENG/ENG_0A/slide_ENG_0A_3.mp3"
   },
   {
     type: "concept",
@@ -61,7 +58,6 @@ export const notes = [
     example: "✗ Sarah handed the report to Jason, but she forgot to sign it.\n✓ Sarah handed the report to Jason, but Sarah forgot to sign it.",
     exampleVn: "✗ Sarah đưa báo cáo cho Jason, nhưng cô ấy quên ký.\n✓ Sarah đưa báo cáo cho Jason, nhưng Sarah quên ký.",
     inlineSvg: DIAGRAMS.UNCLEAR_PRONOUN,
-    audio: "/audio/GED_ENG/ENG_0A/slide_ENG_0A_4.mp3"
   },
   {
     type: "summary",

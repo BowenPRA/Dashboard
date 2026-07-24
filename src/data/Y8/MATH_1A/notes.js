@@ -10,7 +10,6 @@ export const notes = [
     subtitleVn: "Mục tiêu: Nắm vững các tính chất của các cặp góc, đường cát tuyến và đường thẳng song song.",
     color: "bg-[#8b5cf6]", 
     borderColor: "border-[#7c3aed]",
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_1.mp3"
   },
   {
     type: "concept",
@@ -23,7 +22,6 @@ export const notes = [
     example: "An angle measuring 45° is acute, while an angle measuring 120° is obtuse.",
     exampleVn: "Góc có số đo 45° là góc nhọn, trong khi góc có số đo 120° là góc tù.",
     inlineSvg: DIAGRAMS.NOTES_ACUTE_OBTUSE,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_2.mp3"
   },
   {
     type: "concept",
@@ -36,7 +34,6 @@ export const notes = [
     example: "If Angle A is 60° and Angle B is 120°, they are supplementary because 60 + 120 = 180.",
     exampleVn: "Nếu Góc A là 60° và Góc B là 120°, chúng là hai góc bù nhau vì 60 + 120 = 180.",
     inlineSvg: DIAGRAMS.NOTES_COMPLEMENTARY_SUPPLEMENTARY,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_3.mp3"
   },
   {
     type: "concept",
@@ -49,7 +46,6 @@ export const notes = [
     example: "If the top angle in an intersection is 105°, the bottom angle directly across from it is also exactly 105°.",
     exampleVn: "Nếu góc trên cùng tại một giao điểm là 105°, thì góc dưới cùng đối diện trực tiếp với nó cũng chính xác là 105°.",
     inlineSvg: DIAGRAMS.NOTES_VERTICALLY_OPPOSITE,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_4.mp3"
   },
   {
     type: "concept",
@@ -62,7 +58,6 @@ export const notes = [
     example: "Think of a set of train tracks as the parallel lines, and a straight road crossing over both tracks as the transversal.",
     exampleVn: "Hãy tưởng tượng một bộ đường ray xe lửa là các đường thẳng song song, và một con đường thẳng chạy vắt ngang qua cả hai đường ray là đường cát tuyến.",
     inlineSvg: DIAGRAMS.NOTES_PARALLEL_TRANSVERSAL,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_5.mp3"
   },
   {
     type: "concept",
@@ -75,7 +70,6 @@ export const notes = [
     example: "If you trace a 'Z' along the lines and find the inner top angle is 50°, the opposite inner angle at the bottom of the 'Z' is also 50°.",
     exampleVn: "Nếu bạn vẽ một chữ 'Z' dọc theo các đường thẳng và thấy góc trong phía trên là 50°, thì góc trong đối diện ở dưới cùng của chữ 'Z' cũng là 50°.",
     inlineSvg: DIAGRAMS.NOTES_ALTERNATE_ANGLES,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_6.mp3"
   },
   {
     type: "concept",
@@ -88,7 +82,6 @@ export const notes = [
     example: "The top-right angle of the upper intersection is corresponding and exactly equal to the top-right angle of the lower intersection.",
     exampleVn: "Góc trên cùng bên phải của giao điểm trên là đồng vị và hoàn toàn bằng với góc trên cùng bên phải của giao điểm dưới.",
     inlineSvg: DIAGRAMS.NOTES_CORRESPONDING_ANGLES,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_7.mp3"
   },
   {
     type: "concept",
@@ -101,7 +94,6 @@ export const notes = [
     example: "If the top inside angle is 110°, the bottom inside angle right below it must be 70° (because 110 + 70 = 180).",
     exampleVn: "Nếu góc bên trong phía trên là 110°, góc bên trong phía dưới ngay bên dưới nó phải là 70° (vì 110 + 70 = 180).",
     inlineSvg: DIAGRAMS.NOTES_COINTERIOR_ANGLES,
-    audio: "/audio/Y8/MATH_1A/slide_MATH_1A_8.mp3"
   },
   {
     type: "summary",

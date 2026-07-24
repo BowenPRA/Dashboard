@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Mục tiêu: Hiểu về các lớp của Trái đất, dòng đối lưu và cách các mảng kiến tạo di chuyển.",
     color: "bg-[#0ea5e9]",
     borderColor: "border-[#0284c7]",
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_1.mp3"
   },
   {
     type: "concept",
@@ -25,7 +24,6 @@ export const notes = [
     exampleVn: "Nếu Trái đất là một quả táo, thì lớp vỏ sẽ chỉ dày bằng vỏ quả táo.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_EARTH_LAYERS,
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_2.mp3"
   },
   {
     type: "concept",
@@ -41,7 +39,6 @@ export const notes = [
     exampleVn: "Nó hoạt động giống hệt như đun sôi một nồi súp đặc. Súp nóng nổi lên trên, nguội đi và chìm xuống trong một chu kỳ liên tục.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_MANTLE_CONVECTION,
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_3.mp3"
   },
   {
     type: "concept",
@@ -56,7 +53,6 @@ export const notes = [
     example: "Imagine thick slabs of ice floating and bumping into each other on the surface of a slowly moving river.",
     exampleVn: "Hãy tưởng tượng những tảng băng dày trôi nổi và va chạm vào nhau trên bề mặt của một dòng sông đang chảy chậm.",
     drawThis: false,
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_4.mp3"
   },
   {
     type: "concept",
@@ -72,7 +68,6 @@ export const notes = [
     exampleVn: "Sống núi giữa Đại Tây Dương là một dãy núi khổng lồ dưới nước được tạo ra bởi hai mảng đang từ từ kéo ra xa nhau.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_DIVERGENT_BOUNDARY,
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_5.mp3"
   },
   {
     type: "concept",
@@ -88,7 +83,6 @@ export const notes = [
     exampleVn: "Nếu bạn nhìn vào bản đồ, đường bờ biển của Nam Mỹ khớp gần như hoàn hảo với đường bờ biển của Châu Phi, giống hệt như các mảnh ghép.",
     drawThis: false,
     inlineSvg: DIAGRAMS.NOTES_CONTINENTAL_DRIFT,
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_6.mp3"
   },
   {
     type: "concept",
@@ -104,7 +98,6 @@ export const notes = [
     exampleVn: "Hóa thạch của một loài bò sát nước ngọt tên là Mesosaurus được tìm thấy ở cả Brazil và Nam Phi. Nó không bao giờ có thể bơi qua đại dương mặn chát!",
     drawThis: false,
     inlineSvg: DIAGRAMS.ASSESSMENT_FOSSIL_EVIDENCE,
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_7.mp3"
   },
   {
     type: "summary",
@@ -114,6 +107,5 @@ export const notes = [
     subtitleVn: "Đạt được mục tiêu: Bây giờ bạn đã hiểu cấu trúc bên trong của Trái đất và những kiến thức cơ bản về kiến tạo mảng.",
     color: "bg-[#10b981]",
     borderColor: "border-[#059669]",
-    audio: "/audio/Y9/SCIENCE_2A/slide_SCIENCE_2A_8.mp3"
   }
 ];

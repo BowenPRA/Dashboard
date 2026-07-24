@@ -236,18 +236,18 @@ for (const trackId of TRACK_IDS) {
       if (missing.length) warn(`${label}: ${missing.length} audio file(s) not generated yet, e.g. ${missing[0]}`);
     }
 
-    // -- slide narration paths are hardcoded in notes.js, so a folder rename or a
-    //    naming-convention drift silently 404s every slide. Check them explicitly.
-    const notesPath = path.join(dir, 'notes.js');
-    if (fs.existsSync(notesPath)) {
-      const src = fs.readFileSync(notesPath, 'utf8');
-      const dead = [];
-      for (const m of src.matchAll(/["'](\/audio\/[^"']+)["']/g)) {
-        const rel = m[1].replace(/^\/+/, '');
-        if (!fs.existsSync(path.join(ROOT, 'public', rel))) dead.push(m[1]);
+    // -- slide narration is derived from slide position (see slideAudioUrl), so
+    //    every slide needs a matching slide_<unit>_<n>.mp3. A missing file means
+    //    that slide plays silently. Checking by position also catches an off-by-one
+    //    between the deck and the generated files.
+    if ((unit.notes || []).length && fs.existsSync(adir)) {
+      const missingSlides = [];
+      for (let i = 1; i <= unit.notes.length; i++) {
+        const file = `slide_${m.id}_${i}.mp3`;
+        if (!fs.existsSync(path.join(adir, file))) missingSlides.push(file);
       }
-      if (dead.length) {
-        err(`${label}: ${dead.length} slide audio path(s) do not exist, e.g. ${dead[0]}`);
+      if (missingSlides.length) {
+        err(`${label}: ${missingSlides.length} slide audio file(s) missing, e.g. ${missingSlides[0]} — run npm run sync-audio`);
       }
     }
   }

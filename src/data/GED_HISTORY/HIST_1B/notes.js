@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Cách một quốc gia sợ vua chúa xây dựng một chính quyền được thiết kế để tự giới hạn mình.",
     color: "bg-[#e11d48]",
     borderColor: "border-[#be123c]",
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_1.mp3"
   },
   {
     type: "concept",
@@ -27,7 +26,6 @@ export const notes = [
     spokenExample: "For example. The Declaration lists the King's abuses as evidence. It was written as an argument, not just an announcement. Here is what he did, therefore we are justified in leaving.",
     inlineSvg: DIAGRAMS.NOTES_DECLARATION_LOGIC,
     drawThis: false,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_2.mp3"
   },
   {
     type: "concept",
@@ -45,7 +43,6 @@ export const notes = [
     exampleVn: "Năm 1786, những nông dân mắc nợ ở Massachusetts đã cầm vũ khí nổi dậy.\n\nChính quyền quốc gia không có quân đội để lập lại trật tự. Thất bại đó đã thuyết phục các nhà lãnh đạo rằng Các Điều khoản không thể sửa chữa được.",
     spokenExample: "For example. In seventeen eighty six, indebted farmers in Massachusetts took up arms. The national government had no army to restore order. That failure convinced leaders the Articles could not be repaired.",
     drawThis: true,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_3.mp3"
   },
   {
     type: "concept",
@@ -58,7 +55,6 @@ export const notes = [
     spoken: "In seventeen eighty seven the Framers wrote a new Constitution and split the government into three parts. Please write these down. The Legislative branch, which is Congress, makes the laws. The Executive branch, led by the President, carries out the laws. The Judicial branch, the courts, interprets the laws. This division is called the separation of powers. No single branch holds all the power.",
     inlineSvg: DIAGRAMS.NOTES_THREE_BRANCHES,
     drawThis: true,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_4.mp3"
   },
   {
     type: "concept",
@@ -71,7 +67,6 @@ export const notes = [
     spoken: "Splitting the work was not enough. Any branch might still grow too strong, so each was given tools to restrain the others. Please write this down. Checks and balances means each branch can limit the other two, so no branch becomes too powerful. Congress makes a law, and the President can reject it. The President appoints judges, and the Senate must confirm them. The Courts can declare any law unconstitutional.",
     inlineSvg: DIAGRAMS.NOTES_CHECKS_BALANCES,
     drawThis: true,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_5.mp3"
   },
   {
     type: "concept",
@@ -89,7 +84,6 @@ export const notes = [
     exampleVn: "Quốc hội thông qua dự luật → Tổng thống phủ quyết → Quốc hội bỏ phiếu lại.\n\nNếu hai phần ba cả hai viện vẫn đồng ý, dự luật trở thành luật **mà không cần** chữ ký của Tổng thống.",
     spokenExample: "For example. Congress passes a bill. The President vetoes it. Congress votes again. If two thirds of both houses still agree, the bill becomes law without the President's signature.",
     drawThis: true,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_6.mp3"
   },
   {
     type: "concept",
@@ -102,7 +96,6 @@ export const notes = [
     spoken: "Power is divided not only between branches, but between levels of government. Please write this down. Federalism is a system where power is shared between a national government and the states. Only the federal government can print money, declare war or sign treaties. Only states run public schools, issue drivers licences and organise elections. Both can tax, build roads and create courts.",
     inlineSvg: DIAGRAMS.NOTES_FEDERALISM,
     drawThis: true,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_7.mp3"
   },
   {
     type: "concept",
@@ -115,7 +108,6 @@ export const notes = [
     spoken: "Writing the Constitution was only half the battle. It had to be approved. Please write this down. To Ratify means to formally approve something so that it becomes official. Nine of the thirteen states had to ratify it before it could take effect. Many citizens resisted, fearing the strong new national government would threaten their liberties.",
     inlineSvg: DIAGRAMS.NOTES_RATIFY_NINE,
     drawThis: false,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_8.mp3"
   },
   {
     type: "concept",
@@ -133,7 +125,6 @@ export const notes = [
     spokenExample: "For example. Several states agreed to ratify only on the promise that a Bill of Rights would follow immediately. That promise was kept, and it is why the first ten amendments exist.",
     inlineSvg: DIAGRAMS.NOTES_BILL_OF_RIGHTS,
     drawThis: false,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_9.mp3"
   },
   {
     type: "concept",
@@ -146,7 +137,6 @@ export const notes = [
     spoken: "The Framers wanted the Constitution to be changeable, but not easily. Please write this down. Step one, propose. This needs two thirds of both houses of Congress. Step two, ratify. This needs three quarters of the states. In more than two hundred and thirty years, only twenty seven amendments have passed. That difficulty is the point. A temporary majority cannot rewrite the nation's basic rules.",
     inlineSvg: DIAGRAMS.DIAGRAM_AMENDMENT_PROCESS,
     drawThis: true,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_10.mp3"
   },
   {
     type: "concept",
@@ -158,7 +148,6 @@ export const notes = [
     contentVn: "Bốn sự nhầm lẫn sau làm mất nhiều điểm nhất ở chủ đề này:\n\n> **Hãy ghi chép lại:**\n> 1. **Tuyên ngôn** (1776) không phải là **Hiến pháp** (1787). Hai văn bản khác nhau, cách nhau mười một năm.\n> 2. **Lập pháp** làm ra, **Hành pháp** thi hành, **Tư pháp** giải thích. Đừng đảo lộn chúng.\n> 3. Phủ quyết không phải là quyết định cuối cùng — Quốc hội có thể bác bỏ bằng hai phần ba.\n> 4. **Phê chuẩn** nghĩa là chấp thuận; **tu chính** nghĩa là thay đổi.",
     spoken: "Four confusions cost the most marks on this topic. Please write these down. One. The Declaration of seventeen seventy six is not the Constitution of seventeen eighty seven. Different documents, eleven years apart. Two. Legislative makes, Executive carries out, Judicial interprets. Do not swap them. Three. A veto is not final. Congress can override with two thirds. Four. Ratify means approve, while amend means change.",
     drawThis: false,
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_11.mp3"
   },
   {
     type: "summary",
@@ -168,6 +157,5 @@ export const notes = [
     subtitleVn: "Đã Đạt Mục Tiêu: Bạn có thể giải thích ba nhánh quyền lực, kiểm soát và cân bằng, chủ nghĩa liên bang, và cách Hiến pháp được phê chuẩn và tu chính.",
     color: "bg-[#16a34a]",
     borderColor: "border-[#15803d]",
-    audio: "/audio/GED_HISTORY/HIST_1B/slide_HIST_1B_12.mp3"
   }
 ];

@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Mục tiêu: Hiểu về dòng điện, điện áp, điện trở và các ký hiệu phổ quát được sử dụng để thiết kế mạch nối tiếp và song song.",
     color: "bg-[#0ea5e9]", 
     borderColor: "border-[#0284c7]",
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_1.mp3"
   },
   {
     type: "concept",
@@ -41,7 +40,6 @@ export const notes = [
         </marker>
       </defs>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_2.mp3"
   },
   {
     type: "concept",
@@ -79,7 +77,6 @@ export const notes = [
       <path d="M 285 180 Q 300 210 315 180" fill="none" stroke="#1e293b" stroke-width="2"/>
       <line x1="285" y1="180" x2="315" y2="180" stroke="#1e293b" stroke-width="2"/>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_3.mp3"
   },
   {
     type: "concept",
@@ -114,7 +111,6 @@ export const notes = [
       <text x="200" y="225" font-family="sans-serif" font-weight="bold" font-size="14" fill="#3b82f6" text-anchor="middle">V</text>
       <text x="200" y="245" font-family="sans-serif" font-weight="bold" font-size="12" fill="#3b82f6" text-anchor="middle">Parallel</text>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_4.mp3"
   },
   {
     type: "concept",
@@ -139,7 +135,6 @@ export const notes = [
       <polygon points="330,115 322,115 328,122" fill="#1e293b"/>
       <text x="300" y="175" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">Adjustable Ω</text>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_5.mp3"
   },
   {
     type: "concept",
@@ -164,7 +159,6 @@ export const notes = [
       <text x="20" y="195" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ef4444">Current (Amps)</text>
       <text x="330" y="195" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ec4899">Resistance (Ω)</text>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_6.mp3"
   },
   {
     type: "concept",
@@ -192,7 +186,6 @@ export const notes = [
       <path d="M 245 180 L 265 200 M 265 180 L 245 200" stroke="#1e293b" stroke-width="2"/>
       <text x="200" y="135" font-family="sans-serif" font-weight="900" font-size="20" fill="#f43f5e" text-anchor="middle">Single Loop</text>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_7.mp3"
   },
   {
     type: "concept",
@@ -224,7 +217,6 @@ export const notes = [
       <circle cx="100" cy="125" r="4" fill="#1e293b"/>
       <circle cx="300" cy="125" r="4" fill="#1e293b"/>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_8.mp3"
   },
   {
     type: "concept",
@@ -268,7 +260,6 @@ export const notes = [
       <circle cx="320" cy="190" r="12" fill="white" stroke="#1e293b" stroke-width="2"/>
       <path d="M 312 182 L 328 198 M 328 182 L 312 198" stroke="#1e293b" stroke-width="2"/>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_9.mp3"
   },
   {
     type: "concept",
@@ -316,7 +307,6 @@ export const notes = [
       <text x="340" y="164" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ec4899" text-anchor="middle">12V</text>
       <path d="M 310 160 L 328 160" stroke="#ec4899" stroke-width="2" stroke-dasharray="2"/>
     </svg>`,
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_10.mp3"
   },
   {
     type: "summary",
@@ -326,6 +316,5 @@ export const notes = [
     subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể nhận diện các linh kiện điện tiêu chuẩn và hiểu các quy tắc của mạch nối tiếp và song song.",
     color: "bg-[#10b981]",
     borderColor: "border-[#059669]",
-    audio: "/audio/Y9/SCIENCE_1A/slide_SCIENCE_1A_11.mp3"
   }
 ];

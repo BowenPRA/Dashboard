@@ -23,3 +23,17 @@ export const audioUrl = (track, unitId, kind, word) =>
 /** URL for a reading-passage audio clip (1-indexed). */
 export const passageAudioUrl = (track, unitId, index) =>
   `${basePath}/audio/${track}/${unitId}/${encodeURIComponent(`passage_${unitId}_${index}.mp3`)}`;
+
+/**
+ * URL for a lesson slide's narration, keyed by the slide's 1-indexed position.
+ *
+ * This is the single source of truth for slide audio. generate_all_audio.py
+ * names every slide's file slide_<unitId>_<position>.mp3 (position counts ALL
+ * slides, intro first), so deriving the path from position here keeps the app
+ * and the generator in lockstep. Never hardcode slide audio in notes.js — a
+ * hand-typed number drifts out of sync the moment a slide is added or removed,
+ * which is exactly how the intro fell silent and every slide played the previous
+ * slide's narration.
+ */
+export const slideAudioUrl = (track, unitId, position) =>
+  `${basePath}/audio/${track}/${unitId}/slide_${unitId}_${position}.mp3`;

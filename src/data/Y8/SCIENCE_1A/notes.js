@@ -11,7 +11,6 @@ export const notes = [
     subtitleVn: "Mục tiêu: Hiểu về sự phản xạ, khúc xạ, tán sắc và sự cộng màu.",
     color: "bg-[#0ea5e9]", 
     borderColor: "border-[#0284c7]",
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_1.mp3"
   },
   {
     type: "concept",
@@ -27,7 +26,6 @@ export const notes = [
     exampleVn: "Chúng bản luôn đo các góc bắt đầu từ đường Pháp tuyến, không bao giờ đo từ chính mặt gương.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_INCIDENT_RAY_NORMAL,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_2.mp3"
   },
   {
     type: "concept",
@@ -44,7 +42,6 @@ export const notes = [
     drawThis: false,
     widget: ReflectionWidget,
     inlineSvg: DIAGRAMS.NOTES_LAW_OF_REFLECTION,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_3.mp3"
   },
   {
     type: "concept",
@@ -60,7 +57,6 @@ export const notes = [
     exampleVn: "Không khí là một môi trường 'loãng', nên ánh sáng lao qua nó một cách nhanh chóng. Thủy tinh là một môi trường 'đặc', hoạt động như lớp bùn dày làm chậm ánh sáng lại.",
     drawThis: false,
     inlineSvg: DIAGRAMS.NOTES_MEDIUMS_SPEED,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_4.mp3"
   },
   {
     type: "concept",
@@ -76,7 +72,6 @@ export const notes = [
     exampleVn: "Hãy tưởng tượng một chiếc xe đẩy siêu thị lăn từ vỉa hè nhẵn nhụi vào lớp bùn dày. Các bánh xe chạm bùn, chạy chậm lại và chuyển hướng vào trong.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_REFRACTION_ENTER,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_5.mp3"
   },
   {
     type: "concept",
@@ -92,7 +87,6 @@ export const notes = [
     exampleVn: "Tia sáng thoát ra khỏi thủy tinh cuối cùng sẽ di chuyển theo cùng một hướng song song chính xác như tia sáng ban đầu đi vào nó.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_REFRACTION_EXIT,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_6.mp3"
   },
   {
     type: "concept",
@@ -108,7 +102,6 @@ export const notes = [
     exampleVn: "Để chứng minh điều này, các nhà khoa học sử dụng một khối thủy tinh hình tam giác đặc gọi là lăng kính để khám phá những màu sắc ẩn giấu.",
     drawThis: false,
     inlineSvg: DIAGRAMS.NOTES_WHITE_LIGHT,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_7.mp3"
   },
   {
     type: "concept",
@@ -124,7 +117,6 @@ export const notes = [
     exampleVn: "Bởi vì mỗi màu uốn cong ở một góc hoàn toàn duy nhất, chúng xòe ra và tách rời nhau hoàn toàn.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_DISPERSION_PRISM,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_8.mp3"
   },
   {
     type: "concept",
@@ -140,7 +132,6 @@ export const notes = [
     exampleVn: "Cầu vồng tự nhiên là ví dụ hoàn hảo về quang phổ nhìn thấy được tán sắc bởi các giọt nước trên bầu trời.",
     drawThis: false,
     inlineSvg: DIAGRAMS.NOTES_VISIBLE_SPECTRUM,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_9.mp3"
   },
   {
     type: "concept",
@@ -156,7 +147,6 @@ export const notes = [
     exampleVn: "Hãy nhìn kỹ vào màn hình TV hoặc điện thoại. Nó chỉ sử dụng các điểm ảnh phát sáng siêu nhỏ màu đỏ, lục và lam để đánh lừa mắt bạn nhìn thấy mọi màu sắc.",
     drawThis: false,
     inlineSvg: DIAGRAMS.NOTES_PRIMARY_COLOURS,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_10.mp3"
   },
   {
     type: "concept",
@@ -172,7 +162,6 @@ export const notes = [
     exampleVn: "Đỏ và Lục tạo ra Vàng. Lục và Lam tạo ra Xanh lơ. Đỏ và Lam tạo ra Đỏ thắm.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_SECONDARY_VENN,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_11.mp3"
   },
   {
     // --- NEW RGB PIXELS WIDGET SLIDE ---
@@ -188,7 +177,6 @@ export const notes = [
     example: "Play with the RGB sliders below to adjust the brightness of the microscopic sub-pixels. Can you match the recipe cards to create new colours?",
     exampleVn: "Chơi với các thanh trượt RGB bên dưới để điều chỉnh độ sáng của các điểm ảnh phụ siêu nhỏ. Bạn có thể làm theo các thẻ công thức để tạo ra những màu mới không?",
     drawThis: false,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_12.mp3",
 
     widget: RGBWidget, 
     // Uses widget dynamically in Notes.jsx
@@ -207,7 +195,6 @@ export const notes = [
     exampleVn: "Kính lọc đỏ hấp thụ ánh sáng lam và lục. Nó chỉ cho phép ánh sáng đỏ đi thẳng qua phía bên kia.",
     drawThis: true,
     inlineSvg: DIAGRAMS.NOTES_COLOUR_FILTER,
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_13.mp3"
   },
   {
     type: "concept",
@@ -226,6 +213,5 @@ export const notes = [
     subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể vẽ đường đi của các tia sáng, sự tán sắc và sự cộng màu.",
     color: "bg-[#10b981]",
     borderColor: "border-[#059669]",
-    audio: "/audio/Y8/SCIENCE_1A/slide_SCIENCE_1A_13.mp3"
   }
 ];

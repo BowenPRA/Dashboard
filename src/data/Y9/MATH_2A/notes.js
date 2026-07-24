@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Mục tiêu: Nắm vững các tính chất của hình lăng trụ, tính toán thể tích, diện tích bề mặt và phân tích các phần phân số của hình khối 3D.",
     color: "bg-[#8b5cf6]", 
     borderColor: "border-[#7c3aed]",
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_1.mp3"
   },
   {
     type: "concept",
@@ -50,7 +49,6 @@ export const notes = [
       <path d="M 60 210 L 120 175" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowVertex)"/>
       <text x="50" y="215" font-family="sans-serif" font-weight="600" font-size="14" fill="#2563eb" text-anchor="end">Vertex</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_2.mp3"
   },
   {
     type: "concept",
@@ -86,7 +84,6 @@ export const notes = [
       <path d="M 280 190 L 230 130" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowSlate)"/>
       <text x="290" y="200" font-family="sans-serif" font-weight="600" font-size="14" fill="#64748b">Lateral Face</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_3.mp3"
   },
   {
     type: "concept",
@@ -122,7 +119,6 @@ export const notes = [
         <text x="50" y="195" font-family="sans-serif" font-weight="600" font-size="13" fill="#64748b" text-anchor="middle">Hexagonal</text>
       </g>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_4.mp3"
   },
   {
     type: "concept",
@@ -149,7 +145,6 @@ export const notes = [
       
       <text x="210" y="230" font-family="sans-serif" font-weight="600" font-size="14" fill="#047857" text-anchor="middle">Uniform Cross-section</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_5.mp3"
   },
   {
     type: "concept",
@@ -179,7 +174,6 @@ export const notes = [
       <path d="M 190 200 L 290 150" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dimArrowStart)" marker-end="url(#dimArrowEnd)"/>
       <text x="255" y="195" font-family="sans-serif" font-weight="600" font-size="14" fill="#475569" text-anchor="middle">Length = 10 cm</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_6.mp3"
   },
   {
     type: "concept",
@@ -215,7 +209,6 @@ export const notes = [
 
       <text x="210" y="225" font-family="sans-serif" font-weight="700" font-size="15" fill="#4c1d95" text-anchor="middle">Sum of all 5 faces = Surface Area</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_7.mp3"
   },
   {
     type: "concept",
@@ -246,7 +239,6 @@ export const notes = [
       <text x="330" y="115" font-family="sans-serif" font-weight="600" font-size="14" fill="#db2777" text-anchor="middle">3 Rectangles</text>
       <text x="330" y="145" font-family="sans-serif" font-weight="600" font-size="14" fill="#4f46e5" text-anchor="middle">2 Triangles</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_8.mp3"
   },
   {
     type: "concept",
@@ -269,7 +261,6 @@ export const notes = [
       <text x="200" y="155" font-family="sans-serif" font-weight="700" font-size="18" fill="#0ea5e9" text-anchor="middle">Total Surface Area</text>
       <text x="200" y="175" font-family="sans-serif" font-weight="600" font-size="12" fill="#64748b" text-anchor="middle">(The Denominator)</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_9.mp3"
   },
   {
     type: "concept",
@@ -307,7 +298,6 @@ export const notes = [
       <line x1="355" y1="145" x2="375" y2="145" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
       <text x="365" y="165" font-family="sans-serif" font-weight="700" font-size="16" fill="#0f172a" text-anchor="middle">7</text>
     </svg>`,
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_10.mp3"
   },
   {
     type: "summary",
@@ -317,6 +307,5 @@ export const notes = [
     subtitleVn: "Đạt được mục tiêu: Bây giờ bạn có thể nhận diện hình lăng trụ, tính toán thể tích và phân tích các diện tích bề mặt phân số.",
     color: "bg-[#14b8a6]",
     borderColor: "border-[#0d9488]",
-    audio: "/audio/Y9/MATH_2A/slide_MATH_2A_11.mp3"
   }
 ];

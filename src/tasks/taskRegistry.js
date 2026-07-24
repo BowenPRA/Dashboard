@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine
 } from 'lucide-react';
-import { assetUrl, audioUrl } from '../utils/assetPaths';
+import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
 /**
  * The one place a task type is defined.
@@ -54,10 +54,13 @@ export const TASKS = [
     phase: 'concept',
     component: lazy(() => import('./Notes.jsx')),
     hasContent: (u) => notEmpty(u.notes),
-    buildPool: (u) =>
-      (u.notes || []).map((note) => ({
+    // Slide audio is DERIVED from position, not read from the note — see
+    // slideAudioUrl. This is the one place that mapping lives, so intro/summary
+    // narration is included and concept slides can never drift out of sync.
+    buildPool: (u, { track, unitId }) =>
+      (u.notes || []).map((note, i) => ({
         ...note,
-        ...(note.audio ? { audio: assetUrl(note.audio) } : null),
+        audio: slideAudioUrl(track, unitId, i + 1),
         ...(note.image ? { image: assetUrl(note.image) } : null),
       })),
     props: ({ pool, onComplete, onQuit }) => ({ slides: pool, onComplete: () => onComplete(10), onQuit }),

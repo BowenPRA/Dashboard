@@ -22,7 +22,6 @@ export const notes = [
     example: "He works late. / They work late.\nThe car costs a lot. / The cars cost a lot.",
     exampleVn: "Anh ấy làm việc muộn. / Họ làm việc muộn.\nChiếc xe có giá cao. / Những chiếc xe có giá cao.",
     inlineSvg: DIAGRAMS.THE_S_RULE,
-    audio: "/audio/GED_ENG/ENG_0B/slide_ENG_0B_1.mp3"
   },
   {
     type: "concept",
@@ -35,7 +34,6 @@ export const notes = [
     example: "The list of names is on the desk. (list is the subject)\nOne of the machines is broken. (one is the subject)",
     exampleVn: "Danh sách các tên ở trên bàn. (list là chủ ngữ)\nMột trong các máy bị hỏng. (one là chủ ngữ)",
     inlineSvg: DIAGRAMS.INTERRUPTING_PHRASE,
-    audio: "/audio/GED_ENG/ENG_0B/slide_ENG_0B_2.mp3"
   },
   {
     type: "concept",
@@ -48,7 +46,6 @@ export const notes = [
     example: "Everybody needs a ticket. (not need)\nAna and Minh are here. (and → plural)\nAna or her brothers are here. (or → match the closest)",
     exampleVn: "Mọi người cần một vé. (không phải need)\nAna và Minh đang ở đây. (and → số nhiều)\nAna hoặc các anh của cô ấy đang ở đây. (or → hòa hợp với từ gần nhất)",
     inlineSvg: DIAGRAMS.TRICKY_SUBJECTS,
-    audio: "/audio/GED_ENG/ENG_0B/slide_ENG_0B_3.mp3"
   },
   {
     type: "summary",

@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Giải tìm ẩn số, sau đó học cách mô tả tất cả các đáp án cùng một lúc.",
     color: "bg-[#3b82f6]",
     borderColor: "border-[#2563eb]",
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_1.mp3"
   },
   {
     type: "concept",
@@ -27,7 +26,6 @@ export const notes = [
     exampleVn: "Chiếc cân cho thấy $2x + 3$ ở bên trái và $11$ ở bên phải.\n\nCả hai đĩa cân nặng bằng nhau, vậy $2x + 3 = 11$. Nhiệm vụ của chúng ta là tìm xem $x$ nặng bao nhiêu.",
     spokenExample: "For example. The scale shows two x plus three on the left and eleven on the right. Both pans weigh the same, so two x plus three equals eleven. Our job is to find what x weighs.",
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_2.mp3"
   },
   {
     type: "concept",
@@ -45,7 +43,6 @@ export const notes = [
     spokenExample: "For example. In two x plus three equals eleven, undo the plus three first by subtracting three from both sides. That leaves two x equals eight. Now undo the times two by dividing both sides by two, giving x equals four.",
     inlineSvg: DIAGRAMS.NOTES_INVERSE_STEPS,
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_3.mp3"
   },
   {
     type: "concept",
@@ -63,7 +60,6 @@ export const notes = [
     spokenExample: "For example. The original equation is two x plus three equals eleven. Substitute four. Two times four plus three equals eight plus three, which equals eleven. The left side equals the right side, so x equals four is confirmed.",
     inlineSvg: DIAGRAMS.DIAGRAM_CHECK_SOLUTION,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_4.mp3"
   },
   {
     type: "concept",
@@ -76,7 +72,6 @@ export const notes = [
     spoken: "An equation has one answer. An inequality can have thousands. The statement x is greater than five is true for six, for five point one, and for nine hundred. All of those numbers are solutions. Please write this down. An Inequality is a statement showing two sides are not equal, using the less than, greater than, less than or equal to, or greater than or equal to signs. Because we cannot list every answer, we draw them instead.",
     inlineSvg: DIAGRAMS.NOTES_OPEN_CLOSED_CIRCLE,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_5.mp3"
   },
   {
     type: "concept",
@@ -94,7 +89,6 @@ export const notes = [
     exampleVn: "\"Một thang máy chứa **không quá** 8 người.\"\n\n*Không quá* báo hiệu $\\le$, vậy bất đẳng thức là $p \\le 8$. Đúng 8 người vẫn được phép.",
     spokenExample: "For example. A lift holds no more than eight people. The phrase no more than signals the less than or equal to sign, so the inequality is p is less than or equal to eight. Exactly eight people is still allowed.",
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_6.mp3"
   },
   {
     type: "concept",
@@ -107,7 +101,6 @@ export const notes = [
     spoken: "On a number line, the number at the edge of the shading is the boundary. How you draw that circle changes the meaning completely. Please write this down. An open circle, which is empty, means the boundary is not included. Use it for the less than and greater than signs. A closed circle, which is filled in, means the boundary is included. Use it for the at most and at least signs.",
     inlineSvg: DIAGRAMS.NOTES_OPEN_CLOSED_CIRCLE,
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_7.mp3"
   },
   {
     type: "concept",
@@ -125,7 +118,6 @@ export const notes = [
     exampleVn: "Giải $-2x < 8$. Chia cả hai vế cho $-2$ và đảo dấu: $x > -4$.\n\nThử $-3$: $-2(-3) = 6$, và $6 < 8$ là đúng. Và $-3 > -4$ cũng đúng, vậy dấu đã đảo chiều là dấu chính xác.",
     spokenExample: "For example. Solve negative two x is less than eight. Divide both sides by negative two and flip the sign to get x is greater than negative four. Test negative three. Negative two times negative three is six, and six is less than eight, which is true. And negative three is greater than negative four, which is also true. So the flipped sign is the correct one.",
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_8.mp3"
   },
   {
     type: "concept",
@@ -143,7 +135,6 @@ export const notes = [
     spokenExample: "For example. A fridge must stay between two degrees and eight degrees Celsius. That is written as two is less than or equal to t is less than or equal to eight. Both circles are filled in, because exactly two degrees and exactly eight degrees are still safe.",
     inlineSvg: DIAGRAMS.DIAGRAM_COMPOUND_RANGE,
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_9.mp3"
   },
   {
     type: "concept",
@@ -161,7 +152,6 @@ export const notes = [
     exampleVn: "Mai có $\\$60$. Vé xe buýt giá $\\$15$ và mỗi bữa trưa giá $\\$6$.\n\nGọi $L$ là số bữa trưa: $15 + 6L \\le 60$. Giải ra được $L \\le 7,5$.\n\nCô ấy không thể mua nửa bữa trưa, nên làm tròn **xuống**: nhiều nhất **7 bữa trưa**.",
     spokenExample: "For example. Mai has sixty dollars. A bus pass costs fifteen dollars and each lunch costs six dollars. Let L be the number of lunches. Fifteen plus six L is less than or equal to sixty. Solving gives L is less than or equal to seven point five. She cannot buy half a lunch, so round down. At most seven lunches.",
     drawThis: true,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_10.mp3"
   },
   {
     type: "concept",
@@ -173,7 +163,6 @@ export const notes = [
     contentVn: "Bốn lỗi sau làm mất nhiều điểm nhất ở chủ đề này:\n\n> **Hãy ghi chép lại:**\n> 1. Quên đảo dấu sau khi chia cho số âm.\n> 2. Dùng vòng tròn rỗng khi đề bài nói *nhiều nhất* hoặc *ít nhất*.\n> 3. Làm tròn **lên** khi giới hạn nói rằng bạn không được vượt quá.\n> 4. Chỉ thay đổi một vế của phương trình.\n\nMột lần kiểm tra mười giây sẽ phát hiện cả bốn lỗi.",
     spoken: "Four mistakes cost the most marks on this topic. Please write these down. One. Forgetting to flip the sign after dividing by a negative. Two. Using an open circle when the words say at most or at least. Three. Rounding up when the limit says you cannot exceed it. Four. Changing only one side of the equation. A ten second check catches all four.",
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_11.mp3"
   },
   {
     type: "summary",
@@ -183,6 +172,5 @@ export const notes = [
     subtitleVn: "Đã Đạt Mục Tiêu: Bạn có thể giải phương trình nhiều bước và bất đẳng thức, và biểu diễn mọi nghiệm trên trục số.",
     color: "bg-[#16a34a]",
     borderColor: "border-[#15803d]",
-    audio: "/audio/GED_MATH/MATH_1B/slide_MATH_1B_12.mp3"
   }
 ];

@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Mục tiêu: Tìm hiểu Phương pháp Khoa học và sử dụng nó để nghiên cứu thực vật, môi trường sống và thiên nhiên xung quanh trại của chúng ta.",
     color: "bg-[#0ea5e9]",
     borderColor: "border-[#0284c7]",
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_1.mp3"
   },
   {
     type: "concept",
@@ -38,7 +37,6 @@ export const notes = [
       <text x="200" y="130" font-family="sans-serif" font-weight="900" font-size="16" fill="#1e293b" text-anchor="middle">Scientific</text>
       <text x="200" y="148" font-family="sans-serif" font-weight="900" font-size="16" fill="#1e293b" text-anchor="middle">Method</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_2.mp3"
   },
   {
     type: "concept",
@@ -61,7 +59,6 @@ export const notes = [
       <text x="310" y="160" font-family="sans-serif" font-weight="bold" font-size="14" fill="#059669" text-anchor="middle">Hot or Cold?</text>
       <text x="200" y="220" font-family="sans-serif" font-weight="bold" font-size="14" fill="#64748b" text-anchor="middle">Ask one clear question.</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_3.mp3"
   },
   {
     type: "concept",
@@ -85,7 +82,6 @@ export const notes = [
       <text x="200" y="202" font-family="sans-serif" font-weight="bold" font-size="13" fill="#7c3aed" text-anchor="middle">If the plant gets more sun,</text>
       <text x="200" y="220" font-family="sans-serif" font-weight="bold" font-size="13" fill="#7c3aed" text-anchor="middle">then it will grow taller.</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_4.mp3"
   },
   {
     type: "concept",
@@ -115,7 +111,6 @@ export const notes = [
       <ellipse cx="305" cy="118" rx="6" ry="3" fill="#16a34a"/>
       <text x="310" y="225" font-family="sans-serif" font-weight="bold" font-size="13" fill="#64748b" text-anchor="middle">Short</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_5.mp3"
   },
   {
     type: "concept",
@@ -147,7 +142,6 @@ export const notes = [
       <text x="100" y="115" font-family="sans-serif" font-weight="900" font-size="22" fill="#10b981" text-anchor="middle">15 cm</text>
       <text x="100" y="140" font-family="sans-serif" font-weight="bold" font-size="13" fill="#64748b" text-anchor="middle">Friday Week 1</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_6.mp3"
   },
   {
     type: "concept",
@@ -176,7 +170,6 @@ export const notes = [
       <text x="140" y="199" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">3</text>
       <text x="260" y="199" font-family="sans-serif" font-weight="bold" font-size="13" fill="#475569" text-anchor="middle">31 cm</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_7.mp3"
   },
   {
     type: "concept",
@@ -202,7 +195,6 @@ export const notes = [
       <text x="340" y="95" font-family="sans-serif" font-weight="bold" font-size="11" fill="#58cc02" text-anchor="middle">Hypothesis</text>
       <text x="340" y="108" font-family="sans-serif" font-weight="bold" font-size="11" fill="#58cc02" text-anchor="middle">Correct!</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_8.mp3"
   },
   {
     type: "concept",
@@ -235,7 +227,6 @@ export const notes = [
       <path d="M 85 180 L 158 180" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="3"/>
       <path d="M 315 180 L 242 180" stroke="#7c3aed" stroke-width="2" stroke-dasharray="3"/>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_9.mp3"
   },
   {
     type: "concept",
@@ -267,7 +258,6 @@ export const notes = [
       <path d="M 200 75 L 200 60" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-dasharray="3"/>
       <text x="230" y="55" font-family="sans-serif" font-weight="bold" font-size="12" fill="#16a34a">Grows tall!</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_10.mp3"
   },
   {
     type: "concept",
@@ -303,7 +293,6 @@ export const notes = [
       <text x="320" y="180" font-family="sans-serif" font-weight="900" font-size="14" fill="#4b5563">Hill</text>
       <text x="320" y="200" font-family="sans-serif" font-weight="bold" font-size="11" fill="#4b5563">Lizards, Rocks</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_11.mp3"
   },
   {
     type: "concept",
@@ -333,7 +322,6 @@ export const notes = [
       <path d="M 240 130 L 290 185" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3"/>
       <text x="200" y="40" font-family="sans-serif" font-weight="900" font-size="16" fill="#ea580c" text-anchor="middle">YOUR CAMP MISSION</text>
     </svg>`,
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_12.mp3"
   },
   {
     type: "summary",
@@ -343,6 +331,5 @@ export const notes = [
     subtitleVn: "Bây giờ bạn đã tư duy như một nhà khoa học. Hãy sử dụng sáu bước để khám phá thế giới xung quanh trại của chúng ta trong tuần này!",
     color: "bg-[#10b981]",
     borderColor: "border-[#059669]",
-    audio: "/audio/ESL/CAMP_1A/slide_CAMP_1A_13.mp3"
   }
 ];

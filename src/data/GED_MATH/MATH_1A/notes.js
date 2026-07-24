@@ -9,7 +9,6 @@ export const notes = [
     subtitleVn: "Học ngôn ngữ của đại số, dịch từ ngữ sang toán học, và giải tìm ẩn số.",
     color: "bg-[#06b6d4]", 
     borderColor: "border-[#0891b2]",
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_1.mp3"
   },
   {
     type: "concept",
@@ -27,7 +26,6 @@ export const notes = [
     spokenExample: "For example. Imagine you have 3 apples on a table. A friend gives you a closed bag of apples. Now you have 3 plus x apples in total. The letter x represents the unknown number of apples inside the bag.",
     inlineSvg: DIAGRAMS.NOTES_VARIABLE_BOX,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_2.mp3"
   },
   {
     type: "concept",
@@ -40,7 +38,6 @@ export const notes = [
     spoken: "To understand algebra, you must learn the names of its parts. Please write these definitions down. First, a Coefficient is the number attached directly to a variable. It shows how many of that variable you have. Next, a Constant is a normal number that stands alone. Its value never changes. Finally, a Term is a single block of math. Terms are separated by plus or minus signs.",
     inlineSvg: DIAGRAMS.NOTES_ANATOMY,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_3.mp3"
   },
   {
     type: "concept",
@@ -53,7 +50,6 @@ export const notes = [
     spoken: "It is easy to confuse expressions and equations. To tell the difference, always look for the equal sign. Please write this down. An Expression is a math phrase with numbers and variables, but no equal sign. You can make it shorter, but you cannot solve it. An Equation is a complete math sentence with an equal sign. It shows that the left side balances exactly with the right side. You can solve it.",
     inlineSvg: DIAGRAMS.NOTES_EXPR_VS_EQ,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_4.mp3"
   },
   {
     type: "concept",
@@ -71,7 +67,6 @@ export const notes = [
     spokenExample: "For example. The English sentence 'A worker earns 15 dollars an hour, increased by a 50 dollar bonus' translates to the math expression 15 h plus 50. Here, h represents the unknown number of hours worked.",
     inlineSvg: DIAGRAMS.NOTES_WORDS_TO_SYMBOLS,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_5.mp3"
   },
   {
     type: "concept",
@@ -89,7 +84,6 @@ export const notes = [
     spokenExample: "Let's look at an example. Find the total cost of the expression 5 x minus 3 if x equals 4. Step 1: Substitute the 4 in parentheses. Step 2: Multiply 5 times 4 to get 20. Step 3: Subtract 3. The final answer is 17.",
     inlineSvg: DIAGRAMS.NOTES_SUBSTITUTE_STEPS,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_6.mp3"
   },
   {
     type: "concept",
@@ -102,7 +96,6 @@ export const notes = [
     spoken: "You can make long math expressions much shorter. We do this by grouping similar parts together. Please write this down. Like Terms are terms that have the exact same variables. Think of variables like types of fruit. You can add apples to apples, but you cannot add apples to bananas. If you have 2 x and 3 x, you combine them to make 5 x. You simply add the coefficients in front. The variable x stays exactly the same.",
     inlineSvg: DIAGRAMS.NOTES_LIKE_TERMS,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_7.mp3"
   },
   {
     type: "concept",
@@ -115,7 +108,6 @@ export const notes = [
     spoken: "When a number is directly outside a set of parentheses, it means you need to multiply. Please write this down. The Distributive Property means you must take the outside number and multiply it by every single term inside the parentheses. Think of the outside number like a teacher handing out paper. The teacher must give a paper to every single student inside the classroom. Everyone gets multiplied!",
     inlineSvg: DIAGRAMS.NOTES_DISTRIBUTIVE,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_8.mp3"
   },
   {
     type: "concept",
@@ -128,7 +120,6 @@ export const notes = [
     spoken: "Now we move from expressions to equations. An equation is like a perfectly balanced scale. If you add weight to the left side, the scale tilts. To keep the scale balanced, you must add the exact same weight to the right side. Please write this down. The Golden Rule of algebra is: Whatever math operation you do to one side of the equation, you must do to the exact other side.",
     widget: "BalanceScaleWidget",
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_9.mp3"
   },
   {
     type: "concept",
@@ -146,7 +137,6 @@ export const notes = [
     spokenExample: "Let's solve for x in the equation 4 x equals 24. The 4 and the x are connected by multiplication. To do the inverse, we divide both sides by 4. 24 divided by 4 leaves us with x equals 6.",
     inlineSvg: DIAGRAMS.NOTES_ONE_STEP,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_10.mp3"
   },
   {
     type: "concept",
@@ -164,7 +154,6 @@ export const notes = [
     spokenExample: "Let's solve the equation 2 x plus 5 equals 15. Step 1: Subtract the constant 5 from both sides. This leaves 2 x equals 10. Step 2: Divide both sides by the coefficient 2. The final answer is x equals 5.",
     inlineSvg: DIAGRAMS.NOTES_TWO_STEP,
     drawThis: false,
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_11.mp3"
   },
   {
     type: "summary",
@@ -174,6 +163,5 @@ export const notes = [
     subtitleVn: "Bạn đã học được những kiến thức cơ bản của Đại số: Biểu thức, Dịch Từ ngữ, và Giải Phương trình.",
     color: "bg-[#10b981]",
     borderColor: "border-[#059669]",
-    audio: "/audio/GED_MATH/MATH_1A/slide_MATH_1A_12.mp3"
   }
 ];

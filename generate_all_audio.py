@@ -246,7 +246,14 @@ async def main():
                         clean_example = re.sub(r'\$\$?', '', clean_example)
                         clean_example = re.sub(r'\s+', ' ', clean_example).strip()
                         parts.append("For example: " + clean_example)
-                    
+
+                # Never leave a slide silent. A diagram-only concept has no prose
+                # to read, but the app derives audio by slide position and expects
+                # a file for every slide, so fall back to narrating the title.
+                if not any(p.strip() for p in parts):
+                    if note.get("title"): parts.append(note["title"])
+                    if note.get("subtitle"): parts.append(note["subtitle"])
+
                 text_to_read = ". ".join(parts)
                 
                 if text_to_read.strip():

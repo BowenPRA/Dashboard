@@ -22,7 +22,6 @@ export const notes = [
     example: "A newspaper editorial arguing that the city needs more parks is written to Persuade.",
     exampleVn: "Một bài xã luận trên báo lập luận rằng thành phố cần nhiều công viên hơn được viết để Thuyết phục.",
     inlineSvg: DIAGRAMS.AUTHORS_PURPOSE,
-    audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_1.mp3"
   },
   {
     type: "concept",
@@ -35,7 +34,6 @@ export const notes = [
     example: "Fact: The human body is composed of about 60% water.\nOpinion: Swimming is the best way to exercise.",
     exampleVn: "Sự thật: Cơ thể con người bao gồm khoảng 60% là nước.\nÝ kiến: Bơi lội là cách tốt nhất để tập thể dục.",
     image: "/images/GED/fact_opinion1.svg",
-    audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_2.mp3"
   },
   {
     type: "concept",
@@ -49,7 +47,6 @@ export const notes = [
     exampleVn: "Luận điểm: Đọc sách hàng ngày cải thiện vốn từ vựng.\nBằng chứng: Một nghiên cứu đại học cho thấy những sinh viên đọc 20 phút mỗi ngày học được 1.800.000 từ mới một năm.",
     image: "/images/GED/reading_map1.svg",
     inlineSvg: DIAGRAMS.CLAIM_EVIDENCE_REASONING,
-    audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_3.mp3"
   },
   {
     type: "concept",
@@ -62,7 +59,6 @@ export const notes = [
     example: "Using words like 'devastating', 'tragic', and 'heartbreaking' creates a serious, sorrowful tone.\nUsing words like 'ridiculous', 'absurd', and 'nonsense' creates a sarcastic or critical tone.",
     exampleVn: "Sử dụng các từ như 'tàn phá', 'bi thảm' và 'đau lòng' tạo ra một giọng điệu nghiêm túc, buồn bã.\nSử dụng các từ như 'lố bịch', 'vô lý' và 'vô nghĩa' tạo ra một giọng điệu mỉa mai hoặc chỉ trích.",
     inlineSvg: DIAGRAMS.TONE_SPECTRUM,
-    audio: "/audio/GED_ENG/ENG_1A/slide_ENG_1A_4.mp3"
   },
   {
     type: "summary",
