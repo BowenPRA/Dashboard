@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
-  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil
+  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine
 } from 'lucide-react';
 import { assetUrl, audioUrl } from '../utils/assetPaths';
 
@@ -159,6 +159,21 @@ export const TASKS = [
     buildPool: (u) => ({ diagrams: u.diagrams || [] }),
     props: ({ pool, unit, unitId, track, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
       ({ pool, unitId, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onQuit }),
+  },
+  {
+    id: 'GRAMMAR_EDIT',
+    nativeMax: 20,
+    dbKey: 'p13',
+    label: 'Edit',
+    icon: PenLine,
+    color: { bg: 'bg-[#0ea5e9]', border: 'border-[#0284c7]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./GrammarEdit.jsx')),
+    hasContent: (u) => notEmpty(u.grammarEdit),
+    buildPool: (u) => ({ exercises: u.grammarEdit || [] }),
+    props: ({ pool, savedData, onComplete, onQuit }) =>
+      ({ pool, savedData, onComplete, onQuit }),
   },
   {
     id: 'ESSAY',

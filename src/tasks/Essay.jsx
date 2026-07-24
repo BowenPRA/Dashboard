@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, Type, FlaskConical, FileEdit, ArrowRight, Clock } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, Award, Type, FlaskConical, FileEdit, ArrowRight, Clock, Lightbulb } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeEssay } from '../utils/aiGrader';
@@ -138,7 +138,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       maxPoints,
       isPerfect: false,
       englishFeedback: englishScore ? "1 point awarded for capital letter and punctuation." : "Missed extra point. Ensure proper sentence structure.",
-      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No Cambridge marks can be awarded.",
+      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No content marks can be awarded.",
       fixedAnswer: "AI Grader disabled.",
       isStrikeFallback: true
     });
@@ -247,6 +247,15 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
     onComplete(finalXP, localAnswers); 
   };
+
+  // Labels adapt to the subject. A GED English essay must not be told its content
+  // was judged on a "Cambridge" scheme or given "Science" feedback. track and
+  // unitTitle come from the registry.
+  const isGedTrack = (track || '').startsWith('GED');
+  const isScienceTrack = /SCIENCE/i.test(track || '') || track === 'Y8' || track === 'Y9';
+  const markSchemeTitle = isGedTrack ? 'GED Mark Scheme' : 'Cambridge Mark Scheme';
+  const contentFeedbackTitle = isScienceTrack ? 'Science Feedback' : 'Content Feedback';
+  const ContentIcon = isScienceTrack ? FlaskConical : Lightbulb;
 
   let containerClass = "w-full rounded-[1.5rem] shadow-sm border p-6 sm:p-8 mb-6 relative transition-all duration-300 ";
   let textAreaClass = "w-full h-64 text-lg font-medium bg-transparent focus:outline-none resize-none disabled:bg-transparent leading-relaxed ";
@@ -486,7 +495,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                   <div className="flex items-center justify-between mb-4 text-slate-800">
                     <div className="flex items-center">
                       <Award className="w-6 h-6 mr-2 text-amber-500" />
-                      <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
+                      <h3 className="text-lg font-black">{markSchemeTitle} Breakdown</h3>
                     </div>
                     <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-sm">
                       {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
@@ -527,8 +536,8 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                    
                    <div className="bg-[#eff6ff] border border-[#bfdbfe] p-6 rounded-[1.5rem]">
                      <div className="flex items-center text-[#2563eb] mb-3">
-                       <FlaskConical className="w-5 h-5 mr-2" />
-                       <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
+                       <ContentIcon className="w-5 h-5 mr-2" />
+                       <h4 className="font-black text-sm uppercase tracking-widest">{contentFeedbackTitle}</h4>
                      </div>
                      <p className="text-slate-700 font-medium leading-relaxed">
                        {feedback.scienceFeedback}

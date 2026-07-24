@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, Component } from 'react';
-import { 
-  ChevronRight, ChevronLeft, BookOpen, Scale, Target, 
-  MessageSquare, ShieldCheck, CheckCircle2, Construction, 
+import {
+  ChevronRight, ChevronLeft, BookOpen, Scale, Target,
+  MessageSquare, ShieldCheck, CheckCircle2, Construction,
   PlayCircle, PauseCircle, Maximize2, X, Pencil, MonitorPlay, Minimize2,
-  Volume2
+  Volume2, Repeat, AlertTriangle, UserCheck, HelpCircle, Equal, Scissors, Users
 } from 'lucide-react';
 
 import katex from 'katex';
@@ -12,7 +12,10 @@ import 'katex/dist/katex.min.css';
 import TopBar from '../components/TopBar';
 import WidgetRenderer from '../components/WidgetRenderer';
 
-const IconMap = { BookOpen, Scale, Target, MessageSquare, ShieldCheck };
+const IconMap = {
+  BookOpen, Scale, Target, MessageSquare, ShieldCheck,
+  Repeat, AlertTriangle, UserCheck, HelpCircle, Equal, Scissors, Users,
+};
 
 const SafeInlineMath = ({ math }) => {
   try {
