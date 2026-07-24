@@ -1,51 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
+import { getRoster } from '../utils/adminApi';
 import StudentProfileDrawer from '../components/StudentProfileDrawer';
-import { 
-  Users, Star, AlertTriangle, Search, Filter, 
-  Trophy, BookOpen, ShieldAlert, Loader2, LogOut
+import AddStudentModal from '../components/AddStudentModal';
+import {
+  Users, Star, AlertTriangle, Search, Filter,
+  Trophy, BookOpen, ShieldAlert, Loader2, LogOut, UserPlus
 } from 'lucide-react';
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
   const [roster, setRoster] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('highest_xp');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showAdd, setShowAdd] = useState(false);
+
+  const fetchRoster = async () => {
+    setIsLoading(true);
+    try {
+      const { roster: list } = await getRoster();
+      setRoster(list || []);
+      setLoadError('');
+    } catch (err) {
+      console.error('Error fetching roster:', err);
+      setLoadError(err.message || 'Could not load the roster.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchRoster = async () => {
-      try {
-        const { data, error } = await supabase.rpc('get_teacher_roster');
-        
-        if (error) throw error;
-        setRoster(data || []);
-      } catch (err) {
-        console.error('Error fetching roster:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchRoster();
   }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
-  };
-
-  const formatLastLogin = (dateString) => {
-    if (!dateString) return 'Never logged in';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      hour: 'numeric', 
-      minute: '2-digit' 
-    });
   };
 
   // --- Derived Metrics ---
@@ -93,13 +87,22 @@ export default function TeacherDashboard() {
           </div>
         </div>
         
-        <button 
-          onClick={handleLogout}
-          className="flex items-center px-5 py-3 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 hover:text-rose-500 hover:border-rose-200 shadow-sm border-b-[4px] active:border-b-[2px] active:translate-y-[2px] transition-all font-black text-xs uppercase tracking-widest"
-        >
-          <LogOut className="w-4 h-4 mr-2" strokeWidth={3} />
-          Sign Out
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowAdd(true)}
+            className="flex items-center px-5 py-3 bg-[#58cc02] text-white rounded-2xl shadow-sm border-b-[4px] border-[#58a700] active:border-b-0 active:translate-y-[4px] transition-all font-black text-xs uppercase tracking-widest"
+          >
+            <UserPlus className="w-4 h-4 mr-2" strokeWidth={3} />
+            Add Student
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex items-center px-5 py-3 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 hover:text-rose-500 hover:border-rose-200 shadow-sm border-b-[4px] active:border-b-[2px] active:translate-y-[2px] transition-all font-black text-xs uppercase tracking-widest"
+          >
+            <LogOut className="w-4 h-4 mr-2" strokeWidth={3} />
+            Sign Out
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto">
@@ -169,6 +172,13 @@ export default function TeacherDashboard() {
           </div>
         </div>
 
+        {loadError && (
+          <div className="mb-6 flex items-center gap-3 bg-rose-50 dark:bg-rose-900/20 border-2 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 px-5 py-4 rounded-2xl font-bold">
+            <AlertTriangle className="w-5 h-5 flex-shrink-0" strokeWidth={2.5} />
+            {loadError}
+          </div>
+        )}
+
         {/* Tactile Student Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedRoster.map((student) => (
@@ -193,7 +203,9 @@ export default function TeacherDashboard() {
                     <h3 className="font-black text-xl text-slate-800 dark:text-white truncate max-w-[150px]">
                       {student.name}
                     </h3>
-                    <p className="text-xs font-bold text-slate-400 tracking-wide">Last Login: {formatLastLogin(student.last_login)}</p>
+                    <p className="text-xs font-bold text-slate-400 tracking-wide">
+                      {student.pra_id ? `PRA ${student.pra_id}` : 'No PRA id'}
+                    </p>
                   </div>
                 </div>
 
@@ -227,11 +239,17 @@ export default function TeacherDashboard() {
 
       </div>
 
-      <StudentProfileDrawer 
+      <StudentProfileDrawer
         isOpen={selectedStudent !== null}
         studentId={selectedStudent?.id}
         studentName={selectedStudent?.name}
-        onClose={() => setSelectedStudent(null)}
+        onClose={() => { setSelectedStudent(null); fetchRoster(); }}
+      />
+
+      <AddStudentModal
+        isOpen={showAdd}
+        onClose={() => setShowAdd(false)}
+        onCreated={fetchRoster}
       />
     </div>
   );

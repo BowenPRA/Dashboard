@@ -2,7 +2,7 @@ import React, { useState, Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction, Trophy, Sun, Moon, Sparkles, PackageOpen } from 'lucide-react';
 
-import { useStudentProgress } from '../hooks/useStudentProgress';
+import { useStudentProgress } from '../utils/supabaseClient';
 import UnitCard from '../components/UnitCard';
 import { getTrackConfig } from '../components/trackRegistry';
 import { getTrack } from '../data/index';

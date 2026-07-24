@@ -11,8 +11,10 @@ export default function TeacherRoute({ children }) {
     const checkTeacherAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      // If no session exists, or if the role is not 'teacher', deny access
-      if (!session || session.user.user_metadata?.role !== 'teacher') {
+      // Trust app_metadata only — user_metadata is user-writable, so a student
+      // could set role:'teacher' on themselves. This gate is display-only; the
+      // backend admin endpoints independently verify app_metadata.role too.
+      if (!session || session.user.app_metadata?.role !== 'teacher') {
         setIsAuthorized(false);
       } else {
         setIsAuthorized(true);

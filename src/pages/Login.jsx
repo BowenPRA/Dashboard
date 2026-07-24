@@ -49,8 +49,8 @@ export default function Login() {
       if (error) throw new Error("Incorrect Name or Secret Code. Please try again.");
       
       if (data.user) {
-        // Check the metadata role to fork the routing
-        const userRole = data.user.user_metadata?.role;
+        // Fork on app_metadata (server-set) — see TeacherRoute for why.
+        const userRole = data.user.app_metadata?.role;
         
         if (userRole === 'teacher') {
           navigate('/teacher-dashboard');

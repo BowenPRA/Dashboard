@@ -4,7 +4,7 @@ import {
   X, Shield, Trophy, Lock, Loader2, Users, Award, ChevronLeft, 
   Crown, Medal, Map as MapIcon, Heart, Ban, Coins 
 } from 'lucide-react';
-import { getGlobalGameLeaderboard, supabase } from '../hooks/useStudentProgress';
+import { getGlobalGameLeaderboard, supabase } from '../utils/supabaseClient';
 import TowerDefense from './games/TowerDefense';
 import TowerVisual from '../components/towerdefense/TowerVisual';
 

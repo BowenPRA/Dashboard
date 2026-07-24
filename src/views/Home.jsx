@@ -21,7 +21,10 @@ export default function Home() {
 
     const fetchUserAndTracks = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const enrolled = session?.user?.user_metadata?.enrolled_tracks;
+      // Prefer app_metadata (where teachers now set it); fall back to any legacy
+      // user_metadata value so no existing student loses their enrolment.
+      const enrolled = session?.user?.app_metadata?.enrolled_tracks
+        ?? session?.user?.user_metadata?.enrolled_tracks;
 
       if (Array.isArray(enrolled) && enrolled.length > 0) {
         // RBAC: only show enrolled tracks
