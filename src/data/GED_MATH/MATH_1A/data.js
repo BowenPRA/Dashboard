@@ -133,8 +133,8 @@ export const GED_MATH_1A_DATA = {
       suggestedWords: [["expression"], ["equation"], ["equal sign", "equals sign", "equal"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "States that an expression is a maths phrase with no equal sign.",
-        "States that an equation contains an equal sign showing the two sides are equal or balanced."
+        "States that an expression has no equal sign (it is just a maths phrase).",
+        "States that an equation has an equal sign."
       ],
       modelAnswer: "An expression is a math phrase with no equal sign, while an equation has an equal sign showing that two sides are balanced.",
       vnTranslation: "Sự khác biệt chính giữa biểu thức và phương trình là gì?"

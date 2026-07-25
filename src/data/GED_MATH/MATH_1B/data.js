@@ -158,7 +158,7 @@ export const GED_MATH_1B_DATA = {
     },
     {
       id: "qa5",
-      question: "When solving an inequality, when do you have to reverse the direction of the sign?",
+      question: "When solving an inequality, which operation forces you to reverse the direction of the sign, and which common operation does NOT reverse it?",
       suggestedWords: [["negative"], ["multiply", "divide"], ["reverse", "flip", "switch"]],
       scienceMaxMarks: 2,
       markScheme: [
@@ -166,7 +166,7 @@ export const GED_MATH_1B_DATA = {
         "Notes that adding or subtracting a negative does not flip the sign."
       ],
       modelAnswer: "You reverse the sign whenever you multiply or divide both sides by a negative number. Adding or subtracting a negative number does not flip the sign.",
-      vnTranslation: "Khi giải bất đẳng thức, khi nào bạn phải đảo chiều hướng của dấu?"
+      vnTranslation: "Khi giải bất đẳng thức, phép toán nào buộc bạn phải đảo chiều dấu bất đẳng thức, và phép toán phổ biến nào KHÔNG làm đảo chiều dấu?"
     },
     {
       id: "qa6",
