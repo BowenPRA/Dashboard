@@ -134,7 +134,7 @@ export const SCIENCE_2A_DATA = {
     {
       id: "q1",
       question: "Explain the process of a convection current in the Earth's mantle.",
-      requiredWords: [["heat", "hot", "core"], ["rise", "rises", "up", "ascends"], ["cool", "cools", "cold"], ["sink", "sinks", "down", "descends"]],
+      suggestedWords: [["heat", "hot", "core"], ["rise", "rises", "up", "ascends"], ["cool", "cools", "cold"], ["sink", "sinks", "down", "descends"]],
       scienceMaxMarks: 3,
       markScheme: [
         "1 mark for stating that rock is heated by the core.",
@@ -146,7 +146,7 @@ export const SCIENCE_2A_DATA = {
     {
       id: "q2",
       question: "What geological event happens when two tectonic plates interact at a divergent boundary?",
-      requiredWords: [["pull apart", "away", "separate"], ["magma", "lava", "rock"], ["new crust", "new land", "ocean floor"]],
+      suggestedWords: [["pull apart", "away", "separate"], ["magma", "lava", "rock"], ["new crust", "new land", "ocean floor"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating the plates pull apart or move away from each other.",
@@ -157,7 +157,7 @@ export const SCIENCE_2A_DATA = {
     {
       id: "q3",
       question: "How do matching fossils found in South America and Africa support the theory of Continental Drift?",
-      requiredWords: [["ocean", "sea", "swim", "water"], ["connected", "joined", "together", "supercontinent", "pangea"]],
+      suggestedWords: [["ocean", "sea", "swim", "water"], ["connected", "joined", "together", "supercontinent", "pangea"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for noting that these animals/plants could not cross the modern oceans.",
@@ -171,7 +171,7 @@ export const SCIENCE_2A_DATA = {
       id: "d1",
       inlineSvg: DIAGRAMS.NOTES_MANTLE_CONVECTION,
       promptText: "Analyze the diagram showing convection currents. Explain how the heat from the core influences the movement of the tectonic plates floating on top.",
-      requiredWords: [["rises", "rise", "up"], ["drags", "pulls", "moves", "pushes"], ["plates", "crust"]],
+      suggestedWords: [["rises", "rise", "up"], ["drags", "pulls", "moves", "pushes"], ["plates", "crust"]],
       scienceMaxMarks: 3,
       markScheme: [
         "1 mark for identifying that heat causes the mantle rock to rise.",
@@ -184,7 +184,7 @@ export const SCIENCE_2A_DATA = {
       id: "d2",
       inlineSvg: DIAGRAMS.NOTES_DIVERGENT_BOUNDARY,
       promptText: "The diagram shows a cross-section of a divergent boundary. Describe the role of magma in this specific boundary type.",
-      requiredWords: [["gap", "space", "apart", "away"], ["magma"], ["cools", "hardens", "solidifies", "new crust", "new rock"]],
+      suggestedWords: [["gap", "space", "apart", "away"], ["magma"], ["cools", "hardens", "solidifies", "new crust", "new rock"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for explaining that magma rises into the gap between pulling plates.",
@@ -201,7 +201,7 @@ export const SCIENCE_2A_DATA = {
       "Describe the 'Jigsaw' evidence.",
       "Describe the Fossil evidence."
     ],
-    requiredWords: [
+    suggestedWords: [
       ["move", "drift", "apart"], 
       ["pangea", "supercontinent"], 
       ["jigsaw", "puzzle", "fit", "coastline", "shape"], 

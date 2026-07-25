@@ -118,15 +118,17 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
   const handleLocalFallbackGrade = () => {
     // Bulletproofed mapping
-    const usedWordGroups = (currentQ.requiredWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
-    
+    // Suggested words are highlighted as hints, never scored.
+    const usedWordGroups = (currentQ.suggestedWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
+
     const trimmed = (userAnswer || '').trim();
     const hasCapital = /^[A-Z]/.test(trimmed);
     const hasPeriod = /[.!?]$/.test(trimmed);
-    const englishScore = (hasCapital && hasPeriod) ? 1 : 0; 
+    const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
 
-    const pointsEarned = usedWordGroups.length + englishScore;
-    const maxPoints = (currentQ.requiredWords || []).length + (currentQ.scienceMaxMarks || 0) + 3;
+    // Two components only: content (mark scheme) + English (max 3).
+    const pointsEarned = englishScore;
+    const maxPoints = (currentQ.scienceMaxMarks || 0) + 3;
 
     setFeedback({
       originalAnswer: trimmed,
@@ -158,11 +160,11 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
     setGameState('LOADING');
 
-    const primaryRequiredWords = (currentQ.requiredWords || []).map(w => Array.isArray(w) ? w[0] : w);
+    const primarySuggestedWords = (currentQ.suggestedWords || []).map(w => Array.isArray(w) ? w[0] : w);
     const payload = {
       task: currentQ.task,
       studentAnswer: trimmedAnswer,
-      requiredWords: primaryRequiredWords,
+      suggestedWords: primarySuggestedWords,
       expectedAnswer: currentQ.modelAnswer,
       scienceMaxMarks: currentQ.scienceMaxMarks,
       markScheme: currentQ.markScheme,
@@ -203,13 +205,15 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       return;
     }
 
-    const usedWordGroups = (currentQ.requiredWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
+    // Suggested words are highlighted as hints only — not part of the score.
+    const usedWordGroups = (currentQ.suggestedWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
     const scienceScore = aiData.scienceScore || 0;
     const englishScore = aiData.englishScore || 0;
     const scienceMarks = (currentQ.markScheme || []).map((_, i) => i < scienceScore);
 
-    const pointsEarned = usedWordGroups.length + scienceScore + englishScore;
-    const maxPoints = (currentQ.requiredWords || []).length + (currentQ.scienceMaxMarks || 0) + 3; 
+    // Two components only: content (mark scheme) + English (max 3).
+    const pointsEarned = scienceScore + englishScore;
+    const maxPoints = (currentQ.scienceMaxMarks || 0) + 3;
     const isPerfect = pointsEarned >= maxPoints;
 
     setFeedback({
@@ -249,11 +253,11 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
   };
 
   // Labels adapt to the subject. A GED English essay must not be told its content
-  // was judged on a "Cambridge" scheme or given "Science" feedback. track and
-  // unitTitle come from the registry.
+  // was given "Science" feedback where it isn't a science unit. track and
+  // unitTitle come from the registry. Never surface an exam board name.
   const isGedTrack = (track || '').startsWith('GED');
   const isScienceTrack = /SCIENCE/i.test(track || '') || track === 'Y8' || track === 'Y9';
-  const markSchemeTitle = isGedTrack ? 'GED Mark Scheme' : 'Cambridge Mark Scheme';
+  const markSchemeTitle = isGedTrack ? 'GED Mark Scheme' : 'Content Marks';
   const contentFeedbackTitle = isScienceTrack ? 'Science Feedback' : 'Content Feedback';
   const ContentIcon = isScienceTrack ? FlaskConical : Lightbulb;
 
@@ -370,20 +374,23 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                 disabled={gameState !== 'Q' || timeUp}
                 spellCheck={false}
                 autoCorrect="off"
-                autoCapitalize="sentences"
+                autoCapitalize="off"
                 autoComplete="off"
+                data-gramm="false"
+                data-gramm_editor="false"
+                data-enable-grammarly="false"
                 placeholder={strikes >= 3 ? "AI Grader disabled. Local fallback grading only." : "Start writing your essay here..."}
                 className={textAreaClass}
               />
             </div>
 
-            {gameState !== 'LOADING' && (
+            {gameState !== 'LOADING' && (currentQ.suggestedWords || []).length > 0 && (
               <div className="w-full mb-8">
                 <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">
-                  Required Vocabulary
+                  Suggested Vocabulary <span className="normal-case tracking-normal text-slate-300 dark:text-slate-600">· optional hints, not graded</span>
                 </span>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {(currentQ.requiredWords || []).map((wordGroup, i) => {
+                  {(currentQ.suggestedWords || []).map((wordGroup, i) => {
                     const isUsed = feedback 
                       ? feedback.usedWordGroups.includes(wordGroup) 
                       : checkRequiredWordGroup(wordGroup, userAnswer);

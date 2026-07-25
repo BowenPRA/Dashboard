@@ -213,7 +213,7 @@ export const ENGLISH_2A_DATA = {
     {
       id: "q1",
       question: "In public speaking, why is it effective to pause for a few seconds immediately after making a very important point?",
-      requiredWords: [["absorb", "think", "understand", "impact"]],
+      suggestedWords: [["absorb", "think", "understand", "impact"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that it gives the audience time to process the information.",
@@ -224,7 +224,7 @@ export const ENGLISH_2A_DATA = {
     {
       id: "q2",
       question: "How does Bao use his personal failure (failing Language Arts) as evidence in his speech?",
-      requiredWords: [["claim", "point", "argue", "success"], ["part", "opposite"]],
+      suggestedWords: [["claim", "point", "argue", "success"], ["part", "opposite"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for mentioning his main claim (failure is part of success, not the opposite).",
@@ -235,7 +235,7 @@ export const ENGLISH_2A_DATA = {
     {
       id: "q3",
       question: "What is the 'Z-Pattern' in public speaking, and what is its main purpose?",
-      requiredWords: [["eye", "eyes", "contact"], ["audience", "room", "listeners"]],
+      suggestedWords: [["eye", "eyes", "contact"], ["audience", "room", "listeners"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for defining it as a method of making eye contact across different parts of the room.",
@@ -249,7 +249,7 @@ export const ENGLISH_2A_DATA = {
       id: "d1",
       inlineSvg: DIAGRAMS.SPEAKER_STANCE,
       promptText: "Look at the diagram showing correct posture and stance. Why is it important to keep your feet planted shoulder-width apart rather than shifting your weight back and forth?",
-      requiredWords: [["nervous", "nervousness", "distracting", "confidence"]],
+      suggestedWords: [["nervous", "nervousness", "distracting", "confidence"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for noting that shifting weight makes the speaker look nervous.",
@@ -261,7 +261,7 @@ export const ENGLISH_2A_DATA = {
       id: "d2",
       inlineSvg: DIAGRAMS.SPEECH_STRUCTURE,
       promptText: "Review the graphic showing the structure of an argument. According to the lesson, how does a speaker's 'Tone' influence how the audience receives the 'Evidence'?",
-      requiredWords: [["emotion", "feelings", "attitude", "serious"]],
+      suggestedWords: [["emotion", "feelings", "attitude", "serious"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for defining tone as the speaker's emotional attitude.",
@@ -277,7 +277,7 @@ export const ENGLISH_2A_DATA = {
       "Describe the specific evidence (the tragedy) he experienced.",
       "Analyze how surviving that tragedy proves his claim about perseverance."
     ],
-    requiredWords: [
+    suggestedWords: [
       ["perseverance", "keep going", "step"], 
       ["evidence", "tragedy", "father", "passed away"],
       ["claim", "prove", "support"]

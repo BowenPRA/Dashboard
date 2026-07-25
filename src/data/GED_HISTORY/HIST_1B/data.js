@@ -131,7 +131,7 @@ export const GED_HIST_1B_DATA = {
     {
       id: "qa2",
       question: "Give two specific weaknesses of the Articles of Confederation and explain why each caused problems.",
-      requiredWords: [["tax", "taxes"], ["army", "military"], ["Congress"]],
+      suggestedWords: [["tax", "taxes"], ["army", "military"], ["Congress"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Identifies that Congress could not tax, only request money from states.",
@@ -144,7 +144,7 @@ export const GED_HIST_1B_DATA = {
     {
       id: "qa3",
       question: "Name the three branches of government and state what each one does with the laws.",
-      requiredWords: [["legislative"], ["executive"], ["judicial"]],
+      suggestedWords: [["legislative"], ["executive"], ["judicial"]],
       scienceMaxMarks: 3,
       markScheme: [
         "States the legislative branch (Congress) makes the laws.",
@@ -158,7 +158,7 @@ export const GED_HIST_1B_DATA = {
     {
       id: "qa5",
       question: "Explain what a veto is and how Congress can respond to one.",
-      requiredWords: [["veto"], ["President"], ["override", "two-thirds", "2/3"]],
+      suggestedWords: [["veto"], ["President"], ["override", "two-thirds", "2/3"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Defines a veto as the President rejecting a bill passed by Congress.",
@@ -171,7 +171,7 @@ export const GED_HIST_1B_DATA = {
     {
       id: "qa6",
       question: "What is federalism, and give one power that belongs to the federal government and one that belongs to the states.",
-      requiredWords: [["federalism"], ["shared", "divided", "both"], ["states"]],
+      suggestedWords: [["federalism"], ["shared", "divided", "both"], ["states"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Defines federalism as power shared between a national government and the states.",
@@ -185,7 +185,7 @@ export const GED_HIST_1B_DATA = {
     {
       id: "qa8",
       question: "Why did several states refuse to approve the Constitution until a Bill of Rights was promised?",
-      requiredWords: [["rights", "freedoms"], ["protect", "protection"], ["government"]],
+      suggestedWords: [["rights", "freedoms"], ["protect", "protection"], ["government"]],
       scienceMaxMarks: 2,
       markScheme: [
         "Explains that the original document described how government works but did not list individual protections.",
@@ -198,7 +198,7 @@ export const GED_HIST_1B_DATA = {
     {
       id: "qa10",
       question: "The Supreme Court can strike down a law passed by Congress and signed by the President. Explain how this is an example of checks and balances.",
-      requiredWords: [["judicial", "court", "Supreme Court"], ["unconstitutional", "Constitution"], ["power"]],
+      suggestedWords: [["judicial", "court", "Supreme Court"], ["unconstitutional", "Constitution"], ["power"]],
       scienceMaxMarks: 3,
       markScheme: [
         "States that the judicial branch can rule a law unconstitutional.",
@@ -215,7 +215,7 @@ export const GED_HIST_1B_DATA = {
       id: "diag_1_articles_weakness",
       promptText: "Study the diagram of the Articles of Confederation. Explain why this design made the government unable to function, and what it led to.",
       inlineSvg: DIAGRAMS.NOTES_ARTICLES_WEAKNESS,
-      requiredWords: [["tax", "taxes"], ["weak"], ["Constitution", "new government"]],
+      suggestedWords: [["tax", "taxes"], ["weak"], ["Constitution", "new government"]],
       modelAnswer: "The Articles gave power to the states and left the central government weak. Congress could not tax, so it had no reliable money and could not pay its soldiers. There was no national army to restore order and no national court to settle disputes between states. These failures led leaders to abandon the Articles and write a new Constitution in 1787.",
       scienceMaxMarks: 3,
       markScheme: [
@@ -228,7 +228,7 @@ export const GED_HIST_1B_DATA = {
       id: "diag_2_branch_identify",
       promptText: "Read the situation in the diagram. Name the power the President is using, say which branch each actor belongs to, and explain what Congress can do next.",
       inlineSvg: DIAGRAMS.DIAGRAM_BRANCH_IDENTIFY,
-      requiredWords: [["veto"], ["override", "two-thirds", "2/3"], ["legislative", "executive"]],
+      suggestedWords: [["veto"], ["override", "two-thirds", "2/3"], ["legislative", "executive"]],
       modelAnswer: "The President is using the veto, which is the power to reject a bill. Congress is the legislative branch and the President heads the executive branch. Congress can respond by overriding the veto, but this requires a two-thirds vote in both the House and the Senate.",
       scienceMaxMarks: 3,
       markScheme: [
@@ -242,7 +242,7 @@ export const GED_HIST_1B_DATA = {
       id: "diag_4_federalism",
       promptText: "Look at how powers are divided in the diagram. Explain what federalism means, and why taxation appears on both the federal and state lists.",
       inlineSvg: DIAGRAMS.DIAGRAM_FEDERALISM_SORT,
-      requiredWords: [["federalism"], ["shared", "both", "divided"], ["tax", "taxes"]],
+      suggestedWords: [["federalism"], ["shared", "both", "divided"], ["tax", "taxes"]],
       modelAnswer: "Federalism means power is shared between the national government and the states, with some powers belonging only to one and some belonging to both. Taxation appears on both lists because each level of government needs its own money to function: the federal government funds the military and national programmes, while states fund schools, roads and local police.",
       scienceMaxMarks: 3,
       markScheme: [

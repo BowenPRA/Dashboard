@@ -315,7 +315,7 @@ export const ENGLISH_0B_DATA = {
       "Check that every verb agrees with its true subject.",
       "Write in paragraphs, with a short conclusion.",
     ],
-    requiredWords: [
+    suggestedWords: [
       ["Evidence", "prove", "proof"],
       ["Claim", "argues", "argument", "position"],
       ["School", "schools", "students"],

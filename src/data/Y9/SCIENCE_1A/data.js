@@ -134,7 +134,7 @@ export const SCIENCE_1A_DATA = {
     {
       id: "q1",
       question: "Mia wants to measure the current flowing through a circuit and the voltage across a specific lamp. Explain exactly how she should connect the ammeter and the voltmeter.",
-      requiredWords: [["ammeter", "series"], ["voltmeter", "parallel", "across"]],
+      suggestedWords: [["ammeter", "series"], ["voltmeter", "parallel", "across"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating the ammeter goes in series.",
@@ -145,7 +145,7 @@ export const SCIENCE_1A_DATA = {
     {
       id: "q2",
       question: "Explain what will happen to the remaining lamps if one bulb breaks in a Series Circuit compared to a Parallel Circuit.",
-      requiredWords: [["series", "off", "stop", "broken"], ["parallel", "on", "work", "shine"]],
+      suggestedWords: [["series", "off", "stop", "broken"], ["parallel", "on", "work", "shine"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating all lamps turn off in a series circuit.",
@@ -156,7 +156,7 @@ export const SCIENCE_1A_DATA = {
     {
       id: "q3",
       question: "Using Ohm's Law (V = I × R), calculate the Voltage of a circuit if the Current is 3 Amps and the Resistance is 4 Ohms.",
-      requiredWords: [["12", "twelve"], ["Volts", "V", "voltage"]],
+      suggestedWords: [["12", "twelve"], ["Volts", "V", "voltage"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for calculating the correct number (12).",
@@ -190,7 +190,7 @@ export const SCIENCE_1A_DATA = {
         <text x="200" y="240" font-family="sans-serif" font-weight="900" font-size="20" fill="#f43f5e" text-anchor="middle">X</text>
       </svg>`,
       promptText: "Identify the component marked 'X' in the diagram and explain its primary function in this electrical circuit.",
-      requiredWords: [["variable", "resistor"], ["change", "adjust", "control", "alter"]],
+      suggestedWords: [["variable", "resistor"], ["change", "adjust", "control", "alter"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for correctly identifying component X as a variable resistor.",
@@ -217,7 +217,7 @@ export const SCIENCE_1A_DATA = {
         <text x="200" y="225" font-family="sans-serif" font-weight="900" font-size="14" fill="#3b82f6" text-anchor="middle">V</text>
       </svg>`,
       promptText: "Examine the circuit diagram. Explain why the voltmeter (V) is placed in this specific branching position relative to the lamp.",
-      requiredWords: [["parallel", "across"], ["voltage", "potential difference"]],
+      suggestedWords: [["parallel", "across"], ["voltage", "potential difference"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for identifying that the voltmeter is connected in parallel (or across the component).",
@@ -256,7 +256,7 @@ export const SCIENCE_1A_DATA = {
         <path d="M 368 193 L 382 207 M 382 193 L 368 207" stroke="#1e293b" stroke-width="2"/>
       </svg>`,
       promptText: "Assume an identical battery is used in both diagrams. Compare how the current behaves in Circuit A (Series) versus Circuit B (Parallel).",
-      requiredWords: [["same", "one path", "constant"], ["split", "splits", "branches", "divide"]],
+      suggestedWords: [["same", "one path", "constant"], ["split", "splits", "branches", "divide"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for explaining that the current in Circuit A stays exactly the same everywhere because there is only one path.",
@@ -272,7 +272,7 @@ export const SCIENCE_1A_DATA = {
       "Explain the rules for sharing or splitting current and voltage.",
       "Provide a logical real-world application."
     ],
-    requiredWords: [
+    suggestedWords: [
       ["series", "one", "single"], 
       ["parallel", "branches", "multiple"], 
       ["current", "voltage", "same", "shared", "split"], 

@@ -136,7 +136,7 @@ export const MATH_1A_DATA = {
     {
       id: "q1",
       question: "Describe the visual difference between a positive correlation and a negative correlation on a scatter graph.",
-      requiredWords: [["upward", "up", "increase", "increases"], ["downward", "down", "decrease", "decreases"]],
+      suggestedWords: [["upward", "up", "increase", "increases"], ["downward", "down", "decrease", "decreases"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that a positive correlation slopes upward (from left to right) or that both variables increase together.",
@@ -147,7 +147,7 @@ export const MATH_1A_DATA = {
     {
       id: "q2",
       question: "Look at a scatter graph. How can you tell if the correlation between two variables is strong or weak?",
-      requiredWords: [["close", "closely", "packed", "tight"], ["spread", "scattered", "far", "apart"]],
+      suggestedWords: [["close", "closely", "packed", "tight"], ["spread", "scattered", "far", "apart"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that strong correlation means the data points are packed closely together.",
@@ -158,7 +158,7 @@ export const MATH_1A_DATA = {
     {
       id: "q3",
       question: "Why do mathematicians plot bivariate data (two variables) on a coordinate grid instead of just reading a table of numbers?",
-      requiredWords: [["visual", "see", "easier", "picture"], ["trend", "pattern", "relationship", "trends"]],
+      suggestedWords: [["visual", "see", "easier", "picture"], ["trend", "pattern", "relationship", "trends"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for identifying that graphing makes the data visual or easier to see.",
@@ -192,7 +192,7 @@ export const MATH_1A_DATA = {
         <path d="M 70 35 L 330 185" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6, 6" stroke-linecap="round"/>
       </svg>`,
       promptText: "Analyze the provided scatter graph. Describe the direction and strength of the correlation shown between the two variables.",
-      requiredWords: [["negative", "downward"], ["strong", "tight", "close"]],
+      suggestedWords: [["negative", "downward"], ["strong", "tight", "close"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for correctly identifying the direction as a negative correlation.",
@@ -221,7 +221,7 @@ export const MATH_1A_DATA = {
         <circle cx="330" cy="50" r="6" fill="#fb923c"/>
       </svg>`,
       promptText: "Examine the second scatter graph. Describe the direction and strength of the correlation shown, and explain how you know the strength.",
-      requiredWords: [["positive", "upward"], ["weak", "spread", "scattered", "apart"]],
+      suggestedWords: [["positive", "upward"], ["weak", "spread", "scattered", "apart"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for correctly identifying it as a weak positive correlation.",
@@ -237,7 +237,7 @@ export const MATH_1A_DATA = {
       "Explain the difference between a strong and weak correlation visually.",
       "Provide a logical real-world example."
     ],
-    requiredWords: [
+    suggestedWords: [
       ["direction", "positive", "negative"], 
       ["strength", "strong", "weak", "spread", "tight"],
       ["example", "instance"]

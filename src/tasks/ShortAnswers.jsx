@@ -60,7 +60,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
   const currentQ = questions[currentIndex];
 
   // --- SAFE FALLBACKS FOR COMPONENT STABILITY ---
-  const requiredWords = currentQ?.requiredWords || [];
+  const suggestedWords = currentQ?.suggestedWords || [];
   const scienceMaxMarks = currentQ?.scienceMaxMarks || 2;
   const markScheme = currentQ?.markScheme || ['Provides a correct explanation or calculation.', 'Addresses the specific prompt.'];
   const modelAnswer = currentQ?.modelAnswer || currentQ?.sampleAnswer || "No model answer provided.";
@@ -96,15 +96,17 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
   }, [currentIndex]);
 
   const handleLocalFallbackGrade = () => {
-    const usedWordGroups = requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
-    
+    // Suggested words are still highlighted as hints, but never scored.
+    const usedWordGroups = suggestedWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+
     const trimmed = userAnswer.trim();
     const hasCapital = /^[A-Z]/.test(trimmed);
     const hasPeriod = /[.!?]$/.test(trimmed);
     const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
 
-    const pointsEarned = usedWordGroups.length + englishScore;
-    const maxPoints = requiredWords.length + scienceMaxMarks + 2; 
+    // Two components only: content (mark scheme) + English (max 3).
+    const pointsEarned = englishScore;
+    const maxPoints = scienceMaxMarks + 3;
 
     setFeedback({
       originalAnswer: userAnswer.trim(),
@@ -135,11 +137,11 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
     setGameState('LOADING');
 
-    const primaryRequiredWords = requiredWords.map(w => Array.isArray(w) ? w[0] : w);
+    const primaryRequiredWords = suggestedWords.map(w => Array.isArray(w) ? w[0] : w);
     const payload = {
       question: currentQ.question,
       studentAnswer: userAnswer.trim(),
-      requiredWords: primaryRequiredWords,
+      suggestedWords: primaryRequiredWords,
       expectedAnswer: modelAnswer,
       scienceMaxMarks: scienceMaxMarks,
       markScheme: markScheme,
@@ -178,13 +180,15 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       return;
     }
 
-    const usedWordGroups = requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    // Suggested words are highlighted as hints only — not part of the score.
+    const usedWordGroups = suggestedWords.filter(group => checkRequiredWordGroup(group, userAnswer));
     const scienceScore = aiData.scienceScore || 0;
     const englishScore = aiData.englishScore || 0;
     const marksScored = markScheme.map((_, i) => i < scienceScore);
 
-    const pointsEarned = usedWordGroups.length + scienceScore + englishScore;
-    const maxPoints = requiredWords.length + scienceMaxMarks + 2; 
+    // Two components only: content (mark scheme) + English (max 3).
+    const pointsEarned = scienceScore + englishScore;
+    const maxPoints = scienceMaxMarks + 3;
     const isPerfect = pointsEarned >= maxPoints;
 
     setFeedback({
@@ -214,14 +218,14 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     let newMaxPoints = maxPossiblePoints;
 
     if (gameState === 'SAVED_PERFECT') {
-      const maxP = requiredWords.length + scienceMaxMarks + 2;
+      const maxP = scienceMaxMarks + 3;
       newCumPoints += maxP;
       newMaxPoints += maxP;
     } else if (feedback) {
       newCumPoints += feedback.pointsEarned;
       newMaxPoints += feedback.maxPoints;
     } else if (gameState === 'SAVED_API_ERROR') {
-      newMaxPoints += requiredWords.length + scienceMaxMarks + 2;
+      newMaxPoints += scienceMaxMarks + 3;
     }
 
     setCumulativePoints(newCumPoints);
@@ -334,7 +338,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
         </div>
 
         <div className={containerClass}>
-          <textarea 
+          <textarea
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -342,18 +346,25 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
             onCopy={(e) => e.preventDefault()}
             onCut={(e) => e.preventDefault()}
             disabled={gameState !== 'Q'}
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+            autoComplete="off"
+            data-gramm="false"
+            data-gramm_editor="false"
+            data-enable-grammarly="false"
             placeholder={strikes >= 3 ? "AI Grader disabled. Local fallback grading only." : "Type your answer here..."}
             className={textAreaClass}
           />
         </div>
 
-        {gameState !== 'LOADING' && requiredWords.length > 0 && (
+        {gameState !== 'LOADING' && suggestedWords.length > 0 && (
           <div className="w-full mb-10">
             <span className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-3">
-              Required Vocabulary
+              Suggested Vocabulary <span className="normal-case tracking-normal text-slate-300 dark:text-slate-600">· optional hints, not graded</span>
             </span>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {requiredWords.map((wordGroup, i) => {
+              {suggestedWords.map((wordGroup, i) => {
                 const isUsed = feedback 
                   ? feedback.usedWordGroups.includes(wordGroup) 
                   : checkRequiredWordGroup(wordGroup, userAnswer);
@@ -494,7 +505,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
                      <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
                    </div>
                    <span className="bg-[#fef3c7] dark:bg-[#fef3c7]/20 text-[#b45309] dark:text-[#fcd34d] font-bold px-2 py-0.5 rounded-md text-xs">
-                     {feedback.englishScore} / 2 Pts
+                     {feedback.englishScore} / 3 Pts
                    </span>
                  </div>
                  <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">

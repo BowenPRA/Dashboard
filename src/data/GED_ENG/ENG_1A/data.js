@@ -210,7 +210,7 @@ export const ENGLISH_1A_DATA = {
     {
       id: "q1",
       question: "Why is it helpful for a reader to identify the author's purpose before reading a long passage?",
-      requiredWords: [["understand", "understanding"], ["expect", "expectations"]],
+      suggestedWords: [["understand", "understanding"], ["expect", "expectations"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that it helps the reader know what to expect from the text.",
@@ -221,7 +221,7 @@ export const ENGLISH_1A_DATA = {
     {
       id: "q2",
       question: "What is the primary difference between a fact and an opinion in an informational text?",
-      requiredWords: [["prove", "proven", "proof"]],
+      suggestedWords: [["prove", "proven", "proof"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that a fact can be proven with objective evidence.",
@@ -232,7 +232,7 @@ export const ENGLISH_1A_DATA = {
     {
       id: "q3",
       question: "Why must a writer include evidence when making a strong claim?",
-      requiredWords: [["support", "prove", "back"]],
+      suggestedWords: [["support", "prove", "back"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for explaining that evidence is needed to prove the claim is true.",
@@ -246,7 +246,7 @@ export const ENGLISH_1A_DATA = {
       id: "d1",
       inlineSvg: DIAGRAMS.PARAGRAPH_STRUCTURE,
       promptText: "Look at the basic paragraph structure chart. In which section does the author usually introduce their main claim?",
-      requiredWords: [["beginning", "start", "first"]],
+      suggestedWords: [["beginning", "start", "first"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for identifying the beginning or introduction.",
@@ -258,7 +258,7 @@ export const ENGLISH_1A_DATA = {
       id: "d2",
       inlineSvg: DIAGRAMS.FACT_VS_OPINION,
       promptText: "Review the graphic sorting statements. What is the key feature that separates the statements in the 'Fact' column from the 'Opinion' column?",
-      requiredWords: [["proof", "proven", "prove"], ["objective", "evidence"]],
+      suggestedWords: [["proof", "proven", "prove"], ["objective", "evidence"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for noting that facts can be proven with objective evidence.",
@@ -292,7 +292,7 @@ export const ENGLISH_1A_DATA = {
       "Explain why that evidence is strong or weak — do not just repeat it.",
       "Organise your answer with an introduction, body paragraphs and a conclusion.",
     ],
-    requiredWords: [
+    suggestedWords: [
       ["Evidence", "prove", "proof"],
       ["Claim", "argues", "argument", "position"],
       ["Fact", "facts"],

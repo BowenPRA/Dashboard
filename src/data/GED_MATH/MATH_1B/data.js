@@ -134,7 +134,7 @@ export const GED_MATH_1B_DATA = {
     {
       id: "qa3",
       question: "Solve 4x + 5 = 29 and describe each step you took.",
-      requiredWords: [["subtract", "minus", "take away"], ["divide"], ["6"]],
+      suggestedWords: [["subtract", "minus", "take away"], ["divide"], ["6"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Subtracts 5 from both sides to get 4x = 24.",
@@ -147,7 +147,7 @@ export const GED_MATH_1B_DATA = {
     {
       id: "qa4",
       question: "Explain the difference between an open circle and a closed circle on a number line.",
-      requiredWords: [["open", "empty", "hollow"], ["closed", "filled", "solid"], ["included", "include", "part of"]],
+      suggestedWords: [["open", "empty", "hollow"], ["closed", "filled", "solid"], ["included", "include", "part of"]],
       scienceMaxMarks: 2,
       markScheme: [
         "States that an open (empty) circle means the boundary number is not included.",
@@ -159,7 +159,7 @@ export const GED_MATH_1B_DATA = {
     {
       id: "qa5",
       question: "When solving an inequality, when do you have to reverse the direction of the sign?",
-      requiredWords: [["negative"], ["multiply", "divide"], ["reverse", "flip", "switch"]],
+      suggestedWords: [["negative"], ["multiply", "divide"], ["reverse", "flip", "switch"]],
       scienceMaxMarks: 2,
       markScheme: [
         "States that the sign flips when multiplying or dividing both sides by a negative number.",
@@ -171,7 +171,7 @@ export const GED_MATH_1B_DATA = {
     {
       id: "qa6",
       question: "Solve the inequality -3x < 12 and explain what happens to the sign.",
-      requiredWords: [["divide"], ["negative"], ["x > -4", "x>-4", "greater than -4"]],
+      suggestedWords: [["divide"], ["negative"], ["x > -4", "x>-4", "greater than -4"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Divides both sides by -3.",
@@ -185,7 +185,7 @@ export const GED_MATH_1B_DATA = {
     {
       id: "qa8",
       question: "Mai has $60. A bus pass costs $15 and each lunch costs $6. Write an inequality for the number of lunches (L) she can buy, then solve it.",
-      requiredWords: [["15"], ["6"], ["60"], ["7"]],
+      suggestedWords: [["15"], ["6"], ["60"], ["7"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Writes the inequality 15 + 6L ≤ 60.",
@@ -199,7 +199,7 @@ export const GED_MATH_1B_DATA = {
     {
       id: "qa10",
       question: "Why is it useful to verify your solution by substituting it back into the original equation?",
-      requiredWords: [["substitute", "put back", "plug in"], ["check", "verify", "correct"]],
+      suggestedWords: [["substitute", "put back", "plug in"], ["check", "verify", "correct"]],
       scienceMaxMarks: 2,
       markScheme: [
         "Explains that substituting the answer back tests whether both sides come out equal.",
@@ -215,7 +215,7 @@ export const GED_MATH_1B_DATA = {
       id: "diag_1_number_line",
       promptText: "Look at the number line shown. Write the inequality it represents and explain how the circle tells you which sign to use.",
       inlineSvg: DIAGRAMS.DIAGRAM_NUMBER_LINE_SOLUTION,
-      requiredWords: [["open", "empty", "hollow"], ["boundary", "-2"], ["greater than", ">"]],
+      suggestedWords: [["open", "empty", "hollow"], ["boundary", "-2"], ["greater than", ">"]],
       modelAnswer: "The shading starts at -2 and continues to the right, so the solution is every number greater than -2. The circle at -2 is open, which means -2 itself is not included, so the correct inequality is x > -2 rather than x ≥ -2.",
       scienceMaxMarks: 3,
       markScheme: [
@@ -228,7 +228,7 @@ export const GED_MATH_1B_DATA = {
       id: "diag_2_compound_range",
       promptText: "Describe the range of values shaded on this number line. Write it as a compound inequality and explain both circles.",
       inlineSvg: DIAGRAMS.DIAGRAM_COMPOUND_RANGE,
-      requiredWords: [["compound", "between"], ["closed", "filled", "included"], ["open", "not included"]],
+      suggestedWords: [["compound", "between"], ["closed", "filled", "included"], ["open", "not included"]],
       modelAnswer: "The shading runs from 1 to 4. The circle at 1 is filled, so 1 is included, and the circle at 4 is open, so 4 is not. Written as a compound inequality this is 1 ≤ x < 4.",
       scienceMaxMarks: 3,
       markScheme: [
@@ -241,7 +241,7 @@ export const GED_MATH_1B_DATA = {
       id: "diag_3_budget",
       promptText: "Read the budget situation in the diagram. Write an inequality for the number of lunches Mai can buy, solve it, and state your final answer as a whole number.",
       inlineSvg: DIAGRAMS.DIAGRAM_WORD_PROBLEM_BUDGET,
-      requiredWords: [["inequality", "≤", "<="], ["constraint", "60", "budget"], ["7"]],
+      suggestedWords: [["inequality", "≤", "<="], ["constraint", "60", "budget"], ["7"]],
       modelAnswer: "Her spending must stay within $60, so the inequality is 15 + 6L ≤ 60. Subtracting 15 gives 6L ≤ 45, and dividing by 6 gives L ≤ 7.5. Since she cannot buy part of a lunch, the answer must be rounded down: Mai can buy at most 7 lunches.",
       scienceMaxMarks: 3,
       markScheme: [

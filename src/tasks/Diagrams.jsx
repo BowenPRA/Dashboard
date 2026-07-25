@@ -99,15 +99,17 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
   }
 
   const handleLocalFallbackGrade = () => {
-    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
-    
+    // Suggested words are highlighted as hints, never scored.
+    const usedWordGroups = (currentQ.suggestedWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
+
     const trimmed = userAnswer.trim();
     const hasCapital = /^[A-Z]/.test(trimmed);
     const hasPeriod = /[.!?]$/.test(trimmed);
-    const englishScore = (hasCapital && hasPeriod) ? 1 : 0; 
+    const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
 
-    const pointsEarned = usedWordGroups.length + englishScore;
-    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3;
+    // Two components only: content (mark scheme) + English (max 3).
+    const pointsEarned = englishScore;
+    const maxPoints = currentQ.scienceMaxMarks + 3;
 
     setFeedback({
       originalAnswer: userAnswer.trim(),
@@ -119,7 +121,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       maxPoints,
       isPerfect: false,
       englishFeedback: englishScore ? "1 point awarded for capital letter and punctuation." : "Missed extra point. Start with a capital and end with a period.",
-      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No Cambridge marks can be awarded.",
+      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No content marks can be awarded.",
       fixedAnswer: "AI Grader disabled.",
       isStrikeFallback: true
     });
@@ -138,11 +140,11 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
 
     setGameState('LOADING');
 
-    const primaryRequiredWords = currentQ.requiredWords.map(w => Array.isArray(w) ? w[0] : w);
+    const primarySuggestedWords = (currentQ.suggestedWords || []).map(w => Array.isArray(w) ? w[0] : w);
     const payload = {
       promptText: currentQ.prompt || currentQ.promptText,
       studentAnswer: userAnswer.trim(),
-      requiredWords: primaryRequiredWords,
+      suggestedWords: primarySuggestedWords,
       expectedAnswer: currentQ.modelAnswer,
       scienceMaxMarks: currentQ.scienceMaxMarks,
       markScheme: currentQ.markScheme,
@@ -181,13 +183,15 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       return;
     }
 
-    const usedWordGroups = currentQ.requiredWords.filter(group => checkRequiredWordGroup(group, userAnswer));
+    // Suggested words are highlighted as hints only — not part of the score.
+    const usedWordGroups = (currentQ.suggestedWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
     const scienceScore = aiData.scienceScore || 0;
     const englishScore = aiData.englishScore || 0;
     const scienceMarks = currentQ.markScheme.map((_, i) => i < scienceScore);
 
-    const pointsEarned = usedWordGroups.length + scienceScore + englishScore;
-    const maxPoints = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3; 
+    // Two components only: content (mark scheme) + English (max 3).
+    const pointsEarned = scienceScore + englishScore;
+    const maxPoints = currentQ.scienceMaxMarks + 3;
     const isPerfect = pointsEarned >= maxPoints;
 
     setFeedback({
@@ -217,14 +221,14 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
     let newMaxPoints = maxPossiblePoints;
 
     if (gameState === 'SAVED_PERFECT') {
-      const maxP = currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3;
+      const maxP = currentQ.scienceMaxMarks + 3;
       newCumPoints += maxP;
       newMaxPoints += maxP;
     } else if (feedback) {
       newCumPoints += feedback.pointsEarned;
       newMaxPoints += feedback.maxPoints;
     } else if (gameState === 'SAVED_API_ERROR') {
-      newMaxPoints += currentQ.requiredWords.length + currentQ.scienceMaxMarks + 3;
+      newMaxPoints += currentQ.scienceMaxMarks + 3;
     }
 
     setCumulativePoints(newCumPoints);
@@ -332,7 +336,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
             </div>
 
             <div className={containerClass}>
-              <textarea 
+              <textarea
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -340,18 +344,25 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                 onCopy={(e) => e.preventDefault()}
                 onCut={(e) => e.preventDefault()}
                 disabled={gameState !== 'Q'}
+                spellCheck={false}
+                autoCorrect="off"
+                autoCapitalize="off"
+                autoComplete="off"
+                data-gramm="false"
+                data-gramm_editor="false"
+                data-enable-grammarly="false"
                 placeholder={strikes >= 3 ? "AI Grader disabled. Local fallback grading only." : "Analyze the diagram here..."}
                 className={textAreaClass}
               />
             </div>
 
-            {gameState !== 'LOADING' && (
+            {gameState !== 'LOADING' && (currentQ.suggestedWords || []).length > 0 && (
               <div className="w-full mb-8">
                 <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">
-                  Required Vocabulary
+                  Suggested Vocabulary <span className="normal-case tracking-normal text-slate-300 dark:text-slate-600">· optional hints, not graded</span>
                 </span>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {currentQ.requiredWords.map((wordGroup, i) => {
+                  {(currentQ.suggestedWords || []).map((wordGroup, i) => {
                     const isUsed = feedback 
                       ? feedback.usedWordGroups.includes(wordGroup) 
                       : checkRequiredWordGroup(wordGroup, userAnswer);
@@ -461,7 +472,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                   <div className="flex items-center justify-between mb-4 text-slate-800 dark:text-slate-100">
                     <div className="flex items-center">
                       <Award className="w-6 h-6 mr-2 text-amber-500" />
-                      <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
+                      <h3 className="text-lg font-black">Content Marks Breakdown</h3>
                     </div>
                     <span className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold px-3 py-1 rounded-lg text-sm">
                       {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts

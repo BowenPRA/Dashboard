@@ -318,7 +318,7 @@ export const ENGLISH_0A_DATA = {
       "Make every pronoun point clearly at one noun — name the person if there is any doubt.",
       "Write in paragraphs, with a short conclusion.",
     ],
-    requiredWords: [
+    suggestedWords: [
       ["Evidence", "prove", "proof"],
       ["Claim", "argues", "argument", "position"],
       ["Student", "students"],

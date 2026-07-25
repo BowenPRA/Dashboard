@@ -130,7 +130,7 @@ export const GED_MATH_1A_DATA = {
     {
       id: "qa1",
       question: "What is the primary difference between an expression and an equation?",
-      requiredWords: [["expression"], ["equation"], ["equal sign", "equals sign", "equal"]],
+      suggestedWords: [["expression"], ["equation"], ["equal sign", "equals sign", "equal"]],
       scienceMaxMarks: 2,
       markScheme: [
         "States that an expression is a maths phrase with no equal sign.",
@@ -144,7 +144,7 @@ export const GED_MATH_1A_DATA = {
     {
       id: "qa4",
       question: "Why is it important to only combine 'like terms' in an expression?",
-      requiredWords: [["like terms", "same variable"], ["different", "unlike", "cannot"]],
+      suggestedWords: [["like terms", "same variable"], ["different", "unlike", "cannot"]],
       scienceMaxMarks: 2,
       markScheme: [
         "States that like terms share the same variable (and the same exponent).",
@@ -157,7 +157,7 @@ export const GED_MATH_1A_DATA = {
     {
       id: "qa6",
       question: "A plumber charges a $50 flat service fee plus $25 per hour of work. If the total bill was $150, which equation can be used to find the number of hours (h) he worked?",
-      requiredWords: [["50"], ["25"], ["150"]],
+      suggestedWords: [["50"], ["25"], ["150"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Uses 50 as a constant flat fee that is added once.",
@@ -170,7 +170,7 @@ export const GED_MATH_1A_DATA = {
     {
       id: "qa7",
       question: "Evaluate the algebraic expression 4x² - 3y when x = 3 and y = 5.",
-      requiredWords: [["substitute", "replace", "plug in"], ["21"]],
+      suggestedWords: [["substitute", "replace", "plug in"], ["21"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Substitutes x = 3 and y = 5 into the expression correctly.",
@@ -184,7 +184,7 @@ export const GED_MATH_1A_DATA = {
     {
       id: "qa9",
       question: "Solve the equation for x: 3x - 12 = 24. What are the steps?",
-      requiredWords: [["inverse", "opposite", "both sides"], ["12"]],
+      suggestedWords: [["inverse", "opposite", "both sides"], ["12"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Adds 12 to both sides to get 3x = 36.",
@@ -197,7 +197,7 @@ export const GED_MATH_1A_DATA = {
     {
       id: "qa10",
       question: "Simplify the expression by using the distributive property: -4(2x - 5).",
-      requiredWords: [["distribute", "distributive"], ["-8x + 20", "-8x+20"]],
+      suggestedWords: [["distribute", "distributive"], ["-8x + 20", "-8x+20"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Multiplies -4 by 2x to get -8x.",
@@ -214,7 +214,7 @@ export const GED_MATH_1A_DATA = {
       id: "diag_1_number_line",
       promptText: "Analyze the number line provided. Identify the coordinates of Point A and Point B, and calculate the exact distance between them. Explain your steps.",
       inlineSvg: DIAGRAMS.DIAGRAM_NUMBER_LINE,
-      requiredWords: [["distance", "khoảng cách"], ["absolute value", "giá trị tuyệt đối"], ["subtract", "trừ"], "five"],
+      suggestedWords: [["distance", "khoảng cách"], ["absolute value", "giá trị tuyệt đối"], ["subtract", "trừ"], "five"],
       modelAnswer: "Point A is located at -2 and Point B is located at 3. To find the distance between them, we can subtract the coordinates and take the absolute value: |3 - (-2)| = |5| = 5. The distance is 5 units.",
       scienceMaxMarks: 3,
       markScheme: [
@@ -227,7 +227,7 @@ export const GED_MATH_1A_DATA = {
       id: "diag_2_coordinate_plane",
       promptText: "Examine the coordinate plane. Identify the y-intercept of the graphed line and explain what the y-intercept represents in a coordinate system.",
       inlineSvg: DIAGRAMS.DIAGRAM_COORDINATE_PLANE,
-      requiredWords: [["y-intercept", "tung độ gốc"], ["axis", "trục"], "crosses", "zero"],
+      suggestedWords: [["y-intercept", "tung độ gốc"], ["axis", "trục"], "crosses", "zero"],
       modelAnswer: "The y-intercept is the point where the line crosses the vertical y-axis. Looking at the graph, the line crosses the y-axis at the point (0, 2), making the y-intercept 2.",
       scienceMaxMarks: 2,
       markScheme: [
@@ -239,7 +239,7 @@ export const GED_MATH_1A_DATA = {
       id: "diag_3_inequality",
       promptText: "Analyze the inequality graphed on the number line. Determine the inequality expression it represents and explain the significance of the open circle and the direction of the arrow.",
       inlineSvg: DIAGRAMS.DIAGRAM_INEQUALITY,
-      requiredWords: [["inequality", "bất phương trình"], ["open circle", "vòng tròn mở"], "less than", "four"],
+      suggestedWords: [["inequality", "bất phương trình"], ["open circle", "vòng tròn mở"], "less than", "four"],
       modelAnswer: "The graph represents the inequality x < 4. The open circle at 4 indicates that the number 4 is not included in the solution. The shaded arrow points to the left, meaning all numbers less than 4 are solutions.",
       scienceMaxMarks: 3,
       markScheme: [

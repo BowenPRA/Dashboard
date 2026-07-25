@@ -164,16 +164,16 @@ for (const trackId of TRACK_IDS) {
       }
     }
     // ShortAnswers.jsx reads modelAnswer (falling back to sampleAnswer) and sends
-    // requiredWords / scienceMaxMarks / markScheme to the AI grader. Without the
-    // latter three it falls back to a generic placeholder mark scheme, which
-    // grades noticeably worse — so those are warnings, not silent defaults.
+    // scienceMaxMarks / markScheme to the AI grader. Without the latter two it
+    // falls back to a generic placeholder mark scheme, which grades noticeably
+    // worse — so those are warnings, not silent defaults. suggestedWords are
+    // optional vocabulary hints (never scored), so their absence is fine.
     for (const qa of unit.shortQA || []) {
       if (!qa.modelAnswer && !qa.sampleAnswer) err(`${label}: shortQA ${qa.id} has no modelAnswer for the grader`);
       if (!(qa.markScheme || []).length) warn(`${label}: shortQA ${qa.id} has no markScheme — the AI will grade against a generic default`);
       else if (qa.scienceMaxMarks !== qa.markScheme.length) {
         err(`${label}: shortQA ${qa.id} scienceMaxMarks ${qa.scienceMaxMarks} != ${qa.markScheme.length} markScheme rows`);
       }
-      if (!(qa.requiredWords || []).length) warn(`${label}: shortQA ${qa.id} has no requiredWords — no vocabulary is enforced`);
     }
     for (const d of unit.diagrams || []) {
       if (!d.modelAnswer) err(`${label}: diagram ${d.id} has no modelAnswer`);

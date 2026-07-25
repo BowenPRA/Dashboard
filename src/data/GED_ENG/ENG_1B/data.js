@@ -225,7 +225,7 @@ export const ENGLISH_1B_DATA = {
     {
       id: "q1",
       question: "How does using a dependent clause help organize a complex sentence?",
-      requiredWords: [["background", "context", "secondary"], ["main", "independent", "focus"]],
+      suggestedWords: [["background", "context", "secondary"], ["main", "independent", "focus"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that it provides background information, context, or secondary details.",
@@ -236,7 +236,7 @@ export const ENGLISH_1B_DATA = {
     {
       id: "q2",
       question: "What is the main purpose of juxtaposition in writing or art?",
-      requiredWords: [["side-by-side", "beside", "together"], ["contrast", "differences"]],
+      suggestedWords: [["side-by-side", "beside", "together"], ["contrast", "differences"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for defining juxtaposition as placing two different concepts or images side-by-side.",
@@ -247,7 +247,7 @@ export const ENGLISH_1B_DATA = {
     {
       id: "q3",
       question: "Why is it a good strategy to include a concession in a persuasive essay?",
-      requiredWords: [["valid", "reasonable", "agree"], ["trust", "fair", "objective"]],
+      suggestedWords: [["valid", "reasonable", "agree"], ["trust", "fair", "objective"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for identifying that a concession acknowledges the opposing side has a valid or reasonable point.",
@@ -262,7 +262,7 @@ export const ENGLISH_1B_DATA = {
       inlineSvg: DIAGRAMS.SENTENCE_STRUCTURE_CHART,
       imagePrompt: "A clean, minimalist academic bar chart titled 'Sentence Structures in Persuasive Essays'. The y-axis shows 'Frequency of Use (%)' and the x-axis shows three categories: 'Simple Sentences', 'Compound Sentences', and 'Complex Sentences (Subordination)'. The bar for 'Complex Sentences (Subordination)' is the tallest at 65%, 'Simple Sentences' is at 15%, and 'Compound Sentences' is at 20%. Use a modern color palette of teal, navy, and coral on a white background. No 3D effects, highly legible sans-serif fonts, flat graphic design style suitable for an English language test.",
       promptText: "Analyze the provided chart. What does the data suggest about the preferred sentence structure in persuasive writing?",
-      requiredWords: [["complex", "subordination"], ["highest", "majority", "most", "preferred"]],
+      suggestedWords: [["complex", "subordination"], ["highest", "majority", "most", "preferred"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for identifying that Complex Sentences (Subordination) are the most frequently used.",
@@ -275,7 +275,7 @@ export const ENGLISH_1B_DATA = {
       inlineSvg: DIAGRAMS.ARGUMENT_ARCHITECTURE,
       imagePrompt: "A flat vector infographic showing the 'Architecture of an Argument'. It features three interconnected blocks flowing upwards. The bottom block is blue and labeled '1. Evidence Synthesis'. A prominent arrow points up to a middle orange block labeled '2. Concession to Opponent'. A final arrow points up to the top green block labeled '3. Primary Claim'. The design should be sleek, corporate, and highly legible, using standard sans-serif fonts, placed on a clean white background.",
       promptText: "Examine the flowchart detailing the Architecture of an Argument. Describe the sequence of steps a writer must take before reaching the Primary Claim.",
-      requiredWords: [["synthesis", "synthesize"], ["concession", "concede"]],
+      suggestedWords: [["synthesis", "synthesize"], ["concession", "concede"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for identifying the first step as Evidence Synthesis.",
@@ -291,7 +291,7 @@ export const ENGLISH_1B_DATA = {
       "Explain the effect of using juxtaposition to contrast ideas.",
       "Describe how a concession builds trust with an audience."
     ],
-    requiredWords: [
+    suggestedWords: [
       ["Syntax", "structure", "structures"], 
       ["Juxtaposition", "contrast"],
       ["Concession", "concede"]

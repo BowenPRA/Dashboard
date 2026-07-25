@@ -224,7 +224,7 @@ export const MATH_2A_DATA = {
     {
       id: "q1",
       question: "If you already know the 2D area of a prism's cross-section, what is the exact mathematical step required to find its total 3D volume?",
-      requiredWords: [["multiply", "times"], ["length", "depth", "height"]],
+      suggestedWords: [["multiply", "times"], ["length", "depth", "height"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating the mathematical operation is multiplication.",
@@ -235,7 +235,7 @@ export const MATH_2A_DATA = {
     {
       id: "q2",
       question: "When calculating the total surface area of a 3D solid, why do mathematicians highly recommend drawing an unfolded 2D net first?",
-      requiredWords: [["flat", "2d", "unfold", "see all"], ["hidden", "miss", "forget", "mistakes"]],
+      suggestedWords: [["flat", "2d", "unfold", "see all"], ["hidden", "miss", "forget", "mistakes"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for explaining that a net unfolds the 3D shape into a flat 2D map.",
@@ -246,7 +246,7 @@ export const MATH_2A_DATA = {
     {
       id: "q3",
       question: "Imagine a cuboid has its square bases painted blue and its lateral sides painted white. Describe the step-by-step process to find the exact simplified fraction of the total surface area that is painted blue.",
-      requiredWords: [["total", "denominator", "all"], ["numerator", "target", "color", "blue"]],
+      suggestedWords: [["total", "denominator", "all"], ["numerator", "target", "color", "blue"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating you must calculate the total surface area of all faces to serve as the bottom denominator.",
@@ -283,7 +283,7 @@ export const MATH_2A_DATA = {
         <text x="245" y="195" font-family="sans-serif" font-weight="600" font-size="14" fill="#475569" text-anchor="start">Length = 10 cm</text>
       </svg>`,
       promptText: "Look at the triangular prism below. Given the area of the shaded front cross-section and the total length, calculate the exact volume of the prism.",
-      requiredWords: [["240", "240cm3", "240cm"]],
+      suggestedWords: [["240", "240cm3", "240cm"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for indicating the multiplication of the base area (24) and the length (10).",
@@ -315,7 +315,7 @@ export const MATH_2A_DATA = {
         <text x="115" y="25" font-family="sans-serif" font-weight="600" font-size="12" fill="#475569" text-anchor="end">4 cm</text>
       </svg>`,
       promptText: "This diagram shows the unfolded 2D net of a cuboid. Using the labeled dimensions, calculate the total surface area of the 3D solid.",
-      requiredWords: [["76", "76cm2", "76cm"]],
+      suggestedWords: [["76", "76cm2", "76cm"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for calculating the correct areas of the individual face pairs (Top/Bottom = 16, Left/Right = 20, Front/Back = 40).",
@@ -357,7 +357,7 @@ export const MATH_2A_DATA = {
         <text x="325" y="55" font-family="sans-serif" font-weight="700" font-size="13" fill="#475569" text-anchor="start">Lateral Faces (White)</text>
       </svg>`,
       promptText: "This cuboid features two blue square bases and four white rectangular sides. Calculate the total surface area, then determine the exact simplified fraction of the shape that is painted blue.",
-      requiredWords: [["1/6", "one sixth"], ["192", "32"]],
+      suggestedWords: [["1/6", "one sixth"], ["192", "32"]],
       scienceMaxMarks: 3,
       markScheme: [
         "1 mark for calculating the blue area (32 cm²) and the total surface area (192 cm²).",
@@ -374,7 +374,7 @@ export const MATH_2A_DATA = {
       "Detail how to isolate target face categories",
       "Describe the value of utilizing a 2D flat net blueprint"
     ],
-    requiredWords: [
+    suggestedWords: [
       ["total", "surface", "area"],
       ["fraction", "simplify", "numerator"],
       ["net", "unfold", "faces"]

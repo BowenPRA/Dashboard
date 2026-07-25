@@ -126,7 +126,7 @@ export const HIST_1A_DATA = {
     {
       id: "qa1",
       question: "Why did the New England, Middle, and Southern colonies develop completely different economies?",
-      requiredWords: [["geography", "climate", "soil"], ["New England"], ["South", "Southern"]],
+      suggestedWords: [["geography", "climate", "soil"], ["New England"], ["South", "Southern"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Links the differences to geography, soil or climate.",
@@ -139,7 +139,7 @@ export const HIST_1A_DATA = {
     {
       id: "qa2",
       question: "Explain the economic policy of mercantilism and how it affected the colonies.",
-      requiredWords: [["mercantilism"], ["raw materials", "resources"], ["manufactured", "finished goods"]],
+      suggestedWords: [["mercantilism"], ["raw materials", "resources"], ["manufactured", "finished goods"]],
       scienceMaxMarks: 3,
       markScheme: [
         "Defines mercantilism as a system where the mother country builds wealth through controlled trade.",
@@ -153,7 +153,7 @@ export const HIST_1A_DATA = {
     {
       id: "qa4",
       question: "How did the end of the French and Indian War change the relationship between Great Britain and the colonies?",
-      requiredWords: [["debt"], ["tax", "taxes", "taxation"], ["neglect", "control"]],
+      suggestedWords: [["debt"], ["tax", "taxes", "taxation"], ["neglect", "control"]],
       scienceMaxMarks: 3,
       markScheme: [
         "States that the war left Britain with an enormous debt.",
@@ -166,7 +166,7 @@ export const HIST_1A_DATA = {
     {
       id: "qa5",
       question: "What did the colonists mean when they shouted 'No taxation without representation'?",
-      requiredWords: [["representation", "represent", "representative"], ["Parliament"], ["unfair", "consent"]],
+      suggestedWords: [["representation", "represent", "representative"], ["Parliament"], ["unfair", "consent"]],
       scienceMaxMarks: 2,
       markScheme: [
         "Explains that the colonists had no elected representatives in the British Parliament.",
@@ -179,7 +179,7 @@ export const HIST_1A_DATA = {
     {
       id: "qa7",
       question: "Why did the British Parliament eventually decide to repeal the Stamp Act?",
-      requiredWords: [["boycott", "boycotts"], ["merchants", "money", "profits"]],
+      suggestedWords: [["boycott", "boycotts"], ["merchants", "money", "profits"]],
       scienceMaxMarks: 2,
       markScheme: [
         "States that widespread colonial boycotts sharply cut British sales.",
@@ -192,7 +192,7 @@ export const HIST_1A_DATA = {
     {
       id: "qa9",
       question: "What was the primary difference between a Patriot and a Loyalist?",
-      requiredWords: [["Patriot"], ["Loyalist"], ["independence", "independent"]],
+      suggestedWords: [["Patriot"], ["Loyalist"], ["independence", "independent"]],
       scienceMaxMarks: 2,
       markScheme: [
         "Defines a Patriot as a colonist who wanted independence from Britain.",

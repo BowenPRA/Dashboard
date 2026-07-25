@@ -145,7 +145,7 @@ export const SCIENCE_1A_DATA = {
     {
       id: "q1",
       question: "According to the Law of Reflection, what is the relationship between the angle of incidence and the angle of reflection?",
-      requiredWords: [["equal", "same"]],
+      suggestedWords: [["equal", "same"]],
       scienceMaxMarks: 1,
       markScheme: [
         "1 mark for stating that the angles are always equal to each other."
@@ -155,7 +155,7 @@ export const SCIENCE_1A_DATA = {
     {
       id: "q2",
       question: "Explain what happens to the speed and direction of a light ray when it enters a glass block from the air.",
-      requiredWords: [["slow", "slower", "slows down"], ["towards", "closer"]],
+      suggestedWords: [["slow", "slower", "slows down"], ["towards", "closer"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for stating that the light slows down.",
@@ -166,7 +166,7 @@ export const SCIENCE_1A_DATA = {
     {
       id: "q3",
       question: "When white light passes through a prism, why does violet light appear at the bottom of the spectrum while red light is at the top?",
-      requiredWords: [["red", "least"], ["violet", "most"]],
+      suggestedWords: [["red", "least"], ["violet", "most"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for explaining that red light bends (or slows down) the least.",
@@ -180,7 +180,7 @@ export const SCIENCE_1A_DATA = {
       id: "d1",
       inlineSvg: DIAGRAMS.DATA_REFLECTION_55,
       promptText: "Look at the diagram showing an incident ray hitting a mirror. Calculate the angle of the missing reflected ray and state the law that proves your answer.",
-      requiredWords: [["equal", "same", "reflection"]],
+      suggestedWords: [["equal", "same", "reflection"]],
       scienceMaxMarks: 2,
       markScheme: [
         "1 mark for correctly stating the angle is 55 degrees.",
@@ -192,7 +192,7 @@ export const SCIENCE_1A_DATA = {
       id: "d2",
       inlineSvg: DIAGRAMS.DATA_REFRACTION_GLASS_BLOCK,
       promptText: "The diagram shows refraction through a glass block. Compare what is happening to the light ray at point A (inside the glass) and point B (exiting the glass). Based on this bending, what can you infer about the glass block compared to the air?",
-      requiredWords: [["towards", "closer"], ["away", "further"], ["medium"]],
+      suggestedWords: [["towards", "closer"], ["away", "further"], ["medium"]],
       scienceMaxMarks: 3,
       markScheme: [
         "1 mark for stating that at A, the light bends towards the normal.",
@@ -205,7 +205,7 @@ export const SCIENCE_1A_DATA = {
       id: "d3",
       inlineSvg: DIAGRAMS.FILTER_DOUBLE_EXPERIMENT,
       promptText: "Lily sets up an experiment shining white light through a red filter, and then a green filter. Predict what she will see on the screen. Explain your reasoning using the words 'absorb' and 'pass'.",
-      requiredWords: [["black", "nothing", "no light", "dark"], ["absorb", "absorbs", "absorbed"], ["pass", "passes"]],
+      suggestedWords: [["black", "nothing", "no light", "dark"], ["absorb", "absorbs", "absorbed"], ["pass", "passes"]],
       scienceMaxMarks: 3,
       markScheme: [
         "1 mark for predicting that the screen will be dark/black (no light).",
@@ -222,7 +222,7 @@ export const SCIENCE_1A_DATA = {
       "Explain the role of the prism in changing the speed of different colours.",
       "List the 7 colours of the spectrum in order from least bent to most bent."
     ],
-    requiredWords: [
+    suggestedWords: [
       ["prism"], 
       ["speed", "slow", "bend", "refract"], 
       ["spectrum", "dispersion"], 
