@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { CheckCircle2, XCircle, PenLine, ArrowRight } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { playChime } from '../utils/sound';
+import { EmptyState } from '../components/ui';
 
 /**
  * Inline passage editing — the GED RLA "drop-down inside the text" item type.
@@ -54,21 +55,13 @@ export default function GrammarEdit({
   // anyway so an empty pool shows a message instead of a blank white screen.
   if (!current) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-6 text-center">
-        <PenLine className="w-14 h-14 text-sky-300 dark:text-sky-700 mb-4" />
-        <h2 className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mb-2">
-          Nothing to edit yet
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm">
-          No editing passages have been added to this unit.
-        </p>
-        <button
-          onClick={onQuit}
-          className="rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-8 py-4 font-extrabold text-white transition hover:brightness-105"
-        >
-          Return
-        </button>
-      </div>
+      <EmptyState
+        icon={<PenLine className="w-16 h-16" />}
+        iconClassName="text-sky-300 dark:text-sky-700"
+        title="Nothing to edit yet"
+        message="No editing passages have been added to this unit."
+        onAction={onQuit}
+      />
     );
   }
 
@@ -156,7 +149,7 @@ export default function GrammarEdit({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       <TopBar
         current={index + 1}
         total={exercises.length}

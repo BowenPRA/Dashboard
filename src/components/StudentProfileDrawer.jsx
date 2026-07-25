@@ -127,14 +127,14 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
 
       <div className="relative w-full max-w-4xl bg-slate-50 dark:bg-slate-950 h-full shadow-2xl border-l-2 border-slate-200 dark:border-slate-800 flex flex-col animate-in slide-in-from-right-full duration-300">
 
-        <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 border-b-2 border-slate-200 dark:border-slate-800 flex items-start justify-between shrink-0">
-          <div>
-            <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-1">
+        <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 border-b-2 border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 shrink-0">
+          <div className="min-w-0">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-1 break-words">
               {detail?.name || studentName}'s Profile
             </h2>
             <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Detailed Academic Record</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setShowEdit((v) => !v)}
               className={`h-10 px-4 flex items-center gap-2 rounded-xl border-2 font-black text-xs uppercase tracking-widest transition-colors active:scale-95 ${showEdit ? 'bg-indigo-500 text-white border-indigo-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700 hover:text-indigo-500'}`}

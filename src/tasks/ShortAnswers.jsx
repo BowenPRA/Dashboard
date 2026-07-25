@@ -3,6 +3,7 @@ import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FlaskConical, FileEdi
 import TopBar from '../components/TopBar';
 
 import { gradeShortAnswer } from '../utils/aiGrader';
+import { EmptyState } from '../components/ui';
 
 const calculateSimilarity = (str1, str2) => {
   const clean = (s) => s.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
@@ -265,14 +266,13 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
   if (!currentQ) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center transition-colors duration-300">
-        <PenTool className="w-16 h-16 text-teal-300 dark:text-teal-500 mb-4" />
-        <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-2">Coming Soon</h2>
-        <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 max-w-md">Teacher is currently writing the Short Answer questions for this unit.</p>
-        <button onClick={onQuit} className="px-8 py-4 bg-[#1CB0F6] hover:bg-[#1899D6] text-white rounded-2xl font-black uppercase tracking-widest border-b-[5px] border-[#1899D6] active:border-b-0 active:translate-y-[5px] transition-all">
-          Return
-        </button>
-      </div>
+      <EmptyState
+        icon={<PenTool className="w-16 h-16" />}
+        iconClassName="text-teal-300 dark:text-teal-500"
+        title="Coming Soon"
+        message="Teacher is currently writing the Short Answer questions for this unit."
+        onAction={onQuit}
+      />
     );
   }
 

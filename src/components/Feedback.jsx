@@ -127,12 +127,12 @@ export default function Feedback({
           </div>
         </div>
         
-        <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-slate-200">
+        <div className="bg-white dark:bg-slate-900 px-6 py-4 flex items-center justify-between border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-            <button 
-              onClick={onPrev} 
-              disabled={isFirst} 
-              className="px-6 py-3 rounded-xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30"
+            <button
+              onClick={onPrev}
+              disabled={isFirst}
+              className="px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition-all disabled:opacity-30"
             >
               Previous
             </button>

@@ -3,6 +3,7 @@ import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FlaskConical, FileE
 import TopBar from '../components/TopBar';
 
 import { gradeDiagram } from '../utils/aiGrader';
+import { EmptyState } from '../components/ui';
 
 const calculateSimilarity = (str1, str2) => {
   const clean = (s) => s.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
@@ -87,14 +88,13 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
 
   if (!currentQ) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-        <ImageIcon className="w-16 h-16 text-rose-300 mb-4" />
-        <h2 className="text-3xl font-black text-slate-800 mb-2">Coming Soon</h2>
-        <p className="text-lg text-slate-500 mb-8 max-w-md">Teacher is currently uploading the Diagrams for this unit.</p>
-        <button onClick={onQuit} className="px-8 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all">
-          Return
-        </button>
-      </div>
+      <EmptyState
+        icon={<ImageIcon className="w-16 h-16" />}
+        iconClassName="text-rose-300 dark:text-rose-700"
+        title="Coming Soon"
+        message="Teacher is currently uploading the Diagrams for this unit."
+        onAction={onQuit}
+      />
     );
   }
 
@@ -253,17 +253,17 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
   let textAreaClass = "w-full h-40 text-lg font-medium bg-transparent focus:outline-none resize-none disabled:bg-transparent ";
   
   if (gameState === 'SAVED_API_ERROR') {
-    containerClass += "bg-orange-50 border-orange-300";
-    textAreaClass += "text-orange-900";
+    containerClass += "bg-orange-50 dark:bg-orange-900/20 border-orange-300 dark:border-orange-800";
+    textAreaClass += "text-orange-900 dark:text-orange-200";
   } else if (strikes >= 3 || (gameState === 'A' && feedback?.isStrikeFallback)) {
-    containerClass += "bg-rose-50 border-rose-400";
-    textAreaClass += "text-rose-900";
+    containerClass += "bg-rose-50 dark:bg-rose-900/20 border-rose-400 dark:border-rose-800";
+    textAreaClass += "text-rose-900 dark:text-rose-200";
   } else if ((gameState === 'A' && feedback?.isPerfect) || gameState === 'SAVED_PERFECT') {
-    containerClass += "bg-[#ecfccb] border-[#84cc16]";
-    textAreaClass += "text-[#3f6212]";
+    containerClass += "bg-[#ecfccb] dark:bg-lime-900/20 border-[#84cc16] dark:border-lime-800";
+    textAreaClass += "text-[#3f6212] dark:text-lime-200";
   } else {
-    containerClass += "bg-white border-slate-200";
-    textAreaClass += "text-slate-800";
+    containerClass += "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800";
+    textAreaClass += "text-slate-800 dark:text-slate-100";
   }
 
   // Dynamic Image Logic Helper
@@ -293,19 +293,19 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
     }
     
     return (
-      <div className="w-full h-64 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
+      <div className="w-full h-64 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400">
         <ImageIcon className="w-12 h-12" />
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-32">
-      <TopBar 
-        current={currentIndex} 
-        total={questions.length} 
-        onQuit={() => onComplete(0, localAnswers)} 
-        modeTitle="Diagram Analysis" 
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans pb-32">
+      <TopBar
+        current={currentIndex}
+        total={questions.length}
+        onQuit={() => onComplete(0, localAnswers)}
+        modeTitle="Diagram Analysis"
       />
 
       <div className="max-w-7xl mx-auto p-4 sm:p-6 mt-2 sm:mt-6">
@@ -314,7 +314,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
           
           {/* LEFT: Image/SVG Viewer */}
           <div className="w-full lg:w-1/2 flex flex-col">
-            <div className="bg-white p-4 rounded-[2rem] border border-slate-200 shadow-sm sticky top-24">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm sticky top-24">
                {renderVisual()}
             </div>
           </div>
@@ -326,7 +326,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
               <h2 className="text-rose-500 font-black text-xl mb-2 uppercase tracking-widest">
                 Analysis {currentIndex + 1}
               </h2>
-              <p className="text-2xl font-bold text-slate-800 leading-snug">
+              <p className="text-2xl font-bold text-slate-800 dark:text-white leading-snug">
                 {currentQ.prompt || currentQ.promptText}
               </p>
             </div>
@@ -361,9 +361,9 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                       <span 
                         key={i} 
                         className={`px-4 py-1.5 rounded-full text-sm font-bold border-2 transition-colors duration-300 ${
-                          isUsed 
-                            ? 'bg-[#d7ffb8] text-[#3e7500] border-[#58a700]' 
-                            : 'bg-white text-[#58a700] border-[#58a700]'
+                          isUsed
+                            ? 'bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-300 border-[#58a700]'
+                            : 'bg-white dark:bg-slate-900 text-[#58a700] dark:text-lime-400 border-[#58a700]'
                         }`}
                       >
                         {displayWord}
@@ -375,7 +375,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
             )}
 
             {gameState === 'SAVED_PERFECT' && (
-              <div className="w-full flex justify-end mb-8 border-t border-slate-200 pt-6 animate-in fade-in">
+              <div className="w-full flex justify-end mb-8 border-t border-slate-200 dark:border-slate-800 pt-6 animate-in fade-in">
                  <button 
                    onClick={handleNext} 
                    className="flex items-center px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
@@ -388,16 +388,16 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
 
             {gameState === 'SAVED_API_ERROR' && (
               <div className="w-full animate-in fade-in">
-                <div className="bg-orange-50 border border-orange-200 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
+                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
                    <div className="flex items-center mb-4">
                      <XCircle className="w-8 h-8 text-orange-500 mr-3" />
-                     <h3 className="text-xl font-black text-orange-800">Connection Failed</h3>
+                     <h3 className="text-xl font-black text-orange-800 dark:text-orange-300">Connection Failed</h3>
                    </div>
-                   <p className="text-sm font-bold text-orange-700 mt-2">
+                   <p className="text-sm font-bold text-orange-700 dark:text-orange-400 mt-2">
                      The AI grader is currently offline. Your answer has been saved. Please continue and resubmit on a future attempt.
                    </p>
                 </div>
-                <div className="flex justify-end pt-4 border-t border-slate-200 mb-8">
+                <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
                    <button onClick={handleNext} className="flex items-center px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-orange-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm">
                      {currentIndex < questions.length - 1 ? 'Skip Question' : 'Complete Section'} <ArrowRight className="w-6 h-6 ml-3" />
                    </button>
@@ -406,7 +406,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
             )}
 
             {(gameState === 'Q' || gameState === 'SAVED_API_ERROR') && (
-              <div className="w-full flex justify-end mb-8 border-t border-slate-200 pt-6">
+              <div className="w-full flex justify-end mb-8 border-t border-slate-200 dark:border-slate-800 pt-6">
                 <button 
                   onClick={handleGrade} 
                   disabled={!userAnswer.trim()} 
@@ -418,11 +418,11 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
             )}
 
             {gameState === 'LOADING' && (
-              <div className="w-full h-40 flex flex-col items-center justify-center bg-white rounded-[2rem] border border-slate-200 shadow-sm animate-pulse mb-8">
-                 <div className="bg-rose-100 p-3 rounded-full mb-3">
+              <div className="w-full h-40 flex flex-col items-center justify-center bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm animate-pulse mb-8">
+                 <div className="bg-rose-100 dark:bg-rose-900/40 p-3 rounded-full mb-3">
                    <Bot className="w-8 h-8 text-rose-500 animate-bounce" />
                  </div>
-                 <h3 className="text-lg font-black text-slate-700">AI Tutor is analyzing your answer...</h3>
+                 <h3 className="text-lg font-black text-slate-700 dark:text-slate-200">AI Tutor is analyzing your answer...</h3>
               </div>
             )}
 
@@ -430,53 +430,53 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
               <div className="w-full animate-in slide-in-from-bottom-8 duration-500">
 
                 {!feedback.isPerfect && (
-                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+                  <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">
                       Your Attempt
                     </span>
-                    <p className="text-lg text-slate-700 font-medium italic">
+                    <p className="text-lg text-slate-700 dark:text-slate-300 font-medium italic">
                       "{feedback.originalAnswer}"
                     </p>
                   </div>
                 )}
 
-                <div className="flex items-center mb-6 border-b border-slate-200 pb-6">
+                <div className="flex items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
                   <div className={`p-3 rounded-full mr-4 flex-shrink-0 bg-rose-500`}>
                     <Bot className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-black text-slate-800">
+                    <h3 className="text-2xl font-black text-slate-800 dark:text-white">
                       {feedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
                     </h3>
-                    <p className="text-sm font-bold text-slate-500 tracking-widest uppercase mt-1">
-                      Accuracy Score: 
-                      <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600' : 'text-rose-500'}`}>
+                    <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">
+                      Accuracy Score:
+                      <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}`}>
                         {feedback.pointsEarned} / {feedback.maxPoints} Pts
                       </span>
                     </p>
                   </div>
                 </div>
 
-                <div className="w-full bg-white p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 shadow-sm mb-6">
-                  <div className="flex items-center justify-between mb-4 text-slate-800">
+                <div className="w-full bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm mb-6">
+                  <div className="flex items-center justify-between mb-4 text-slate-800 dark:text-slate-100">
                     <div className="flex items-center">
                       <Award className="w-6 h-6 mr-2 text-amber-500" />
                       <h3 className="text-lg font-black">Cambridge Mark Scheme Breakdown</h3>
                     </div>
-                    <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-sm">
+                    <span className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold px-3 py-1 rounded-lg text-sm">
                       {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
                     </span>
                   </div>
-                  
+
                   <ul className="space-y-3">
                     {currentQ.markScheme.map((mark, i) => (
                       <li key={i} className="flex items-start">
                         {feedback.scienceMarks[i] ? (
                           <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
                         ) : (
-                          <XCircle className="w-5 h-5 text-slate-300 mr-3 mt-0.5 flex-shrink-0" />
+                          <XCircle className="w-5 h-5 text-slate-300 dark:text-slate-600 mr-3 mt-0.5 flex-shrink-0" />
                         )}
-                        <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800' : 'text-slate-400 line-through'}`}>
+                        <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 line-through'}`}>
                           {mark}
                         </span>
                       </li>
@@ -485,66 +485,66 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 mb-6">
-                   <div className="bg-[#fff9e6] border border-[#fde68a] p-6 rounded-[1.5rem]">
+                   <div className="bg-[#fff9e6] dark:bg-amber-900/20 border border-[#fde68a] dark:border-amber-800 p-6 rounded-[1.5rem]">
                      <div className="flex items-center justify-between mb-3">
-                       <div className="flex items-center text-[#d97706]">
+                       <div className="flex items-center text-[#d97706] dark:text-amber-400">
                          <Type className="w-5 h-5 mr-2" />
                          <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
                        </div>
-                       <span className="bg-[#fef3c7] text-[#b45309] font-bold px-2 py-0.5 rounded-md text-xs">
+                       <span className="bg-[#fef3c7] dark:bg-amber-900/40 text-[#b45309] dark:text-amber-300 font-bold px-2 py-0.5 rounded-md text-xs">
                          {feedback.englishScore} / 3 Pts
                        </span>
                      </div>
-                     <p className="text-slate-700 font-medium leading-relaxed">
+                     <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                        {feedback.englishFeedback}
                      </p>
                    </div>
-                   
-                   <div className="bg-[#eff6ff] border border-[#bfdbfe] p-6 rounded-[1.5rem]">
-                     <div className="flex items-center text-[#2563eb] mb-3">
+
+                   <div className="bg-[#eff6ff] dark:bg-blue-900/20 border border-[#bfdbfe] dark:border-blue-800 p-6 rounded-[1.5rem]">
+                     <div className="flex items-center text-[#2563eb] dark:text-blue-400 mb-3">
                        <FlaskConical className="w-5 h-5 mr-2" />
                        <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
                      </div>
-                     <p className="text-slate-700 font-medium leading-relaxed">
+                     <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                        {feedback.scienceFeedback}
                      </p>
                    </div>
                 </div>
 
-                <div className="bg-[#ecfccb] border border-[#bbf7d0] p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
+                <div className="bg-[#ecfccb] dark:bg-lime-900/20 border border-[#bbf7d0] dark:border-lime-800 p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
                   <div className="absolute top-4 right-4 bg-[#84cc16] p-2 rounded-full text-white">
                     <FileEdit className="w-5 h-5" />
                   </div>
-                  
-                  <h4 className="font-black text-[#3f6212] text-sm uppercase tracking-widest mb-4">
+
+                  <h4 className="font-black text-[#3f6212] dark:text-lime-300 text-sm uppercase tracking-widest mb-4">
                     Suggested Notebook Answer
                   </h4>
-                  
+
                   <div className="space-y-4">
                     <div>
-                      <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                      <span className="block text-xs font-bold text-[#65a30d] dark:text-lime-400 uppercase mb-1">
                         {feedback.isPerfect ? "Your Perfect Analysis:" : "Fixed Version of Your Analysis:"}
                       </span>
-                      <p className="text-lg font-bold text-[#166534]">
+                      <p className="text-lg font-bold text-[#166534] dark:text-lime-200">
                         "{feedback.fixedAnswer}"
                       </p>
                     </div>
-                    <div className="pt-4 border-t border-[#d9f99d]">
-                      <span className="block text-xs font-bold text-[#65a30d] uppercase mb-1">
+                    <div className="pt-4 border-t border-[#d9f99d] dark:border-lime-800">
+                      <span className="block text-xs font-bold text-[#65a30d] dark:text-lime-400 uppercase mb-1">
                         Official Model Answer:
                       </span>
-                      <p className="text-lg font-bold text-[#166534]">
+                      <p className="text-lg font-bold text-[#166534] dark:text-lime-200">
                         "{currentQ.modelAnswer}"
                       </p>
                     </div>
                   </div>
-                  
-                  <p className="text-sm font-bold text-[#3f6212] mt-6 bg-[#d9f99d] inline-block px-4 py-2 rounded-lg">
+
+                  <p className="text-sm font-bold text-[#3f6212] dark:text-lime-300 mt-6 bg-[#d9f99d] dark:bg-lime-900/40 inline-block px-4 py-2 rounded-lg">
                     📝 Write one of these down in your notebook for full credit.
                   </p>
                 </div>
 
-                <div className="flex justify-end pt-4 border-t border-slate-200 mb-8">
+                <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
                    <button 
                      onClick={handleNext} 
                      className="flex items-center px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
