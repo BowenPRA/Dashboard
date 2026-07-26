@@ -1,6 +1,6 @@
 export const DIAGRAMS = {
   PRONOUN_CHART: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 330" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
-    <text x="280" y="24" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">The job a pronoun does decides its form</text>
+    <text x="280" y="20" font-family="sans-serif" font-weight="900" font-size="16" fill="#0f172a" text-anchor="middle">The job a pronoun does decides its form</text>
 
     <rect x="16" y="38" width="150" height="34" rx="6" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
     <rect x="170" y="38" width="126" height="34" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>

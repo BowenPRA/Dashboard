@@ -92,7 +92,7 @@ export const DIAGRAMS = {
 
   NOTES_FLIP_RULE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 250" class="w-full h-full drop-shadow-md bg-white rounded-lg p-2">
     <rect x="20" y="25" width="460" height="52" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="3"/>
-    <text x="250" y="58" font-family="sans-serif" font-weight="900" font-size="16" fill="#991b1b" text-anchor="middle">Multiply or divide by a NEGATIVE → flip the sign</text>
+    <text x="250" y="58" font-family="sans-serif" font-weight="900" font-size="15" fill="#991b1b" text-anchor="middle">Multiply or divide by a NEGATIVE → flip the sign</text>
 
     <text x="130" y="115" font-family="sans-serif" font-weight="900" font-size="22" fill="#0f172a" text-anchor="middle">−2x &lt; 8</text>
     <line x1="215" y1="108" x2="275" y2="108" stroke="#64748b" stroke-width="3"/>

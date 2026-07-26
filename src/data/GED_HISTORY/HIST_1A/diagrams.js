@@ -68,28 +68,28 @@ export const DIAGRAMS = {
     <!-- Point 1: 1754-1763 -->
     <circle cx="150" cy="150" r="10" fill="#3b82f6" stroke="#fff" stroke-width="3"/>
     <text x="150" y="110" font-family="sans-serif" font-weight="900" font-size="20" fill="#1e293b" text-anchor="middle">1754-1763</text>
-    <rect x="70" y="180" width="160" height="60" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="64" y="180" width="172" height="60" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
     <text x="150" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a" text-anchor="middle">French &amp; Indian War</text>
     <text x="150" y="225" font-family="sans-serif" font-size="12" fill="#64748b" text-anchor="middle">(Britain gains huge debt)</text>
 
     <!-- Point 2: 1765 -->
     <circle cx="320" cy="150" r="10" fill="#eab308" stroke="#fff" stroke-width="3"/>
     <text x="320" y="200" font-family="sans-serif" font-weight="900" font-size="20" fill="#1e293b" text-anchor="middle">1765</text>
-    <rect x="240" y="50" width="160" height="60" rx="8" fill="#fffbeb" stroke="#fde047" stroke-width="2"/>
+    <rect x="234" y="50" width="172" height="60" rx="8" fill="#fffbeb" stroke="#fde047" stroke-width="2"/>
     <text x="320" y="75" font-family="sans-serif" font-weight="bold" font-size="14" fill="#854d0e" text-anchor="middle">Stamp Act</text>
     <text x="320" y="95" font-family="sans-serif" font-size="12" fill="#a16207" text-anchor="middle">"No Taxation W/O Rep"</text>
 
     <!-- Point 3: 1770 -->
     <circle cx="490" cy="150" r="10" fill="#ef4444" stroke="#fff" stroke-width="3"/>
     <text x="490" y="110" font-family="sans-serif" font-weight="900" font-size="20" fill="#1e293b" text-anchor="middle">1770</text>
-    <rect x="410" y="180" width="160" height="60" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+    <rect x="404" y="180" width="172" height="60" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
     <text x="490" y="205" font-family="sans-serif" font-weight="bold" font-size="14" fill="#991b1b" text-anchor="middle">Boston Massacre</text>
     <text x="490" y="225" font-family="sans-serif" font-size="12" fill="#b91c1c" text-anchor="middle">Rising violence</text>
 
     <!-- Point 4: 1773 -->
     <circle cx="660" cy="150" r="10" fill="#10b981" stroke="#fff" stroke-width="3"/>
     <text x="660" y="200" font-family="sans-serif" font-weight="900" font-size="20" fill="#1e293b" text-anchor="middle">1773</text>
-    <rect x="580" y="50" width="160" height="60" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+    <rect x="574" y="50" width="172" height="60" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
     <text x="660" y="75" font-family="sans-serif" font-weight="bold" font-size="14" fill="#166534" text-anchor="middle">Boston Tea Party</text>
     <text x="660" y="95" font-family="sans-serif" font-size="12" fill="#15803d" text-anchor="middle">Sons of Liberty protest</text>
   </svg>`,
