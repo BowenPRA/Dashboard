@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FlaskConical, FileEdit, ArrowRight, Languages } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FileEdit, ArrowRight, Languages } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeShortAnswer } from '../utils/aiGrader';
@@ -497,7 +497,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
               </ul>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="mb-8">
                <div className="bg-[#fff9e6] dark:bg-[#fff9e6]/10 border border-[#fde68a] dark:border-[#fde68a]/20 p-6 rounded-[1.5rem]">
                  <div className="flex items-center justify-between mb-3">
                    <div className="flex items-center text-[#d97706] dark:text-[#fbbf24]">
@@ -510,16 +510,6 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
                  </div>
                  <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                    {feedback.englishFeedback}
-                 </p>
-               </div>
-               
-               <div className="bg-[#eff6ff] dark:bg-[#eff6ff]/10 border border-[#bfdbfe] dark:border-[#bfdbfe]/20 p-6 rounded-[1.5rem]">
-                 <div className="flex items-center text-[#2563eb] dark:text-[#60a5fa] mb-3">
-                   <FlaskConical className="w-5 h-5 mr-2" />
-                   <h4 className="font-black text-sm uppercase tracking-widest">Academic Feedback</h4>
-                 </div>
-                 <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                   {feedback.scienceFeedback}
                  </p>
                </div>
             </div>

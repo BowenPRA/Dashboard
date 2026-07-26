@@ -161,9 +161,9 @@ export const DIAGRAMS = {
     <line x1="200" y1="0" x2="200" y2="400" stroke="#1e293b" stroke-width="3" />
     <line x1="0" y1="200" x2="400" y2="200" stroke="#1e293b" stroke-width="3" />
     <text x="210" y="215" font-family="sans-serif" font-size="12" fill="#64748b">0</text>
+    <line x1="0" y1="253" x2="400" y2="-13" stroke="#10b981" stroke-width="4" stroke-dasharray="8 4" opacity="0.6"/>
     <circle cx="200" cy="120" r="6" fill="#10b981" />
     <circle cx="320" cy="40" r="6" fill="#10b981" />
-    <line x1="100" y1="280" x2="400" y2="-40" stroke="#10b981" stroke-width="4" stroke-dasharray="8 4" opacity="0.6"/>
   </svg>`,
 
   DIAGRAM_INEQUALITY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" class="w-full h-full drop-shadow-md bg-white rounded-lg p-4">

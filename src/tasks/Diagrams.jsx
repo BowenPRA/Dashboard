@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FlaskConical, FileEdit, ArrowRight } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FileEdit, ArrowRight } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeDiagram } from '../utils/aiGrader';
@@ -495,7 +495,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                   </ul>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 mb-6">
+                <div className="mb-6">
                    <div className="bg-[#fff9e6] dark:bg-amber-900/20 border border-[#fde68a] dark:border-amber-800 p-6 rounded-[1.5rem]">
                      <div className="flex items-center justify-between mb-3">
                        <div className="flex items-center text-[#d97706] dark:text-amber-400">
@@ -508,16 +508,6 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                      </div>
                      <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
                        {feedback.englishFeedback}
-                     </p>
-                   </div>
-
-                   <div className="bg-[#eff6ff] dark:bg-blue-900/20 border border-[#bfdbfe] dark:border-blue-800 p-6 rounded-[1.5rem]">
-                     <div className="flex items-center text-[#2563eb] dark:text-blue-400 mb-3">
-                       <FlaskConical className="w-5 h-5 mr-2" />
-                       <h4 className="font-black text-sm uppercase tracking-widest">Science Feedback</h4>
-                     </div>
-                     <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                       {feedback.scienceFeedback}
                      </p>
                    </div>
                 </div>

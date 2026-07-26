@@ -143,15 +143,15 @@ export const GED_MATH_1A_DATA = {
 
     {
       id: "qa4",
-      question: "Why is it important to only combine 'like terms' in an expression?",
+      question: "What makes two terms 'like terms', and why can you only combine like terms in an expression?",
       suggestedWords: [["like terms", "same variable"], ["different", "unlike", "cannot"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "States that like terms share the same variable (and the same exponent).",
+        "States that like terms have the same variable.",
         "Explains that terms with different variables represent different quantities, so they cannot be added together."
       ],
       modelAnswer: "Like terms have exactly the same variable, so they count the same kind of thing. Terms with different variables represent entirely different things, like apples and bananas, so they cannot be added together.",
-      vnTranslation: "Tại sao việc chỉ kết hợp 'các hạng tử đồng dạng' trong một biểu thức lại quan trọng?"
+      vnTranslation: "Điều gì làm cho hai hạng tử trở thành 'hạng tử đồng dạng', và tại sao bạn chỉ có thể kết hợp các hạng tử đồng dạng trong một biểu thức?"
     },
 
     {

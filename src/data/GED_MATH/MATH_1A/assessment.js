@@ -1,7 +1,7 @@
 import { DIAGRAMS } from './diagrams.js';
 
 export const assessment = {
-  timeLimit: 4000, // 60 minutes
+  timeLimit: 1800, // 30 minutes
   passages: [],
   questions: [
     {
