@@ -57,7 +57,7 @@ export const assessment = {
       options: [
         { val: "A", text: "A. explain" },
         { val: "B", text: "B. explains" },
-        { val: "C", text: "C. explain the" },
+        { val: "C", text: "C. were explaining" },
         { val: "D", text: "D. are explaining" }
       ],
       correct: "B",
@@ -88,7 +88,7 @@ export const assessment = {
         { val: "A", text: "A. receives" },
         { val: "B", text: "B. receive" },
         { val: "C", text: "C. are receiving" },
-        { val: "D", text: "D. receive their" }
+        { val: "D", text: "D. have received" }
       ],
       correct: "A",
       expEn: "\"Everyone\" ends in -one and is singular, so the verb takes an -s: \"receives\".",
@@ -117,7 +117,7 @@ export const assessment = {
       options: [
         { val: "A", text: "A. puts" },
         { val: "B", text: "B. put" },
-        { val: "C", text: "C. puts away" },
+        { val: "C", text: "C. was putting" },
         { val: "D", text: "D. is putting" }
       ],
       correct: "B",
@@ -178,7 +178,7 @@ export const assessment = {
         { val: "A", text: "A. receive" },
         { val: "B", text: "B. receives" },
         { val: "C", text: "C. are receiving" },
-        { val: "D", text: "D. receive a" }
+        { val: "D", text: "D. were receiving" }
       ],
       correct: "B",
       expEn: "\"Anybody\" is singular, so the verb takes an -s: \"receives\". The phrase \"who returns a book late\" does not change that.",

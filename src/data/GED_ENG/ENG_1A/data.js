@@ -1,15 +1,17 @@
-// src/data/GED/ENG_1A/data.js
+// src/data/GED_ENG/ENG_1A/data.js
+// Lesson 7 of the 10-lesson GED RLA blueprint: Reading for Main Idea & Supporting
+// Detail. Refocused from the old broad "Foundations of Reading & Argument" unit —
+// the argument/claims material now lives in ENG_1C (Lesson 9). Reading lesson
+// shape: Notes + Vocab + Reading + Short Answers + Diagrams + Essay + Assessment.
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
-import { workbook } from './workbook.js';
-import { games } from './games.js';
 import { DIAGRAMS } from './diagrams.js';
 
 export const ENGLISH_1A_DATA = {
   meta: {
     id: "ENG_1A",
-    title: "English for the GED: Foundations of Reading & Argument",
-    desc: "An introduction to reading comprehension, identifying author's purpose, recognizing tone, and understanding basic claims and evidence.",
+    title: "GED Reading 1: Main Idea & Detail",
+    desc: "Find the main idea of a passage, tell it apart from the topic, choose the details that support it, and write a short, fair summary.",
     track: "GED_ENG",
     icon: "GraduationCap"
   },
@@ -19,297 +21,228 @@ export const ENGLISH_1A_DATA = {
       title: "Phase 0: Core Concepts",
       threshold: 0,
       tasks: [
-        { id: "NOTES", dbKey: "p10", maxXP: 5 },
-        { id: "WORD_REC", dbKey: "p1", maxXP: 5 }
+        { id: "NOTES", dbKey: "p10", maxXP: 10 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 10 }
       ]
     },
     {
       id: "practice",
       title: "Phase 1: Practice",
-      threshold: 5,
+      threshold: 20,
       tasks: [
-        { id: "SPELLING", dbKey: "p2", maxXP: 5 },
-        { id: "DICTATION", dbKey: "p3", maxXP: 5 },
-        { id: "READ_COMP", dbKey: "p4", maxXP: 5 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 15 }
+        { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
       ]
     },
     {
       id: "mastery",
       title: "Phase 2: Mastery",
-      threshold: 30,
+      threshold: 55,
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
-        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
       ]
     }
   ],
   realWords: [
     {
-      word: "Theme",
+      word: "Topic",
       vn: "Chủ đề",
-      def: "The main subject, topic, or underlying message in a piece of writing.",
-      vnDef: "Chủ đề chính, đề tài hoặc thông điệp ẩn chứa trong một bài viết.",
-      sent: "The central theme of the story is the importance of family and loyalty.", 
-      vnSent: "Chủ đề trung tâm của câu chuyện là tầm quan trọng của gia đình và lòng trung thành.",
-      dictSent: "Understanding the theme helps you grasp the author's overall message.",
+      def: "The subject a text is about, named in a word or short phrase.",
+      vnDef: "Đề tài mà một văn bản nói về, được gọi tên bằng một từ hoặc cụm từ ngắn.",
+      sent: "The topic of the article is city parks.",
+      vnSent: "Chủ đề của bài báo là công viên thành phố.",
       isReal: true
     },
     {
-      word: "Purpose",
-      vn: "Mục đích",
-      def: "The reason an author writes a text, such as to inform, persuade, or entertain.",
-      vnDef: "Lý do tác giả viết một văn bản, chẳng hạn như để thông tin, thuyết phục hoặc giải trí.",
-      sent: "The writer's primary purpose is to persuade the reader to protect the environment.",
-      vnSent: "Mục đích chính của người viết là thuyết phục người đọc bảo vệ môi trường.",
-      dictSent: "Always ask yourself what the author's main purpose is before answering the questions.",
+      word: "Gist",
+      vn: "Ý chính",
+      def: "The main idea, or the one point a writer makes about the topic.",
+      vnDef: "Ý chính, hay điểm duy nhất mà người viết nêu ra về chủ đề.",
+      sent: "In one sentence, the gist is that reading every day helps you learn.",
+      vnSent: "Trong một câu, ý chính là đọc sách mỗi ngày giúp bạn học hỏi.",
       isReal: true
     },
     {
-      word: "Tone",
-      vn: "Giọng điệu",
-      def: "The author's attitude or feeling toward the subject they are writing about.",
-      vnDef: "Thái độ hoặc cảm xúc của tác giả đối với chủ đề họ đang viết.",
-      sent: "The serious tone of the article matched the tragedy of the breaking news.",
-      vnSent: "Giọng điệu nghiêm túc của bài báo phù hợp với thảm kịch của tin tức nóng hổi.",
-      dictSent: "You can often guess the tone by looking at the descriptive adjectives used.",
+      word: "Detail",
+      vn: "Chi tiết",
+      def: "A fact, example or reason that supports the main idea.",
+      vnDef: "Một sự thật, ví dụ hoặc lý do hỗ trợ cho ý chính.",
+      sent: "Each detail in the paragraph backs up the writer's main point.",
+      vnSent: "Mỗi chi tiết trong đoạn văn củng cố cho điểm chính của người viết.",
       isReal: true
     },
     {
-      word: "Evidence",
-      vn: "Bằng chứng",
-      def: "Facts, statistics, or examples that support an author's claim or argument.",
-      vnDef: "Sự thật, số liệu thống kê hoặc ví dụ hỗ trợ cho tuyên bố hoặc lập luận của tác giả.",
-      sent: "The lawyer presented strong evidence to prove his client was innocent.",
-      vnSent: "Luật sư đã đưa ra bằng chứng mạnh mẽ để chứng minh thân chủ của mình vô tội.",
-      dictSent: "Good writers always back up their claims with solid and reliable evidence.",
+      word: "Relevant",
+      vn: "Liên quan",
+      def: "Closely connected to the main idea being discussed.",
+      vnDef: "Có liên hệ chặt chẽ với ý chính đang được bàn đến.",
+      sent: "A relevant detail points straight at the main idea.",
+      vnSent: "Một chi tiết liên quan chỉ thẳng vào ý chính.",
       isReal: true
     },
     {
-      word: "Fact",
-      vn: "Sự thật (Dữ kiện)",
-      def: "A statement that can be proven true or false with objective information.",
-      vnDef: "Một tuyên bố có thể được chứng minh là đúng hoặc sai bằng thông tin khách quan.",
-      sent: "It is a scientific fact that water boils at one hundred degrees Celsius.",
-      vnSent: "Đó là một sự thật khoa học rằng nước sôi ở một trăm độ C.",
-      dictSent: "A strong argument relies on fact rather than raw emotion or personal bias.",
+      word: "Passage",
+      vn: "Đoạn văn",
+      def: "A short section of a longer text that you read and study.",
+      vnDef: "Một phần ngắn của một văn bản dài hơn mà bạn đọc và nghiên cứu.",
+      sent: "Read the whole passage before you choose the main idea.",
+      vnSent: "Hãy đọc toàn bộ đoạn văn trước khi bạn chọn ý chính.",
       isReal: true
     },
     {
-      word: "Opinion",
-      vn: "Ý kiến cá nhân",
-      def: "A personal belief or judgment that cannot be objectively proven true or false.",
-      vnDef: "Một niềm tin hoặc đánh giá cá nhân không thể được chứng minh một cách khách quan là đúng hay sai.",
-      sent: "Saying that pizza is the best food in the world is just an opinion.",
-      vnSent: "Nói rằng pizza là món ăn ngon nhất trên thế giới chỉ là một ý kiến cá nhân.",
-      dictSent: "Be careful not to confuse a writer's opinion with actual historical facts.",
+      word: "Summary",
+      vn: "Tóm tắt",
+      def: "A short restatement of the main idea and key points of a text.",
+      vnDef: "Một bản nêu lại ngắn gọn ý chính và các điểm quan trọng của một văn bản.",
+      sent: "Her summary covered the whole article in two sentences.",
+      vnSent: "Bản tóm tắt của cô ấy bao quát toàn bộ bài báo trong hai câu.",
       isReal: true
     },
     {
-      word: "Transition",
-      vn: "Sự chuyển tiếp",
-      def: "Words or phrases that connect ideas and help a text flow smoothly from one thought to the next.",
-      vnDef: "Các từ hoặc cụm từ kết nối các ý tưởng và giúp văn bản trôi chảy từ suy nghĩ này sang suy nghĩ khác.",
-      sent: "Words like 'however' and 'therefore' act as a transition between paragraphs.",
-      vnSent: "Các từ như 'tuy nhiên' và 'do đó' đóng vai trò như sự chuyển tiếp giữa các đoạn văn.",
-      dictSent: "A good transition makes it much easier for the reader to follow your logic.",
+      word: "Paraphrase",
+      vn: "Diễn giải",
+      def: "To restate an idea in your own words instead of copying it.",
+      vnDef: "Nêu lại một ý bằng lời của chính bạn thay vì sao chép nó.",
+      sent: "To paraphrase, keep the meaning but change the words.",
+      vnSent: "Để diễn giải, hãy giữ nghĩa nhưng thay đổi từ ngữ.",
       isReal: true
     },
     {
-      word: "Claim",
-      vn: "Luận điểm",
-      def: "The main argument or point that a writer is trying to make and defend.",
-      vnDef: "Lập luận hoặc điểm chính mà người viết đang cố gắng đưa ra và bảo vệ.",
-      sent: "The author's main claim is that daily exercise improves long-term mental health.",
-      vnSent: "Luận điểm chính của tác giả là tập thể dục hàng ngày cải thiện sức khỏe tinh thần lâu dài.",
-      dictSent: "Every persuasive essay must have a clear and strong claim at the beginning.",
-      isReal: true
-    },
-    {
-      word: "Analyze",
-      vn: "Phân tích",
-      def: "To examine something carefully in order to understand its different parts and meaning.",
-      vnDef: "Kiểm tra điều gì đó cẩn thận để hiểu các phần khác nhau và ý nghĩa của nó.",
-      sent: "Students must analyze the poem to find its hidden message about nature.",
-      vnSent: "Học sinh phải phân tích bài thơ để tìm ra thông điệp ẩn giấu của nó về thiên nhiên.",
-      dictSent: "You will need to analyze the data carefully before making a final decision.",
-      isReal: true
-    },
-    {
-      word: "Conclude",
-      vn: "Kết luận",
-      def: "To bring to an end or to reach a logical decision based on the information provided.",
-      vnDef: "Kết thúc hoặc đạt được một quyết định logic dựa trên thông tin được cung cấp.",
-      sent: "After reading the report, we can conclude that the new project was a success.",
-      vnSent: "Sau khi đọc báo cáo, chúng ta có thể kết luận rằng dự án mới đã thành công.",
-      dictSent: "Your final paragraph should effectively conclude your entire argument for the reader.",
+      word: "Restate",
+      vn: "Nêu lại",
+      def: "To say the same point again in a shorter or clearer way.",
+      vnDef: "Nói lại cùng một điểm theo cách ngắn gọn hoặc rõ ràng hơn.",
+      sent: "A good summary restates the main idea briefly and fairly.",
+      vnSent: "Một bản tóm tắt tốt nêu lại ý chính một cách ngắn gọn và công bằng.",
       isReal: true
     }
-  ],
-  dictation: [
-    { sent: "Understanding the theme helps you grasp the author's overall message.", vnSent: "Hiểu được chủ đề giúp bạn nắm bắt được thông điệp tổng thể của tác giả." },
-    { sent: "Always ask yourself what the author's main purpose is before answering the questions.", vnSent: "Luôn tự hỏi mục đích chính của tác giả là gì trước khi trả lời các câu hỏi." },
-    { sent: "You can often guess the tone by looking at the descriptive adjectives used.", vnSent: "Bạn thường có thể đoán được giọng điệu bằng cách nhìn vào các tính từ miêu tả được sử dụng." },
-    { sent: "Good writers always back up their claims with solid and reliable evidence.", vnSent: "Những người viết tốt luôn củng cố luận điểm của họ bằng bằng chứng vững chắc và đáng tin cậy." },
-    { sent: "A strong argument relies on fact rather than raw emotion or personal bias.", vnSent: "Một lập luận mạnh mẽ dựa trên sự thật hơn là cảm xúc nhất thời hoặc thành kiến cá nhân." },
-    { sent: "Be careful not to confuse a writer's opinion with actual historical facts.", vnSent: "Hãy cẩn thận đừng nhầm lẫn ý kiến của người viết với sự thật lịch sử thực tế." },
-    { sent: "A good transition makes it much easier for the reader to follow your logic.", vnSent: "Một sự chuyển tiếp tốt làm cho người đọc dễ dàng theo dõi logic của bạn hơn nhiều." },
-    { sent: "Every persuasive essay must have a clear and strong claim at the beginning.", vnSent: "Mỗi bài luận thuyết phục phải có một luận điểm rõ ràng và mạnh mẽ ngay từ đầu." },
-    { sent: "You will need to analyze the data carefully before making a final decision.", vnSent: "Bạn sẽ cần phân tích dữ liệu cẩn thận trước khi đưa ra quyết định cuối cùng." },
-    { sent: "Your final paragraph should effectively conclude your entire argument for the reader.", vnSent: "Đoạn văn cuối cùng của bạn nên kết luận một cách hiệu quả toàn bộ lập luận của bạn cho người đọc." }
   ],
   passages: [
     {
       id: "passage_1",
-      title: "Understanding the Author's Intent",
-      text: "Every text is written with a specific {purpose}. Sometimes an author wants to teach you a {fact} about history, while other times they want to convince you to agree with their {opinion}. Figuring out the 'why' behind the writing is the very first step to good reading comprehension and analysis.",
-      vnText: "Mỗi văn bản được viết với một mục đích cụ thể. Đôi khi tác giả muốn dạy cho bạn một sự thật về lịch sử, trong khi những lúc khác họ muốn thuyết phục bạn đồng ý với ý kiến của họ. Tìm ra lý do 'tại sao' đằng sau bài viết là bước đầu tiên để đọc hiểu và phân tích tốt."
+      title: "Topic and Main Idea",
+      vnTitle: "Chủ đề và Ý chính",
+      text: "Every {passage} you read has a {topic}: the subject it is about, named in a word or two. The main idea, or {gist}, is different — it is the one point the writer makes about that topic.",
+      vnText: "Mỗi đoạn văn bạn đọc đều có một chủ đề: đề tài mà nó nói về, được gọi tên bằng một hai từ. Ý chính thì khác — đó là điểm duy nhất mà người viết nêu ra về chủ đề đó."
     },
     {
       id: "passage_2",
-      title: "Listening to the Writer's Voice",
-      text: "You can tell a lot about a text by paying attention to the {tone}. If the author uses angry or urgent words, they are likely upset about the {theme} they are discussing. Paying attention to these emotional clues helps you {analyze} the true meaning behind the words on the page.",
-      vnText: "Bạn có thể hiểu nhiều điều về một văn bản bằng cách chú ý đến giọng điệu. Nếu tác giả sử dụng những từ ngữ tức giận hoặc khẩn cấp, có thể họ đang bực tức về chủ đề mà họ đang thảo luận. Chú ý đến những manh mối cảm xúc này giúp bạn phân tích ý nghĩa thực sự đằng sau những từ ngữ trên trang giấy."
+      title: "Details That Support",
+      vnTitle: "Những Chi tiết Hỗ trợ",
+      text: "The main idea is held up by supporting details. A strong {detail} is {relevant}: it points straight at the point. A sentence can be true and still not fit, so ask whether each {detail} really supports the main idea.",
+      vnText: "Ý chính được nâng đỡ bởi các chi tiết hỗ trợ. Một chi tiết mạnh thì liên quan: nó chỉ thẳng vào điểm chính. Một câu có thể đúng nhưng vẫn không phù hợp, nên hãy hỏi liệu mỗi chi tiết có thực sự hỗ trợ ý chính hay không."
     },
     {
       id: "passage_3",
-      title: "Building a Solid Argument",
-      text: "To make a strong {claim}, a writer cannot simply state what they believe. They must provide solid {evidence} to back it up. Furthermore, using a smooth {transition} between sentences ensures that the reader does not get confused as the argument builds toward the end.",
-      vnText: "Để đưa ra một luận điểm mạnh mẽ, người viết không thể chỉ đơn giản nêu ra những gì họ tin tưởng. Họ phải cung cấp bằng chứng vững chắc để chứng minh. Hơn nữa, việc sử dụng sự chuyển tiếp mượt mà giữa các câu đảm bảo rằng người đọc không bị nhầm lẫn khi lập luận được xây dựng về cuối."
+      title: "Writing a Summary",
+      vnTitle: "Viết một Bản tóm tắt",
+      text: "A good {summary} keeps the main idea and drops the small examples. Instead of copying whole lines, {paraphrase} the point in your own words. In short, {restate} the writer's main idea briefly and fairly.",
+      vnText: "Một bản tóm tắt tốt giữ ý chính và bỏ các ví dụ nhỏ. Thay vì sao chép cả câu, hãy diễn giải điểm đó bằng lời của chính bạn. Nói ngắn gọn, hãy nêu lại ý chính của người viết một cách súc tích và công bằng."
     }
   ],
-  notebookArticle: {
-    title: "Unit 1A: Foundations of Reading & Argument",
-    vnTitle: "Bài 1A: Cơ sở của việc Đọc hiểu & Lập luận",
-    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their definitions.",
-    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với định nghĩa của chúng.",
-    sections: [
-      {
-        heading: "1. The Author's Intent",
-        vnHeading: "1. Ý định của Tác giả",
-        text: "Every text is written with a specific **Purpose**. Sometimes an author wants to teach you a **Fact**, while other times they want to share their **Opinion**.",
-        vnText: "Mỗi văn bản được viết với một **Mục đích** cụ thể. Đôi khi tác giả muốn dạy cho bạn một **Sự thật**, trong khi những lúc khác họ muốn chia sẻ **Ý kiến** của họ."
-      },
-      {
-        heading: "2. Voice and Message",
-        vnHeading: "2. Giọng điệu và Thông điệp",
-        text: "You can tell a lot about a text by paying attention to the **Tone**. Paying attention to these emotional clues helps you **Analyze** the true meaning and **Theme** behind the words.",
-        vnText: "Bạn có thể hiểu nhiều điều về một văn bản bằng cách chú ý đến **Giọng điệu**. Chú ý đến những manh mối cảm xúc này giúp bạn **Phân tích** ý nghĩa thực sự và **Chủ đề** đằng sau những từ ngữ."
-      },
-      {
-        heading: "3. Building an Argument",
-        vnHeading: "3. Xây dựng một Lập luận",
-        text: "To make a strong **Claim**, a writer must provide solid **Evidence**. Using a smooth **Transition** between sentences ensures the reader can follow along until you **Conclude** the argument.",
-        vnText: "Để đưa ra một **Luận điểm** mạnh mẽ, người viết phải cung cấp **Bằng chứng** vững chắc. Sử dụng **Sự chuyển tiếp** mượt mà giữa các câu đảm bảo người đọc có thể theo dõi cho đến khi bạn **Kết luận** lập luận."
-      }
-    ]
-  },
   shortQA: [
     {
       id: "q1",
-      question: "Why is it helpful for a reader to identify the author's purpose before reading a long passage?",
-      suggestedWords: [["understand", "understanding"], ["expect", "expectations"]],
+      question: "What is the difference between the topic of a passage and its main idea?",
+      suggestedWords: [["subject", "about"], ["point", "sentence"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for stating that it helps the reader know what to expect from the text.",
-        "1 mark for explaining that it makes it easier to understand the main message."
+        "1 mark for stating that the topic is the subject the text is about (a word or short phrase).",
+        "1 mark for stating that the main idea is the point the writer makes about that topic (a full sentence)."
       ],
-      modelAnswer: "Identifying the author's purpose is helpful because it tells the reader what to expect, making it much easier to understand the main message of the text."
+      modelAnswer: "The topic is the subject the passage is about, named in a word or short phrase. The main idea is different: it is the full-sentence point the writer makes about that topic."
     },
     {
       id: "q2",
-      question: "What is the primary difference between a fact and an opinion in an informational text?",
-      suggestedWords: [["prove", "proven", "proof"]],
+      question: "How can you tell whether a detail belongs in a paragraph or not?",
+      suggestedWords: [["relevant", "connected"], ["off-topic", "wanders"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for stating that a fact can be proven with objective evidence.",
-        "1 mark for stating that an opinion is a personal belief that cannot be proven."
+        "1 mark for saying a detail belongs if it is relevant — it supports the main idea.",
+        "1 mark for saying a true but off-topic sentence does not belong because it does not support the main idea."
       ],
-      modelAnswer: "The primary difference is that a fact can be objectively proven with evidence, whereas an opinion is a personal belief that cannot be proven."
+      modelAnswer: "A detail belongs when it is relevant and directly supports the main idea. A sentence that is true but off-topic does not belong, because it does not help prove the writer's main point."
     },
     {
       id: "q3",
-      question: "Why must a writer include evidence when making a strong claim?",
-      suggestedWords: [["support", "prove", "back"]],
+      question: "What makes a good summary of a passage?",
+      suggestedWords: [["short", "brief"], ["own words", "paraphrase"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for explaining that evidence is needed to prove the claim is true.",
-        "1 mark for noting that without evidence, the claim is just an unsupported opinion."
+        "1 mark for saying a good summary keeps the main idea and the most important points.",
+        "1 mark for saying it is short and written in your own words, without adding your own opinion."
       ],
-      modelAnswer: "A writer must include evidence to prove that their claim is true; otherwise, their argument is simply an unsupported opinion."
+      modelAnswer: "A good summary keeps the main idea and the most important supporting points while leaving out small examples. It is short and written in your own words, and it does not add any opinion of your own."
     }
   ],
   diagrams: [
     {
       id: "d1",
-      inlineSvg: DIAGRAMS.PARAGRAPH_STRUCTURE,
-      promptText: "Look at the basic paragraph structure chart. In which section does the author usually introduce their main claim?",
-      suggestedWords: [["beginning", "start", "first"]],
+      inlineSvg: DIAGRAMS.TOPIC_VS_MAIN,
+      promptText: "The chart puts TOPIC and MAIN IDEA side by side, using 'school lunches' and 'Lunches should be healthier.' Explain the difference the chart is showing.",
+      suggestedWords: [["subject", "about"], ["sentence", "point"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for identifying the beginning or introduction.",
-        "1 mark for explaining that this sets up the argument for the rest of the paragraph."
+        "1 mark for explaining that the topic is the subject the text is about (a word or short phrase, like 'school lunches').",
+        "1 mark for explaining that the main idea is the point made about the topic, stated as a full sentence (like 'Lunches should be healthier')."
       ],
-      modelAnswer: "The author usually introduces their main claim at the very beginning of the paragraph to clearly set up the argument."
+      modelAnswer: "The chart shows that the topic is only the subject — a short phrase such as 'school lunches' — that names what the text is about. The main idea goes further: it is a full sentence that makes a point about the topic, such as 'Lunches should be healthier.'"
     },
     {
       id: "d2",
-      inlineSvg: DIAGRAMS.FACT_VS_OPINION,
-      promptText: "Review the graphic sorting statements. What is the key feature that separates the statements in the 'Fact' column from the 'Opinion' column?",
-      suggestedWords: [["proof", "proven", "prove"], ["objective", "evidence"]],
+      inlineSvg: DIAGRAMS.MAIN_IDEA_MAP,
+      promptText: "The diagram shows a MAIN IDEA resting on three DETAIL boxes below it. What does this picture tell you about how a main idea and its supporting details are related?",
+      suggestedWords: [["support", "hold up"], ["one point"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for noting that facts can be proven with objective evidence.",
-        "1 mark for noting that opinions cannot be proven."
+        "1 mark for stating that the details support or hold up the main idea.",
+        "1 mark for stating that the main idea is the single point all the details point to, and the details do not replace it."
       ],
-      modelAnswer: "The key feature is that facts can be proven true or false with objective evidence, whereas opinions are personal beliefs that cannot be proven."
+      modelAnswer: "The picture shows that the supporting details sit underneath the main idea and hold it up, like legs under a table. The main idea is the one point that all the details support; the details give facts, examples and reasons, but they do not replace the main idea itself."
     }
   ],
   essay: {
-    // Modelled on the GED Reasoning Through Language Arts Extended Response:
-    // two opposing sources, and the student argues which is BETTER SUPPORTED --
-    // not which they personally agree with. 45 minutes, unaided.
-    minutesAllowed: 45,
+    // Every reading unit carries a full GED Extended Response for practice: two
+    // opposing contemporary sources, 60 minutes (ESL accommodation vs. the real
+    // 45), argue which side is BETTER SUPPORTED.
+    minutesAllowed: 60,
     sources: [
       {
-        title: "Label the Opinions",
+        title: "The Case for School Uniforms",
         text:
-          "News websites should mark every opinion article with a large, clear label. A study by the Media Insight Project found that 43% of readers could not tell the difference between a news report and an opinion column on the same site. When a reader believes a columnist's personal view is a verified fact, they may repeat it as truth. Newspapers already separate these pieces in print, where the opinion pages sit in their own section. Online, that separation disappears, and every article looks identical in a search result. Clear labelling costs a publisher nothing and removes the confusion entirely.",
+          "Schools should require students to wear a simple uniform. When Lincoln Middle School introduced uniforms, staff recorded far fewer arguments over clothing and brand-name pressure, and teachers said the mornings ran more calmly. Uniforms can also save families money: instead of buying new outfits to keep up with fashion, parents buy two or three sets that last the whole year. A shared uniform quietly reminds every student that they belong to the same school.",
       },
       {
-        title: "Teach the Reader Instead",
+        title: "Uniforms Miss the Point",
         text:
-          "Labels treat adults like children. A reader who relies on a coloured tag to know what to think has not learned anything; they have simply moved their trust from the writer to the label. Skilled readers already spot opinion by looking at the language: words such as 'should', 'terrible' or 'best' signal judgement, while a fact can be checked against a source. Schools and libraries that run short media-literacy courses report large gains in readers' ability to identify unsupported claims. Those gains last a lifetime and work on any website, including the ones that will never add a label at all.",
+          "A uniform is an easy answer to a hard question. Requiring one does nothing about the real causes of trouble at school, such as bullying or boredom in class. Uniforms also cost money that some families do not have, because a required set must be bought whether or not last year's clothes still fit. One district that switched to uniforms found no measurable change in student behaviour after two years. Students learn respect from how they are treated, not from matching shirts.",
       },
     ],
     task:
-      "Both sources argue about how readers should be protected from confusing opinion with fact. In your response, analyse both positions to determine which one is better supported. Use specific evidence from the sources to support your answer.",
+      "Both writers argue about whether schools should require students to wear a uniform. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
     guidelines: [
       "State clearly which position is better supported.",
-      "Quote or refer to specific evidence from BOTH sources.",
-      "Explain why that evidence is strong or weak — do not just repeat it.",
-      "Organise your answer with an introduction, body paragraphs and a conclusion.",
+      "Use specific evidence from BOTH sources.",
+      "Weigh how strong each side's evidence is — do not just repeat it.",
+      "Write in paragraphs, with a short conclusion.",
     ],
     suggestedWords: [
-      ["Evidence", "prove", "proof"],
-      ["Claim", "argues", "argument", "position"],
-      ["Fact", "facts"],
-      ["Opinion", "opinions", "judgement"],
+      ["Evidence", "proof", "prove"],
+      ["Claim", "argues", "position"],
+      ["School", "students"],
     ],
     scienceMaxMarks: 4,
     markScheme: [
       "States clearly which position is better supported, rather than only which the writer personally prefers.",
-      "Refers to specific evidence from Source 1 (for example the 43% statistic or the print/online comparison).",
-      "Refers to specific evidence from Source 2 (for example the signal words or the media-literacy course results).",
-      "Evaluates the quality of the evidence rather than simply restating it, for example noting that a statistic is stronger than an assertion.",
+      "Refers to specific evidence from Source 1 (for example the calmer mornings at Lincoln or the saving for families).",
+      "Refers to specific evidence from Source 2 (for example the district that found no measurable change, or the cost of a required set).",
+      "Evaluates the quality of the evidence rather than simply restating it, for example noting that a measured result is stronger than a staff impression.",
     ],
     modelAnswer:
-      "Source 1 is better supported because it offers measurable evidence while Source 2 relies mostly on assertion. Source 1 cites a specific finding, that 43% of readers could not distinguish a news report from an opinion column, which is a fact that can be checked. It also gives a concrete comparison: print newspapers separate opinion into its own section, and that separation is lost online. Source 2 makes a reasonable claim that readers should be taught to spot judgement words such as 'should' or 'best', and it mentions that media-literacy courses report large gains. However, it never says how large those gains were or who measured them, so that evidence is much weaker. Source 2 also makes an emotional appeal by saying labels 'treat adults like children', which is an opinion rather than proof. Both positions want readers to avoid confusing fact with opinion, but only Source 1 supports its argument with verifiable evidence, so its position is the better supported of the two.",
+      "This is a close case, but Source 2 is slightly better supported because it relies on a measured result while Source 1 relies mostly on impressions. Source 1 argues for uniforms and offers real reasons: staff at Lincoln Middle School recorded fewer arguments over clothing, and families can save money by buying a few sets that last the year. However, the calmer mornings come from what teachers 'said,' which is an impression rather than a measured figure. Source 2 answers with a stronger kind of evidence: it points to a district that switched to uniforms and found no measurable change in behaviour after two years. That is a checkable result, and it directly weakens Source 1's main promise. Source 2 also raises a fair cost problem for families who must buy a required set. Because Source 2 supports its position with a measured outcome and answers Source 1's strongest claim, its argument is the better supported of the two.",
   },
   assessment,
-  notes,
-  workbook,
-  games
+  notes
 };

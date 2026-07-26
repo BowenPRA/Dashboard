@@ -294,10 +294,11 @@ export const ENGLISH_0A_DATA = {
     }
   ],
   essay: {
-    // Shorter than the ENG_1A extended response on purpose: this is a foundations
-    // unit, so the writing task is 25 minutes and the mark scheme rewards clear
-    // pronoun reference alongside the usual claim-and-evidence marks.
-    minutesAllowed: 25,
+    // The GED Extended Response is officially 45 minutes; we give 60 as an ESL
+    // accommodation, matching every essay in the track. The mark scheme keeps a
+    // pronoun-reference line so the writing task still reinforces this unit's focus
+    // alongside the usual claim-and-evidence marks.
+    minutesAllowed: 60,
     sources: [
       {
         title: "Keep Phones Out of the Classroom",

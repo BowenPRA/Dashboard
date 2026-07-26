@@ -199,7 +199,7 @@ export const ENGLISH_0B_DATA = {
         },
         {
           id: "b5",
-          options: ["empty", "empties", "empties out"],
+          options: ["empty", "empties", "has emptied"],
           correct: "empty",
           expEn: "\"The caretakers\" is plural, so the verb has no -s: \"empty\".",
           expVn: "\"The caretakers\" là số nhiều, nên động từ không có -s: \"empty\"."
@@ -294,7 +294,9 @@ export const ENGLISH_0B_DATA = {
     }
   ],
   essay: {
-    minutesAllowed: 25,
+    // 60 minutes: the real GED Extended Response is 45; the extra time is an ESL
+    // accommodation applied across the track.
+    minutesAllowed: 60,
     sources: [
       {
         title: "Four-Day School Week",

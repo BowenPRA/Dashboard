@@ -85,23 +85,31 @@ Add lessons later if a topic needs its own; for now, ten.
 
 | # | Lesson | Strand | Status |
 |---|---|---|---|
-| 1 | Pronouns | Language | **ENG_0A — good; polish** |
-| 2 | Subject–Verb Agreement | Language | **ENG_0B — good; polish** |
+| 1 | Pronouns | Language | **ENG_0A — built, polished** |
+| 2 | Subject–Verb Agreement | Language | **ENG_0B — built, polished** |
 | 3 | Verb Tense & Consistency | Language | new |
 | 4 | Sentence Boundaries (fragments, run-ons, comma splices) | Language | new |
 | 5 | Punctuation & Confusable Words (commas, apostrophes, their/there/they're) | Language | new |
 | 6 | Transitions & Organization | Language / Writing | new |
-| 7 | Reading for Main Idea & Detail | Reading | from **ENG_1A** |
-| 8 | Author's Purpose, Tone & Point of View | Reading | new (mine ENG_1B) |
-| 9 | Claims, Evidence & Evaluating Arguments | Reading | from **ENG_1A/1B** |
+| 7 | Reading for Main Idea & Detail | Reading | **ENG_1A — built** |
+| 8 | Author's Purpose, Tone & Point of View | Reading | **ENG_1B — built** |
+| 9 | Claims, Evidence & Evaluating Arguments | Reading | **ENG_1C — built** |
 | 10 | The Extended Response Essay | Writing | capstone |
 
 **Current inventory:**
-- **ENG_0A (Pronouns), ENG_0B (Subject–Verb Agreement)** → lessons 1–2. Good; polish only.
-- **ENG_1A (Foundations of Reading & Argument)** → basis for lessons 7 and 9.
-- **ENG_1B (Rhetorical Analysis & Syntax Mastery)** → tries to do too much at once;
-  mine it for lessons 8 and 9, split into contained pieces.
-- **ENG_2A (Speeches)** → **remove.** Public-speaking analysis isn't on the RLA.
+- **ENG_0A (Pronouns), ENG_0B (Subject–Verb Agreement)** → lessons 1–2. Built and polished.
+- **ENG_1A (Main Idea & Detail)** → lesson 7. Refocused from the old broad "Foundations
+  of Reading & Argument" unit; its argument half moved to ENG_1C.
+- **ENG_1B (Purpose, Tone & Point of View)** → lesson 8. Refocused from the old
+  "Rhetorical Analysis & Syntax" unit; the college-level rhetoric (juxtaposition,
+  subordination, synthesis) was above GED/ESL level and was retired.
+- **ENG_1C (Claims, Evidence & Evaluating Arguments)** → lesson 9. New unit mined from
+  the ENG_1A/1B argument material; carries the flagship two-source Extended Response.
+- **ENG_2A (Speeches)** → **removed.** Public-speaking analysis isn't on the RLA.
+
+Each reading unit (7–9) is contained to one focus and uses the shape Notes + Vocab +
+Reading + Short Answers + Diagrams + Essay + Assessment, with `games`/`workbook`
+dropped as off-focus. Lessons 3–6 (Language) remain to be built.
 
 ## 6. Authoring checklist (per lesson)
 

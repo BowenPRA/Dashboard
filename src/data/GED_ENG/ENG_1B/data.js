@@ -1,15 +1,19 @@
-// src/data/GED/ENG_1B/data.js
+// src/data/GED_ENG/ENG_1B/data.js
+// Lesson 8 of the 10-lesson GED RLA blueprint: Author's Purpose, Tone & Point of
+// View. Refocused from the old overloaded "Rhetorical Analysis & Syntax" unit —
+// the college-level rhetoric (juxtaposition, subordination, synthesis) was above
+// GED/ESL level and has been retired; the claims/evidence half moved to ENG_1C
+// (Lesson 9). Reading lesson shape: Notes + Vocab + Reading + Short Answers +
+// Diagrams + Essay + Assessment.
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
-import { workbook } from './workbook.js';
-import { games } from './games.js';
 import { DIAGRAMS } from './diagrams.js';
 
 export const ENGLISH_1B_DATA = {
   meta: {
     id: "ENG_1B",
-    title: "English for the GED: Rhetorical Analysis & Syntax Mastery",
-    desc: "Focuses on foundational reading comprehension, complex grammar analysis, rhetorical devices, and essay writing mechanics.",
+    title: "GED Reading 2: Purpose, Tone & Point of View",
+    desc: "Work out why an author wrote a text, hear the attitude in their word choice, and identify the point of view and any bias.",
     track: "GED_ENG",
     icon: "GraduationCap"
   },
@@ -19,293 +23,240 @@ export const ENGLISH_1B_DATA = {
       title: "Phase 0: Core Concepts",
       threshold: 0,
       tasks: [
-        { id: "NOTES", dbKey: "p10", maxXP: 5 },
-        { id: "WORD_REC", dbKey: "p1", maxXP: 5 }
+        { id: "NOTES", dbKey: "p10", maxXP: 10 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 10 }
       ]
     },
     {
       id: "practice",
       title: "Phase 1: Practice",
-      threshold: 5,
+      threshold: 20,
       tasks: [
-        { id: "SPELLING", dbKey: "p2", maxXP: 5 },
-        { id: "DICTATION", dbKey: "p3", maxXP: 5 },
-        { id: "READ_COMP", dbKey: "p4", maxXP: 5 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 15 }
+        { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
       ]
     },
     {
       id: "mastery",
       title: "Phase 2: Mastery",
-      threshold: 30,
+      threshold: 55,
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
-        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
       ]
     }
   ],
   realWords: [
     {
-      word: "Syntax",
-      vn: "Cú pháp",
-      def: "The way words and phrases are arranged to create logical and correct sentences.",
-      vnDef: "Cách sắp xếp các từ và cụm từ để tạo thành những câu hợp lý và chính xác.",
-      sent: "The author uses clear syntax to ensure the reader understands the main point.", 
-      vnSent: "Tác giả sử dụng cú pháp rõ ràng để đảm bảo người đọc hiểu được ý chính.",
-      dictSent: "Good syntax makes your writing much easier to read.",
+      word: "Purpose",
+      vn: "Mục đích",
+      def: "The reason an author writes: to persuade, inform or entertain.",
+      vnDef: "Lý do tác giả viết: để thuyết phục, cung cấp thông tin hoặc giải trí.",
+      sent: "The author's purpose is to persuade the town to save water.",
+      vnSent: "Mục đích của tác giả là thuyết phục thị trấn tiết kiệm nước.",
       isReal: true
     },
     {
-      word: "Juxtaposition",
-      vn: "Sự đặt cạnh nhau",
-      def: "Placing two things close together to highlight their differences or create a contrast.",
-      vnDef: "Đặt hai sự vật gần nhau để làm nổi bật sự khác biệt hoặc tạo ra sự tương phản.",
-      sent: "The juxtaposition of the rich neighborhood and the poor streets showed the city's inequality.",
-      vnSent: "Sự đặt cạnh nhau giữa khu nhà giàu và những con phố nghèo đã cho thấy sự bất bình đẳng của thành phố.",
-      dictSent: "Writers use juxtaposition to show strong contrast between ideas.",
+      word: "Persuade",
+      vn: "Thuyết phục",
+      def: "To try to make the reader agree with an opinion or take action.",
+      vnDef: "Cố gắng khiến người đọc đồng ý với một ý kiến hoặc hành động.",
+      sent: "An editorial is written to persuade, not just to inform.",
+      vnSent: "Một bài xã luận được viết để thuyết phục, không chỉ để cung cấp thông tin.",
       isReal: true
     },
     {
-      word: "Subordination",
-      vn: "Cấu trúc phụ thuộc",
-      def: "Linking two clauses so that one is less important and relies on the other for meaning.",
-      vnDef: "Liên kết hai mệnh đề sao cho một mệnh đề ít quan trọng hơn và phụ thuộc vào mệnh đề kia để có ý nghĩa.",
-      sent: "By using subordination, the writer made the counterargument seem less important.",
-      vnSent: "Bằng cách sử dụng cấu trúc phụ thuộc, người viết đã làm cho phản biện có vẻ ít quan trọng hơn.",
-      dictSent: "Subordination helps organize complex thoughts in a single sentence.",
+      word: "Inform",
+      vn: "Cung cấp thông tin",
+      def: "To give the reader facts without taking a side.",
+      vnDef: "Cung cấp cho người đọc sự thật mà không đứng về phía nào.",
+      sent: "A news report should inform the reader with checkable facts.",
+      vnSent: "Một bản tin nên cung cấp thông tin cho người đọc bằng những sự thật có thể kiểm tra.",
       isReal: true
     },
     {
-      word: "Synthesis",
-      vn: "Sự tổng hợp",
-      def: "Combining different ideas, facts, or texts to form a single, complete understanding.",
-      vnDef: "Kết hợp các ý tưởng, sự kiện hoặc văn bản khác nhau để tạo thành một sự hiểu biết hoàn chỉnh và duy nhất.",
-      sent: "A good essay requires the synthesis of multiple historical sources.",
-      vnSent: "Một bài luận hay đòi hỏi sự tổng hợp từ nhiều nguồn lịch sử khác nhau.",
-      dictSent: "We must synthesize the data before writing the report.",
+      word: "Tone",
+      vn: "Giọng điệu",
+      def: "The author's attitude toward the subject, heard in word choice.",
+      vnDef: "Thái độ của tác giả đối với chủ đề, nghe được qua cách chọn từ.",
+      sent: "The angry tone comes from words like 'reckless' and 'shameful'.",
+      vnSent: "Giọng điệu tức giận đến từ những từ như 'liều lĩnh' và 'đáng xấu hổ'.",
       isReal: true
     },
     {
-      word: "Ambiguity",
-      vn: "Tính mơ hồ",
-      def: "When a word, phrase, or sentence is unclear and can be understood in more than one way.",
-      vnDef: "Khi một từ, cụm từ hoặc câu không rõ ràng và có thể được hiểu theo nhiều cách.",
-      sent: "The contract's ambiguity caused a major disagreement between the two companies.",
-      vnSent: "Tính mơ hồ của hợp đồng đã gây ra một cuộc tranh cãi lớn giữa hai công ty.",
-      dictSent: "Please avoid ambiguity by choosing your words carefully.",
+      word: "Attitude",
+      vn: "Thái độ",
+      def: "How the writer feels about the topic — for, against or neutral.",
+      vnDef: "Người viết cảm thấy thế nào về chủ đề — ủng hộ, phản đối hay trung lập.",
+      sent: "Her warm attitude toward the plan shows in every sentence.",
+      vnSent: "Thái độ ấm áp của cô ấy đối với kế hoạch thể hiện trong từng câu.",
       isReal: true
     },
     {
-      word: "Rhetoric",
-      vn: "Tu từ học",
-      def: "The art of using language effectively to persuade or influence an audience.",
-      vnDef: "Nghệ thuật sử dụng ngôn ngữ một cách hiệu quả để thuyết phục hoặc ảnh hưởng đến khán giả.",
-      sent: "The politician's rhetoric was designed to make people feel hopeful about the future.",
-      vnSent: "Tu từ học của chính trị gia được thiết kế để khiến mọi người cảm thấy hy vọng về tương lai.",
-      dictSent: "The politician used strong rhetoric to persuade the crowd.",
+      word: "Connotation",
+      vn: "Sắc thái nghĩa",
+      def: "The feeling a word carries beyond its plain meaning.",
+      vnDef: "Cảm giác mà một từ mang theo ngoài nghĩa đen của nó.",
+      sent: "'Thrifty' and 'cheap' mean the same thing but have a different connotation.",
+      vnSent: "'Thrifty' và 'cheap' có cùng nghĩa nhưng có sắc thái nghĩa khác nhau.",
       isReal: true
     },
     {
-      word: "Cohesion",
-      vn: "Tính mạch lạc",
-      def: "The flow and connection of ideas in a text, making it easy to read and logically sound.",
-      vnDef: "Sự trôi chảy và kết nối của các ý tưởng trong một văn bản, giúp nó dễ đọc và hợp lý.",
-      sent: "Using transition words like 'however' and 'therefore' improves paragraph cohesion.",
-      vnSent: "Sử dụng các từ chuyển tiếp như 'tuy nhiên' và 'do đó' giúp cải thiện tính mạch lạc của đoạn văn.",
-      dictSent: "Transition words help improve the overall cohesion of paragraphs.",
+      word: "Perspective",
+      vn: "Góc nhìn",
+      def: "The point of view or position a writer sees an issue from.",
+      vnDef: "Góc nhìn hoặc lập trường mà người viết nhìn nhận một vấn đề.",
+      sent: "The article is written from the perspective of a small shop owner.",
+      vnSent: "Bài báo được viết từ góc nhìn của một chủ cửa hàng nhỏ.",
       isReal: true
     },
     {
-      word: "Clause",
-      vn: "Mệnh đề",
-      def: "A group of words containing a subject and a verb, forming part of a sentence.",
-      vnDef: "Một nhóm từ chứa chủ ngữ và động từ, tạo thành một phần của câu.",
-      sent: "An independent clause can stand alone as a complete sentence.",
-      vnSent: "Một mệnh đề độc lập có thể đứng riêng lẻ như một câu hoàn chỉnh.",
-      dictSent: "An independent clause can stand alone as a sentence.",
-      isReal: true
-    },
-    {
-      word: "Inference",
-      vn: "Sự suy luận",
-      def: "An educated guess or conclusion made based on evidence and reasoning.",
-      vnDef: "Một dự đoán hoặc kết luận có cơ sở được đưa ra dựa trên bằng chứng và lập luận.",
-      sent: "Based on the character's actions, we can make an inference that he is very nervous.",
-      vnSent: "Dựa trên hành động của nhân vật, chúng ta có thể đưa ra suy luận rằng anh ấy đang rất lo lắng.",
-      dictSent: "You can make an inference based on the evidence.",
-      isReal: true
-    },
-    {
-      word: "Concession",
-      vn: "Sự nhượng bộ",
-      def: "Admitting that an opponent has a valid point before returning to your own argument.",
-      vnDef: "Thừa nhận rằng đối thủ có một quan điểm hợp lý trước khi quay lại lập luận của riêng bạn.",
-      sent: "Making a small concession shows the reader that you are fair and objective.",
-      vnSent: "Việc đưa ra một sự nhượng bộ nhỏ cho người đọc thấy rằng bạn công bằng và khách quan.",
-      dictSent: "Making a small concession makes your argument look fair.",
+      word: "Bias",
+      vn: "Thiên kiến",
+      def: "A leaning to one side that shows only part of the picture.",
+      vnDef: "Sự nghiêng về một phía chỉ cho thấy một phần của bức tranh.",
+      sent: "A writer who shows only one side reveals a clear bias.",
+      vnSent: "Một người viết chỉ cho thấy một phía bộc lộ một thiên kiến rõ ràng.",
       isReal: true
     }
-  ],
-  fakeWords: [
-    { word: "Syntox", imitating: "Syntax", isReal: false },
-    { word: "Juxtaposement", imitating: "Juxtaposition", isReal: false },
-    { word: "Subordinance", imitating: "Subordination", isReal: false },
-    { word: "Synthetion", imitating: "Synthesis", isReal: false },
-    { word: "Ambiguism", imitating: "Ambiguity", isReal: false },
-    { word: "Rhetoricality", imitating: "Rhetoric", isReal: false },
-    { word: "Cohesity", imitating: "Cohesion", isReal: false },
-    { word: "Clausalment", imitating: "Clause", isReal: false },
-    { word: "Inferation", imitating: "Inference", isReal: false },
-    { word: "Concessity", imitating: "Concession", isReal: false }
-  ],
-  dictation: [
-    { sent: "Good syntax makes your writing much easier to read.", vnSent: "Cú pháp tốt giúp bài viết của bạn dễ đọc hơn nhiều." },
-    { sent: "Writers use juxtaposition to show strong contrast between ideas.", vnSent: "Người viết sử dụng sự đặt cạnh nhau để thể hiện sự tương phản mạnh mẽ giữa các ý tưởng." },
-    { sent: "An independent clause can stand alone as a sentence.", vnSent: "Một mệnh đề độc lập có thể đứng riêng lẻ thành một câu." },
-    { sent: "We must synthesize the data before writing the report.", vnSent: "Chúng ta phải tổng hợp dữ liệu trước khi viết báo cáo." },
-    { sent: "Please avoid ambiguity by choosing your words carefully.", vnSent: "Vui lòng tránh sự mơ hồ bằng cách chọn từ ngữ cẩn thận." },
-    { sent: "The politician used strong rhetoric to persuade the crowd.", vnSent: "Chính trị gia đã sử dụng tu từ mạnh mẽ để thuyết phục đám đông." },
-    { sent: "Transition words help improve the overall cohesion of paragraphs.", vnSent: "Các từ chuyển tiếp giúp cải thiện tính mạch lạc tổng thể của các đoạn văn." },
-    { sent: "You can make an inference based on the evidence.", vnSent: "Bạn có thể đưa ra suy luận dựa trên bằng chứng." },
-    { sent: "Making a small concession makes your argument look fair.", vnSent: "Đưa ra một sự nhượng bộ nhỏ làm cho lập luận của bạn trông có vẻ công bằng." },
-    { sent: "Subordination helps organize complex thoughts in a single sentence.", vnSent: "Cấu trúc phụ thuộc giúp sắp xếp các suy nghĩ phức tạp trong một câu duy nhất." }
   ],
   passages: [
     {
       id: "passage_1",
-      title: "The Art of a Great Speech",
-      text: "Have you ever wondered why some speeches are so powerful? The secret is not just the words, but how they are arranged. {Syntax} is the way we structure sentences. Good speakers use {subordination} to build clear and logical ideas. Instead of giving every point the same importance, they put the main idea in an {independent} clause and use {dependent} clauses for background details.",
-      vnTitle: "Nghệ thuật của một Bài diễn văn Tuyệt vời",
-      vnText: "Bạn có bao giờ tự hỏi tại sao một số bài diễn văn lại mạnh mẽ đến vậy? Bí mật không chỉ nằm ở ngôn từ, mà ở cách chúng được sắp xếp. Cú pháp là cách chúng ta cấu trúc câu. Những người diễn thuyết giỏi sử dụng cấu trúc phụ thuộc để xây dựng các ý tưởng rõ ràng và logic. Thay vì tạo cho mọi điểm sự quan trọng như nhau, họ đặt ý chính vào một mệnh đề độc lập và sử dụng các mệnh đề phụ thuộc cho các chi tiết nền tảng."
+      title: "Why the Author Wrote It",
+      vnTitle: "Tại sao Tác giả Viết nó",
+      text: "Every writer has a {purpose}. Some want to {persuade} you to agree or to act, using strong opinions. Others only want to {inform} you, giving plain facts that you can check for yourself.",
+      vnText: "Mỗi người viết đều có một mục đích. Một số muốn thuyết phục bạn đồng ý hoặc hành động, bằng những ý kiến mạnh mẽ. Những người khác chỉ muốn cung cấp thông tin cho bạn, đưa ra những sự thật đơn giản mà bạn có thể tự kiểm tra."
     },
     {
       id: "passage_2",
-      title: "A Tale of Two Cities",
-      text: "In modern architecture, designers often use {juxtaposition} to make a bold statement. By placing a shiny glass skyscraper right next to a centuries-old brick church, they create a striking visual {contrast}. This side-by-side {comparison} forces us to think about how fast our world is changing.",
-      vnTitle: "Câu chuyện của Hai Thành phố",
-      vnText: "Trong kiến trúc hiện đại, các nhà thiết kế thường sử dụng sự đặt cạnh nhau để đưa ra một tuyên bố táo bạo. Bằng cách đặt một tòa nhà chọc trời bằng kính sáng bóng ngay cạnh một nhà thờ gạch hàng thế kỷ, họ tạo ra một sự tương phản hình ảnh nổi bật. Sự so sánh song song này buộc chúng ta phải suy nghĩ về việc thế giới của chúng ta đang thay đổi nhanh như thế nào."
+      title: "Hearing the Tone",
+      vnTitle: "Nghe Giọng điệu",
+      text: "A writer's {tone} is the {attitude} they take toward the subject, and you find it in their word choice. A word's {connotation} — the feeling it carries — tells you whether that attitude is warm or sharp.",
+      vnText: "Giọng điệu của người viết là thái độ mà họ mang đối với chủ đề, và bạn tìm thấy nó trong cách chọn từ của họ. Sắc thái nghĩa của một từ — cảm giác nó mang theo — cho bạn biết thái độ đó là ấm áp hay sắc bén."
     },
     {
       id: "passage_3",
-      title: "How to Win an Argument",
-      text: "When people argue, they usually try to attack the other person's ideas immediately. However, skilled debaters know the value of a smart {concession}. If you start by agreeing with a valid point, you show that you are fair. This builds {trust} with your audience before you present your main {synthesis} of the facts.",
-      vnTitle: "Cách để Chiến thắng một Cuộc tranh luận",
-      vnText: "Khi mọi người tranh luận, họ thường cố gắng tấn công ý tưởng của người kia ngay lập tức. Tuy nhiên, những người tranh luận lão luyện biết giá trị của một sự nhượng bộ thông minh. Nếu bạn bắt đầu bằng việc đồng ý với một điểm hợp lý, bạn cho thấy rằng mình công bằng. Điều này xây dựng lòng tin với khán giả của bạn trước khi bạn trình bày sự tổng hợp chính của mình về các sự thật."
+      title: "Whose Side Is It On?",
+      vnTitle: "Nó Đứng về Phía Ai?",
+      text: "Point of view is the writer's {perspective} on an issue. A fair writer may lean one way, but heavy {bias} — showing only one side — is a signal to read with care and to check the {purpose} behind the words.",
+      vnText: "Góc nhìn là quan điểm của người viết về một vấn đề. Một người viết công bằng có thể nghiêng về một phía, nhưng thiên kiến nặng — chỉ cho thấy một phía — là một tín hiệu để đọc cẩn thận và kiểm tra mục đích đằng sau những từ ngữ."
     }
   ],
-  notebookArticle: {
-    title: "Unit 1B: Rhetorical Analysis & Syntax",
-    vnTitle: "Bài 1B: Phân tích Tu từ & Cú pháp",
-    instructions: "Read the following summary carefully. Write down the highlighted vocabulary words in your notebook along with their definitions.",
-    vnInstructions: "Hãy đọc kỹ bản tóm tắt sau đây. Viết các từ vựng được in đậm vào vở bài tập cùng với định nghĩa của chúng.",
-    sections: [
-      {
-        heading: "1. Syntax & Clauses",
-        vnHeading: "1. Cú pháp & Mệnh đề",
-        text: "Good **Syntax** uses independent and dependent **Clauses** to build clear sentences. This proper structure reduces **Ambiguity** and helps the reader make the correct **Inference**.",
-        vnText: "Cú pháp (**Syntax**) tốt sử dụng các Mệnh đề (**Clauses**) độc lập và phụ thuộc để xây dựng các câu rõ ràng. Cấu trúc phù hợp này làm giảm Tính mơ hồ (**Ambiguity**) và giúp người đọc đưa ra Suy luận (**Inference**) chính xác."
-      },
-      {
-        heading: "2. The Power of Contrast",
-        vnHeading: "2. Sức mạnh của sự tương phản",
-        text: "**Juxtaposition** places two different ideas side by side to highlight their differences. When used correctly, it creates a smooth flow and improves paragraph **Cohesion**.",
-        vnText: "Sự đặt cạnh nhau (**Juxtaposition**) đặt hai ý tưởng khác nhau cạnh nhau để làm nổi bật sự khác biệt của chúng. Khi được sử dụng đúng cách, nó tạo ra một luồng chảy mượt mà và cải thiện Tính mạch lạc (**Cohesion**) của đoạn văn."
-      },
-      {
-        heading: "3. Advanced Persuasion",
-        vnHeading: "3. Thuyết phục Nâng cao",
-        text: "Using persuasive **Rhetoric** often involves **Subordination** to downplay weak ideas and making a **Concession** to build trust. Ultimately, you must create a **Synthesis** of all ideas to win the argument.",
-        vnText: "Sử dụng Tu từ học (**Rhetoric**) thuyết phục thường liên quan đến Cấu trúc phụ thuộc (**Subordination**) để làm giảm sự chú ý vào các ý tưởng yếu và đưa ra Sự nhượng bộ (**Concession**) để xây dựng lòng tin. Cuối cùng, bạn phải tạo ra một Sự tổng hợp (**Synthesis**) của tất cả các ý tưởng để giành chiến thắng trong cuộc tranh luận."
-      }
-    ]
-  },
   shortQA: [
     {
       id: "q1",
-      question: "How does using a dependent clause help organize a complex sentence?",
-      suggestedWords: [["background", "context", "secondary"], ["main", "independent", "focus"]],
+      question: "What does an author's tone tell you, and where in a text do you look to find it?",
+      suggestedWords: [["attitude", "feeling"], ["word choice", "adjectives"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for stating that it provides background information, context, or secondary details.",
-        "1 mark for explaining that it keeps the reader's main focus on the independent clause (or main idea)."
+        "1 mark for stating that tone is the author's attitude or feeling toward the subject.",
+        "1 mark for saying you find it in the writer's word choice (the adjectives and verbs), not in the topic itself."
       ],
-      modelAnswer: "A dependent clause helps by providing background context, which ensures the reader's main focus remains locked on the independent clause."
+      modelAnswer: "An author's tone tells you their attitude or feeling toward the subject. You find it by looking closely at the writer's word choice — the adjectives and verbs they pick — rather than at the topic itself."
     },
     {
       id: "q2",
-      question: "What is the main purpose of juxtaposition in writing or art?",
-      suggestedWords: [["side-by-side", "beside", "together"], ["contrast", "differences"]],
+      question: "What is the difference between writing to inform and writing to persuade?",
+      suggestedWords: [["facts", "objective"], ["agree", "opinion"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for defining juxtaposition as placing two different concepts or images side-by-side.",
-        "1 mark for stating that the goal is to highlight differences or create a strong contrast."
+        "1 mark for saying writing to inform gives the reader facts without taking a side.",
+        "1 mark for saying writing to persuade tries to make the reader agree with an opinion or take action."
       ],
-      modelAnswer: "Juxtaposition places two concepts side-by-side. Its main purpose is to highlight their differences and create a strong, memorable contrast."
+      modelAnswer: "Writing to inform gives the reader facts plainly, without taking a side. Writing to persuade goes further: it tries to make the reader agree with an opinion or take some action, so it leans on judgement rather than only facts."
     },
     {
       id: "q3",
-      question: "Why is it a good strategy to include a concession in a persuasive essay?",
-      suggestedWords: [["valid", "reasonable", "agree"], ["trust", "fair", "objective"]],
+      question: "What does it mean to say a text shows bias, and why should a reader notice it?",
+      suggestedWords: [["one side", "leaning"], ["balanced", "fair"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for identifying that a concession acknowledges the opposing side has a valid or reasonable point.",
-        "1 mark for explaining that this strategy builds trust and makes the writer appear fair or objective."
+        "1 mark for saying bias means the writing leans to one side and shows only part of the picture.",
+        "1 mark for saying a reader should notice it so they do not mistake a one-sided view for a balanced or neutral fact."
       ],
-      modelAnswer: "Including a concession acknowledges that the opponent has a valid point. This strategy builds trust by making the writer appear fair and highly objective."
+      modelAnswer: "A text shows bias when it leans to one side and presents only part of the picture instead of a balanced view. A reader should notice bias so that they do not mistake a one-sided argument for neutral, proven fact, and can weigh what is missing."
     }
   ],
   diagrams: [
     {
       id: "d1",
-      inlineSvg: DIAGRAMS.SENTENCE_STRUCTURE_CHART,
-      imagePrompt: "A clean, minimalist academic bar chart titled 'Sentence Structures in Persuasive Essays'. The y-axis shows 'Frequency of Use (%)' and the x-axis shows three categories: 'Simple Sentences', 'Compound Sentences', and 'Complex Sentences (Subordination)'. The bar for 'Complex Sentences (Subordination)' is the tallest at 65%, 'Simple Sentences' is at 15%, and 'Compound Sentences' is at 20%. Use a modern color palette of teal, navy, and coral on a white background. No 3D effects, highly legible sans-serif fonts, flat graphic design style suitable for an English language test.",
-      promptText: "Analyze the provided chart. What does the data suggest about the preferred sentence structure in persuasive writing?",
-      suggestedWords: [["complex", "subordination"], ["highest", "majority", "most", "preferred"]],
+      inlineSvg: DIAGRAMS.AUTHORS_PURPOSE,
+      promptText: "The chart shows three common purposes: PERSUADE, INFORM, and ENTERTAIN. A newspaper editorial that urges the mayor to build a shelter — which purpose is it, and how can you tell?",
+      suggestedWords: [["persuade", "persuasive"], ["agree", "act"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for identifying that Complex Sentences (Subordination) are the most frequently used.",
-        "1 mark for accurately citing the data (65%) to support the conclusion."
+        "1 mark for identifying the purpose as to persuade.",
+        "1 mark for explaining that it tries to make the reader agree or act (it pushes an opinion), matching the PERSUADE box."
       ],
-      modelAnswer: "The chart suggests that Complex Sentences utilizing subordination are the preferred structure in persuasive writing, representing the vast majority at 65% frequency of use."
+      modelAnswer: "The editorial's purpose is to persuade. It does not just report facts; it urges the mayor to build a shelter, trying to make the reader agree and take action. That matches the PERSUADE box on the chart, which is about getting the reader to agree or act."
     },
     {
       id: "d2",
-      inlineSvg: DIAGRAMS.ARGUMENT_ARCHITECTURE,
-      imagePrompt: "A flat vector infographic showing the 'Architecture of an Argument'. It features three interconnected blocks flowing upwards. The bottom block is blue and labeled '1. Evidence Synthesis'. A prominent arrow points up to a middle orange block labeled '2. Concession to Opponent'. A final arrow points up to the top green block labeled '3. Primary Claim'. The design should be sleek, corporate, and highly legible, using standard sans-serif fonts, placed on a clean white background.",
-      promptText: "Examine the flowchart detailing the Architecture of an Argument. Describe the sequence of steps a writer must take before reaching the Primary Claim.",
-      suggestedWords: [["synthesis", "synthesize"], ["concession", "concede"]],
+      inlineSvg: DIAGRAMS.TONE_SPECTRUM,
+      promptText: "The scale runs from Approving on the left to Critical on the right. A reviewer calls a plan 'a reckless, costly mistake.' Where on the scale does that tone fall, and what in the words tells you?",
+      suggestedWords: [["critical", "negative"], ["word choice", "adjectives"]],
       scienceMaxMarks: 2,
       markScheme: [
-        "1 mark for identifying the first step as Evidence Synthesis.",
-        "1 mark for identifying the second step as making a Concession to the opponent."
+        "1 mark for placing the tone at the Critical end of the scale.",
+        "1 mark for explaining that the negative adjectives ('reckless', 'costly') reveal the critical attitude."
       ],
-      modelAnswer: "Before reaching the Primary Claim, a writer must first complete an Evidence Synthesis. Following this, the writer must offer a Concession to the opponent."
+      modelAnswer: "That tone falls at the Critical end of the scale. The negative adjectives the reviewer chooses — 'reckless' and 'costly' — carry a disapproving feeling, and it is that word choice, not the topic itself, that shows the critical attitude."
+    },
+    {
+      id: "d3",
+      inlineSvg: DIAGRAMS.POINT_OF_VIEW,
+      promptText: "The chart contrasts FIRST PERSON and THIRD PERSON and asks whether the writer is for, against, or neutral. A passage reads: 'We must act now to save our river.' Which point of view is it, and what stance does the writer take?",
+      suggestedWords: [["first person", "we"], ["for", "against"]],
+      scienceMaxMarks: 2,
+      markScheme: [
+        "1 mark for identifying it as first person (it uses 'we').",
+        "1 mark for stating that the writer takes a side — they are for action, not neutral."
+      ],
+      modelAnswer: "It is written in the first person, because the writer uses 'we'. The stance is not neutral: by saying 'we must act now,' the writer clearly takes a side and is for taking action to save the river."
     }
   ],
   essay: {
-    task: "Analyze how an author can use structural choices, such as juxtaposition or concessions, to construct a persuasive argument.",
+    // A full GED Extended Response for practice: two opposing contemporary sources
+    // with checkable evidence on each side; 60 minutes (ESL accommodation vs. the
+    // real 45). The student argues which side is BETTER SUPPORTED.
+    minutesAllowed: 60,
+    sources: [
+      {
+        title: "Make Service a Graduation Requirement",
+        text:
+          "High schools should require students to complete a set number of community-service hours before they graduate. When Oak Ridge High added a forty-hour requirement, the share of seniors who volunteered rose sharply, and a follow-up survey found that many of them kept volunteering a year after leaving school. Service also teaches lessons a classroom cannot: students learn to show up on time, work beside strangers, and see how their town actually runs.",
+      },
+      {
+        title: "Service Should Be a Choice",
+        text:
+          "Requiring service turns a good deed into a chore. A student who volunteers only to tick a box learns little about kindness, and the rule falls hardest on teenagers who already work paid jobs to help their families. One district that tracked its graduates found no lasting difference in volunteering between students who had been required to serve and those who had not. Real generosity cannot be forced onto a form.",
+      },
+    ],
+    task:
+      "Both writers argue about whether high schools should require community service to graduate. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
     guidelines: [
-      "Define how syntax and structure impact readability.",
-      "Explain the effect of using juxtaposition to contrast ideas.",
-      "Describe how a concession builds trust with an audience."
+      "State clearly which position is better supported.",
+      "Use specific evidence from BOTH sources.",
+      "Weigh how strong each side's evidence is — do not just repeat it.",
+      "Write in paragraphs, with a short conclusion.",
     ],
     suggestedWords: [
-      ["Syntax", "structure", "structures"], 
-      ["Juxtaposition", "contrast"],
-      ["Concession", "concede"]
+      ["Evidence", "proof", "prove"],
+      ["Claim", "argues", "position"],
+      ["Service", "volunteer"],
     ],
-    scienceMaxMarks: 3,
+    scienceMaxMarks: 4,
     markScheme: [
-      "1 mark for accurately describing how syntax or structure guides the reader's logic.",
-      "1 mark for explaining how juxtaposition emphasizes contrast.",
-      "1 mark for explaining how concessions build credibility and trust."
+      "States clearly which position is better supported, rather than only which the writer personally prefers.",
+      "Refers to specific evidence from Source 1 (for example the rise in volunteering at Oak Ridge or the follow-up survey).",
+      "Refers to specific evidence from Source 2 (for example the district that found no lasting difference, or the burden on working students).",
+      "Evaluates the quality of the evidence rather than simply restating it, for example noting that comparing two groups is stronger than surveying only one.",
     ],
-    modelAnswer: "An author's syntax and structural choices are vital for persuasion. By using juxtaposition, an author can place opposing ideas side-by-side to create a sharp contrast that highlights the superiority of their claim. Furthermore, by offering a concession, the author acknowledges the other side, which builds immense trust with the reader and makes the overall argument much more compelling."
+    modelAnswer:
+      "Both sources use real evidence, but Source 2 is slightly better supported because its evidence compares two groups, while Source 1's looks at only one. Source 1 argues for a requirement and reports that after Oak Ridge High added forty hours, more seniors volunteered and a survey found many kept volunteering later. That sounds convincing, yet the survey follows only the students who were required to serve, so it cannot show whether the rule itself made the difference. Source 2 answers exactly that weakness: it points to a district that tracked its graduates and found no lasting difference in volunteering between students who had been required to serve and those who had not. Comparing the two groups is a stronger test than following one, because it rules out the chance that those students would have volunteered anyway. Source 2 also raises a fair point about the burden on teenagers who already work. Because its evidence is a fairer comparison and answers Source 1's main claim, Source 2's position is the better supported.",
   },
   assessment,
-  notes,
-  workbook,
-  games
+  notes
 };
