@@ -13,6 +13,14 @@ status* section so it can be closed deliberately.
   Diagram, and Essay questions. Covers suggested vocabulary, the two-part grading
   model, integrity (anti-cheat) rules, and math-specific quality rules. The
   **Y8 / MATH_1A "parallel lines & angles" unit is the reference exemplar.**
+- [svg-diagrams.md](svg-diagrams.md) — the look-and-feel standard for inline SVG
+  teaching diagrams: layout, palette, typography, the `npm run audit:svg` text-fit
+  rule, and subject-specific notes (math, history, science, ELA). The **GED_MATH /
+  MATH_1A `NOTES_ANATOMY` (coefficient) diagram is the reference exemplar.**
+- [imagery-sourcing.md](imagery-sourcing.md) — when to use a real image over an SVG,
+  and how to source **public-domain** photos, political cartoons, and documents
+  (licensing rules, reputable sources, attribution, file placement) — geared toward
+  history.
 
 ## How to use these
 
