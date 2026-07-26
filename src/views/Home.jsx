@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2 } from 'lucide-react';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
+import { isPreviewAccount } from '../utils/previewAccount';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -26,7 +27,10 @@ export default function Home() {
       const enrolled = session?.user?.app_metadata?.enrolled_tracks
         ?? session?.user?.user_metadata?.enrolled_tracks;
 
-      if (Array.isArray(enrolled) && enrolled.length > 0) {
+      if (isPreviewAccount(session?.user)) {
+        // Preview/QA account: every track, regardless of enrolment.
+        setVisibleTracks(TRACK_REGISTRY);
+      } else if (Array.isArray(enrolled) && enrolled.length > 0) {
         // RBAC: only show enrolled tracks
         setVisibleTracks(TRACK_REGISTRY.filter(t => enrolled.includes(t.id)));
       } else {

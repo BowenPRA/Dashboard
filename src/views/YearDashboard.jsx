@@ -7,6 +7,7 @@ import UnitCard from '../components/UnitCard';
 import { getTrackConfig } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
 import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
+import { isPreviewAccount } from '../utils/previewAccount';
 
 function PlaceholderView({ title, onQuit }) {
   return (
@@ -70,6 +71,9 @@ export default function YearDashboard({ track }) {
   const trackConfig = getTrackConfig(track);
   const currentTheme = trackConfig?.theme || {};
   const trackTitle = trackConfig?.title || 'Unknown Track';
+
+  // Preview/QA accounts have every phase unlocked, ignoring XP thresholds.
+  const previewAll = isPreviewAccount(user);
 
   const { meta: META_DATA, data: UNIT_DATA } = getTrack(track);
   const activeExpandedUnit = expandedUnit !== null ? expandedUnit : 'NONE';
@@ -265,6 +269,7 @@ export default function YearDashboard({ track }) {
                     isExpanded={activeExpandedUnit === metaUnit.id}
                     onToggle={() => setExpandedUnit(activeExpandedUnit === metaUnit.id ? 'NONE' : metaUnit.id)}
                     needsWork={needsWork}
+                    previewAll={previewAll}
                   />
                 );
               });

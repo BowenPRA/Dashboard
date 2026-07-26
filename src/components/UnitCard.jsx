@@ -19,7 +19,7 @@ const IconMap = {
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card
 // and the launcher cannot drift apart.
 
-export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork }) {
+export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false }) {
   if (!unit) return null;
 
   const { title, description, icon } = unit.meta || {};
@@ -201,7 +201,7 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
 
             <div className="p-6 sm:p-8 space-y-10">
               {unitPhases.map(phase => {
-                const isPhaseLocked = unitXP < phase.threshold;
+                const isPhaseLocked = !previewAll && unitXP < phase.threshold;
                 
                 return (
                   <div key={phase.id} className="relative group">
