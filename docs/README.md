@@ -21,6 +21,9 @@ status* section so it can be closed deliberately.
   and how to source **public-domain** photos, political cartoons, and documents
   (licensing rules, reputable sources, attribution, file placement) — geared toward
   history.
+- [ged-english-lessons.md](ged-english-lessons.md) — how to build the GED English
+  (RLA) track for an ESL learner: what the test assesses, bite-size design principles,
+  the activity toolkit, the 60-minute essay standard, and the **10-lesson blueprint**.
 
 ## How to use these
 
