@@ -49,6 +49,12 @@ const MIN_CHARS = 100;
 export default function Essay({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const currentQ = pool?.essay || pool;
 
+  // GED essays are graded like the real Extended Response: three traits (0-2
+  // each) with no mark scheme, model answer, or corrected rewrite. Every other
+  // track keeps the content/English mark-scheme flow. Declared up here so the
+  // grading handlers can branch on it.
+  const isGedTrack = (track || '').startsWith('GED');
+
   // The GED Extended Response is a timed, unaided piece of writing. Units may
   // override the limit; 45 minutes matches the real test.
   const minutesAllowed = currentQ?.minutesAllowed ?? 45;
@@ -122,6 +128,27 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     const usedWordGroups = (currentQ.suggestedWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
 
     const trimmed = (userAnswer || '').trim();
+
+    // GED fallback keeps the trait shape so the results screen renders the same
+    // way; the AI grader is off, so no traits can be awarded.
+    if (isGedTrack) {
+      const disabled = "The AI examiner is disabled for this unit after 3 strikes, so no marks can be awarded.";
+      setFeedback({
+        mode: 'ged',
+        originalAnswer: trimmed,
+        usedWordGroups,
+        gedTraits: { arguments: 0, development: 0, conventions: 0 },
+        gedTotal: 0,
+        traitFeedback: { arguments: disabled, development: disabled, conventions: disabled },
+        nextStep: "Reach out to your teacher to re-enable grading for this unit.",
+        isPerfect: false,
+        isStrikeFallback: true
+      });
+      setLocalAnswers({ 0: { text: trimmed, status: 'strike_fallback' } });
+      setGameState('A');
+      return;
+    }
+
     const hasCapital = /^[A-Z]/.test(trimmed);
     const hasPeriod = /[.!?]$/.test(trimmed);
     const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
@@ -169,6 +196,8 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       scienceMaxMarks: currentQ.scienceMaxMarks,
       markScheme: currentQ.markScheme,
       guidelines: currentQ.guidelines || [],
+      // GED grading judges use of the two source passages, so send them.
+      sources: currentQ.sources || [],
       track,
       unitTitle,
       minutesAllowed
@@ -207,16 +236,45 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
     // Suggested words are highlighted as hints only — not part of the score.
     const usedWordGroups = (currentQ.suggestedWords || []).filter(group => checkRequiredWordGroup(group, userAnswer));
+
+    // GED tracks: pure Extended Response rubric — three traits, /6, one next step.
+    if (isGedTrack && aiData.gedTraits) {
+      const traits = aiData.gedTraits;
+      const gedTotal = Number.isFinite(aiData.gedTotal)
+        ? aiData.gedTotal
+        : (traits.arguments || 0) + (traits.development || 0) + (traits.conventions || 0);
+      const isPerfect = gedTotal >= 6;
+
+      setFeedback({
+        mode: 'ged',
+        originalAnswer: trimmedAnswer,
+        usedWordGroups,
+        gedTraits: traits,
+        gedTotal,
+        traitFeedback: aiData.traitFeedback || {},
+        nextStep: aiData.nextStep || '',
+        isPerfect,
+        isStrikeFallback: false
+      });
+
+      if (isPerfect) {
+        setLocalAnswers({ 0: { text: trimmedAnswer, status: 'perfect' } });
+      }
+      setGameState('A');
+      return;
+    }
+
+    // Every other track: content (mark scheme) + English (max 3).
     const scienceScore = aiData.scienceScore || 0;
     const englishScore = aiData.englishScore || 0;
     const scienceMarks = (currentQ.markScheme || []).map((_, i) => i < scienceScore);
 
-    // Two components only: content (mark scheme) + English (max 3).
     const pointsEarned = scienceScore + englishScore;
     const maxPoints = (currentQ.scienceMaxMarks || 0) + 3;
     const isPerfect = pointsEarned >= maxPoints;
 
     setFeedback({
+      mode: 'legacy',
       originalAnswer: trimmedAnswer,
       usedWordGroups,
       scienceMarks,
@@ -234,7 +292,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     if (isPerfect) {
       setLocalAnswers({ 0: { text: trimmedAnswer, status: 'perfect' } });
     }
-    
+
     setGameState('A');
   };
 
@@ -243,6 +301,9 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
     if (gameState === 'SAVED_PERFECT') {
       finalXP = 10;
+    } else if (feedback?.mode === 'ged') {
+      // GED total is out of 6; scale to the task's 0-10.
+      finalXP = Math.round((feedback.gedTotal / 6) * 10);
     } else if (feedback) {
       finalXP = Math.ceil((feedback.pointsEarned / feedback.maxPoints) * 10);
     } else if (gameState === 'SAVED_API_ERROR') {
@@ -252,12 +313,12 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     onComplete(finalXP, localAnswers); 
   };
 
-  // Labels adapt to the subject. A GED English essay must not be told its content
-  // was given "Science" feedback where it isn't a science unit. track and
-  // unitTitle come from the registry. Never surface an exam board name.
-  const isGedTrack = (track || '').startsWith('GED');
+  // Labels adapt to the subject for the non-GED (legacy) results view. A science
+  // unit gets "Science Feedback"; anything else gets neutral "Content Feedback".
+  // GED essays use the trait view below and never reach these. Never surface an
+  // exam board name.
   const isScienceTrack = /SCIENCE/i.test(track || '') || track === 'Y8' || track === 'Y9';
-  const markSchemeTitle = isGedTrack ? 'GED Mark Scheme' : 'Content Marks';
+  const markSchemeTitle = 'Content Marks';
   const contentFeedbackTitle = isScienceTrack ? 'Science Feedback' : 'Content Feedback';
   const ContentIcon = isScienceTrack ? FlaskConical : Lightbulb;
 
@@ -467,7 +528,80 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
               </div>
             )}
 
-            {gameState === 'A' && feedback && (
+            {/* GED tracks: the real Extended Response flow — three traits scored
+                0-2, a short reason for each, /6 total, and one next step. No mark
+                scheme, no content/English split, no model answer, no rewrite. */}
+            {gameState === 'A' && feedback?.mode === 'ged' && (
+              <div className="w-full animate-in slide-in-from-bottom-8 duration-500">
+
+                <div className="flex items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
+                  <div className="p-3 rounded-full mr-4 flex-shrink-0 bg-indigo-600">
+                    <Award className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 dark:text-white">
+                      {feedback.isStrikeFallback ? "Grader Disabled" : "GED Examiner Score"}
+                    </h3>
+                    <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">
+                      Extended Response
+                      <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-indigo-600 dark:text-indigo-400'}`}>
+                        {feedback.gedTotal} / 6
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mb-6">
+                  {[
+                    { key: 'arguments', label: 'Arguments & Evidence', hint: 'A clear position, backed by evidence from the two sources.' },
+                    { key: 'development', label: 'Development & Organization', hint: 'Ideas developed and in order — a beginning, middle and end.' },
+                    { key: 'conventions', label: 'Clarity & Conventions', hint: 'Grammar, spelling and punctuation under control.' },
+                  ].map((t) => {
+                    const score = feedback.gedTraits?.[t.key] ?? 0;
+                    const fb = feedback.traitFeedback?.[t.key] || 'No feedback provided.';
+                    const pill = score === 2
+                      ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+                      : score === 1
+                        ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
+                        : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300';
+                    const accent = score === 2 ? 'border-l-emerald-400' : score === 1 ? 'border-l-amber-400' : 'border-l-rose-400';
+                    return (
+                      <div key={t.key} className={`bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 border-l-4 ${accent} shadow-sm`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="text-lg font-black text-slate-800 dark:text-white">{t.label}</h4>
+                          <span className={`font-bold px-3 py-1 rounded-lg text-sm tabular-nums ${pill}`}>{score} / 2</span>
+                        </div>
+                        <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-3">{t.hint}</p>
+                        <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{fb}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {feedback.nextStep && (
+                  <div className="bg-[#eff6ff] dark:bg-blue-900/20 border border-[#bfdbfe] dark:border-blue-800 p-6 rounded-[1.5rem] mb-8">
+                    <div className="flex items-center text-[#2563eb] dark:text-blue-400 mb-2">
+                      <Lightbulb className="w-5 h-5 mr-2" />
+                      <h4 className="font-black text-sm uppercase tracking-widest">Your Next Step</h4>
+                    </div>
+                    <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{feedback.nextStep}</p>
+                  </div>
+                )}
+
+                <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
+                  <button
+                    onClick={handleNext}
+                    className="flex items-center px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-indigo-800 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+                  >
+                    Complete Section <ArrowRight className="w-6 h-6 ml-3" />
+                  </button>
+                </div>
+
+              </div>
+            )}
+
+            {/* Every other track: the existing content + English mark-scheme flow. */}
+            {gameState === 'A' && feedback && feedback.mode !== 'ged' && (
               <div className="w-full animate-in slide-in-from-bottom-8 duration-500">
 
                 {!feedback.isPerfect && (
