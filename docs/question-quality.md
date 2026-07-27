@@ -45,17 +45,17 @@ Every item shares the same grading fields:
 {
   id: "q2",
   question: "…",                 // or promptText / task
-  suggestedWords: [["…","…"]],   // synonym groups — see §3 (currently named requiredWords)
+  suggestedWords: [["…","…"]],   // synonym groups — see §3
   scienceMaxMarks: 2,            // = number of markScheme lines
   markScheme: [ "1 mark for …", "1 mark for …" ],
   modelAnswer: "…"
 }
 ```
 
-> **Naming note.** The field is called `requiredWords` in the data and code today.
-> The intent going forward is **suggested** words (§3). Until the code rename lands
-> (see *Implementation status*), keep using `requiredWords` as the key but author its
-> contents by the suggested-words rules below.
+> **Naming note.** The field is `suggestedWords` (§3) — the `requiredWords` →
+> `suggestedWords` rename has landed across all `data.js` files, the task readers,
+> and the grader payload (see *Implementation status*). Author its contents by the
+> suggested-words rules below; suggested words are optional and never scored.
 
 ---
 

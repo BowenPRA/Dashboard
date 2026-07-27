@@ -90,10 +90,17 @@ It flags two things per [scripts/svg-audit.mjs](../scripts/svg-audit.mjs):
 - **FRAME** — text runs past the `viewBox` edge.
 - **BOX** — text overflows the `<rect>` it sits inside (needs ≥6px padding).
 
-Width is estimated as `characters × fontSize × ~0.55`. Practical consequences:
+It scans every unit's `diagrams.js` **and** inline `inlineSvg` blocks in `notes.js`
+and `assessment.js`, so one-off diagrams are checked too.
+
+Width is estimated as `characters × fontSize × glyphFactor`, where the factor
+depends on weight: **0.52** for normal text, **0.57** for `bold`, **0.60** for
+`font-weight="900"`. Practical consequences:
 - Keep labels short ("Coefficient", not "The coefficient of the term").
-- Size label rects to the text, plus padding; prefer `text-anchor="middle"` and
-  place the anchor at the box centre.
+- **Bold and 900 labels are wider than they look** — a heading that fits as normal
+  weight can overflow once you bold it. Size its box for the heavier factor.
+- Size label rects to the text plus ≥6px slack each side; prefer `text-anchor="middle"`
+  with the anchor at the box centre.
 - **A new or edited diagram is not done until `npm run audit:svg` is clean for it.**
 
 ## 7. Accessibility & robustness

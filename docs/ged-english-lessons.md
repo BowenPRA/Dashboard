@@ -62,7 +62,10 @@ Tasks come from `src/tasks/taskRegistry.js`. Choose by the skill the lesson targ
 
 Rules of thumb:
 - **Grammar lesson** → Notes + GrammarEdit + a short Assessment; light vocab.
-- **Reading lesson** → Notes + Reading + Short Answers + on-topic vocab; GrammarEdit optional.
+- **Reading lesson** → Notes + on-topic Vocab + Reading + Short Answers + Diagrams,
+  then the practice Essay and a short Assessment. GrammarEdit optional; `Games` and
+  `Workbook` are dropped as off-focus. Lessons 7–9 (ENG_1A/1B/1C) are the reference
+  shape, each 100 XP across concept/practice/mastery phases.
 - Keep total volume tight: enough reps to learn, not to grind.
 
 ## 4. The essay standard
@@ -118,9 +121,17 @@ dropped as off-focus. Lessons 3–6 (Language) remain to be built.
 - [ ] Activity mix serves the focus — no filler, no task-for-its-own-sake.
 - [ ] Vocab is on-topic and genuinely useful, not padding.
 - [ ] GrammarEdit / Reading / Short Answer items follow [question-quality.md](question-quality.md).
+- [ ] MCQ distractors are clean and parallel — each isolates the one thing being
+      tested, with no smuggled extra words (e.g. verb-form options differ only in the verb).
 - [ ] Essay: 60 minutes, two GED-style opposing sources.
 - [ ] Bilingual `vn` fields present.
-- [ ] Assessment mirrors GED item types and stays short.
+- [ ] Assessment mirrors GED item types, stays short, and has a **balanced A–D
+      answer key** — the validator warns on a lopsided key (>50% one letter) or an
+      option that is never correct.
+- [ ] Any new or edited diagram passes `npm run audit:svg` (see [svg-diagrams.md](svg-diagrams.md)).
+- [ ] After changing a unit's vocab, passages or notes, refresh its audio: delete
+      `public/audio/GED_ENG/<UNIT>/` then run `npm run sync-audio` (it only fills
+      files that are missing).
 - [ ] `npm run validate` green; task ids/dbKeys only from the registries.
 
 ## Related
