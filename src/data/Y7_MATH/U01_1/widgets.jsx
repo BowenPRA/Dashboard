@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { DIAGRAMS } from './diagrams.js';
 
 /* ============================================================= *
  * WIDGET 1 — NUMBER LINE JUMPER
@@ -179,3 +180,206 @@ export const ZeroPairsWidget = () => {
     </div>
   );
 };
+
+/* ============================================================= *
+ * WIDGET 3 — TEAM ACTIVITY (2-minute brainstorm)
+ * A big countdown timer for the paired "list the negatives" game,
+ * plus a reveal button that shows genuinely surprising real-world
+ * negatives once the teams have shared their own. Fully theme-safe.
+ * ============================================================= */
+const START_SECONDS = 120;
+
+const COOL_NEGATIVES = [
+  { icon: '🏖️', label: 'Dead Sea shore', value: '−430 m', note: 'lowest land on Earth' },
+  { icon: '⛳', label: 'Golf "under par"', value: '−3', note: 'a great score is negative' },
+  { icon: '🚀', label: 'Rocket launch', value: 'T − 10', note: 'the countdown to lift-off' },
+  { icon: '🧊', label: 'Home freezer', value: '−18 °C', note: 'colder than the kitchen' },
+  { icon: '💳', label: 'Bank overdraft', value: '−$50', note: 'money you owe the bank' },
+  { icon: '🏔️', label: 'Antarctica record', value: '−89 °C', note: 'the coldest day ever measured' },
+];
+
+export const TeamActivityWidget = () => {
+  const [seconds, setSeconds] = useState(START_SECONDS);
+  const [running, setRunning] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (running) {
+      intervalRef.current = setInterval(() => {
+        setSeconds((s) => {
+          if (s <= 1) {
+            clearInterval(intervalRef.current);
+            setRunning(false);
+            return 0;
+          }
+          return s - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [running]);
+
+  const mm = String(Math.floor(seconds / 60));
+  const ss = String(seconds % 60).padStart(2, '0');
+  const done = seconds === 0;
+  const low = seconds > 0 && seconds <= 15;
+  const timeColor = done ? 'text-[#ef4444]' : low ? 'text-[#ff9600]' : 'text-[#14b8a6]';
+
+  const reset = () => { clearInterval(intervalRef.current); setRunning(false); setSeconds(START_SECONDS); };
+
+  return (
+    <div className="w-full h-full flex flex-col select-none">
+      {/* Stage: the timer */}
+      <div className="flex-1 min-h-[210px] w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-inner relative flex flex-col items-center justify-center p-3 sm:p-5 overflow-hidden">
+        {!revealed ? (
+          <>
+            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
+              {done ? "Time's up! ✋" : 'Brainstorm time'}
+            </div>
+            <div className={`font-mono font-black tabular-nums leading-none ${timeColor} ${low && !done ? 'animate-pulse' : ''}`} style={{ fontSize: 'clamp(3.5rem, 12vw, 6rem)' }}>
+              {mm}:{ss}
+            </div>
+            <div className="mt-2 text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 text-center max-w-[16rem]">
+              How many negatives can your team list?
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full overflow-y-auto custom-scrollbar">
+            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-[#14b8a6] text-center mb-3">
+              Surprising real negatives 🌍
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {COOL_NEGATIVES.map((c) => (
+                <div key={c.label} className="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-2.5 shadow-sm">
+                  <span className="text-2xl shrink-0" aria-hidden="true">{c.icon}</span>
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-black text-slate-700 dark:text-slate-200 text-sm truncate">{c.label}</span>
+                      <span className="font-mono font-black text-[#ef4444] text-sm shrink-0">{c.value}</span>
+                    </div>
+                    <div className="text-[11px] font-bold text-slate-400 truncate">{c.note}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Controls */}
+      <div className="w-full bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-700 mt-2 flex-shrink-0">
+        <div className="flex items-center gap-2 mb-2">
+          <button
+            onClick={() => (done ? reset() : setRunning((r) => !r))}
+            className={`flex-1 py-2 rounded-xl font-black text-sm uppercase tracking-widest text-white border-2 active:scale-95 transition-all ${running ? 'bg-[#ff9600] border-[#e08600]' : 'bg-[#14b8a6] border-[#0d9488]'}`}>
+            {done ? 'Reset Timer' : running ? '❚❚ Pause' : '▶ Start 2:00'}
+          </button>
+          <button
+            onClick={reset}
+            className="px-3 py-2 rounded-xl font-black text-xs uppercase tracking-widest bg-slate-100 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 text-slate-500 active:scale-95">
+            Reset
+          </button>
+        </div>
+        <button
+          onClick={() => setRevealed((v) => !v)}
+          className="w-full py-2 rounded-xl font-black text-sm uppercase tracking-widest bg-[#8b5cf6] border-2 border-[#7c3aed] text-white active:scale-95 transition-all">
+          {revealed ? '↩ Back to timer' : '💡 Reveal interesting examples'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* ============================================================= *
+ * WIDGET 4 — WORD PROBLEM (break it down, then reveal)
+ * Shows a stepped breakdown of a word problem. The number-line
+ * picture stays hidden behind a button so the class solves it
+ * first. Parametrised so each problem is a thin wrapper below.
+ * ============================================================= */
+const WordProblemWidget = ({ steps = [], answer, svg, accent = '#1cb0f6' }) => {
+  const [revealed, setRevealed] = useState(false);
+  const [shown, setShown] = useState(0); // how many steps are visible
+
+  const allSteps = shown >= steps.length;
+
+  const revealNext = () => {
+    if (!allSteps) setShown((n) => n + 1);
+    else setRevealed(true);
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col select-none">
+      {/* Stage */}
+      <div className="flex-1 min-h-[210px] w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-inner relative flex flex-col p-3 sm:p-4 overflow-y-auto custom-scrollbar">
+        {shown === 0 && !revealed ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center gap-2">
+            <span className="text-4xl" aria-hidden="true">🤔</span>
+            <div className="text-sm font-bold text-slate-500 dark:text-slate-400 max-w-[15rem]">
+              Solve it on your whiteboard first. Then reveal the steps one at a time.
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {steps.slice(0, shown).map((st, i) => (
+              <div key={i} className="flex items-start gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <span className="shrink-0 w-6 h-6 rounded-full text-white font-black text-xs flex items-center justify-center shadow-sm" style={{ backgroundColor: accent }}>{i + 1}</span>
+                <div className="text-sm sm:text-base font-bold text-slate-700 dark:text-slate-200 leading-snug pt-0.5" dangerouslySetInnerHTML={{ __html: st }} />
+              </div>
+            ))}
+
+            {revealed && svg && (
+              <div className="mt-2 w-full bg-white dark:bg-slate-800 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-2 animate-in fade-in zoom-in-95 duration-300" style={{ aspectRatio: '520 / 150' }} dangerouslySetInnerHTML={{ __html: svg }} />
+            )}
+
+            {revealed && answer && (
+              <div className="mt-1 flex items-center justify-center gap-2 bg-[#14b8a6]/10 rounded-xl border-2 border-[#14b8a6] px-4 py-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#0d9488]">Answer</span>
+                <span className="font-mono font-black text-lg text-[#0d9488]">{answer}</span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Control */}
+      <div className="w-full mt-2 flex-shrink-0">
+        <button
+          onClick={revealNext}
+          disabled={revealed}
+          className="w-full py-3 rounded-2xl font-black text-sm uppercase tracking-widest text-white border-2 shadow-sm active:scale-95 transition-all disabled:opacity-60"
+          style={{ backgroundColor: accent, borderColor: accent }}>
+          {revealed ? '✓ Solved' : !allSteps ? `Reveal step ${shown + 1}` : '📈 Show the number line'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Word problem 1 — temperature drops: 4 − 9 = −5.
+export const TempDropProblemWidget = () => (
+  <WordProblemWidget
+    accent="#ff4b4b"
+    steps={[
+      'At noon it is <b>+4°C</b>. Start at <b>4</b> on the line.',
+      '"Dropped 9 degrees" means <b>subtract 9</b> → move <b>9 left</b>.',
+      '4 − 9 = <b>−5</b>. Five steps below zero.',
+    ]}
+    answer="−5 °C"
+    svg={DIAGRAMS.NOTES_WP1}
+  />
+);
+
+// Word problem 2 — how much warmer: 20 − (−15) = 35.
+export const WarmerProblemWidget = () => (
+  <WordProblemWidget
+    accent="#14b8a6"
+    steps={[
+      'Room is <b>20°C</b>, freezer is <b>−15°C</b>. "How much warmer" = 20 − (−15).',
+      'Subtracting a negative → <b>add</b>: 20 − (−15) = 20 + 15.',
+      '20 + 15 = <b>35</b>. The gap from −15 up to 20 is 35 steps.',
+    ]}
+    answer="35 °C"
+    svg={DIAGRAMS.NOTES_WP2}
+  />
+);
