@@ -236,10 +236,10 @@ export const TASKS = [
     color: { bg: 'bg-[#ec4899]', border: 'border-[#be185d]', text: 'text-white' },
     defaultMaxXP: 10,
     phase: 'practice',
-    component: null, // not built yet — renders the placeholder
+    component: lazy(() => import('./Workbook.jsx')),
     hasContent: (u) => notEmpty(u.workbook),
     buildPool: (u) => u.workbook || [],
-    props: ({ onQuit }) => ({ onQuit }),
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];
 

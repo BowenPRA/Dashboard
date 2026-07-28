@@ -232,6 +232,7 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const currentSlide = slides[currentIndex];
   const slideTitle = lang === 'vn' ? (currentSlide.titleVn || currentSlide.title) : currentSlide.title;
   const slideSubtitle = lang === 'vn' ? (currentSlide.subtitleVn || currentSlide.subtitle) : currentSlide.subtitle;
+  const slideObjective = lang === 'vn' ? (currentSlide.objectiveVn || currentSlide.objective) : currentSlide.objective;
   
   const slideContent = lang === 'vn' ? (currentSlide.contentVn || currentSlide.content) : currentSlide.content;
   const slideExample = lang === 'vn' ? (currentSlide.exampleVn || currentSlide.example) : currentSlide.example;
@@ -430,13 +431,29 @@ export default function Notes({ slides, onComplete, onQuit }) {
               <div className={`bg-white/20 mx-auto rounded-[2rem] flex items-center justify-center mb-8 shadow-inner border-[4px] border-white/30 ${isDisplayMode ? 'w-32 h-32' : 'w-24 h-24'}`}>
                 <BookOpen className={`opacity-100 ${isDisplayMode ? 'w-16 h-16' : 'w-12 h-12'}`} strokeWidth={2.5} />
               </div>
+              {currentSlide.unit && (
+                <div className={`inline-block bg-white/20 text-white font-black uppercase tracking-[0.2em] rounded-full mb-5 border border-white/30 shadow-inner ${isDisplayMode ? 'text-[clamp(0.9rem,1.4vw,1.4rem)] px-6 py-2' : 'text-xs sm:text-sm px-4 py-1.5'}`}>
+                  {currentSlide.unit}
+                </div>
+              )}
               <h1 className={`font-black tracking-tight mb-6 drop-shadow-md leading-tight ${isDisplayMode ? 'text-[clamp(3rem,6vw,7rem)]' : 'text-4xl lg:text-6xl'}`}>
                 {slideTitle || 'Introduction'}
               </h1>
-              <p className={`font-bold opacity-90 drop-shadow-sm max-w-4xl mx-auto ${isDisplayMode ? 'text-[clamp(1.5rem,3vw,3rem)]' : 'text-xl lg:text-2xl'}`}>
-                {slideSubtitle}
-              </p>
-              
+              {slideObjective ? (
+                <div className={`bg-white/15 backdrop-blur-sm rounded-2xl border-2 border-white/25 shadow-inner max-w-3xl mx-auto ${isDisplayMode ? 'px-8 py-6' : 'px-5 py-4'}`}>
+                  <div className={`font-black uppercase tracking-[0.2em] opacity-80 mb-1.5 ${isDisplayMode ? 'text-[clamp(0.8rem,1.1vw,1.1rem)]' : 'text-[10px] sm:text-xs'}`}>
+                    {lang === 'vn' ? 'Mục tiêu' : 'Objective'}
+                  </div>
+                  <p className={`font-bold opacity-95 drop-shadow-sm leading-snug ${isDisplayMode ? 'text-[clamp(1.4rem,2.6vw,2.6rem)]' : 'text-lg lg:text-2xl'}`}>
+                    {slideObjective}
+                  </p>
+                </div>
+              ) : (
+                <p className={`font-bold opacity-90 drop-shadow-sm max-w-4xl mx-auto ${isDisplayMode ? 'text-[clamp(1.5rem,3vw,3rem)]' : 'text-xl lg:text-2xl'}`}>
+                  {slideSubtitle}
+                </p>
+              )}
+
               {!isDisplayMode && currentSlide.audio && (
                  <button onClick={() => toggleAudio(currentSlide.audio)} className="mt-12 mx-auto flex items-center bg-white text-slate-800 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md border-b-[4px] border-slate-200 active:border-b-0 active:translate-y-[4px] px-6 py-3 text-sm">
                    {isPlayingAudio ? <PauseCircle className="w-6 h-6 mr-3 text-slate-800" /> : <PlayCircle className="w-6 h-6 mr-3 text-slate-800" />}
@@ -583,6 +600,40 @@ export default function Notes({ slides, onComplete, onQuit }) {
               )}
             </div>
           )}
+
+          {currentSlide.type === 'warmup' && (() => {
+            const themeColor = currentSlide.color || 'bg-[#ff9600]';
+            return (
+              <>
+                {/* Amber "Do Now" header */}
+                <div className={`${themeColor} ${isDisplayMode ? 'p-3 lg:p-4' : 'p-4 lg:p-6'} text-white flex items-center relative overflow-hidden flex-shrink-0 border-b-4 border-black/10`}>
+                  <div className={`bg-white/20 rounded-xl mr-3 sm:mr-4 shadow-inner border border-white/30 ${isDisplayMode ? 'p-2' : 'p-2.5 lg:p-3'}`}>
+                    <Pencil className={`drop-shadow-sm ${isDisplayMode ? 'w-6 h-6' : 'w-5 h-5 lg:w-8 lg:h-8'}`} strokeWidth={2.5} />
+                  </div>
+                  <h2 className={`font-black tracking-tight drop-shadow-md ${isDisplayMode ? 'text-[clamp(1.25rem,2vw,2rem)]' : 'text-xl sm:text-2xl lg:text-4xl'}`}>
+                    {slideTitle || 'Do Now'}
+                  </h2>
+                  <div className={`ml-auto bg-white/20 text-white font-black uppercase tracking-[0.2em] rounded-full border border-white/30 shadow-inner ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)] px-5 py-2' : 'text-[9px] sm:text-xs px-3 py-1.5'}`}>
+                    {lang === 'vn' ? 'Viết vào vở' : 'Write it down'}
+                  </div>
+                </div>
+                {/* Body */}
+                <div className={`flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden`}>
+                  <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-6 lg:p-10'} ${currentSlide.inlineSvg ? 'lg:w-[55%] lg:border-r-2 border-slate-100 dark:border-slate-800' : 'w-full max-w-4xl mx-auto'}`}>
+                    {renderContent(slideContent)}
+                  </div>
+                  {currentSlide.inlineSvg && (
+                    <div className={`flex-1 lg:w-[45%] bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-center flex-shrink-0 min-h-0 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-3 sm:p-4 lg:p-8'}`}>
+                      <div
+                        className="w-full h-full flex items-center justify-center bg-white dark:bg-slate-800 rounded-2xl lg:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-sm p-3 sm:p-4"
+                        dangerouslySetInnerHTML={{ __html: currentSlide.inlineSvg }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 

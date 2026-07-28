@@ -74,6 +74,19 @@ export const TRACK_REGISTRY = [
     },
   },
   {
+    id: 'Y7_MATH',
+    title: 'Year 7 Mathematics',
+    desc: 'Cambridge Lower Secondary',
+    icon: Calculator,
+    group: 'Cambridge',
+    theme: {
+      bg: 'bg-orange-500', border: 'border-orange-700', hover: 'hover:bg-orange-400',
+      text: 'text-orange-600 dark:text-orange-400',
+      ambient1: 'bg-orange-400', ambient2: 'bg-amber-500',
+      glow: 'hover:border-orange-400 dark:hover:border-orange-600',
+    },
+  },
+  {
     id: 'Y8',
     title: 'Year 8 Science',
     desc: 'Biology & Chemistry',

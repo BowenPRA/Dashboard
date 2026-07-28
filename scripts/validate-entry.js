@@ -128,7 +128,7 @@ for (const trackId of TRACK_IDS) {
     // -- slide types Notes.jsx can actually render; anything else shows a blank
     //    slide AND is skipped by generate_all_audio.py, so it fails silently twice.
     {
-      const RENDERABLE = ['intro', 'concept', 'summary'];
+      const RENDERABLE = ['intro', 'warmup', 'concept', 'summary'];
       (unit.notes || []).forEach((slide, i) => {
         if (!RENDERABLE.includes(slide.type)) {
           err(`${label}: notes slide ${i + 1} has type "${slide.type}" — Notes.jsx only renders ${RENDERABLE.join('/')}, so it would render blank`);

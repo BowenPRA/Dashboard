@@ -1,0 +1,161 @@
+# Workbook Tasks — Reveal-Solution Practice (`workbook.js`)
+
+The self-serve practice task: the section's exercise questions, beautifully laid out,
+each with a **"Show solution"** button that reveals a clear, worked answer. This is
+the `WORKBOOK` task (label "Extra", `dbKey: p11`) in
+[taskRegistry.js](../src/tasks/taskRegistry.js) — registered but not yet built
+(`component: null`), so it renders a placeholder until we ship the screen (§Implementation).
+
+Design goal: **clean, visually engaging, and built to maximise understanding** — a
+student who got a question wrong should learn *how* from the revealed steps, not just
+see the final number.
+
+---
+
+## 1. Where the questions come from
+
+Each Cambridge section ends with an **Exercise** split into tiers:
+
+- **Focus** — the core, do-these-first questions.
+- **Practice** — standard fluency.
+- **Challenge** — stretch / reasoning.
+
+We mirror those tiers. Transcribe the questions faithfully, but **every question gets
+a full worked solution we write** (the workbook only prints answers in the back, if at
+all — the value we add is the *method*).
+
+---
+
+## 2. Data schema (`workbook.js`)
+
+`workbook` is an array of **tier groups**; each holds question items. Keep it data —
+no JSX in here.
+
+```js
+// src/data/Y7_MATH/U01_1/workbook.js
+export const workbook = [
+  {
+    tier: "Focus",                      // "Focus" | "Practice" | "Challenge"
+    tierVn: "Trọng tâm",
+    questions: [
+      {
+        id: "f1",
+        prompt: "Work out $-3 + -4$.",
+        promptVn: "Tính $-3 + -4$.",
+        // Optional: an SVG (from diagrams.js) or a small table shown with the prompt
+        inlineSvg: null,
+        // The revealed solution: an ordered list of steps. Each step is one line of
+        // reasoning; the last step should state the answer.
+        solution: [
+          "Both numbers are negative, so we move left twice.",
+          "Start at $-3$, move $4$ left: $-3 + -4 = -7$.",
+        ],
+        solutionVn: [
+          "Cả hai số đều âm, nên ta di chuyển sang trái.",
+          "Bắt đầu từ $-3$, đi $4$ đơn vị sang trái: $-3 + -4 = -7$.",
+        ],
+        answer: "$-7$",                 // the headline result, shown emphasised
+        answerVn: "$-7$",
+      },
+      // …more Focus questions
+    ],
+  },
+  {
+    tier: "Practice",
+    tierVn: "Luyện tập",
+    questions: [ /* … */ ],
+  },
+  {
+    tier: "Challenge",
+    tierVn: "Nâng cao",
+    questions: [ /* … */ ],
+  },
+];
+```
+
+Field notes:
+
+- `prompt` / `solution` steps support the **same markdown-lite + KaTeX** as lessons:
+  `$…$` inline, `$$…$$` block, `**bold**`. Use math markup for *all* notation.
+- `solution` is an **array of steps**, not a paragraph — this is what makes the reveal
+  teach. One idea per step; the final step contains the answer.
+- `answer` is the short headline result, shown as a highlighted pill when revealed.
+- `inlineSvg` (optional) references a diagram/table from `diagrams.js` — e.g. the
+  "copy and complete this table" questions. Build it per [svg-diagrams.md](svg-diagrams.md).
+- Multi-part questions (a, b, c, d): make each part its **own item** (`f1a`, `f1b`, …)
+  so each has its own reveal. Cleaner than one giant solution block.
+
+---
+
+## 3. UX & visual spec (for the component)
+
+The screen these render into must feel like the rest of the app (Duolingo-clean,
+rounded cards, `border-b-[4px]` buttons). Requirements:
+
+- **Tier sections** with a clear header (`Focus` / `Practice` / `Challenge`) and a
+  subtle colour accent per tier (green → blue → purple).
+- **One card per question**: number, prompt (math-rendered), optional diagram.
+- **"Show solution" button** per card. Revealing:
+  - animates open the stepped solution (fade/slide, like the widget reveals),
+  - shows steps as a numbered list,
+  - shows the `answer` as an emphasised pill.
+  - toggles to **"Hide solution"**.
+- A **"Reveal all / Hide all"** control at the top for teacher-led review.
+- **EN/VN toggle**, matching the Notes deck.
+- Progress is light: completing the task awards its XP (`nativeMax: 10`) — this is
+  practice, not a graded test, so **no marking, no integrity lockdown** (the student
+  is meant to check their own work against the reveal).
+- Fully responsive; solutions must scroll inside their card, never the page.
+
+Do **not** copy-block the prompt text (this isn't a graded box) — students should be
+able to select and re-read.
+
+---
+
+## 4. Writing good solutions
+
+The revealed steps are the whole point. Hold them to this bar:
+
+- **Show the method a Year 7 can follow**, not a terse answer. "Move 4 left" beats
+  "= −7".
+- **Clean numbers** — the workbook already picks them; keep the arithmetic light so
+  the *method* is the lesson.
+- **Name the reason** where there is one ("add the inverse", "common factor is 4"),
+  mirroring the lesson's language and the workbook's **Key words**.
+- **One step per line.** If a step does two things, split it.
+- The **last step states the answer**, and `answer` repeats it as the pill.
+- Match the worked example on the page — same notation, same approach — so the practice
+  reinforces the lesson rather than teaching a second method.
+
+---
+
+## 5. Authoring checklist
+
+- [ ] Questions grouped by **Focus / Practice / Challenge**, in book order.
+- [ ] Multi-part questions split into one item per part.
+- [ ] Every item has a stepped `solution` (array) **and** an `answer` headline.
+- [ ] All notation uses `$…$` / `$$…$$`; `**bold**` for emphasis.
+- [ ] Solutions teach the **method** and name the reason; one step per line.
+- [ ] Any tables/figures are SVGs in `diagrams.js`, `audit:svg`-clean.
+- [ ] EN + VN present on `prompt`, `solution`, `answer`, `tier`.
+- [ ] Renders cleanly on a phone; long solutions scroll in-card.
+
+---
+
+## Implementation status
+
+The `WORKBOOK` task is registered (`taskRegistry.js`) with `component: null`, so it
+shows the "not built yet" placeholder. To ship it:
+
+- [ ] **Build `src/tasks/Workbook.jsx`** to the spec in §3 — tiered cards, per-question
+      reveal, reveal-all, EN/VN, KaTeX (reuse the `SafeInlineMath` / `SafeBlockMath`
+      and `renderContent` patterns from [Notes.jsx](../src/tasks/Notes.jsx); the
+      `WidgetErrorBoundary` too if a question embeds a widget).
+- [ ] **Wire it in** [taskRegistry.js](../src/tasks/taskRegistry.js): set
+      `component: lazy(() => import('./Workbook.jsx'))` on the `WORKBOOK` entry and
+      pass the pool via `props` (the entry already builds `pool` from `u.workbook`).
+- [ ] `hasContent` already gates on a non-empty `workbook` array — a section with no
+      `workbook.js` content correctly shows the empty tile.
+
+Author `workbook.js` files against this schema now; they'll light up the moment the
+component lands.
