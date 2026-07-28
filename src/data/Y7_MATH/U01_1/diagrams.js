@@ -22,6 +22,8 @@ const TICKS_INTRO = [[50,'-5'],[92,'-4'],[134,'-3'],[176,'-2'],[218,'-1'],[260,'
 const TICKS_ADD = [[50,'-8'],[96.7,'-7'],[143.3,'-6'],[190,'-5'],[236.7,'-4'],[283.3,'-3'],[330,'-2'],[376.7,'-1'],[423.3,'0',true],[470,'1']];
 // −1 … 9, step 42px
 const TICKS_SUB = [[50,'-1'],[92,'0',true],[134,'1'],[176,'2'],[218,'3'],[260,'4'],[302,'5'],[344,'6'],[386,'7'],[428,'8'],[470,'9']];
+// −10 … 0, step 42px
+const TICKS_SUBPOS = [[50,'-10'],[92,'-9'],[134,'-8'],[176,'-7'],[218,'-6'],[260,'-5'],[302,'-4'],[344,'-3'],[386,'-2'],[428,'-1'],[470,'0',true]];
 
 export const DIAGRAMS = {
   // Generic orientation: left = smaller, right = larger.
@@ -52,7 +54,33 @@ export const DIAGRAMS = {
     <circle cx="386" cy="90" r="6" fill="#10b981"/>
   </svg>`,
 
-  // Addition table for the Focus "copy and complete" question.
+  // −6 − 3 = −9 : subtracting a positive, move LEFT.
+  NOTES_SUB_POS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
+    <path d="M 218 82 Q 155 48 92 82" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#ah-red)"/>
+    <text x="155" y="44" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">− 3 (left)</text>
+    ${axis(TICKS_SUBPOS)}
+    <circle cx="218" cy="90" r="6" fill="#3b82f6"/>
+    <circle cx="92" cy="90" r="6" fill="#ef4444"/>
+  </svg>`,
+
+  // Real-world context: a thermometer as a vertical number line (−10 … 10 °C).
+  NOTES_THERMOMETER: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 240" class="w-full h-full drop-shadow-md">
+    <text x="30" y="20" font-family="sans-serif" font-size="13" font-weight="bold" fill="#64748b" text-anchor="middle">°C</text>
+    <rect x="72" y="30" width="16" height="176" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="74" y="86" width="12" height="120" fill="#ef4444"/>
+    <circle cx="80" cy="210" r="16" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
+    ${[['10',30],['5',70],['0',110,true],['-5',150],['-10',190]].map(([lab,y,bold]) => `
+      <line x1="66" y1="${y}" x2="72" y2="${y}" stroke="#94a3b8" stroke-width="2"/>
+      <text x="60" y="${y+4}" font-family="monospace" font-size="12" font-weight="${bold?'900':'bold'}" fill="${bold?'#10b981':'#64748b'}" text-anchor="end">${lab}</text>`).join('')}
+    <line x1="92" y1="158" x2="118" y2="158" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
+    <text x="122" y="162" font-family="monospace" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="start">-6</text>
+    <path d="M 108 158 L 108 90" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#therm-up)"/>
+    <defs><marker id="therm-up" viewBox="0 0 10 10" refX="5" refY="3" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 10 L5 0 L10 10 z" fill="#10b981"/></marker></defs>
+    <text x="135" y="128" font-family="sans-serif" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">+9</text>
+    <text x="122" y="90" font-family="monospace" font-size="12" font-weight="bold" fill="#10b981" text-anchor="start">3</text>
+  </svg>`,
+
+  // Addition table for the "copy and complete" question — BLANK (question) form.
   WB_ADD_TABLE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 170" class="w-full h-full">
     <rect x="20" y="20" width="210" height="130" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
     <line x1="90" y1="20" x2="90" y2="150" stroke="#cbd5e1" stroke-width="2"/>
@@ -69,5 +97,28 @@ export const DIAGRAMS = {
     <text x="195" y="91" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
     <text x="125" y="134" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
     <text x="195" y="134" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
+  </svg>`,
+
+  // Addition table — SOLVED form: the four blanks filled, highlighted green.
+  WB_ADD_TABLE_SOLVED: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 170" class="w-full h-full">
+    <rect x="20" y="20" width="210" height="130" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="90" y1="20" x2="90" y2="150" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="160" y1="20" x2="160" y2="150" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="20" y1="63" x2="230" y2="63" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="20" y1="106" x2="230" y2="106" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="20" y="20" width="70" height="43" fill="#eef2ff"/>
+    <rect x="90" y="63" width="70" height="43" fill="#f0fdf4"/>
+    <rect x="160" y="63" width="70" height="43" fill="#f0fdf4"/>
+    <rect x="90" y="106" width="70" height="44" fill="#f0fdf4"/>
+    <rect x="160" y="106" width="70" height="44" fill="#f0fdf4"/>
+    <text x="55" y="48" font-family="monospace" font-size="18" font-weight="900" fill="#1e293b" text-anchor="middle">+</text>
+    <text x="125" y="48" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">4</text>
+    <text x="195" y="48" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">-5</text>
+    <text x="55" y="91" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">2</text>
+    <text x="55" y="134" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">-6</text>
+    <text x="125" y="91" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">6</text>
+    <text x="195" y="91" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">-3</text>
+    <text x="125" y="134" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">-2</text>
+    <text x="195" y="134" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">-11</text>
   </svg>`,
 };

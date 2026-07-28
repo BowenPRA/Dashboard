@@ -233,6 +233,7 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const slideTitle = lang === 'vn' ? (currentSlide.titleVn || currentSlide.title) : currentSlide.title;
   const slideSubtitle = lang === 'vn' ? (currentSlide.subtitleVn || currentSlide.subtitle) : currentSlide.subtitle;
   const slideObjective = lang === 'vn' ? (currentSlide.objectiveVn || currentSlide.objective) : currentSlide.objective;
+  const slideWarmUp = lang === 'vn' ? (currentSlide.warmUpVn || currentSlide.warmUp) : currentSlide.warmUp;
   
   const slideContent = lang === 'vn' ? (currentSlide.contentVn || currentSlide.content) : currentSlide.content;
   const slideExample = lang === 'vn' ? (currentSlide.exampleVn || currentSlide.example) : currentSlide.example;
@@ -452,6 +453,18 @@ export default function Notes({ slides, onComplete, onQuit }) {
                 <p className={`font-bold opacity-90 drop-shadow-sm max-w-4xl mx-auto ${isDisplayMode ? 'text-[clamp(1.5rem,3vw,3rem)]' : 'text-xl lg:text-2xl'}`}>
                   {slideSubtitle}
                 </p>
+              )}
+
+              {slideWarmUp && (
+                <div className={`bg-white rounded-2xl shadow-xl border-2 border-amber-300 text-left max-w-3xl mx-auto ${isDisplayMode ? 'mt-8 px-8 py-6' : 'mt-6 px-5 py-4'}`}>
+                  <div className={`flex items-center gap-2 text-amber-600 font-black uppercase tracking-[0.15em] mb-2 ${isDisplayMode ? 'text-[clamp(0.8rem,1.1vw,1.15rem)]' : 'text-[11px] sm:text-xs'}`}>
+                    <Pencil className={isDisplayMode ? 'w-5 h-5' : 'w-4 h-4'} strokeWidth={3} />
+                    {lang === 'vn' ? 'Khởi động · Làm ngay vào vở' : 'Warm-Up · Do this now in your book'}
+                  </div>
+                  <div className={`font-bold text-slate-800 leading-snug ${isDisplayMode ? 'text-[clamp(1.3rem,2.4vw,2.4rem)]' : 'text-lg lg:text-2xl'}`}>
+                    {parseInlineText(slideWarmUp)}
+                  </div>
+                </div>
               )}
 
               {!isDisplayMode && currentSlide.audio && (

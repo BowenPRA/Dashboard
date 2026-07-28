@@ -120,6 +120,7 @@ export const workbook = [
         prompt: "Copy and complete this addition table.",
         promptVn: "Chép lại và hoàn thành bảng cộng này.",
         inlineSvg: DIAGRAMS.WB_ADD_TABLE,
+        inlineSvgSolved: DIAGRAMS.WB_ADD_TABLE_SOLVED,
         solution: [
           "Add each row number to each column number.",
           "$2 + 4 = 6$ and $2 + -5 = -3$.",

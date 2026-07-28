@@ -15,15 +15,22 @@ this guide adds the Year 7 lesson **shape** (warm-up → objective → concepts 
 
 A section lesson is a short deck, roughly:
 
-1. **Title slide** (`intro`) — unit number, section title, and the **objective**.
-2. **Warm-up** (`warmup`) — a "Do Now" the students write and answer as they arrive.
-3. **3–6 concept slides** (`concept`) — one idea each, with a diagram, worked example,
-   or widget. Include at least one **discussion** prompt and, where it fits, one
-   **activity**.
-4. **Summary** (`summary`) — objective restated as "you can now…", one exit question.
+1. **Title slide** (`intro`) — unit number, section title, the **objective**, and the
+   **warm-up question** (the `warmUp` field, §3–4). Students copy and answer the
+   warm-up as they arrive, while the objective sets the destination.
+2. **5–9 concept slides** (`concept`) — one idea each, **every slide carrying a
+   diagram, worked example, or widget** (match the SCIENCE_1A density — no bare text
+   slides). Weave in at least one **interactive widget**, one **discussion** prompt,
+   a **"Watch Out"** on the classic mistake, and one **activity**.
+3. **Summary** (`summary`) — objective restated as "you can now…", one exit question.
 
-Keep it to **6–10 slides**. If a section is big, it's still one lesson — cut to the
+Keep it to **8–13 slides**. If a section is big, it's still one lesson — cut to the
 core, push extra practice into the workbook task.
+
+**The bar is SCIENCE_1A** ([notes.js](../src/data/Y8/SCIENCE_1A/notes.js)): every
+concept slide pairs a teaching paragraph + a `>` definition bumper + a **labelled
+example** (`exampleLabel`: "Analogy", "Real World", "Fun Fact", "The Big Idea",
+"Watch Out"…) + a diagram, and interactive widgets appear at the moments that move.
 
 ---
 
@@ -71,7 +78,8 @@ Two title styles; pick per unit.
 ```
 
 **Rich** (new fields, for units that want the fuller header) — surfaces the unit
-number and objective as distinct, styled elements:
+number, the objective, **and the warm-up question** as distinct, styled elements on
+the one title slide:
 
 ```js
 {
@@ -81,45 +89,32 @@ number and objective as distinct, styled elements:
   titleVn: "Cộng và Trừ số nguyên",
   objective: "I can add and subtract positive and negative integers using a number line.",
   objectiveVn: "Em có thể cộng và trừ số nguyên bằng trục số.",
+  warmUp: "Work out $7 + 3$ and $7 - 3$. Then write the **inverse** of $-4$.",
+  warmUpVn: "Tính $7 + 3$ và $7 - 3$. Sau đó viết **số đối** của $-4$.",
   color: "bg-[#8b5cf6]",
 }
 ```
 
-Both are valid. A unit that omits `unit`/`objective` gets the simple layout — so
-older/simpler lessons keep working untouched. Rendering the rich fields needs the
-small Notes.jsx change in §Implementation.
+The `warmUp` field renders as a white "Warm-Up · Do this now" card beneath the
+objective (supports `$…$` math and `**bold**`). This is the **preferred** place for
+the warm-up — one slide up on the TV as students settle. A unit that omits
+`unit`/`objective`/`warmUp` gets the simple layout, so older lessons keep working.
 
 Write the objective as a student-voice **"I can…"** statement — it doubles as the
 success criterion on the summary slide.
 
 ---
 
-## 4. The warm-up slide ("Do Now")
+## 4. The warm-up question
 
-A distinct, amber-themed slide students copy and answer while settling in. One or two
-quick questions that recall yesterday or bridge into today — never new material.
+Put a **single** warm-up question on the **title slide** via the `warmUp` field (§3) —
+students copy and answer it while settling in. Keep it to recall/bridge (never new
+material) and short enough to read across the room. The answer lives in the lesson
+plan, revealed live — not on the slide.
 
-```js
-{
-  type: "warmup",
-  title: "Do Now",
-  titleVn: "Khởi động",
-  content:
-    "Write these down and work them out:\n\n" +
-    "> 1.  What is $7 + 3$?\n" +
-    "> 2.  What is $7 - 3$?\n" +
-    "> 3.  On a number line, which way do you move to **subtract**?",
-  contentVn:
-    "Viết ra và tính:\n\n" +
-    "> 1.  $7 + 3$ bằng bao nhiêu?\n" +
-    "> 2.  $7 - 3$ bằng bao nhiêu?\n" +
-    "> 3.  Trên trục số, ta di chuyển về phía nào để **trừ**?",
-  color: "bg-[#ff9600]",
-}
-```
-
-Keep it to what fits on the screen with no scrolling. Answers go in the lesson plan,
-not on the slide (reveal them live).
+A standalone `warmup` slide type also exists (amber "Do Now" header, `content` with
+`>` bumpers) for when you want a fuller, multi-part warm-up on its own screen. Prefer
+the title-slide `warmUp` for the normal single-question case.
 
 ---
 

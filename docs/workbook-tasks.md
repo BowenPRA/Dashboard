@@ -82,33 +82,34 @@ Field notes:
 - `answer` is the short headline result, shown as a highlighted pill when revealed.
 - `inlineSvg` (optional) references a diagram/table from `diagrams.js` — e.g. the
   "copy and complete this table" questions. Build it per [svg-diagrams.md](svg-diagrams.md).
+- `inlineSvgSolved` (optional) is the **filled-in** version of `inlineSvg`. When the
+  student reveals the solution, the diagram swaps to this — the `?` cells become the
+  answers (highlighted). Author the pair as `WB_FOO` (blanks) and `WB_FOO_SOLVED`
+  (answers) in `diagrams.js`. This is how "revealing fills in the diagram" works.
 - Multi-part questions (a, b, c, d): make each part its **own item** (`f1a`, `f1b`, …)
   so each has its own reveal. Cleaner than one giant solution block.
 
 ---
 
-## 3. UX & visual spec (for the component)
+## 3. UX & visual spec (the shipped component)
 
-The screen these render into must feel like the rest of the app (Duolingo-clean,
-rounded cards, `border-b-[4px]` buttons). Requirements:
+`Workbook.jsx` is **slide-per-problem** — one question on screen at a time, navigated
+like the lesson deck (this is the shape we want; do not go back to a scrolling list):
 
-- **Tier sections** with a clear header (`Focus` / `Practice` / `Challenge`) and a
-  subtle colour accent per tier (green → blue → purple).
-- **One card per question**: number, prompt (math-rendered), optional diagram.
-- **"Show solution" button** per card. Revealing:
-  - animates open the stepped solution (fade/slide, like the widget reveals),
-  - shows steps as a numbered list,
-  - shows the `answer` as an emphasised pill.
-  - toggles to **"Hide solution"**.
-- A **"Reveal all / Hide all"** control at the top for teacher-led review.
-- **EN/VN toggle**, matching the Notes deck.
-- Progress is light: completing the task awards its XP (`nativeMax: 10`) — this is
-  practice, not a graded test, so **no marking, no integrity lockdown** (the student
-  is meant to check their own work against the reveal).
-- Fully responsive; solutions must scroll inside their card, never the page.
-
-Do **not** copy-block the prompt text (this isn't a graded box) — students should be
-able to select and re-read.
+- **One problem per slide**, centred in a card with a coloured **tier header strip**
+  (Focus green → Practice blue → Challenge purple) and a `Question n / N` badge.
+- **Prompt** rendered large with KaTeX; optional **diagram** below it.
+- **"Show solution"** (full-width, tier-coloured). Revealing:
+  - swaps `inlineSvg` → `inlineSvgSolved` so **fill-in diagrams fill in** (animated),
+  - opens the numbered **stepped solution** and the `answer` pill,
+  - toggles to **"Hide solution"**; reveal state is remembered per problem.
+- **Bottom nav:** Prev · a dot strip (click any dot to jump; revealed dots are
+  marked) · Next, becoming **Done** on the last problem (awards XP). Arrow keys move,
+  Space/Enter reveals.
+- **EN/VN toggle** in the TopBar, matching the Notes deck; TopBar shows progress.
+- Practice, not a test: **no marking, no integrity lockdown** — students self-check
+  against the reveal. Prompt text stays selectable.
+- Fully responsive; the problem body scrolls inside its card, never the page.
 
 ---
 
@@ -144,18 +145,14 @@ The revealed steps are the whole point. Hold them to this bar:
 
 ## Implementation status
 
-The `WORKBOOK` task is registered (`taskRegistry.js`) with `component: null`, so it
-shows the "not built yet" placeholder. To ship it:
+Built and live (2026-07-28).
 
-- [ ] **Build `src/tasks/Workbook.jsx`** to the spec in §3 — tiered cards, per-question
-      reveal, reveal-all, EN/VN, KaTeX (reuse the `SafeInlineMath` / `SafeBlockMath`
-      and `renderContent` patterns from [Notes.jsx](../src/tasks/Notes.jsx); the
-      `WidgetErrorBoundary` too if a question embeds a widget).
-- [ ] **Wire it in** [taskRegistry.js](../src/tasks/taskRegistry.js): set
-      `component: lazy(() => import('./Workbook.jsx'))` on the `WORKBOOK` entry and
-      pass the pool via `props` (the entry already builds `pool` from `u.workbook`).
-- [ ] `hasContent` already gates on a non-empty `workbook` array — a section with no
-      `workbook.js` content correctly shows the empty tile.
+- [x] **`src/tasks/Workbook.jsx`** — slide-per-problem navigator (§3): tier header,
+      KaTeX prompt, diagram that swaps to `inlineSvgSolved` on reveal, stepped
+      solution + answer pill, dot-strip nav, arrow-key / Space-Enter controls, EN/VN.
+- [x] **Wired** in [taskRegistry.js](../src/tasks/taskRegistry.js): `component:
+      lazy(() => import('./Workbook.jsx'))`, `props` passes `pool`/`onComplete`/`onQuit`.
+- [x] `hasContent` gates on a non-empty `workbook` array (empty tile when absent).
 
 Author `workbook.js` files against this schema now; they'll light up the moment the
 component lands.
