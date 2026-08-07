@@ -20,6 +20,18 @@ export const assetUrl = (p) => (p ? `${basePath}/${String(p).replace(/^\/+/, '')
 export const audioUrl = (track, unitId, kind, word) =>
   `${basePath}/audio/${track}/${unitId}/${encodeURIComponent(`${kind}_${String(word).toLowerCase()}.mp3`)}`;
 
+/**
+ * URL for a unit's source image — the chart, map, cartoon, document or
+ * photograph a Source Analysis item is about.
+ *
+ * Mirrors the audio convention: public/images/<TRACK>/<UNIT>/<file>. Diagrams
+ * used to build this itself as `images/<unitId>/<file>`, a folder that exists
+ * for no unit in the repo, so every `imageFile:` reference 404'd inside the one
+ * task whose whole point is looking at the picture.
+ */
+export const unitImageUrl = (track, unitId, file) =>
+  `${basePath}/images/${track}/${unitId}/${encodeURIComponent(String(file).replace(/^.*[\\/]/, ''))}`;
+
 /** URL for a reading-passage audio clip (1-indexed). */
 export const passageAudioUrl = (track, unitId, index) =>
   `${basePath}/audio/${track}/${unitId}/${encodeURIComponent(`passage_${unitId}_${index}.mp3`)}`;

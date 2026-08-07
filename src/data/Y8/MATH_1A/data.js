@@ -260,8 +260,6 @@ export const MATH_1A_DATA = {
     {
       id: "d1",
       inlineSvg: DIAGRAMS.DIAGRAM_TRANSVERSAL_Z_SHAPE,
-      imageFile: "transversal_z_shape.png", 
-      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick purple line highlights the 'Z' shape formed by the inner segments. The top inner angle and bottom opposite inner angle are marked with matching purple arcs. Minimalist, pure white background, sans-serif font.",
       promptText: "Analyze the provided diagram. Identify the type of angle pair highlighted by the geometric shape, and state their mathematical relationship.",
       suggestedWords: [["z-shape", "z shape", "shape"], ["equal", "same"]],
       scienceMaxMarks: 2,
@@ -274,8 +272,6 @@ export const MATH_1A_DATA = {
     {
       id: "d2",
       inlineSvg: DIAGRAMS.DIAGRAM_TRANSVERSAL_C_SHAPE,
-      imageFile: "transversal_c_shape.png",
-      imagePrompt: "A clean, flat vector illustration of geometry. Two horizontal parallel lines (blue) are cut by a diagonal transversal line (orange). A thick blue line highlights the 'C' shape formed by the inner segments on the left side of the transversal. The two inside angles are marked with different colored arcs. Text reads 'Adds to 180°'. Minimalist, pure white background.",
       promptText: "Examine the second diagram showing the C-shape. Name this angle pair and explain why they are fundamentally different from alternate and corresponding angles.",
       suggestedWords: [["c-shape", "c shape", "shape"], ["supplementary", "180", "add"]],
       scienceMaxMarks: 2,
@@ -288,7 +284,6 @@ export const MATH_1A_DATA = {
     {
       id: "d3",
       inlineSvg: DIAGRAMS.DIAGRAM_TRANSVERSAL_FOUR_ANGLES,
-      imageFile: "transversal_four_angles.png",
       promptText: "In the diagram, one angle is given as 60°. Calculate the values of angles x, y, and z. State the geometric reason for each calculation based on the properties discussed in class.",
       suggestedWords: [["60", "60°"], ["120", "120°"], ["vertically", "corresponding", "alternate", "co-interior", "opposite"]],
       scienceMaxMarks: 3,

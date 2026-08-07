@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FileEdit, ArrowRight } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FileEdit, ArrowRight, ListChecks } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeDiagram } from '../utils/aiGrader';
+import { assetUrl, unitImageUrl } from '../utils/assetPaths';
 import { EmptyState } from '../components/ui';
 
 const calculateSimilarity = (str1, str2) => {
@@ -44,59 +45,67 @@ const checkRequiredWordGroup = (wordGroup, text) => {
   return false;
 };
 
+/** Points an item is worth: an MCQ its `marks`, a written item content + English. */
+const maxPointsOf = (q) => (q?.type === 'mcq' ? (q.marks || 1) : (q?.scienceMaxMarks || 0) + 3);
+
 export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const questions = pool?.diagrams || [];
   const [localAnswers, setLocalAnswers] = useState(savedData);
-  
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [gameState, setGameState] = useState('Q'); // Q, LOADING, A, SAVED_PERFECT, SAVED_API_ERROR
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
-  
+  const [picked, setPicked] = useState(null); // MCQ: the chosen option's val
+
   const [cumulativePoints, setCumulativePoints] = useState(0);
   const [maxPossiblePoints, setMaxPossiblePoints] = useState(0);
 
   const currentQ = questions[currentIndex];
+  // Written is the default so every item authored before mixed types keeps working.
+  const isMcq = currentQ?.type === 'mcq';
+
+  // Feedback is stamped with the item it belongs to and only rendered for that
+  // item. Advancing sets currentIndex immediately while the reset effect runs
+  // after the commit, so for one render the NEXT question is paired with the
+  // PREVIOUS answer — which, in a pool that mixes types, means reading
+  // markScheme off an MCQ or usedWordGroups off a multiple-choice result.
+  const shownFeedback = feedback && feedback.index === currentIndex ? feedback : null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const saved = localAnswers[currentIndex];
-    
+
     if (saved) {
       const text = typeof saved === 'string' ? saved : saved.text;
       const status = typeof saved === 'string' ? 'perfect' : saved.status;
 
-      setUserAnswer(text);
+      setUserAnswer(text || '');
       setFeedback(null);
+      setPicked(null);
 
-      if (status === 'perfect') {
+      if (status === 'mcq') {
+        // Replay the graded choice rather than re-asking it.
+        setPicked(saved.val);
+        setFeedback({ index: currentIndex, isMcq: true, correct: saved.correct, pointsEarned: saved.correct ? (questions[currentIndex].marks || 1) : 0, maxPoints: questions[currentIndex].marks || 1 });
+        setGameState('A');
+      } else if (status === 'perfect') {
         setGameState('SAVED_PERFECT');
       } else if (status === 'api_error') {
         setGameState('SAVED_API_ERROR');
       } else if (status === 'strike_fallback') {
-        setGameState('Q'); 
+        setGameState('Q');
       } else {
         setGameState('Q');
       }
     } else {
       setUserAnswer('');
       setFeedback(null);
+      setPicked(null);
       setGameState('Q');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
-
-  if (!currentQ) {
-    return (
-      <EmptyState
-        icon={<ImageIcon className="w-16 h-16" />}
-        iconClassName="text-rose-300 dark:text-rose-700"
-        title="Coming Soon"
-        message="Teacher is currently uploading the Diagrams for this unit."
-        onAction={onQuit}
-      />
-    );
-  }
 
   const handleLocalFallbackGrade = () => {
     // Suggested words are highlighted as hints, never scored.
@@ -112,6 +121,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
     const maxPoints = currentQ.scienceMaxMarks + 3;
 
     setFeedback({
+      index: currentIndex,
       originalAnswer: userAnswer.trim(),
       usedWordGroups,
       scienceMarks: currentQ.markScheme.map(() => false),
@@ -127,6 +137,23 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
     });
 
     setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'strike_fallback' } }));
+    setGameState('A');
+  };
+
+  /**
+   * MCQ items are graded here, not by the AI — the answer key is in the data.
+   * That also means no English 0–3 component, which is the point: a
+   * source-analysis item asking which claim the chart supports should not cost
+   * marks for the grammar of a single-letter answer.
+   */
+  const handlePick = (val) => {
+    if (gameState !== 'Q') return;
+    const correct = val === currentQ.correct;
+    const marks = currentQ.marks || 1;
+
+    setPicked(val);
+    setFeedback({ index: currentIndex, isMcq: true, correct, pointsEarned: correct ? marks : 0, maxPoints: marks });
+    setLocalAnswers((prev) => ({ ...prev, [currentIndex]: { val, correct, status: 'mcq' } }));
     setGameState('A');
   };
 
@@ -195,6 +222,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
     const isPerfect = pointsEarned >= maxPoints;
 
     setFeedback({
+      index: currentIndex,
       originalAnswer: userAnswer.trim(),
       usedWordGroups,
       scienceMarks,
@@ -221,14 +249,15 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
     let newMaxPoints = maxPossiblePoints;
 
     if (gameState === 'SAVED_PERFECT') {
-      const maxP = currentQ.scienceMaxMarks + 3;
+      const maxP = maxPointsOf(currentQ);
       newCumPoints += maxP;
       newMaxPoints += maxP;
-    } else if (feedback) {
-      newCumPoints += feedback.pointsEarned;
-      newMaxPoints += feedback.maxPoints;
+    } else if (shownFeedback) {
+      // Only the current item's result may be banked — never a leftover.
+      newCumPoints += shownFeedback.pointsEarned;
+      newMaxPoints += shownFeedback.maxPoints;
     } else if (gameState === 'SAVED_API_ERROR') {
-      newMaxPoints += currentQ.scienceMaxMarks + 3;
+      newMaxPoints += maxPointsOf(currentQ);
     }
 
     setCumulativePoints(newCumPoints);
@@ -238,13 +267,26 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       setCurrentIndex(prev => prev + 1);
     } else {
       const finalXP = newMaxPoints === 0 ? 0 : Math.ceil((newCumPoints / newMaxPoints) * 20);
-      onComplete(finalXP, localAnswers); 
+      onComplete(finalXP, localAnswers);
     }
   };
 
+  // MCQ items have no textarea to hold focus, so Enter is handled globally.
+  useEffect(() => {
+    if (!currentQ || !isMcq) return;
+    const onKey = (e) => {
+      if (e.key !== 'Enter' || gameState !== 'A') return;
+      e.preventDefault();
+      handleNext();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQ, isMcq, gameState, currentIndex, shownFeedback]);
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); 
+      e.preventDefault();
       if (gameState === 'Q' || gameState === 'SAVED_API_ERROR') {
         if (userAnswer.trim()) handleGrade();
       } else if (gameState === 'A' || gameState === 'SAVED_PERFECT') {
@@ -252,6 +294,21 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       }
     }
   };
+
+
+  // Guarded here rather than at the top of the component: every hook must run
+  // on every render, and the Enter-key effect above needs handleNext in scope.
+  if (!currentQ) {
+    return (
+      <EmptyState
+        icon={<ImageIcon className="w-16 h-16" />}
+        iconClassName="text-rose-300 dark:text-rose-700"
+        title="Coming Soon"
+        message="Teacher is currently uploading the Diagrams for this unit."
+        onAction={onQuit}
+      />
+    );
+  }
 
   let containerClass = "w-full rounded-[1.5rem] shadow-sm border p-6 sm:p-8 mb-6 relative transition-all duration-300 ";
   let textAreaClass = "w-full h-40 text-lg font-medium bg-transparent focus:outline-none resize-none disabled:bg-transparent ";
@@ -262,7 +319,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
   } else if (strikes >= 3 || (gameState === 'A' && feedback?.isStrikeFallback)) {
     containerClass += "bg-rose-50 dark:bg-rose-900/20 border-rose-400 dark:border-rose-800";
     textAreaClass += "text-rose-900 dark:text-rose-200";
-  } else if ((gameState === 'A' && feedback?.isPerfect) || gameState === 'SAVED_PERFECT') {
+  } else if ((gameState === 'A' && shownFeedback?.isPerfect) || gameState === 'SAVED_PERFECT') {
     containerClass += "bg-[#ecfccb] dark:bg-lime-900/20 border-[#84cc16] dark:border-lime-800";
     textAreaClass += "text-[#3f6212] dark:text-lime-200";
   } else {
@@ -281,21 +338,22 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       );
     } 
     
-    if (currentQ.imageFile || currentQ.imageUrl) {
-      const fallbackImage = currentQ.imageFile || currentQ.imageUrl;
-      // Strip any leading slashes or directories for clean formatting
-      const cleanImageName = fallbackImage.startsWith('/') ? fallbackImage.split('/').pop() : fallbackImage;
-      const dynamicSrc = `${import.meta.env.BASE_URL || ''}images/${unitId}/${cleanImageName}`;
+    // imageFile is a bare filename living in public/images/<TRACK>/<UNIT>/;
+    // imageUrl/image is a full public-relative path, for shared assets.
+    const src = currentQ.imageFile
+      ? unitImageUrl(track, unitId, currentQ.imageFile)
+      : (currentQ.imageUrl || currentQ.image ? assetUrl(currentQ.imageUrl || currentQ.image) : null);
 
+    if (src) {
       return (
-        <img 
-          src={dynamicSrc} 
-          alt="Science Diagram" 
+        <img
+          src={src}
+          alt={currentQ.imageAlt || 'Source material for this question'}
           className="w-full h-auto max-h-[500px] object-contain rounded-xl"
         />
       );
     }
-    
+
     return (
       <div className="w-full h-64 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400">
         <ImageIcon className="w-12 h-12" />
@@ -320,6 +378,12 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
           <div className="w-full lg:w-1/2 flex flex-col">
             <div className="bg-white dark:bg-slate-900 p-4 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm sticky top-24">
                {renderVisual()}
+               {(currentQ.credit || currentQ.license) && (
+                 <p className="mt-3 px-2 text-[11px] font-medium text-slate-400 dark:text-slate-500 leading-snug">
+                   {currentQ.credit}
+                   {currentQ.license ? ` · ${currentQ.license}` : ''}
+                 </p>
+               )}
             </div>
           </div>
 
@@ -327,7 +391,8 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
           <div className="w-full lg:w-1/2 flex flex-col">
             
             <div className="w-full mb-6 animate-in fade-in duration-300">
-              <h2 className="text-rose-500 font-black text-xl mb-2 uppercase tracking-widest">
+              <h2 className="text-rose-500 font-black text-xl mb-2 uppercase tracking-widest flex items-center">
+                {isMcq && <ListChecks className="w-5 h-5 mr-2" strokeWidth={3} />}
                 Analysis {currentIndex + 1}
               </h2>
               <p className="text-2xl font-bold text-slate-800 dark:text-white leading-snug">
@@ -335,6 +400,73 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
               </p>
             </div>
 
+            {isMcq && (
+              <div className="w-full animate-in fade-in duration-300">
+                <div className="grid gap-3 mb-6">
+                  {(currentQ.options || []).map((opt) => {
+                    const isRight = opt.val === currentQ.correct;
+                    const isPicked = picked === opt.val;
+
+                    let style = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 border-b-[5px] text-slate-700 dark:text-slate-200 hover:border-rose-400 active:border-b-2 active:translate-y-[3px]';
+                    if (picked) {
+                      if (isRight) style = 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-200';
+                      else if (isPicked) style = 'bg-[#ffdfe0] dark:bg-rose-900/30 border-[#ea2b2b] text-[#c9362a] dark:text-rose-200';
+                      else style = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 opacity-50';
+                    }
+
+                    return (
+                      <button
+                        key={opt.val}
+                        disabled={!!picked}
+                        onClick={() => handlePick(opt.val)}
+                        className={`flex items-start text-left p-4 sm:p-5 rounded-2xl border-2 font-bold text-base leading-snug transition-all disabled:cursor-default ${style}`}
+                      >
+                        <span className="font-black uppercase tracking-widest opacity-50 mr-3 mt-0.5 flex-shrink-0">{opt.val}</span>
+                        <span className="flex-1">{opt.text}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {gameState === 'A' && shownFeedback?.isMcq && (
+                  <div className="animate-in slide-in-from-bottom-4 duration-300">
+                    <div className={`p-6 sm:p-8 rounded-[1.5rem] border mb-8 ${shownFeedback.correct ? 'bg-[#ecfccb] dark:bg-lime-900/20 border-[#84cc16] dark:border-lime-800' : 'bg-[#ffe5e5] dark:bg-rose-900/20 border-[#ea4335] dark:border-rose-800'}`}>
+                      <div className={`flex items-center justify-between mb-4 pb-4 border-b border-black/10 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-300' : 'text-[#a32d23] dark:text-rose-300'}`}>
+                        <div className="flex items-center font-black text-xl tracking-tight">
+                          {shownFeedback.correct
+                            ? <><CheckCircle2 className="w-7 h-7 mr-2" strokeWidth={2.5} /> Correct</>
+                            : <><XCircle className="w-7 h-7 mr-2" strokeWidth={2.5} /> Not quite</>}
+                        </div>
+                        <span className="font-bold text-sm">{shownFeedback.pointsEarned} / {shownFeedback.maxPoints} Pts</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+                        <div>
+                          <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>Explanation</span>
+                          <p className="text-[15px] font-medium leading-relaxed text-slate-700 dark:text-slate-300">{currentQ.expEn}</p>
+                        </div>
+                        <div>
+                          <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>Giải thích</span>
+                          <p className="text-[15px] font-medium italic leading-relaxed text-slate-700 dark:text-slate-300">{currentQ.expVn}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
+                      <button
+                        onClick={handleNext}
+                        className="flex items-center px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+                      >
+                        {currentIndex < questions.length - 1 ? 'Continue' : 'Complete Section'}
+                        <ArrowRight className="w-6 h-6 ml-3" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!isMcq && (
             <div className={containerClass}>
               <textarea
                 value={userAnswer}
@@ -355,6 +487,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                 className={textAreaClass}
               />
             </div>
+            )}
 
             {gameState !== 'LOADING' && (currentQ.suggestedWords || []).length > 0 && (
               <div className="w-full mb-8">
@@ -363,8 +496,8 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                 </span>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
                   {(currentQ.suggestedWords || []).map((wordGroup, i) => {
-                    const isUsed = feedback 
-                      ? feedback.usedWordGroups.includes(wordGroup) 
+                    const isUsed = shownFeedback?.usedWordGroups
+                      ? shownFeedback.usedWordGroups.includes(wordGroup)
                       : checkRequiredWordGroup(wordGroup, userAnswer);
                     const displayWord = Array.isArray(wordGroup) ? wordGroup[0] : wordGroup;
                     
@@ -416,10 +549,10 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
               </div>
             )}
 
-            {(gameState === 'Q' || gameState === 'SAVED_API_ERROR') && (
+            {!isMcq && (gameState === 'Q' || gameState === 'SAVED_API_ERROR') && (
               <div className="w-full flex justify-end mb-8 border-t border-slate-200 dark:border-slate-800 pt-6">
-                <button 
-                  onClick={handleGrade} 
+                <button
+                  onClick={handleGrade}
                   disabled={!userAnswer.trim()} 
                   className="px-10 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-rose-700 active:border-b-0 active:translate-y-[5px] disabled:opacity-50 transition-all shadow-sm"
                 >
@@ -437,16 +570,16 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
               </div>
             )}
 
-            {gameState === 'A' && feedback && (
+            {gameState === 'A' && shownFeedback && !shownFeedback.isMcq && (
               <div className="w-full animate-in slide-in-from-bottom-8 duration-500">
 
-                {!feedback.isPerfect && (
+                {!shownFeedback.isPerfect && (
                   <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">
                       Your Attempt
                     </span>
                     <p className="text-lg text-slate-700 dark:text-slate-300 font-medium italic">
-                      "{feedback.originalAnswer}"
+                      "{shownFeedback.originalAnswer}"
                     </p>
                   </div>
                 )}
@@ -457,12 +590,12 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                   </div>
                   <div>
                     <h3 className="text-2xl font-black text-slate-800 dark:text-white">
-                      {feedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
+                      {shownFeedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
                     </h3>
                     <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">
                       Accuracy Score:
-                      <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}`}>
-                        {feedback.pointsEarned} / {feedback.maxPoints} Pts
+                      <span className={`ml-2 text-base ${shownFeedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}`}>
+                        {shownFeedback.pointsEarned} / {shownFeedback.maxPoints} Pts
                       </span>
                     </p>
                   </div>
@@ -475,19 +608,19 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                       <h3 className="text-lg font-black">Content Marks Breakdown</h3>
                     </div>
                     <span className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold px-3 py-1 rounded-lg text-sm">
-                      {feedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
+                      {shownFeedback.scienceScore} / {currentQ.scienceMaxMarks} Pts
                     </span>
                   </div>
 
                   <ul className="space-y-3">
                     {currentQ.markScheme.map((mark, i) => (
                       <li key={i} className="flex items-start">
-                        {feedback.scienceMarks[i] ? (
+                        {shownFeedback.scienceMarks[i] ? (
                           <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
                         ) : (
                           <XCircle className="w-5 h-5 text-slate-300 dark:text-slate-600 mr-3 mt-0.5 flex-shrink-0" />
                         )}
-                        <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 line-through'}`}>
+                        <span className={`text-base font-medium ${shownFeedback.scienceMarks[i] ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500 line-through'}`}>
                           {mark}
                         </span>
                       </li>
@@ -503,11 +636,11 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                          <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
                        </div>
                        <span className="bg-[#fef3c7] dark:bg-amber-900/40 text-[#b45309] dark:text-amber-300 font-bold px-2 py-0.5 rounded-md text-xs">
-                         {feedback.englishScore} / 3 Pts
+                         {shownFeedback.englishScore} / 3 Pts
                        </span>
                      </div>
                      <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                       {feedback.englishFeedback}
+                       {shownFeedback.englishFeedback}
                      </p>
                    </div>
                 </div>
@@ -524,10 +657,10 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                   <div className="space-y-4">
                     <div>
                       <span className="block text-xs font-bold text-[#65a30d] dark:text-lime-400 uppercase mb-1">
-                        {feedback.isPerfect ? "Your Perfect Analysis:" : "Fixed Version of Your Analysis:"}
+                        {shownFeedback.isPerfect ? "Your Perfect Analysis:" : "Fixed Version of Your Analysis:"}
                       </span>
                       <p className="text-lg font-bold text-[#166534] dark:text-lime-200">
-                        "{feedback.fixedAnswer}"
+                        "{shownFeedback.fixedAnswer}"
                       </p>
                     </div>
                     <div className="pt-4 border-t border-[#d9f99d] dark:border-lime-800">

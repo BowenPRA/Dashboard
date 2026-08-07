@@ -206,12 +206,28 @@ for (const trackId of TRACK_IDS) {
         err(`${label}: shortQA ${qa.id} scienceMaxMarks ${qa.scienceMaxMarks} != ${qa.markScheme.length} markScheme rows`);
       }
     }
+    // Source Analysis items come in two shapes. `written` is the default, so an
+    // item authored before mixed types is validated exactly as it always was.
     for (const d of unit.diagrams || []) {
-      if (!d.modelAnswer) err(`${label}: diagram ${d.id} has no modelAnswer`);
-      if (!(d.markScheme || []).length) err(`${label}: diagram ${d.id} has no markScheme`);
-      if (d.scienceMaxMarks !== (d.markScheme || []).length) {
-        err(`${label}: diagram ${d.id} maxMarks ${d.scienceMaxMarks} != ${(d.markScheme || []).length} markScheme rows`);
+      const at = `${label}: diagram ${d.id}`;
+      if (d.type === 'mcq') {
+        const opts = d.options || [];
+        if (opts.length < 2) err(`${at} is an MCQ with ${opts.length} option(s) — needs at least 2`);
+        if (!opts.some((o) => o.val === d.correct)) err(`${at}: correct "${d.correct}" is not one of the options`);
+        for (const o of opts) if (!o.text) err(`${at}: option "${o.val}" has no text`);
+        if (!d.expEn || !d.expVn) err(`${at} is missing a bilingual explanation (expEn/expVn)`);
+        if (d.marks !== undefined && !(d.marks > 0)) err(`${at}: marks must be a positive number`);
+        if (d.markScheme || d.modelAnswer) warn(`${at} is an MCQ but also carries modelAnswer/markScheme — those are ignored`);
+      } else {
+        if (!d.modelAnswer) err(`${at} has no modelAnswer`);
+        if (!(d.markScheme || []).length) err(`${at} has no markScheme`);
+        if (d.scienceMaxMarks !== (d.markScheme || []).length) {
+          err(`${at} maxMarks ${d.scienceMaxMarks} != ${(d.markScheme || []).length} markScheme rows`);
+        }
       }
+      // Source material that is a real document or photograph must say where it
+      // came from — the house rule, and the only defence of its licence.
+      if (d.imageFile && !d.credit) warn(`${at} shows ${d.imageFile} with no credit`);
     }
 
     // -- diagram references resolve
@@ -240,7 +256,9 @@ for (const trackId of TRACK_IDS) {
     }
 
     // -- referenced images must exist. A missing PNG renders as a broken image
-    //    inside a task that asks the student to analyse it.
+    //    inside a task that asks the student to analyse it. `imageFile` went
+    //    unchecked here for a long time, which is how Y8/MATH_1A shipped three
+    //    diagram items pointing at files that were never in the repo.
     for (const f of fs.existsSync(dir) ? fs.readdirSync(dir) : []) {
       if (!f.endsWith('.js')) continue;
       const src = fs.readFileSync(path.join(dir, f), 'utf8');
@@ -248,6 +266,14 @@ for (const trackId of TRACK_IDS) {
         const rel = m[1].replace(/^\/+/, '');
         if (!fs.existsSync(path.join(ROOT, 'public', rel))) {
           err(`${label}: ${f} references ${m[1]}, which does not exist in public/`);
+        }
+      }
+      // imageFile is a bare filename resolved against public/images/<TRACK>/<UNIT>/
+      // by assetPaths.unitImageUrl — the same shape as the audio folders.
+      for (const mm of src.matchAll(/imageFile:\s*["']([^"']+)["']/g)) {
+        const file = mm[1].replace(/^.*[\\/]/, '');
+        if (!fs.existsSync(path.join(ROOT, 'public', 'images', trackId, m.id, file))) {
+          err(`${label}: ${f} references imageFile "${mm[1]}", expected at public/images/${trackId}/${m.id}/${file}`);
         }
       }
     }

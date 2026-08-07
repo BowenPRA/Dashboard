@@ -92,6 +92,21 @@ It only works if modules are **uniform in size**, which is what §4 enforces.
   `inlineSvg`/image, takes a written answer, and AI-grades content + English. That is exactly
   a Science chart item, a Social Studies political cartoon, a map or graph item. Only the
   label and the authored content need to change.
+
+  Two changes on top of the rename:
+
+  - **Items may be MCQ or written**, mixed in one pool (`type: 'mcq'`, else written).
+    MCQs are graded from the answer key with a bilingual `expEn`/`expVn` explanation —
+    no AI call, no English 0–3 component — and carry `marks` (default 1) into the same
+    points total. On the real test Social Studies and Science are almost entirely
+    multiple choice, so **aim for roughly 2 MCQ : 1 written per unit**: closer to the
+    exam, far cheaper to author, and the one written item keeps the writing alive.
+  - **The source may be a real document.** `imageFile: "<name>.png"` resolves to
+    `public/images/<TRACK>/<UNIT>/<name>.png` (the audio convention). Social Studies and
+    Science pull real public-domain material — Library of Congress, National Archives,
+    Census/BLS, NASA/NOAA — and every such item carries `credit` and `license`, shown
+    under the image. **Maths stays authored SVG**: we control the numbers, so the mark
+    scheme is exact and the graph matches the on-screen tools.
 - **`WORKBOOK` — the tiered Focus/Practice/Challenge reveal-solution task — is used by one
   unit in the whole repo, and it is not a GED unit.** It is the best self-serve practice
   shape we have. Wire it into `GED_MATH`.
@@ -116,14 +131,22 @@ Thresholds sit below each phase's own total so a half-finished phase never locks
 | **ENG — editing** (`0A/0B/3/4/5`) | NOTES 10 · WORD_REC 10 | GRAMMAR_EDIT 30 · WORKBOOK 10 | SHORT_ANSWERS 10 · ASSESSMENT 30 |
 | **ENG — essay capstone** (`10`) | NOTES 10 · WORD_REC 10 | READ_COMP 20 (the two sources) · SHORT_ANSWERS 20 (frame drill) | ESSAY 40 |
 | **HISTORY** and **SCIENCE** | NOTES 10 · WORD_REC 10 | READ_COMP 20 · DIAGRAMS 20 | SHORT_ANSWERS 20 · ASSESSMENT 20 |
-| **MATH** | NOTES 10 · WORD_REC 10 | WORKBOOK 30 · SHORT_ANSWERS 10 | DIAGRAMS 20 · ASSESSMENT 20 |
+| **MATH** | NOTES 10 · WORD_REC 10 | WORKBOOK 40 | DIAGRAMS 20 · ASSESSMENT 20 |
+
+**Maths carries no written-response task.** `SHORT_ANSWERS` is cut from `GED_MATH`
+entirely. `MATH_1A` was asking for prose answers to *"What is the primary difference
+between an expression and an equation?"* and *"Simplify −4(2x − 5)"*, then grading the
+English 0–3 on them. Maths is the least English-dependent test on the paper; taxing it
+with sentence-writing spends the student's scarcest resource on his strongest subject.
+Maths writing is the workbook's stepped solutions, and source analysis is mostly MCQ.
 
 ### Migration of the 9 existing units
 
 - [ ] Remove `SPELLING` from `ENG_0A`, `ENG_0B`, `HIST_1A`, `HIST_1B`, `MATH_1A`, `MATH_1B`
 - [ ] Add `GRAMMAR_EDIT` to `ENG_1A`, `ENG_1B`, `ENG_1C`
 - [ ] Remove `ESSAY` from `ENG_0A`, `ENG_0B` (grammar units don't need one)
-- [ ] `MATH_1A`, `MATH_1B`: swap drill to `WORKBOOK`, remove `READ_COMP`
+- [ ] `MATH_1A`, `MATH_1B`: swap drill to `WORKBOOK` 40, remove `READ_COMP` **and
+      `SHORT_ANSWERS`** (needs `workbook.js` authored first — both are empty stubs)
 - [ ] Re-title phases Learn / Drill / Prove; thresholds 0 / 15 / 45; each unit totals 100 XP
 - [ ] `npm run validate` green
 
