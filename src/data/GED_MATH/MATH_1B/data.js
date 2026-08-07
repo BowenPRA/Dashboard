@@ -1,5 +1,6 @@
 // src/data/GED_MATH/MATH_1B/data.js
 import { notes } from './notes.js';
+import { workbook } from './workbook.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
 import { DIAGRAMS } from './diagrams.js';
@@ -20,7 +21,7 @@ export const GED_MATH_1B_DATA = {
   phases: [
     {
       id: "concept",
-      title: "Phase 0: Core Concepts",
+      title: "Learn",
       threshold: 0,
       tasks: [
         { id: "NOTES", dbKey: "p10", maxXP: 10 },
@@ -29,18 +30,16 @@ export const GED_MATH_1B_DATA = {
     },
     {
       id: "practice",
-      title: "Phase 1: Practice",
-      threshold: 20,
+      title: "Drill",
+      threshold: 15,
       tasks: [
-        { id: "SPELLING", dbKey: "p2", maxXP: 10 },
-        { id: "READ_COMP", dbKey: "p4", maxXP: 10 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
+        { id: "WORKBOOK", dbKey: "p11", maxXP: 40 }
       ]
     },
     {
       id: "mastery",
-      title: "Phase 2: Mastery",
-      threshold: 40,
+      title: "Prove",
+      threshold: 45,
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 20 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 }
@@ -255,5 +254,6 @@ export const GED_MATH_1B_DATA = {
 
   assessment,
   games,
-  notes
+  notes,
+  workbook
 };

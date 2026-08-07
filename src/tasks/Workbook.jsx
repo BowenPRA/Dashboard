@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, Component } from 'react';
-import { Eye, EyeOff, CheckCircle2, Construction, ChevronLeft, ChevronRight, Lightbulb } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, Lightbulb } from 'lucide-react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import TopBar from '../components/TopBar';
@@ -53,6 +53,35 @@ const RichText = ({ text }) => {
   );
 };
 
+/**
+ * Loose equality for a maths answer typed by a student.
+ *
+ * The authored answer is display markup ("$-7$", "$x = 12$"); what gets typed is
+ * "-7" or "x=12" or "12". Strip the presentation, then compare — and accept a
+ * bare value where the answer names the variable, since "12" is not a wrong
+ * answer to "solve for x". Anything genuinely ambiguous gets an `accept` list
+ * in the data rather than a looser rule here.
+ */
+const norm = (s) => String(s ?? '')
+  .replace(/\$/g, '')
+  .replace(/\\square/g, '')
+  .replace(/[−–—]/g, '-')
+  .replace(/\s+/g, '')
+  .replace(/^\+/, '')
+  .replace(/\.$/, '')
+  .toLowerCase();
+
+const bare = (s) => s.replace(/^[a-z]=/, '');
+
+const answerMatches = (input, q) => {
+  const typed = norm(input);
+  if (!typed) return false;
+  return [q.answer, ...(q.accept || [])].some((candidate) => {
+    const want = norm(candidate);
+    return want === typed || bare(want) === bare(typed);
+  });
+};
+
 const TIER_THEME = {
   Focus:     { bg: 'bg-[#58cc02]', text: 'text-[#58a700] dark:text-[#7bd42f]', soft: 'bg-[#58cc02]/10' },
   Practice:  { bg: 'bg-[#1cb0f6]', text: 'text-[#1899d6] dark:text-[#5cc4f7]', soft: 'bg-[#1cb0f6]/10' },
@@ -75,17 +104,49 @@ export default function Workbook({ pool, onComplete, onQuit }) {
   const [idx, setIdx] = useState(0);
   const [lang, setLang] = useState('en');
   const [revealed, setRevealed] = useState(() => new Set());
+  const [results, setResults] = useState({}); // id -> { value, correct, shown }
+  const [drafts, setDrafts] = useState({});   // id -> what they have typed so far
 
   const total = problems.length;
   const q = problems[idx];
   const isRevealed = q ? revealed.has(q.id) : false;
+  // Only questions with an authored answer can be marked; a "copy and complete
+  // the table" item is still worth doing, just not worth points.
+  const scorable = useMemo(() => problems.filter((p) => p.answer), [problems]);
+  const result = q ? results[q.id] : null;
+  // Keyed by question rather than reset on navigation, so flicking back to an
+  // unanswered problem still shows what was typed.
+  const draft = q ? (drafts[q.id] ?? '') : '';
+  const setDraft = (v) => setDrafts((prev) => ({ ...prev, [q.id]: v }));
 
-  const toggle = () => setRevealed((prev) => {
-    const next = new Set(prev);
-    next.has(q.id) ? next.delete(q.id) : next.add(q.id);
-    return next;
-  });
+  const grade = (correct, shown = false) =>
+    setResults((prev) => (prev[q.id] ? prev : { ...prev, [q.id]: { value: draft, correct, shown } }));
+
+  const check = () => {
+    if (!q?.answer || result || !draft.trim()) return;
+    grade(answerMatches(draft, q));
+    setRevealed((prev) => new Set(prev).add(q.id)); // right or wrong, show the method
+  };
+
+  const toggle = () => {
+    // Revealing before answering is allowed — it is practice, and a stuck
+    // student should be able to read the method. It just doesn't score.
+    if (q.answer && !results[q.id] && !revealed.has(q.id)) grade(false, true);
+    setRevealed((prev) => {
+      const next = new Set(prev);
+      next.has(q.id) ? next.delete(q.id) : next.add(q.id);
+      return next;
+    });
+  };
   const go = (d) => setIdx((i) => Math.max(0, Math.min(total - 1, i + d)));
+
+  /** XP is the share of markable questions answered right before the reveal. */
+  const finish = () => {
+    if (!scorable.length) { onComplete?.(10); return; }
+    const items = scorable.map((p) => ({ itemId: p.id, correct: !!results[p.id]?.correct }));
+    const right = items.filter((i) => i.correct).length;
+    onComplete?.(Math.round((right / scorable.length) * 10), null, { items });
+  };
 
   useEffect(() => {
     const onKey = (e) => {
@@ -194,6 +255,43 @@ export default function Workbook({ pool, onComplete, onQuit }) {
           )}
         </div>
 
+        {/* Answer entry — the part that earns the XP */}
+        {q.answer && (
+          <div className="flex-shrink-0 px-5 sm:px-8 pb-3">
+            {!result ? (
+              <div className="flex gap-2">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); check(); } }}
+                  placeholder={lang === 'vn' ? 'Đáp án của bạn' : 'Your answer'}
+                  spellCheck={false}
+                  autoComplete="off"
+                  className="flex-1 min-w-0 px-4 py-3 rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold text-lg focus:outline-none focus:border-[#1cb0f6]"
+                />
+                <button
+                  onClick={check}
+                  disabled={!draft.trim()}
+                  className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest bg-[#1cb0f6] border-2 border-b-[4px] border-[#1899d6] text-white hover:bg-[#159bd9] active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-40 disabled:pointer-events-none"
+                >
+                  {lang === 'vn' ? 'Kiểm tra' : 'Check'}
+                </button>
+              </div>
+            ) : (
+              <div className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 font-black text-sm uppercase tracking-widest
+                ${result.correct
+                  ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300'
+                  : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>
+                {result.correct
+                  ? <><CheckCircle2 className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Chính xác' : 'Correct'}</>
+                  : result.shown
+                    ? <><Eye className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Đã xem lời giải' : 'Solution shown'}</>
+                    : <><XCircle className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Bạn viết' : 'You wrote'} “{result.value}”</>}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Reveal button row */}
         <div className="flex-shrink-0 px-5 sm:px-8 pb-4">
           <button onClick={toggle}
@@ -224,7 +322,7 @@ export default function Workbook({ pool, onComplete, onQuit }) {
           </div>
 
           {isLast ? (
-            <button onClick={() => onComplete?.(10)}
+            <button onClick={finish}
               className="flex items-center px-5 sm:px-7 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase bg-[#58cc02] border-b-[4px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[4px] transition-all">
               <CheckCircle2 className="w-6 h-6 mr-2" strokeWidth={2.5} />
               {lang === 'vn' ? 'Xong' : 'Done'}

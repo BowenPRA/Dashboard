@@ -79,7 +79,13 @@ Field notes:
   `$…$` inline, `$$…$$` block, `**bold**`. Use math markup for *all* notation.
 - `solution` is an **array of steps**, not a paragraph — this is what makes the reveal
   teach. One idea per step; the final step contains the answer.
-- `answer` is the short headline result, shown as a highlighted pill when revealed.
+- `answer` is the short headline result, shown as a highlighted pill when revealed —
+  **and it is what the student's typed answer is marked against**, so keep it to a
+  value (`$-7$`, `$x = 12$`, `Expression`), never a sentence.
+- `accept` (optional) is an array of extra spellings that should also be marked
+  correct — a reordered expression (`"20-8x"`), a unit-bearing form (`"4 hours"`), a
+  typed symbol (`">="` for `$\geq$`). Add one whenever a right answer could
+  reasonably be written another way.
 - `inlineSvg` (optional) references a diagram/table from `diagrams.js` — e.g. the
   "copy and complete this table" questions. Build it per [svg-diagrams.md](svg-diagrams.md).
 - `inlineSvgSolved` (optional) is the **filled-in** version of `inlineSvg`. When the
@@ -103,12 +109,24 @@ like the lesson deck (this is the shape we want; do not go back to a scrolling l
   - swaps `inlineSvg` → `inlineSvgSolved` so **fill-in diagrams fill in** (animated),
   - opens the numbered **stepped solution** and the `answer` pill,
   - toggles to **"Hide solution"**; reveal state is remembered per problem.
+- **Answer entry above the reveal**, for any question with an `answer`. The student
+  types a value and presses **Check**; it is matched locally against `answer` plus any
+  `accept` alternates, ignoring `$…$`, spacing, a leading `+` and unicode minus signs,
+  and accepting a bare value where the answer names the variable (`12` for `$x = 12$`).
+  Right or wrong, the solution then opens — the method is the teaching either way.
+  **Revealing before answering is allowed and scores nothing**, which is the honest
+  trade: a stuck student still gets the method.
 - **Bottom nav:** Prev · a dot strip (click any dot to jump; revealed dots are
   marked) · Next, becoming **Done** on the last problem (awards XP). Arrow keys move,
   Space/Enter reveals.
 - **EN/VN toggle** in the TopBar, matching the Notes deck; TopBar shows progress.
-- Practice, not a test: **no marking, no integrity lockdown** — students self-check
-  against the reveal. Prompt text stays selectable.
+- **XP is the share of markable questions answered right before the reveal**, out of
+  10 (the task's `nativeMax`); a workbook with no `answer` anywhere still pays on
+  completion. Questions without an `answer` — "copy and complete this table" — are
+  worth doing but not worth points.
+- Still practice, not an exam: **no integrity lockdown, no strikes, unlimited time**,
+  and prompt text stays selectable. The mark exists so the XP means something, not to
+  police anyone.
 - Fully responsive; the problem body scrolls inside its card, never the page.
 
 ---
