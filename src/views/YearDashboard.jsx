@@ -125,12 +125,14 @@ export default function YearDashboard({ track }) {
 
   const closeTask = () => setActiveTaskId(null);
 
-  const handleTaskComplete = async (taskId, rawScore, answers = null) => {
+  // `meta` carries the per-item and per-word log a task chose to keep — see
+  // progressSchema.js. Tasks that don't produce one simply omit it.
+  const handleTaskComplete = async (taskId, rawScore, answers = null, meta = {}) => {
     const unit = UNIT_DATA[activeUnit];
     const declared = (unit?.phases || []).flatMap((p) => p.tasks).find((t) => t.id === taskId);
     const task = { ...getTask(taskId), maxXP: declared?.maxXP ?? getTask(taskId)?.defaultMaxXP };
 
-    await saveScore(activeUnit, task.dbKey, normalizeScore(task, rawScore), answers);
+    await saveScore(activeUnit, task.dbKey, normalizeScore(task, rawScore), answers, meta);
     setActiveTaskId(null);
   };
 
@@ -154,7 +156,7 @@ export default function YearDashboard({ track }) {
         savedData: activeScores[activeTask.dbKey]?.answers || {},
         strikes: activeScores.strikes || 0,
         onAddStrike: (n) => addStrike(activeUnit, n),
-        onComplete: (score, answers) => handleTaskComplete(activeTask.id, score, answers),
+        onComplete: (score, answers, meta) => handleTaskComplete(activeTask.id, score, answers, meta),
         onQuit: closeTask,
       });
       taskElement = <TaskComponent {...taskProps} />;

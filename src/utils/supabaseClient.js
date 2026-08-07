@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
+import { recordAttempt, mergeVocab, VOCAB_KEY } from './progressSchema';
 
 // The single Supabase client for the whole app. Having a second createClient in
 // another module spins up a second GoTrueClient on the same storage key, which
@@ -90,7 +91,15 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
     fetchProgress();
   }, [navigate]);
 
-  const saveScore = async (unitId, section, score, answers = null) => {
+  /**
+   * Save one completed attempt.
+   *
+   * `meta` is the task's memory of what just happened:
+   *   items — [{ itemId, correct }] per-question log, for targeted review
+   *   vocab — [{ word, correct }]   per-word results, for the track's word bank
+   * A task that passes neither still saves exactly as it always did.
+   */
+  const saveScore = async (unitId, section, score, answers = null, meta = {}) => {
     // Functional update with a deep clone entirely prevents stale closures when
     // several tasks save in quick succession.
     setAllProgress(prev => {
@@ -99,13 +108,13 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       if (!newProgress[track]) newProgress[track] = {};
       if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
 
-      const existingScore = newProgress[track][unitId][section]?.current || 0;
+      newProgress[track][unitId][section] = recordAttempt(
+        newProgress[track][unitId][section], score, answers, meta
+      );
 
-      // Number() so threshold logic never trips over a stringified score.
-      newProgress[track][unitId][section] = {
-        current: Math.max(existingScore, Number(score) || 0),
-        answers: answers || newProgress[track][unitId][section]?.answers || null
-      };
+      if (meta.vocab?.length) {
+        newProgress[track][VOCAB_KEY] = mergeVocab(newProgress[track][VOCAB_KEY], meta.vocab);
+      }
 
       // Fire and forget so the UI doesn't wait on the round-trip.
       supabase.from('students').update({ progress: newProgress }).eq('id', user.id)

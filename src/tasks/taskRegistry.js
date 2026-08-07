@@ -63,7 +63,10 @@ export const TASKS = [
         audio: slideAudioUrl(track, unitId, i + 1),
         ...(note.image ? { image: assetUrl(note.image) } : null),
       })),
-    props: ({ pool, onComplete, onQuit }) => ({ slides: pool, onComplete: () => onComplete(10), onQuit }),
+    // Notes scores itself out of 10 from the check questions embedded in the
+    // deck (a deck with none still pays on completion — see Notes.jsx), and
+    // forwards a per-item log. It must NOT be hardwired to 10 here.
+    props: ({ pool, onComplete, onQuit }) => ({ slides: pool, onComplete, onQuit }),
   },
   {
     id: 'WORD_REC',
@@ -152,7 +155,10 @@ export const TASKS = [
     id: 'DIAGRAMS',
     nativeMax: 20,
     dbKey: 'p7',
-    label: 'Diagram',
+    // Renders a diagram/chart/image and AI-grades a written answer on content
+    // and English — which is exactly a GED source-analysis item. Only the label
+    // changed; the id and dbKey are live and must not.
+    label: 'Source Analysis',
     icon: ImageIcon,
     color: { bg: 'bg-[#ff4b4b]', border: 'border-[#cc3c3c]', text: 'text-white' },
     defaultMaxXP: 20,
@@ -231,7 +237,9 @@ export const TASKS = [
     id: 'WORKBOOK',
     nativeMax: 10,
     dbKey: 'p11',
-    label: 'Extra',
+    // Tiered Focus/Practice/Challenge with stepped solutions — the best
+    // self-serve practice shape in the app, not an optional extra.
+    label: 'Practice',
     icon: FileBox,
     color: { bg: 'bg-[#ec4899]', border: 'border-[#be185d]', text: 'text-white' },
     defaultMaxXP: 10,

@@ -139,7 +139,38 @@ for (const trackId of TRACK_IDS) {
         if (slide.type === 'concept' && !hasBody) {
           err(`${label}: notes slide ${i + 1} ("${slide.title || '?'}") is a concept slide with no content, widget, diagram or image`);
         }
+
+        // -- check questions: what the NOTES task is now scored on. A malformed
+        //    one silently costs the student XP they cannot get back, so these
+        //    are errors, not warnings.
+        if (slide.check) {
+          const at = `${label}: notes slide ${i + 1} check`;
+          if (!['concept', 'warmup'].includes(slide.type)) {
+            err(`${at} sits on a "${slide.type}" slide — Notes.jsx only renders checks on concept/warmup slides`);
+          }
+          if (!slide.check.q || !slide.check.qVn) err(`${at} is missing a bilingual question (q/qVn)`);
+          if (!slide.check.expEn || !slide.check.expVn) err(`${at} is missing a bilingual explanation (expEn/expVn)`);
+          const opts = slide.check.options || [];
+          if (opts.length < 2) err(`${at} has ${opts.length} option(s) — needs at least 2`);
+          if (!opts.some((o) => o.val === slide.check.correct)) {
+            err(`${at}: correct "${slide.check.correct}" is not one of the options`);
+          }
+          for (const o of opts) {
+            if (!o.text || !o.textVn) err(`${at}: option "${o.val}" is missing a bilingual label (text/textVn)`);
+          }
+        }
       });
+
+      // NOTES pays out of the check questions in the deck. Zero is allowed —
+      // decks written before checks existed still pay on completion — but it
+      // means the task is unearned, so say so once per unit.
+      const checkCount = (unit.notes || []).filter((s) => s.check).length;
+      const notesTask = (unit.phases || []).flatMap((p) => p.tasks || []).some((t) => t.id === 'NOTES');
+      if (notesTask && (unit.notes || []).length && checkCount === 0) {
+        warn(`${label}: notes deck has no check questions — NOTES pays full XP for reaching the last slide`);
+      } else if (notesTask && checkCount > 0 && checkCount < 2) {
+        warn(`${label}: notes deck has only ${checkCount} check question — one item decides the whole NOTES score`);
+      }
     }
 
     // -- answer-key distribution: a lopsided key is guessable

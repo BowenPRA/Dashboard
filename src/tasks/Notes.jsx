@@ -82,6 +82,71 @@ class WidgetErrorBoundary extends Component {
   }
 }
 
+/**
+ * The check question a slide can carry: predict → answer → reveal.
+ *
+ * This is what the Notes task is scored on. Reaching the last slide used to pay
+ * full marks, which taught the student that clicking Next is the goal; the deck
+ * now has to ask, and the answer has to be right.
+ */
+function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText }) {
+  const question = lang === 'vn' ? (check.qVn || check.q) : check.q;
+  const explanation = lang === 'vn' ? (check.expVn || check.expEn) : (check.expEn || check.expVn);
+
+  return (
+    <div className={`mt-6 shrink-0 rounded-2xl lg:rounded-[1.75rem] border-2 border-[#1cb0f6]/40 bg-[#1cb0f6]/[0.07] dark:bg-[#1cb0f6]/[0.1] ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2rem)]' : 'p-4 lg:p-6'}`}>
+      <div className={`flex items-center text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest mb-3 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
+        <HelpCircle className={isDisplayMode ? 'w-5 h-5 mr-2' : 'w-4 h-4 mr-2'} strokeWidth={3} />
+        {lang === 'vn' ? 'Kiểm tra nhanh' : 'Quick Check'}
+      </div>
+
+      <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug mb-4 ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
+        {parseText(question)}
+      </div>
+
+      <div className="grid gap-2.5 sm:grid-cols-2">
+        {(check.options || []).map((opt) => {
+          const label = lang === 'vn' ? (opt.textVn || opt.text) : opt.text;
+          const isRight = opt.val === check.correct;
+          const picked = answer?.val === opt.val;
+
+          let style = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 border-b-[4px] text-slate-700 dark:text-slate-200 hover:border-[#1cb0f6] active:border-b-2 active:translate-y-[2px]';
+          if (answer) {
+            if (isRight) style = 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]';
+            else if (picked) style = 'bg-[#ffdfe0] border-[#ea2b2b] text-[#c9362a]';
+            else style = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 opacity-60';
+          }
+
+          return (
+            <button
+              key={opt.val}
+              disabled={!!answer}
+              onClick={() => onAnswer(opt)}
+              className={`flex items-start text-left rounded-2xl border-2 font-bold transition-all disabled:cursor-default ${style} ${isDisplayMode ? 'p-[clamp(0.9rem,1.3vw,1.25rem)] text-[clamp(1rem,1.5vw,1.3rem)]' : 'p-3 lg:p-4 text-sm lg:text-base'}`}
+            >
+              <span className="font-black uppercase tracking-widest opacity-60 mr-2.5 mt-0.5">{opt.val}</span>
+              <span className="flex-1">{parseText(label)}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {answer && (
+        <div className={`mt-4 rounded-2xl border-2 ${answer.correct ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'} ${isDisplayMode ? 'p-[clamp(1rem,1.5vw,1.5rem)]' : 'p-4'}`}>
+          <div className={`flex items-center font-black uppercase tracking-widest mb-1.5 ${answer.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
+            {answer.correct
+              ? <><CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} />{lang === 'vn' ? 'Chính xác' : 'Correct'}</>
+              : <><AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />{lang === 'vn' ? 'Chưa đúng' : 'Not quite'}</>}
+          </div>
+          <div className={`font-bold leading-relaxed ${answer.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'} ${isDisplayMode ? 'text-[clamp(1rem,1.5vw,1.3rem)]' : 'text-sm lg:text-base'}`}>
+            {parseText(explanation)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Notes({ slides, onComplete, onQuit }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -89,7 +154,8 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const [lang, setLang] = useState('en');
   const [isDisplayMode, setIsDisplayMode] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
-  
+  const [checkAnswers, setCheckAnswers] = useState({}); // slide index -> { val, correct }
+
   const audioRef = useRef(null);
   const activeAudioUrl = useRef(null); 
   const containerRef = useRef(null);
@@ -171,14 +237,42 @@ export default function Notes({ slides, onComplete, onQuit }) {
     if (typeof onQuit === 'function') onQuit();
   };
 
+  // Every check question in the deck, with the slide it sits on.
+  const checks = (slides || [])
+    .map((slide, i) => (slide?.check ? { i, check: slide.check } : null))
+    .filter(Boolean);
+
+  // A slide's check must be answered before it can be left behind — the reveal
+  // is the teaching, so skipping past it would skip the point.
+  const pendingCheck = !!slides?.[currentIndex]?.check && !checkAnswers[currentIndex];
+
+  const answerCheck = (index, option, check) => {
+    setCheckAnswers(prev => (
+      prev[index] ? prev : { ...prev, [index]: { val: option.val, correct: option.val === check.correct } }
+    ));
+  };
+
   const handleComplete = () => {
     stopAudio();
     if (document.fullscreenElement) document.exitFullscreen();
-    // FIX: Force the payload to exactly 10. Dashboard phase calculations rely on this returning >= 10.
-    if (typeof onComplete === 'function') onComplete(10);
+    if (typeof onComplete !== 'function') return;
+
+    // A deck with no check questions still pays on completion, so decks written
+    // before checks existed keep their XP until they are authored with them.
+    if (!checks.length) { onComplete(10); return; }
+
+    const items = checks.map(({ i, check }) => ({
+      itemId: check.id || `slide-${i + 1}`,
+      correct: !!checkAnswers[i]?.correct,
+    }));
+    const right = items.filter((it) => it.correct).length;
+
+    // Notes is a native-10 task (taskRegistry), so score out of 10.
+    onComplete(Math.round((right / items.length) * 10), null, { items });
   };
 
   const handleNext = () => {
+    if (pendingCheck) return;
     if (currentIndex < slides.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
@@ -210,7 +304,9 @@ export default function Notes({ slides, onComplete, onQuit }) {
     };
     window.addEventListener('keydown', handleGlobalNav);
     return () => window.removeEventListener('keydown', handleGlobalNav);
-  }, [currentIndex, slides?.length, zoomedImage]);
+    // checkAnswers: answering the check on the current slide unblocks Enter/→,
+    // and the listener has to be rebuilt to see it.
+  }, [currentIndex, slides?.length, zoomedImage, checkAnswers]);
 
   if (!slides || !Array.isArray(slides) || slides.length === 0) {
     return (
@@ -241,7 +337,10 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const hasContent = !!slideContent;
   const hasExample = !!slideExample;
   const hasDiagram = !!currentSlide.widget || !!currentSlide.image || !!currentSlide.inlineSvg;
-  
+
+  const slideCheck = currentSlide.check || null;
+  const slideAnswer = checkAnswers[currentIndex] || null;
+
   const showExampleOnRight = hasExample && !hasDiagram;
   const rightPanelExists = hasDiagram || showExampleOnRight;
 
@@ -504,8 +603,8 @@ export default function Notes({ slides, onComplete, onQuit }) {
                 {/* Content Body */}
                 <div className="flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
                   
-                  {/* Left Panel: Primary Content & Inline Examples */}
-                  {(hasContent || (hasExample && hasDiagram)) && (
+                  {/* Left Panel: Primary Content, Inline Examples & the Check */}
+                  {(hasContent || (hasExample && hasDiagram) || slideCheck) && (
                     <div className={`flex-none h-[45%] lg:h-auto lg:flex-1 flex flex-col overflow-y-auto custom-scrollbar border-b-2 lg:border-b-0 border-slate-100 dark:border-slate-800 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-6 lg:p-10'} ${rightPanelExists ? 'lg:border-r-2 lg:w-[45%]' : 'w-full max-w-4xl mx-auto'}`}>
                       
                       {hasContent && <div className={hasExample && hasDiagram ? "pb-4 lg:pb-6" : ""}>{renderContent(slideContent)}</div>}
@@ -521,6 +620,17 @@ export default function Notes({ slides, onComplete, onQuit }) {
                             {renderContent(slideExample, true)}
                           </div>
                         </div>
+                      )}
+
+                      {slideCheck && (
+                        <CheckBlock
+                          check={slideCheck}
+                          lang={lang}
+                          answer={slideAnswer}
+                          onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
+                          isDisplayMode={isDisplayMode}
+                          parseText={parseInlineText}
+                        />
                       )}
                     </div>
                   )}
@@ -634,6 +744,16 @@ export default function Notes({ slides, onComplete, onQuit }) {
                 <div className={`flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden`}>
                   <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-6 lg:p-10'} ${currentSlide.inlineSvg ? 'lg:w-[55%] lg:border-r-2 border-slate-100 dark:border-slate-800' : 'w-full max-w-4xl mx-auto'}`}>
                     {renderContent(slideContent)}
+                    {slideCheck && (
+                      <CheckBlock
+                        check={slideCheck}
+                        lang={lang}
+                        answer={slideAnswer}
+                        onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
+                        isDisplayMode={isDisplayMode}
+                        parseText={parseInlineText}
+                      />
+                    )}
                   </div>
                   {currentSlide.inlineSvg && (
                     <div className={`flex-1 lg:w-[45%] bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-center flex-shrink-0 min-h-0 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-3 sm:p-4 lg:p-8'}`}>
@@ -676,7 +796,7 @@ export default function Notes({ slides, onComplete, onQuit }) {
              <Minimize2 className="w-5 h-5" strokeWidth={2.5} />
           </button>
 
-          <button onClick={handleNext} className="p-2 rounded-xl bg-[#58cc02] text-white hover:bg-[#46a802] transition-colors shadow-sm ml-0.5">
+          <button onClick={handleNext} disabled={pendingCheck} className="p-2 rounded-xl bg-[#58cc02] text-white hover:bg-[#46a802] transition-colors shadow-sm ml-0.5 disabled:opacity-30 disabled:pointer-events-none">
             <ChevronRight className="w-5 h-5" strokeWidth={3} />
           </button>
         </div>
@@ -733,11 +853,13 @@ export default function Notes({ slides, onComplete, onQuit }) {
               </button>
             </div>
 
-            <button 
+            <button
               onClick={handleNext}
-              className={`flex items-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg tracking-widest uppercase transition-all border-b-[4px] active:border-b-0 active:translate-y-[4px]
-                ${currentIndex === slides.length - 1 
-                  ? 'bg-[#58cc02] border-[#58a700] text-white hover:bg-[#46a802]' 
+              disabled={pendingCheck}
+              title={pendingCheck ? 'Answer the check question first' : undefined}
+              className={`flex items-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg tracking-widest uppercase transition-all border-b-[4px] active:border-b-0 active:translate-y-[4px] disabled:opacity-40 disabled:pointer-events-none
+                ${currentIndex === slides.length - 1
+                  ? 'bg-[#58cc02] border-[#58a700] text-white hover:bg-[#46a802]'
                   : 'bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159bd9]'}`}
             >
               <span className="hidden sm:inline">{currentIndex === slides.length - 1 ? 'Finish' : 'Continue'}</span>

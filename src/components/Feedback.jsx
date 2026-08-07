@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Volume2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { Volume2, CheckCircle2, XCircle, AlertCircle, BookOpen } from 'lucide-react';
 import { playChime } from '../utils/sound';
 
-export default function Feedback({ 
+export default function Feedback({
   // Core / Vocab Props
-  isCorrect, 
-  currentWord, 
-  isWordRecognition, 
-  track, 
+  isCorrect,
+  currentWord,
+  isWordRecognition,
+  // Study mode: a first exposure with no right answer. Same card, but neutral
+  // colours and no chime — nothing has been marked, so nothing should sound
+  // like it was.
+  isStudy = false,
+  track,
   unitId,
   onNext,
   // Assessment Review Props
@@ -42,7 +46,7 @@ export default function Feedback({
   useEffect(() => {
     if (isAssessmentMode) return;
 
-    playChime(isCorrect ? 'correct' : 'incorrect');
+    if (!isStudy) playChime(isCorrect ? 'correct' : 'incorrect');
     if (!currentWord?.isReal) return;
 
     const state = audioState.current;
@@ -81,7 +85,7 @@ export default function Feedback({
       state.isCancelled = true;
       if (state.currentAudio) { state.currentAudio.pause(); state.currentAudio.currentTime = 0; }
     };
-  }, [isCorrect, currentWord, isWordRecognition, track, unitId, isAssessmentMode]);
+  }, [isCorrect, currentWord, isWordRecognition, track, unitId, isAssessmentMode, isStudy]);
 
   const handleManualAudio = () => {
     if (isAssessmentMode || !currentWord?.isReal || btnCooldown) return;
@@ -148,10 +152,13 @@ export default function Feedback({
     );
   }
 
-  const bgClass = isCorrect ? 'bg-[#D7FFB8]' : 'bg-[#FFDFE0]';
-  const textClass = isCorrect ? 'text-[#468500]' : 'text-[#C9362A]';
-  const borderClass = isCorrect ? 'border-[#58A700]' : 'border-[#EA2B2B]';
-  
+  const bgClass = isStudy ? 'bg-[#DDF4FF]' : isCorrect ? 'bg-[#D7FFB8]' : 'bg-[#FFDFE0]';
+  const textClass = isStudy ? 'text-[#1899D6]' : isCorrect ? 'text-[#468500]' : 'text-[#C9362A]';
+  const borderClass = isStudy ? 'border-[#1CB0F6]' : isCorrect ? 'border-[#58A700]' : 'border-[#EA2B2B]';
+  const accentText = isStudy ? 'text-[#1899D6]/80' : isCorrect ? 'text-[#3E7500]/80' : 'text-[#A32D23]/80';
+  const accentBorder = isStudy ? 'border-[#1CB0F6]/20' : isCorrect ? 'border-[#58A700]/20' : 'border-[#EA2B2B]/20';
+  const accentHighlight = isStudy ? 'bg-[#1CB0F6]/20 text-[#1899D6]' : isCorrect ? 'bg-[#58A700]/20 text-[#3E7500]' : 'bg-[#EA2B2B]/20 text-[#A32D23]';
+
   return (
     <div className={`fixed bottom-0 left-0 w-full ${bgClass} border-t-[6px] ${borderClass} p-6 md:p-8 animate-in slide-in-from-bottom-10 shadow-[0_-15px_50px_-15px_rgba(0,0,0,0.2)] z-50`}>
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
@@ -159,9 +166,13 @@ export default function Feedback({
           {currentWord?.isReal ? (
             <div className="flex flex-col md:flex-row items-start gap-6 w-full">
               <div className="flex flex-row md:flex-col items-center md:items-start gap-4 md:w-1/5 flex-shrink-0">
-                <div className={`flex items-center ${isCorrect ? 'text-[#58A700]' : 'text-[#EA2B2B]'} mb-0 flex-shrink-0`}>
-                  {isCorrect ? <CheckCircle2 className="w-12 h-12 mr-3 bg-white rounded-full" /> : <XCircle className="w-12 h-12 mr-3 bg-white rounded-full" />}
-                  <span className="text-3xl font-black tracking-wide hidden sm:inline">{isCorrect ? 'Correct!' : 'Incorrect'}</span>
+                <div className={`flex items-center mb-0 flex-shrink-0 ${isStudy ? 'text-[#1CB0F6]' : isCorrect ? 'text-[#58A700]' : 'text-[#EA2B2B]'}`}>
+                  {isStudy
+                    ? <BookOpen className="w-12 h-12 mr-3 bg-white rounded-full p-1.5" strokeWidth={2.5} />
+                    : isCorrect ? <CheckCircle2 className="w-12 h-12 mr-3 bg-white rounded-full" /> : <XCircle className="w-12 h-12 mr-3 bg-white rounded-full" />}
+                  <span className="text-3xl font-black tracking-wide hidden sm:inline">
+                    {isStudy ? 'Learn it' : isCorrect ? 'Correct!' : 'Incorrect'}
+                  </span>
                 </div>
               </div>
               <div className="flex-1 min-w-0 w-full bg-white/50 p-5 md:p-6 rounded-[2rem] border border-white/60 shadow-sm">
@@ -173,14 +184,14 @@ export default function Feedback({
                 </div>
                 <div className="mb-4">
                   <p className="text-lg font-bold text-slate-800 leading-snug">{currentWord.def}</p>
-                  <p className={`text-md font-medium mt-1 ${isCorrect ? 'text-[#3E7500]/80' : 'text-[#A32D23]/80'}`}>{currentWord.vnDef}</p>
+                  <p className={`text-md font-medium mt-1 ${accentText}`}>{currentWord.vnDef}</p>
                 </div>
-                <div className={`pt-4 border-t ${isCorrect ? 'border-[#58A700]/20' : 'border-[#EA2B2B]/20'}`}>
+                <div className={`pt-4 border-t ${accentBorder}`}>
                   <span className={`font-black text-xs uppercase tracking-widest block mb-2 ${textClass}`}>Sample Sentence</span>
                   <p className="text-xl font-medium italic leading-relaxed text-slate-800">
-                    {currentWord.sent.split(new RegExp(`(${currentWord.word})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${isCorrect ? 'bg-[#58A700]/20 text-[#3E7500]' : 'bg-[#EA2B2B]/20 text-[#A32D23]'}`}>{part}</strong> : part)}
+                    {currentWord.sent.split(new RegExp(`(${currentWord.word})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${accentHighlight}`}>{part}</strong> : part)}
                   </p>
-                  <p className={`text-lg font-medium italic mt-1 ${isCorrect ? 'text-[#3E7500]/80' : 'text-[#A32D23]/80'}`}>"{currentWord.vnSent}"</p>
+                  <p className={`text-lg font-medium italic mt-1 ${accentText}`}>"{currentWord.vnSent}"</p>
                 </div>
               </div>
             </div>
@@ -204,7 +215,7 @@ export default function Feedback({
             </div>
           )}
         </div>
-        <button disabled={btnCooldown} onClick={handleNextClick} className={`w-full md:w-auto px-12 py-6 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all flex-shrink-0 border-b-[6px] active:border-b-0 active:translate-y-[6px] mt-2 md:mt-0 ${isCorrect ? 'bg-[#58A700] hover:bg-[#468500] border-[#468500]' : 'bg-[#EA2B2B] hover:bg-[#C9362A] border-[#C9362A]'} disabled:opacity-80`}>Continue</button>
+        <button disabled={btnCooldown} onClick={handleNextClick} className={`w-full md:w-auto px-12 py-6 rounded-2xl font-black text-white text-xl uppercase tracking-widest transition-all flex-shrink-0 border-b-[6px] active:border-b-0 active:translate-y-[6px] mt-2 md:mt-0 ${isStudy ? 'bg-[#1CB0F6] hover:bg-[#1899D6] border-[#1899D6]' : isCorrect ? 'bg-[#58A700] hover:bg-[#468500] border-[#468500]' : 'bg-[#EA2B2B] hover:bg-[#C9362A] border-[#C9362A]'} disabled:opacity-80`}>Continue</button>
       </div>
     </div>
   );

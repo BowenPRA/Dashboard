@@ -3,6 +3,7 @@ import { getStudentDetail, updateStudent, setProgress } from '../utils/adminApi'
 import { getTrack } from '../data/index';
 import { TRACK_IDS, TRACK_REGISTRY } from './trackRegistry';
 import { TASKS, resolveUnitTasks } from '../tasks/taskRegistry';
+import { isUnitKey } from '../utils/progressSchema';
 import {
   X, Loader2, Edit2, Check, XCircle, Gamepad2, BookOpen, Settings2, UserCog,
   Eraser, Rocket, Save
@@ -212,7 +213,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                       Track: {trackId}
                     </h3>
 
-                    {Object.entries(trackData).map(([unitId, unitData]) => {
+                    {Object.entries(trackData).filter(([key]) => isUnitKey(key)).map(([unitId, unitData]) => {
                       const unitMeta = getUnitMeta(trackId, unitId);
                       const p12Score = unitData?.p12?.current || 0;
                       const gamesScore = unitData?.GAMES?.current || 0;
@@ -302,7 +303,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                 );
               })}
 
-              {progressData && !TRACK_IDS.some((t) => progressData[t] && Object.keys(progressData[t]).length) && (
+              {progressData && !TRACK_IDS.some((t) => progressData[t] && Object.keys(progressData[t]).filter(isUnitKey).length) && (
                 <div className="flex flex-col items-center justify-center h-64 text-slate-400">
                   <BookOpen className="w-16 h-16 mb-4 opacity-20" strokeWidth={2} />
                   <p className="text-center font-bold text-lg">No progress recorded yet. Use the buttons above once the student starts a unit.</p>
