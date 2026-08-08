@@ -60,6 +60,49 @@ def extract_objects(block_text):
                         objects.append(block_text[start:i+1])
     return objects
 
+def speechify(text):
+    """Turn authored slide markup into something a TTS voice reads cleanly:
+    expand the little KaTeX we use, drop markdown/bumpers, and tidy spaces."""
+    if not text:
+        return ""
+    # In the .js source a literal backslash is written doubled (\\dfrac, \\%),
+    # so collapse those first, then handle newline escapes.
+    t = text.replace('\\\\', '\\')
+    t = t.replace('\\n', '. ').replace('\n', '. ')
+    # Expand the maths that actually appears in the decks.
+    t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
+    t = re.sub(r'\\mathbf\s*\{([^{}]*)\}', r'\1', t)
+    t = t.replace('\\times', ' times ').replace('\\div', ' divided by ')
+    t = t.replace('\\%', ' percent ').replace('%', ' percent ')
+    t = t.replace('\\$', ' dollars ')
+    # Drop any remaining LaTeX commands, stray backslashes, braces and $.
+    t = re.sub(r'\\[a-zA-Z]+', '', t)
+    t = t.replace('\\', '')
+    t = re.sub(r'[{}$]', '', t)
+    # Markdown: bold/italic markers and the ">" copy-down bumper.
+    t = re.sub(r'\*+', '', t)
+    t = re.sub(r'(?m)^\s*>\s*', '', t).replace('>', '')
+    # Tidy: collapse whitespace and runs of periods.
+    t = re.sub(r'\s+', ' ', t)
+    t = re.sub(r'(?:\.\s*){2,}', '. ', t)
+    return t.strip()
+
+def build_layout_narration(slide):
+    """Narration for a flexible `layout` slide. Reads the teaching fields in
+    document order (title, headings, content, notes, steps, checklist items,
+    reveal prompt) but NOT the interactive `check` block or a reveal's hidden
+    answer — those would spoil the predict-then-reveal."""
+    s = re.split(r'(?m)^\s*check\s*:\s*\{', slide)[0]
+    pieces = []
+    for m in re.finditer(
+        r'\b(title|subtitle|objective|sub|heading|content|text|prompt|caption)\b\s*:\s*(["\'`])((?:\\.|[^\\])*?)\2',
+        s, re.DOTALL,
+    ):
+        val = m.group(3).strip()
+        if val:
+            pieces.append(val)
+    return speechify(". ".join(pieces))
+
 def parse_js_to_dict(filepath):
     data = {
         "realWords": [],
@@ -129,25 +172,48 @@ def parse_js_to_dict(filepath):
                 
                 for slide in slide_blocks:
                     # FIX: Upgraded all quotes to include backticks (`) for modern JS strings
+                    layout_m = re.search(r'layout\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     type_m = re.search(r'type\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     title_m = re.search(r'title\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     sub_m = re.search(r'subtitle\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
-                    
+
                     # Core visual content fields
                     content_m = re.search(r'content\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     ex_m = re.search(r'example\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
-                    
-                    # Dedicated audio script fields 
+
+                    # Dedicated audio script fields
                     spoken_m = re.search(r'spoken\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
                     spoken_ex_m = re.search(r'spokenExample\s*:\s*(["\'`])(.*?)\1', slide, re.DOTALL)
-                    
-                    if type_m:
+
+                    # Flexible `layout` slides (ported from the Lessons project) carry
+                    # no `type`; narrate their teaching fields. Every slide must append
+                    # exactly one entry so position-keyed audio (slide_<unit>_<n>) stays
+                    # aligned — never skip.
+                    if layout_m:
+                        data["notes"].append({
+                            "type": "concept",
+                            "title": title_m.group(2).strip() if title_m else "",
+                            "subtitle": "",
+                            "content": build_layout_narration(slide),
+                            "example": ""
+                        })
+                    elif type_m:
                         data["notes"].append({
                             "type": type_m.group(2).strip(),
                             "title": title_m.group(2).strip() if title_m else "",
                             "subtitle": sub_m.group(2).strip() if sub_m else "",
                             "content": spoken_m.group(2).strip() if spoken_m else (content_m.group(2).strip() if content_m else ""),
                             "example": spoken_ex_m.group(2).strip() if spoken_ex_m else (ex_m.group(2).strip() if ex_m else "")
+                        })
+                    else:
+                        # Unparseable slide — keep a placeholder so later slides keep
+                        # their position; it falls back to narrating the title.
+                        data["notes"].append({
+                            "type": "concept",
+                            "title": title_m.group(2).strip() if title_m else "",
+                            "subtitle": "",
+                            "content": "",
+                            "example": ""
                         })
 
         return data

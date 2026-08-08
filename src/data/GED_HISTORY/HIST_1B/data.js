@@ -2,7 +2,6 @@
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
-import { DIAGRAMS } from './diagrams.js';
 
 // VALID TASK IDS: WORD_REC, NOTES, WORKBOOK, SPELLING, READ_COMP, DICTATION,
 // SHORT_ANSWERS, DIAGRAMS, ESSAY, ASSESSMENT, GAMES
@@ -20,7 +19,7 @@ export const GED_HIST_1B_DATA = {
   phases: [
     {
       id: "concept",
-      title: "Phase 0: Core Concepts",
+      title: "Learn",
       threshold: 0,
       tasks: [
         { id: "NOTES", dbKey: "p10", maxXP: 10 },
@@ -29,20 +28,22 @@ export const GED_HIST_1B_DATA = {
     },
     {
       id: "practice",
-      title: "Phase 1: Practice",
-      threshold: 20,
+      title: "Drill",
+      threshold: 15,
+      // SPELLING removed — never tested on the GED (GED-SPRINT.md §4). Source
+      // Analysis (DIAGRAMS) sits in the Drill next to Reading, matching the
+      // History unit shape; both are the reading-with-a-source skill the test uses.
       tasks: [
-        { id: "SPELLING", dbKey: "p2", maxXP: 10 },
-        { id: "READ_COMP", dbKey: "p4", maxXP: 10 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
+        { id: "READ_COMP", dbKey: "p4", maxXP: 20 },
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 20 }
       ]
     },
     {
       id: "mastery",
-      title: "Phase 2: Mastery",
-      threshold: 40,
+      title: "Prove",
+      threshold: 45,
       tasks: [
-        { id: "DIAGRAMS", dbKey: "p7", maxXP: 20 },
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 }
       ]
     }
@@ -210,46 +211,75 @@ export const GED_HIST_1B_DATA = {
     }
   ],
 
+  // Source Analysis on REAL primary sources (GED-SPRINT.md §4, imagery-sourcing.md).
+  // The GED Social Studies test hands students actual documents and cartoons to
+  // read, so these items do too — the Constitution and Declaration themselves and
+  // a 1787 ratification-debate cartoon, all public domain. The civics *structure*
+  // diagrams (three branches, checks & balances) stay as teaching SVGs in notes.js,
+  // which is what a schematic is for; a source-analysis item wants a real source.
+  // ~2 MCQ : 1 written, matching the real test. The grader is blind, so every
+  // written mark scheme and model answer describes the image in words.
   diagrams: [
     {
-      id: "diag_1_articles_weakness",
-      promptText: "Study the diagram of the Articles of Confederation. Explain why this design made the government unable to function, and what it led to.",
-      inlineSvg: DIAGRAMS.NOTES_ARTICLES_WEAKNESS,
-      suggestedWords: [["tax", "taxes"], ["weak"], ["Constitution", "new government"]],
-      modelAnswer: "The Articles gave power to the states and left the central government weak. Congress could not tax, so it had no reliable money and could not pay its soldiers. There was no national army to restore order and no national court to settle disputes between states. These failures led leaders to abandon the Articles and write a new Constitution in 1787.",
-      scienceMaxMarks: 3,
-      markScheme: [
-        "Identifies at least two specific weaknesses shown in the diagram.",
-        "Explains that power sat with the states rather than the central government.",
-        "States that these failures led to writing a new Constitution."
-      ]
+      id: "diag_1_constitution_preamble",
+      type: "mcq",
+      // credit: U.S. Constitution, page 1 (1787), engrossed copy — U.S. National
+      // Archives and Records Administration. Public domain (US federal record).
+      imageFile: "constitution_p1.jpg",
+      imageAlt: "The handwritten first page of the United States Constitution, opening with the large words 'We the People'.",
+      credit: "U.S. Constitution, page 1 (1787) — U.S. National Archives",
+      license: "Public domain",
+      promptText: "This is the first page of the U.S. Constitution. It opens with the words 'We the People of the United States…'. What does that opening tell you about where the government's power comes from?",
+      options: [
+        { val: "A", text: "The government's power comes from the people themselves, not from a king." },
+        { val: "B", text: "The government's power comes from Great Britain." },
+        { val: "C", text: "Only the thirteen state governments hold power." },
+        { val: "D", text: "The Church chooses who governs the country." }
+      ],
+      correct: "A",
+      marks: 1,
+      expEn: "'We the People' means the Constitution's authority flows up from the citizens. This idea, popular sovereignty, is the opposite of a king ruling from above.",
+      expVn: "'We the People' (Chúng ta, Nhân dân) nghĩa là quyền lực của Hiến pháp bắt nguồn từ người dân. Đây là ý tưởng chủ quyền nhân dân, trái ngược với việc một vị vua cai trị từ trên xuống."
     },
     {
-      id: "diag_2_branch_identify",
-      promptText: "Read the situation in the diagram. Name the power the President is using, say which branch each actor belongs to, and explain what Congress can do next.",
-      inlineSvg: DIAGRAMS.DIAGRAM_BRANCH_IDENTIFY,
-      suggestedWords: [["veto"], ["override", "two-thirds", "2/3"], ["legislative", "executive"]],
-      modelAnswer: "The President is using the veto, which is the power to reject a bill. Congress is the legislative branch and the President heads the executive branch. Congress can respond by overriding the veto, but this requires a two-thirds vote in both the House and the Senate.",
-      scienceMaxMarks: 3,
-      markScheme: [
-        "Names the power correctly as a veto.",
-        "Correctly assigns Congress to the legislative branch and the President to the executive branch.",
-        "States that Congress can override the veto with a two-thirds vote."
-      ]
+      id: "diag_2_declaration_purpose",
+      type: "mcq",
+      // credit: United States Declaration of Independence (1776), engrossed copy —
+      // U.S. National Archives. Public domain (US federal record).
+      imageFile: "declaration.jpg",
+      imageAlt: "The engrossed Declaration of Independence of 1776, a large handwritten document with the bold heading and many signatures below.",
+      credit: "Declaration of Independence (1776) — U.S. National Archives",
+      license: "Public domain",
+      promptText: "This is the Declaration of Independence (1776). Most of its text is a long list of complaints against the King of Great Britain. What was the main PURPOSE of listing those complaints?",
+      options: [
+        { val: "A", text: "To justify to the world why the colonies were breaking away from the King." },
+        { val: "B", text: "To set out the three branches of the new government." },
+        { val: "C", text: "To ask Britain for lower taxes and then remain loyal." },
+        { val: "D", text: "To describe how a bill becomes a law." }
+      ],
+      correct: "A",
+      marks: 1,
+      expEn: "The Declaration lists the King's abuses (grievances) to prove the colonies had good reasons to separate. It announces independence; it does not design the later government — that is the Constitution's job.",
+      expVn: "Bản Tuyên ngôn liệt kê những lạm quyền của Nhà vua (các khiếu nại) để chứng minh các thuộc địa có lý do chính đáng để ly khai. Nó tuyên bố độc lập; nó không thiết kế chính quyền sau này — đó là việc của Hiến pháp."
     },
-
     {
-      id: "diag_4_federalism",
-      promptText: "Look at how powers are divided in the diagram. Explain what federalism means, and why taxation appears on both the federal and state lists.",
-      inlineSvg: DIAGRAMS.DIAGRAM_FEDERALISM_SORT,
-      suggestedWords: [["federalism"], ["shared", "both", "divided"], ["tax", "taxes"]],
-      modelAnswer: "Federalism means power is shared between the national government and the states, with some powers belonging only to one and some belonging to both. Taxation appears on both lists because each level of government needs its own money to function: the federal government funds the military and national programmes, while states fund schools, roads and local police.",
+      id: "diag_3_looking_glass_1787",
+      // credit: "The Looking Glass for 1787. A house divided against itself cannot
+      // stand," attributed to Amos Doolittle, 1787 — Library of Congress,
+      // LCCN 2008661778. Public domain.
+      imageFile: "looking_glass_1787.jpg",
+      imageAlt: "A 1787 political cartoon showing a wagon of goods stuck in the mud while two groups of men pull it in opposite directions.",
+      credit: "'The Looking Glass for 1787', Amos Doolittle — Library of Congress",
+      license: "Public domain",
+      promptText: "This 1787 cartoon shows a loaded wagon stuck in the mud while two groups pull it in opposite directions. Americans were arguing about whether to approve the new Constitution. Explain what the cartoon is saying about the country at that moment, and connect it to federalism — the sharing of power between the states and a national government.",
+      suggestedWords: [["divided", "disagree", "opposite"], ["federalism"], ["states", "national government"]],
       scienceMaxMarks: 3,
       markScheme: [
-        "Defines federalism as power shared between national and state governments.",
-        "States that some powers are exclusive while others are held by both.",
-        "Explains that both levels tax because each needs revenue to fund its own responsibilities."
-      ]
+        "Reads the image: the wagon is stuck because the two groups pull it in opposite directions, showing the country divided and unable to move forward.",
+        "Connects this to the 1787 debate over ratifying the Constitution — Americans disagreed about approving the new national government.",
+        "Explains federalism as power shared between the states and a national government, which is the balance the argument was really about."
+      ],
+      modelAnswer: "The cartoon shows a wagon full of goods sunk in the mud while two teams of men haul it in opposite directions, so it goes nowhere. It is a picture of a country pulling against itself. In 1787 that division was the fight over whether to ratify the new Constitution: some wanted a stronger national government and others feared it would swallow the states. The real question underneath was federalism — how much power the national government should hold and how much should stay with the states. The cartoon warns that while the two sides pull opposite ways, the whole country stays stuck."
     }
   ],
 

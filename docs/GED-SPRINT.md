@@ -201,40 +201,71 @@ charts, or any rewrite of a built unit that a diagnostic hasn't flagged.
 | **W1** | `ENG_0A` Pronouns ✅ | `ENG_0B` Subject–Verb ✅ | `MATH_1A` Expressions & Equations ✅ | `ENG_1A` Main Idea & Detail ✅ | `HIST_1A` Colonial America ✅ |
 | **W2** | `ENG_1B` Purpose & Tone ✅ | `MATH_1B` Linear Equations ✅ | `ENG_1C` Claims & Evidence ✅ | `HIST_1B` Constitution ✅ | `MATH_0D` **Data & Statistics** ♻ |
 | **W3** | `ENG_4` **Sentence Boundaries** | `HIST_2A` **Civics 1** | `MATH_0E` **Geometric Measurement** ♻ | `ENG_5` **Punctuation & Confusables** | `HIST_0A` **Reading SS Sources** |
-| **W4** | `ENG_10` **Extended Response** | `SCI_0A` **Reading Science** | `HIST_2B` **Civics 2** | `MATH_1E` **Word Problems → Equations** | `SCI_1A` **Life Science** |
+| **W4** | `ENG_10` **Extended Response** | `SCI_0A` **Reading Science** | `HIST_2B` **Civics 2** | `MATH_0C` **Ratios & Proportions** | `SCI_1A` **Life Science** |
 | **W5** | `ENG_3` **Verb Tense** | `HIST_3A` **Economics** | `SCI_3A` **Earth & Space** ♻ | `MATH_0B` **Fractions, Decimals, Percents** | `ENG_6` **Transitions & Organization** |
 | **W6** | *no new modules — timed rehearsal, error review, the last two sittings* | | | | |
 
-**9 modules exist, 16 need building.** Weeks 1–2 need almost nothing authored, which buys a
-fortnight to build weeks 3–5. Subject split: English 10 / Social Studies 6 / Math 6 /
-Science 3 — matching the risk order.
+The week grid above is the **shipping schedule**; the subject module maps below are the
+**coverage target** (the six most-tested topics per subject). Science was widened from 3 to 6
+after a topic review, so the maps now hold **29 modules — 12 built, 17 to author** (English 10 ·
+Social Studies 7 · Math 6 · Science 6). The three reading/number-sense spines `HIST_0A`,
+`SCI_0A` and `MATH_0B` are now built on the flexible layout Notes. That is more than six weeks can author, which is the
+point of the drop-order: build down the maps in risk order and let the tail fall.
 
-**If the build slips, drop from the tail in this order:** `ENG_6`, `MATH_0B`, `HIST_3A`,
-`SCI_1A`. **Never drop `ENG_10`, `HIST_2A`, or `SCI_0A`.**
+**If the build slips, drop from the tail in this order:** `SCI_2A`, `SCI_2B`, `HIST_4A`,
+`MATH_0C`, `ENG_6`. **Never drop `ENG_10`, `HIST_0A`, `HIST_2A`, or `SCI_0A`.**
 
-### New module specs
+### Subject module maps — the coverage blueprint
 
-- `MATH_0D` Data & statistics: mean/median/mode, tables, graphs — *reskin `Y9/MATH_1A`*
-- `MATH_0E` Area, perimeter, volume, surface area, Pythagoras — *reskin `Y9/MATH_2A` + `Y8/MATH_1A`*
-- `MATH_1E` Word problems → equations — the one place the English tax hits maths
-- `MATH_0B` Fractions, decimals, percents
-- `ENG_3` Verb tense & consistency — a known Vietnamese-L1 difficulty
-- `ENG_4` Sentence boundaries: fragments, run-ons, comma splices — commonest ESL error
-- `ENG_5` Punctuation & confusables: commas, apostrophes, their/there/they're
-- `ENG_6` Transitions & organization
-- `ENG_10` Extended Response capstone — structure + **a bank of ~15 sentence frames**
-  (*"The author of Source A claims that ___. However, this evidence is weak because ___."*)
-  drilled to automaticity. ~20% of the RLA score and it is a formula
-- `HIST_0A` Reading social studies sources: documents, political cartoons, maps, charts
-- `HIST_2A` Civics 1: the Constitution, three branches, checks & balances, federalism
-- `HIST_2B` Civics 2: rights & amendments, elections, the role of the citizen
-- `HIST_3A` Economics: supply & demand, markets, money, incentives
-- `SCI_0A` Reading science: passages, tables, charts; variables, hypothesis, experimental design
-- `SCI_1A` Life science: cells, body systems, health & nutrition
-- `SCI_3A` Earth & space — *mine `Y9/SCIENCE_2A`*
+Six modules per subject, chosen to cover the most-tested ground and weighted to the test
+blueprint (§1). `✅` built · `♻` reskin an existing non-GED unit (~¼ the authoring cost) ·
+**new** = author from scratch. English's 10-module set is the specs list further below; these
+three maps replace the old Math/Science/Social-Studies spec bullets.
 
-Civics is 50% of Social Studies, currently at zero coverage, and is finite and factual — the
-cheapest large block of marks in the plan.
+**Math** — *Quantitative 45% · Algebraic 55%*
+
+| ID | Module | Strand | Status |
+|---|---|---|---|
+| `MATH_0B` | Fractions, Decimals & Percents | Quantitative | ✅ built (authored SVG source analysis) |
+| `MATH_0C` | Ratios, Proportions & Rates | Quantitative | **new** — highest-frequency word-problem type |
+| `MATH_1A` | Expressions & Equations | Algebraic | ✅ |
+| `MATH_1B` | Linear Equations, Inequalities & Graphing | Algebraic | ✅ (extend: slope, `y=mx+b`) |
+| `MATH_0D` | Data, Statistics & Probability | Quantitative | ♻ `Y9/MATH_1A` |
+| `MATH_0E` | Geometry & Measurement (area, volume, surface area, Pythagoras) | Quantitative | ♻ `Y9/MATH_2A` + `Y8/MATH_1A` |
+
+Word problems → equations is woven through `MATH_0C` and `MATH_1A/1B`, not a separate module.
+Percents and proportions carry more marks than quadratics, so fluency there is prioritised.
+
+**Science** — *Life 40% · Physical 40% · Earth & Space 20% · no essay*
+
+| ID | Module | Strand | Status |
+|---|---|---|---|
+| `SCI_0A` | Reading Science: Data, Graphs & the Scientific Method | Practices (the spine) | ✅ built (first `GED_SCIENCE` unit) |
+| `SCI_1A` | Cells & Human Body Systems (+ health, nutrition) | Life | **new** |
+| `SCI_1B` | Ecosystems, Energy Flow & Heredity (food webs, cycles, natural selection, Punnett) | Life | ♻ `Y9` ecology |
+| `SCI_2A` | Matter, Atoms & Chemical Reactions (states, physical vs chemical change, conservation of mass) | Physical | **new** |
+| `SCI_2B` | Force, Motion & Energy (Newton's laws, speed/accel, work, energy, waves) | Physical | ♻ `Y8/SCIENCE_1A` |
+| `SCI_3A` | Earth & Space Science (tectonics, weather/climate, water cycle, solar system) | Earth & Space | ♻ `Y9/SCIENCE_2A` |
+
+`SCI_0A` is content-light but highest-leverage: Science is a reading-and-data test with content
+bolted on, so its data/method skills transfer to every other Science module — and to Social
+Studies. All diagrams are real charts/micrographs (NASA/NOAA/USGS/NIH), never SVG — see
+[imagery-sourcing.md](imagery-sourcing.md).
+
+**Social Studies** — *Civics & Gov 50% · US History 20% · Geography 15% · Economics 15% · no essay*
+
+| ID | Module | Strand | Status |
+|---|---|---|---|
+| `HIST_0A` | Reading SS Sources (documents, political cartoons, maps, charts; fact vs opinion, bias) | Cross-cutting spine | ✅ built (real-source cartoon/map/photo) |
+| `HIST_1A` + `HIST_1B` | US History: Colonial → Revolution → Independence & Constitution | US History | ✅ ✅ |
+| `HIST_2A` | Foundations of Government (three branches, checks & balances, federalism) | Civics | **new** — extends `HIST_1B` |
+| `HIST_2B` | Rights, Citizenship & Elections (Bill of Rights, key amendments, voting) | Civics | **new** |
+| `HIST_3A` | Economics (supply & demand, markets, money, incentives, credit/interest) | Economics | **new** |
+| `HIST_4A` | Geography & Human-Environment (map reading, migration, resources) | Geography | **new** |
+
+Civics is **50%** of the test, is finite and factual, and sits at near-zero coverage — the
+single cheapest large block of marks in the plan, so it takes 2.5 of the six modules. Map- and
+chart-reading for the Geography strand is also drilled inside `HIST_0A`.
 
 ---
 

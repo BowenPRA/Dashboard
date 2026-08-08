@@ -1,9 +1,8 @@
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
-import { games } from './games.js';
 
-// VALID TASK IDS FOR AI CONTEXT: 
-// WORD_REC, NOTES, WORKBOOK, SPELLING, READ_COMP, DICTATION, SHORT_ANSWERS, ESSAY, ASSESSMENT, GAMES
+// VALID TASK IDS FOR AI CONTEXT:
+// WORD_REC, NOTES, WORKBOOK, SPELLING, READ_COMP, DICTATION, SHORT_ANSWERS, DIAGRAMS, ESSAY, ASSESSMENT, GAMES
 
 export const HIST_1A_DATA = {
   meta: {
@@ -18,29 +17,32 @@ export const HIST_1A_DATA = {
   phases: [
     {
       id: "concept",
-      title: "Phase 0: Core Concepts",
+      title: "Learn",
       threshold: 0,
       tasks: [
-        { id: "NOTES", dbKey: "p10", maxXP: 15 },
-        { id: "WORD_REC", dbKey: "p1", maxXP: 15 }
+        { id: "NOTES", dbKey: "p10", maxXP: 10 },
+        { id: "WORD_REC", dbKey: "p1", maxXP: 10 }
       ]
     },
     {
       id: "practice",
-      title: "Phase 1: Practice",
-      threshold: 20, 
+      title: "Drill",
+      threshold: 15,
+      // SPELLING removed — never tested on the GED (GED-SPRINT.md §4). Source
+      // Analysis (DIAGRAMS) added on real primary sources, matching the History
+      // unit shape and HIST_1B.
       tasks: [
-        { id: "SPELLING", dbKey: "p2", maxXP: 15 },   
-        { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 25 }
+        { id: "READ_COMP", dbKey: "p4", maxXP: 20 },
+        { id: "DIAGRAMS", dbKey: "p7", maxXP: 20 }
       ]
     },
     {
       id: "mastery",
-      title: "Phase 2: Mastery",
-      threshold: 40, 
+      title: "Prove",
+      threshold: 45,
       tasks: [
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 },
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 }
       ]
     }
   ],
@@ -204,7 +206,77 @@ export const HIST_1A_DATA = {
 
   ],
 
+  // Source Analysis on REAL primary sources (GED-SPRINT.md §4, imagery-sourcing.md).
+  // Colonial resistance was fought partly in print, so the sources here are the
+  // period's own famous images: Franklin's 'Join, or Die', a Loyalist-mocking
+  // tarring-and-feathering cartoon, and Paul Revere's Boston Massacre engraving —
+  // all public domain. ~2 MCQ : 1 written, matching the real test. The grader is
+  // blind, so the written mark scheme and model answer describe the image in words.
+  diagrams: [
+    {
+      id: "diag_1_join_or_die",
+      type: "mcq",
+      // credit: "JOIN, or DIE.", Benjamin Franklin, Pennsylvania Gazette, 1754 —
+      // Library of Congress, LCCN 2002695523. Public domain.
+      imageFile: "join_or_die.jpg",
+      imageAlt: "Benjamin Franklin's 1754 woodcut of a snake cut into eight labelled pieces, above the words 'JOIN, or DIE.'",
+      credit: "'Join, or Die', Benjamin Franklin, 1754 — Library of Congress",
+      license: "Public domain",
+      promptText: "Benjamin Franklin published this in 1754. The snake is cut into pieces, each labelled with a colony, above the words 'JOIN, or DIE.' What message was Franklin sending to the colonies?",
+      options: [
+        { val: "A", text: "The colonies must unite and act together, or they will not survive." },
+        { val: "B", text: "The colonies should each go their own separate way." },
+        { val: "C", text: "Snakes were a growing danger in the colonies." },
+        { val: "D", text: "Great Britain should send more soldiers to America." }
+      ],
+      correct: "A",
+      marks: 1,
+      expEn: "A snake cut into pieces dies; only a whole snake lives. Each piece is a colony, so the message is that the colonies must JOIN — unite — or be destroyed one by one.",
+      expVn: "Một con rắn bị chặt thành nhiều khúc sẽ chết; chỉ con rắn nguyên vẹn mới sống. Mỗi khúc là một thuộc địa, nên thông điệp là các thuộc địa phải ĐOÀN KẾT — hợp nhất — nếu không sẽ bị tiêu diệt từng cái một."
+    },
+    {
+      id: "diag_2_tarring_exciseman",
+      type: "mcq",
+      // credit: "The Bostonians Paying the Excise-Man, or Tarring & Feathering",
+      // London, 1774 — The Metropolitan Museum of Art (MM2273), Open Access.
+      imageFile: "tarring_exciseman.jpg",
+      imageAlt: "A 1774 cartoon of angry colonists tarring and feathering a British tax collector under a Liberty Tree while forcing tea down his throat.",
+      credit: "'The Bostonians Paying the Excise-Man', 1774 — The Met (Open Access)",
+      license: "Public domain",
+      promptText: "In this 1774 cartoon, a crowd of colonists has covered a British tax collector in hot tar and feathers and is forcing tea into his mouth. What does the scene tell you about how many colonists felt about British taxes?",
+      options: [
+        { val: "A", text: "They were angry enough to attack the officials who collected the taxes." },
+        { val: "B", text: "They happily paid the new taxes to Britain." },
+        { val: "C", text: "They wanted Britain to send them more tea." },
+        { val: "D", text: "They trusted Parliament to treat them fairly." }
+      ],
+      correct: "A",
+      marks: 1,
+      expEn: "Tarring and feathering was a violent public punishment. Forcing tea on the tax man ties the anger to the tea tax. The cartoon shows resistance to British taxes had turned into open, physical protest.",
+      expVn: "Trát hắc ín và phủ lông là một hình phạt công khai bạo lực. Việc ép trà vào người thu thuế gắn cơn giận với thuế trà. Bức tranh cho thấy sự phản kháng thuế của Anh đã trở thành cuộc phản đối công khai, bằng vũ lực."
+    },
+    {
+      id: "diag_3_boston_massacre",
+      // credit: "The Bloody Massacre perpetrated in King Street," engraved by Paul
+      // Revere, 1770 — Library of Congress. Public domain. A famous piece of
+      // one-sided propaganda, which is the point of the question.
+      imageFile: "boston_massacre.jpg",
+      imageAlt: "Paul Revere's 1770 engraving of the Boston Massacre: a line of British soldiers firing in unison into a small crowd of unarmed colonists.",
+      credit: "'The Bloody Massacre', Paul Revere, 1770 — Library of Congress",
+      license: "Public domain",
+      promptText: "Paul Revere, a Patriot, made this engraving of the Boston Massacre in 1770. It shows British soldiers lined up and firing together, on an order, into a peaceful crowd. Historians say the real event was a confused, two-sided struggle. Explain why this image is a biased source, and how Revere wanted colonists to feel.",
+      suggestedWords: [["biased", "one-sided", "propaganda"], ["Patriot"], ["angry", "sympathy", "victims"]],
+      scienceMaxMarks: 3,
+      markScheme: [
+        "Reads the image: it shows the British as an organised firing squad shooting unarmed, peaceful colonists — the colonists are the clear victims.",
+        "Explains the bias: Revere was a Patriot, and the neat firing line and helpless crowd make the British look guilty, unlike the confused real event.",
+        "States the intended effect: to make colonists angry at Britain and sympathetic to the victims, building support for the Patriot cause."
+      ],
+      modelAnswer: "The engraving is biased because it does not show what really happened. Revere draws the British soldiers as a neat firing squad shooting on command into a calm, unarmed crowd, so the colonists look like innocent victims and the British look like cold killers. In reality the event was a confused, two-sided struggle. Revere was a Patriot, and he made the picture one-sided on purpose: it is propaganda. He wanted colonists who saw it to feel angry at Britain and sorry for the victims, so that more of them would support the fight against British rule."
+    },
+
+  ],
+
   assessment,
-  games,
   notes
 };

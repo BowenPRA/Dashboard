@@ -13,7 +13,7 @@ export const ENGLISH_0A_DATA = {
   phases: [
     {
       id: "concept",
-      title: "Phase 0: Core Concepts",
+      title: "Learn",
       threshold: 0,
       tasks: [
         { id: "NOTES", dbKey: "p10", maxXP: 10 },
@@ -22,18 +22,19 @@ export const ENGLISH_0A_DATA = {
     },
     {
       id: "practice",
-      title: "Phase 1: Practice",
+      title: "Drill",
       threshold: 15,
+      // SPELLING removed — it is never tested on the GED (GED-SPRINT.md §4). Its
+      // 10 XP moved into GRAMMAR_EDIT, the editing skill the RLA actually tests.
       tasks: [
-        { id: "SPELLING", dbKey: "p2", maxXP: 10 },
         { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
-        { id: "GRAMMAR_EDIT", dbKey: "p13", maxXP: 20 }
+        { id: "GRAMMAR_EDIT", dbKey: "p13", maxXP: 30 }
       ]
     },
     {
       id: "mastery",
-      title: "Phase 2: Mastery",
-      threshold: 55,
+      title: "Prove",
+      threshold: 45,
       tasks: [
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }

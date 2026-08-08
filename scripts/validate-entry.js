@@ -130,14 +130,23 @@ for (const trackId of TRACK_IDS) {
     //    slide AND is skipped by generate_all_audio.py, so it fails silently twice.
     {
       const RENDERABLE = ['intro', 'warmup', 'concept', 'summary'];
+      // Flexible lesson layouts (src/components/notes/layouts). A slide is valid
+      // if it declares a known `layout` OR a legacy `type`; checks may sit on any
+      // layout slide since Notes.jsx renders the check gate beneath the layout.
+      const LAYOUTS = ['hero', 'statement', 'split', 'showcase', 'compare', 'stack', 'steps', 'callout', 'gallery'];
       (unit.notes || []).forEach((slide, i) => {
-        if (!RENDERABLE.includes(slide.type)) {
-          err(`${label}: notes slide ${i + 1} has type "${slide.type}" — Notes.jsx only renders ${RENDERABLE.join('/')}, so it would render blank`);
+        const hasLayout = typeof slide.layout === 'string';
+        if (hasLayout) {
+          if (!LAYOUTS.includes(slide.layout)) {
+            err(`${label}: notes slide ${i + 1} has layout "${slide.layout}" — not one of ${LAYOUTS.join('/')}`);
+          }
+        } else if (!RENDERABLE.includes(slide.type)) {
+          err(`${label}: notes slide ${i + 1} has type "${slide.type}" and no layout — Notes.jsx only renders ${RENDERABLE.join('/')} or a layout, so it would render blank`);
         }
         // A concept slide needs a body of some kind: prose, an interactive widget,
         // a diagram or an image. Otherwise it renders as an empty card.
         const hasBody = slide.content || slide.widget || slide.inlineSvg || slide.image;
-        if (slide.type === 'concept' && !hasBody) {
+        if (!hasLayout && slide.type === 'concept' && !hasBody) {
           err(`${label}: notes slide ${i + 1} ("${slide.title || '?'}") is a concept slide with no content, widget, diagram or image`);
         }
 
@@ -146,8 +155,8 @@ for (const trackId of TRACK_IDS) {
         //    are errors, not warnings.
         if (slide.check) {
           const at = `${label}: notes slide ${i + 1} check`;
-          if (!['concept', 'warmup'].includes(slide.type)) {
-            err(`${at} sits on a "${slide.type}" slide — Notes.jsx only renders checks on concept/warmup slides`);
+          if (!hasLayout && !['concept', 'warmup'].includes(slide.type)) {
+            err(`${at} sits on a "${slide.type}" slide — Notes.jsx only renders checks on concept/warmup or layout slides`);
           }
           if (!slide.check.q || !slide.check.qVn) err(`${at} is missing a bilingual question (q/qVn)`);
           if (!slide.check.expEn || !slide.check.expVn) err(`${at} is missing a bilingual explanation (expEn/expVn)`);

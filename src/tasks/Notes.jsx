@@ -11,6 +11,8 @@ import 'katex/dist/katex.min.css';
 
 import TopBar from '../components/TopBar';
 import WidgetRenderer from '../components/WidgetRenderer';
+import { SlideLayout } from '../components/notes/layouts';
+import { isLayout } from '../components/notes/layouts/helpers.jsx';
 
 const IconMap = {
   BookOpen, Scale, Target, MessageSquare, ShieldCheck,
@@ -341,6 +343,13 @@ export default function Notes({ slides, onComplete, onQuit }) {
   const slideCheck = currentSlide.check || null;
   const slideAnswer = checkAnswers[currentIndex] || null;
 
+  // Flexible lesson layouts ported from the classroom Lessons project. A slide
+  // with a `layout` renders through one of these; slides with only a `type`
+  // (intro/concept/summary/warmup) keep the legacy renderer below untouched.
+  const hasLayout = isLayout(currentSlide.layout);
+  const pick = (en, vn) => (lang === 'vn' ? (vn ?? en) : en);
+  const layoutCtx = { pick, lang, isDisplayMode, onZoom: setZoomedImage };
+
   const showExampleOnRight = hasExample && !hasDiagram;
   const rightPanelExists = hasDiagram || showExampleOnRight;
 
@@ -522,11 +531,43 @@ export default function Notes({ slides, onComplete, onQuit }) {
           className={`w-full max-h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden transition-all duration-500 animate-in fade-in zoom-in-[0.98]
           ${isDisplayMode 
             ? 'h-full max-w-none rounded-none border-0' 
-            : `rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 h-full ${rightPanelExists ? 'max-w-7xl' : 'max-w-4xl'}`
+            : `rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 h-full ${(rightPanelExists || hasLayout) ? 'max-w-7xl' : 'max-w-4xl'}`
           }`}
         >
-          
-          {currentSlide.type === 'intro' && (
+
+          {hasLayout && (
+            <>
+              <div className="flex-1 min-h-0 flex flex-col overflow-hidden relative">
+                <SlideLayout name={currentSlide.layout} slide={currentSlide} ctx={layoutCtx} />
+                {/* Autonomous narration: the classroom decks were silent (the
+                    teacher talked). Every layout slide gets a floating Listen
+                    button so a solo student still hears the slide read aloud. */}
+                {!isDisplayMode && currentSlide.audio && (
+                  <button
+                    onClick={() => toggleAudio(currentSlide.audio)}
+                    className="absolute bottom-4 right-4 z-40 flex items-center justify-center w-12 h-12 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur text-slate-700 dark:text-slate-200 shadow-lg border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-[1px] active:translate-y-[3px] transition-all"
+                    title={isPlayingAudio ? 'Stop audio' : 'Listen'}
+                  >
+                    {isPlayingAudio ? <PauseCircle className="w-6 h-6" /> : <PlayCircle className="w-6 h-6" />}
+                  </button>
+                )}
+              </div>
+              {slideCheck && (
+                <div className="shrink-0 max-h-[45%] overflow-y-auto custom-scrollbar border-t-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 lg:px-10 py-4">
+                  <CheckBlock
+                    check={slideCheck}
+                    lang={lang}
+                    answer={slideAnswer}
+                    onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
+                    isDisplayMode={isDisplayMode}
+                    parseText={parseInlineText}
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          {!hasLayout && currentSlide.type === 'intro' && (
             <div className={`flex-1 flex flex-col items-center justify-center p-8 sm:p-12 text-center text-white ${currentSlide.color || 'bg-[#1cb0f6] dark:bg-[#1899d6]'} overflow-y-auto min-h-0`}>
               <div className={`bg-white/20 mx-auto rounded-[2rem] flex items-center justify-center mb-8 shadow-inner border-[4px] border-white/30 ${isDisplayMode ? 'w-32 h-32' : 'w-24 h-24'}`}>
                 <BookOpen className={`opacity-100 ${isDisplayMode ? 'w-16 h-16' : 'w-12 h-12'}`} strokeWidth={2.5} />

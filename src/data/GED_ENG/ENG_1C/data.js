@@ -19,7 +19,7 @@ export const ENGLISH_1C_DATA = {
   phases: [
     {
       id: "concept",
-      title: "Phase 0: Core Concepts",
+      title: "Learn",
       threshold: 0,
       tasks: [
         { id: "NOTES", dbKey: "p10", maxXP: 10 },
@@ -28,8 +28,8 @@ export const ENGLISH_1C_DATA = {
     },
     {
       id: "practice",
-      title: "Phase 1: Practice",
-      threshold: 20,
+      title: "Drill",
+      threshold: 15,
       tasks: [
         { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
         { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
@@ -37,8 +37,8 @@ export const ENGLISH_1C_DATA = {
     },
     {
       id: "mastery",
-      title: "Phase 2: Mastery",
-      threshold: 55,
+      title: "Prove",
+      threshold: 45,
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
