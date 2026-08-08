@@ -81,11 +81,13 @@ Field notes:
   teach. One idea per step; the final step contains the answer.
 - `answer` is the short headline result, shown as a highlighted pill when revealed —
   **and it is what the student's typed answer is marked against**, so keep it to a
-  value (`$-7$`, `$x = 12$`, `Expression`), never a sentence.
-- `accept` (optional) is an array of extra spellings that should also be marked
-  correct — a reordered expression (`"20-8x"`), a unit-bearing form (`"4 hours"`), a
-  typed symbol (`">="` for `$\geq$`). Add one whenever a right answer could
-  reasonably be written another way.
+  value (`$-7$`, `$x = 12$`, `$x \geq 5$`, `Expression`), never a sentence. The
+  equivalence engine parses maths, so you do **not** need to list reorderings,
+  spacings, factored forms or `x=`/bare-value variants — those are handled.
+- `accept` (optional) is for the cases the engine can't parse: **word answers with
+  extra words** (`"open circle"`, `"4 hours"`, a Vietnamese translation) and
+  deliberate leniencies (allowing a bare `"13"` for an inequality answer). Do not use
+  it for algebra — `"20-8x"` alongside `$-8x+20$` is already redundant.
 - `inlineSvg` (optional) references a diagram/table from `diagrams.js` — e.g. the
   "copy and complete this table" questions. Build it per [svg-diagrams.md](svg-diagrams.md).
 - `inlineSvgSolved` (optional) is the **filled-in** version of `inlineSvg`. When the
@@ -110,12 +112,13 @@ like the lesson deck (this is the shape we want; do not go back to a scrolling l
   - opens the numbered **stepped solution** and the `answer` pill,
   - toggles to **"Hide solution"**; reveal state is remembered per problem.
 - **Answer entry above the reveal**, for any question with an `answer`. The student
-  types a value and presses **Check**; it is matched locally against `answer` plus any
-  `accept` alternates, ignoring `$…$`, spacing, a leading `+` and unicode minus signs,
-  and accepting a bare value where the answer names the variable (`12` for `$x = 12$`).
-  Right or wrong, the solution then opens — the method is the teaching either way.
-  **Revealing before answering is allowed and scores nothing**, which is the honest
-  trade: a stuck student still gets the method.
+  types a value and presses **Check**, marked locally by
+  [mathEquivalence.js](../src/utils/mathEquivalence.js) — which tests genuine
+  algebraic equivalence, not string equality. `10+2x` is right for `$2x+10$`,
+  `3(x+5)` for `$3x+15$`, `4>x` for `$x<4$`, and a bare `6` for `$x=6$`. It also
+  distinguishes what it should: `x≤4` is **not** accepted for `$x<4$`. Right or wrong,
+  the solution then opens — the method is the teaching either way. **Revealing before
+  answering is allowed and scores nothing**, the honest trade for a stuck student.
 - **Bottom nav:** Prev · a dot strip (click any dot to jump; revealed dots are
   marked) · Next, becoming **Done** on the last problem (awards XP). Arrow keys move,
   Space/Enter reveals.

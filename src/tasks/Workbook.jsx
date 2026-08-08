@@ -3,6 +3,7 @@ import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronR
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import TopBar from '../components/TopBar';
+import { answersEquivalent } from '../utils/mathEquivalence';
 
 /* ------------------------------------------------------------------ *
  * Slide-per-problem practice. Reads a unit's `workbook` array:
@@ -53,35 +54,6 @@ const RichText = ({ text }) => {
   );
 };
 
-/**
- * Loose equality for a maths answer typed by a student.
- *
- * The authored answer is display markup ("$-7$", "$x = 12$"); what gets typed is
- * "-7" or "x=12" or "12". Strip the presentation, then compare — and accept a
- * bare value where the answer names the variable, since "12" is not a wrong
- * answer to "solve for x". Anything genuinely ambiguous gets an `accept` list
- * in the data rather than a looser rule here.
- */
-const norm = (s) => String(s ?? '')
-  .replace(/\$/g, '')
-  .replace(/\\square/g, '')
-  .replace(/[−–—]/g, '-')
-  .replace(/\s+/g, '')
-  .replace(/^\+/, '')
-  .replace(/\.$/, '')
-  .toLowerCase();
-
-const bare = (s) => s.replace(/^[a-z]=/, '');
-
-const answerMatches = (input, q) => {
-  const typed = norm(input);
-  if (!typed) return false;
-  return [q.answer, ...(q.accept || [])].some((candidate) => {
-    const want = norm(candidate);
-    return want === typed || bare(want) === bare(typed);
-  });
-};
-
 const TIER_THEME = {
   Focus:     { bg: 'bg-[#58cc02]', text: 'text-[#58a700] dark:text-[#7bd42f]', soft: 'bg-[#58cc02]/10' },
   Practice:  { bg: 'bg-[#1cb0f6]', text: 'text-[#1899d6] dark:text-[#5cc4f7]', soft: 'bg-[#1cb0f6]/10' },
@@ -124,7 +96,8 @@ export default function Workbook({ pool, onComplete, onQuit }) {
 
   const check = () => {
     if (!q?.answer || result || !draft.trim()) return;
-    grade(answerMatches(draft, q));
+    // Equivalent expressions count: "10+2x" is right for "2x+10". See mathEquivalence.
+    grade(answersEquivalent(draft, q.answer, q.accept));
     setRevealed((prev) => new Set(prev).add(q.id)); // right or wrong, show the method
   };
 
