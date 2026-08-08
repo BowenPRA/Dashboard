@@ -15,6 +15,15 @@ Two representations of the same act, one above the other.
   coefficient of 3 renders as three countable chips, which is what makes "divide by 3"
   something you can *see* rather than a rule you recall. Both pans are forced to equal
   height — a balance whose pans are different sizes rather undermines the point.
+- **A variable term is a chip, not a mode.** The number row offers constants in amber
+  and variable terms in the variable's own blue — `2x`, not a `2` plus a separate
+  toggle, which made "subtract 2x" look identical to "subtract 2". Picking one puts the
+  letter inside the typing box too, so `2` and `2x` never look alike. A coefficient is
+  *also* offered as a plain number, because dividing by it is the last step of nearly
+  every equation. `×` and `÷` scale a whole side, so choosing either drops the variable
+  flag — `×2x` is not a linear move and cannot be built.
+- **`±` makes an amount negative**, which no choice of operator can express: `÷ -1` is
+  a legitimate and often elegant first move on `-2x - 1 = -9`.
 - **The working builds up as a notebook page**, the operation written under *both*
   sides with a rule beneath, exactly as it is taught on paper:
 
@@ -27,6 +36,18 @@ Two representations of the same act, one above the other.
   ─────────────────
       x   =  5
 ```
+
+**There is no single correct route, and the task must never imply there is.** Every
+legal move keeps the equation true, so `-2x - 1 = -9` can be opened by adding `2x`
+(moving the term across), by `÷ -1` (making the coefficient positive first), or by
+clearing the `-1` — all three arrive at `x = 4`, and `4 = x` counts as solved just as
+`x = 4` does. The step target is the count the taught strategy happens to need; beating
+it or missing it changes nothing about the marks.
+
+**Solving is not the end of the task.** On completion an amber copy-down panel asks the
+student to write the whole thing — every line, including the operations under both
+sides — into their notebook, and the continue button is worded as the confirmation
+("I have written it down"). The working stays on screen while they copy.
 
 Prior art worth knowing: [Graspable Math](https://graspablemath.com/learn/solving-equations)
 puts the affordance on the equals sign (click it, act on both sides) but its

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import {
-  Scale, RotateCcw, Undo2, Lightbulb, ArrowRight, Construction, PartyPopper,
+  Scale, RotateCcw, Undo2, Lightbulb, ArrowRight, Construction, PartyPopper, Pencil, Check,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import {
@@ -47,6 +47,9 @@ const VN = {
   stays: 'Cân luôn thăng bằng — vì bạn luôn làm giống nhau ở cả hai vế.',
   yourAnswer: 'Đáp án',
   hintUsed: 'Đã dùng gợi ý',
+  copyTitle: 'Chép vào vở',
+  copyBody: 'Chép lại TOÀN BỘ bài giải ở trên — từng dòng một, kể cả các phép toán viết dưới hai vế. Không chỉ chép đáp án.',
+  copied: 'Đã chép xong',
 };
 const EN = {
   title: 'Balance the Equation',
@@ -63,6 +66,9 @@ const EN = {
   stays: 'The scale stays level — because you always do the same to both sides.',
   yourAnswer: 'Answer',
   hintUsed: 'Hint used',
+  copyTitle: 'Copy this into your notebook',
+  copyBody: 'Write out ALL of the working above — every line, including the operations under both sides. Not just the answer.',
+  copied: 'I have written it down',
 };
 
 /** One pan of the balance: x-chips you can count, and the constant as a chip. */
@@ -200,20 +206,48 @@ function Solver({ problem, t, lang, onSolved, footer }) {
   const varName = current.v || 'x';
   const opSymbol = OPS.find((o) => o.kind === opKind)?.sym || '+';
 
-  // Collecting x only matters once x is on both sides. Gating the flag at the
-  // point of use means it can never be left stranded as the equation changes.
-  const bothSidesHaveX = !isZero(current.left.x) && !isZero(current.right.x);
-  const onX = wantOnX && bothSidesHaveX;
+  // × and ÷ scale the WHOLE side, so "×2x" is not a linear move and must never
+  // be constructible. Picking one of those simply drops the variable flag.
+  const onX = wantOnX && (opKind === 'add' || opKind === 'sub');
 
-  // Numbers worth one tap: the ones actually in front of them.
+  /**
+   * One tap for every number in front of them, constants and variable terms
+   * alike. The variable terms are chips in their own right — labelled `2x` and
+   * coloured as the variable — rather than a number plus a separate modal
+   * toggle, which made "subtract 2x" look like "subtract 2".
+   */
   const chips = useMemo(() => {
-    const vals = new Set();
+    const consts = new Set(), vars = new Set();
     for (const s of [current.left, current.right]) {
-      if (!isZero(s.c) && s.c.d === 1) vals.add(Math.abs(s.c.n));
-      if (!isZero(s.x) && s.x.d === 1 && !isOne(s.x)) vals.add(Math.abs(s.x.n));
+      if (!isZero(s.c) && s.c.d === 1) consts.add(Math.abs(s.c.n));
+      if (!isZero(s.x) && s.x.d === 1) {
+        vars.add(Math.abs(s.x.n));
+        // A coefficient is offered as a plain number too: dividing by it is the
+        // last step of almost every equation, and "2x" cannot express "÷ 2".
+        consts.add(Math.abs(s.x.n));
+      }
     }
-    return [...vals].filter((v) => v > 0).sort((a, b) => a - b).slice(0, 6);
-  }, [current]);
+    return [
+      ...[...consts].filter((v) => v > 0).sort((a, b) => a - b).slice(0, 5)
+        .map((v) => ({ key: `c${v}`, value: v, isVar: false, label: String(v) })),
+      ...[...vars].filter((v) => v > 0).sort((a, b) => a - b).slice(0, 3)
+        .map((v) => ({ key: `v${v}`, value: v, isVar: true, label: v === 1 ? varName : `${v}${varName}` })),
+    ];
+  }, [current, varName]);
+
+  const pickChip = (c) => {
+    setAmount(String(c.value));
+    setWantOnX(c.isVar);
+    // A variable term can only be added or taken away, never scaled.
+    if (c.isVar && opKind !== 'add' && opKind !== 'sub') setOpKind('sub');
+    setError('');
+  };
+
+  /** Negative amounts matter for "÷ -1" and "× -1", which no operator can express. */
+  const flipSign = () => {
+    setAmount((a) => (a.startsWith('-') ? a.slice(1) : `-${a}`));
+    setError('');
+  };
 
   const apply = () => {
     if (solved) return;
@@ -286,7 +320,12 @@ function Solver({ problem, t, lang, onSolved, footer }) {
             {OPS.map((o) => (
               <button
                 key={o.kind}
-                onClick={() => { setOpKind(o.kind); setError(''); }}
+                onClick={() => {
+                  setOpKind(o.kind);
+                  // Scaling a whole side cannot be "×2x"; drop the variable.
+                  if (o.kind === 'mul' || o.kind === 'div') setWantOnX(false);
+                  setError('');
+                }}
                 className={`py-3 rounded-2xl font-black text-2xl border-2 border-b-[5px] transition-all active:border-b-2 active:translate-y-[3px]
                   ${opKind === o.kind
                     ? 'bg-[#1cb0f6] border-[#1899d6] text-white'
@@ -298,36 +337,65 @@ function Solver({ problem, t, lang, onSolved, footer }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 mb-3">
-            {chips.map((v) => (
-              <button
-                key={v}
-                onClick={() => { setAmount(String(v)); setError(''); }}
-                className={`px-4 py-2 rounded-xl font-black text-lg border-2 border-b-[4px] transition-all active:border-b-2 active:translate-y-[2px]
-                  ${String(amount) === String(v)
-                    ? 'bg-[#ffc800] border-[#cca000] text-amber-950'
-                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[#ffc800]'}`}
-              >
-                {v}
-              </button>
-            ))}
-            <input
-              value={amount}
-              onChange={(e) => { setAmount(e.target.value); setError(''); }}
-              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); apply(); } }}
-              inputMode="numeric"
-              placeholder="?"
-              className="w-20 px-3 py-2 rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-black text-lg text-center focus:outline-none focus:border-[#1cb0f6]"
-            />
-            {bothSidesHaveX && (
-              <button
-                onClick={() => setWantOnX((v) => !v)}
-                title={lang === 'vn' ? 'Áp dụng cho số hạng x' : 'Apply to the x term'}
-                className={`px-4 py-2 rounded-xl font-black text-lg border-2 border-b-[4px] transition-all active:border-b-2 active:translate-y-[2px]
-                  ${onX ? 'bg-[#1cb0f6] border-[#1899d6] text-white' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500'}`}
-              >
-                {varName}
-              </button>
-            )}
+            {chips.map((c) => {
+              const picked = String(amount).replace('-', '') === String(c.value) && onX === c.isVar;
+              return (
+                <button
+                  key={c.key}
+                  onClick={() => pickChip(c)}
+                  className={`px-4 py-2 rounded-xl font-black text-lg border-2 border-b-[4px] transition-all active:border-b-2 active:translate-y-[2px]
+                    ${picked
+                      ? (c.isVar ? 'bg-[#1cb0f6] border-[#1899d6] text-white' : 'bg-[#ffc800] border-[#cca000] text-amber-950')
+                      : c.isVar
+                        // The variable reads as the variable even unselected — same
+                        // blue as the x chips on the beam above.
+                        ? 'bg-[#1cb0f6]/10 border-[#1cb0f6]/50 text-[#1899d6] dark:text-[#5cc4f7] hover:border-[#1cb0f6]'
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[#ffc800]'}`}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={flipSign}
+              title={lang === 'vn' ? 'Đổi dấu âm/dương' : 'Make it negative'}
+              className={`px-3 py-2 rounded-xl font-black text-lg border-2 border-b-[4px] transition-all active:border-b-2 active:translate-y-[2px]
+                ${String(amount).startsWith('-')
+                  ? 'bg-rose-500 border-rose-700 text-white'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-rose-400'}`}
+            >
+              ±
+            </button>
+
+            {/* The typed box carries the variable too, so "2" and "2x" never look alike. */}
+            <div className="relative">
+              <input
+                value={amount}
+                onChange={(e) => { setAmount(e.target.value); setError(''); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); apply(); } }}
+                inputMode="numeric"
+                placeholder="?"
+                className={`w-24 pl-3 pr-7 py-2 rounded-xl border-2 border-b-[4px] bg-white dark:bg-slate-900 font-black text-lg text-center focus:outline-none
+                  ${onX ? 'border-[#1cb0f6] text-[#1899d6] dark:text-[#5cc4f7]'
+                        : 'border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:border-[#1cb0f6]'}`}
+              />
+              {onX && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 font-black text-lg text-[#1899d6] dark:text-[#5cc4f7] pointer-events-none">
+                  {varName}
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={() => { setWantOnX((v) => !v); if (opKind === 'mul' || opKind === 'div') setOpKind('sub'); setError(''); }}
+              title={lang === 'vn' ? `Áp dụng cho số hạng ${varName}` : `Apply to the ${varName} term`}
+              className={`px-4 py-2 rounded-xl font-black text-lg border-2 border-b-[4px] transition-all active:border-b-2 active:translate-y-[2px]
+                ${onX ? 'bg-[#1cb0f6] border-[#1899d6] text-white'
+                      : 'bg-[#1cb0f6]/10 border-[#1cb0f6]/50 text-[#1899d6] dark:text-[#5cc4f7] hover:border-[#1cb0f6]'}`}
+            >
+              {varName}
+            </button>
           </div>
 
           {/* The preview says out loud what is about to happen to BOTH sides. */}
@@ -446,26 +514,41 @@ export default function EquationBalance({ pool = [], onComplete, onQuit }) {
           lang={lang}
           onSolved={record}
           footer={(stepsTaken) => (
-            <div className="mt-5 pt-5 border-t-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in zoom-in-95 duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-[#58cc02] flex items-center justify-center shadow-sm shrink-0">
-                  <PartyPopper className="w-6 h-6 text-white" strokeWidth={2.5} />
+            <div className="mt-5 pt-5 border-t-2 border-dashed border-slate-200 dark:border-slate-700 animate-in fade-in zoom-in-95 duration-300">
+              {/* The copy-down panel, in the app's established amber. The working
+                  above IS the thing to copy, so this sits directly under it. */}
+              <div className="bg-[#ffc800]/10 dark:bg-amber-900/15 border-l-[6px] border-[#ffc800] rounded-r-2xl p-4 sm:p-5 mb-5">
+                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-black uppercase tracking-widest text-[11px] sm:text-xs mb-1.5">
+                  <Pencil className="w-4 h-4 shrink-0" strokeWidth={3} />
+                  {t.copyTitle}
                 </div>
-                <div>
-                  <div className="font-black text-lg text-[#3e7500] dark:text-[#7bd42f]">{t.solved}</div>
-                  <div className="text-xs font-bold text-slate-400">
-                    {stepsTaken} {t.steps} · {t.par} {par}
-                    {results[p.id]?.hinted ? ` · ${t.hintUsed}` : ''}
+                <p className="text-sm sm:text-base font-bold text-amber-900 dark:text-amber-200 leading-relaxed">
+                  {t.copyBody}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-[#58cc02] flex items-center justify-center shadow-sm shrink-0">
+                    <PartyPopper className="w-6 h-6 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <div className="font-black text-lg text-[#3e7500] dark:text-[#7bd42f]">{t.solved}</div>
+                    <div className="text-xs font-bold text-slate-400">
+                      {stepsTaken} {t.steps} · {t.par} {par}
+                      {results[p.id]?.hinted ? ` · ${t.hintUsed}` : ''}
+                    </div>
                   </div>
                 </div>
+                <button
+                  onClick={next}
+                  className="w-full sm:w-auto flex items-center justify-center px-6 py-4 rounded-2xl font-black text-sm sm:text-base uppercase tracking-widest bg-[#58cc02] border-b-[5px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[5px] transition-all"
+                >
+                  <Check className="w-5 h-5 mr-2 shrink-0" strokeWidth={3} />
+                  {t.copied}
+                  <ArrowRight className="w-5 h-5 ml-2 shrink-0" strokeWidth={3} />
+                </button>
               </div>
-              <button
-                onClick={next}
-                className="w-full sm:w-auto flex items-center justify-center px-8 py-4 rounded-2xl font-black text-base uppercase tracking-widest bg-[#58cc02] border-b-[5px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[5px] transition-all"
-              >
-                {idx < problems.length - 1 ? t.next : t.finish}
-                <ArrowRight className="w-5 h-5 ml-2" strokeWidth={3} />
-              </button>
             </div>
           )}
         />

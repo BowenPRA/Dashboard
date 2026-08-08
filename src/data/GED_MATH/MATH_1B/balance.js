@@ -55,4 +55,12 @@ export const balance = [
     prompt: 'Collect x, and do not be surprised by a negative answer.',
     promptVn: 'Gom x, và đừng ngạc nhiên với đáp án âm.',
   },
+  {
+    id: 'e9',
+    equation: '-2x - 1 = -9',
+    // Deliberately open-ended: adding 2x moves the term across, dividing by -1
+    // makes it positive first, and clearing the -1 works too. All three arrive.
+    prompt: 'More than one good first move here — try adding 2x, or dividing by -1.',
+    promptVn: 'Có nhiều cách mở đầu đúng — thử cộng 2x, hoặc chia cho -1.',
+  },
 ];
