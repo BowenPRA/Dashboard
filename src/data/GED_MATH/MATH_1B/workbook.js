@@ -282,7 +282,7 @@ export const workbook = [
       },
       {
         id: "c3",
-        prompt: "Mai has $60. She buys a bag for $18 and notebooks costing $6 each. What is the greatest number of notebooks $n$ she can buy?",
+        prompt: "Mai has 60 dollars. She buys a bag for 18 dollars and notebooks costing 6 dollars each. What is the greatest number of notebooks $n$ she can buy?",
         promptVn: "Mai có 60 đô la. Cô mua một cái túi giá 18 đô la và các quyển vở giá 6 đô la mỗi quyển. Số vở $n$ nhiều nhất cô có thể mua là bao nhiêu?",
         solution: [
           "The total must be at most $60$: $18 + 6n \\leq 60$.",
@@ -299,7 +299,7 @@ export const workbook = [
       },
       {
         id: "c4",
-        prompt: "A taxi charges $4 plus $2 per mile. Nam has $30. Write and solve an inequality for the miles $m$ he can travel.",
+        prompt: "A taxi charges 4 dollars plus 2 dollars per mile. Nam has 30 dollars. Write and solve an inequality for the miles $m$ he can travel.",
         promptVn: "Taxi tính 4 đô la cộng 2 đô la mỗi dặm. Nam có 30 đô la. Viết và giải bất phương trình cho số dặm $m$ anh ấy đi được.",
         solution: [
           "The fare must not exceed what he has: $4 + 2m \\leq 30$.",

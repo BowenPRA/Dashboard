@@ -251,7 +251,7 @@ export const workbook = [
       },
       {
         id: "p7",
-        prompt: "A plumber charges a $50 flat fee plus $25 per hour. Write an equation for a total bill of $150 using $h$ for hours.",
+        prompt: "A plumber charges a 50 dollar flat fee plus 25 dollars per hour. Write an equation for a total bill of 150 dollars, using $h$ for hours.",
         promptVn: "Một thợ sửa ống nước tính phí cố định 50 đô la cộng 25 đô la mỗi giờ. Viết phương trình cho hoá đơn 150 đô la, dùng $h$ cho số giờ.",
         solution: [
           "The flat fee is charged once: $50$.",
@@ -323,7 +323,7 @@ export const workbook = [
       },
       {
         id: "c3",
-        prompt: "Tickets cost $12 each and a booking fee of $5 is added once. Nina paid $65. How many tickets did she buy?",
+        prompt: "Tickets cost 12 dollars each and a booking fee of 5 dollars is added once. Nina paid 65 dollars. How many tickets did she buy?",
         promptVn: "Mỗi vé giá 12 đô la và phí đặt chỗ 5 đô la tính một lần. Nina trả 65 đô la. Cô ấy mua bao nhiêu vé?",
         solution: [
           "Let $t$ be the number of tickets: $12t + 5 = 65$.",

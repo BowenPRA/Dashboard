@@ -92,8 +92,8 @@ export const GED_SCI_0A_DATA = {
       meta: "How science answers a question",
       text: [
         "Science follows a repeatable path. It starts with a question about the world, such as \"does more light make a plant grow taller?\"",
-        "Next comes a hypothesis: a testable prediction, written before you start. For example, \"I predict that plants given more light will grow taller.\" A hypothesis must be something an experiment could prove wrong.",
-        "Then you run an experiment and collect data — the measurements you record. Finally you compare the data with your hypothesis and write a conclusion: what the data actually shows. The conclusion must follow from the evidence, even when it disagrees with what you expected.",
+        "Next comes a {hypothesis}: a testable prediction, written before you start. For example, \"I predict that plants given more light will grow taller.\" A hypothesis must be something an experiment could prove wrong.",
+        "Then you run an experiment and collect {data} — the measurements you record. Finally you compare the data with your hypothesis and write a {conclusion}: what the data actually shows. The conclusion must follow from the evidence, even when it disagrees with what you expected.",
       ].join(" "),
       vnText: [
         "Khoa học đi theo một lộ trình có thể lặp lại. Nó bắt đầu bằng một câu hỏi về thế giới, chẳng hạn \"nhiều ánh sáng hơn có làm cây cao hơn không?\"",
@@ -111,8 +111,8 @@ export const GED_SCI_0A_DATA = {
       vnTitle: "Biến số và Thí nghiệm Công bằng",
       meta: "Changing one thing at a time",
       text: [
-        "An experiment has variables — things that can change. The independent variable is the one thing the scientist changes on purpose. The dependent variable is what they measure to see the result.",
-        "Everything else must be kept the same. These kept-the-same parts are called controls. If a scientist gives plants different amounts of light but also different amounts of water, they cannot tell which change caused the result.",
+        "An experiment has variables — things that can change. The {independent} variable is the one thing the scientist changes on purpose. The {dependent} variable is what they measure to see the result.",
+        "Everything else must be kept the same. These kept-the-same parts are called {controls}. If a scientist gives plants different amounts of light but also different amounts of water, they cannot tell which change caused the result.",
         "That is why a fair test changes only the independent variable and controls the rest. On the test, a common question is: \"What was done wrong?\" The answer is often that more than one variable was changed at once.",
       ].join(" "),
       vnText: [
@@ -131,9 +131,9 @@ export const GED_SCI_0A_DATA = {
       vnTitle: "Đọc một Biểu đồ",
       meta: "Axes, values and trends",
       text: [
-        "Most Science questions give you a graph and ask what it shows. Read it in order. First read the title, then read both axis labels — the two lines that tell you what is being measured and in what units.",
+        "Most Science questions give you a graph and ask what it shows. Read it in order. First read the {title}, then read both {axis} labels — the two lines that tell you what is being measured and in what units.",
         "Next, read a single value: find a point, drop straight down to the bottom axis and across to the side axis. That tells you the exact numbers at that point.",
-        "Finally, describe the trend — the overall direction. Is the line going up, going down, or staying flat as you move to the right? On the test, \"describe the trend\" almost never means list every number; it means say the direction in one clear sentence.",
+        "Finally, describe the {trend} — the overall direction. Is the line going up, going down, or staying flat as you move to the right? On the test, \"describe the trend\" almost never means list every number; it means say the direction in one clear sentence.",
       ].join(" "),
       vnText: [
         "Hầu hết câu hỏi Khoa học đưa cho bạn một biểu đồ và hỏi nó cho thấy điều gì. Hãy đọc theo thứ tự. Trước tiên đọc tiêu đề, rồi đọc nhãn của cả hai trục — hai đường cho biết đang đo cái gì và bằng đơn vị nào.",

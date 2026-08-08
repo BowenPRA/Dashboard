@@ -91,22 +91,30 @@ class WidgetErrorBoundary extends Component {
  * full marks, which taught the student that clicking Next is the goal; the deck
  * now has to ask, and the answer has to be right.
  */
-function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText }) {
+function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, compact = false }) {
   const question = lang === 'vn' ? (check.qVn || check.q) : check.q;
   const explanation = lang === 'vn' ? (check.expVn || check.expEn) : (check.expEn || check.expVn);
 
+  // `compact` is used when the check sits in the layout slide's own footer bar,
+  // which already frames it — so drop the top margin, the tinted box and the
+  // extra padding, and shrink the options, keeping the answer section small.
+  const shell = compact
+    ? ''
+    : `mt-6 shrink-0 rounded-2xl lg:rounded-[1.75rem] border-2 border-[#1cb0f6]/40 bg-[#1cb0f6]/[0.07] dark:bg-[#1cb0f6]/[0.1] ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2rem)]' : 'p-4 lg:p-6'}`;
+  const optPad = compact ? 'p-2.5 lg:p-3 text-sm' : (isDisplayMode ? 'p-[clamp(0.9rem,1.3vw,1.25rem)] text-[clamp(1rem,1.5vw,1.3rem)]' : 'p-3 lg:p-4 text-sm lg:text-base');
+
   return (
-    <div className={`mt-6 shrink-0 rounded-2xl lg:rounded-[1.75rem] border-2 border-[#1cb0f6]/40 bg-[#1cb0f6]/[0.07] dark:bg-[#1cb0f6]/[0.1] ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2rem)]' : 'p-4 lg:p-6'}`}>
-      <div className={`flex items-center text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest mb-3 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
+    <div className={shell}>
+      <div className={`flex items-center text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest ${compact ? 'mb-2' : 'mb-3'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
         <HelpCircle className={isDisplayMode ? 'w-5 h-5 mr-2' : 'w-4 h-4 mr-2'} strokeWidth={3} />
         {lang === 'vn' ? 'Kiểm tra nhanh' : 'Quick Check'}
       </div>
 
-      <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug mb-4 ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
+      <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug ${compact ? 'mb-2.5' : 'mb-4'} ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
         {parseText(question)}
       </div>
 
-      <div className="grid gap-2.5 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         {(check.options || []).map((opt) => {
           const label = lang === 'vn' ? (opt.textVn || opt.text) : opt.text;
           const isRight = opt.val === check.correct;
@@ -124,7 +132,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText })
               key={opt.val}
               disabled={!!answer}
               onClick={() => onAnswer(opt)}
-              className={`flex items-start text-left rounded-2xl border-2 font-bold transition-all disabled:cursor-default ${style} ${isDisplayMode ? 'p-[clamp(0.9rem,1.3vw,1.25rem)] text-[clamp(1rem,1.5vw,1.3rem)]' : 'p-3 lg:p-4 text-sm lg:text-base'}`}
+              className={`flex items-start text-left rounded-xl border-2 font-bold transition-all disabled:cursor-default ${style} ${optPad}`}
             >
               <span className="font-black uppercase tracking-widest opacity-60 mr-2.5 mt-0.5">{opt.val}</span>
               <span className="flex-1">{parseText(label)}</span>
@@ -134,7 +142,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText })
       </div>
 
       {answer && (
-        <div className={`mt-4 rounded-2xl border-2 ${answer.correct ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'} ${isDisplayMode ? 'p-[clamp(1rem,1.5vw,1.5rem)]' : 'p-4'}`}>
+        <div className={`rounded-xl border-2 ${compact ? 'mt-2.5' : 'mt-4'} ${answer.correct ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'} ${isDisplayMode ? 'p-[clamp(1rem,1.5vw,1.5rem)]' : (compact ? 'p-3' : 'p-4')}`}>
           <div className={`flex items-center font-black uppercase tracking-widest mb-1.5 ${answer.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
             {answer.correct
               ? <><CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} />{lang === 'vn' ? 'Chính xác' : 'Correct'}</>
@@ -545,15 +553,15 @@ export default function Notes({ slides, onComplete, onQuit }) {
                 {!isDisplayMode && currentSlide.audio && (
                   <button
                     onClick={() => toggleAudio(currentSlide.audio)}
-                    className="absolute bottom-4 right-4 z-40 flex items-center justify-center w-12 h-12 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur text-slate-700 dark:text-slate-200 shadow-lg border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-[1px] active:translate-y-[3px] transition-all"
+                    className="absolute bottom-3 right-3 z-40 flex items-center justify-center w-10 h-10 rounded-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur text-slate-600 dark:text-slate-300 shadow-md border-2 border-slate-200 dark:border-slate-700 border-b-[3px] opacity-80 hover:opacity-100 active:border-b-[1px] active:translate-y-[2px] transition-all"
                     title={isPlayingAudio ? 'Stop audio' : 'Listen'}
                   >
-                    {isPlayingAudio ? <PauseCircle className="w-6 h-6" /> : <PlayCircle className="w-6 h-6" />}
+                    {isPlayingAudio ? <PauseCircle className="w-5 h-5" /> : <PlayCircle className="w-5 h-5" />}
                   </button>
                 )}
               </div>
               {slideCheck && (
-                <div className="shrink-0 max-h-[45%] overflow-y-auto custom-scrollbar border-t-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 lg:px-10 py-4">
+                <div className="shrink-0 max-h-[40%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 lg:px-8 py-3">
                   <CheckBlock
                     check={slideCheck}
                     lang={lang}
@@ -561,6 +569,7 @@ export default function Notes({ slides, onComplete, onQuit }) {
                     onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
                     isDisplayMode={isDisplayMode}
                     parseText={parseInlineText}
+                    compact
                   />
                 </div>
               )}

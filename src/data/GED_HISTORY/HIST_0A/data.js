@@ -66,9 +66,9 @@ export const GED_HIST_0A_DATA = {
       vnTitle: "Nguồn Sơ cấp và Thứ cấp",
       meta: "Where information comes from",
       text: [
-        "Everything we know about the past comes from sources. A source is anything that carries information about an event: a letter, a photograph, a map, a law, even an old shopping list.",
-        "A primary source is made by someone who was actually there at the time. A soldier's diary, a speech, a photograph taken during the event, or the original text of a law are all primary sources. They are close to the event, but each one shows only one person's point of view.",
-        "A secondary source is made later by someone who studied the event but did not live through it. Your textbook and this lesson are secondary sources. They can compare many primary sources at once, but they are one step further away from what happened.",
+        "Everything we know about the past comes from {sources}. A source is anything that carries information about an event: a letter, a photograph, a map, a law, even an old shopping list.",
+        "A {primary} source is made by someone who was actually there at the time. A soldier's diary, a speech, a photograph taken during the event, or the original text of a law are all primary sources. They are close to the event, but each one shows only one person's point of view.",
+        "A {secondary} source is made later by someone who studied the event but did not live through it. Your textbook and this lesson are secondary sources. They can compare many primary sources at once, but they are one step further away from what happened.",
       ].join(" "),
       vnText: [
         "Mọi điều ta biết về quá khứ đều đến từ các nguồn. Một nguồn là bất cứ thứ gì mang thông tin về một sự kiện: một lá thư, một bức ảnh, một bản đồ, một đạo luật, thậm chí một tờ danh sách mua sắm cũ.",
@@ -86,8 +86,8 @@ export const GED_HIST_0A_DATA = {
       vnTitle: "Sự thật hay Ý kiến?",
       meta: "Testing a statement",
       text: [
-        "On the test you must often decide whether a statement is a fact or an opinion. A fact can be checked and proven true: \"Women won the right to vote in 1920.\" You could look that up.",
-        "An opinion is a belief or judgment that cannot be proven true or false: \"1920 was the most important year in American history.\" Someone else could disagree, and neither of you could prove it.",
+        "On the test you must often decide whether a statement is a fact or an opinion. A {fact} can be checked and proven true: \"Women won the right to vote in 1920.\" You could look that up.",
+        "An {opinion} is a belief or judgment that cannot be proven true or false: \"1920 was the most important year in American history.\" Someone else could disagree, and neither of you could prove it.",
         "Watch for opinion signal words such as best, worst, should, beautiful, terrible and I believe. They often mark a judgment. A source is not wrong for having opinions — but you must know which parts are facts you can trust and which are the writer's point of view.",
       ].join(" "),
       vnText: [
@@ -106,9 +106,9 @@ export const GED_HIST_0A_DATA = {
       vnTitle: "Đọc một Bức tranh Biếm họa Chính trị",
       meta: "Symbols, exaggeration and purpose",
       text: [
-        "A political cartoon is not just a funny drawing. The artist is making an argument, and every part of the picture is a clue. First, look for symbols — a picture that stands for a bigger idea, like a dollar sign for money or a snake for danger.",
+        "A political cartoon is not just a funny drawing. The artist is making an argument, and every part of the picture is a clue. First, look for {symbols} — a picture that stands for a bigger idea, like a dollar sign for money or a snake for danger.",
         "Next, notice exaggeration. Cartoonists draw a person very fat, very small or very ugly on purpose, to say something about them. That choice tells you the artist's point of view.",
-        "Finally, ask the two questions that matter most: what is the cartoonist's opinion, and who or what are they attacking or defending? A cartoon almost always shows bias — it takes a side. Your job is to name the side and the message, not to be fooled into thinking a drawing is neutral.",
+        "Finally, ask the two questions that matter most: what is the cartoonist's {opinion}, and who or what are they attacking or defending? A cartoon almost always shows {bias} — it takes a side. Your job is to name the side and the message, not to be fooled into thinking a drawing is neutral.",
       ].join(" "),
       vnText: [
         "Một bức tranh biếm họa chính trị không chỉ là hình vẽ vui. Người họa sĩ đang đưa ra một lập luận, và mỗi phần của bức tranh là một manh mối. Trước tiên, hãy tìm các biểu tượng — một hình ảnh đại diện cho ý lớn hơn, như dấu đô la cho tiền bạc hay con rắn cho sự nguy hiểm.",
