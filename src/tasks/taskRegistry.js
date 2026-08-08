@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
-  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine
+  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -232,6 +232,20 @@ export const TASKS = [
       return pool;
     },
     props: ({ pool, unitId, scores, onComplete, onQuit }) => ({ pool, unitId, scores, onComplete, onQuit }),
+  },
+  {
+    id: 'BALANCE',
+    nativeMax: 10,
+    dbKey: 'p14',
+    label: 'Balance',
+    icon: Scale,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./EquationBalance.jsx')),
+    hasContent: (u) => notEmpty(u.balance),
+    buildPool: (u) => u.balance || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
   {
     id: 'WORKBOOK',

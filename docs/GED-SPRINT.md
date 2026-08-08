@@ -131,7 +131,13 @@ Thresholds sit below each phase's own total so a half-finished phase never locks
 | **ENG — editing** (`0A/0B/3/4/5`) | NOTES 10 · WORD_REC 10 | GRAMMAR_EDIT 30 · WORKBOOK 10 | SHORT_ANSWERS 10 · ASSESSMENT 30 |
 | **ENG — essay capstone** (`10`) | NOTES 10 · WORD_REC 10 | READ_COMP 20 (the two sources) · SHORT_ANSWERS 20 (frame drill) | ESSAY 40 |
 | **HISTORY** and **SCIENCE** | NOTES 10 · WORD_REC 10 | READ_COMP 20 · DIAGRAMS 20 | SHORT_ANSWERS 20 · ASSESSMENT 20 |
-| **MATH** | NOTES 10 · WORD_REC 10 | WORKBOOK 40 | DIAGRAMS 20 · ASSESSMENT 20 |
+| **MATH** | NOTES 10 · WORD_REC 10 | WORKBOOK 25 · BALANCE 15 | DIAGRAMS 20 · ASSESSMENT 20 |
+
+`BALANCE` ([balance-tasks.md](balance-tasks.md)) is the interactive equation solver:
+pick an operation, press **Do it to both sides**, and watch it land under both sides of
+a notebook-style working while a beam that never tilts shows why. Algebraic reasoning is
+55% of the Math test and inverse operations are its spine, so it earns its own task
+rather than sitting inside the workbook. Its 15 XP comes out of `WORKBOOK`'s 40.
 
 **Maths carries no written-response task.** `SHORT_ANSWERS` is cut from `GED_MATH`
 entirely. `MATH_1A` was asking for prose answers to *"What is the primary difference

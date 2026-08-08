@@ -1,6 +1,7 @@
 // src/data/GED_MATH/MATH_1B/data.js
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
+import { balance } from './balance.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
 import { DIAGRAMS } from './diagrams.js';
@@ -33,7 +34,8 @@ export const GED_MATH_1B_DATA = {
       title: "Drill",
       threshold: 15,
       tasks: [
-        { id: "WORKBOOK", dbKey: "p11", maxXP: 40 }
+        { id: "WORKBOOK", dbKey: "p11", maxXP: 25 },
+        { id: "BALANCE", dbKey: "p14", maxXP: 15 }
       ]
     },
     {
@@ -255,5 +257,6 @@ export const GED_MATH_1B_DATA = {
   assessment,
   games,
   notes,
-  workbook
+  workbook,
+  balance
 };

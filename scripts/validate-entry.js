@@ -12,6 +12,7 @@ import crypto from 'crypto';
 import { TRACKS, getTrack, contentProblems } from '../src/data/index.js';
 import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, unitXPOf, normalizeScore } from '../src/tasks/taskRegistry.js';
+import { parseEquation, applyMove, suggestMove, isSolved, sameSolution } from '../src/utils/linearEquation.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -228,6 +229,35 @@ for (const trackId of TRACK_IDS) {
       // Source material that is a real document or photograph must say where it
       // came from — the house rule, and the only defence of its licence.
       if (d.imageFile && !d.credit) warn(`${at} shows ${d.imageFile} with no credit`);
+    }
+
+    // -- Balance equations: every one must parse, be solvable by the strategy
+    //    the unit teaches, and not quietly change its own answer. A broken
+    //    equation here is a task the student cannot finish.
+    if ((unit.balance || []).length) {
+      const seenIds = new Set();
+      for (const b of unit.balance) {
+        const at = `${label}: balance ${b.id}`;
+        if (seenIds.has(b.id)) err(`${at}: duplicate id`);
+        seenIds.add(b.id);
+        if (!b.prompt || !b.promptVn) err(`${at} is missing a bilingual prompt`);
+        let eq;
+        try {
+          eq = parseEquation(b.equation);
+        } catch (e) {
+          err(`${at}: cannot parse "${b.equation}" — ${e.message}`);
+          continue;
+        }
+        let cur = eq, n = 0;
+        while (!isSolved(cur) && n < 12) {
+          const mv = suggestMove(cur);
+          if (!mv) break;
+          cur = applyMove(cur, mv);
+          n++;
+        }
+        if (!isSolved(cur)) err(`${at}: "${b.equation}" is not solvable by the taught strategy`);
+        else if (!sameSolution(eq, cur)) err(`${at}: solving "${b.equation}" changes its answer`);
+      }
     }
 
     // -- diagram references resolve
