@@ -163,32 +163,32 @@ export const workbook = [
       },
       {
         id: "p3",
-        prompt: "A $\\$50$ shirt is $20\\%$ off. How many dollars do you **save**?",
-        promptVn: "Một chiếc áo giá $\\$50$ được giảm $20\\%$. Bạn tiết kiệm được bao nhiêu **đô la**?",
+        prompt: "A 50-dollar shirt is $20\\%$ off. How many dollars do you **save**?",
+        promptVn: "Một chiếc áo giá 50 đô la được giảm $20\\%$. Bạn tiết kiệm được bao nhiêu **đô la**?",
         solution: [
           "Find $20\\%$ of $50$. $20\\% = 0.2$.",
-          "$0.2 \\times 50 = 10$, so you save $\\$10$.",
+          "$0.2 \\times 50 = 10$, so you save 10 dollars.",
         ],
         solutionVn: [
           "Tìm $20\\%$ của $50$. $20\\% = 0{,}2$.",
-          "$0{,}2 \\times 50 = 10$, nên bạn tiết kiệm $\\$10$.",
+          "$0{,}2 \\times 50 = 10$, nên bạn tiết kiệm 10 đô la.",
         ],
-        answer: "$\\$10$", answerVn: "$\\$10$",
+        answer: "10 dollars", answerVn: "10 đô la",
         accept: ["10", "$10"],
       },
       {
         id: "p4",
-        prompt: "The same $\\$50$ shirt is $20\\%$ off. What is the **sale price** you pay?",
-        promptVn: "Cũng chiếc áo $\\$50$ đó giảm $20\\%$. **Giá bán** bạn phải trả là bao nhiêu?",
+        prompt: "The same 50-dollar shirt is $20\\%$ off. What is the **sale price** you pay?",
+        promptVn: "Cũng chiếc áo giá 50 đô la đó giảm $20\\%$. **Giá bán** bạn phải trả là bao nhiêu?",
         solution: [
-          "The discount is $\\$10$ (from the last question).",
+          "The discount is 10 dollars (from the last question).",
           "Subtract it from the original: $50 - 10 = 40$.",
         ],
         solutionVn: [
-          "Khoản giảm là $\\$10$ (từ câu trước).",
+          "Khoản giảm là 10 đô la (từ câu trước).",
           "Trừ vào giá gốc: $50 - 10 = 40$.",
         ],
-        answer: "$\\$40$", answerVn: "$\\$40$",
+        answer: "40 dollars", answerVn: "40 đô la",
         accept: ["40", "$40"],
       },
       {
@@ -244,8 +244,8 @@ export const workbook = [
     questions: [
       {
         id: "c1",
-        prompt: "A $\\$1200$ laptop is $15\\%$ off. What is the final price?",
-        promptVn: "Một laptop giá $\\$1200$ giảm $15\\%$. Giá cuối cùng là bao nhiêu?",
+        prompt: "A 1200-dollar laptop is $15\\%$ off. What is the final price?",
+        promptVn: "Một laptop giá 1200 đô la giảm $15\\%$. Giá cuối cùng là bao nhiêu?",
         solution: [
           "Find the discount: $15\\% = 0.15$, and $0.15 \\times 1200 = 180$.",
           "Subtract: $1200 - 180 = 1020$.",
@@ -256,7 +256,7 @@ export const workbook = [
           "Trừ: $1200 - 180 = 1020$.",
           "Thử lại: trả $85\\%$ cũng được, $0{,}85 \\times 1200 = 1020$. ✓",
         ],
-        answer: "$\\$1020$", answerVn: "$\\$1020$",
+        answer: "1020 dollars", answerVn: "1020 đô la",
         accept: ["1020", "$1020"],
       },
       {
@@ -275,8 +275,8 @@ export const workbook = [
       },
       {
         id: "c3",
-        prompt: "A meal costs $\\$40$. You add a $20\\%$ tip. What is the total you pay?",
-        promptVn: "Một bữa ăn giá $\\$40$. Bạn thêm tiền boa $20\\%$. Tổng số bạn trả là bao nhiêu?",
+        prompt: "A meal costs 40 dollars. You add a $20\\%$ tip. What is the total you pay?",
+        promptVn: "Một bữa ăn giá 40 đô la. Bạn thêm tiền boa $20\\%$. Tổng số bạn trả là bao nhiêu?",
         solution: [
           "A tip is added on top, not taken off.",
           "$20\\%$ of $40$ is $0.2 \\times 40 = 8$.",
@@ -287,7 +287,7 @@ export const workbook = [
           "$20\\%$ của $40$ là $0{,}2 \\times 40 = 8$.",
           "Tổng: $40 + 8 = 48$.",
         ],
-        answer: "$\\$48$", answerVn: "$\\$48$",
+        answer: "48 dollars", answerVn: "48 đô la",
         accept: ["48", "$48"],
       },
       {
