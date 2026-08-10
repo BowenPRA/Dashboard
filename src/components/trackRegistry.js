@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -74,6 +74,19 @@ export const TRACK_REGISTRY = [
     },
   },
   {
+    id: 'AOPS',
+    title: 'Problem Solving',
+    desc: 'Proportion, Rates & Multi-Step Reasoning',
+    icon: Puzzle,
+    group: 'Problem Solving',
+    theme: {
+      bg: 'bg-fuchsia-500', border: 'border-fuchsia-700', hover: 'hover:bg-fuchsia-400',
+      text: 'text-fuchsia-600 dark:text-fuchsia-400',
+      ambient1: 'bg-fuchsia-400', ambient2: 'bg-purple-500',
+      glow: 'hover:border-fuchsia-400 dark:hover:border-fuchsia-600',
+    },
+  },
+  {
     id: 'Y7_MATH',
     title: 'Year 7 Mathematics',
     desc: 'Cambridge Lower Secondary',
@@ -132,4 +145,4 @@ export const TRACK_IDS = TRACK_REGISTRY.map((t) => t.id);
 export const getTrackConfig = (id) => TRACK_REGISTRY.find((t) => t.id === id);
 
 /** Display order for grouped views. */
-export const TRACK_GROUPS = ['GED', 'Cambridge', 'Foundation'];
+export const TRACK_GROUPS = ['GED', 'Cambridge', 'Problem Solving', 'Foundation'];
