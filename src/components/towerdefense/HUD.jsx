@@ -9,7 +9,7 @@ function formatScore(num) {
 
 export default function HUD({
   credits, lives, wave, totalWaves, score, bestScore, speed,
-  gameState, waveInProgress, autoPlay,
+  gameState, waveInProgress, autoPlay, tierLabel,
   onStartWave, onToggleAutoPlay, onSetSpeed, onQuit
 }) {
   return (
@@ -20,10 +20,17 @@ export default function HUD({
         
         {/* Left: Stats */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden lg:flex items-center justify-center w-10 h-10 rounded-2xl bg-[#1CB0F6] border-b-4 border-[#1899D6] mr-2">
-            <Shield className="w-5 h-5 text-white" strokeWidth={3} />
+          <div className="hidden lg:flex items-center gap-2 mr-2">
+            <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#1CB0F6] border-b-4 border-[#1899D6]">
+              <Shield className="w-5 h-5 text-white" strokeWidth={3} />
+            </div>
+            {tierLabel && (
+              <div className="px-3 h-10 flex items-center rounded-2xl bg-slate-900 border-b-[3px] border-slate-950 text-[10px] font-black uppercase tracking-widest text-slate-300 shadow-inner">
+                {tierLabel}
+              </div>
+            )}
           </div>
-          
+
           <StatPill icon={<Coins className="w-5 h-5 text-[#FFC800]" />} value={credits} size="lg" />
           <StatPill icon={<Heart className="w-5 h-5 text-[#EA2B2B]" />} value={lives} size="lg" />
           

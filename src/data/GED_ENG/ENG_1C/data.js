@@ -7,6 +7,7 @@
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { DIAGRAMS } from './diagrams.js';
+import { games } from './games.js';
 
 export const ENGLISH_1C_DATA = {
   meta: {
@@ -43,6 +44,14 @@ export const ENGLISH_1C_DATA = {
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
+      ]
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]
     }
   ],
@@ -258,5 +267,6 @@ export const ENGLISH_1C_DATA = {
       "Both sources support their claims with a measured example, so this is a close case, but Source 2 is slightly better supported because its evidence points to a cost the other side never answers. Source 1 argues that buses should be free and gives a real result: after Elmwood dropped its fares, ridership rose by thirty percent and fewer cars used the roads at rush hour. It also makes the fair point that collecting fares is itself expensive. However, Source 1 never says how the free service was paid for. Source 2 answers exactly that gap. It agrees a bus system is worth having but shows, with the example of Marsden, that free buses drew so many riders that the town had to buy vehicles it had not budgeted for, and the service became less reliable. That is a concrete, measured harm, not just a worry. Because Source 2 both provides its own evidence and exposes the missing cost in Source 1's argument, its position is the better supported of the two.",
   },
   assessment,
+  games,
   notes
 };

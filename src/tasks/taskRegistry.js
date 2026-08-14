@@ -223,6 +223,13 @@ export const TASKS = [
     icon: Gamepad2,
     color: { bg: 'bg-[#6366f1]', border: 'border-[#4f46e5]', text: 'text-white' },
     defaultMaxXP: 10,
+    // A reward task may be declared with maxXP 0 — it is what a student unlocks
+    // by finishing the unit, not another thing to grind. The GED units use that:
+    // their academic tasks already account for the full 100 XP, so paying XP for
+    // the arcade would mean taking it away from real work. Its prize is the
+    // shared per-unit leaderboard instead. The validator allows a zero only for
+    // tasks flagged here.
+    reward: true,
     phase: 'mastery',
     component: lazy(() => import('./Games.jsx')),
     hasContent: (u) => !!u.games?.gameConfig,
@@ -231,7 +238,9 @@ export const TASKS = [
       pool.gameConfig = u.games?.gameConfig || null;
       return pool;
     },
-    props: ({ pool, unitId, scores, onComplete, onQuit }) => ({ pool, unitId, scores, onComplete, onQuit }),
+    // `track` decides which map and theme the arcade uses — see unitDifficulty.js.
+    props: ({ pool, unitId, track, scores, onComplete, onQuit }) =>
+      ({ pool, unitId, track, scores, onComplete, onQuit }),
   },
   {
     id: 'BALANCE',

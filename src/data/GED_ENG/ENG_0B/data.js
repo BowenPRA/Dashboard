@@ -1,6 +1,7 @@
 // src/data/GED_ENG/ENG_0B/data.js
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
+import { games } from './games.js';
 
 export const ENGLISH_0B_DATA = {
   meta: {
@@ -38,6 +39,14 @@ export const ENGLISH_0B_DATA = {
       tasks: [
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
+      ]
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]
     }
   ],
@@ -334,5 +343,6 @@ export const ENGLISH_0B_DATA = {
       "Source 2 is better supported because it questions the very evidence Source 1 relies on. Source 1 claims that attendance rose and that fewer teachers left after a district switched to a four-day week, which sounds convincing. However, Source 2 points out that the same district measured attendance but never checked what vulnerable children did on the missing day, so an important effect was never proven. Source 2 also gives its own evidence: a parents' committee in another town found that childcare costs rose sharply, and that the heaviest burden fell on families who could least afford it. That is a concrete, measured harm. Source 1's strongest point, the gain for teachers, is real but does not answer the question of who is hurt. Because Source 2 both weakens Source 1's evidence and adds a measured cost of its own, its position is the better supported of the two.",
   },
   assessment,
+  games,
   notes
 };

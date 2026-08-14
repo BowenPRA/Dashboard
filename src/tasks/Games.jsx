@@ -1,42 +1,43 @@
-import { TRACK_REGISTRY } from '../components/trackRegistry'; // <-- ADD THIS IMPORT AT THE TOP
 import React, { useState, useMemo } from 'react';
-import { 
-  X, Shield, Trophy, Lock, Loader2, Users, Award, ChevronLeft, 
-  Crown, Medal, Map as MapIcon, Heart, Ban, Coins 
+import {
+  X, Shield, Trophy, Lock, Loader2, Users, Award, ChevronLeft,
+  Crown, Medal, Map as MapIcon, Heart, Ban, Coins, Swords
 } from 'lucide-react';
-import { getGlobalGameLeaderboard, supabase } from '../utils/supabaseClient';
+import { getGlobalGameLeaderboard } from '../utils/supabaseClient';
 import TowerDefense from './games/TowerDefense';
 import TowerVisual from '../components/towerdefense/TowerVisual';
+import { arcadeConfig } from '../components/towerdefense/unitDifficulty';
+import { ARCADE_KEY } from '../utils/progressSchema';
 
-export default function Games({ pool, unitId, scores, onComplete, onQuit }) {
+export default function Games({ pool, unitId, track, scores, onComplete, onQuit }) {
   const [view, setView] = useState('MENU');
   const [toast, setToast] = useState(null);
-  
+
   const [leaderboard, setLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const [leaderboardError, setLeaderboardError] = useState(null);
 
+  // The arcade key holds the raw game score, not unit XP — counting it here
+  // would let one good run bankroll the next.
+  const IGNORED = [ARCADE_KEY, 'games', 'strikes'];
   const unitXP = Object.entries(scores || {})
-    .filter(([key]) => key !== 'GAMES')
+    .filter(([key]) => !IGNORED.includes(key))
     .reduce((sum, [, section]) => sum + (Number(section?.current) || 0), 0);
 
-  // Restored your exact original multiplier
-  const startingCredits = Math.max(20, unitXP * 2);
+  // The arena comes from the track and the difficulty from the unit — see
+  // unitDifficulty.js. A unit's games.js may hand down its own config (that is
+  // what taskRegistry attaches to the pool); otherwise it is derived here so a
+  // unit that only declares `{ gameConfig: {} }` still gets its track's map.
+  const gameConfig = useMemo(
+    () => arcadeConfig(track, unitId, pool?.gameConfig || {}),
+    [track, unitId, pool]
+  );
 
-  // Dynamic Assignments directly linked to the unit
-  const gameConfig = useMemo(() => {
-    const isScience = unitId?.toLowerCase().includes('science');
-    const isMath = unitId?.toLowerCase().includes('math');
-
-    if (isScience) {
-      return { mapId: 'STRAIGHT', lives: 20, bannedTowers: [] };
-    }
-    if (isMath) {
-      return { mapId: 'WAVE', lives: 20, bannedTowers: [] };
-    }
-    // Default fallback
-    return { mapId: 'WAVE', lives: 20, bannedTowers: [] };
-  }, [unitId]);
+  // Study pays for the defence, and harder units hand out a thinner purse.
+  const startingCredits = Math.max(
+    20,
+    Math.round(unitXP * 2 * (gameConfig.creditMultiplier || 1))
+  );
 
   const fetchScores = async () => {
     setLoadingLeaderboard(true);
@@ -76,38 +77,15 @@ export default function Games({ pool, unitId, scores, onComplete, onQuit }) {
     }
   };
 
-const handleGameComplete = async (score) => {
-    if (onComplete) onComplete(score);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const { data } = await supabase.from('students').select('progress').eq('id', session.user.id).single();
-        if (data?.progress) {
-          let prog = data.progress;
-          let updated = false;
-          
-          // MAP OVER REGISTRY INSTEAD OF HARDCODED ARRAY
-          TRACK_REGISTRY.forEach(trackObj => {
-            const t = trackObj.id;
-            if (prog[t] && prog[t][unitId]) {
-              if (!prog[t][unitId].GAMES) prog[t][unitId].GAMES = { current: 0 };
-              if (score > (prog[t][unitId].GAMES.current || 0)) {
-                  prog[t][unitId].GAMES.current = score;
-                  updated = true;
-              }
-            }
-          });
-          
-          if (updated) {
-              await supabase.from('students').update({ progress: prog }).eq('id', session.user.id);
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Backup DB save failed", err);
-    }
+  // The raw score travels as `meta.arcadeScore`, which saveScore folds into the
+  // unit's `GAMES` record in the same atomic update as the XP. Writing it here
+  // with a separate supabase round-trip used to lose the score: saveScore
+  // rewrites the whole progress JSON from React state, which knows nothing about
+  // an out-of-band write, so the next task saved anywhere clobbered it.
+  const handleGameComplete = (score) => {
+    if (onComplete) onComplete(score, null, { arcadeScore: score });
   };
-  
+
   if (view === 'TD') {
     return (
       <TowerDefense 
@@ -172,9 +150,15 @@ const handleGameComplete = async (score) => {
                   {/* Map */}
                   <div className="flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
                     <MapIcon className="w-4 h-4 text-white" strokeWidth={2.5} />
-                    <span>{gameConfig.mapId.charAt(0) + gameConfig.mapId.slice(1).toLowerCase()}</span>
+                    <span>{gameConfig.mapName || gameConfig.mapId}</span>
                   </div>
-                  
+
+                  {/* Difficulty tier */}
+                  <div className="flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
+                    <Swords className="w-4 h-4 text-white" strokeWidth={2.5} />
+                    <span>{gameConfig.tierLabel}</span>
+                  </div>
+
                   {/* Lives */}
                   <div className="flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
                     <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />

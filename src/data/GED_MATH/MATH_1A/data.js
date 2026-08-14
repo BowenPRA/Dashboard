@@ -45,6 +45,14 @@ export const GED_MATH_1A_DATA = {
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 20 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 }
       ]
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
+      ]
     }
   ],
 

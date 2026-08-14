@@ -7,6 +7,7 @@
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { workbook } from './workbook.js';
+import { games } from './games.js';
 
 // A 10x10 percent grid with the first `n` cells shaded. Rects are generated (no
 // text in them), and the only <text> is written literally so audit:svg sees it.
@@ -88,6 +89,14 @@ export const MATH_0B_DATA = {
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 },
       ],
     },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
+      ]
+    },
   ],
 
   realWords: [
@@ -160,5 +169,6 @@ export const MATH_0B_DATA = {
 
   workbook,
   assessment,
+  games,
   notes,
 };

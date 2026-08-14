@@ -90,7 +90,11 @@ for (const trackId of TRACK_IDS) {
     const total = resolved.reduce((s, t) => s + t.maxXP, 0);
     if (total !== 100) err(`${label}: tasks total ${total} XP, must be exactly 100`);
     for (const t of resolved) {
-      if (t.maxXP <= 0) err(`${label}: task ${t.id} is worth ${t.maxXP} XP`);
+      // A graded task worth nothing is a mistake; a `reward` task worth nothing
+      // is the point — it is unlocked by the unit rather than paid for by it.
+      if (t.maxXP < 0 || (t.maxXP === 0 && !t.reward)) {
+        err(`${label}: task ${t.id} is worth ${t.maxXP} XP`);
+      }
       if (!t.hasContent(unit)) err(`${label}: declares ${t.id} but has no ${t.id} content`);
       try {
         t.buildPool(unit, { track: trackId, unitId: m.id });

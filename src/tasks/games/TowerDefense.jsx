@@ -58,12 +58,14 @@ export default function TowerDefense({
   onComplete = () => {}
 }) {
   const layout = MAP_LAYOUTS[gameConfig.mapId] || MAP_LAYOUTS.WAVE;
-  
+  const lives = gameConfig.lives || 20;
+
   // Calculate specific limits dynamically based on the Hub rules
   const allTowerIds = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO'];
+  const bannedTowers = gameConfig.bannedTowers || [];
   const allowedTowers = useMemo(() => {
-    return allTowerIds.filter(t => !gameConfig.bannedTowers.includes(t));
-  }, [gameConfig.bannedTowers]);
+    return allTowerIds.filter(t => !bannedTowers.includes(t));
+  }, [bannedTowers]);
 
   const totalWaves = WAVE_PRESETS.SET_1.length; 
   
@@ -89,17 +91,21 @@ export default function TowerDefense({
     return WAVE_PRESETS.SET_1?.[0]?.[0]?.type || Object.keys(ENEMIES)[0];
   }, []);
 
+  // The difficulty object is per unit (see unitDifficulty.js). It is part of the
+  // engine config rather than a prop because the engine reads it once when the
+  // loop starts — changing it mid-run would desync scores from the waves.
   const engineConfig = useMemo(() => ({
     waves: WAVE_PRESETS.SET_1,
-    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR
-  }), []);
+    generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR,
+    difficulty: gameConfig.difficulty
+  }), [gameConfig.difficulty]);
 
   const gRef = useRef(null);
   
   // Re-initialize state safely if unmounted/remounted
   if (gRef.current === null) {
     gRef.current = {
-      credits: startingCredits, lives: gameConfig.lives, maxLives: gameConfig.lives, wave: 0, score: 0, bolts: 0,
+      credits: startingCredits, lives, maxLives: lives, wave: 0, score: 0, bolts: 0,
       speed: 1, gameState: 'PLAYING',
       towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
       decorations: generateDecorations(layout, pathSet),
@@ -341,7 +347,7 @@ export default function TowerDefense({
 
   function handleReset() {
     Object.assign(g, {
-      credits: startingCredits, lives: gameConfig.lives, maxLives: gameConfig.lives, wave: 0, score: 0, bolts: 0,
+      credits: startingCredits, lives, maxLives: lives, wave: 0, score: 0, bolts: 0,
       gameState: 'PLAYING', towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
       waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false, 
       usedVocab: {}, // Reset the tracker dictionary entirely
@@ -387,6 +393,7 @@ export default function TowerDefense({
         gameState={g.gameState}
         waveInProgress={g.waveInProgress}
         autoPlay={autoPlayRef.current}
+        tierLabel={gameConfig.tierLabel}
         onStartWave={handleStartWave}
         onToggleAutoPlay={() => { autoPlayRef.current = !autoPlayRef.current; render(); }}
         onSetSpeed={(s) => { g.speed = s; render(); }}

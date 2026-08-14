@@ -1,4 +1,4 @@
-// src/data/GED_MATH/MATH_1B/games.js
+// src/data/GED_MATH/MATH_0B/games.js
 //
 // The arena comes from the track and the difficulty tier from the unit id — see
 // src/components/towerdefense/unitDifficulty.js. Pass overrides as a third
@@ -6,5 +6,5 @@
 import { arcadeConfig } from '../../../components/towerdefense/unitDifficulty';
 
 export const games = {
-  gameConfig: arcadeConfig('GED_MATH', 'MATH_1B')
+  gameConfig: arcadeConfig('GED_MATH', 'MATH_0B')
 };

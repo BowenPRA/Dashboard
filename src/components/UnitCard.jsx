@@ -6,6 +6,7 @@ import {
   Compass, Lightbulb, Activity, Zap, Landmark
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
+import { ARCADE_KEY } from '../utils/progressSchema';
 
 const IconMap = {
   "Award": Award, "GraduationCap": GraduationCap, "BookOpen": BookOpen,
@@ -32,6 +33,9 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
 
   const strikes = scores.strikes || 0;
   const isAILocked = strikes >= 3;
+
+  // Raw arcade high score, kept outside the XP keys — see progressSchema.
+  const arcadeBest = scores[ARCADE_KEY]?.current || 0;
 
   const getTrophyStyles = (xp) => {
     if (xp === 100) return { 
@@ -97,7 +101,11 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
         
         <div className="w-full bg-black/15 rounded-xl py-1.5 mt-auto flex items-center justify-center">
           <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white/90">
-            {taskScore} / {taskMaxXP} XP
+            {/* A task worth no XP is a reward, not a grade — the arcade's prize is
+                its high score, so show that rather than a meaningless "0 / 0 XP". */}
+            {taskMaxXP === 0
+              ? (arcadeBest > 0 ? `Best ${arcadeBest.toLocaleString()}` : 'Bonus')
+              : `${taskScore} / ${taskMaxXP} XP`}
           </span>
         </div>
       </button>

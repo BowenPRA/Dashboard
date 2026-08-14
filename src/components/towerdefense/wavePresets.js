@@ -19,8 +19,17 @@ export const MAP_LAYOUTS = {
     rows: 10,
     cols: 15,
     path: [
-      [1, 0], [1, 13], [8, 13], [8, 2], [3, 2], 
+      [1, 0], [1, 13], [8, 13], [8, 2], [3, 2],
       [3, 11], [6, 11], [6, 4], [4, 4], [4, 9], [5, 9]
+    ]
+  },
+  // Enters from the top edge and drops out of the bottom, so the two ends sit
+  // far apart and towers placed for the entrance cannot also cover the exit.
+  CIRCUIT: {
+    rows: 10,
+    cols: 15,
+    path: [
+      [0, 1], [5, 1], [5, 5], [1, 5], [1, 9], [8, 9], [8, 4], [9, 4]
     ]
   }
 };

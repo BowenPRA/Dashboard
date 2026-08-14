@@ -27,11 +27,20 @@
 /** Reserved key beside the unit ids in a track's progress. Never a unit id. */
 export const VOCAB_KEY = '__vocab';
 
+/**
+ * Where a unit's raw arcade high score lives, beside the task records.
+ *
+ * It is deliberately not a dbKey: the GAMES task's XP is clamped to a few
+ * points, so the unclamped score needs its own home for the shared per-unit
+ * leaderboard to be able to rank anyone. Never counted as unit XP.
+ */
+export const ARCADE_KEY = 'GAMES';
+
 /** Keys inside a track's progress that are not units. */
 const RESERVED_TRACK_KEYS = [VOCAB_KEY];
 
 /** Keys inside a unit's progress that are not task dbKeys. */
-const RESERVED_UNIT_KEYS = ['strikes'];
+const RESERVED_UNIT_KEYS = ['strikes', ARCADE_KEY];
 
 /** True for keys that address a real unit. Use before iterating a track. */
 export const isUnitKey = (key) => !RESERVED_TRACK_KEYS.includes(key);

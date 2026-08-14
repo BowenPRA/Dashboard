@@ -1,6 +1,7 @@
 // src/data/GED_ENG/ENG_0A/data.js
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
+import { games } from './games.js';
 
 export const ENGLISH_0A_DATA = {
   meta: {
@@ -38,6 +39,14 @@ export const ENGLISH_0A_DATA = {
       tasks: [
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
+      ]
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]
     }
   ],
@@ -336,5 +345,6 @@ export const ENGLISH_0A_DATA = {
       "Source 1 is better supported because it gives a measured result while Source 2 mostly describes what might happen. Source 1 reports that classroom interruptions at Riverton High fell by about half over one term, which is a figure a reader can check. It also explains the mechanism: a student who carries a phone checks it without meaning to, and each check costs attention. Source 2 makes a fair point that phones can be useful in a lesson, since a class can look up a source or translate a word, and it claims that students who were taught to manage distraction later checked their phones less often. However, Source 2 never says how many students were studied or how much less often they checked, so its evidence is much weaker than the figure in Source 1. Source 2 also relies on a prediction about adult life, which cannot be proven now. Both writers want students to concentrate, but only Source 1 supports its claim with a measured result, so its position is the better supported.",
   },
   assessment,
+  games,
   notes
 };

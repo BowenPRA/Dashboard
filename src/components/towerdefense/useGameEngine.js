@@ -29,6 +29,15 @@ export function useGameEngine({
     const g = gRef.current;
     const newId = () => g.nextId++;
 
+    // Per-unit difficulty, supplied by the unit's arcadeConfig. A missing or
+    // partial object must behave exactly like the pre-scaling game, so every
+    // multiplier falls back to 1.
+    const D = engineConfig.difficulty || {};
+    const HP_MUL     = Number(D.hpMul)     > 0 ? Number(D.hpMul)     : 1;
+    const SPEED_MUL  = Number(D.speedMul)  > 0 ? Number(D.speedMul)  : 1;
+    const REWARD_MUL = Number(D.rewardMul) > 0 ? Number(D.rewardMul) : 1;
+    const SCORE_MUL  = Number(D.scoreMul)  > 0 ? Number(D.scoreMul)  : 1;
+
     function distAlong(c) {
       if (c.waypointIdx >= layout.path.length - 1) return Infinity;
       const [pr, pc] = layout.path[c.waypointIdx];
@@ -112,11 +121,11 @@ export function useGameEngine({
       }
       if (c.hp <= 0) {
         const conf = ENEMIES[c.typeKey];
-        let reward = conf.reward;
+        let reward = Math.round(conf.reward * REWARD_MUL);
         if (g.wave >= 51) reward = Math.floor(reward / 4);
         g.credits += reward;
-        g.score += conf.reward * 10;
-        
+        g.score += Math.round(conf.reward * 10 * SCORE_MUL);
+
         g.particles.push({
           id: newId(), row: c.row, col: c.col, radius: 0.6,
           color: 'rgba(255,200,0,0.55)', life: 400, maxLife: 400
@@ -135,10 +144,11 @@ export function useGameEngine({
       const [sr, sc] = layout.path[0];
       const [nr, nc] = layout.path.length > 1 ? layout.path[1] : [sr, sc];
       const initAngle = Math.atan2(nr - sr, nc - sc) * (180 / Math.PI);
-      
+      const hp = Math.max(1, Math.round(conf.hp * HP_MUL));
+
       g.creeps.push({
         id: newId(), typeKey, row: sr, col: sc,
-        hp: conf.hp, maxHp: conf.hp, speed: conf.speed, waypointIdx: 0, angle: initAngle,
+        hp, maxHp: hp, speed: conf.speed * SPEED_MUL, waypointIdx: 0, angle: initAngle,
         freezeTimer: 0, slowPercent: 0, burning: 0, burnTick: 0, damageReduction: conf.damageReduction || 0,
         burnStacks: [], spawnTimer: typeKey === 'GIANT_ANT' ? 2000 : 0
       });
@@ -321,12 +331,13 @@ export function useGameEngine({
           c.spawnTimer = (c.spawnTimer || 0) - dt;
           if (c.spawnTimer <= 0 && !c.reachedEnd) {
             c.spawnTimer = 2000; 
+            const spawnHp = Math.max(1, Math.round(ENEMIES.ANT.hp * HP_MUL));
             for(let i=0; i<6; i++) {
               const rOff = (Math.random() - 0.5) * 0.5;
               const cOff = (Math.random() - 0.5) * 0.5;
               g.creeps.push({
                 id: newId(), typeKey: 'ANT', row: c.row + rOff, col: c.col + cOff,
-                hp: ENEMIES.ANT.hp, maxHp: ENEMIES.ANT.hp, speed: ENEMIES.ANT.speed * 1.15,
+                hp: spawnHp, maxHp: spawnHp, speed: ENEMIES.ANT.speed * 1.15 * SPEED_MUL,
                 waypointIdx: c.waypointIdx, angle: c.angle,
                 freezeTimer: 0, slowPercent: 0, burning: 0, burnTick: 0, damageReduction: 0,
                 burnStacks: [], spawnTimer: 0
@@ -396,9 +407,9 @@ export function useGameEngine({
 
       if (g.waveInProgress && g.spawnQueue.length === 0 && g.creeps.length === 0) {
         g.waveInProgress = false;
-        g.credits += 50;
-        g.score += 100;
-        
+        g.credits += Math.round(50 * REWARD_MUL);
+        g.score += Math.round(100 * SCORE_MUL);
+
         if (!engineConfig.generateInfiniteWave && g.wave >= engineConfig.waves.length) {
           g.gameState = 'WON';
         } else {

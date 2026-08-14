@@ -6,6 +6,7 @@
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { DIAGRAMS } from './diagrams.js';
+import { games } from './games.js';
 
 export const ENGLISH_1A_DATA = {
   meta: {
@@ -42,6 +43,14 @@ export const ENGLISH_1A_DATA = {
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
+      ]
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]
     }
   ],
@@ -244,5 +253,6 @@ export const ENGLISH_1A_DATA = {
       "This is a close case, but Source 2 is slightly better supported because it relies on a measured result while Source 1 relies mostly on impressions. Source 1 argues for uniforms and offers real reasons: staff at Lincoln Middle School recorded fewer arguments over clothing, and families can save money by buying a few sets that last the year. However, the calmer mornings come from what teachers 'said,' which is an impression rather than a measured figure. Source 2 answers with a stronger kind of evidence: it points to a district that switched to uniforms and found no measurable change in behaviour after two years. That is a checkable result, and it directly weakens Source 1's main promise. Source 2 also raises a fair cost problem for families who must buy a required set. Because Source 2 supports its position with a measured outcome and answers Source 1's strongest claim, its argument is the better supported of the two.",
   },
   assessment,
+  games,
   notes
 };

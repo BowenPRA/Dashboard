@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
-import { recordAttempt, mergeVocab, VOCAB_KEY } from './progressSchema';
+import { recordAttempt, mergeVocab, VOCAB_KEY, ARCADE_KEY } from './progressSchema';
 
 // The single Supabase client for the whole app. Having a second createClient in
 // another module spins up a second GoTrueClient on the same storage key, which
 // Supabase warns about and which caused subtly divergent auth/session reads.
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// `process` only exists once the production build has substituted it. Reading it
+// unguarded throws `process is not defined` on the bare dev server, which took
+// down every screen that transitively imports this module.
+const nodeEnv = typeof process !== 'undefined' && process.env ? process.env : {};
+const supabaseUrl = nodeEnv.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = nodeEnv.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const getGlobalGameLeaderboard = async (unitId, limit = 5) => {
@@ -111,6 +115,16 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       newProgress[track][unitId][section] = recordAttempt(
         newProgress[track][unitId][section], score, answers, meta
       );
+
+      // The arcade reports a raw game score in the thousands, but its task XP is
+      // clamped to a handful of points — so the leaderboard cannot read the XP
+      // key or every student would be tied. The unclamped score is kept beside
+      // it under GAMES, in this same update so it survives the next save.
+      if (meta.arcadeScore != null) {
+        newProgress[track][unitId][ARCADE_KEY] = recordAttempt(
+          newProgress[track][unitId][ARCADE_KEY], meta.arcadeScore
+        );
+      }
 
       if (meta.vocab?.length) {
         newProgress[track][VOCAB_KEY] = mergeVocab(newProgress[track][VOCAB_KEY], meta.vocab);

@@ -8,6 +8,7 @@
 import { assessment } from './assessment.js';
 import { notes } from './notes.js';
 import { DIAGRAMS } from './diagrams.js';
+import { games } from './games.js';
 
 export const ENGLISH_1B_DATA = {
   meta: {
@@ -44,6 +45,14 @@ export const ENGLISH_1B_DATA = {
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
+      ]
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]
     }
   ],
@@ -258,5 +267,6 @@ export const ENGLISH_1B_DATA = {
       "Both sources use real evidence, but Source 2 is slightly better supported because its evidence compares two groups, while Source 1's looks at only one. Source 1 argues for a requirement and reports that after Oak Ridge High added forty hours, more seniors volunteered and a survey found many kept volunteering later. That sounds convincing, yet the survey follows only the students who were required to serve, so it cannot show whether the rule itself made the difference. Source 2 answers exactly that weakness: it points to a district that tracked its graduates and found no lasting difference in volunteering between students who had been required to serve and those who had not. Comparing the two groups is a stronger test than following one, because it rules out the chance that those students would have volunteered anyway. Source 2 also raises a fair point about the burden on teenagers who already work. Because its evidence is a fairer comparison and answers Source 1's main claim, Source 2's position is the better supported.",
   },
   assessment,
+  games,
   notes
 };

@@ -7,6 +7,7 @@
 // authored experiment chart where we control the numbers (imagery-sourcing.md).
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
+import { games } from './games.js';
 
 // Authored bar chart for a controlled experiment (we own the numbers, so the
 // mark scheme is exact). Labels written out literally so audit:svg can see them.
@@ -67,6 +68,14 @@ export const GED_SCI_0A_DATA = {
         { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 },
       ],
+    },
+    {
+      id: "arcade",
+      title: "Arcade",
+      threshold: 80,
+      tasks: [
+        { id: "GAMES", dbKey: "p12", maxXP: 0 }
+      ]
     },
   ],
 
@@ -274,5 +283,6 @@ export const GED_SCI_0A_DATA = {
   ],
 
   assessment,
+  games,
   notes,
 };
