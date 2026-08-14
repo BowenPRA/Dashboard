@@ -1,5 +1,5 @@
 // src/components/towerdefense/TowerVisual.jsx
-import React from 'react';
+import React, { memo } from 'react';
 
 // ==========================================
 // TOWER SVGS WITH PASSIVE MODIFIERS
@@ -191,22 +191,32 @@ const SIZES = {
 };
 
 // ==========================================
-// CSS Animations defined inline for easy scope
+// CSS Animations
 // ==========================================
-const InjectStyles = () => (
-  <style>{`
-    @keyframes td-fast-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-    @keyframes td-leg-l { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
-    @keyframes td-leg-r { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
-    @keyframes td-wing-flap { 0%, 100% { transform: scaleX(0.8) rotate(-20deg); } 50% { transform: scaleX(0.3) rotate(-5deg); } }
-    .td-leg-l { animation: td-leg-l 0.25s ease-in-out infinite; transform-origin: center; }
-    .td-leg-r { animation: td-leg-r 0.25s ease-in-out infinite; transform-origin: center; }
-    .td-wing-l { animation: td-wing-flap 0.08s ease-in-out infinite; transform-origin: 25px 45px; }
-    .td-wing-r { animation: td-wing-flap 0.08s ease-in-out infinite reverse; transform-origin: 75px 45px; }
-  `}</style>
-);
+// Injected ONCE into document.head, not once per component. This used to render
+// a <style> element inside every TowerVisual, so a board with twenty towers
+// carried twenty identical copies of the same keyframes — each one re-created on
+// every frame, and each one forcing the engine to re-parse them.
+const TD_KEYFRAMES = `
+  @keyframes td-fast-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes td-leg-l { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+  @keyframes td-leg-r { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
+  @keyframes td-wing-flap { 0%, 100% { transform: scaleX(0.8) rotate(-20deg); } 50% { transform: scaleX(0.3) rotate(-5deg); } }
+  .td-leg-l { animation: td-leg-l 0.25s ease-in-out infinite; transform-origin: center; }
+  .td-leg-r { animation: td-leg-r 0.25s ease-in-out infinite; transform-origin: center; }
+  .td-wing-l { animation: td-wing-flap 0.08s ease-in-out infinite; transform-origin: 25px 45px; }
+  .td-wing-r { animation: td-wing-flap 0.08s ease-in-out infinite reverse; transform-origin: 75px 45px; }
+`;
 
-export default function TowerVisual({ typeId, size = 'md', selected = false, hovered = false, dimmed = false, upgrades = {} }) {
+const STYLE_ID = 'td-visual-keyframes';
+if (typeof document !== 'undefined' && !document.getElementById(STYLE_ID)) {
+  const el = document.createElement('style');
+  el.id = STYLE_ID;
+  el.textContent = TD_KEYFRAMES;
+  document.head.appendChild(el);
+}
+
+function TowerVisualBase({ typeId, size = 'md', selected = false, hovered = false, dimmed = false, upgrades = {} }) {
   const conf = VISUALS[typeId];
   if (!conf) return null;
   const { Blook } = conf;
@@ -228,8 +238,6 @@ export default function TowerVisual({ typeId, size = 'md', selected = false, hov
       className={`relative ${s.wrap} flex items-center justify-center transition-all duration-300 ${dimmed ? 'opacity-50 grayscale' : ''}`}
       style={{ transform: `scale(${finalScale}) translateY(${transformY})` }}
     >
-      <InjectStyles />
-      
       {/* TARGETING AURA: Faint white glow */}
       {hasTargeting && (
         <div className="absolute inset-[-10%] rounded-full bg-white/20 blur-md z-0 pointer-events-none" />
@@ -253,10 +261,29 @@ export default function TowerVisual({ typeId, size = 'md', selected = false, hov
   );
 }
 
+// Memoised: a tower's artwork only changes when it is selected, hovered or
+// upgraded, but the board re-renders every frame to move the creeps. Without
+// this, every tower's whole SVG tree was reconciled thirty times a second.
+// `upgrades` is compared by content because the engine replaces the object.
+const sameUpgrades = (a = {}, b = {}) =>
+  a === b || (!!a.rate === !!b.rate && !!a.damage === !!b.damage && !!a.range === !!b.range &&
+              !!a.targeting === !!b.targeting && !!a.passive === !!b.passive);
+
+const TowerVisual = memo(TowerVisualBase, (p, n) =>
+  p.typeId === n.typeId && p.size === n.size && p.selected === n.selected &&
+  p.hovered === n.hovered && p.dimmed === n.dimmed && sameUpgrades(p.upgrades, n.upgrades)
+);
+
+export default TowerVisual;
+
 // ==========================================
 // INSECT SVG COMPONENTS FOR ENEMIES
 // ==========================================
-export const InsectVisual = ({ type }) => {
+// Memoised on `type` alone: the artwork is identical for every creep of a kind,
+// and only the wrapper's transform changes as it walks. This is the single
+// biggest reconciliation saving on the board — two hundred creeps each carrying
+// a twenty-node SVG were being diffed in full on every frame.
+export const InsectVisual = memo(({ type }) => {
   switch (type) {
     case 'ANT':
       return (
@@ -346,7 +373,8 @@ export const InsectVisual = ({ type }) => {
     default:
       return null;
   }
-};
+});
+InsectVisual.displayName = 'InsectVisual';
 
 // ==========================================
 // OVERSIZED DONUT HEALTH TRACKER

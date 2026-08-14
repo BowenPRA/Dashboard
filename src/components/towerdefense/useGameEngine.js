@@ -1,8 +1,15 @@
 // src/components/towerdefense/useGameEngine.js
-import { useEffect } from 'react';
-import { TOWERS, ENEMIES, getEffectiveStats } from './gameData';
+import { useEffect, useRef } from 'react';
+import { TOWERS, ENEMIES, distSq, getStatsMap } from './gameData';
 
 const TILE_SPEED = 2.0;
+
+// Damage numbers are cosmetic, and an unbounded stream of them is the single
+// biggest source of DOM churn in a heavy wave — twenty towers hitting two
+// hundred creeps produces hundreds of nodes a second. Past this many live
+// floaters new damage numbers are dropped; kill rewards still always show.
+const MAX_FLOATERS = 40;
+const MAX_PARTICLES = 60;
 
 const PROJ_COLOR = {
   DART:   '#0ea5e9',
@@ -12,10 +19,34 @@ const PROJ_COLOR = {
   CHAIN:  '#fbbf24'
 };
 
-export function useGameEngine({ 
-  gRef, render, layout, engineConfig, 
-  onTriggerChallenge, challengeActiveRef, autoPlayRef 
+/** Drops dead entries without allocating a new array every frame. */
+function compact(arr, keep) {
+  let w = 0;
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    if (keep(item)) arr[w++] = item;
+  }
+  arr.length = w;
+}
+
+export function useGameEngine({
+  gRef, render, layout, engineConfig,
+  onTriggerChallenge, onAutoStartWave, challengeActiveRef, autoPlayRef
 }) {
+  // The loop must survive re-renders. `render` and `onTriggerChallenge` are
+  // recreated on every render by any caller that doesn't memoise them, and with
+  // them in the dependency array the effect tore the rAF loop down and rebuilt
+  // every closure in it thirty times a second — while resetting the fixed-step
+  // accumulator each time. Latest-value refs keep the callbacks current without
+  // making the loop's identity depend on them.
+  const renderRef = useRef(render);
+  const challengeRef = useRef(onTriggerChallenge);
+  const autoStartRef = useRef(onAutoStartWave);
+  useEffect(() => {
+    renderRef.current = render;
+    challengeRef.current = onTriggerChallenge;
+    autoStartRef.current = onAutoStartWave;
+  }, [render, onTriggerChallenge, onAutoStartWave]);
 
   useEffect(() => {
     let raf;
@@ -28,6 +59,9 @@ export function useGameEngine({
 
     const g = gRef.current;
     const newId = () => g.nextId++;
+    const render = () => renderRef.current();
+    const onTriggerChallenge = () => challengeRef.current();
+    let frameNo = 0;
 
     // Per-unit difficulty, supplied by the unit's arcadeConfig. A missing or
     // partial object must behave exactly like the pre-scaling game, so every
@@ -78,29 +112,77 @@ export function useGameEngine({
       return conf.defaultTargeting || 'FIRST';
     }
 
-    function findTarget(tower, mode, stats) {
-      const range = stats.range;
-      const pool = g.creeps.filter(c =>
-        c.hp > 0 && !c.reachedEnd && Math.hypot(c.row - tower.row, c.col - tower.col) <= range
-      );
-      if (pool.length === 0) return null;
-      if (mode === 'STRONG') return pool.reduce((a, b) => a.hp > b.hp ? a : b);
-      if (mode === 'LOWEST') return pool.reduce((a, b) => a.hp < b.hp ? a : b);
-      if (mode === 'ARMOR') return pool.reduce((a, b) => (a.damageReduction || 0) >= (b.damageReduction || 0) ? a : b);
-      if (mode === 'FRESH') {
-        const fresh = pool.filter(c => c.freezeTimer <= 0);
-        const arr = fresh.length ? fresh : pool;
-        return arr.reduce((a, b) => distAlong(a) > distAlong(b) ? a : b);
-      }
-      if (mode === 'DENSEST') {
-        let best = pool[0], bestN = -1;
-        for (const c of pool) {
-          const n = g.creeps.reduce((acc, x) => acc + (Math.hypot(x.row - c.row, x.col - c.col) < 1.8 ? 1 : 0), 0);
-          if (n > bestN) { bestN = n; best = c; }
+    // Reused across every tower, every frame: the in-range candidate list used
+    // to be a fresh `filter` allocation per tower per frame.
+    const pool = [];
+
+    // Density is only needed by two upgraded towers, is identical for all of
+    // them within a frame, and used to be an O(creeps²) scan per tower. It is
+    // computed lazily at most once per frame over a coarse grid instead.
+    const DENSITY_CELL = 1.8;
+    let densityFrame = -1;
+    let densityGrid = new Map();
+    function densityAt(c) {
+      if (densityFrame !== frameNo) {
+        densityFrame = frameNo;
+        densityGrid.clear();
+        for (const x of g.creeps) {
+          if (x.hp <= 0) continue;
+          const key = `${Math.floor(x.row / DENSITY_CELL)}_${Math.floor(x.col / DENSITY_CELL)}`;
+          densityGrid.set(key, (densityGrid.get(key) || 0) + 1);
         }
-        return best;
       }
-      return pool.reduce((a, b) => distAlong(a) > distAlong(b) ? a : b);
+      return densityGrid.get(`${Math.floor(c.row / DENSITY_CELL)}_${Math.floor(c.col / DENSITY_CELL)}`) || 0;
+    }
+
+    function findTarget(tower, mode, stats) {
+      const rangeSq = stats.range * stats.range;
+      pool.length = 0;
+      for (const c of g.creeps) {
+        if (c.hp > 0 && !c.reachedEnd && distSq(c.row, c.col, tower.row, tower.col) <= rangeSq) {
+          pool.push(c);
+        }
+      }
+      if (pool.length === 0) return null;
+
+      let best = pool[0];
+      switch (mode) {
+        case 'STRONG':
+          for (const c of pool) if (c.hp > best.hp) best = c;
+          return best;
+        case 'LOWEST':
+          for (const c of pool) if (c.hp < best.hp) best = c;
+          return best;
+        case 'ARMOR':
+          for (const c of pool) if ((c.damageReduction || 0) > (best.damageReduction || 0)) best = c;
+          return best;
+        case 'FRESH': {
+          // Prefer un-slowed creeps; among those, the one furthest along.
+          let bestFresh = null, bestFreshD = -Infinity, bestD = -Infinity;
+          for (const c of pool) {
+            const d = distAlong(c);
+            if (c.freezeTimer <= 0 && d > bestFreshD) { bestFreshD = d; bestFresh = c; }
+            if (d > bestD) { bestD = d; best = c; }
+          }
+          return bestFresh || best;
+        }
+        case 'DENSEST': {
+          let bestN = -1;
+          for (const c of pool) {
+            const n = densityAt(c);
+            if (n > bestN) { bestN = n; best = c; }
+          }
+          return best;
+        }
+        default: {
+          let bestD = -Infinity;
+          for (const c of pool) {
+            const d = distAlong(c);
+            if (d > bestD) { bestD = d; best = c; }
+          }
+          return best;
+        }
+      }
     }
 
     function damageCreep(c, dmg, ignoreArmor = false, flatArmorPen = 0) {
@@ -112,8 +194,8 @@ export function useGameEngine({
       const d = Math.round(actualDmg);
       
       c.hp -= d;
-      
-      if (d > 0) {
+
+      if (d > 0 && g.floaters.length < MAX_FLOATERS) {
         g.floaters.push({
           id: newId(), text: `-${d}`, row: c.row, col: c.col,
           colorClass: 'text-white font-black', life: 500, maxLife: 500
@@ -126,11 +208,13 @@ export function useGameEngine({
         g.credits += reward;
         g.score += Math.round(conf.reward * 10 * SCORE_MUL);
 
-        g.particles.push({
-          id: newId(), row: c.row, col: c.col, radius: 0.6,
-          color: 'rgba(255,200,0,0.55)', life: 400, maxLife: 400
-        });
-        if (reward > 0) {
+        if (g.particles.length < MAX_PARTICLES) {
+          g.particles.push({
+            id: newId(), row: c.row, col: c.col, radius: 0.6,
+            color: 'rgba(255,200,0,0.55)', life: 400, maxLife: 400
+          });
+        }
+        if (reward > 0 && g.floaters.length < MAX_FLOATERS) {
           g.floaters.push({
             id: newId(), text: `+$${reward}`, row: c.row, col: c.col - 0.4,
             colorClass: 'text-[#FFC800] font-black', life: 700, maxLife: 700
@@ -152,16 +236,20 @@ export function useGameEngine({
         freezeTimer: 0, slowPercent: 0, burning: 0, burnTick: 0, damageReduction: conf.damageReduction || 0,
         burnStacks: [], spawnTimer: typeKey === 'GIANT_ANT' ? 2000 : 0
       });
+      // The board only re-renders creeps when the roster changes; movement is
+      // applied straight to the DOM. See GameBoard's creep layer.
+      g.creepsVersion++;
     }
 
-    function fireTower(tower, logicDt) {
+    function fireTower(tower, logicDt, statsMap) {
       const conf = TOWERS[tower.typeId];
       if (conf.type === 'BUFF') return;
       const id = tower.id;
       g.fireCooldowns[id] = (g.fireCooldowns[id] || 0) - logicDt;
       if (g.fireCooldowns[id] > 0) return;
 
-      const stats = getEffectiveStats(tower, g.towers);
+      const stats = statsMap.get(tower.id);
+      if (!stats) return;
       const target = findTarget(tower, towerTargetingMode(tower), stats);
       if (!target) return;
 
@@ -173,7 +261,7 @@ export function useGameEngine({
         damageCreep(target, damage);
         if (stats.pierce) {
           const second = g.creeps.find(c =>
-            c !== target && c.hp > 0 && Math.hypot(c.row - target.row, c.col - target.col) < 1.6);
+            c !== target && c.hp > 0 && distSq(c.row, c.col, target.row, target.col) < 2.56);
           if (second) damageCreep(second, damage);
         }
         
@@ -186,10 +274,16 @@ export function useGameEngine({
       } else if (tower.typeId === 'CHAIN') {
         const hit = [target];
         let last = target;
+        // Nearest un-hit creep per bounce, found in one scan. This used to
+        // allocate a filtered array and fully sort it for every bounce.
         for (let i = 0; i < stats.bounces; i++) {
-          const next = g.creeps
-            .filter(c => c.hp > 0 && !hit.includes(c) && Math.hypot(c.row - last.row, c.col - last.col) < 2.5)
-            .sort((a, b) => Math.hypot(a.row - last.row, a.col - last.col) - Math.hypot(b.row - last.row, b.col - last.col))[0];
+          let next = null;
+          let bestD = 6.25; // 2.5² — the chain's reach
+          for (const c of g.creeps) {
+            if (c.hp <= 0 || hit.includes(c)) continue;
+            const d = distSq(c.row, c.col, last.row, last.col);
+            if (d < bestD) { bestD = d; next = c; }
+          }
           if (!next) break;
           hit.push(next); last = next;
         }
@@ -254,7 +348,7 @@ export function useGameEngine({
         if (stats.frostBurst) {
           g.creeps.forEach(c => {
             if (c === target || c.hp <= 0) return;
-            if (Math.hypot(c.row - target.row, c.col - target.col) < 1.6) {
+            if (distSq(c.row, c.col, target.row, target.col) < 2.56) {
               c.freezeTimer = Math.max(c.freezeTimer, stats.slowDuration * 0.6);
               c.slowPercent = stats.slowPercent;
             }
@@ -268,7 +362,7 @@ export function useGameEngine({
         damageCreep(target, damage);
         if (stats.pierce) {
           const second = g.creeps.find(c =>
-            c !== target && c.hp > 0 && Math.hypot(c.row - target.row, c.col - target.col) < 1.6);
+            c !== target && c.hp > 0 && distSq(c.row, c.col, target.row, target.col) < 2.56);
           if (second) damageCreep(second, damage);
         }
         g.projectiles.push({
@@ -288,9 +382,10 @@ export function useGameEngine({
       }
 
       last = now - (elapsed % fpsInterval);
-      
+
       if (g.gameState !== 'PLAYING') { render(); return; }
       const dt = FIXED_DT * g.speed;
+      frameNo++;
 
       // ==========================================
       // OVERHAULED SIMULTANEOUS SPAWN LOGIC
@@ -343,6 +438,7 @@ export function useGameEngine({
                 burnStacks: [], spawnTimer: 0
               });
             }
+            g.creepsVersion++;
             g.particles.push({ id: newId(), row: c.row, col: c.col, radius: 1.2, color: 'rgba(185,28,28,0.6)', life: 300, maxLife: 300 });
           }
         }
@@ -367,10 +463,16 @@ export function useGameEngine({
         }
       });
 
-      g.creeps.forEach(c => { if (c.reachedEnd) { g.lives -= 1; c.hp = -1; } });
-      g.creeps = g.creeps.filter(c => c.hp > 0 && !c.reachedEnd);
+      for (const c of g.creeps) if (c.reachedEnd) { g.lives -= 1; c.hp = -1; }
+      const before = g.creeps.length;
+      compact(g.creeps, (c) => c.hp > 0 && !c.reachedEnd);
+      if (g.creeps.length !== before) g.creepsVersion++;
 
-      g.towers.forEach(t => fireTower(t, dt));
+      // Adjacency and Nitro auras make each tower's stats depend on every other
+      // tower, so they are resolved once per frame (and cached across frames
+      // until the board actually changes) rather than per tower.
+      const statsMap = getStatsMap(g.towers, g.towersVersion || 0);
+      for (const t of g.towers) fireTower(t, dt, statsMap);
 
       g.projectiles.forEach(p => {
         p.life -= dt;
@@ -382,8 +484,9 @@ export function useGameEngine({
           
           if (d <= step) {
             if (p.kind === 'SPLASH') {
+              const splashSq = p.splashRadius * p.splashRadius;
               g.creeps.forEach(c => {
-                if (Math.hypot(c.row - p.targetRow, c.col - p.targetCol) <= p.splashRadius) {
+                if (distSq(c.row, c.col, p.targetRow, p.targetCol) <= splashSq) {
                     damageCreep(c, p.damage);
                     if (p.napalm) {
                         if (!c.burnStacks) c.burnStacks = [];
@@ -391,7 +494,9 @@ export function useGameEngine({
                     }
                 }
               });
-              g.particles.push({ id: newId(), row: p.targetRow, col: p.targetCol, radius: p.splashRadius, color: 'rgba(234,43,43,0.6)', life: 320, maxLife: 320 });
+              if (g.particles.length < MAX_PARTICLES) {
+                g.particles.push({ id: newId(), row: p.targetRow, col: p.targetCol, radius: p.splashRadius, color: 'rgba(234,43,43,0.6)', life: 320, maxLife: 320 });
+              }
               if (p.napalm) g.burnZones.push({ id: newId(), row: p.targetRow, col: p.targetCol, radius: p.splashRadius * 0.7, life: 4000, maxLife: 4000 });
             }
             p.life = 0;
@@ -400,10 +505,12 @@ export function useGameEngine({
           }
         }
       });
-      g.projectiles = g.projectiles.filter(p => p.life > 0);
-      g.floaters = g.floaters.filter(f => (f.life -= dt) > 0);
-      g.particles = g.particles.filter(p => (p.life -= dt) > 0);
-      g.burnZones = g.burnZones.filter(z => (z.life -= dt) > 0);
+      // In-place: these four ran `filter` every frame, allocating four arrays
+      // per tick and forcing React to see four new prop identities.
+      compact(g.projectiles, (p) => p.life > 0);
+      compact(g.floaters, (f) => (f.life -= dt) > 0);
+      compact(g.particles, (p) => (p.life -= dt) > 0);
+      compact(g.burnZones, (z) => (z.life -= dt) > 0);
 
       if (g.waveInProgress && g.spawnQueue.length === 0 && g.creeps.length === 0) {
         g.waveInProgress = false;
@@ -419,7 +526,14 @@ export function useGameEngine({
 
       if (!g.waveInProgress && g.gameState === 'PLAYING' && autoPlayRef.current) {
         g.autoPlayDelay -= dt;
-        if (g.autoPlayDelay <= 0) { g.autoPlayDelay = 9999; g.triggerNextWave = true; }
+        if (g.autoPlayDelay <= 0) {
+          g.autoPlayDelay = 9999;
+          // Called directly. This used to set a `triggerNextWave` flag that an
+          // effect watched via a mutable ref field in its dependency array —
+          // which only worked because the board happened to re-render every
+          // frame anyway.
+          autoStartRef.current?.();
+        }
       }
 
       if (g.lives <= 0) { g.lives = 0; g.gameState = 'LOST'; }
@@ -445,5 +559,7 @@ export function useGameEngine({
     
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [gRef, render, layout, engineConfig, onTriggerChallenge, challengeActiveRef, autoPlayRef]);
+    // render/onTriggerChallenge are deliberately absent — they are read through
+    // refs above so that an unmemoised caller cannot restart the loop.
+  }, [gRef, layout, engineConfig, challengeActiveRef, autoPlayRef]);
 }

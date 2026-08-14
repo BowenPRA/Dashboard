@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { TOWERS, ENEMIES, getSellValue } from '../../components/towerdefense/gameData';
 import { MAP_LAYOUTS, WAVE_PRESETS } from '../../components/towerdefense/wavePresets';
 import GameBoard from '../../components/towerdefense/GameBoard';
@@ -10,6 +10,7 @@ import ExitConfirmModal from '../../components/towerdefense/ExitConfirmModal';
 import { useGameEngine } from '../../components/towerdefense/useGameEngine';
 
 const CHALLENGE_DURATION = 15;
+const ALL_TOWER_IDS = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO'];
 
 function buildPathSet(path) {
   const s = new Set();
@@ -61,11 +62,10 @@ export default function TowerDefense({
   const lives = gameConfig.lives || 20;
 
   // Calculate specific limits dynamically based on the Hub rules
-  const allTowerIds = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO'];
-  const bannedTowers = gameConfig.bannedTowers || [];
   const allowedTowers = useMemo(() => {
-    return allTowerIds.filter(t => !bannedTowers.includes(t));
-  }, [bannedTowers]);
+    const banned = gameConfig.bannedTowers || [];
+    return ALL_TOWER_IDS.filter(t => !banned.includes(t));
+  }, [gameConfig.bannedTowers]);
 
   const totalWaves = WAVE_PRESETS.SET_1.length; 
   
@@ -112,13 +112,18 @@ export default function TowerDefense({
       waveInProgress: false, spawnQueue: [], spawnTimer: 0,
       fireCooldowns: {}, nextId: 1, challengeTimer: Infinity, wave5ChallengeSpawned: false,
       usedVocab: {}, // Changed from [] to {} to track usage per mode
-      autoPlayDelay: 0, triggerNextWave: false
+      autoPlayDelay: 0,
+      // Stamped on every build/sell/upgrade so the effective-stats cache and the
+      // memoised tower layer know the board actually changed; creepsVersion is
+      // the same signal for spawns and deaths.
+      towersVersion: 0, creepsVersion: 0
     };
   }
   const g = gRef.current;
 
+  // Stable across renders: the engine keeps this for the lifetime of its loop.
   const [, setTick] = useState(0);
-  const render = () => setTick(t => (t + 1) % 1e9);
+  const render = useCallback(() => setTick(t => (t + 1) % 1e9), []);
 
   const [selectedTowerId, setSelectedTowerId] = useState(null);
   const [hoveredTowerId] = useState(null);
@@ -127,7 +132,11 @@ export default function TowerDefense({
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const autoPlayRef = useRef(false);
-  const [bestScore, setBestScore] = useState(0);
+  // Read once, lazily — an effect that setState'd on mount showed 0 for a frame
+  // and re-rendered the whole board to correct itself.
+  const [bestScore, setBestScore] = useState(() => {
+    try { return Number(localStorage.getItem(`td_best_${unitId}`)) || 0; } catch { return 0; }
+  });
 
   const [challenge, setChallenge] = useState(null);
   const [challengeInput, setChallengeInput] = useState('');
@@ -141,20 +150,9 @@ export default function TowerDefense({
   useGameEngine({
     gRef, render, layout, engineConfig,
     onTriggerChallenge: buildChallengeTrigger,
+    onAutoStartWave: handleStartWave,
     challengeActiveRef, autoPlayRef
   });
-
-  useEffect(() => {
-    if (g.triggerNextWave) {
-      handleStartWave();
-      g.triggerNextWave = false;
-    }
-  }, [g.triggerNextWave]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem(`td_best_${unitId}`);
-    if (saved) setBestScore(Number(saved));
-  }, [unitId]);
 
   useEffect(() => {
     const obs = new ResizeObserver(entries => {
@@ -234,15 +232,21 @@ export default function TowerDefense({
     });
   }
 
+  // Countdown for the vocab challenge. The expiry runs inside the timer callback
+  // rather than in the effect body, so running out of time is handled as the
+  // event it is instead of a state change made during render commit.
   useEffect(() => {
-    if (!challenge) return;
-    if (challengeTimeLeft <= 0) {
-      if (challenge.mode === 'CHOICE') punishChallengeFail(); 
-      closeChallenge();
-      return;
-    }
-    const t = setTimeout(() => setChallengeTimeLeft(s => s - 1), 1000);
+    if (!challenge || challengeTimeLeft <= 0) return;
+    const t = setTimeout(() => {
+      if (challengeTimeLeft <= 1) {
+        if (challenge.mode === 'CHOICE') punishChallengeFail();
+        closeChallenge();
+      } else {
+        setChallengeTimeLeft(s => s - 1);
+      }
+    }, 1000);
     return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [challenge, challengeTimeLeft]);
 
   function handleStartWave() {
@@ -262,35 +266,53 @@ export default function TowerDefense({
     render();
   }
 
-  function handleCellClick(r, c, isPath) {
-    if (activeBuilder) {
+  // The board's handlers are memoised because GameBoard's layers are memoised:
+  // a handler recreated on every render is a new prop identity, which defeats
+  // every memo it is passed to and forced the whole tower layer — twenty-odd
+  // full SVG trees — to reconcile on every frame. They read mutable state
+  // through refs so they can stay stable without going stale.
+  const activeBuilderRef = useRef(null);
+  const hoverCellRef = useRef(hoverCell);
+  useEffect(() => { activeBuilderRef.current = activeBuilder; }, [activeBuilder]);
+  useEffect(() => { hoverCellRef.current = hoverCell; }, [hoverCell]);
+
+  const handleCellClick = useCallback((r, c, isPath) => {
+    const builder = activeBuilderRef.current;
+    if (builder) {
       if (isPath) return;
       if (g.towers.some(t => t.row === r && t.col === c)) return;
-      const conf = TOWERS[activeBuilder.typeId];
+      const conf = TOWERS[builder.typeId];
       if (g.credits < conf.cost) return;
       g.credits -= conf.cost;
-      g.towers.push({ id: g.nextId++, typeId: activeBuilder.typeId, row: r, col: c, upgrades: {} });
+      g.towers.push({ id: g.nextId++, typeId: builder.typeId, row: r, col: c, upgrades: {} });
+      g.towersVersion++;
       setActiveBuilder(null);
       setHoverCell({ row: -1, col: -1, valid: false });
       render();
     } else setSelectedTowerId(null);
-  }
+  }, [g, render]);
 
-  function handleCellHover(r, c, isPath) {
-    if (!activeBuilder) { 
-      if (hoverCell.row !== -1) setHoverCell({ row: -1, col: -1, valid: false }); 
-      return; 
+  const handleCellHover = useCallback((r, c, isPath) => {
+    const builder = activeBuilderRef.current;
+    const hc = hoverCellRef.current;
+    if (!builder) {
+      if (hc.row !== -1) setHoverCell({ row: -1, col: -1, valid: false });
+      return;
     }
-    if (hoverCell.row === r && hoverCell.col === c) return;
+    if (hc.row === r && hc.col === c) return;
 
     const valid = !isPath && !g.towers.some(t => t.row === r && t.col === c);
     setHoverCell({ row: r, col: c, valid });
-  }
+  }, [g]);
 
-  function handleTowerClick(id) {
-    if (activeBuilder) { setActiveBuilder(null); return; }
+  const handleTowerClick = useCallback((id) => {
+    if (activeBuilderRef.current) { setActiveBuilder(null); return; }
     setSelectedTowerId(id);
-  }
+  }, []);
+
+  const handleCellLeave = useCallback(
+    () => setHoverCell({ row: -1, col: -1, valid: false }), []
+  );
 
   function handleUpgrade(key) {
     const t = g.towers.find(x => x.id === selectedTowerId);
@@ -300,6 +322,7 @@ export default function TowerDefense({
     if (!upg || t.upgrades[key] || g.credits < upg.cost) return;
     g.credits -= upg.cost;
     t.upgrades = { ...t.upgrades, [key]: true };
+    g.towersVersion++;
     render();
   }
 
@@ -308,6 +331,7 @@ export default function TowerDefense({
     if (!t) return;
     g.credits += getSellValue(t);
     g.towers = g.towers.filter(x => x.id !== selectedTowerId);
+    g.towersVersion++;
     delete g.fireCooldowns[t.id];
     setSelectedTowerId(null);
     render();
@@ -345,13 +369,20 @@ export default function TowerDefense({
     closeChallenge();
   }
 
+  // A run also ends by winning or losing, not only by exiting.
+  useEffect(() => {
+    if (g.gameState !== 'PLAYING') persistBest();
+  }, [g.gameState]); // eslint-disable-line react-hooks/exhaustive-deps
+
   function handleReset() {
+    persistBest();
     Object.assign(g, {
       credits: startingCredits, lives, maxLives: lives, wave: 0, score: 0, bolts: 0,
       gameState: 'PLAYING', towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
-      waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false, 
+      waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false,
       usedVocab: {}, // Reset the tracker dictionary entirely
-      autoPlayDelay: 0
+      autoPlayDelay: 0,
+      towersVersion: g.towersVersion + 1, creepsVersion: g.creepsVersion + 1
     });
     challengeActiveRef.current = false;
     setSelectedTowerId(null);
@@ -361,22 +392,27 @@ export default function TowerDefense({
     render();
   }
 
-  function confirmExit() {
-    setShowExitConfirm(false);
-    if (g.score > bestScore) {
-      localStorage.setItem(`td_best_${unitId}`, g.score);
+  function persistBest() {
+    if (g.score > bestRef.current) {
+      bestRef.current = g.score;
+      try { localStorage.setItem(`td_best_${unitId}`, String(g.score)); } catch { /* private mode */ }
       setBestScore(g.score);
     }
+  }
+
+  function confirmExit() {
+    setShowExitConfirm(false);
+    persistBest();
     onComplete(g.score);
     onQuit();
   }
 
-  useEffect(() => {
-    if (g.score > bestScore) {
-      setBestScore(g.score);
-      localStorage.setItem(`td_best_${unitId}`, g.score);
-    }
-  }, [g.score, bestScore, unitId]);
+  // The best score is tracked in a ref during play and only written to
+  // localStorage when the run ends. Writing on every increase meant a synchronous
+  // disk write several times a second for the whole of a wave.
+  const bestRef = useRef(bestScore);
+  useEffect(() => { bestRef.current = bestScore; }, [bestScore]);
+  const liveBest = Math.max(bestScore, g.score);
 
   const selectedTower = g.towers.find(t => t.id === selectedTowerId) || null;
 
@@ -388,7 +424,7 @@ export default function TowerDefense({
         wave={g.wave}
         totalWaves={totalWaves}
         score={g.score}
-        bestScore={bestScore}
+        bestScore={liveBest}
         speed={g.speed}
         gameState={g.gameState}
         waveInProgress={g.waveInProgress}
@@ -407,10 +443,11 @@ export default function TowerDefense({
                layout={layout} towers={g.towers} creeps={g.creeps} projectiles={g.projectiles}
                floaters={g.floaters} particles={g.particles} burnZones={g.burnZones}
                decorations={g.decorations} lives={g.lives} maxLives={g.maxLives}
+               towersVersion={g.towersVersion} creepsVersion={g.creepsVersion}
                selectedTowerId={selectedTowerId} hoveredTowerId={hoveredTowerId}
                activeBuilder={activeBuilder} hoverCell={hoverCell}
                onCellClick={handleCellClick} onCellHover={handleCellHover}
-               onCellLeave={() => setHoverCell({ row: -1, col: -1, valid: false })}
+               onCellLeave={handleCellLeave}
                onTowerClick={handleTowerClick} themeId={activeThemeId}
              />
           </div>

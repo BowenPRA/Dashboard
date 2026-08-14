@@ -187,6 +187,21 @@ export const TOWERS = {
 export const TOWER_ORDER = ['DART', 'SNIPER', 'FROST', 'SPLASH', 'CHAIN', 'NITRO'];
 
 // ---------- Stat helpers ----------
+
+/**
+ * Squared distance between two grid points.
+ *
+ * The hot loops only ever COMPARE distances, and `Math.hypot` is markedly slower
+ * than the arithmetic it wraps (it guards against intermediate overflow, which a
+ * 15x10 grid cannot produce). Compare against a squared radius instead of taking
+ * a root per candidate.
+ */
+export function distSq(ar, ac, br, bc) {
+  const dr = ar - br;
+  const dc = ac - bc;
+  return dr * dr + dc * dc;
+}
+
 // Dynamic calculation now fully accepts allTowers to bake the Adjacency and Buff modifiers directly into the UI
 export function getEffectiveStats(tower, allTowers = []) {
   const tConf = TOWERS[tower.typeId];
@@ -292,6 +307,29 @@ export function getNitroBuff(tower, allTowers) {
   }
   
   return { rateMul: bestRateMul, damageMul: bestDamageMul, rangeAdd: bestRangeAdd };
+}
+
+/**
+ * Effective stats for every tower on the board, computed in one pass.
+ *
+ * `getEffectiveStats` is O(towers) on its own because of the adjacency and Nitro
+ * scans, so calling it per tower per frame made the firing loop O(towers²) every
+ * frame. The result only changes when a tower is built, sold or upgraded, so the
+ * caller stamps `g.towersVersion` on those events and this returns the cached map
+ * until it changes.
+ */
+const statsCache = { version: -1, towers: null, map: null };
+
+export function getStatsMap(towers, version) {
+  if (statsCache.version === version && statsCache.towers === towers && statsCache.map) {
+    return statsCache.map;
+  }
+  const map = new Map();
+  for (const t of towers) map.set(t.id, getEffectiveStats(t, towers));
+  statsCache.version = version;
+  statsCache.towers = towers;
+  statsCache.map = map;
+  return map;
 }
 
 export function getTotalSpent(tower) {

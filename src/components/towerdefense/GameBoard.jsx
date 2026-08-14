@@ -1,5 +1,5 @@
 // src/components/towerdefense/GameBoard.jsx
-import React, { useMemo, useRef, memo } from 'react';
+import React, { useMemo, useRef, useState, useCallback, useLayoutEffect, memo } from 'react';
 import { ENEMIES, TOWERS, getEffectiveStats, getNitroBuff } from './gameData';
 import { MAP_THEMES } from './themeData';
 import TowerVisual, { InsectVisual, DonutBase } from './TowerVisual';
@@ -47,13 +47,31 @@ const StaticEnvironment = memo(({ width, height, theme, pathPoints, decorations 
 export default function GameBoard({
   layout, towers, creeps, projectiles, floaters, particles, burnZones, decorations,
   lives, maxLives, selectedTowerId, hoveredTowerId, activeBuilder, hoverCell,
-  onCellClick, onCellHover, onCellLeave, onTowerClick, themeId = 'STANDARD'
+  onCellClick, onCellHover, onCellLeave, onTowerClick, themeId = 'STANDARD',
+  // Bumped by the game screen whenever a tower is built, sold or upgraded. The
+  // engine mutates towers in place, so array identity alone cannot tell the
+  // memoised tower layer that an upgrade needs repainting. `creepsVersion` is
+  // the same idea for the creep roster.
+  towersVersion = 0, creepsVersion = 0
 }) {
   const { rows, cols, path } = layout;
   const width = cols * CELL_SIZE;
   const height = rows * CELL_SIZE;
   const theme = MAP_THEMES[themeId] || MAP_THEMES.STANDARD;
   const boardRef = useRef(null);
+
+  // id -> mounted creep root. Populated by ref callbacks in <Creep>.
+  // useState, not useRef: the identity must be stable for the whole mount and
+  // React forbids reading a ref's `current` during render.
+  const [creepNodes] = useState(() => new Map());
+
+  // Runs after every board render — which is every frame — but the creep layer
+  // itself has already bailed out of reconciliation by then, so this is the only
+  // per-frame work creeps cost. Layout effect so the write lands in the same
+  // frame as the paint and creeps never lag a frame behind everything else.
+  useLayoutEffect(() => {
+    syncCreeps(creeps, creepNodes);
+  });
 
   const pathCellSet = useMemo(() => {
     const s = new Set();
@@ -190,31 +208,12 @@ export default function GameBoard({
         );
       })()}
 
-      {towers.map(t => {
-        const isSelected = selectedTowerId === t.id;
-        const isHovered = hoveredTowerId === t.id;
-        const isBuffed = t.typeId !== 'NITRO' && getNitroBuff(t, towers).rateMul < 1;
+      <TowerLayer
+        towers={towers} towersVersion={towersVersion}
+        selectedTowerId={selectedTowerId}
+        hoveredTowerId={hoveredTowerId} onTowerClick={onTowerClick}
+      />
 
-        return (
-          <div
-            key={t.id}
-            onClick={(e) => { e.stopPropagation(); onTowerClick(t.id); }}
-            className="absolute cursor-pointer z-20"
-            style={{ 
-               transform: `translate(${t.col * CELL_SIZE}px, ${t.row * CELL_SIZE}px)`, 
-               width: CELL_SIZE, height: CELL_SIZE 
-            }}
-          >
-            <div className="relative w-full h-full flex items-center justify-center td-pop-in">
-              {isBuffed && <div className="absolute inset-0 scale-125 bg-yellow-400/20 border-2 border-yellow-400/40 rounded-full animate-pulse z-0 pointer-events-none" />}
-              <UpgradeBadges upgrades={t.upgrades} />
-              <div className="relative z-10 w-full h-full flex items-center justify-center">
-                 <TowerVisual typeId={t.typeId} size="md" selected={isSelected} hovered={isHovered} upgrades={t.upgrades} />
-              </div>
-            </div>
-          </div>
-        );
-      })}
 
       {projectiles.map(p => {
         if (p.kind === 'DART_PROJ') {
@@ -291,39 +290,8 @@ export default function GameBoard({
         />
       ))}
 
-      {creeps.map(c => {
-        const eConf = ENEMIES[c.typeKey];
-        if (!eConf) return null;
-        const hpPct = Math.max(0, c.hp / c.maxHp);
-        const rotationAngle = (c.angle || 0) + 90;
+      <CreepLayer creeps={creeps} creepsVersion={creepsVersion} registry={creepNodes} />
 
-        return (
-          <div
-            key={c.id} className="absolute pointer-events-none z-20 flex flex-col items-center justify-center gpu-accel"
-            style={{ transform: `translate(${c.col * CELL_SIZE + CELL_SIZE / 2}px, ${c.row * CELL_SIZE + CELL_SIZE / 2}px) translate(-50%, -50%)` }}
-          >
-            <div className="absolute -top-4 w-10 h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-700 z-30">
-              <div className="h-full rounded-full" style={{ width: `${hpPct * 100}%`, background: hpPct > 0.5 ? '#58A700' : hpPct > 0.25 ? '#FFC800' : '#EA2B2B' }} />
-            </div>
-            
-            <div
-              className="flex items-center justify-center relative creep-visual"
-              style={{ 
-                width: eConf.radius * 2.5, 
-                height: eConf.radius * 2.5, 
-                transform: `rotate(${rotationAngle}deg)`,
-                filter: c.freezeTimer > 0 ? 'sepia(1) hue-rotate(180deg) saturate(4) brightness(1.2)' : 'none'
-              }}
-            >
-              <InsectVisual type={c.typeKey} />
-            </div>
-
-            {c.freezeTimer > 0 && <div className="absolute -top-8 text-xs">❄️</div>}
-            {(c.burning > 0 || (c.burnStacks && c.burnStacks.length > 0)) && <div className="absolute -top-8 text-xs">🔥</div>}
-            {eConf.damageReduction > 0 && hpPct > 0 && <div className="absolute -bottom-5 text-[10px] bg-slate-800 text-slate-300 font-black px-1 rounded-sm border border-slate-700">🛡️</div>}
-          </div>
-        );
-      })}
 
       {floaters.map(f => (
         <div
@@ -339,6 +307,158 @@ export default function GameBoard({
     </div>
   );
 }
+
+/**
+ * One creep. Rendered exactly once — when it spawns — and never re-rendered
+ * while it walks.
+ *
+ * Everything that changes frame to frame (position, facing, health bar, frozen
+ * tint, status pips) is written straight to these nodes by `syncCreeps` below.
+ * The artwork, the DOM shape and the class names are identical to what React
+ * used to produce on every frame; only the update path changed.
+ */
+const Creep = memo(function Creep({ creep, registry }) {
+  const eConf = ENEMIES[creep.typeKey];
+  // Resolve the three mutable children ONCE, at mount. Looking them up with
+  // querySelector on every frame cost more than the reconciliation this whole
+  // layer exists to avoid.
+  const ref = useCallback((el) => {
+    if (!el) { registry.delete(creep.id); return; }
+    registry.set(creep.id, {
+      root: el,
+      bar: el.querySelector('[data-hp]'),
+      visual: el.querySelector('[data-visual]'),
+      status: el.querySelector('[data-status]'),
+      lastStatus: '',
+    });
+  }, [creep.id, registry]);
+
+  if (!eConf) return null;
+
+  return (
+    <div
+      ref={ref}
+      data-creep={creep.id}
+      className="absolute pointer-events-none z-20 flex flex-col items-center justify-center gpu-accel"
+      style={{ transform: `translate(${creep.col * CELL_SIZE + CELL_SIZE / 2}px, ${creep.row * CELL_SIZE + CELL_SIZE / 2}px) translate(-50%, -50%)` }}
+    >
+      <div className="absolute -top-4 w-10 h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-700 z-30">
+        <div data-hp className="h-full rounded-full" style={{ width: '100%', background: '#58A700' }} />
+      </div>
+
+      <div
+        data-visual
+        className="flex items-center justify-center relative creep-visual"
+        style={{
+          width: eConf.radius * 2.5,
+          height: eConf.radius * 2.5,
+          transform: `rotate(${(creep.angle || 0) + 90}deg)`,
+          filter: 'none'
+        }}
+      >
+        <InsectVisual type={creep.typeKey} />
+      </div>
+
+      <div data-status className="absolute -top-8 text-xs" style={{ display: 'none' }} />
+      {eConf.damageReduction > 0 && (
+        <div className="absolute -bottom-5 text-[10px] bg-slate-800 text-slate-300 font-black px-1 rounded-sm border border-slate-700">🛡️</div>
+      )}
+    </div>
+  );
+});
+
+/**
+ * The creep roster. Only re-renders when a creep actually spawns or dies —
+ * `creepsVersion` is the engine's stamp for that — because the array itself is
+ * mutated in place and cannot signal the change on its own.
+ */
+// eslint-disable-next-line no-unused-vars -- creepsVersion is a memo cache key
+const CreepLayer = memo(function CreepLayer({ creeps, creepsVersion, registry }) {
+  return creeps.map((c) => <Creep key={c.id} creep={c} registry={registry} />);
+});
+
+/**
+ * Writes this frame's creep state onto the mounted nodes.
+ *
+ * Two hundred creeps × six elements each was ~1300 React element updates per
+ * frame purely to move things that had not changed shape. Touching the four
+ * style properties that actually vary is far cheaper, and produces the same
+ * pixels.
+ */
+const FROZEN_FILTER = 'sepia(1) hue-rotate(180deg) saturate(4) brightness(1.2)';
+const HALF = CELL_SIZE / 2;
+
+function syncCreeps(creeps, registry) {
+  for (let i = 0; i < creeps.length; i++) {
+    const c = creeps[i];
+    const n = registry.get(c.id);
+    if (!n) continue;
+
+    n.root.style.transform =
+      `translate(${c.col * CELL_SIZE + HALF}px, ${c.row * CELL_SIZE + HALF}px) translate(-50%, -50%)`;
+
+    if (n.bar) {
+      const hpPct = c.hp > 0 ? c.hp / c.maxHp : 0;
+      n.bar.style.width = `${hpPct * 100}%`;
+      n.bar.style.background = hpPct > 0.5 ? '#58A700' : hpPct > 0.25 ? '#FFC800' : '#EA2B2B';
+    }
+
+    if (n.visual) {
+      n.visual.style.transform = `rotate(${(c.angle || 0) + 90}deg)`;
+      n.visual.style.filter = c.freezeTimer > 0 ? FROZEN_FILTER : 'none';
+    }
+
+    if (n.status) {
+      const text = c.freezeTimer > 0
+        ? '❄️'
+        : (c.burning > 0 || (c.burnStacks && c.burnStacks.length > 0)) ? '🔥' : '';
+      // Status rarely changes; skip the write (and its style recalc) when it hasn't.
+      if (text !== n.lastStatus) {
+        n.lastStatus = text;
+        n.status.textContent = text;
+        n.status.style.display = text ? '' : 'none';
+      }
+    }
+  }
+}
+
+/**
+ * Towers, isolated behind memo.
+ *
+ * Towers do not move — they change only when one is built, sold, upgraded,
+ * selected or hovered — but they sat inline in a board that re-renders every
+ * frame, so their artwork and the O(towers²) Nitro-buff scan ran thirty times a
+ * second for nothing. The array identity is stable between those events (the
+ * engine mutates in place), so a plain memo is enough to skip the whole layer.
+ */
+// eslint-disable-next-line no-unused-vars -- towersVersion is a memo cache key
+const TowerLayer = memo(function TowerLayer({ towers, towersVersion, selectedTowerId, hoveredTowerId, onTowerClick }) {
+  return towers.map(t => {
+    const isSelected = selectedTowerId === t.id;
+    const isHovered = hoveredTowerId === t.id;
+    const isBuffed = t.typeId !== 'NITRO' && getNitroBuff(t, towers).rateMul < 1;
+
+    return (
+      <div
+        key={t.id}
+        onClick={(e) => { e.stopPropagation(); onTowerClick(t.id); }}
+        className="absolute cursor-pointer z-20"
+        style={{
+          transform: `translate(${t.col * CELL_SIZE}px, ${t.row * CELL_SIZE}px)`,
+          width: CELL_SIZE, height: CELL_SIZE
+        }}
+      >
+        <div className="relative w-full h-full flex items-center justify-center td-pop-in">
+          {isBuffed && <div className="absolute inset-0 scale-125 bg-yellow-400/20 border-2 border-yellow-400/40 rounded-full animate-pulse z-0 pointer-events-none" />}
+          <UpgradeBadges upgrades={t.upgrades} />
+          <div className="relative z-10 w-full h-full flex items-center justify-center">
+            <TowerVisual typeId={t.typeId} size="md" selected={isSelected} hovered={isHovered} upgrades={t.upgrades} />
+          </div>
+        </div>
+      </div>
+    );
+  });
+});
 
 function PortalMarker({ row, col, kind, healthPct }) {
   const isIn = kind === 'in';
