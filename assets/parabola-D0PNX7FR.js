@@ -1,0 +1,1 @@
+function e({a:e,h:t,k:n}){if(!e)return[];let r=-n/e;if(r<0)return[];let i=Math.sqrt(r);return i===0?[t]:[t-i,t+i]}export{e as t};
