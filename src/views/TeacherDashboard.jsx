@@ -6,7 +6,7 @@ import StudentProfileDrawer from '../components/StudentProfileDrawer';
 import AddStudentModal from '../components/AddStudentModal';
 import {
   Users, Star, AlertTriangle, Search, Filter,
-  Trophy, BookOpen, ShieldAlert, Loader2, LogOut, UserPlus
+  Trophy, BookOpen, ShieldAlert, Loader2, LogOut, UserPlus, CalendarDays
 } from 'lucide-react';
 
 export default function TeacherDashboard() {
@@ -88,6 +88,13 @@ export default function TeacherDashboard() {
         </div>
         
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/study-plan')}
+            className="flex items-center px-5 py-3 bg-indigo-500 text-white rounded-2xl shadow-sm border-b-[4px] border-indigo-700 active:border-b-0 active:translate-y-[4px] transition-all font-black text-xs uppercase tracking-widest"
+          >
+            <CalendarDays className="w-4 h-4 mr-2" strokeWidth={3} />
+            Study Plan
+          </button>
           <button
             onClick={() => setShowAdd(true)}
             className="flex items-center px-5 py-3 bg-[#58cc02] text-white rounded-2xl shadow-sm border-b-[4px] border-[#58a700] active:border-b-0 active:translate-y-[4px] transition-all font-black text-xs uppercase tracking-widest"

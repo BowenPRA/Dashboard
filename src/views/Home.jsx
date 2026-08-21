@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2 } from 'lucide-react';
-import { TRACK_REGISTRY } from '../components/trackRegistry';
+import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee } from 'lucide-react';
+import { TRACK_REGISTRY, getTrackConfig } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
+import { planForDate, todayISO } from '../utils/studyPlan';
 
 export default function Home() {
   const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
   const [visibleTracks, setVisibleTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // The banner only needs the plan, not the progress behind it — /today owns
+  // the per-goal detail, and Home stays a one-query screen.
+  const plan = useMemo(() => planForDate(todayISO()), []);
 
   useEffect(() => {
     const isDarkMode = localStorage.getItem('theme') === 'dark' || 
@@ -86,6 +91,57 @@ export default function Home() {
             Select Learning Track
           </p>
         </div>
+
+        {/* Today's plan — the intended way in. The tracks below stay available
+            for free study, but the assignment is what the day is measured on. */}
+        <button
+          onClick={() => navigate('/today')}
+          className="group relative w-full text-left mb-8 p-7 sm:p-8 rounded-[2.5rem] border-2 border-slate-200 dark:border-slate-800 border-b-[8px] bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 active:translate-y-[8px] active:border-b-2 animate-in fade-in slide-in-from-bottom-4 duration-500"
+        >
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-[#ff9600] rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] border-[#cc7800] flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+              {plan.assignments.length > 0
+                ? <CalendarCheck className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />
+                : <Coffee className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-1">
+                {plan.dayName}
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-2">
+                {plan.assignments.length > 0 ? "Today's Plan" : 'Rest day'}
+              </h2>
+
+              {plan.assignments.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {plan.assignments.map((a, i) => {
+                    const theme = getTrackConfig(a.track)?.theme || {};
+                    return (
+                      <span
+                        key={`${a.track}-${a.unitId ?? i}`}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-white border-b-[3px] ${theme.bg} ${theme.border}`}
+                      >
+                        {a.subject}
+                      </span>
+                    );
+                  })}
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
+                    2 units
+                  </span>
+                </div>
+              ) : (
+                <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-wide">
+                  No assigned units — review anything you like.
+                </p>
+              )}
+            </div>
+
+            <div className="hidden sm:flex w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 border-b-[4px] shadow-sm group-hover:bg-[#ff9600] group-hover:border-[#cc7800] group-hover:text-white transition-all flex-shrink-0">
+              <ChevronRight className="w-7 h-7" strokeWidth={3} />
+            </div>
+          </div>
+        </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {visibleTracks.map((t, index) => {

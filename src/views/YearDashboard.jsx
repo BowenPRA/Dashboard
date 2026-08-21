@@ -1,5 +1,5 @@
 import React, { useState, Suspense, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction, Trophy, Sun, Moon, Sparkles, PackageOpen } from 'lucide-react';
 
 import { useStudentProgress } from '../utils/supabaseClient';
@@ -47,12 +47,25 @@ export default function YearDashboard({ track }) {
   const navigate = useNavigate();
   const { user, unitScores = {}, isLoadingDB, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
 
+  // `?unit=<id>` — how Today's Plan hands a student straight to the unit it
+  // assigned, instead of dropping them at the top of the track to hunt for it.
+  const [searchParams] = useSearchParams();
+  const requestedUnit = searchParams.get('unit');
+
   const [activeTaskId, setActiveTaskId] = useState(null);
   const [activeUnit, setActiveUnit] = useState(null);
   const [currentPool, setCurrentPool] = useState([]);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
-  const [expandedUnit, setExpandedUnit] = useState(null);
+  const [expandedUnit, setExpandedUnit] = useState(requestedUnit);
   const [isDark, setIsDark] = useState(false);
+
+  // Scroll the requested unit into view once the cards have rendered. Expanding
+  // a card below the fold otherwise looks like nothing happened.
+  useEffect(() => {
+    if (!requestedUnit || isLoadingDB) return;
+    const el = document.getElementById(`unit-${requestedUnit}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [requestedUnit, isLoadingDB]);
 
   useEffect(() => {
     const isDarkMode = localStorage.getItem('theme') === 'dark' ||
@@ -262,17 +275,19 @@ export default function YearDashboard({ track }) {
                 };
 
                 return (
-                  <UnitCard
-                    key={metaUnit.id}
-                    unit={combinedUnitPayload}
-                    scores={scores}
-                    currentTheme={currentTheme}
-                    startMode={startMode}
-                    isExpanded={activeExpandedUnit === metaUnit.id}
-                    onToggle={() => setExpandedUnit(activeExpandedUnit === metaUnit.id ? 'NONE' : metaUnit.id)}
-                    needsWork={needsWork}
-                    previewAll={previewAll}
-                  />
+                  // The id is the scroll anchor for `?unit=` deep links.
+                  <div key={metaUnit.id} id={`unit-${metaUnit.id}`} className="scroll-mt-24">
+                    <UnitCard
+                      unit={combinedUnitPayload}
+                      scores={scores}
+                      currentTheme={currentTheme}
+                      startMode={startMode}
+                      isExpanded={activeExpandedUnit === metaUnit.id}
+                      onToggle={() => setExpandedUnit(activeExpandedUnit === metaUnit.id ? 'NONE' : metaUnit.id)}
+                      needsWork={needsWork}
+                      previewAll={previewAll}
+                    />
+                  </div>
                 );
               });
             })()}
