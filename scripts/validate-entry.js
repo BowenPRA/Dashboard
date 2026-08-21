@@ -13,6 +13,7 @@ import { TRACKS, getTrack, contentProblems } from '../src/data/index.js';
 import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, unitXPOf, normalizeScore } from '../src/tasks/taskRegistry.js';
 import { parseEquation, applyMove, suggestMove, isSolved, sameSolution } from '../src/utils/linearEquation.js';
+import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -270,6 +271,58 @@ for (const trackId of TRACK_IDS) {
         }
         if (!isSolved(cur)) err(`${at}: "${b.equation}" is not solvable by the taught strategy`);
         else if (!sameSolution(eq, cur)) err(`${at}: solving "${b.equation}" changes its answer`);
+      }
+    }
+
+    // -- Graph It items: the task DERIVES the vertex and the zeros from `curve`,
+    //    so the risk is not a wrong answer key but an unanswerable question —
+    //    a target that is off the grid or lands between the lattice points the
+    //    student is allowed to click. Both look fine in the data and are
+    //    impossible on screen.
+    if ((unit.graphPlot || []).length) {
+      const seenIds = new Set();
+      const KINDS = ['vertex', 'zeros', 'point'];
+      const DEFAULT_GRID = { xMin: -7, xMax: 7, yMin: -6, yMax: 8 };
+      for (const g of unit.graphPlot) {
+        const at = `${label}: graphPlot ${g.id}`;
+        if (!g.id) err(`${label}: a graphPlot item has no id`);
+        if (seenIds.has(g.id)) err(`${at}: duplicate id`);
+        seenIds.add(g.id);
+        if (!g.equation) err(`${at} has no equation to read`);
+        const c = g.curve || {};
+        if (![c.a, c.h, c.k].every((v) => typeof v === 'number')) {
+          err(`${at}: curve must be { a, h, k } numbers`);
+          continue;
+        }
+        if (!c.a) err(`${at}: a = 0 is a straight line, not a parabola`);
+        const grid = { ...DEFAULT_GRID, ...(g.grid || {}) };
+        const onGrid = ([x, y]) =>
+          x >= grid.xMin && x <= grid.xMax && y >= grid.yMin && y <= grid.yMax;
+        const isLattice = ([x, y]) => Number.isInteger(x) && Number.isInteger(y);
+        if (!(g.steps || []).length) err(`${at} has no steps`);
+        for (const st of g.steps || []) {
+          if (!KINDS.includes(st.kind)) { err(`${at}: unknown step kind "${st.kind}"`); continue; }
+          let targets;
+          if (st.kind === 'vertex') targets = [vertexOf(c)];
+          else if (st.kind === 'zeros') targets = rootsOf(c).map((x) => [x, 0]);
+          else {
+            if (!Array.isArray(st.at) || st.at.length !== 2) { err(`${at}: a point step needs at: [x, y]`); continue; }
+            if (!st.label || !st.labelVn) err(`${at}: a point step needs a bilingual label`);
+            if (Math.abs(yAt(c, st.at[0]) - st.at[1]) > 1e-9) {
+              err(`${at}: point (${st.at.join(', ')}) is not on the curve — the curve gives y = ${yAt(c, st.at[0])}`);
+            }
+            targets = [st.at];
+          }
+          for (const tp of targets) {
+            if (!isLattice(tp)) err(`${at}: ${st.kind} target (${tp.join(', ')}) is not a whole-number point, so it cannot be clicked`);
+            if (!onGrid(tp)) err(`${at}: ${st.kind} target (${tp.join(', ')}) is outside the grid ${JSON.stringify(grid)}`);
+          }
+          // A "no zeros" step is legitimate and is answered with the button, but
+          // only if the curve really does miss the axis.
+          if (st.kind === 'zeros' && targets.length === 0 && -c.k / c.a >= 0) {
+            err(`${at}: zeros step has no targets but the curve does cross the axis`);
+          }
+        }
       }
     }
 

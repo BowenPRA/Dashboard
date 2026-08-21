@@ -1,10 +1,13 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 
 // Lazy-load complex mathematical and physics widgets to keep bundle size small
 const MathGraph = lazy(() => import('../components/math/MathGraph'));
+const ParabolaLab = lazy(() => import('../components/math/ParabolaLab'));
 
-export default function WidgetRenderer({ config }) {
+const KNOWN = ['MathGraph', 'ParabolaLab'];
+
+export default function WidgetRenderer({ config, lang = 'en' }) {
   if (!config) return null;
 
   // 1. Legacy Support: If the config is passed directly as a functional React component 
@@ -25,9 +28,12 @@ export default function WidgetRenderer({ config }) {
       </div>
     }>
       {type === 'MathGraph' && <MathGraph {...params} />}
-      
+      {/* Interface text inside a widget follows the deck's EN/VN toggle, so the
+          language has to travel with the config. */}
+      {type === 'ParabolaLab' && <ParabolaLab {...params} lang={lang} />}
+
       {/* Fallback for unrecognized dynamically requested widgets */}
-      {type !== 'MathGraph' && (
+      {!KNOWN.includes(type) && (
         <div className="p-6 border-2 border-dashed border-rose-300 bg-rose-50 dark:bg-rose-900/20 rounded-2xl text-rose-500 font-bold flex flex-col items-center text-center">
           <span>Widget Type "{type}" Not Found</span>
           <span className="text-sm font-medium mt-2 text-rose-400">Ensure it is registered in WidgetRenderer.jsx</span>

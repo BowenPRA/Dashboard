@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
-  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale
+  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -270,6 +270,24 @@ export const TASKS = [
     component: lazy(() => import('./Workbook.jsx')),
     hasContent: (u) => notEmpty(u.workbook),
     buildPool: (u) => u.workbook || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'GRAPH',
+    nativeMax: 10,
+    dbKey: 'p15',
+    // "Put the key points on the grid": the student reads an equation and clicks
+    // the vertex and the zeros on a lattice. Production rather than recognition
+    // — there is nothing to eliminate, so it cannot be won by guessing the way
+    // an MCQ can. Item shape is documented in src/tasks/GraphPlot.jsx.
+    label: 'Graph It',
+    icon: LineChart,
+    color: { bg: 'bg-[#0891b2]', border: 'border-[#0e7490]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'mastery',
+    component: lazy(() => import('./GraphPlot.jsx')),
+    hasContent: (u) => notEmpty(u.graphPlot),
+    buildPool: (u) => u.graphPlot || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];
