@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BookOpen, X as XIcon, Sun, Moon, Clock, Languages } from 'lucide-react';
+import useDarkMode from '../hooks/useDarkMode';
 
 export default function TopBar({ 
   onQuit, 
@@ -15,26 +16,7 @@ export default function TopBar({
   const displayTotal = total !== undefined ? total : 0;
   const displayProgress = progress !== undefined ? progress : (displayTotal > 0 ? (displayScore / displayTotal) * 100 : 0);
 
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setIsDark(isDarkMode);
-    if (isDarkMode) document.documentElement.classList.add('dark');
-  }, []);
-
-  const toggleDarkMode = () => {
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
-  };
+  const [isDark, toggleDarkMode] = useDarkMode();
 
   const formatTime = (seconds) => {
     if (seconds === undefined || seconds === null) return null;

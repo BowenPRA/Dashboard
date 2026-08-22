@@ -1,4 +1,3 @@
-import { DIAGRAMS } from './diagrams.js';
 
 export const assessment = {
   timeLimit: 3600, // 60 minutes

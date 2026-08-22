@@ -69,6 +69,11 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
   useEffect(() => {
     window.scrollTo(0, 0);
     const saved = localAnswers[currentIndex];
+    // Restores the persisted attempt when the item changes, and (per task) also
+    // scrolls, focuses, or advances the running score — side effects that have to
+    // stay in an effect. Queued for the render-phase-adjustment rewrite; not worth
+    // re-testing scoring mid study-block. See docs/daily-plan.md.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowTranslation(false); 
     
     if (saved) {
@@ -213,6 +218,7 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     setGameState('A');
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- wrapping in useCallback would need its whole closure memoised too; the effect below is keyed to the question index on purpose
   const handleNext = () => {
     let newCumPoints = cumulativePoints;
     let newMaxPoints = maxPossiblePoints;

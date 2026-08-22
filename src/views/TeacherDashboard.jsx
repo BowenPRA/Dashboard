@@ -19,6 +19,8 @@ export default function TeacherDashboard() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
 
+  // Refresh triggered by a user action (drawer closed, student added). It shows
+  // the spinner because the roster is about to change under them.
   const fetchRoster = async () => {
     setIsLoading(true);
     try {
@@ -33,8 +35,26 @@ export default function TeacherDashboard() {
     }
   };
 
+  // The mount load is deliberately not `fetchRoster()`: `isLoading` already
+  // starts true, so re-setting it synchronously in an effect only costs a
+  // render. Every state write here happens after the await, and `alive` stops a
+  // teacher who navigates away mid-request from setting state on a dead view.
   useEffect(() => {
-    fetchRoster();
+    let alive = true;
+    (async () => {
+      try {
+        const { roster: list } = await getRoster();
+        if (!alive) return;
+        setRoster(list || []);
+        setLoadError('');
+      } catch (err) {
+        console.error('Error fetching roster:', err);
+        if (alive) setLoadError(err.message || 'Could not load the roster.');
+      } finally {
+        if (alive) setIsLoading(false);
+      }
+    })();
+    return () => { alive = false; };
   }, []);
 
   const handleLogout = async () => {
@@ -256,7 +276,7 @@ export default function TeacherDashboard() {
       <AddStudentModal
         isOpen={showAdd}
         onClose={() => setShowAdd(false)}
-        onCreated={fetchRoster}
+        onCreated={() => fetchRoster()}
       />
     </div>
   );

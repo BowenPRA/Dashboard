@@ -5,10 +5,11 @@ import { TRACK_REGISTRY, getTrackConfig } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
 import { planForDate, todayISO } from '../utils/studyPlan';
+import useDarkMode from '../hooks/useDarkMode';
 
 export default function Home() {
   const navigate = useNavigate();
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, toggleDarkMode] = useDarkMode();
   const [visibleTracks, setVisibleTracks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,11 +18,6 @@ export default function Home() {
   const plan = useMemo(() => planForDate(todayISO()), []);
 
   useEffect(() => {
-    const isDarkMode = localStorage.getItem('theme') === 'dark' || 
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setIsDark(isDarkMode);
-    if (isDarkMode) document.documentElement.classList.add('dark');
-
     // Students with no explicit enrolment see the full GED programme.
     const defaultTracks = TRACK_REGISTRY.filter(t => t.group === 'GED');
 
@@ -46,18 +42,6 @@ export default function Home() {
 
     fetchUserAndTracks();
   }, []);
-
-  const toggleDarkMode = () => {
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
-  };
 
   if (loading) {
     return (

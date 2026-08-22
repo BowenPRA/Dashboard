@@ -8,6 +8,7 @@ import { getTrackConfig } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
 import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
 import { isPreviewAccount } from '../utils/previewAccount';
+import useDarkMode from '../hooks/useDarkMode';
 
 function PlaceholderView({ title, onQuit }) {
   return (
@@ -57,7 +58,7 @@ export default function YearDashboard({ track }) {
   const [currentPool, setCurrentPool] = useState([]);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [expandedUnit, setExpandedUnit] = useState(requestedUnit);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, toggleDarkMode] = useDarkMode();
 
   // Scroll the requested unit into view once the cards have rendered. Expanding
   // a card below the fold otherwise looks like nothing happened.
@@ -66,20 +67,6 @@ export default function YearDashboard({ track }) {
     const el = document.getElementById(`unit-${requestedUnit}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [requestedUnit, isLoadingDB]);
-
-  useEffect(() => {
-    const isDarkMode = localStorage.getItem('theme') === 'dark' ||
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setIsDark(isDarkMode);
-    if (isDarkMode) document.documentElement.classList.add('dark');
-  }, []);
-
-  const toggleDarkMode = () => {
-    const next = !isDark;
-    document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('theme', next ? 'dark' : 'light');
-    setIsDark(next);
-  };
 
   const trackConfig = getTrackConfig(track);
   const currentTheme = trackConfig?.theme || {};

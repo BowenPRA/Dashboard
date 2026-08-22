@@ -3,7 +3,7 @@ import { BookOpen } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import Feedback from '../components/Feedback';
 
-export default function Spell({ pool, track, unitId, savedData = {}, onComplete, onQuit }) {
+export default function Spell({ pool, track, unitId, savedData = {}, onComplete }) {
   const realWords = useMemo(() => (pool || []).filter(w => w.isReal !== false), [pool]);
   const [wordIndex, setWordIndex] = useState(0);
   
@@ -36,6 +36,11 @@ export default function Spell({ pool, track, unitId, savedData = {}, onComplete,
     const saved = localAnswers[wordIndex];
     if (saved && saved.status === 'perfect') {
       const targetLetters = currentWord.word.replace(/[^a-zA-Z]/g, '');
+      // Restores the persisted attempt when the item changes, and (per task) also
+      // scrolls, focuses, or advances the running score — side effects that have to
+      // stay in an effect. Queued for the render-phase-adjustment rewrite; not worth
+      // re-testing scoring mid study-block. See docs/daily-plan.md.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUserInput(targetLetters);
       setGameState('SAVED_PERFECT');
       setScore(s => s + 1);
@@ -45,7 +50,7 @@ export default function Spell({ pool, track, unitId, savedData = {}, onComplete,
       setGameState('Q');
       setTimeout(() => { if (inputRef.current) inputRef.current.focus(); }, 100);
     }
-  }, [wordIndex, currentWord]);
+  }, [wordIndex, currentWord]); // eslint-disable-line react-hooks/exhaustive-deps -- restores the saved attempt for this word only; localAnswers changing must not re-run it
 
   const checkAnswer = () => {
     if (gameState !== 'Q') return;
@@ -102,7 +107,7 @@ export default function Spell({ pool, track, unitId, savedData = {}, onComplete,
     
     window.addEventListener('keydown', handleGlobalNav);
     return () => window.removeEventListener('keydown', handleGlobalNav);
-  }, [gameState, userInput, currentWord]);
+  }, [gameState, userInput, currentWord]); // eslint-disable-line react-hooks/exhaustive-deps -- deliberately keyed to the typing state, not to the handlers it calls
 
   const renderInteractiveSentence = () => {
     if (!currentWord) return null;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, Loader2, Flame, CheckCircle2, Circle, Sun, Moon, Coffee,
@@ -8,6 +8,7 @@ import {
 import { useStudentProgress } from '../utils/supabaseClient';
 import { getTrackConfig } from '../components/trackRegistry';
 import { Card, Badge, Button } from '../components/ui';
+import useDarkMode from '../hooks/useDarkMode';
 import { PROGRAM, BENCHMARK } from '../utils/studyPlanConfig';
 import {
   todayISO, dayName, evaluateDay, weekOf, computeStreak, missedThisWeek,
@@ -343,22 +344,8 @@ export default function Today() {
   // would write to, and this screen never saves.
   const { user, allProgress, isLoadingDB } = useStudentProgress(navigate, 'GED_ENG');
 
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, toggleDarkMode] = useDarkMode();
   const [iso] = useState(todayISO);
-
-  useEffect(() => {
-    const dark = localStorage.getItem('theme') === 'dark' ||
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setIsDark(dark);
-    if (dark) document.documentElement.classList.add('dark');
-  }, []);
-
-  const toggleDarkMode = () => {
-    const next = !isDark;
-    document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('theme', next ? 'dark' : 'light');
-    setIsDark(next);
-  };
 
   const day = useMemo(() => evaluateDay(iso, allProgress), [iso, allProgress]);
   const streak = useMemo(() => computeStreak(allProgress, iso), [iso, allProgress]);

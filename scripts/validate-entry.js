@@ -9,9 +9,9 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
-import { TRACKS, getTrack, contentProblems } from '../src/data/index.js';
+import { getTrack, contentProblems } from '../src/data/index.js';
 import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
-import { TASKS, getTask, resolveUnitTasks, unitXPOf, normalizeScore } from '../src/tasks/taskRegistry.js';
+import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/taskRegistry.js';
 import { parseEquation, applyMove, suggestMove, isSolved, sameSolution } from '../src/utils/linearEquation.js';
 import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
 

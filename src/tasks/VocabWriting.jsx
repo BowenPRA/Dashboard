@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BookOpen, Volume2, PenTool, CheckCircle2, AlertCircle, FileText } from 'lucide-react';
+import { BookOpen, Volume2, CheckCircle2, AlertCircle, FileText } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 export default function VocabWriting({ pool, track, onComplete, onQuit }) {
@@ -13,6 +13,7 @@ export default function VocabWriting({ pool, track, onComplete, onQuit }) {
     
     return () => {
       if (audioState.current.currentAudio) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- reads the ref at unmount on purpose: this is whatever audio is playing when the student leaves, not what was playing at mount
         audioState.current.currentAudio.pause();
       }
     };

@@ -74,6 +74,11 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       const text = saved.text;
       const status = saved.status;
 
+      // Restores the persisted attempt when the item changes, and (per task) also
+      // scrolls, focuses, or advances the running score — side effects that have to
+      // stay in an effect. Queued for the render-phase-adjustment rewrite; not worth
+      // re-testing scoring mid study-block. See docs/daily-plan.md.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUserAnswer(text || '');
       setFeedback(null);
 

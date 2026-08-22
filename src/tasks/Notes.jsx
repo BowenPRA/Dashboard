@@ -6,51 +6,17 @@ import {
   Volume2, Repeat, AlertTriangle, UserCheck, HelpCircle, Equal, Scissors, Users
 } from 'lucide-react';
 
-import katex from 'katex';
-import 'katex/dist/katex.min.css';
-
 import TopBar from '../components/TopBar';
 import WidgetRenderer from '../components/WidgetRenderer';
 import { SlideLayout } from '../components/notes/layouts';
 import { isLayout } from '../components/notes/layouts/helpers.jsx';
+import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 
 const IconMap = {
   BookOpen, Scale, Target, MessageSquare, ShieldCheck,
   Repeat, AlertTriangle, UserCheck, HelpCircle, Equal, Scissors, Users,
 };
 
-const SafeInlineMath = ({ math }) => {
-  try {
-    const k = katex.default || katex;
-    const cleanMath = math.replace(/[\u200B-\u200D\uFEFF]/g, '');
-    const html = k.renderToString(cleanMath, { throwOnError: true, displayMode: false });
-    return <span dangerouslySetInnerHTML={{ __html: html }} className="mx-0.5" />;
-  } catch (err) {
-    return <span className="text-rose-500 font-mono text-sm px-1" title={err.message}>{math}</span>;
-  }
-};
-
-const SafeBlockMath = ({ math }) => {
-  try {
-    const k = katex.default || katex;
-    const cleanMath = math.replace(/[\u200B-\u200D\uFEFF]/g, '');
-    const html = k.renderToString(cleanMath, { throwOnError: true, displayMode: true });
-    return (
-      <div 
-        className="overflow-x-auto overflow-y-hidden w-full py-4 my-2 px-4 flex justify-center custom-scrollbar" 
-        dangerouslySetInnerHTML={{ __html: html }} 
-      />
-    );
-  } catch (err) {
-    return (
-      <div className="flex flex-col items-center bg-rose-500/10 p-4 rounded-xl border border-rose-500/20 max-w-full overflow-x-auto my-4 w-full">
-        <span className="text-rose-500 font-black text-xs uppercase tracking-widest mb-2">KaTeX Error</span>
-        <span className="text-rose-700 dark:text-rose-300 font-mono text-sm text-center mb-2">{err.message}</span>
-        <span className="text-rose-800/50 dark:text-rose-200/50 font-mono text-xs text-center break-all">{math}</span>
-      </div>
-    );
-  }
-};
 
 class WidgetErrorBoundary extends Component {
   constructor(props) {
@@ -58,7 +24,7 @@ class WidgetErrorBoundary extends Component {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
@@ -186,7 +152,11 @@ export default function Notes({ slides, onComplete, onQuit }) {
     return () => stopAudio();
   }, []);
 
+  // Changing slide must stop the previous slide's narration. Pausing an <audio>
+  // element is a side effect on an external system, so it belongs in an effect;
+  // the flagged setState is `stopAudio` clearing the play/pause icon.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     stopAudio();
   }, [currentIndex]);
 
@@ -214,6 +184,10 @@ export default function Notes({ slides, onComplete, onQuit }) {
       window.addEventListener('keydown', handleActivity);
       window.addEventListener('touchstart', handleActivity);
     } else {
+      // Leaving display mode must clear the idle overlay. Cheap, runs only on the
+      // mode flip, and there is no render-phase equivalent — `isDisplayMode` is
+      // this component's own state, not a prop it can derive from.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsIdle(false);
     }
 
@@ -316,7 +290,7 @@ export default function Notes({ slides, onComplete, onQuit }) {
     return () => window.removeEventListener('keydown', handleGlobalNav);
     // checkAnswers: answering the check on the current slide unblocks Enter/→,
     // and the listener has to be rebuilt to see it.
-  }, [currentIndex, slides?.length, zoomedImage, checkAnswers]);
+  }, [currentIndex, slides?.length, zoomedImage, checkAnswers]); // eslint-disable-line react-hooks/exhaustive-deps -- handleNext/handlePrev are stable navigation, re-binding the key listener each render is worse
 
   if (!slides || !Array.isArray(slides) || slides.length === 0) {
     return (
@@ -552,7 +526,9 @@ export default function Notes({ slides, onComplete, onQuit }) {
                     button so a solo student still hears the slide read aloud. */}
                 {!isDisplayMode && currentSlide.audio && (
                   <button
-                    onClick={() => toggleAudio(currentSlide.audio)}
+                    onClick={() => {
+                      toggleAudio(currentSlide.audio);
+                    }}
                     className="absolute bottom-3 right-3 z-40 flex items-center justify-center w-10 h-10 rounded-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur text-slate-600 dark:text-slate-300 shadow-md border-2 border-slate-200 dark:border-slate-700 border-b-[3px] opacity-80 hover:opacity-100 active:border-b-[1px] active:translate-y-[2px] transition-all"
                     title={isPlayingAudio ? 'Stop audio' : 'Listen'}
                   >
@@ -617,7 +593,9 @@ export default function Notes({ slides, onComplete, onQuit }) {
               )}
 
               {!isDisplayMode && currentSlide.audio && (
-                 <button onClick={() => toggleAudio(currentSlide.audio)} className="mt-12 mx-auto flex items-center bg-white text-slate-800 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md border-b-[4px] border-slate-200 active:border-b-0 active:translate-y-[4px] px-6 py-3 text-sm">
+                 <button onClick={() => {
+                      toggleAudio(currentSlide.audio);
+                    }} className="mt-12 mx-auto flex items-center bg-white text-slate-800 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md border-b-[4px] border-slate-200 active:border-b-0 active:translate-y-[4px] px-6 py-3 text-sm">
                    {isPlayingAudio ? <PauseCircle className="w-6 h-6 mr-3 text-slate-800" /> : <PlayCircle className="w-6 h-6 mr-3 text-slate-800" />}
                    {isPlayingAudio ? "Stop Audio" : "Listen"}
                  </button>
@@ -642,7 +620,10 @@ export default function Notes({ slides, onComplete, onQuit }) {
                   
                   {!isDisplayMode && currentSlide.audio && (
                     <button 
-                      onClick={() => toggleAudio(currentSlide.audio)} 
+                      onClick={() => {
+                        // eslint-disable-next-line react-hooks/refs -- runs on click, never during render
+                        toggleAudio(currentSlide.audio);
+                      }}
                       className="ml-auto z-10 bg-white/20 hover:bg-white/30 transition-colors rounded-xl shadow-sm border border-white/30 active:scale-95 border-b-[4px] active:border-b-[1px] active:translate-y-[3px] p-2 lg:p-3"
                     >
                       {isPlayingAudio ? <PauseCircle className="drop-shadow-sm w-6 h-6 lg:w-7 lg:h-7" /> : <PlayCircle className="drop-shadow-sm w-6 h-6 lg:w-7 lg:h-7" />}
@@ -766,7 +747,9 @@ export default function Notes({ slides, onComplete, onQuit }) {
               
               {/* FIX: Audio button universally applied to the summary screen */}
               {!isDisplayMode && currentSlide.audio && (
-                 <button onClick={() => toggleAudio(currentSlide.audio)} className="mt-12 mx-auto flex items-center bg-white text-slate-800 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md border-b-[4px] border-slate-200 active:border-b-0 active:translate-y-[4px] px-6 py-3 text-sm">
+                 <button onClick={() => {
+                      toggleAudio(currentSlide.audio);
+                    }} className="mt-12 mx-auto flex items-center bg-white text-slate-800 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-md border-b-[4px] border-slate-200 active:border-b-0 active:translate-y-[4px] px-6 py-3 text-sm">
                    {isPlayingAudio ? <PauseCircle className="w-6 h-6 mr-3 text-slate-800" /> : <PlayCircle className="w-6 h-6 mr-3 text-slate-800" />}
                    {isPlayingAudio ? "Stop Audio" : "Listen"}
                  </button>
@@ -834,7 +817,9 @@ export default function Notes({ slides, onComplete, onQuit }) {
 
           {currentSlide.audio && (
             <button 
-              onClick={() => toggleAudio(currentSlide.audio)}
+              onClick={() => {
+                      toggleAudio(currentSlide.audio);
+                    }}
               className={`flex items-center justify-center p-2 rounded-xl font-black transition-colors ${isPlayingAudio ? 'bg-amber-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
               title="Play Audio"
             >

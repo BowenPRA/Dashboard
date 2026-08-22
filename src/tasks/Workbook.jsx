@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useEffect, Component } from 'react';
 import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, Lightbulb } from 'lucide-react';
-import katex from 'katex';
-import 'katex/dist/katex.min.css';
 import TopBar from '../components/TopBar';
+import { renderMath } from '../components/notes/renderMath';
 import { answersEquivalent } from '../utils/mathEquivalence';
 
 /* ------------------------------------------------------------------ *
@@ -14,18 +13,17 @@ import { answersEquivalent } from '../utils/mathEquivalence';
  * a fill-in diagram (inlineSvg → inlineSvgSolved). See docs/workbook-tasks.md.
  * ------------------------------------------------------------------ */
 
-const strip = (s) => s.replace(/[​-‍﻿]/g, '');
+// Same KaTeX boundary as the Notes deck, but the workbook keeps its own tighter
+// block spacing and its one-line error fallback.
 const SafeInlineMath = ({ math }) => {
-  try {
-    const k = katex.default || katex;
-    return <span className="mx-0.5" dangerouslySetInnerHTML={{ __html: k.renderToString(strip(math), { throwOnError: true, displayMode: false }) }} />;
-  } catch (err) { return <span className="text-rose-500 font-mono text-sm px-1" title={err.message}>{math}</span>; }
+  const { html, error } = renderMath(math, false);
+  if (error) return <span className="text-rose-500 font-mono text-sm px-1" title={error}>{math}</span>;
+  return <span className="mx-0.5" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 const SafeBlockMath = ({ math }) => {
-  try {
-    const k = katex.default || katex;
-    return <div className="overflow-x-auto py-2 flex justify-center custom-scrollbar" dangerouslySetInnerHTML={{ __html: k.renderToString(strip(math), { throwOnError: true, displayMode: true }) }} />;
-  } catch (err) { return <span className="text-rose-500 font-mono text-sm px-1" title={err.message}>{math}</span>; }
+  const { html, error } = renderMath(math, true);
+  if (error) return <span className="text-rose-500 font-mono text-sm px-1" title={error}>{math}</span>;
+  return <div className="overflow-x-auto py-2 flex justify-center custom-scrollbar" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 /** Render a string with **bold**, $inline$ and $$block$$ math. */
@@ -131,7 +129,7 @@ export default function Workbook({ pool, onComplete, onQuit }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [idx, total, q]);
+  }, [idx, total, q]); // eslint-disable-line react-hooks/exhaustive-deps -- go/toggle are re-created each render; re-binding the key listener each render is worse
 
   if (total === 0) {
     return (

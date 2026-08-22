@@ -24,7 +24,7 @@ const getNiceStep = (span, maxTicks) => {
   const roughStep = span / maxTicks;
   const mag = Math.pow(10, Math.floor(Math.log10(roughStep)));
   const rel = roughStep / mag;
-  let niceMult = 1;
+  let niceMult;
   if (rel < 1.5) niceMult = 1;
   else if (rel < 3) niceMult = 2;
   else if (rel < 7) niceMult = 5;
@@ -78,7 +78,7 @@ export default function MathGraph({ equation = 'e^x', xRange = [-3, 3], yRange =
     const area = `${path} L ${points[points.length-1].split(',')[0]},${height} L ${points[0].split(',')[0]},${height} Z`;
     
     return { pathData: path, areaData: area };
-  }, [equation, xMin, xMax, yMin, yMax, height]);
+  }, [equation, xMin, xMax, yMin, yMax, height]); // eslint-disable-line react-hooks/exhaustive-deps -- mapX/mapY are derived from these same bounds
 
   const currentY = safeEvaluate(equation, sliderX);
   const pointX = mapX(sliderX);

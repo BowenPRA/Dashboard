@@ -6,7 +6,7 @@ export const playChime = (type) => {
   
   // Anti-Spam: Instantly kill any currently playing sound effects
   activeNodes.forEach(node => {
-    try { node.stop(); node.disconnect(); } catch (e) { }
+    try { node.stop(); node.disconnect(); } catch { /* already stopped or disconnected — nothing to clean up */ }
   });
   activeNodes = [];
 

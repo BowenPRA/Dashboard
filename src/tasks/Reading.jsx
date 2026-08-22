@@ -70,6 +70,11 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
           ? targetLetters 
           : targetLetters.substring(0, getPrefixLength(targetLetters));
       });
+      // Restores the persisted attempt when the item changes, and (per task) also
+      // scrolls, focuses, or advances the running score — side effects that have to
+      // stay in an effect. Queued for the render-phase-adjustment rewrite; not worth
+      // re-testing scoring mid study-block. See docs/daily-plan.md.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputs(initialInputs);
 
       if (isPreviouslyPerfect) {
@@ -152,7 +157,7 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
     };
     window.addEventListener('keydown', handleGlobalNav);
     return () => window.removeEventListener('keydown', handleGlobalNav);
-  }, [gameState, inputs]); 
+  }, [gameState, inputs]); // eslint-disable-line react-hooks/exhaustive-deps -- deliberately keyed to the answer state, not to the handlers it calls
 
   const renderPassage = () => {
     if (!currentPassage) return null;
@@ -316,7 +321,10 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
                       Passage Audio
                     </span>
                     <div className="flex items-center space-x-3">
-                       <button onClick={() => { stopAudio(); playPassageAudio(); }} className="flex-1 flex items-center justify-center bg-[#1CB0F6] hover:bg-[#1899D6] text-white py-2.5 rounded-xl font-bold text-sm uppercase tracking-wider shadow-sm transition-all active:scale-95">
+                       <button onClick={() => {
+                         // eslint-disable-next-line react-hooks/refs -- runs on click, never during render
+                         stopAudio(); playPassageAudio();
+                       }} className="flex-1 flex items-center justify-center bg-[#1CB0F6] hover:bg-[#1899D6] text-white py-2.5 rounded-xl font-bold text-sm uppercase tracking-wider shadow-sm transition-all active:scale-95">
                          <Volume2 className="w-4 h-4 mr-2" /> Replay
                        </button>
                        <button onClick={stopAudio} className="flex-1 flex items-center justify-center bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:text-[#EA2B2B] dark:hover:text-red-400 border-2 border-slate-200 dark:border-slate-600 py-2.5 rounded-xl font-bold text-sm uppercase tracking-wider shadow-sm transition-all active:scale-95">

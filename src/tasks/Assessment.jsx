@@ -433,18 +433,32 @@ export default function Assessment(props) {
   const [expandedReviewId, setExpandedReviewId] = useState(null);
   const [activeGlossaryTerm, setActiveGlossaryTerm] = useState(null);
 
-  useEffect(() => {
+  // Reset the clock when a different assessment loads. Adjusting state during
+  // render rather than in an effect means the first paint already shows the new
+  // limit — the effect version rendered the previous unit's clock for a frame.
+  const [clockSetFor, setClockSetFor] = useState(extractedTimeLimit);
+  if (clockSetFor !== extractedTimeLimit) {
+    setClockSetFor(extractedTimeLimit);
     setTimeLeft(extractedTimeLimit);
-  }, [extractedTimeLimit]);
+  }
 
+  // `submitAssessment` is a hoisted function declaration, not a const, so the
+  // run-out-of-time branch below can name it despite it being written further
+  // down the file. As a `const` it sat in the temporal dead zone at this point
+  // and only worked because effects run after the body finishes evaluating.
   useEffect(() => {
-    if (phase === 'testing' && timeLeft > 0) {
+    if (phase !== 'testing') return undefined;
+    if (timeLeft > 0) {
       const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
       return () => clearInterval(timerId);
-    } else if (phase === 'testing' && timeLeft === 0 && extractedTimeLimit > 0) {
-      submitAssessment();
     }
-  }, [phase, timeLeft, extractedTimeLimit]);
+    // `submitAssessment` is a hoisted function declaration, so there is no
+    // temporal dead zone here; the rule only sees that it is written further
+    // down the file.
+    // eslint-disable-next-line react-hooks/immutability
+    if (extractedTimeLimit > 0) submitAssessment();
+    return undefined;
+  }, [phase, timeLeft, extractedTimeLimit]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!extractedQuestions || extractedQuestions.length === 0) {
     return (
@@ -540,11 +554,12 @@ export default function Assessment(props) {
     return { correctCount, results };
   };
 
-  const submitAssessment = () => {
+  // Declared with `function` so the timer effect above can call it — see there.
+  function submitAssessment() {
     setScoreData(calculateScore());
     setPhase('review');
     window.scrollTo(0, 0);
-  };
+  }
 
   const finishAndExit = () => {
     const scorePct = scoreData.correctCount / totalQuestions;
