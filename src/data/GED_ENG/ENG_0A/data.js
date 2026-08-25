@@ -44,7 +44,7 @@ export const ENGLISH_0A_DATA = {
     {
       id: "arcade",
       title: "Arcade",
-      threshold: 80,
+      threshold: 75,
       tasks: [
         { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]

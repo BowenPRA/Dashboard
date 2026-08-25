@@ -74,6 +74,18 @@ Thresholds sit *below* the phase's own total so a student who half-finishes Lear
 stuck. Keep the existing `id` values `concept` / `practice` / `mastery` — only the display
 titles change.
 
+**A gate must never exceed 80% of the XP available before it**, and `npm run validate`
+fails if one does. Being *reachable* is not enough: a gate at 45 of 55 is clearable by a
+flawless student and by nobody else, so a student who drops a few marks watches the next
+phase stay shut with no way to open it. This is not hypothetical — moving short answers to
+mark-scheme-only marking removed three near-automatic English points per question, and the
+45 in the table above quietly became impassable in `ENG_1A/1B/1C`. Where a unit's Drill
+phase is thin, use a lower Prove gate (those three units now use 35) rather than assuming
+the numbers in this table transfer.
+
+The 80% cap does not apply to a reward-only phase such as the arcade, which carries 0 XP:
+locking a student out of a game costs them nothing they need.
+
 ---
 
 ## 3. Per-track composition
@@ -175,6 +187,7 @@ Build order and rationale: [independent-learning.md](independent-learning.md) §
 - [ ] Move `ESSAY` out of `ENG_0A`, `ENG_0B` (grammar units do not need one)
 - [ ] Swap `SHORT_ANSWERS` → `WORKBOOK` as the drill task in `MATH_1A`, `MATH_1B`
 - [ ] Remove `READ_COMP` from `MATH_1A`, `MATH_1B`
-- [ ] Re-title phases Learn / Drill / Prove; set thresholds 0 / 15 / 45
+- [ ] Re-title phases Learn / Drill / Prove; set thresholds 0 / 15 / 45 — then check each
+      gate against the 80% rule above and lower it if the phase before it is thin
 - [ ] Re-check each unit still totals 100 XP
 - [ ] `npm run validate` green

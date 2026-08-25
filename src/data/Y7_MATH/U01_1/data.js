@@ -23,7 +23,7 @@ export const U01_1_DATA = {
     {
       id: "practice",
       title: "Phase 1: Practice",
-      threshold: 50,
+      threshold: 40,
       tasks: [
         { id: "WORKBOOK", dbKey: "p11", maxXP: 50 },
       ],

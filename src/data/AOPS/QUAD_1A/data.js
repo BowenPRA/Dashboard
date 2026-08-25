@@ -46,7 +46,7 @@ export const QUAD_1A_DATA = {
     {
       id: 'mastery',
       title: 'Prove',
-      threshold: 45,
+      threshold: 40,
       tasks: [
         { id: 'GRAPH', dbKey: 'p15', maxXP: 25 },
         { id: 'ASSESSMENT', dbKey: 'p9', maxXP: 25 },

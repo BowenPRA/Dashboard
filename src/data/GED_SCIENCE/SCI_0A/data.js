@@ -72,7 +72,7 @@ export const GED_SCI_0A_DATA = {
     {
       id: "arcade",
       title: "Arcade",
-      threshold: 80,
+      threshold: 70,
       tasks: [
         { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]

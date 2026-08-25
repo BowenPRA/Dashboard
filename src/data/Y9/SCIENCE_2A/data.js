@@ -36,7 +36,7 @@ export const SCIENCE_2A_DATA = {
     {
       id: "mastery",
       title: "Phase 2: Mastery",
-      threshold: 30,
+      threshold: 25,
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },

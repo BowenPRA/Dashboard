@@ -107,7 +107,35 @@ for (const trackId of TRACK_IDS) {
     for (const p of unit.phases || []) {
       if (typeof p.threshold !== 'number') err(`${label}: phase "${p.id}" has a non-numeric threshold`);
       if (p.threshold > cumulative) err(`${label}: phase "${p.id}" needs ${p.threshold} XP but only ${cumulative} is reachable before it`);
-      cumulative += (p.tasks || []).reduce((s, t) => s + (getTask(t.id) ? (t.maxXP ?? getTask(t.id).defaultMaxXP) : 0), 0);
+
+      const phaseXP = (p.tasks || []).reduce((s, t) => s + (getTask(t.id) ? (t.maxXP ?? getTask(t.id).defaultMaxXP) : 0), 0);
+
+      /*
+       * A gate that is merely *reachable* is not the same as a gate that is
+       * passable. "Reachable" means a flawless student can clear it; a gate at
+       * 82% of everything before it locks out anyone who drops a few marks, and
+       * it does so silently — the check above stays green.
+       *
+       * This bit us for real: making short answers mark-scheme-only removed
+       * three near-automatic English points per question, and three GED English
+       * units went from "tight" to genuinely impassable without near-perfect
+       * work. Nothing failed; the units just quietly stopped opening.
+       *
+       * So progression gates cap at 80% of the XP available before them.
+       * Reward-only phases are exempt: the 80-of-100 arcade gate is a deliberate
+       * design decision, and locking a student out of a game costs them nothing
+       * they need.
+       */
+      const isReward = phaseXP === 0;
+      if (!isReward && cumulative > 0 && p.threshold > cumulative * 0.8) {
+        err(
+          `${label}: phase "${p.id}" gates at ${p.threshold} of ${cumulative} XP available before it ` +
+          `(${Math.round((p.threshold / cumulative) * 100)}%) — a student who drops a few marks can never open it. ` +
+          `Cap progression gates at 80%: ${Math.floor(cumulative * 0.8)} or lower.`
+        );
+      }
+
+      cumulative += phaseXP;
     }
 
     // -- assessment answer keys

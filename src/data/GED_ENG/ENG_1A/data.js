@@ -38,7 +38,7 @@ export const ENGLISH_1A_DATA = {
     {
       id: "mastery",
       title: "Prove",
-      threshold: 45,
+      threshold: 35,
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
@@ -48,7 +48,7 @@ export const ENGLISH_1A_DATA = {
     {
       id: "arcade",
       title: "Arcade",
-      threshold: 80,
+      threshold: 70,
       tasks: [
         { id: "GAMES", dbKey: "p12", maxXP: 0 }
       ]
