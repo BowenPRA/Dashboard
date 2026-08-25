@@ -14,6 +14,7 @@ import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/taskRegistry.js';
 import { parseEquation, applyMove, suggestMove, isSolved, sameSolution } from '../src/utils/linearEquation.js';
 import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
+import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -349,6 +350,87 @@ for (const trackId of TRACK_IDS) {
           // only if the curve really does miss the axis.
           if (st.kind === 'zeros' && targets.length === 0 && -c.k / c.a >= 0) {
             err(`${at}: zeros step has no targets but the curve does cross the axis`);
+          }
+        }
+      }
+    }
+
+    // -- Vectors items: like Graph It, the task DERIVES every answer from the
+    //    forces, so the risk is not a wrong key but an unanswerable or
+    //    untellable question — a resultant of zero (whose direction does not
+    //    exist), two forces that lie on top of each other (no triangle to see),
+    //    or a pair whose components are so close that the sin/cos diagnosis
+    //    would call a correct answer a mistake. All three look fine in the data
+    //    and only fall over in front of the student.
+    if ((unit.vectorAdd || []).length) {
+      const seenIds = new Set();
+      for (const v of unit.vectorAdd) {
+        const at = `${label}: vectorAdd ${v.id || '(no id)'}`;
+        if (!v.id) err(`${label}: a vectorAdd item has no id`);
+        if (seenIds.has(v.id)) err(`${at}: duplicate id`);
+        seenIds.add(v.id);
+        if (!v.prompt || !v.promptVn) err(`${at} is missing a bilingual prompt`);
+
+        const forces = v.vectors || [];
+        if (forces.length < 2) { err(`${at} has ${forces.length} force(s) — needs at least 2 to add`); continue; }
+
+        let bad = false;
+        const names = new Set();
+        for (const f of forces) {
+          const which = `${at}: force ${f.name || '(unnamed)'}`;
+          if (!f.name) { err(`${at} has a force with no name`); bad = true; }
+          if (names.has(f.name)) { err(`${which} shares its name with another force`); bad = true; }
+          names.add(f.name);
+          if (!(typeof f.mag === 'number') || !(f.mag > 0)) { err(`${which} has mag ${f.mag} — must be a positive number`); bad = true; }
+          if (typeof f.angle !== 'number' || !Number.isFinite(f.angle)) { err(`${which} has angle ${f.angle} — must be a number of degrees`); bad = true; }
+          if (!f.label || !f.labelVn) warn(`${which} has no bilingual label`);
+        }
+        if (bad) continue;
+
+        // Two forces along the same line draw one arrow on top of another: the
+        // triangle the whole task is teaching never appears.
+        for (let i = 0; i < forces.length; i++) {
+          for (let j = i + 1; j < forces.length; j++) {
+            const gap = Math.abs(((forces[i].angle - forces[j].angle) % 360 + 360) % 360);
+            if (Math.min(gap, 360 - gap) < 5) {
+              err(`${at}: ${forces[i].name} and ${forces[j].name} point within 5° of each other — they draw as one arrow, so there is no triangle to read`);
+            }
+          }
+        }
+
+        const r = resultantOf(forces);
+        if (r.mag < 1) {
+          err(`${at}: the forces very nearly cancel (|R| = ${r.mag.toFixed(2)}) — a resultant of about zero has no direction to ask for`);
+        }
+
+        // The task names the sin/cos swap when a wrong entry matches the OTHER
+        // component. If a force's two components are within tolerance of each
+        // other, the swap is undetectable and — worse — a student who does swap
+        // them scores full marks.
+        for (const f of forces) {
+          const c = componentsOf(f);
+          if (closeEnough(c.x, c.y, 'linear')) {
+            err(`${at}: force ${f.name} at ${f.angle}° has Fx ≈ Fy (${c.x.toFixed(2)} vs ${c.y.toFixed(2)}) — swapping sin and cos would still be marked right. Move it off 45°.`);
+          }
+        }
+
+        // Same problem one level up: an angle the student could reach by
+        // measuring from the wrong axis.
+        const fromY = ((90 - r.angle) % 360 + 360) % 360;
+        if (Math.abs(fromY - r.angle) <= ANGLE_TOL) {
+          err(`${at}: the resultant at ${r.angle.toFixed(1)}° reads the same from the x-axis and the y-axis, so that mistake cannot be caught`);
+        }
+
+        // A grid that cannot hold the arrows draws them off the canvas.
+        const g = v.grid || gridFor(forces);
+        if (!(g.step > 0) || !(g.xMax > g.xMin) || !(g.yMax > g.yMin)) {
+          err(`${at}: grid ${JSON.stringify(g)} is not a usable window`);
+        } else {
+          const pts = [{ x: r.x, y: r.y }, ...forces.map(componentsOf)];
+          for (const p of pts) {
+            if (p.x < g.xMin || p.x > g.xMax || p.y < g.yMin || p.y > g.yMax) {
+              err(`${at}: an arrow reaches (${p.x.toFixed(1)}, ${p.y.toFixed(1)}), outside the grid ${JSON.stringify(g)}`);
+            }
           }
         }
       }

@@ -4,8 +4,9 @@ import { Loader2 } from 'lucide-react';
 // Lazy-load complex mathematical and physics widgets to keep bundle size small
 const MathGraph = lazy(() => import('../components/math/MathGraph'));
 const ParabolaLab = lazy(() => import('../components/math/ParabolaLab'));
+const VectorLab = lazy(() => import('../components/math/VectorLab'));
 
-const KNOWN = ['MathGraph', 'ParabolaLab'];
+const KNOWN = ['MathGraph', 'ParabolaLab', 'VectorLab'];
 
 export default function WidgetRenderer({ config, lang = 'en' }) {
   if (!config) return null;
@@ -31,6 +32,7 @@ export default function WidgetRenderer({ config, lang = 'en' }) {
       {/* Interface text inside a widget follows the deck's EN/VN toggle, so the
           language has to travel with the config. */}
       {type === 'ParabolaLab' && <ParabolaLab {...params} lang={lang} />}
+      {type === 'VectorLab' && <VectorLab {...params} lang={lang} />}
 
       {/* Fallback for unrecognized dynamically requested widgets */}
       {!KNOWN.includes(type) && (

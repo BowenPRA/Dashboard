@@ -1,7 +1,8 @@
 import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
-  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart
+  Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
+  Move3d
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -288,6 +289,25 @@ export const TASKS = [
     component: lazy(() => import('./GraphPlot.jsx')),
     hasContent: (u) => notEmpty(u.graphPlot),
     buildPool: (u) => u.graphPlot || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'VECTOR_ADD',
+    nativeMax: 10,
+    dbKey: 'p16',
+    // "Resolve, add down the columns, rebuild." The student is given two forces
+    // as magnitude + angle and fills in the component table while the picture
+    // redraws under their fingers. Like Graph It it is production, not
+    // recognition — there is nothing to eliminate. Item shape is documented in
+    // src/tasks/VectorAdd.jsx; every answer is derived from the forces.
+    label: 'Vectors',
+    icon: Move3d,
+    color: { bg: 'bg-[#6366f1]', border: 'border-[#4338ca]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'mastery',
+    component: lazy(() => import('./VectorAdd.jsx')),
+    hasContent: (u) => notEmpty(u.vectorAdd),
+    buildPool: (u) => u.vectorAdd || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];

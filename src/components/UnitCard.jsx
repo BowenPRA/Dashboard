@@ -3,7 +3,7 @@ import {
   Languages, BookOpen, Lock, Award, AlertCircle,
   ChevronDown, ChevronUp, Trophy, Globe, Atom, Leaf, GraduationCap,
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
-  Compass, Lightbulb, Activity, Zap, Landmark
+  Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEY } from '../utils/progressSchema';
@@ -14,7 +14,7 @@ const IconMap = {
   "Microscope": Microscope, "Telescope": Telescope, "Brain": Brain,
   "Rocket": Rocket, "Calculator": Calculator, "Dna": Dna, "FlaskConical": FlaskConical,
   "Compass": Compass, "Lightbulb": Lightbulb, "Activity": Activity, "Zap": Zap,
-  "Landmark": Landmark
+  "Landmark": Landmark, "Magnet": Magnet, "Move3d": Move3d
 };
 
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card

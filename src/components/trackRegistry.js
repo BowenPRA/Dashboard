@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -87,6 +87,19 @@ export const TRACK_REGISTRY = [
     },
   },
   {
+    id: 'PHYSICS',
+    title: 'Physics',
+    desc: 'Forces, Vectors & Motion',
+    icon: Magnet,
+    group: 'Physics',
+    theme: {
+      bg: 'bg-indigo-500', border: 'border-indigo-700', hover: 'hover:bg-indigo-400',
+      text: 'text-indigo-600 dark:text-indigo-400',
+      ambient1: 'bg-indigo-400', ambient2: 'bg-sky-500',
+      glow: 'hover:border-indigo-400 dark:hover:border-indigo-600',
+    },
+  },
+  {
     id: 'Y7_MATH',
     title: 'Year 7 Mathematics',
     desc: 'Cambridge Lower Secondary',
@@ -145,4 +158,4 @@ export const TRACK_IDS = TRACK_REGISTRY.map((t) => t.id);
 export const getTrackConfig = (id) => TRACK_REGISTRY.find((t) => t.id === id);
 
 /** Display order for grouped views. */
-export const TRACK_GROUPS = ['GED', 'Cambridge', 'Problem Solving', 'Foundation'];
+export const TRACK_GROUPS = ['GED', 'Cambridge', 'Physics', 'Problem Solving', 'Foundation'];
