@@ -324,6 +324,7 @@ export const ENGLISH_0B_DATA = {
     guidelines: [
       "State clearly which position is better supported.",
       "Use evidence from BOTH sources.",
+      "Judge how strong each side's evidence is — do not just repeat it.",
       "Check that every verb agrees with its true subject.",
       "Write in paragraphs, with a short conclusion.",
     ],
