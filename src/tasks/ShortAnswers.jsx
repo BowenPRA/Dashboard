@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, CheckCircle2, XCircle, Award, PenTool, Type, FileEdit, ArrowRight, Languages } from 'lucide-react';
+import { Bot, CheckCircle2, XCircle, MinusCircle, PenTool, ArrowRight, Languages } from 'lucide-react';
 import TopBar from '../components/TopBar';
 
 import { gradeShortAnswer } from '../utils/aiGrader';
@@ -104,27 +104,15 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     // Suggested words are still highlighted as hints, but never scored.
     const usedWordGroups = suggestedWords.filter(group => checkRequiredWordGroup(group, userAnswer));
 
-    const trimmed = userAnswer.trim();
-    const hasCapital = /^[A-Z]/.test(trimmed);
-    const hasPeriod = /[.!?]$/.test(trimmed);
-    const englishScore = (hasCapital && hasPeriod) ? 1 : 0;
-
-    // Two components only: content (mark scheme) + English (max 3).
-    const pointsEarned = englishScore;
-    const maxPoints = scienceMaxMarks + 3;
-
+    // The mark scheme is the whole score now, and only the AI grader can award
+    // it, so a disabled grader means no marks — there is nothing left to
+    // approximate locally.
     setFeedback({
-      originalAnswer: userAnswer.trim(),
       usedWordGroups,
-      scienceMarks: markScheme.map(() => false),
-      scienceScore: 0,
-      englishScore,
-      pointsEarned,
-      maxPoints,
+      marks: markScheme.map(() => false),
+      score: 0,
+      maxMarks: scienceMaxMarks,
       isPerfect: false,
-      englishFeedback: englishScore ? "1 point awarded for capital letter and punctuation." : "Missed extra point. Start with a capital and end with a period.",
-      scienceFeedback: "AI Grader is disabled for this unit due to 3 strikes. No marks can be awarded.",
-      fixedAnswer: "AI Grader disabled.",
       isStrikeFallback: true
     });
 
@@ -187,27 +175,24 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
     // Suggested words are highlighted as hints only — not part of the score.
     const usedWordGroups = suggestedWords.filter(group => checkRequiredWordGroup(group, userAnswer));
-    const scienceScore = aiData.scienceScore || 0;
-    const englishScore = aiData.englishScore || 0;
-    const marksScored = markScheme.map((_, i) => i < scienceScore);
 
-    // Two components only: content (mark scheme) + English (max 3).
-    const pointsEarned = scienceScore + englishScore;
-    const maxPoints = scienceMaxMarks + 3;
-    const isPerfect = pointsEarned >= maxPoints;
+    // The mark scheme is the entire score. Trust the grader's per-row judgement
+    // rather than filling the first N rows from a total, so a student who earns
+    // the second marking point but not the first sees exactly that.
+    const score = Number.isFinite(aiData.contentScore) ? aiData.contentScore : (aiData.scienceScore || 0);
+    const marks = Array.isArray(aiData.markSchemeHits)
+      ? markScheme.map((_, i) => Boolean(aiData.markSchemeHits[i]))
+      : markScheme.map((_, i) => i < score);
+
+    const maxMarks = scienceMaxMarks;
+    const isPerfect = score >= maxMarks;
 
     setFeedback({
-      originalAnswer: userAnswer.trim(),
       usedWordGroups,
-      scienceMarks: marksScored,
-      scienceScore,
-      englishScore,
-      pointsEarned: Math.min(pointsEarned, maxPoints),
-      maxPoints,
+      marks,
+      score: Math.min(score, maxMarks),
+      maxMarks,
       isPerfect,
-      englishFeedback: aiData.englishFeedback || "No feedback provided.",
-      scienceFeedback: aiData.scienceFeedback || "No feedback provided.",
-      fixedAnswer: aiData.reworkedAnswer || userAnswer.trim(),
       isStrikeFallback: false
     });
 
@@ -224,14 +209,13 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     let newMaxPoints = maxPossiblePoints;
 
     if (gameState === 'SAVED_PERFECT') {
-      const maxP = scienceMaxMarks + 3;
-      newCumPoints += maxP;
-      newMaxPoints += maxP;
+      newCumPoints += scienceMaxMarks;
+      newMaxPoints += scienceMaxMarks;
     } else if (feedback) {
-      newCumPoints += feedback.pointsEarned;
-      newMaxPoints += feedback.maxPoints;
+      newCumPoints += feedback.score;
+      newMaxPoints += feedback.maxMarks;
     } else if (gameState === 'SAVED_API_ERROR') {
-      newMaxPoints += scienceMaxMarks + 3;
+      newMaxPoints += scienceMaxMarks;
     }
 
     setCumulativePoints(newCumPoints);
@@ -302,6 +286,43 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     containerClass += "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700";
     textAreaClass += "text-slate-800 dark:text-slate-100";
   }
+
+  /* Three outcomes, and the header says which one at a glance rather than
+     making the student read a fraction to find out. Partial credit gets its own
+     colour: on a mark scheme it is a real result, not a near-miss. */
+  const marksEarned = feedback?.score ?? 0;
+  const RESULT_THEMES = {
+    full: {
+      label: 'Full marks',
+      headerBg: 'bg-emerald-50 dark:bg-emerald-900/20',
+      headerBorder: 'border-emerald-200 dark:border-emerald-800',
+      icon: 'text-emerald-500',
+      title: 'text-emerald-800 dark:text-emerald-300',
+      pill: 'bg-emerald-500 text-white',
+    },
+    partial: {
+      label: 'Partial marks',
+      headerBg: 'bg-amber-50 dark:bg-amber-900/20',
+      headerBorder: 'border-amber-200 dark:border-amber-800',
+      icon: 'text-amber-500',
+      title: 'text-amber-800 dark:text-amber-300',
+      pill: 'bg-amber-500 text-white',
+    },
+    none: {
+      label: 'No marks yet',
+      headerBg: 'bg-rose-50 dark:bg-rose-900/20',
+      headerBorder: 'border-rose-200 dark:border-rose-800',
+      icon: 'text-rose-500',
+      title: 'text-rose-800 dark:text-rose-300',
+      pill: 'bg-rose-500 text-white',
+    },
+  };
+  const resultTheme = feedback?.isPerfect
+    ? RESULT_THEMES.full
+    : marksEarned > 0
+      ? RESULT_THEMES.partial
+      : RESULT_THEMES.none;
+  const ResultIcon = feedback?.isPerfect ? CheckCircle2 : marksEarned > 0 ? MinusCircle : XCircle;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans pb-32 transition-colors duration-300">
@@ -448,110 +469,66 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
         {gameState === 'A' && feedback && (
           <div className="w-full mt-2 animate-in slide-in-from-bottom-8 duration-500">
 
-            {!feedback.isPerfect && (
-              <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
-                <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-2">
-                  Your Attempt
-                </span>
-                <p className="text-lg text-slate-700 dark:text-slate-300 font-medium italic">
-                  "{feedback.originalAnswer}"
-                </p>
-              </div>
-            )}
+            {/* One card carries the whole result. The student's own answer is
+                still in the (now disabled) box above, so repeating it here as
+                "Your Attempt" only pushed the marks further down the page. */}
+            <div className="w-full bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden mb-6">
 
-            <div className="flex items-center mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
-              <div className={`p-3 rounded-full mr-4 flex-shrink-0 ${feedback.isStrikeFallback ? 'bg-rose-500' : 'bg-[#14b8a6]'}`}>
-                <Bot className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
-                  {feedback.isStrikeFallback ? "Local Fallback Evaluation" : "AI Tutor Evaluation"}
-                </h3>
-                <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">
-                  Accuracy Score: 
-                  <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'}`}>
-                    {feedback.pointsEarned} / {feedback.maxPoints} Pts
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            <div className="w-full bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
-              <div className="flex items-center justify-between mb-4 text-slate-800 dark:text-slate-200">
-                <div className="flex items-center">
-                  <Award className="w-6 h-6 mr-2 text-amber-500" />
-                  <h3 className="text-lg font-black">Mark Scheme Breakdown</h3>
+              <div className={`flex items-center justify-between gap-4 px-6 sm:px-8 py-5 border-b ${resultTheme.headerBg} ${resultTheme.headerBorder}`}>
+                <div className="flex items-center min-w-0">
+                  <ResultIcon className={`w-7 h-7 mr-3 flex-shrink-0 ${resultTheme.icon}`} strokeWidth={2.5} />
+                  <div className="min-w-0">
+                    <h3 className={`text-xl font-black leading-tight ${resultTheme.title}`}>
+                      {resultTheme.label}
+                    </h3>
+                    <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-0.5">
+                      Mark Scheme
+                    </p>
+                  </div>
                 </div>
-                <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold px-3 py-1 rounded-lg text-sm">
-                  {feedback.scienceScore} / {scienceMaxMarks} Pts
+                <span className={`flex-shrink-0 font-black text-lg tabular-nums px-4 py-1.5 rounded-xl ${resultTheme.pill}`}>
+                  {feedback.score} / {feedback.maxMarks}
                 </span>
               </div>
-              
-              <ul className="space-y-3">
+
+              <ul className="px-6 sm:px-8 py-6 space-y-4">
                 {markScheme.map((mark, i) => (
                   <li key={i} className="flex items-start">
-                    {feedback.scienceMarks[i] ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
+                    {feedback.marks[i] ? (
+                      <CheckCircle2 className="w-6 h-6 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" strokeWidth={2.5} />
                     ) : (
-                      <XCircle className="w-5 h-5 text-slate-300 dark:text-slate-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <XCircle className="w-6 h-6 text-rose-400 dark:text-rose-500 mr-3 mt-0.5 flex-shrink-0" strokeWidth={2.5} />
                     )}
-                    <span className={`text-base font-medium ${feedback.scienceMarks[i] ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 dark:text-slate-600 line-through'}`}>
+                    <span className={`text-base font-medium leading-relaxed ${
+                      feedback.marks[i]
+                        ? 'text-slate-800 dark:text-slate-200'
+                        : 'text-slate-400 dark:text-slate-500'
+                    }`}>
                       {mark}
                     </span>
                   </li>
                 ))}
               </ul>
+
+              {feedback.isStrikeFallback && (
+                <p className="px-6 sm:px-8 pb-6 -mt-2 text-sm font-bold text-rose-600 dark:text-rose-400">
+                  The AI marker is disabled for this unit after 3 strikes, so no marks can be awarded.
+                </p>
+              )}
             </div>
 
-            <div className="mb-8">
-               <div className="bg-[#fff9e6] dark:bg-[#fff9e6]/10 border border-[#fde68a] dark:border-[#fde68a]/20 p-6 rounded-[1.5rem]">
-                 <div className="flex items-center justify-between mb-3">
-                   <div className="flex items-center text-[#d97706] dark:text-[#fbbf24]">
-                     <Type className="w-5 h-5 mr-2" />
-                     <h4 className="font-black text-sm uppercase tracking-widest">English Feedback</h4>
-                   </div>
-                   <span className="bg-[#fef3c7] dark:bg-[#fef3c7]/20 text-[#b45309] dark:text-[#fcd34d] font-bold px-2 py-0.5 rounded-md text-xs">
-                     {feedback.englishScore} / 3 Pts
-                   </span>
-                 </div>
-                 <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                   {feedback.englishFeedback}
-                 </p>
-               </div>
-            </div>
-
-            <div className="bg-[#ecfccb] dark:bg-[#3f6212]/20 border border-[#bbf7d0] dark:border-[#4d7c0f] p-6 sm:p-8 rounded-[1.5rem] relative overflow-hidden mb-8">
-              <div className="absolute top-4 right-4 bg-[#84cc16] p-2 rounded-full text-white">
-                <FileEdit className="w-5 h-5" />
-              </div>
-              
-              <h4 className="font-black text-[#3f6212] dark:text-[#a3e635] text-sm uppercase tracking-widest mb-4">
-                Suggested Answer
+            <div className="bg-[#ecfccb] dark:bg-[#3f6212]/20 border border-[#bbf7d0] dark:border-[#4d7c0f] p-6 sm:p-8 rounded-[1.5rem] mb-6">
+              <h4 className="font-black text-[#3f6212] dark:text-[#a3e635] text-xs uppercase tracking-widest mb-3">
+                Model Answer
               </h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <span className="block text-xs font-bold text-[#65a30d] dark:text-[#bef264] uppercase mb-1">
-                    {feedback.isPerfect ? "Your Perfect Sentence:" : "Fixed Version of Your Sentence:"}
-                  </span>
-                  <p className="text-lg font-bold text-[#166534] dark:text-[#ecfccb]">
-                    "{feedback.fixedAnswer}"
-                  </p>
-                </div>
-                <div className="pt-4 border-t border-[#d9f99d] dark:border-[#65a30d]">
-                  <span className="block text-xs font-bold text-[#65a30d] dark:text-[#bef264] uppercase mb-1">
-                    Official Model Answer:
-                  </span>
-                  <p className="text-lg font-bold text-[#166534] dark:text-[#ecfccb]">
-                    "{modelAnswer}"
-                  </p>
-                </div>
-              </div>
-              
-              <p className="text-sm font-bold text-[#3f6212] dark:text-[#a3e635] mt-6 bg-[#d9f99d] dark:bg-[#3f6212]/50 inline-block px-4 py-2 rounded-lg">
-                📝 Note how this model answer directly answers the prompt.
+              <p className="text-lg font-bold text-[#166534] dark:text-[#ecfccb] leading-relaxed">
+                &ldquo;{modelAnswer}&rdquo;
               </p>
             </div>
+
+            <p className="text-sm font-bold text-slate-400 dark:text-slate-500 mb-6">
+              Read the model answer, then continue with these marks in mind.
+            </p>
 
             <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800">
                <button 
