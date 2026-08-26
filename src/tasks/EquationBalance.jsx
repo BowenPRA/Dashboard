@@ -4,8 +4,8 @@ import {
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import {
-  fr, frText, parseEquation, sideText, applyMove, moveText, isSolved,
-  suggestMove, parSteps, isZero, isOne, isNeg, toNumber,
+  fr, frText, parseEquation, sideText, coefText, applyMove, moveText, isSolved,
+  suggestMove, parSteps, groupedOf, lcdOf, isZero, isNeg, neg, toNumber,
 } from '../utils/linearEquation';
 
 /* ------------------------------------------------------------------ *
@@ -71,12 +71,36 @@ const EN = {
   copied: 'I have written it down',
 };
 
+/**
+ * A side written as one quotient — (x − 3)/2 — drawn as an actual fraction
+ * rather than as two chips over separate denominators. It is one weight on the
+ * pan, and it has to look like one, or "multiply both sides by 2" reads as an
+ * operation on two unrelated things.
+ */
+function FractionChip({ g, v }) {
+  return (
+    <span className="inline-flex flex-col items-center px-3 sm:px-4 py-1.5 rounded-xl bg-white dark:bg-slate-900 border-2 border-b-[4px] border-[#7c3aed] shadow-sm">
+      <span className="flex items-baseline gap-1.5 font-black text-base sm:text-xl leading-tight px-1">
+        <span className="text-[#1899d6] dark:text-[#5cc4f7]">{coefText(g.num.x, v)}</span>
+        <span className="text-amber-600 dark:text-amber-400">
+          {isNeg(g.num.c) ? `− ${frText(neg(g.num.c))}` : `+ ${frText(g.num.c)}`}
+        </span>
+      </span>
+      <span className="w-full h-0.5 my-1 bg-slate-400 dark:bg-slate-500 rounded-full" />
+      <span className="font-black text-base sm:text-xl leading-tight text-slate-700 dark:text-slate-200">{g.d}</span>
+    </span>
+  );
+}
+
 /** One pan of the balance: x-chips you can count, and the constant as a chip. */
 function Pan({ side, v = 'x' }) {
   const chips = [];
   const co = side.x;
+  const grouped = groupedOf(side);
 
-  if (!isZero(co)) {
+  if (grouped) {
+    chips.push(<FractionChip key="frac" g={grouped} v={v} />);
+  } else if (!isZero(co)) {
     const whole = co.d === 1 ? Math.abs(co.n) : null;
     if (whole !== null && whole <= 6) {
       // Few enough to count — this is what makes "divide by 3" visible.
@@ -91,7 +115,7 @@ function Pan({ side, v = 'x' }) {
         );
       }
     } else {
-      const label = isOne(co) ? v : (co.d === 1 ? `${co.n}${v}` : `${co.n}${v}/${co.d}`);
+      const label = coefText(co, v);
       chips.push(
         <span key="xn"
           className="inline-flex items-center justify-center px-3 sm:px-4 h-10 sm:h-12 rounded-xl font-black text-base sm:text-xl bg-[#1cb0f6] border-b-[4px] border-[#1899d6] text-white shadow-sm">
@@ -101,7 +125,7 @@ function Pan({ side, v = 'x' }) {
     }
   }
 
-  if (!isZero(side.c) || isZero(co)) {
+  if (!grouped && (!isZero(side.c) || isZero(co))) {
     chips.push(
       <span key="c"
         className={`inline-flex items-center justify-center px-3 sm:px-4 h-10 sm:h-12 rounded-xl font-black text-base sm:text-xl border-b-[4px] shadow-sm
@@ -227,6 +251,12 @@ function Solver({ problem, t, lang, onSolved, footer }) {
         consts.add(Math.abs(s.x.n));
       }
     }
+    // While there are denominators about, the LCD is offered for the same
+    // reason: multiplying by it is the taught first move, and on an equation
+    // made only of fractions every loop above adds nothing, so without it the
+    // student faces an empty number row.
+    const lcd = lcdOf(current);
+    if (lcd > 1) consts.add(lcd);
     return [
       ...[...consts].filter((v) => v > 0).sort((a, b) => a - b).slice(0, 5)
         .map((v) => ({ key: `c${v}`, value: v, isVar: false, label: String(v) })),

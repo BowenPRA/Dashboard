@@ -12,7 +12,7 @@ import crypto from 'crypto';
 import { getTrack, contentProblems } from '../src/data/index.js';
 import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/taskRegistry.js';
-import { parseEquation, applyMove, suggestMove, isSolved, sameSolution } from '../src/utils/linearEquation.js';
+import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solutionOf, frText } from '../src/utils/linearEquation.js';
 import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
 
@@ -300,6 +300,13 @@ for (const trackId of TRACK_IDS) {
         }
         if (!isSolved(cur)) err(`${at}: "${b.equation}" is not solvable by the taught strategy`);
         else if (!sameSolution(eq, cur)) err(`${at}: solving "${b.equation}" changes its answer`);
+        else if (solutionOf(cur).d !== 1) {
+          // The engine does exact fractions, so a stray "4x = 15" does not break
+          // — it quietly answers 15/4 and the student, told all course that the
+          // answer is a whole number, assumes they have made a mistake. Catching
+          // it here is the only place it shows up at all.
+          err(`${at}: "${b.equation}" solves to ${eq.v} = ${frText(solutionOf(cur))}, not a whole number`);
+        }
       }
     }
 

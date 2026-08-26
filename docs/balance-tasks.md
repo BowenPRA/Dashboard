@@ -84,10 +84,32 @@ so an equation cannot fall out of sync with its own solution.
 | negative coefficient | `9 - 2x = 1` |
 | variable both sides | `5x - 3 = 2x + 12` |
 | any single letter | `6y = -42`, `50 + 25h = 150` |
-| fractions | `x/5 + 2 = 9` |
+| fractions | `x/5 + 2 = 9`, `2x/5 - 3 = 1` |
+| a whole side over a denominator | `(x + 4)/3 = 5`, `(x - 3)/2 = (2x + 1)/3` |
+| brackets | `4(x - 2) = 20` — see the caveat below |
 
 The variable's letter is detected and carried through, so `h` stays `h` everywhere —
 in the chips, the working and the hint.
+
+### Fractions, and what the student sees
+
+A side is stored as `a·x + b` and has nowhere to keep an unexpanded bracket, so
+`(x - 3)/2` is parsed into the coefficients `1/2` and `-3/2`. The quotient shape is
+then **derived back** out of those numbers by `groupedOf`, which is why the equation
+still reads `(x - 3)/2` on screen and why it stops reading that way the moment the
+student multiplies by 2. Nothing is stored twice, so the picture cannot drift from
+the model.
+
+Two consequences worth knowing before authoring:
+
+- **A bracket that is not over a denominator is expanded on sight.** `4(x - 2) = 20`
+  is a real convenience for the author, but the student meets it as `4x - 8 = 20`.
+  There is no `expand` move yet.
+- **A numerator constant that divides by its own denominator cannot be shown as one
+  quotient.** `(x + 6)/3` holds `x/3` and `2`; the `2` is a whole number, so the side
+  renders as `x/3 + 2` — true, and identical in value, but not what you typed. Keep
+  the constant indivisible by the denominator (`(x + 7)/3`) and the shape survives.
+  `MATH_1C`'s deck is written to that rule throughout.
 
 ---
 
@@ -102,6 +124,10 @@ finish it. Every equation is logged per item for the review deck.
 The banner shows steps taken against **target** — the count the taught strategy needs.
 It is information, not a penalty; solving in four steps still scores full marks.
 
+Because the mark is a *share*, the length of a deck does not change what it is worth.
+`MATH_1C` runs to twenty equations for exactly that reason: balancing is a habit
+rather than a fact, so a long deck buys reps and costs the student nothing.
+
 ---
 
 ## 4. Authoring checklist
@@ -109,8 +135,12 @@ It is information, not a penalty; solving in four steps still scores full marks.
 - [ ] `id` unique within the unit, and stable once a student has attempted it.
 - [ ] Equation parses, and **`npm run validate` proves it is solvable** by the taught
       strategy without changing its own answer. This is checked automatically.
-- [ ] Answers stay whole numbers at the current level; the engine does exact fractions,
-      so a stray `4x = 15` silently becomes `x = 15/4`.
+- [ ] Answers stay whole numbers — also checked automatically now. The engine does
+      exact fractions, so a stray `4x = 15` does not break: it quietly answers `15/4`,
+      and the student, told all course that the answer is whole, assumes *they* are
+      the ones who got it wrong.
+- [ ] If the equation has denominators, the equation still **renders the way you typed
+      it** (see the caveat above). `npm run validate` cannot catch this one.
 - [ ] EN + VN on every `prompt`.
 - [ ] Difficulty rises in the **shape** of the equation, not the size of the numbers.
 - [ ] Order runs easy → hard; the student meets them in sequence.
@@ -120,10 +150,17 @@ It is information, not a penalty; solving in four steps still scores full marks.
 ## 5. Extending it
 
 The engine (`src/utils/linearEquation.js`) already handles variables on both sides,
-negative coefficients, fractional coefficients and any single variable letter, so a
-harder unit needs **only new equations, no code**. What it does not yet do:
+negative coefficients, fractional coefficients, whole sides over a denominator and any
+single variable letter, so a harder unit needs **only new equations, no code**. It also
+knows the taught opening move on a fraction equation: `suggestMove` multiplies by the
+LCD before anything else, `lcdOf` is what the hint and the par count read, and the
+number row offers that same LCD as a chip — without it, an equation made only of
+fractions would present the student with an empty row of numbers.
 
-- brackets — `4(x - 2) = 20` must be authored pre-expanded, or an `expand` move added;
+What it does not yet do:
+
+- keep a bracket unexpanded — `4(x - 2) = 20` parses but is shown multiplied out, and
+  a real `expand` move is still missing;
 - quadratics or anything non-linear;
 - inequalities — these are a `MATH_1B` topic and would need the flip-on-negative rule.
 
