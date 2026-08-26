@@ -14,7 +14,7 @@ import {
   // Physics / vectors, and the list + pen icons decks were already asking for
   // by name. An unlisted name silently renders the Info fallback, so anything a
   // deck references has to be here.
-  Magnet, Compass, Move3d, GitMerge, Triangle, Columns3, ListChecks, PenTool,
+  Magnet, Compass, Move3d, GitMerge, Triangle, Columns3, ListChecks, PenTool, Languages,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -45,7 +45,7 @@ const ICONS = {
   ArrowRight, Target, Users, MessageSquare, Scale, Equal, AlertTriangle,
   ShieldCheck, Repeat, HelpCircle, Sun, Droplet, Landmark, Calculator, Globe,
   Vote, Coins, Map, Gavel,
-  Magnet, Compass, Move3d, GitMerge, Triangle, Columns3, ListChecks, PenTool,
+  Magnet, Compass, Move3d, GitMerge, Triangle, Columns3, ListChecks, PenTool, Languages,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

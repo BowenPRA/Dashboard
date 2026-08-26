@@ -16,7 +16,7 @@ import { getTrack } from './data/index';
 import { getTask } from './tasks/taskRegistry';
 
 const CASES = [
-  ['FORCE_1A', 'NOTES', 'Deck · Adding Force Vectors (12 slides)'],
+  ['FORCE_1A', 'NOTES', 'Deck · Adding Force Vectors (21 slides)'],
   ['FORCE_1A', 'VECTOR_ADD', 'Vectors · 3 problems, 8 boxes each'],
   ['FORCE_1A', 'WORKBOOK', 'Practice · 14 questions in 3 tiers'],
   ['FORCE_1A', 'ASSESSMENT', 'Assessment · 10 MCQ, 20 minutes'],

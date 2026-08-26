@@ -227,4 +227,88 @@ export const DIAGRAMS = {
   <text x="498" y="212" font-family="monospace" font-size="18" font-weight="bold" fill="#dc2626" text-anchor="middle">Rx = -6, Ry = -4</text>
   <text x="498" y="246" font-family="monospace" font-size="20" font-weight="bold" fill="#dc2626" text-anchor="middle">θ = 213.4°</text>
 </svg>`,
+
+  // Where the angle starts and which way it turns. Every later slide assumes
+  // this one convention, so it gets a picture of its own rather than a line of
+  // prose the student has to hold in their head.
+  NOTES_ANGLE_RULE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 360" class="w-full h-full drop-shadow-md">
+  <defs>
+    <marker id="ar-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6"/></marker>
+    <marker id="ar-grey" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker>
+  </defs>
+  <rect x="0" y="0" width="660" height="360" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="330" y="30" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1e293b" text-anchor="middle">The angle: where it starts, which way it turns</text>
+
+  <circle cx="190" cy="185" r="100" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="70" y1="185" x2="310" y2="185" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="190" y1="65" x2="190" y2="305" stroke="#cbd5e1" stroke-width="2"/>
+
+  <line x1="190" y1="185" x2="285" y2="185" stroke="#94a3b8" stroke-width="4" marker-end="url(#ar-grey)"/>
+  <line x1="190" y1="185" x2="190" y2="90" stroke="#94a3b8" stroke-width="4" marker-end="url(#ar-grey)"/>
+  <line x1="190" y1="185" x2="95" y2="185" stroke="#94a3b8" stroke-width="4" marker-end="url(#ar-grey)"/>
+  <line x1="190" y1="185" x2="190" y2="280" stroke="#94a3b8" stroke-width="4" marker-end="url(#ar-grey)"/>
+
+  <text x="322" y="191" font-family="monospace" font-size="16" font-weight="bold" fill="#64748b" text-anchor="start">0°</text>
+  <text x="190" y="52" font-family="monospace" font-size="16" font-weight="bold" fill="#64748b" text-anchor="middle">90°</text>
+  <text x="58" y="191" font-family="monospace" font-size="16" font-weight="bold" fill="#64748b" text-anchor="end">180°</text>
+  <text x="190" y="326" font-family="monospace" font-size="16" font-weight="bold" fill="#64748b" text-anchor="middle">270°</text>
+
+  <line x1="190" y1="185" x2="272" y2="139" stroke="#3b82f6" stroke-width="7" stroke-linecap="round" marker-end="url(#ar-blue)"/>
+  <path d="M 245 185 A 55 55 0 0 0 237.6 157.5" fill="none" stroke="#3b82f6" stroke-width="3"/>
+  <text x="262" y="176" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">30°</text>
+  <circle cx="190" cy="185" r="6" fill="#1e293b"/>
+
+  <rect x="380" y="70" width="260" height="88" rx="14" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="510" y="106" font-family="sans-serif" font-size="17" font-weight="bold" fill="#2563eb" text-anchor="middle">Start at the +x axis</text>
+  <text x="510" y="134" font-family="sans-serif" font-size="14" fill="#64748b" text-anchor="middle">the way "right" points</text>
+
+  <rect x="380" y="178" width="260" height="88" rx="14" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="510" y="214" font-family="sans-serif" font-size="17" font-weight="bold" fill="#059669" text-anchor="middle">Turn anticlockwise</text>
+  <text x="510" y="242" font-family="monospace" font-size="16" font-weight="bold" fill="#64748b" text-anchor="middle">0 to 90 to 180 to 270</text>
+
+  <text x="330" y="344" font-family="sans-serif" font-size="15" fill="#334155" text-anchor="middle">"50 N at 45°" means 50 newtons, turned 45° from the +x axis.</text>
+</svg>`,
+
+  // The four quadrants and the sign of each part. A student who can point at
+  // this picture does not have to reason about cos of an obtuse angle.
+  NOTES_SIGNS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 380" class="w-full h-full drop-shadow-md">
+  <defs>
+    <marker id="sg-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker>
+  </defs>
+  <rect x="0" y="0" width="660" height="380" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="330" y="30" font-family="sans-serif" font-size="17" font-weight="bold" fill="#1e293b" text-anchor="middle">Which parts come out negative</text>
+
+  <rect x="215" y="70" width="140" height="130" fill="#f0fdf4"/>
+  <rect x="75" y="70" width="140" height="130" fill="#eff6ff"/>
+  <rect x="75" y="200" width="140" height="130" fill="#fef2f2"/>
+  <rect x="215" y="200" width="140" height="130" fill="#fffbeb"/>
+
+  <line x1="75" y1="200" x2="355" y2="200" stroke="#334155" stroke-width="2.5"/>
+  <line x1="215" y1="70" x2="215" y2="330" stroke="#334155" stroke-width="2.5"/>
+
+  <line x1="215" y1="200" x2="290" y2="145" stroke="#475569" stroke-width="3.5" marker-end="url(#sg-arrow)"/>
+  <line x1="215" y1="200" x2="140" y2="145" stroke="#475569" stroke-width="3.5" marker-end="url(#sg-arrow)"/>
+  <line x1="215" y1="200" x2="140" y2="255" stroke="#475569" stroke-width="3.5" marker-end="url(#sg-arrow)"/>
+  <line x1="215" y1="200" x2="290" y2="255" stroke="#475569" stroke-width="3.5" marker-end="url(#sg-arrow)"/>
+  <circle cx="215" cy="200" r="5" fill="#1e293b"/>
+
+  <text x="285" y="102" font-family="monospace" font-size="18" font-weight="bold" fill="#059669" text-anchor="middle">x +  y +</text>
+  <text x="285" y="124" font-family="sans-serif" font-size="13" fill="#64748b" text-anchor="middle">0° to 90°</text>
+  <text x="145" y="102" font-family="monospace" font-size="18" font-weight="bold" fill="#2563eb" text-anchor="middle">x −  y +</text>
+  <text x="145" y="124" font-family="sans-serif" font-size="13" fill="#64748b" text-anchor="middle">90° to 180°</text>
+  <text x="145" y="292" font-family="monospace" font-size="18" font-weight="bold" fill="#dc2626" text-anchor="middle">x −  y −</text>
+  <text x="145" y="314" font-family="sans-serif" font-size="13" fill="#64748b" text-anchor="middle">180° to 270°</text>
+  <text x="285" y="292" font-family="monospace" font-size="18" font-weight="bold" fill="#b45309" text-anchor="middle">x +  y −</text>
+  <text x="285" y="314" font-family="sans-serif" font-size="13" fill="#64748b" text-anchor="middle">270° to 360°</text>
+
+  <rect x="400" y="88" width="240" height="84" rx="14" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="520" y="122" font-family="sans-serif" font-size="17" font-weight="bold" fill="#b45309" text-anchor="middle">Points LEFT</text>
+  <text x="520" y="150" font-family="sans-serif" font-size="15" fill="#334155" text-anchor="middle">x-part is negative</text>
+
+  <rect x="400" y="190" width="240" height="84" rx="14" fill="#fdf2f8" stroke="#ec4899" stroke-width="2"/>
+  <text x="520" y="224" font-family="sans-serif" font-size="17" font-weight="bold" fill="#be185d" text-anchor="middle">Points DOWN</text>
+  <text x="520" y="252" font-family="sans-serif" font-size="15" fill="#334155" text-anchor="middle">y-part is negative</text>
+
+  <text x="330" y="362" font-family="sans-serif" font-size="15" fill="#334155" text-anchor="middle">Type the real angle. The calculator gets the signs right for you.</text>
+</svg>`,
 };
