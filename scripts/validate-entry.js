@@ -89,8 +89,14 @@ for (const trackId of TRACK_IDS) {
     if (!declared.length) err(`${label}: no tasks declared`);
     for (const d of declared) if (!getTask(d.id)) err(`${label}: unknown task id "${d.id}"`);
 
+    // unitXPOf caps a unit's payout at 100, so a unit may over-provision: six
+    // tasks at 20 XP total 120, and the student can drop a whole task and still
+    // finish at 100. Keep the LOWER bound as an error — a unit that cannot reach
+    // 100 is a real bug — but allow anything above it, warning once the overflow
+    // gets large enough that the gates stop meaning much.
     const total = resolved.reduce((s, t) => s + t.maxXP, 0);
-    if (total !== 100) err(`${label}: tasks total ${total} XP, must be exactly 100`);
+    if (total < 100) err(`${label}: tasks total ${total} XP — 100 is unreachable`);
+    else if (total > 150) warn(`${label}: ${total} XP available for a 100 XP unit — gates lose meaning`);
     for (const t of resolved) {
       // A graded task worth nothing is a mistake; a `reward` task worth nothing
       // is the point — it is unlocked by the unit rather than paid for by it.
@@ -105,9 +111,23 @@ for (const trackId of TRACK_IDS) {
       }
     }
     let cumulative = 0;
+    const declaredEarlier = new Set();
     for (const p of unit.phases || []) {
       if (typeof p.threshold !== 'number') err(`${label}: phase "${p.id}" has a non-numeric threshold`);
       if (p.threshold > cumulative) err(`${label}: phase "${p.id}" needs ${p.threshold} XP but only ${cumulative} is reachable before it`);
+
+      // An attempt-gate (`requires: '<TASK_ID>'`) must name a task the unit
+      // declares in an EARLIER phase — otherwise the gated phase (the arcade)
+      // can never unlock, and it fails silently, which is this repo's signature
+      // failure. resolveUnitTasks reads the required task's dbKey, so an unknown
+      // id would just never have a progress record and stay locked forever.
+      if (p.requires !== undefined) {
+        if (!getTask(p.requires)) {
+          err(`${label}: phase "${p.id}" requires unknown task "${p.requires}"`);
+        } else if (!declaredEarlier.has(p.requires)) {
+          err(`${label}: phase "${p.id}" requires "${p.requires}", which is not declared in an earlier phase — it can never unlock`);
+        }
+      }
 
       const phaseXP = (p.tasks || []).reduce((s, t) => s + (getTask(t.id) ? (t.maxXP ?? getTask(t.id).defaultMaxXP) : 0), 0);
 
@@ -137,6 +157,7 @@ for (const trackId of TRACK_IDS) {
       }
 
       cumulative += phaseXP;
+      for (const t of p.tasks || []) declaredEarlier.add(t.id);
     }
 
     // -- assessment answer keys
@@ -441,6 +462,47 @@ for (const trackId of TRACK_IDS) {
           }
         }
       }
+    }
+
+    // -- Number Gym drill: operands only, every intermediate cell derived by
+    //    NumberDrill.jsx. The risk is an item the component cannot build a grid
+    //    for (a mode it does not implement, or operands out of range), which
+    //    renders blank in front of the student. Modes are added to this list as
+    //    NumberDrill.jsx grows to support them.
+    if (unit.drill) {
+      const at = `${label}: drill`;
+      const DRILL_MODES = ['long-mult'];
+      const d = unit.drill;
+      if (!DRILL_MODES.includes(d.mode)) {
+        err(`${at}: mode "${d.mode}" — NumberDrill.jsx implements ${DRILL_MODES.join('/')}`);
+      }
+      if (!d.title || !d.titleVn) err(`${at} is missing a bilingual title`);
+      const ladder = d.ladder || [];
+      if (!ladder.length) err(`${at} has an empty ladder`);
+      ladder.forEach((rung, ri) => {
+        const rat = `${at} rung ${ri + 1}`;
+        if (!rung.level || !rung.levelVn) err(`${rat} is missing a bilingual level name (level/levelVn)`);
+        const items = rung.items || [];
+        if (!items.length) err(`${rat} has no items`);
+        // long-mult: each item is an operand PAIR, both positive integers in a
+        // range the column method can actually lay out (up to 4 digits), and at
+        // least one multi-digit — a 1×1 fact is a times-table drill, not this.
+        if (d.mode === 'long-mult') {
+          items.forEach((it, ii) => {
+            const iat = `${rat} item ${ii + 1}`;
+            if (!Array.isArray(it) || it.length !== 2) {
+              err(`${iat}: long-mult items are [a, b] operand pairs`);
+              return;
+            }
+            for (const n of it) {
+              if (!Number.isInteger(n) || n < 2 || n > 9999) {
+                err(`${iat}: operand ${n} must be a whole number from 2 to 9999`);
+              }
+            }
+            if (it.every((n) => n < 10)) err(`${iat}: (${it.join(', ')}) is a single-digit fact, not a column multiplication`);
+          });
+        }
+      });
     }
 
     // -- diagram references resolve

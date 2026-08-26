@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d
+  Move3d, Grid3x3
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -310,6 +310,29 @@ export const TASKS = [
     buildPool: (u) => u.vectorAdd || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
+  {
+    id: 'NUM_DRILL',
+    nativeMax: 10,
+    // p1–p16 are taken; p5 is unused as a task key but reads as a workbook
+    // question id everywhere — do not reuse it. p17 is the next free key.
+    dbKey: 'p17',
+    // "Column arithmetic, one digit at a time." The student is given operand
+    // pairs only; the component derives every partial product, carry and column
+    // sum, checks each cell as it is typed, and lands feedback on the digit that
+    // caused the error rather than on the final answer. Production, not
+    // recognition — the same rule Graph It and Vectors follow. A wrong ladder
+    // rung stays locked until the one above it is clean. Item shape is
+    // documented in src/tasks/NumberDrill.jsx.
+    label: 'Number Gym',
+    icon: Grid3x3,
+    color: { bg: 'bg-[#f97316]', border: 'border-[#c2410c]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./NumberDrill.jsx')),
+    hasContent: (u) => !!u.drill?.ladder?.length,
+    buildPool: (u) => u.drill,
+    props: ({ pool, savedData, onComplete, onQuit }) => ({ pool, savedData, onComplete, onQuit }),
+  },
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));
@@ -334,21 +357,28 @@ export function resolveTask(declared) {
 }
 
 /** All resolved tasks for a unit, flattened across phases, with lock state. */
-export function resolveUnitTasks(unit, unitXP = 0) {
-  return (unit?.phases || []).flatMap((phase) =>
-    (phase.tasks || [])
+export function resolveUnitTasks(unit, unitXP = 0, scores = {}) {
+  return (unit?.phases || []).flatMap((phase) => {
+    // An optional `requires: '<TASK_ID>'` gates a phase on another task having
+    // been ATTEMPTED, not scored — a progress record exists once recordAttempt
+    // writes one, even for a score of zero. The arcade uses it: the game unlocks
+    // the moment the assessment is sat, pass or fail (§6.4). With no `scores`
+    // (validator, teacher view) the gate reads as not-yet-attempted, i.e. locked.
+    const gateKey = phase.requires ? resolveTask({ id: phase.requires })?.dbKey : null;
+    const gateUnmet = gateKey ? !scores?.[gateKey] : false;
+    return (phase.tasks || [])
       .map((t) => {
         const resolved = resolveTask(t);
         if (!resolved) return null;
         return {
           ...resolved,
           phaseId: phase.id,
-          locked: unitXP < (phase.threshold || 0),
+          locked: unitXP < (phase.threshold || 0) || gateUnmet,
           empty: !resolved.hasContent(unit || {}),
         };
       })
-      .filter(Boolean)
-  );
+      .filter(Boolean);
+  });
 }
 
 /**

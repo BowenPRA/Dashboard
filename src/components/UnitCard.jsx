@@ -3,7 +3,7 @@ import {
   Languages, BookOpen, Lock, Award, AlertCircle,
   ChevronDown, ChevronUp, Trophy, Globe, Atom, Leaf, GraduationCap,
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
-  Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d
+  Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEY } from '../utils/progressSchema';
@@ -14,7 +14,8 @@ const IconMap = {
   "Microscope": Microscope, "Telescope": Telescope, "Brain": Brain,
   "Rocket": Rocket, "Calculator": Calculator, "Dna": Dna, "FlaskConical": FlaskConical,
   "Compass": Compass, "Lightbulb": Lightbulb, "Activity": Activity, "Zap": Zap,
-  "Landmark": Landmark, "Magnet": Magnet, "Move3d": Move3d
+  "Landmark": Landmark, "Magnet": Magnet, "Move3d": Move3d, "Grid3x3": Grid3x3,
+  "Hash": Hash
 };
 
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card
@@ -52,8 +53,10 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
   const trophy = getTrophyStyles(unitXP);
 
   // Resolved against the registry: carries label/icon/colour/dbKey/maxXP plus
-  // `locked` (phase threshold not met) and `empty` (unit has no data for it).
-  const allTasks = resolveUnitTasks(unit, unitXP);
+  // `locked` (phase threshold not met, or a phase `requires` gate unmet) and
+  // `empty` (unit has no data for it). `scores` lets the attempt-gate see
+  // whether the required task (e.g. the assessment) has a progress record yet.
+  const allTasks = resolveUnitTasks(unit, unitXP, scores);
 
   const needsWorkTasks = allTasks.filter(t => {
     if (t.id === 'GAMES') return false;
@@ -209,8 +212,12 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
 
             <div className="p-6 sm:p-8 space-y-10">
               {unitPhases.map(phase => {
-                const isPhaseLocked = !previewAll && unitXP < phase.threshold;
-                
+                // Single source of truth for the lock: a phase is locked when
+                // any of its resolved tasks is locked, which folds in both the
+                // XP threshold and an optional `requires` attempt-gate (§6.4).
+                const phaseTasks = allTasks.filter(t => t.phaseId === phase.id);
+                const isPhaseLocked = !previewAll && phaseTasks.some(t => t.locked);
+
                 return (
                   <div key={phase.id} className="relative group">
                     {/* Locking Overlay */}
@@ -232,9 +239,7 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                       </div>
                       
                       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-                        {allTasks
-                          .filter(t => t.phaseId === phase.id)
-                          .map(task => renderTaskButton(task, isPhaseLocked))}
+                        {phaseTasks.map(task => renderTaskButton(task, isPhaseLocked))}
                       </div>
                     </div>
                   </div>

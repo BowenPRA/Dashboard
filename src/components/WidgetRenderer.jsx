@@ -11,11 +11,13 @@ const KNOWN = ['MathGraph', 'ParabolaLab', 'VectorLab'];
 export default function WidgetRenderer({ config, lang = 'en' }) {
   if (!config) return null;
 
-  // 1. Legacy Support: If the config is passed directly as a functional React component 
-  // (Maintains backwards compatibility with Y8/SCIENCE_1A hardcoded imports)
+  // 1. Legacy Support: If the config is passed directly as a functional React component
+  // (Maintains backwards compatibility with Y8/SCIENCE_1A hardcoded imports). Forward
+  // `lang` so a bilingual widget (e.g. Y7_MATH TranslateWidget) follows the deck's
+  // EN/VN toggle; widgets that ignore the prop are unaffected.
   if (typeof config === 'function' || (typeof config === 'object' && config.$$typeof)) {
     const LegacyWidget = config;
-    return <LegacyWidget />;
+    return <LegacyWidget lang={lang} />;
   }
 
   // 2. Dynamic Component resolution for Phase 3 configuration objects
