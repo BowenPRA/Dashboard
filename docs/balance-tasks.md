@@ -24,6 +24,14 @@ Two representations of the same act, one above the other.
   flag — `×2x` is not a linear move and cannot be built.
 - **`±` makes an amount negative**, which no choice of operator can express: `÷ -1` is
   a legitimate and often elegant first move on `-2x - 1 = -9`.
+- **Every fraction is drawn stacked** — numerator above a rule above the denominator,
+  never `(x - 3)/2`. The slashed form quietly teaches the wrong thing: reading it needs
+  the bracket to know what the 2 divides, while the stacked form needs nothing, because
+  the bar is drawn under the whole numerator and **the grouping is the picture**. That
+  is the one idea the fractions unit turns on, so the notation carries it rather than
+  fighting it. The rule takes `currentColor`, so a fraction inside a blue chip stays
+  blue and dark mode needs no special case; sizes are in `em`, so the same component
+  serves a 12px chip and a 30px working line. `src/components/math/LinearMath.jsx`.
 - **The working builds up as a notebook page**, the operation written under *both*
   sides with a rule beneath, exactly as it is taught on paper:
 
@@ -35,6 +43,17 @@ Two representations of the same act, one above the other.
      ÷ 3     ÷ 3
   ─────────────────
       x   =  5
+```
+
+With denominators it reads the same way, the equals sign sitting on the fraction bars:
+
+```
+  x − 3       2x + 1
+  ─────   =   ──────
+    2            3
+    × 6          × 6
+  ──────────────────
+  3x − 9  =   4x + 2
 ```
 
 **There is no single correct route, and the task must never imply there is.** Every

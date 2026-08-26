@@ -18,6 +18,7 @@ import { getTask } from './tasks/taskRegistry';
 
 const CASES = [
   ['MATH_1C', 'BALANCE', 'Balance · all 20 equations from the top'],
+  ['MATH_1C', 'BALANCE', 'Balance · from e4, a fraction beside a whole number', 3],
   ['MATH_1C', 'BALANCE', 'Balance · from e6, (x + 4)/3 = 5 onwards', 5],
   ['MATH_1C', 'BALANCE', 'Balance · from e11, (x - 3)/2 = (2x + 1)/3', 10],
   ['MATH_1C', 'NOTES', 'Deck · Equations with Fractions (11 slides)'],

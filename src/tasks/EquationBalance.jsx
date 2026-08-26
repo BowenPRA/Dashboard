@@ -4,9 +4,10 @@ import {
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import {
-  fr, frText, parseEquation, sideText, coefText, applyMove, moveText, isSolved,
+  fr, frText, parseEquation, coefText, applyMove, isSolved,
   suggestMove, parSteps, groupedOf, lcdOf, isZero, isNeg, neg, toNumber,
 } from '../utils/linearEquation';
+import { Frac, SideMath, MoveMath } from '../components/math/LinearMath';
 
 /* ------------------------------------------------------------------ *
  * Balance — solve an equation by doing the same thing to both sides.
@@ -77,17 +78,19 @@ const EN = {
  * pan, and it has to look like one, or "multiply both sides by 2" reads as an
  * operation on two unrelated things.
  */
-function FractionChip({ g, v }) {
+function FractionChip({ side, v }) {
   return (
-    <span className="inline-flex flex-col items-center px-3 sm:px-4 py-1.5 rounded-xl bg-white dark:bg-slate-900 border-2 border-b-[4px] border-[#7c3aed] shadow-sm">
-      <span className="flex items-baseline gap-1.5 font-black text-base sm:text-xl leading-tight px-1">
-        <span className="text-[#1899d6] dark:text-[#5cc4f7]">{coefText(g.num.x, v)}</span>
-        <span className="text-amber-600 dark:text-amber-400">
-          {isNeg(g.num.c) ? `− ${frText(neg(g.num.c))}` : `+ ${frText(g.num.c)}`}
-        </span>
-      </span>
-      <span className="w-full h-0.5 my-1 bg-slate-400 dark:bg-slate-500 rounded-full" />
-      <span className="font-black text-base sm:text-xl leading-tight text-slate-700 dark:text-slate-200">{g.d}</span>
+    <span className="inline-flex items-center px-3 sm:px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border-2 border-b-[4px] border-[#7c3aed] shadow-sm font-black text-lg sm:text-2xl text-slate-700 dark:text-slate-200">
+      {/* SideMath stacks a grouped side on its own. The numerator keeps the
+          pan's colour language — the variable in its blue, the constant in
+          amber — so the chip still reads as the same two quantities it was
+          before they went over a bar. */}
+      <SideMath
+        side={side}
+        v={v}
+        xClass="text-[#1899d6] dark:text-[#5cc4f7]"
+        cClass="text-amber-600 dark:text-amber-400"
+      />
     </span>
   );
 }
@@ -99,7 +102,7 @@ function Pan({ side, v = 'x' }) {
   const grouped = groupedOf(side);
 
   if (grouped) {
-    chips.push(<FractionChip key="frac" g={grouped} v={v} />);
+    chips.push(<FractionChip key="frac" side={side} v={v} />);
   } else if (!isZero(co)) {
     const whole = co.d === 1 ? Math.abs(co.n) : null;
     if (whole !== null && whole <= 6) {
@@ -115,23 +118,31 @@ function Pan({ side, v = 'x' }) {
         );
       }
     } else {
-      const label = coefText(co, v);
+      // A fractional coefficient stacks — 2x over 5, never "2x/5" — so a chip
+      // on the pan is written the same way as the line in the working below it.
+      const mag = isNeg(co) ? neg(co) : co;
       chips.push(
         <span key="xn"
-          className="inline-flex items-center justify-center px-3 sm:px-4 h-10 sm:h-12 rounded-xl font-black text-base sm:text-xl bg-[#1cb0f6] border-b-[4px] border-[#1899d6] text-white shadow-sm">
-          {label}
+          className="inline-flex items-center justify-center px-3 sm:px-4 min-h-10 sm:min-h-12 py-1.5 rounded-xl font-black text-base sm:text-xl bg-[#1cb0f6] border-b-[4px] border-[#1899d6] text-white shadow-sm">
+          {isNeg(co) && <span className="mr-[0.06em]">−</span>}
+          {mag.d === 1
+            ? coefText(mag, v)
+            : <Frac top={coefText(fr(mag.n), v)} bottom={mag.d} />}
         </span>
       );
     }
   }
 
   if (!grouped && (!isZero(side.c) || isZero(co))) {
+    const c = side.c;
+    const mag = isNeg(c) ? neg(c) : c;
     chips.push(
       <span key="c"
-        className={`inline-flex items-center justify-center px-3 sm:px-4 h-10 sm:h-12 rounded-xl font-black text-base sm:text-xl border-b-[4px] shadow-sm
-          ${isNeg(side.c) ? 'bg-rose-100 dark:bg-rose-900/40 border-rose-400 text-rose-700 dark:text-rose-300'
-                          : 'bg-[#ffc800] border-[#cca000] text-amber-950'}`}>
-        {frText(side.c)}
+        className={`inline-flex items-center justify-center px-3 sm:px-4 min-h-10 sm:min-h-12 py-1.5 rounded-xl font-black text-base sm:text-xl border-b-[4px] shadow-sm
+          ${isNeg(c) ? 'bg-rose-100 dark:bg-rose-900/40 border-rose-400 text-rose-700 dark:text-rose-300'
+                     : 'bg-[#ffc800] border-[#cca000] text-amber-950'}`}>
+        {isNeg(c) && <span className="mr-[0.06em]">−</span>}
+        {mag.d === 1 ? frText(mag) : <Frac top={mag.n} bottom={mag.d} />}
       </span>
     );
   }
@@ -177,25 +188,27 @@ function Working({ history, v = 'x' }) {
     <div className="font-mono">
       {history.map((row, i) => (
         <div key={i} className="animate-in fade-in slide-in-from-top-1 duration-300">
+          {/* Sides are right/left aligned against the "=" so the equals signs
+              stack down the page, the way the lines sit in a notebook. */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5">
-            <div className="text-right text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
-              {sideText(row.eq.left, v)}
+            <div className="flex justify-end text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
+              <SideMath side={row.eq.left} v={v} />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-slate-400 dark:text-slate-500">=</div>
-            <div className="text-left text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
-              {sideText(row.eq.right, v)}
+            <div className="flex justify-start text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
+              <SideMath side={row.eq.right} v={v} />
             </div>
           </div>
 
           {row.move && (
             <>
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5 mt-1">
-                <div className="text-right text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
-                  {moveText(row.move, v)}
+                <div className="flex justify-end text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
+                  <MoveMath move={row.move} v={v} />
                 </div>
                 <div className="w-3" />
-                <div className="text-left text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
-                  {moveText(row.move, v)}
+                <div className="flex justify-start text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
+                  <MoveMath move={row.move} v={v} />
                 </div>
               </div>
               <div className="grid grid-cols-[1fr_auto_1fr] gap-3 sm:gap-5 my-2">
@@ -428,12 +441,20 @@ function Solver({ problem, t, lang, onSolved, footer }) {
             </button>
           </div>
 
-          {/* The preview says out loud what is about to happen to BOTH sides. */}
-          <div className="text-center text-sm font-bold text-slate-400 dark:text-slate-500 mb-3 min-h-5 font-mono">
-            {amount && (() => {
-              const tail = `${opSymbol} ${amount}${onX ? varName : ''}`;
-              return `${sideText(current.left, varName)} ${tail}   =   ${sideText(current.right, varName)} ${tail}`;
-            })()}
+          {/* The preview says out loud what is about to happen to BOTH sides.
+              The typed amount is still raw text — it may be half-finished, or
+              not a number at all — so it prints as typed rather than going
+              through the fraction renderer. */}
+          <div className="flex items-center justify-center flex-wrap gap-x-2 text-center text-base font-bold text-slate-400 dark:text-slate-500 mb-3 min-h-7 font-mono">
+            {amount && (
+              <>
+                <SideMath side={current.left} v={varName} />
+                <span>{opSymbol} {amount}{onX ? varName : ''}</span>
+                <span className="mx-2">=</span>
+                <SideMath side={current.right} v={varName} />
+                <span>{opSymbol} {amount}{onX ? varName : ''}</span>
+              </>
+            )}
           </div>
 
           {error && <div className="text-center text-sm font-bold text-rose-500 mb-3">{error}</div>}
