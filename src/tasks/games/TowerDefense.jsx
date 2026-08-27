@@ -8,9 +8,35 @@ import VocabChallenge from '../../components/towerdefense/VocabChallenge';
 import HUD from '../../components/towerdefense/HUD';
 import ExitConfirmModal from '../../components/towerdefense/ExitConfirmModal';
 import { useGameEngine } from '../../components/towerdefense/useGameEngine';
+import { mathChallengeFor } from '../../components/towerdefense/mathChallenges';
 
 const CHALLENGE_DURATION = 15;
 const ALL_TOWER_IDS = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO'];
+
+// How often a unit that has BOTH bolts fires the maths one. Slightly maths-heavy
+// because it is a maths course; vocab still shows up often enough to reinforce.
+const MATH_CHALLENGE_RATIO = 0.6;
+
+// Loose equality for typed/clicked answers: same case, spaces collapsed, and any
+// flavour of minus normalised to '-', so "−3" / "-3" / " -3 " all match.
+function normalizeAnswer(s) {
+  return String(s ?? '').trim().toLowerCase().replace(/[−–—]/g, '-').replace(/\s+/g, '');
+}
+
+// Four plausible options around a numeric answer, including its sign-flip (the
+// classic integer mistake). Returns null for a non-numeric answer.
+function buildNumericChoices(answer) {
+  const n = Number(answer);
+  if (!Number.isFinite(n)) return null;
+  const opts = new Set([n]);
+  for (const c of [n + 1, n - 1, n + 2, n - 2, -n, n + 3, n - 3, n + 5]) {
+    if (opts.size >= 4) break;
+    opts.add(c);
+  }
+  let k = 4;
+  while (opts.size < 4) opts.add(n + k++);
+  return [...opts].map(String);
+}
 
 // For the "incoming wave" HUD preview — a friendly face per enemy type, shown in
 // a fixed order so the readout stays stable from wave to wave.
@@ -109,6 +135,10 @@ export default function TowerDefense({
     return words.length > 0 ? words : null;
   }, [pool]);
 
+  // The unit's arithmetic question generator (maths tracks only); null elsewhere,
+  // leaving those units on vocab-only challenges exactly as before.
+  const mathGen = useMemo(() => mathChallengeFor(unitId), [unitId]);
+
   const activeThemeId = useMemo(() => {
     const requestedTheme = gameConfig.themeId || themeId;
     if (requestedTheme === 'RANDOM') {
@@ -202,9 +232,41 @@ export default function TowerDefense({
     return () => obs.disconnect();
   }, [layout]);
 
+  // The mid-game challenge fires as either a Vocab Bolt (from the unit's words)
+  // or, on the maths tracks, a Maths Bolt (arithmetic matched to the unit —
+  // mathChallenges.js). Units with both draw maths a bit more often, since it is
+  // a maths course; units with only one always get that one.
   function buildChallengeTrigger() {
-    if (!vocab || vocab.length === 0) return;
-    
+    const hasVocab = vocab && vocab.length > 0;
+    const hasMath = !!mathGen;
+    if (!hasVocab && !hasMath) return;
+    const useMath = hasMath && (!hasVocab || Math.random() < MATH_CHALLENGE_RATIO);
+    if (useMath) triggerMathChallenge();
+    else triggerVocabChallenge();
+  }
+
+  function triggerMathChallenge() {
+    const q = mathGen();
+    let mode, choices = null;
+    if (q.choices) {                       // fixed options (e.g. Yes/No)
+      mode = 'CHOICE';
+      choices = shuffle(q.choices);
+    } else {
+      mode = Math.random() < 0.5 ? 'TYPE' : 'CHOICE';
+      if (mode === 'CHOICE') {
+        const nc = buildNumericChoices(q.answer);
+        choices = nc ? shuffle(nc) : null;
+        if (!choices) mode = 'TYPE';        // non-numeric answer → type it
+      }
+    }
+    challengeActiveRef.current = true;
+    challengeResolvedRef.current = false;
+    setChallenge({ kind: 'MATH', mode, prompt: q.prompt, answer: String(q.answer), choices });
+    setChallengeInput('');
+    setChallengeTimeLeft(CHALLENGE_DURATION);
+  }
+
+  function triggerVocabChallenge() {
     // 1. Compile a list of all available specific questions (Word + Mode)
     let available = [];
     vocab.forEach(v => {
@@ -212,7 +274,7 @@ export default function TowerDefense({
       if (!usage.TYPE) available.push({ item: v, mode: 'TYPE' });
       if (!usage.CHOICE) available.push({ item: v, mode: 'CHOICE' });
     });
-    
+
     // 2. Endless looping - if all specific questions are used, reset the tracker to ensure endless play
     if (available.length === 0) {
       g.usedVocab = {};
@@ -236,10 +298,10 @@ export default function TowerDefense({
       const distractors = shuffle(others).slice(0, 3).map(x => x.word);
       choices = shuffle([item.word, ...distractors]);
     }
-    
+
     challengeActiveRef.current = true;
     challengeResolvedRef.current = false;
-    setChallenge({ mode, word: item.word, def: item.def, sent: item.sent, vn: item.vn, choices });
+    setChallenge({ kind: 'VOCAB', mode, word: item.word, answer: item.word, def: item.def, sent: item.sent, vn: item.vn, choices });
     setChallengeInput('');
     setChallengeTimeLeft(CHALLENGE_DURATION);
   }
@@ -445,15 +507,14 @@ export default function TowerDefense({
   function handleChallengeSubmit(e) {
     e.preventDefault();
     if (!challenge || challenge.mode !== 'TYPE' || challenge.result) return;
-    const guess = challengeInput.trim().toLowerCase();
-    if (!guess) return;
-    if (guess === challenge.word.toLowerCase()) resolveChallenge(true, false);
+    if (!challengeInput.trim()) return;
+    if (normalizeAnswer(challengeInput) === normalizeAnswer(challenge.answer)) resolveChallenge(true, false);
     else { setChallengeShakeKey(k => k + 1); setChallengeInput(''); }
   }
 
   function handleChallengeChoice(choice) {
     if (!challenge || challenge.mode !== 'CHOICE' || challenge.result) return;
-    const correct = choice.toLowerCase() === challenge.word.toLowerCase();
+    const correct = normalizeAnswer(choice) === normalizeAnswer(challenge.answer);
     resolveChallenge(correct, !correct);
   }
 

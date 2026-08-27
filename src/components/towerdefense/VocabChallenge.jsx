@@ -52,6 +52,10 @@ export default function VocabChallenge({
   // not merely answered. Set by the game screen after an answer resolves.
   if (challenge.result) {
     const { correct } = challenge.result;
+    const isMath = challenge.kind === 'MATH';
+    const solved = isMath && challenge.prompt.includes('= ?')
+      ? challenge.prompt.replace('= ?', `= ${challenge.answer}`)
+      : null;
     return (
       <div className="fixed inset-0 z-[120] flex items-center justify-center px-4 animate-in fade-in duration-200 pointer-events-none">
         <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" />
@@ -61,28 +65,43 @@ export default function VocabChallenge({
               {correct ? <Check className="w-5 h-5 text-[#58A700]" strokeWidth={4} /> : <BookOpen className="w-5 h-5 text-rose-500" strokeWidth={3} />}
             </div>
             <div className={`text-sm font-black uppercase tracking-widest ${correct ? 'text-[#58A700]' : 'text-rose-500'}`}>
-              {correct ? 'Correct! +1 Bolt' : 'The word was'}
+              {correct ? 'Correct! +1 Bolt' : 'The answer was'}
             </div>
           </div>
 
-          <div className="text-center mb-4">
-            <div className="text-4xl sm:text-5xl font-black text-slate-800 capitalize tracking-tight">{challenge.word}</div>
-            {challenge.vn && (
-              <div className="text-lg font-bold text-slate-400 mt-1">{challenge.vn}</div>
-            )}
-          </div>
-
-          <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3 mb-2">
-            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5" strokeWidth={3} /> Definition
+          {isMath ? (
+            <div className="text-center py-4">
+              {solved ? (
+                <div className="text-4xl sm:text-5xl font-black text-slate-800 tracking-tight tabular-nums" style={{ fontVariantNumeric: 'tabular-nums' }}>{solved}</div>
+              ) : (
+                <>
+                  <div className="text-lg font-bold text-slate-500 mb-2">{challenge.prompt}</div>
+                  <div className="text-4xl sm:text-5xl font-black text-slate-800 capitalize">{challenge.answer}</div>
+                </>
+              )}
             </div>
-            <div className="text-slate-700 font-bold leading-snug text-sm sm:text-base">{challenge.def}</div>
-          </div>
+          ) : (
+            <>
+              <div className="text-center mb-4">
+                <div className="text-4xl sm:text-5xl font-black text-slate-800 capitalize tracking-tight">{challenge.word}</div>
+                {challenge.vn && (
+                  <div className="text-lg font-bold text-slate-400 mt-1">{challenge.vn}</div>
+                )}
+              </div>
 
-          {challenge.sent && (
-            <div className="px-4 py-2 text-slate-500 font-medium italic leading-snug text-sm sm:text-base">
-              “{highlightWord(challenge.sent, challenge.word)}”
-            </div>
+              <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3 mb-2">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5" strokeWidth={3} /> Definition
+                </div>
+                <div className="text-slate-700 font-bold leading-snug text-sm sm:text-base">{challenge.def}</div>
+              </div>
+
+              {challenge.sent && (
+                <div className="px-4 py-2 text-slate-500 font-medium italic leading-snug text-sm sm:text-base">
+                  “{highlightWord(challenge.sent, challenge.word)}”
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -91,6 +110,7 @@ export default function VocabChallenge({
 
   const pct = Math.max(0, Math.min(100, (timeLeft / maxTime) * 100));
   const lowTime = timeLeft <= 5;
+  const isMath = challenge.kind === 'MATH';
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center px-4 animate-in fade-in duration-300 pointer-events-none">
@@ -117,12 +137,12 @@ export default function VocabChallenge({
                <Zap className="w-5 h-5 text-indigo-600 fill-indigo-600" />
             </div>
             <div>
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Key Term · Vocab Bolt</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">{isMath ? 'Mental Maths · Maths Bolt' : 'Key Term · Vocab Bolt'}</div>
               <div className="text-sm font-black text-slate-800 flex items-center gap-1.5">
                 {challenge.mode === 'TYPE' ? (
-                  <><Keyboard className="w-4 h-4 text-indigo-500" strokeWidth={3} /> Type the word</>
+                  <><Keyboard className="w-4 h-4 text-indigo-500" strokeWidth={3} /> {isMath ? 'Type the answer' : 'Type the word'}</>
                 ) : (
-                  <><ListChecks className="w-4 h-4 text-indigo-500" strokeWidth={3} /> Pick the word</>
+                  <><ListChecks className="w-4 h-4 text-indigo-500" strokeWidth={3} /> {isMath ? 'Pick the answer' : 'Pick the word'}</>
                 )}
               </div>
             </div>
@@ -152,11 +172,17 @@ export default function VocabChallenge({
 
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl mb-4 font-black tracking-widest uppercase text-[10px]">
-             <BookOpen className="w-3.5 h-3.5 mr-1.5" strokeWidth={3} /> Definition Target
+             <BookOpen className="w-3.5 h-3.5 mr-1.5" strokeWidth={3} /> {isMath ? 'Solve' : 'Definition Target'}
           </div>
-          <div className="text-slate-800 font-black text-xl sm:text-2xl leading-snug">
-            {challenge.def}
-          </div>
+          {isMath ? (
+            <div className="text-slate-800 font-black text-4xl sm:text-5xl leading-tight tracking-tight tabular-nums" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              {challenge.prompt}
+            </div>
+          ) : (
+            <div className="text-slate-800 font-black text-xl sm:text-2xl leading-snug">
+              {challenge.def}
+            </div>
+          )}
         </div>
 
         {challenge.mode === 'TYPE' ? (
@@ -166,7 +192,7 @@ export default function VocabChallenge({
               type="text"
               value={input}
               onChange={(e) => onInputChange(e.target.value)}
-              placeholder="Type the word here…"
+              placeholder={isMath ? 'Type your answer…' : 'Type the word here…'}
               autoComplete="off"
               spellCheck={false}
               className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:border-[#1CB0F6] focus:outline-none focus:ring-4 focus:ring-[#1CB0F6]/20 font-bold text-slate-800 text-xl text-center placeholder:text-slate-400"
