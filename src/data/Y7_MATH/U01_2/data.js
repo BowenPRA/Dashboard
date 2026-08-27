@@ -2,9 +2,8 @@
 // 1.2 Multiplying & Dividing Integers — see docs/y7-math/ADAPTATION-PLAN.md.
 //
 // Six tasks at 20 XP each = 120 available, capped at 100 by unitXPOf, so a
-// student can drop a whole task and still finish (ADAPTATION-PLAN §6). The
-// arcade sits in its own reward phase and unlocks on an ASSESSMENT *attempt*,
-// not a score (`requires: 'ASSESSMENT'`, §6.4).
+// student can drop a whole task and still finish (ADAPTATION-PLAN §6). The quiz
+// (ASSESSMENT) and the arcade (GAMES) share one gate at 80 XP.
 //
 // NOTE the module properties are written out in full (`notes: notes,` not
 // `notes,`). A shorthand property right after `realWords` makes the audio
@@ -45,22 +44,14 @@ export const U01_2_DATA = {
       ],
     },
     {
+      // Quiz and the arcade share one gate: both open at 80 XP. The arcade stays
+      // 0 XP (a reward the unit unlocks, not a task paid for by it) and no longer
+      // waits on the quiz being attempted — reaching 80 opens both together.
       id: 'mastery',
-      title: 'Phase 2: Assessment',
+      title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
       tasks: [
         { id: 'ASSESSMENT', dbKey: 'p9', maxXP: 20 },
-      ],
-    },
-    {
-      // The arcade: 0 XP, unlocked once the assessment has been attempted (a
-      // progress record for p9 exists), pass or fail. `requires` names a task
-      // declared in an earlier phase — the validator enforces that.
-      id: 'reward',
-      title: 'Reward: Arcade',
-      threshold: 80,
-      requires: 'ASSESSMENT',
-      tasks: [
         { id: 'GAMES', dbKey: 'p12', maxXP: 0 },
       ],
     },

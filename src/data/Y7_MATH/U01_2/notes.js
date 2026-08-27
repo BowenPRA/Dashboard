@@ -183,6 +183,19 @@ export const notes = [
         'Với **+** thì sai: $-3 + -4 = -7$. Cộng một số âm vẫn đưa em sang trái.\n\n' +
         'Câu đó chỉ an toàn khi em nói rõ **phép tính nào** — đó là lý do bảng quy tắc có tiêu đề **× và ÷**.',
     },
+    check: {
+      id: 'c6',
+      q: '“Two negatives make a positive.” On which calculation is this sentence **false**?',
+      qVn: '“Two negatives make a positive.” Câu này **sai** với phép tính nào?',
+      options: [
+        { val: 'A', text: '$-3 × -4$', textVn: '$-3 × -4$' },
+        { val: 'B', text: '$-3 + -4$', textVn: '$-3 + -4$' },
+        { val: 'C', text: '$-12 ÷ -4$', textVn: '$-12 ÷ -4$' },
+      ],
+      correct: 'B',
+      expEn: 'The rule is for **× and ÷** only: $-3 × -4 = 12$ and $-12 ÷ -4 = 3$ are both positive. But $-3 + -4 = -7$ — adding a negative still sends you left, so the sentence is false for **+**.',
+      expVn: 'Quy tắc chỉ đúng cho **× và ÷**: $-3 × -4 = 12$ và $-12 ÷ -4 = 3$ đều dương. Nhưng $-3 + -4 = -7$ — cộng số âm vẫn đưa sang trái, nên câu đó sai với phép **+**.',
+    },
   },
 
   // 7 ─ Key word: Product (+ CHECK 3) ──────────────────────────────────────
@@ -346,6 +359,19 @@ export const notes = [
       answer: '$5 × -7 = -35$. His balance has gone **down 35 dollars**.',
       answerVn: '$5 × -7 = -35$. Số dư của thầy đã **giảm 35 đô**.',
     },
+    check: {
+      id: 'c7',
+      q: 'Charged $7 a day for 5 days — what has happened to Mr Bowen’s balance?',
+      qVn: 'Bị thu 7 đô mỗi ngày trong 5 ngày — số dư của thầy Bowen thay đổi thế nào?',
+      options: [
+        { val: 'A', text: 'Down $35$ ($-35$)', textVn: 'Giảm $35$ ($-35$)' },
+        { val: 'B', text: 'Up $35$ ($+35$)', textVn: 'Tăng $35$ ($+35$)' },
+        { val: 'C', text: 'Down $12$ ($-12$)', textVn: 'Giảm $12$ ($-12$)' },
+      ],
+      correct: 'A',
+      expEn: 'A charge is a negative: five lots of $-7$ is $5 × -7 = -35$, so the balance falls by 35. $+35$ drops the sign; $-12$ adds $5 + 7$ instead of multiplying.',
+      expVn: 'Bị thu tiền là số âm: năm lần $-7$ là $5 × -7 = -35$, nên số dư giảm 35. $+35$ là bỏ dấu; $-12$ là cộng $5 + 7$ thay vì nhân.',
+    },
   },
 
   // 12 ─ Application 2: the durian run (the deadpan closer problem) ──────────
@@ -371,6 +397,19 @@ export const notes = [
       labelVn: 'Kiểm tra đáp án',
       answer: 'Nothing. **Anything multiplied by 0 is 0**, so not one of the other numbers matters. Read the whole question before you start calculating.',
       answerVn: 'Không đồng nào. **Bất cứ số nào nhân với 0 đều bằng 0**, nên không con số nào khác có ý nghĩa cả. Hãy đọc hết câu hỏi trước khi bắt đầu tính.',
+    },
+    check: {
+      id: 'c8',
+      q: 'He buys **0 durians**. How much does Mr Bowen spend on durian?',
+      qVn: 'Thầy mua **0 quả sầu riêng**. Thầy Bowen tiêu bao nhiêu tiền cho sầu riêng?',
+      options: [
+        { val: 'A', text: '$6\\,480\\,000$ dong', textVn: '$6\\,480\\,000$ đồng' },
+        { val: 'B', text: '$0$ dong', textVn: '$0$ đồng' },
+        { val: 'C', text: '$90\\,000$ dong', textVn: '$90\\,000$ đồng' },
+      ],
+      correct: 'B',
+      expEn: 'He buys 0 durians, and **anything times 0 is 0** — so the price, the class size and the distance are all noise. The big number $6\\,480\\,000$ is the trap for anyone who multiplied before reading to the end.',
+      expVn: 'Thầy mua 0 quả, mà **bất cứ số nào nhân với 0 đều bằng 0** — nên giá, sĩ số và quãng đường đều là nhiễu. Số lớn $6\\,480\\,000$ là bẫy cho ai nhân trước khi đọc hết.',
     },
   },
 

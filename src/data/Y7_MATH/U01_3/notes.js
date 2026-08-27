@@ -335,6 +335,19 @@ export const notes = [
       answer: 'The LCM of 8 and 12 is $24$. So **24 of each**: $24 ÷ 8 = 3$ packs of hot dogs and $24 ÷ 12 = 2$ packs of buns.',
       answerVn: 'BCNN của 8 và 12 là $24$. Vậy **24 cái mỗi loại**: $24 ÷ 8 = 3$ gói xúc xích và $24 ÷ 12 = 2$ gói bánh mì.',
     },
+    check: {
+      id: 'c6',
+      q: 'Hot dogs come in 8s, buns in 12s. What is the **smallest** number of each George can buy with none left over?',
+      qVn: 'Xúc xích bán gói 8, bánh mì gói 12. Số **nhỏ nhất** mỗi loại George mua được mà không thừa là bao nhiêu?',
+      options: [
+        { val: 'A', text: '$96$ of each', textVn: '$96$ cái mỗi loại' },
+        { val: 'B', text: '$24$ of each', textVn: '$24$ cái mỗi loại' },
+        { val: 'C', text: '$20$ of each', textVn: '$20$ cái mỗi loại' },
+      ],
+      correct: 'B',
+      expEn: 'Equal numbers with none left over means a common multiple of 8 and 12, and the smallest is the LCM: $24$. $96 = 8 × 12$ works but is not the smallest; $20$ is a multiple of neither.',
+      expVn: 'Số bằng nhau mà không thừa nghĩa là bội chung của 8 và 12, và nhỏ nhất là BCNN: $24$. $96 = 8 × 12$ cũng chia hết nhưng không nhỏ nhất; $20$ không phải bội của số nào.',
+    },
   },
 
   // 12 ─ Countable recap ────────────────────────────────────────────────────

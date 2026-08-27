@@ -1,13 +1,15 @@
 // src/data/Y7_MATH/U01_4/data.js
-// 1.4 Highest Common Factors — self-study unit (ADAPTATION-PLAN §8). Six tasks
-// at 20 XP each = 120 available, capped at 100 by unitXPOf. The arcade sits in
-// its own reward phase and unlocks on an ASSESSMENT *attempt* (§6.4).
+// 1.4 Highest Common Factors — self-study unit (ADAPTATION-PLAN §8). Seven tasks
+// (135 XP available), capped at 100 by unitXPOf. Factor Blitz is the extra: a
+// timed factor-recognition round, the HCF method at speed. The quiz (ASSESSMENT)
+// and the arcade (GAMES) share one gate at 80 XP.
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio (§10.1).
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
 import { drill } from './drill.js';
+import { factorBlitz } from './factorBlitz.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
 
@@ -36,23 +38,19 @@ export const U01_4_DATA = {
       tasks: [
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
         { id: 'NUM_DRILL', dbKey: 'p17', maxXP: 20 },
+        { id: 'FACTOR_BLITZ', dbKey: 'p18', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
       ],
     },
     {
+      // Quiz and the arcade share one gate: both open at 80 XP. The arcade stays
+      // 0 XP (a reward the unit unlocks, not a task paid for by it) and no longer
+      // waits on the quiz being attempted — reaching 80 opens both together.
       id: 'mastery',
-      title: 'Phase 2: Assessment',
+      title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
       tasks: [
         { id: 'ASSESSMENT', dbKey: 'p9', maxXP: 20 },
-      ],
-    },
-    {
-      id: 'reward',
-      title: 'Reward: Arcade',
-      threshold: 80,
-      requires: 'ASSESSMENT',
-      tasks: [
         { id: 'GAMES', dbKey: 'p12', maxXP: 0 },
       ],
     },
@@ -159,6 +157,7 @@ export const U01_4_DATA = {
   notes: notes,
   workbook: workbook,
   drill: drill,
+  factorBlitz: factorBlitz,
   assessment: assessment,
   games: games,
 };

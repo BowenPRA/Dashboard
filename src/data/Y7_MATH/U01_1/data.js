@@ -1,9 +1,8 @@
 // src/data/Y7_MATH/U01_1/data.js
 // 1.1 Adding & Subtracting Integers — REBUILT into the full self-study format
 // (ADAPTATION-PLAN §8). Six tasks at 20 XP each = 120 available, capped at 100
-// by unitXPOf, so a student can drop a whole task and still finish. The arcade
-// sits in its own reward phase and unlocks on an ASSESSMENT *attempt*, not a
-// score (`requires: 'ASSESSMENT'`, §6.4).
+// by unitXPOf, so a student can drop a whole task and still finish. The quiz
+// (ASSESSMENT) and the arcade (GAMES) share one gate at 80 XP.
 //
 // Module properties are written out in full (`notes: notes,` not `notes,`): a
 // shorthand right after `realWords` makes the audio generator over-read the
@@ -43,19 +42,14 @@ export const U01_1_DATA = {
       ],
     },
     {
+      // Quiz and the arcade share one gate: both open at 80 XP. The arcade stays
+      // 0 XP (a reward the unit unlocks, not a task paid for by it) and no longer
+      // waits on the quiz being attempted — reaching 80 opens both together.
       id: 'mastery',
-      title: 'Phase 2: Assessment',
+      title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
       tasks: [
         { id: 'ASSESSMENT', dbKey: 'p9', maxXP: 20 },
-      ],
-    },
-    {
-      id: 'reward',
-      title: 'Reward: Arcade',
-      threshold: 80,
-      requires: 'ASSESSMENT',
-      tasks: [
         { id: 'GAMES', dbKey: 'p12', maxXP: 0 },
       ],
     },

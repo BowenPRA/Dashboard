@@ -522,6 +522,31 @@ for (const trackId of TRACK_IDS) {
       });
     }
 
+    // -- Factor Blitz: only the target numbers are authored; FactorBlitz.jsx
+    //    derives each round's factor set with `N % c === 0`. The risk is a round
+    //    that cannot be answered — a target whose only factors under 13 are 1 and
+    //    itself (a prime, or a candidate list that misses them all) shows an empty
+    //    grid the student can never "clear". Catch it here rather than on screen.
+    if (unit.factorBlitz) {
+      const at = `${label}: factorBlitz`;
+      const fb = unit.factorBlitz;
+      if (!fb.title || !fb.titleVn) err(`${at} is missing a bilingual title`);
+      if (fb.seconds !== undefined && !(fb.seconds > 0)) err(`${at}: seconds must be a positive number`);
+      const cand = fb.candidates?.length ? fb.candidates : [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+      for (const c of cand) {
+        if (!Number.isInteger(c) || c < 2 || c > 12) err(`${at}: candidate ${c} must be a whole number from 2 to 12 (factors "under 13")`);
+      }
+      const rounds = fb.rounds || [];
+      if (!rounds.length) err(`${at} has no rounds`);
+      rounds.forEach((n, i) => {
+        const rat = `${at} round ${i + 1}`;
+        if (!Number.isInteger(n) || n <= 1) { err(`${rat}: target ${n} must be a whole number greater than 1`); return; }
+        if (!cand.some((c) => n % c === 0)) {
+          err(`${rat}: ${n} has no factor in the candidate grid — the round would show nothing to tap`);
+        }
+      });
+    }
+
     // -- diagram references resolve
     if (fs.existsSync(dir)) {
       const dg = path.join(dir, 'diagrams.js');

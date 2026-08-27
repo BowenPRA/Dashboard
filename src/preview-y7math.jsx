@@ -8,6 +8,7 @@ import Notes from './tasks/Notes';
 import Recognition from './tasks/Recognition';
 import Workbook from './tasks/Workbook';
 import NumberDrill from './tasks/NumberDrill';
+import FactorBlitz from './tasks/FactorBlitz';
 import ShortAnswers from './tasks/ShortAnswers';
 import Assessment from './tasks/Assessment';
 import { getTrack } from './data/index';
@@ -22,13 +23,15 @@ const CASES = [
   ['WORD_REC', 'Vocab · 6 key words with audio'],
   ['WORKBOOK', 'Practice · 12 questions in 3 tiers'],
   ['NUM_DRILL', 'Number Gym · long-mult, 8 items'],
+  ['FACTOR_BLITZ', 'Factor Blitz · timed factor grid (1.4/1.5 only)'],
   ['SHORT_ANSWERS', 'Questions · 4 reasoning items'],
-  ['ASSESSMENT', 'Assessment · 6 MCQ, 8 minutes'],
+  ['ASSESSMENT', 'Quiz · 6 MCQ, 8 minutes'],
 ];
 
 const SCREENS = {
   NOTES: Notes, WORD_REC: Recognition, WORKBOOK: Workbook,
-  NUM_DRILL: NumberDrill, SHORT_ANSWERS: ShortAnswers, ASSESSMENT: Assessment,
+  NUM_DRILL: NumberDrill, FACTOR_BLITZ: FactorBlitz,
+  SHORT_ANSWERS: ShortAnswers, ASSESSMENT: Assessment,
 };
 
 function Harness() {

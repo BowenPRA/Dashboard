@@ -324,6 +324,19 @@ export const notes = [
         'Đáp án là $8 - 5 = 3$ — **không** phải $5 - 8$. Trong tiếng Anh, hai số xuất hiện theo **thứ tự ngược lại** với phép tính.\n\n' +
         'Cùng một cái bẫy: **take 7 away from 3** → $3 - 7$.   **6 less than 2** → $2 - 6$.',
     },
+    check: {
+      id: 'c6',
+      q: 'Which calculation is “Subtract 5 from 8”?',
+      qVn: 'Phép tính nào là “Subtract 5 from 8” (lấy 8 trừ 5)?',
+      options: [
+        { val: 'A', text: '$5 - 8$', textVn: '$5 - 8$' },
+        { val: 'B', text: '$8 - 5$', textVn: '$8 - 5$' },
+        { val: 'C', text: '$5 + 8$', textVn: '$5 + 8$' },
+      ],
+      correct: 'B',
+      expEn: 'The word **from** marks where you start: subtract 5 **from 8** is $8 - 5 = 3$. In English the two numbers arrive in the opposite order to the calculation, so $5 - 8$ is the trap.',
+      expVn: 'Từ **from** cho biết em bắt đầu từ đâu: subtract 5 **from 8** là $8 - 5 = 3$. Trong tiếng Anh hai số xuất hiện ngược thứ tự với phép tính, nên $5 - 8$ là cái bẫy.',
+    },
   },
 
   // 10 ─ Say it, then write it (TranslateWidget) ────────────────────────────
@@ -393,6 +406,19 @@ export const notes = [
       labelVn: 'Kiểm tra đáp án',
       answer: '$-4 + 9 = 5$. He is on **floor 5**.',
       answerVn: '$-4 + 9 = 5$. Thầy đang ở **tầng 5**.',
+    },
+    check: {
+      id: 'c7',
+      q: 'From floor $-4$, Mr Bowen goes up 9 floors. Which floor is he on now?',
+      qVn: 'Từ tầng $-4$, thầy Bowen đi lên 9 tầng. Bây giờ thầy ở tầng nào?',
+      options: [
+        { val: 'A', text: 'Floor $5$', textVn: 'Tầng $5$' },
+        { val: 'B', text: 'Floor $-13$', textVn: 'Tầng $-13$' },
+        { val: 'C', text: 'Floor $13$', textVn: 'Tầng $13$' },
+      ],
+      correct: 'A',
+      expEn: 'Going up adds: $-4 + 9 = 5$, so he is on floor 5. Floor $-13$ comes from subtracting ($-4 - 9$); $13$ ignores the minus sign on $-4$.',
+      expVn: 'Đi lên là phép cộng: $-4 + 9 = 5$, nên thầy ở tầng 5. Tầng $-13$ là do trừ ($-4 - 9$); $13$ là bỏ qua dấu trừ của $-4$.',
     },
   },
 

@@ -665,8 +665,8 @@ const DEN = {
   continue: 'Continue to', bankHere: 'Finish & bank XP', levelClear: 'clear!', unlocked: 'unlocked',
   clean: 'Every box right first time. Full marks for this one.', helped: 'Solved — but a box or two had to be shown.',
   empty: 'Fill in every blue box first.', scoreLine: 'items cleared', heldNote: 'Clear this level to open the next.',
-  step: 'Step', of: 'of', dividing: 'Now dividing', bringDown: 'bring the next digit down',
-  quotientIs: 'Quotient', remainderIs: 'remainder', into: 'How many whole times does',
+  step: 'Step', of: 'of', method: 'divide · multiply · subtract · bring down',
+  quotientIs: 'Quotient', remainderIs: 'remainder',
   reasons: {
     divwrong: 'How many whole times does the divisor go into the number above? That is the quotient digit.',
     prodwrong: 'Multiply your quotient digit by the divisor to get the number you take away.',
@@ -678,8 +678,8 @@ const DVN = {
   continue: 'Tiếp tục lên', bankHere: 'Kết thúc & nhận XP', levelClear: 'hoàn thành!', unlocked: 'đã mở',
   clean: 'Mọi ô đúng ngay lần đầu. Trọn điểm cho bài này.', helped: 'Đã giải xong — nhưng có một hai ô phải hiện đáp án.',
   empty: 'Hãy điền vào mọi ô xanh trước.', scoreLine: 'bài đã hoàn thành', heldNote: 'Hoàn thành cấp này để mở cấp tiếp theo.',
-  step: 'Bước', of: 'trên', dividing: 'Đang chia', bringDown: 'hạ chữ số tiếp theo xuống',
-  quotientIs: 'Thương', remainderIs: 'số dư', into: 'Số chia đi vào bao nhiêu lần trong',
+  step: 'Bước', of: 'trên', method: 'chia · nhân · trừ · hạ chữ số',
+  quotientIs: 'Thương', remainderIs: 'số dư',
   reasons: {
     divwrong: 'Số chia đi vào số ở trên được bao nhiêu lần trọn vẹn? Đó là chữ số thương.',
     prodwrong: 'Nhân chữ số thương với số chia để có số cần trừ đi.',
@@ -687,25 +687,53 @@ const DVN = {
   },
 };
 
-/** A single long-division input: quotient digit (1 wide) or product/remainder. */
-function DivBox({ value, onChange, onEnter, state, wide, refEl, aria }) {
-  const border = state === 'locked' ? '#58cc02' : state === 'error' ? '#ff4b4b' : state === 'live' ? '#f97316' : null;
+/** A quotient-digit box, one column wide, sitting above the bar. */
+function QBox({ value, onChange, onEnter, state = 'dim', refEl }) {
+  const border = state === 'locked' ? GREEN : state === 'error' ? RED : state === 'live' ? ORANGE : null;
   return (
     <input
       ref={refEl}
       value={value ?? ''}
-      onChange={(e) => onChange(e.target.value)}
-      onKeyDown={(e) => { if (e.key === 'Enter') onEnter(); }}
+      onChange={(e) => onChange?.(e.target.value)}
+      onKeyDown={(e) => { if (e.key === 'Enter') onEnter?.(); }}
       readOnly={state !== 'live'}
       disabled={state === 'dim'}
-      aria-label={aria}
-      inputMode="numeric" maxLength={wide ? 4 : 1}
-      className={`${wide ? 'w-14' : 'w-10'} h-11 sm:h-12 rounded-lg border-2 text-center font-mono font-black text-xl tabular-nums outline-none transition-colors
-        ${state === 'locked' ? 'bg-[#58cc02]/10 text-[#3e7500] dark:text-[#8ee000]'
+      inputMode="numeric" maxLength={1} aria-label="quotient digit"
+      className={`w-9 h-11 rounded-lg border-2 text-center font-mono font-black text-xl tabular-nums outline-none transition-colors
+        ${state === 'locked' ? 'bg-[#58cc02]/10 text-[#3e7500] dark:text-[#8ee000] border-[#58a700]'
           : state === 'live' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900'
-            : 'bg-slate-100 dark:bg-slate-900/60 text-slate-300 dark:text-slate-700 border-slate-200 dark:border-slate-800'}`}
+            : 'bg-transparent text-slate-300 dark:text-slate-700 border-dashed border-slate-300 dark:border-slate-700'}`}
       style={border ? { borderColor: border } : undefined}
     />
+  );
+}
+
+/** A product or remainder input. Fills the columns its parent sizes it to, with
+ *  the digits right-aligned so the units digit lands under the quotient column. */
+function NumBox({ value, onChange, onEnter, state }) {
+  const border = state === 'locked' ? GREEN : state === 'error' ? RED : state === 'live' ? ORANGE : null;
+  return (
+    <input
+      value={value ?? ''}
+      onChange={(e) => onChange?.(e.target.value)}
+      onKeyDown={(e) => { if (e.key === 'Enter') onEnter?.(); }}
+      readOnly={state !== 'live'}
+      inputMode="numeric" maxLength={5} aria-label="working"
+      className={`w-full h-11 rounded-lg border-2 text-right pr-2.5 font-mono font-black text-xl tabular-nums outline-none transition-colors
+        ${state === 'locked' ? 'bg-[#58cc02]/10 text-[#3e7500] dark:text-[#8ee000] border-[#58a700]'
+          : state === 'live' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900 border-slate-200 dark:border-slate-700'
+            : 'bg-slate-100 dark:bg-slate-900/60 text-slate-300 border-slate-200 dark:border-slate-800'}`}
+      style={border ? { borderColor: border } : undefined}
+    />
+  );
+}
+
+/** A finished (locked) product or remainder, right-aligned to its column. */
+function LockedNum({ value }) {
+  return (
+    <div className="w-full h-11 flex items-center justify-end pr-2.5 font-mono font-black text-xl tabular-nums text-slate-700 dark:text-slate-200">
+      {value}
+    </div>
   );
 }
 
@@ -804,9 +832,16 @@ function LongDiv({ pool, onComplete, onQuit }) {
 
   const cleared = flat.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const errorList = [...new Set(Object.values(errors).filter(Boolean))];
-  const dDigits = String(item.D).split('');
   const stateOf = (id) => locked[id] ? 'locked' : errors[id] ? 'error' : (liveCells.some((c) => c.id === id) ? 'live' : 'dim');
-  const qId = cid2(stageIdx, 'q'), pId = cid2(stageIdx, 'p'), rId = cid2(stageIdx, 'r');
+  const qId = cid2(stageIdx, 'q');
+
+  // The written method, drawn to scale: one fixed column width, so every product
+  // and remainder lands in the same columns as the dividend digits above it.
+  const COL = 40, QH = 44;              // px per digit column, and row height
+  const W = model.W;
+  const gridW = W * COL;
+  const rightOf = (col) => (W - 1 - col) * COL;   // px from the grid's right edge to column `col`
+  const stepsShown = itemDone ? steps : steps.slice(0, stageIdx + 1);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
@@ -826,50 +861,98 @@ function LongDiv({ pool, onComplete, onQuit }) {
           </div>
         </div>
 
-        {/* The bus stop: quotient boxes over the bar, divisor and dividend under it */}
+        {/* The written long-division method: the quotient over the bar, then each
+            step's product and remainder stacked in the columns beneath the
+            dividend — divide, multiply, subtract, bring down — exactly as it is
+            set out on paper. */}
         <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-4 sm:p-6 overflow-x-auto">
-          <div className="mx-auto w-fit">
-            {/* quotient row */}
-            <div className="flex items-end justify-end gap-1.5 pl-[3.5rem]">
-              {steps.map((s, i) => {
-                const id = cid2(i, 'q');
-                const st = i < stageIdx ? 'locked' : (i === stageIdx && !itemDone) ? stateOf(id) : (itemDone ? 'locked' : 'dim');
-                return <DivBox key={id} value={itemDone || i < stageIdx ? String(s.q) : (entries[id] ?? '')}
-                  onChange={(v) => edit(id, v)} onEnter={check} state={st} aria={`q${i}`}
-                  refEl={i === stageIdx && liveCells[0]?.id === id ? firstBox : undefined} />;
-              })}
-            </div>
-            {/* bar + divisor + dividend */}
-            <div className="flex items-center gap-2 mt-1">
-              <span className="w-[3rem] text-right font-mono font-black text-2xl text-slate-700 dark:text-slate-200">{item.d}</span>
-              <div className="flex items-center border-l-[3px] border-t-[3px] border-slate-800 dark:border-slate-200 rounded-tl-md pl-2 pt-1 gap-1.5">
-                {dDigits.map((dg, i) => (
-                  <span key={i} className={`w-10 h-11 sm:h-12 flex items-center justify-center font-mono font-black text-2xl tabular-nums ${i === stageIdx && !itemDone ? 'text-orange-600 dark:text-orange-300' : 'text-slate-800 dark:text-slate-100'}`}>{dg}</span>
-                ))}
+          <div className="mx-auto w-fit flex items-start">
+            {/* divisor, sitting outside the bracket and level with the dividend */}
+            <div className="flex flex-col items-end shrink-0 pr-1" style={{ minWidth: '2.5rem' }}>
+              <div style={{ height: QH + 3 }} />
+              <div className="flex items-center" style={{ height: QH }}>
+                <span className="font-mono font-black text-2xl tabular-nums text-slate-700 dark:text-slate-200">{item.d}</span>
+                <span className="font-mono font-black text-3xl leading-none text-slate-400 dark:text-slate-500 ml-1">)</span>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* the working step: product and remainder */}
-        {!itemDone && (
-          <div className="rounded-2xl border-2 shadow-sm p-3 sm:p-4" style={{ borderColor: ORANGE, backgroundColor: `${ORANGE}0d` }}>
-            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-              {t.step} {stageIdx + 1} {t.of} {steps.length} · {t.dividing} {stage.current}
-            </div>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-3 font-mono font-black text-lg text-slate-700 dark:text-slate-200">
-              <span>{stage.current} ÷ {item.d} → type the digit above the bar ·</span>
-              <DivBox value={entries[qId] ?? '?'} onChange={() => {}} state="dim" />
-              <span>× {item.d} =</span>
-              <DivBox value={entries[pId] ?? ''} onChange={(v) => edit(pId, v)} onEnter={check} state={stateOf(pId)} wide aria="product" />
-              <span className="mx-1">·</span>
-              <span>{stage.current} −</span>
-              <DivBox value={entries[pId] ?? '?'} onChange={() => {}} state="dim" wide />
-              <span>=</span>
-              <DivBox value={entries[rId] ?? ''} onChange={(v) => edit(rId, v)} onEnter={check} state={stateOf(rId)} wide aria="rem" />
+            {/* the columns: quotient, the bar, the dividend, then the worked steps */}
+            <div style={{ paddingLeft: COL }}>
+              {/* quotient — one box per step, above the digit it was worked from */}
+              <div className="flex" style={{ width: gridW, height: QH }}>
+                {Array.from({ length: W }, (_, c) => {
+                  const sIdx = steps.findIndex((s) => s.qCol === c);
+                  return (
+                    <div key={c} className="flex items-center justify-center" style={{ width: COL }}>
+                      {sIdx === -1 ? null
+                        : (itemDone || sIdx < stageIdx)
+                          ? <QBox value={String(steps[sIdx].q)} state="locked" />
+                          : sIdx === stageIdx
+                            ? <QBox value={entries[qId] ?? ''} onChange={(v) => edit(qId, v)} onEnter={check}
+                                state={stateOf(qId)} refEl={liveCells[0]?.id === qId ? firstBox : undefined} />
+                            : <QBox value="" state="dim" />}
+                    </div>
+                  );
+                })}
+              </div>
+              {/* the bar (vinculum) */}
+              <div className="rounded-full bg-slate-800 dark:bg-slate-200" style={{ width: gridW, height: 3 }} />
+              {/* the dividend */}
+              <div className="flex" style={{ width: gridW }}>
+                {model.digits.map((dg, c) => (
+                  <div key={c}
+                    className={`flex items-center justify-center font-mono font-black text-2xl tabular-nums ${!itemDone && c === stage.qCol ? 'text-orange-600 dark:text-orange-300' : 'text-slate-800 dark:text-slate-100'}`}
+                    style={{ width: COL, height: QH }}>{dg}</div>
+                ))}
+              </div>
+
+              {/* one worked block per step, stacking down the columns */}
+              {stepsShown.map((s, sIdx) => {
+                const active = !itemDone && sIdx === stageIdx;
+                const pKey = cid2(sIdx, 'p'), rKey = cid2(sIdx, 'r');
+                const rLen = String(s.rem).length;
+                const hasNext = sIdx + 1 < steps.length;
+                return (
+                  <div key={sIdx}>
+                    {/* product row: − (q × divisor), right-aligned to the quotient column */}
+                    <div className="relative" style={{ width: gridW, height: QH }}>
+                      <div className="absolute top-0 flex items-center justify-center font-mono font-black text-xl text-slate-400 dark:text-slate-500"
+                        style={{ right: rightOf(s.qCol) + s.productCols * COL, width: COL, height: QH }}>−</div>
+                      <div className="absolute top-0" style={{ right: rightOf(s.qCol), width: s.productCols * COL, height: QH }}>
+                        {active
+                          ? <NumBox value={entries[pKey] ?? ''} onChange={(v) => edit(pKey, v)} onEnter={check} state={stateOf(pKey)} />
+                          : <LockedNum value={s.product} />}
+                      </div>
+                    </div>
+                    {/* the subtraction line, under the product only */}
+                    <div className="relative" style={{ width: gridW, height: 8 }}>
+                      <div className="absolute top-0.5 border-t-2 border-slate-500 dark:border-slate-400"
+                        style={{ right: rightOf(s.qCol), width: s.productCols * COL }} />
+                    </div>
+                    {/* remainder, with the next digit brought down beside it */}
+                    <div className="relative" style={{ width: gridW, height: QH }}>
+                      <div className="absolute top-0" style={{ right: rightOf(s.qCol), width: rLen * COL, height: QH }}>
+                        {active
+                          ? <NumBox value={entries[rKey] ?? ''} onChange={(v) => edit(rKey, v)} onEnter={check} state={stateOf(rKey)} />
+                          : <LockedNum value={s.rem} />}
+                      </div>
+                      {hasNext && (
+                        <div className="absolute top-0 flex items-center justify-center font-mono font-black text-2xl tabular-nums text-orange-500/70 dark:text-orange-300/70"
+                          style={{ right: rightOf(s.qCol + 1), width: COL, height: QH }}>{model.digits[s.qCol + 1]}</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        )}
+
+          {!itemDone && (
+            <p className="text-center text-[11px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-4">
+              {t.step} {stageIdx + 1} {t.of} {steps.length} · {t.method}
+            </p>
+          )}
+        </div>
 
         <div className="min-h-[2rem] flex flex-col gap-2">
           {itemDone && (

@@ -408,6 +408,19 @@ export const notes = [
       answer: 'The fraction is $\\frac{18}{24}$. The HCF of 18 and 24 is $6$, so divide top and bottom by 6: $\\frac{18}{24} = \\frac{3}{4}$. **Three quarters** of the shelf is maths. The HCF is the shortcut that simplifies in one step.',
       answerVn: 'Phân số là $\\frac{18}{24}$. ƯCLN của 18 và 24 là $6$, nên chia cả tử và mẫu cho 6: $\\frac{18}{24} = \\frac{3}{4}$. **Ba phần tư** giá sách là sách toán. ƯCLN là lối tắt giúp rút gọn chỉ trong một bước.',
     },
+    check: {
+      id: 'c6',
+      q: '18 of the 24 books are maths books. What is $\\frac{18}{24}$ in its simplest form?',
+      qVn: '18 trong 24 quyển là sách toán. $\\frac{18}{24}$ ở dạng tối giản là gì?',
+      options: [
+        { val: 'A', text: '$\\frac{9}{12}$', textVn: '$\\frac{9}{12}$' },
+        { val: 'B', text: '$\\frac{3}{4}$', textVn: '$\\frac{3}{4}$' },
+        { val: 'C', text: '$\\frac{6}{8}$', textVn: '$\\frac{6}{8}$' },
+      ],
+      correct: 'B',
+      expEn: 'Simplest form means dividing by the **HCF**. The HCF of 18 and 24 is 6, so $\\frac{18}{24} = \\frac{3}{4}$. $\\frac{9}{12}$ (÷2) and $\\frac{6}{8}$ (÷3) are equal but not fully simplified — they still share a factor.',
+      expVn: 'Dạng tối giản là chia cho **ƯCLN**. ƯCLN của 18 và 24 là 6, nên $\\frac{18}{24} = \\frac{3}{4}$. $\\frac{9}{12}$ (÷2) và $\\frac{6}{8}$ (÷3) bằng nó nhưng chưa tối giản — vẫn còn ước chung.',
+    },
   },
 
   // 14 ─ Countable recap ────────────────────────────────────────────────────

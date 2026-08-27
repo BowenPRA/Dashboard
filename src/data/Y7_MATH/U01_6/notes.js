@@ -318,6 +318,19 @@ export const notes = [
       answer: '**144.** Between 100 and 200 the only squares are 121 and 144. $\\sqrt{121} = 11$ and $\\sqrt{144} = 12$ — and 12 is the multiple of 3.',
       answerVn: '**144.** Giữa 100 và 200 chỉ có hai số chính phương là 121 và 144. $\\sqrt{121} = 11$ và $\\sqrt{144} = 12$ — và 12 mới là bội số của 3.',
     },
+    check: {
+      id: 'c6',
+      q: 'Between 100 and 200, with a square root that is a multiple of 3 — which is Mr Bowen’s number?',
+      qVn: 'Nằm giữa 100 và 200, có căn bậc hai là bội số của 3 — con số của thầy Bowen là số nào?',
+      options: [
+        { val: 'A', text: '$121$', textVn: '$121$' },
+        { val: 'B', text: '$144$', textVn: '$144$' },
+        { val: 'C', text: '$150$', textVn: '$150$' },
+      ],
+      correct: 'B',
+      expEn: 'The only square numbers between 100 and 200 are $121 = 11^2$ and $144 = 12^2$. Only $\\sqrt{144} = 12$ is a multiple of 3, so the number is 144. 150 is not a square number at all.',
+      expVn: 'Hai số chính phương duy nhất giữa 100 và 200 là $121 = 11^2$ và $144 = 12^2$. Chỉ $\\sqrt{144} = 12$ là bội số của 3, nên con số đó là 144. 150 không phải số chính phương.',
+    },
   },
 
   // 12 ─ Problem: the cube watermelons ──────────────────────────────────────
@@ -343,6 +356,19 @@ export const notes = [
       labelVn: 'Kiểm tra đáp án',
       answer: '$3 × 3 × 3 = 27$ watermelons — that is $3^3$. They are real: Japanese farmers grow them inside glass boxes.',
       answerVn: '$3 × 3 × 3 = 27$ quả dưa — đó là $3^3$. Loại dưa này có thật: nông dân Nhật Bản trồng chúng trong hộp kính.',
+    },
+    check: {
+      id: 'c7',
+      q: 'A crate is 3 watermelons along, 3 across and 3 high. How many does it hold?',
+      qVn: 'Một thùng xếp 3 quả dưa dài, 3 quả rộng và 3 quả cao. Nó chứa được bao nhiêu quả?',
+      options: [
+        { val: 'A', text: '$9$', textVn: '$9$' },
+        { val: 'B', text: '$27$', textVn: '$27$' },
+        { val: 'C', text: '$18$', textVn: '$18$' },
+      ],
+      correct: 'B',
+      expEn: 'Three along, three across, three high is $3 × 3 × 3 = 27$ — that is $3^3$, a cube number. $9$ is only $3 × 3$ (one layer); $18$ adds the numbers instead of multiplying all three.',
+      expVn: 'Ba dài, ba rộng, ba cao là $3 × 3 × 3 = 27$ — đó là $3^3$, một số lập phương. $9$ chỉ là $3 × 3$ (một lớp); $18$ là cộng thay vì nhân cả ba số.',
     },
   },
 

@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3
+  Move3d, Grid3x3, Zap
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -206,7 +206,9 @@ export const TASKS = [
     id: 'ASSESSMENT',
     nativeMax: 20,
     dbKey: 'p9',
-    label: 'Assessment',
+    // Presents as "Quiz" everywhere — a single shared label, so the rename is
+    // global (no per-track override exists). The id/dbKey stay ASSESSMENT/p9.
+    label: 'Quiz',
     icon: ClipboardCheck,
     color: { bg: 'bg-[#2563eb]', border: 'border-[#1d4ed8]', text: 'text-white' },
     defaultMaxXP: 20,
@@ -332,6 +334,27 @@ export const TASKS = [
     hasContent: (u) => !!u.drill?.ladder?.length,
     buildPool: (u) => u.drill,
     props: ({ pool, savedData, onComplete, onQuit }) => ({ pool, savedData, onComplete, onQuit }),
+  },
+  {
+    id: 'FACTOR_BLITZ',
+    nativeMax: 10,
+    // p1–p17 are taken (p5 is reserved as a workbook question id); p18 is next.
+    dbKey: 'p18',
+    // "A number lands; grab every factor before the clock." Timed recognition of
+    // the factors under 13 of a target number — the student taps the tiles that
+    // divide it. Production, not recognition of a stored key: the component
+    // derives each round's factor set with `N % c === 0`, the same
+    // derive-don't-store rule Number Gym, Graph It and Vectors follow. Item shape
+    // is documented in src/tasks/FactorBlitz.jsx.
+    label: 'Factor Blitz',
+    icon: Zap,
+    color: { bg: 'bg-[#84cc16]', border: 'border-[#4d7c0f]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./FactorBlitz.jsx')),
+    hasContent: (u) => !!u.factorBlitz?.rounds?.length,
+    buildPool: (u) => u.factorBlitz,
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];
 

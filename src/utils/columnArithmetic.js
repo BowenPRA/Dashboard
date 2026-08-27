@@ -140,36 +140,65 @@ export function modelOf(mode, a, b, op = '+') {
 }
 
 /**
- * The bus-stop (long division) method for D ÷ d, one dividend digit at a time.
- * Each step brings the next digit down beside the running remainder, divides to
- * get a quotient digit, multiplies back, and subtracts. Every value is derived,
- * so the task only ever stores the two operands.
+ * The bus-stop (long division) method for D ÷ d, written the way a student
+ * writes it on paper — so leading zeros are grouped away, not typed. The first
+ * step swallows as many leading digits as it needs for the divisor to "go" at
+ * least once (6 into 3 doesn't go, so read 34); every step after brings down one
+ * more digit. The quotient digit is written above the LAST digit each step used,
+ * which is what makes the products line up in columns underneath the dividend.
+ * Every value is derived, so the task only ever stores the two operands.
  *
  *   step = {
- *     pos,        // which dividend digit (0 = leftmost)
- *     digit,      // the dividend digit brought down
- *     current,    // remainderIn * 10 + digit — the number now being divided
- *     q,          // quotient digit = floor(current / d)
- *     product,    // q * d — subtracted from current
- *     rem,        // current - product — carried to the next step
+ *     qCol,       // column the quotient digit sits above (0 = leftmost dividend digit)
+ *     current,    // the number being divided this step
+ *     q,          // quotient digit = floor(current / d) — always one digit
+ *     product,    // q * d, subtracted from current, right-aligned to qCol
+ *     rem,        // current - product, carried down to the next step
+ *     bringCol,   // column of the digit brought down INTO this step (null on the first)
+ *     productCols // how many columns the product occupies (its digit length)
  *   }
  *
  * Works for exact division (final rem 0, used by 1.4) and division with a
- * remainder (final rem > 0, used by 1.5). `d` is a one- or two-digit divisor.
+ * remainder (final rem > 0, used by 1.5). `d` is a one- or two-digit divisor and
+ * the caller guarantees D >= d, so the first group always divides.
  */
 export function buildLongDiv(D, d) {
   const digits = String(D).split('').map(Number);
+  const W = digits.length;
   const steps = [];
-  let rem = 0;
-  digits.forEach((digit, pos) => {
-    const current = rem * 10 + digit;
+  let rem;
+  let i = 0;
+
+  // First step: pull in leading digits until the divisor goes at least once.
+  let current = 0;
+  do {
+    current = current * 10 + digits[i];
+    i += 1;
+  } while (current < d && i < W);
+  {
     const q = Math.floor(current / d);
     const product = q * d;
     rem = current - product;
-    steps.push({ pos, digit, current, q, product, rem });
-  });
+    steps.push({
+      qCol: i - 1, current, q, product, rem,
+      bringCol: null, productCols: String(product).length,
+    });
+  }
+
+  // Every later step brings down exactly one digit, one column to the right.
+  for (; i < W; i += 1) {
+    current = rem * 10 + digits[i];
+    const q = Math.floor(current / d);
+    const product = q * d;
+    rem = current - product;
+    steps.push({
+      qCol: i, current, q, product, rem,
+      bringCol: i, productCols: String(product).length,
+    });
+  }
+
   return {
-    D, d, steps,
+    D, d, W, digits, steps,
     quotient: Math.floor(D / d),
     remainder: D % d,
   };
