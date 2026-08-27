@@ -159,6 +159,14 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
                     <span>{gameConfig.tierLabel}</span>
                   </div>
 
+                  {/* Mission modifier — only on levels that field one */}
+                  {gameConfig.modifierLabel && (
+                    <div className="flex items-center gap-2 bg-[#FFC800] text-amber-950 px-3 py-1.5 rounded-xl border-b-2 border-[#D1A300] shadow-inner font-black">
+                      <span className="leading-none text-base">{gameConfig.modifierIcon}</span>
+                      <span className="uppercase tracking-wide text-xs sm:text-sm">{gameConfig.modifierLabel}</span>
+                    </div>
+                  )}
+
                   {/* Lives */}
                   <div className="flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
                     <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
@@ -186,6 +194,14 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
                   </div>
 
                 </div>
+
+                {/* Mission briefing — the level's flavour, or the modifier's
+                    counter-strategy when it fields one. */}
+                {gameConfig.briefing && (
+                  <div className="relative z-10 -mt-3 mb-8 text-white/85 font-medium text-sm sm:text-base leading-snug bg-black/10 border-l-4 border-white/30 rounded-r-xl px-4 py-3">
+                    {gameConfig.briefing}
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between mt-auto relative z-10">
                   <div className="bg-white text-[#1CB0F6] font-black uppercase tracking-widest text-sm sm:text-base px-6 py-3 rounded-2xl shadow-sm border-b-4 border-slate-200 group-hover:scale-105 transition-transform">

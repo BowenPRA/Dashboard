@@ -17,6 +17,13 @@ const LOCKED_SCORES = { p10: { current: 10 }, p1: { current: 10 }, p11: { curren
 const UNLOCKED_SCORES = { ...LOCKED_SCORES, p7: { current: 20 }, p9: { current: 10 }, GAMES: { current: 4820 } };
 
 const CASES = [
+  // The Y7 Maths campaign — six units, six distinct levels.
+  ['Y7_MATH', 'U01_1'],
+  ['Y7_MATH', 'U01_2'],
+  ['Y7_MATH', 'U01_3'],
+  ['Y7_MATH', 'U01_4'],
+  ['Y7_MATH', 'U01_5'],
+  ['Y7_MATH', 'U01_6'],
   ['GED_MATH', 'MATH_0B'],
   ['GED_MATH', 'MATH_1A'],
   ['GED_MATH', 'MATH_1B'],
@@ -51,7 +58,7 @@ function Harness() {
       <h1 style={{ fontWeight: 900, fontSize: 28, marginBottom: 16 }}>Arcade harness</h1>
       <table id="config-table" style={{ borderCollapse: 'collapse', marginBottom: 24, fontSize: 14 }}>
         <thead>
-          <tr>{['Track', 'Unit', 'Map', 'Theme', 'Tier', 'Lives', 'HP×', 'Score×', 'Bans'].map(h => (
+          <tr>{['Track', 'Unit', 'Map', 'Theme', 'Tier', 'Modifier', 'Lives', 'HP×', 'Score×', 'Bans'].map(h => (
             <th key={h} style={{ textAlign: 'left', padding: '4px 12px', borderBottom: '1px solid #334155' }}>{h}</th>
           ))}</tr>
         </thead>
@@ -65,6 +72,7 @@ function Harness() {
                 <td style={{ padding: '4px 12px' }}>{c.mapId}</td>
                 <td style={{ padding: '4px 12px' }}>{c.themeId}</td>
                 <td style={{ padding: '4px 12px' }}>{c.tier} {c.tierLabel}</td>
+                <td style={{ padding: '4px 12px' }}>{c.modifierLabel ? `${c.modifierIcon} ${c.modifierLabel}` : '—'}</td>
                 <td style={{ padding: '4px 12px' }}>{c.lives}</td>
                 <td style={{ padding: '4px 12px' }}>{c.difficulty.hpMul}</td>
                 <td style={{ padding: '4px 12px' }}>{c.difficulty.scoreMul}</td>

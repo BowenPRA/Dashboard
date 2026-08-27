@@ -15,7 +15,7 @@
 // A unit's games.js calls `arcadeConfig(track, unitId)` and gets the whole
 // config; it only needs to pass overrides when it wants to break the pattern.
 
-import { MAP_LAYOUTS } from './wavePresets';
+import { MAP_LAYOUTS, WAVE_MODIFIERS } from './wavePresets';
 
 /** Map + theme + flavour for each track that has the arcade switched on. */
 export const TRACK_ARENAS = {
@@ -44,6 +44,55 @@ const DEFAULT_ARENA = {
   themeId: 'STANDARD',
   mapName: 'Serpentine Valley',
   blurb: 'A long switchback road through open grassland.',
+};
+
+/**
+ * Hand-authored campaigns.
+ *
+ * Where `TRACK_ARENAS` gives a whole track one map and derives the tier from the
+ * unit id, a `TRACK_LEVELS` track instead spells out every unit as its own
+ * *level* — a distinct map, theme, difficulty tier and (optionally) an enemy
+ * modifier — so the units read as a designed sequence rather than the same board
+ * getting quietly tougher. A unit listed here ignores the id-suffix tier and
+ * takes the tier written on its level. Tracks with no entry are untouched.
+ *
+ * Y7 Maths, Unit 1 (Integers), sections 1.1–1.6: the tier climbs 0 → 5 for a
+ * clean escalation, while the map and modifier change what *kind* of fight each
+ * one is, so consecutive units never feel like a re-run.
+ */
+export const TRACK_LEVELS = {
+  Y7_MATH: {
+    U01_1: {
+      mapId: 'WAVE', themeId: 'STANDARD', tier: 0,
+      mapName: 'Serpentine Valley',
+      blurb: 'A long switchback through open grassland — room to learn the ropes with the full armoury.',
+    },
+    U01_2: {
+      mapId: 'JUNCTION', themeId: 'DESERT', tier: 1,
+      mapName: 'The Crossroads',
+      blurb: 'Two roads cross in the dunes. Hold the junction — the stream passes it twice — and you hold the field.',
+    },
+    U01_3: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Labyrinth',
+      blurb: 'A winding night maze, and it is crawling.',
+    },
+    U01_4: {
+      mapId: 'CIRCUIT', themeId: 'ICE', tier: 3, waveMod: 'SIEGE',
+      mapName: 'Cryo Lab',
+      blurb: 'Armored heavies grind down the coolant channels.',
+    },
+    U01_5: {
+      mapId: 'COMB', themeId: 'STANDARD', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Foundry',
+      blurb: 'Wave after wave folds through the works, and they never slow down.',
+    },
+    U01_6: {
+      mapId: 'GAUNTLET', themeId: 'NIGHT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Long March',
+      blurb: 'The final march. Queens and broods, the whole way down.',
+    },
+  },
 };
 
 /**
@@ -97,27 +146,44 @@ export const arenaForTrack = (track) => TRACK_ARENAS[track] || DEFAULT_ARENA;
 export function arcadeConfig(track, unitId, overrides = {}) {
   const arena = arenaForTrack(track);
 
-  // The ladder is opt-in per track. Tracks with no arena entry (Y8, Y9, ESL…)
-  // stay on tier 0 — flat, exactly as they played before the ladder existed —
-  // unless a unit asks for a tier by hand.
-  const laddered = Object.prototype.hasOwnProperty.call(TRACK_ARENAS, track);
-  const tier = overrides.tier ?? (laddered ? tierForUnit(unitId) : 0);
+  // A hand-authored level (Y7 campaign) wins over the arena/ladder default.
+  const level = TRACK_LEVELS[track]?.[unitId] || null;
+
+  // The ladder is opt-in per track. Tracks with no arena entry AND no authored
+  // level (Y8, Y9, ESL…) stay on tier 0 — flat, exactly as they played before
+  // the ladder existed — unless a unit asks for a tier by hand.
+  const laddered = !!level || Object.prototype.hasOwnProperty.call(TRACK_ARENAS, track);
+  const tier = overrides.tier ?? level?.tier ?? (laddered ? tierForUnit(unitId) : 0);
   const rules = DIFFICULTY_TIERS[Math.max(0, Math.min(MAX_TIER, tier))];
 
-  const mapId = overrides.mapId || arena.mapId;
+  const mapId = overrides.mapId || level?.mapId || arena.mapId;
+  const themeId = overrides.themeId || level?.themeId || arena.themeId;
+  const mapName = overrides.mapName || level?.mapName || arena.mapName;
+  const mapBlurb = level?.blurb || arena.blurb;
+
+  // The enemy-composition modifier for this level (see wavePresets). Null on
+  // everything that doesn't opt in, so the wave set is the untouched SET_1.
+  const waveMod = overrides.waveMod ?? level?.waveMod ?? null;
+  const mod = waveMod ? WAVE_MODIFIERS[waveMod] : null;
 
   return {
     mapId: MAP_LAYOUTS[mapId] ? mapId : DEFAULT_ARENA.mapId,
-    themeId: arena.themeId,
-    mapName: arena.mapName,
-    mapBlurb: arena.blurb,
+    themeId,
+    mapName,
+    mapBlurb,
 
     tier,
     tierLabel: rules.label,
 
     lives: rules.lives,
     creditMultiplier: rules.creditMul,
-    bannedTowers: rules.bannedTowers,
+    bannedTowers: level?.bannedTowers || rules.bannedTowers,
+
+    // The composition modifier and the briefing text the arcade hub shows.
+    waveMod,
+    modifierLabel: mod?.label || null,
+    modifierIcon: mod?.icon || null,
+    briefing: mod?.blurb || mapBlurb,
 
     // Handed straight to the engine — see useGameEngine.
     difficulty: {

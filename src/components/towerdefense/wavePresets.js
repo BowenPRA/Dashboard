@@ -31,8 +31,122 @@ export const MAP_LAYOUTS = {
     path: [
       [0, 1], [5, 1], [5, 5], [1, 5], [1, 9], [8, 9], [8, 4], [9, 4]
     ]
+  },
+
+  // Two long runs cross near (5,3): a road down col 3 and a road along row 5
+  // share that corner, so a single well-placed cluster there is hit by the enemy
+  // stream twice. Rewards holding the junction over spreading thin.
+  JUNCTION: {
+    rows: 10,
+    cols: 15,
+    path: [
+      [5, 0], [5, 7], [1, 7], [1, 3], [8, 3], [8, 11], [4, 11], [4, 14]
+    ]
+  },
+
+  // A comb: three long horizontal runs stacked rows 1 / 5 / 8, linked at the
+  // ends. A tower parked mid-board on the linking columns covers three lanes of
+  // road at once, so density of coverage beats raw range here.
+  COMB: {
+    rows: 10,
+    cols: 15,
+    path: [
+      [1, 0], [1, 12], [5, 12], [5, 2], [8, 2], [8, 13], [9, 13]
+    ]
+  },
+
+  // The longest road on the grid — five folded horizontal runs. Maximum tower
+  // dwell time, which is the point: the boss-rush finale needs every second of
+  // fire it can get on a queen before she reaches the end.
+  GAUNTLET: {
+    rows: 10,
+    cols: 15,
+    path: [
+      [0, 1], [0, 13], [2, 13], [2, 1], [4, 1], [4, 13],
+      [6, 13], [6, 1], [8, 1], [8, 13], [9, 13]
+    ]
   }
 };
+
+// =====================================================================
+// Wave modifiers
+//
+// The 50-wave SET_1 is the same for everyone; a modifier reshapes the ENEMY
+// COMPOSITION of that set so a level feels like a different *kind* of fight
+// rather than just a bigger-numbers version of the same one. Each modifier
+// scales the count and/or spawn interval of specific enemy types. `buildWaveSet`
+// applies it to a fresh copy; with no modifier it returns SET_1 untouched, so
+// every level and track that doesn't opt in is completely unaffected.
+// =====================================================================
+export const WAVE_MODIFIERS = {
+  SWARM: {
+    label: 'Swarm',
+    icon: '🐜',
+    blurb: 'Light infantry floods the road. Splash, chain and frost towers earn their keep.',
+    scale: {
+      ANT:  { count: 1.7, interval: 0.6 },
+      WASP: { count: 1.5, interval: 0.7 },
+    },
+  },
+  SIEGE: {
+    label: 'Siege',
+    icon: '🛡️',
+    blurb: 'Armored heavies lead every assault. Snipers punch through armor; light fire bounces off.',
+    scale: {
+      ANT:       { count: 0.7 },
+      BEETLE:    { count: 1.8 },
+      QUEEN:     { count: 1.6 },
+      GIANT_ANT: { count: 1.5 },
+    },
+  },
+  TIDE: {
+    label: 'Relentless',
+    icon: '🌊',
+    blurb: 'No breathing room — every wave presses in faster than the last. Slows buy you time.',
+    scale: {
+      ANT:    { interval: 0.6 },
+      WASP:   { interval: 0.6 },
+      BEETLE: { interval: 0.7 },
+      QUEEN:  { interval: 0.75 },
+    },
+  },
+  BOSS: {
+    label: 'Boss Rush',
+    icon: '👑',
+    blurb: 'Queens and broods on every front. Concentrate your firepower — spread thin and they walk through.',
+    scale: {
+      QUEEN:     { count: 1.9 },
+      GIANT_ANT: { count: 2.0 },
+      BEETLE:    { count: 1.3 },
+    },
+  },
+};
+
+// Smallest spawn gap a modifier may compress an interval to, so "faster" never
+// becomes an unspawnable zero.
+const MIN_INTERVAL = 60;
+
+/**
+ * The 50-wave set for a level, with an optional composition modifier applied.
+ *
+ * Returns the shared SET_1 reference unchanged when there is no modifier, so the
+ * common path allocates nothing and behaves exactly as before modifiers existed.
+ */
+export function buildWaveSet(modifierId) {
+  const mod = modifierId ? WAVE_MODIFIERS[modifierId] : null;
+  if (!mod) return WAVE_PRESETS.SET_1;
+
+  return WAVE_PRESETS.SET_1.map(wave =>
+    wave.map(group => {
+      const s = mod.scale[group.type];
+      if (!s) return { ...group };
+      const next = { ...group };
+      if (s.count) next.count = Math.max(1, Math.round(group.count * s.count));
+      if (s.interval) next.interval = Math.max(MIN_INTERVAL, Math.round(group.interval * s.interval));
+      return next;
+    })
+  );
+}
 
 export const WAVE_PRESETS = {
   SET_1: [

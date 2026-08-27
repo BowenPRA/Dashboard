@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { TOWERS, ENEMIES, getSellValue } from '../../components/towerdefense/gameData';
-import { MAP_LAYOUTS, WAVE_PRESETS } from '../../components/towerdefense/wavePresets';
+import { MAP_LAYOUTS, WAVE_PRESETS, buildWaveSet } from '../../components/towerdefense/wavePresets';
 import GameBoard from '../../components/towerdefense/GameBoard';
 import BuildMenu from '../../components/towerdefense/BuildMenu';
 import UpgradePanel from '../../components/towerdefense/UpgradePanel';
@@ -67,8 +67,12 @@ export default function TowerDefense({
     return ALL_TOWER_IDS.filter(t => !banned.includes(t));
   }, [gameConfig.bannedTowers]);
 
-  const totalWaves = WAVE_PRESETS.SET_1.length; 
-  
+  // The 50 authored waves for this level, reshaped by the unit's composition
+  // modifier (Swarm/Siege/…). With no modifier this is the shared SET_1 itself,
+  // so every level and track that doesn't opt in is byte-for-byte unchanged.
+  const waves = useMemo(() => buildWaveSet(gameConfig.waveMod), [gameConfig.waveMod]);
+  const totalWaves = waves.length;
+
   const pathSet = useMemo(() => buildPathSet(layout.path), [layout.path]);
 
   const vocab = useMemo(() => {
@@ -88,17 +92,17 @@ export default function TowerDefense({
   }, [gameConfig.themeId, themeId]);
 
   const basicEnemyType = useMemo(() => {
-    return WAVE_PRESETS.SET_1?.[0]?.[0]?.type || Object.keys(ENEMIES)[0];
-  }, []);
+    return waves?.[0]?.[0]?.type || Object.keys(ENEMIES)[0];
+  }, [waves]);
 
   // The difficulty object is per unit (see unitDifficulty.js). It is part of the
   // engine config rather than a prop because the engine reads it once when the
   // loop starts — changing it mid-run would desync scores from the waves.
   const engineConfig = useMemo(() => ({
-    waves: WAVE_PRESETS.SET_1,
+    waves,
     generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR,
     difficulty: gameConfig.difficulty
-  }), [gameConfig.difficulty]);
+  }), [waves, gameConfig.difficulty]);
 
   const gRef = useRef(null);
   
