@@ -26,9 +26,22 @@ const ADDSUB = {
   ],
 };
 
+const SPRINT = {
+  mode: 'times-sprint',
+  title: 'Times-Table Sprint', titleVn: 'Chạy nước rút bảng cửu chương',
+  intro: 'Answer as many as you can before the timer runs out.',
+  introVn: 'Trả lời càng nhiều càng tốt trước khi hết giờ.',
+  ladder: [
+    { level: 'The 4s and 6s', levelVn: 'Bảng 4 và 6', items: [[4, 3], [4, 8], [6, 5], [6, 9]] },
+    { level: 'Mixed tables', levelVn: 'Bảng hỗn hợp', items: [[7, 8], [9, 6], [8, 4], [7, 7], [9, 8]] },
+    { level: 'Bigger facts', levelVn: 'Phép lớn hơn', items: [[12, 7], [11, 8], [9, 9]] },
+  ],
+};
+
 function Harness() {
   const params = new URLSearchParams(window.location.search);
-  const DRILL = params.get('mode') === 'addsub' ? ADDSUB : MULT;
+  const m = params.get('mode');
+  const DRILL = m === 'addsub' ? ADDSUB : m === 'sprint' ? SPRINT : MULT;
   return (
     <NumberDrill
       pool={DRILL}

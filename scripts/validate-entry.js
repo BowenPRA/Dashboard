@@ -471,7 +471,7 @@ for (const trackId of TRACK_IDS) {
     //    NumberDrill.jsx grows to support them.
     if (unit.drill) {
       const at = `${label}: drill`;
-      const DRILL_MODES = ['long-mult', 'column-add-sub'];
+      const DRILL_MODES = ['long-mult', 'column-add-sub', 'times-sprint'];
       const d = unit.drill;
       if (!DRILL_MODES.includes(d.mode)) {
         err(`${at}: mode "${d.mode}" — NumberDrill.jsx implements ${DRILL_MODES.join('/')}`);
@@ -494,6 +494,10 @@ for (const trackId of TRACK_IDS) {
             if (it.length !== 2) { err(`${iat}: long-mult items are [a, b] operand pairs`); return; }
             for (const n of it) if (!inRange(n)) err(`${iat}: operand ${n} must be a whole number from 2 to 9999`);
             if (it.every((n) => n < 10)) err(`${iat}: (${it.join(', ')}) is a single-digit fact, not a column multiplication`);
+          } else if (d.mode === 'times-sprint') {
+            // [a, b] single times-table fact — small operands, timed for recall.
+            if (it.length !== 2) { err(`${iat}: times-sprint items are [a, b] fact pairs`); return; }
+            for (const n of it) if (!Number.isInteger(n) || n < 2 || n > 12) err(`${iat}: fact operand ${n} must be a whole number from 2 to 12`);
           } else {
             // column-add-sub: [a, b, op]; op is + or -; at least one multi-digit;
             // subtraction must not go negative (the drill teaches the algorithm,

@@ -20,3 +20,5 @@ Every real (non-drawn) image used in the app, with its source and license. See
 | `public/images/Y7_MATH/U01_2/durian.jpg` | Durian (Durio zibethinus) at a market stall, for the deadpan ×0 problem | Kristof Zyskowski & Yulia Bereshpolova | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Malvaceae-_Durio_zibethinus_(durian).jpg) | CC BY 2.0 |
 | `public/images/Y7_MATH/U01_1/lift-panel.jpg` | Lift button panel with B (below-ground) floors, for the car-park problem | Hirho | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Lift_buttons.jpg) | CC BY-SA 4.0 |
 | `public/images/Y7_MATH/U01_1/snail.jpg` | A snail, for the snail-in-the-well problem | Zachi Evenor | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Snail.jpg) | CC BY 2.0 |
+| `public/images/Y7_MATH/U01_3/bus.jpg` | City buses at a stop, for the two-buses LCM problem | PjotrMahh1 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Buses) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U01_3/hotdog.jpg` | Hot dogs, for the George hot-dogs-and-buns LCM problem | Hekatlys | [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Hot_dogs) | CC0 |

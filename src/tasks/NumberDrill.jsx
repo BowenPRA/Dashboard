@@ -135,7 +135,15 @@ const carryReason = (stage) => (stage.op === '-' ? 'borrowwrong' : 'carrywrong')
 
 /* ------------------------------------------------------------- component */
 
-export default function NumberDrill({ pool, onComplete, onQuit }) {
+// One task, several behaviours (ADAPTATION-PLAN §5.3). The column modes
+// (long-mult, column-add-sub) share the digit-grid machinery in ColumnDrill;
+// times-sprint is a timed table of single facts, so it gets its own view.
+export default function NumberDrill(props) {
+  if (props.pool?.mode === 'times-sprint') return <TimesSprint {...props} />;
+  return <ColumnDrill {...props} />;
+}
+
+function ColumnDrill({ pool, onComplete, onQuit }) {
   // Flatten the ladder into an ordered list, remembering each item's rung so we
   // can gate progression and show a banner when a new level opens.
   const mode = pool?.mode || 'long-mult';
@@ -451,6 +459,203 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
     </div>
   );
 }
+
+/* ------------------------------------------------------ times-sprint view */
+
+const SEN = {
+  title: 'Number Gym', level: 'Level', check: 'Check answers', next: 'Next', finish: 'Finish',
+  go: 'Start the timer', timeUp: 'Time is up!', ready: 'Ready?',
+  intro: 'Answer as many as you can before the timer runs out. Multiples are just times tables — the faster you know them, the faster you list them.',
+  scoreLine: 'facts right', timeLeft: 'Time', bankHere: 'Finish & bank XP',
+  levelClear: 'done', got: 'You got',
+};
+const SVN = {
+  title: 'Phòng Gym Số học', level: 'Cấp', check: 'Kiểm tra', next: 'Tiếp', finish: 'Kết thúc',
+  go: 'Bắt đầu đồng hồ', timeUp: 'Hết giờ!', ready: 'Sẵn sàng chưa?',
+  intro: 'Trả lời càng nhiều càng tốt trước khi hết giờ. Bội số chính là bảng cửu chương — thuộc càng nhanh thì liệt kê càng nhanh.',
+  scoreLine: 'phép đúng', timeLeft: 'Thời gian', bankHere: 'Kết thúc & nhận XP',
+  levelClear: 'xong', got: 'Em được',
+};
+
+/** Parse a whole-number answer (products can be up to three digits). */
+const parseWhole = (text) => {
+  const s = String(text ?? '').replace(/[^0-9]/g, '');
+  return s === '' ? NaN : Number(s);
+};
+
+function TimesSprint({ pool, onComplete, onQuit }) {
+  const rungs = pool?.ladder || [];
+  const [lang, setLang] = useState('en');
+  const [rungIdx, setRungIdx] = useState(0);
+  const [phase, setPhase] = useState('ready');   // ready | running | graded
+  const [entries, setEntries] = useState({});
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [results, setResults] = useState({});    // rungIdx -> { correct, total }
+  const [ended, setEnded] = useState(false);
+  // Kept in a ref so the countdown's grade() reads the latest typed answers, not
+  // the answers captured when the timer effect last re-ran. Updated after every
+  // render (including each keystroke) rather than during render.
+  const entriesRef = useRef(entries);
+  useEffect(() => { entriesRef.current = entries; });
+
+  const t = lang === 'vn' ? SVN : SEN;
+  const rung = rungs[rungIdx];
+  const facts = useMemo(() => (rung?.items || []), [rung]);
+  const isLastRung = rungIdx >= rungs.length - 1;
+  const secondsFor = (n) => Math.max(30, n * 8);
+  const factId = (i) => `r${rungIdx}f${i}`;
+
+  const grade = () => {
+    let correct = 0;
+    facts.forEach(([a, b], i) => { if (parseWhole(entriesRef.current[factId(i)]) === a * b) correct += 1; });
+    setResults((r) => ({ ...r, [rungIdx]: { correct, total: facts.length } }));
+    setPhase('graded');
+  };
+
+  // The countdown. Re-runs each tick, so calling grade() here reads fresh state.
+  useEffect(() => {
+    if (phase !== 'running') return undefined;
+    if (timeLeft <= 0) { grade(); return undefined; }
+    const id = setTimeout(() => setTimeLeft((s) => s - 1), 1000);
+    return () => clearTimeout(id);
+  }, [phase, timeLeft]); // eslint-disable-line react-hooks/exhaustive-deps -- grade is stable enough; adding it would re-arm the timer every keystroke
+
+  if (!rungs.length || !rung) {
+    return (
+      <div className="h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4">
+          <Construction className="w-8 h-8 text-orange-500" strokeWidth={2.5} />
+        </div>
+        <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 mb-2">No drill yet</h2>
+        <button onClick={onQuit} className="mt-4 px-6 py-3 bg-[#f97316] text-white rounded-xl font-black text-base uppercase tracking-widest border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px]">Return to Dashboard</button>
+      </div>
+    );
+  }
+
+  const start = () => { setEntries({}); setTimeLeft(secondsFor(facts.length)); setPhase('running'); };
+  const nextRung = () => { setRungIdx((r) => r + 1); setPhase('ready'); setEntries({}); };
+  const finish = () => {
+    if (ended) return;
+    setEnded(true);
+    const total = rungs.reduce((s, r) => s + (r.items || []).length, 0);
+    const correct = Object.values(results).reduce((s, r) => s + r.correct, 0);
+    const raw = total ? Math.round((correct / total) * 10) : 0;
+    const log = [];
+    rungs.forEach((rg, ri) => (rg.items || []).forEach(([a, b], i) => {
+      const known = ri < rungIdx || (ri === rungIdx && phase === 'graded');
+      log.push({ itemId: `L${ri}-${a}x${b}-${i}`, correct: known && parseWhole(entriesRef.current[`r${ri}f${i}`]) === a * b });
+    }));
+    onComplete?.(raw, null, { items: log });
+  };
+
+  const cleared = Object.values(results).reduce((s, r) => s + r.correct, 0);
+  const totalFacts = rungs.reduce((s, r) => s + (r.items || []).length, 0);
+  const low = phase === 'running' && timeLeft <= 5;
+  const mm = String(Math.floor(timeLeft / 60));
+  const ss = String(timeLeft % 60).padStart(2, '0');
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
+      <TopBar onQuit={onQuit}
+        modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
+        current={rungIdx + 1} total={rungs.length} lang={lang}
+        onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+
+      <div className="flex-1 w-full max-w-2xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 rounded-xl px-3 py-1.5 border-2" style={{ borderColor: ORANGE, backgroundColor: `${ORANGE}14` }}>
+            <Grid3x3 className="w-4 h-4" style={{ color: ORANGE }} strokeWidth={2.5} />
+            <span className="font-black text-sm text-slate-800 dark:text-slate-100">
+              {t.level} {rungIdx + 1}: {lang === 'vn' ? (rung.levelVn || rung.level) : rung.level}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-slate-400">
+            <RotateCcw className="w-3.5 h-3.5" strokeWidth={3} /> {cleared} / {totalFacts} {t.scoreLine}
+          </div>
+        </div>
+
+        {/* the timer */}
+        <div className="flex flex-col items-center">
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{t.timeLeft}</div>
+          <div className={`font-mono font-black tabular-nums leading-none ${low ? 'animate-pulse' : ''}`}
+            style={{ fontSize: 'clamp(2.5rem, 9vw, 4rem)', color: phase === 'graded' ? SLATE_TS : low ? RED : ORANGE }}>
+            {mm}:{ss}
+          </div>
+        </div>
+
+        {phase === 'ready' ? (
+          <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-6 text-center flex flex-col items-center gap-4">
+            <p className="font-bold text-slate-600 dark:text-slate-300 max-w-md">{lang === 'vn' ? (pool.introVn || t.intro) : (pool.intro || t.intro)}</p>
+            <button onClick={start}
+              className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#f97316] border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px]">
+              {t.go} · {secondsFor(facts.length)}s
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            {facts.map(([a, b], i) => {
+              const id = factId(i);
+              const val = entries[id] ?? '';
+              const right = phase === 'graded' && parseWhole(val) === a * b;
+              const wrong = phase === 'graded' && !right;
+              return (
+                <div key={id} className={`flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 ${right ? 'border-[#58cc02] bg-[#58cc02]/10' : wrong ? 'border-[#ff4b4b] bg-[#ff4b4b]/10' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900'}`}>
+                  <span className="font-mono font-black text-base sm:text-lg text-slate-700 dark:text-slate-200 tabular-nums whitespace-nowrap">{a} × {b} =</span>
+                  {phase === 'graded' && wrong ? (
+                    <span className="font-mono font-black text-base sm:text-lg text-[#ff4b4b] tabular-nums">{a * b}</span>
+                  ) : (
+                    <input value={val} onChange={(e) => setEntries((s) => ({ ...s, [id]: e.target.value }))}
+                      readOnly={phase !== 'running'} inputMode="numeric" maxLength={3} aria-label={`${a} x ${b}`}
+                      className={`w-12 h-9 rounded-lg border-2 text-center font-mono font-black text-base tabular-nums outline-none
+                        ${right ? 'border-[#58cc02] bg-transparent text-[#3e7500] dark:text-[#8ee000]' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900'}`} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {phase === 'graded' && (
+          <div className="flex items-center gap-2 rounded-xl border-2 p-2.5" style={{ borderColor: '#58cc02', backgroundColor: 'rgba(88,204,2,0.12)' }}>
+            <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: '#58cc02' }} strokeWidth={2.5} />
+            <span className="font-black text-sm text-slate-800 dark:text-slate-100">
+              {t.got} {results[rungIdx]?.correct} / {facts.length}.
+            </span>
+          </div>
+        )}
+
+        <div className="flex items-center justify-end gap-3">
+          {phase === 'running' ? (
+            <button onClick={grade}
+              className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#f97316] border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px]">
+              {t.check}
+            </button>
+          ) : phase === 'graded' ? (
+            isLastRung ? (
+              <button onClick={finish}
+                className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#58cc02] border-b-[4px] border-[#3e7500] active:border-b-0 active:translate-y-[4px] flex items-center gap-2">
+                <Trophy className="w-4 h-4" strokeWidth={3} /> {t.finish}
+              </button>
+            ) : (
+              <>
+                <button onClick={finish}
+                  className="px-4 py-3 rounded-xl font-black text-xs uppercase tracking-widest bg-slate-100 dark:bg-slate-700 border-b-[4px] border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 active:border-b-0 active:translate-y-[4px]">
+                  {t.bankHere}
+                </button>
+                <button onClick={nextRung}
+                  className="px-5 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-white bg-[#f97316] border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px] flex items-center gap-2">
+                  {t.next} {t.level} {rungIdx + 2} <ArrowRight className="w-4 h-4" strokeWidth={3} />
+                </button>
+              </>
+            )
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const SLATE_TS = '#94a3b8';
 
 /* ------------------------------------------------------------------ cells */
 
