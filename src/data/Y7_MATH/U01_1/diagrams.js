@@ -1,203 +1,297 @@
 // src/data/Y7_MATH/U01_1/diagrams.js
-// Number-line teaching diagrams for 1.1 Adding & Subtracting Integers.
-// House style: dark ink on light, monospace numbers, snug viewBox. See docs/svg-diagrams.md.
+// Teaching diagrams for 1.1 Adding & Subtracting Integers, drawn to match the
+// Cambridge Lower Secondary Learner's Book: flat line art on paper-white, a
+// thin ink outline on every shape, pale flat fills, and key words set in the
+// book's orange.
+//
+// House rules (docs/LESSON-PLAYBOOK.md §5):
+//  · every diagram opens with a white plate, so the artwork is legible on a
+//    light OR dark slide and never depends on the page's text colour;
+//  · every <text> is written out literally — helpers draw shapes and leader
+//    lines only. `npm run audit:svg` cannot see text produced by a
+//    `${helper(...)}` call, so a helper that emits <text> silently opts the
+//    label out of checking. The old version of this file hid ~90 tick labels
+//    from the audit that way;
+//  · label text lives in the margins or under the line, never on the artwork.
 
-const MARKERS = `
-  <defs>
-    <marker id="ah-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#ef4444"/></marker>
-    <marker id="ah-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#10b981"/></marker>
-    <marker id="ah-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#3b82f6"/></marker>
-  </defs>`;
+const INK = '#2b2b2b'
+const KEY = '#c25e12' // the book's key-word orange
+const RULE = '#7c8a95'
+const RED = '#c8102e'
+const BLUE = '#1a5fa8'
+const GREEN = '#4a8b23'
+const TEAL = '#0087a8'
+const RED_T = '#fdecee'
+const BLUE_T = '#e9f1fa'
+const GREEN_T = '#eef6e6'
+const TEAL_T = '#e2f2f6'
 
-const axis = (ticks) => `
-  <line x1="50" y1="90" x2="470" y2="90" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
-  ${ticks.map(([x, label, bold]) => `
-    <line x1="${x}" y1="84" x2="${x}" y2="96" stroke="#94a3b8" stroke-width="2"/>
-    <text x="${x}" y="113" font-family="monospace" font-size="13" font-weight="${bold ? '900' : 'bold'}" fill="${bold ? '#10b981' : '#334155'}" text-anchor="middle">${label}</text>
-  `).join('')}`;
+const FONT = "Inter, 'Segoe UI', system-ui, sans-serif"
 
-// −5 … 5, step 42px
-const TICKS_INTRO = [[50,'-5'],[92,'-4'],[134,'-3'],[176,'-2'],[218,'-1'],[260,'0',true],[302,'1'],[344,'2'],[386,'3'],[428,'4'],[470,'5']];
-// −8 … 1, step 46.7px
-const TICKS_ADD = [[50,'-8'],[96.7,'-7'],[143.3,'-6'],[190,'-5'],[236.7,'-4'],[283.3,'-3'],[330,'-2'],[376.7,'-1'],[423.3,'0',true],[470,'1']];
-// −1 … 9, step 42px
-const TICKS_SUB = [[50,'-1'],[92,'0',true],[134,'1'],[176,'2'],[218,'3'],[260,'4'],[302,'5'],[344,'6'],[386,'7'],[428,'8'],[470,'9']];
-// −10 … 0, step 42px
-const TICKS_SUBPOS = [[50,'-10'],[92,'-9'],[134,'-8'],[176,'-7'],[218,'-6'],[260,'-5'],[302,'-4'],[344,'-3'],[386,'-2'],[428,'-1'],[470,'0',true]];
-// −6 … 6, step 35px  (word problem 1: 4 − 9 = −5)
-const TICKS_WP1 = [[50,'-6'],[85,'-5'],[120,'-4'],[155,'-3'],[190,'-2'],[225,'-1'],[260,'0',true],[295,'1'],[330,'2'],[365,'3'],[400,'4'],[435,'5'],[470,'6']];
-// −15 … 20, step 60px  (word problem 2: distance from −15 to 20)
-const TICKS_WP2 = [[50,'-15'],[110,'-10'],[170,'-5'],[230,'0',true],[290,'5'],[350,'10'],[410,'15'],[470,'20']];
+/** White paper plate + a hairline frame. Every diagram starts with this. */
+const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fill="#ffffff"/>
+    <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
-// Big teaching number line: −5 … 5, coloured integer points, zones, whole-number brace.
-const bigTicks = [
-  [40, '-5', '#ef4444'], [96, '-4', '#ef4444'], [152, '-3', '#ef4444'], [208, '-2', '#ef4444'], [264, '-1', '#ef4444'],
-  [320, '0', '#059669'], [376, '1', '#2563eb'], [432, '2', '#2563eb'], [488, '3', '#2563eb'], [544, '4', '#2563eb'], [600, '5', '#2563eb'],
-];
+/** Arrowheads. Shapes only — no text, so nothing is hidden from the audit. */
+const MARKERS = `<defs>
+    <marker id="mi-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${RED}"/></marker>
+    <marker id="mi-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${GREEN}"/></marker>
+    <marker id="mi-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${BLUE}"/></marker>
+  </defs>`
+
+/**
+ * Tick marks and integer dots for a horizontal line — no labels. Every number
+ * label is typed out literally in the diagram that uses this.
+ * Standard geometry: eleven ticks, x = 50 + 56n, axis at y = 118.
+ */
+const ticks = (xs, y = 118, dot = INK) => xs.map((x) => `
+    <line x1="${x}" y1="${y - 8}" x2="${x}" y2="${y + 8}" stroke="${RULE}" stroke-width="2"/>
+    <circle cx="${x}" cy="${y}" r="3.5" fill="${dot}"/>`).join('')
+
+const X = [50, 106, 162, 218, 274, 330, 386, 442, 498, 554, 610]
+
+/** The shared body of a "jump along the line" figure: plate, axis, ticks. */
+const lineBase = (y = 118) => `${plate(660, 215)}${MARKERS}
+    <line x1="20" y1="${y}" x2="640" y2="${y}" stroke="${INK}" stroke-width="3" stroke-linecap="round" marker-start="url(#mi-blue)" marker-end="url(#mi-blue)"/>
+    ${ticks(X, y)}`
 
 export const DIAGRAMS = {
-  // ─────────────────────────────────────────────────────────────────────────
-  // The main teaching number line: names the negative / zero / positive parts,
-  // marks the integers as points, and braces the whole (natural) numbers.
-  // ─────────────────────────────────────────────────────────────────────────
-  NOTES_NUMBER_LINE_BIG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" class="w-full h-full drop-shadow-md">${MARKERS}
-    <rect x="24" y="100" width="288" height="40" rx="8" fill="#fef2f2"/>
-    <rect x="328" y="100" width="288" height="40" rx="8" fill="#eff6ff"/>
+  // ───────────────────────────────────────────────────────────────────────────
+  // The main teaching number line (Draw This). Names the three regions, marks
+  // every integer, and says which way is smaller and which way is larger.
+  // ───────────────────────────────────────────────────────────────────────────
+  NUMBER_LINE_BIG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 215" class="w-full h-full">
+    ${plate(660, 215)}${MARKERS}
+    <rect x="30" y="101" width="278" height="34" rx="8" fill="${RED_T}"/>
+    <rect x="352" y="101" width="278" height="34" rx="8" fill="${BLUE_T}"/>
 
-    <text x="176" y="52" font-family="sans-serif" font-size="15" font-weight="bold" fill="#ef4444" text-anchor="middle">NEGATIVE</text>
-    <text x="176" y="72" font-family="sans-serif" font-size="11" font-weight="bold" fill="#f87171" text-anchor="middle">less than 0</text>
-    <text x="320" y="52" font-family="sans-serif" font-size="14" font-weight="900" fill="#059669" text-anchor="middle">ZERO</text>
-    <text x="320" y="72" font-family="sans-serif" font-size="11" font-weight="bold" fill="#34d399" text-anchor="middle">not + or −</text>
-    <text x="464" y="52" font-family="sans-serif" font-size="15" font-weight="bold" fill="#3b82f6" text-anchor="middle">POSITIVE</text>
-    <text x="464" y="72" font-family="sans-serif" font-size="11" font-weight="bold" fill="#60a5fa" text-anchor="middle">more than 0</text>
+    <text x="180" y="46" font-family="${FONT}" font-size="19" font-weight="bold" fill="${KEY}" text-anchor="middle">NEGATIVE INTEGERS</text>
+    <text x="180" y="68" font-family="${FONT}" font-size="15" font-weight="bold" fill="${RULE}" text-anchor="middle">less than zero</text>
+    <text x="330" y="46" font-family="${FONT}" font-size="19" font-weight="bold" fill="${KEY}" text-anchor="middle">ZERO</text>
+    <text x="330" y="68" font-family="${FONT}" font-size="15" font-weight="bold" fill="${RULE}" text-anchor="middle">neither</text>
+    <text x="480" y="46" font-family="${FONT}" font-size="19" font-weight="bold" fill="${KEY}" text-anchor="middle">POSITIVE INTEGERS</text>
+    <text x="480" y="68" font-family="${FONT}" font-size="15" font-weight="bold" fill="${RULE}" text-anchor="middle">more than zero</text>
 
-    <line x1="18" y1="120" x2="622" y2="120" stroke="#1e293b" stroke-width="3" stroke-linecap="round" marker-start="url(#ah-red)" marker-end="url(#ah-blue)"/>
-    ${bigTicks.map(([x, label, fill]) => `
-      <line x1="${x}" y1="113" x2="${x}" y2="127" stroke="#94a3b8" stroke-width="2"/>
-      <circle cx="${x}" cy="120" r="4" fill="${fill}"/>
-      <text x="${x}" y="146" font-family="monospace" font-size="14" font-weight="${label === '0' ? '900' : 'bold'}" fill="${fill}" text-anchor="middle">${label}</text>
-    `).join('')}
+    <line x1="20" y1="118" x2="640" y2="118" stroke="${INK}" stroke-width="3" stroke-linecap="round" marker-start="url(#mi-red)" marker-end="url(#mi-blue)"/>
+    ${ticks(X)}
 
-    <path d="M 320 162 L 320 170 L 600 170 L 600 162" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/>
-    <text x="460" y="192" font-family="sans-serif" font-size="12" font-weight="bold" fill="#059669" text-anchor="middle">Whole numbers (0, 1, 2, …)</text>
+    <text x="50" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${RED}" text-anchor="middle">-5</text>
+    <text x="106" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${RED}" text-anchor="middle">-4</text>
+    <text x="162" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${RED}" text-anchor="middle">-3</text>
+    <text x="218" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${RED}" text-anchor="middle">-2</text>
+    <text x="274" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${RED}" text-anchor="middle">-1</text>
+    <text x="330" y="152" font-family="${FONT}" font-size="20" font-weight="900" fill="${INK}" text-anchor="middle">0</text>
+    <text x="386" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${BLUE}" text-anchor="middle">1</text>
+    <text x="442" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${BLUE}" text-anchor="middle">2</text>
+    <text x="498" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${BLUE}" text-anchor="middle">3</text>
+    <text x="554" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${BLUE}" text-anchor="middle">4</text>
+    <text x="610" y="152" font-family="${FONT}" font-size="20" font-weight="bold" fill="${BLUE}" text-anchor="middle">5</text>
+
+    <text x="150" y="190" font-family="${FONT}" font-size="17" font-weight="bold" fill="${INK}" text-anchor="middle">smaller this way</text>
+    <text x="510" y="190" font-family="${FONT}" font-size="17" font-weight="bold" fill="${INK}" text-anchor="middle">bigger this way</text>
   </svg>`,
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Two signs together → combine into one. Same signs = +, different = −.
-  // ─────────────────────────────────────────────────────────────────────────
-  NOTES_TWO_SIGNS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 250" class="w-full h-full drop-shadow-md">
-    <rect x="20" y="24" width="245" height="200" rx="18" fill="#f0fdf4" stroke="#10b981" stroke-width="2.5"/>
-    <text x="142" y="58" font-family="sans-serif" font-size="16" font-weight="bold" fill="#059669" text-anchor="middle">SAME SIGNS</text>
-    <text x="142" y="102" font-family="monospace" font-size="26" font-weight="900" fill="#334155" text-anchor="middle">+ +</text>
-    <text x="142" y="138" font-family="monospace" font-size="26" font-weight="900" fill="#334155" text-anchor="middle">− −</text>
-    <line x1="52" y1="152" x2="232" y2="152" stroke="#a7f3d0" stroke-width="2"/>
-    <text x="142" y="190" font-family="monospace" font-size="30" font-weight="900" fill="#059669" text-anchor="middle">= +</text>
-    <text x="142" y="214" font-family="sans-serif" font-size="13" font-weight="bold" fill="#10b981" text-anchor="middle">move RIGHT →</text>
+  // ───────────────────────────────────────────────────────────────────────────
+  // A thermometer: the same number line stood on its end. Carries the language
+  // of position — above / below, higher / lower, warmer / colder.
+  // ───────────────────────────────────────────────────────────────────────────
+  THERMOMETER: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" class="w-full h-full">
+    ${plate(340, 260)}
+    <rect x="126" y="24" width="26" height="186" rx="13" fill="#f6f8fa" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="130" y="152" width="18" height="58" fill="${RED}"/>
+    <circle cx="139" cy="216" r="18" fill="${RED}" stroke="${INK}" stroke-width="2.5"/>
 
-    <rect x="295" y="24" width="245" height="200" rx="18" fill="#fef2f2" stroke="#ef4444" stroke-width="2.5"/>
-    <text x="417" y="58" font-family="sans-serif" font-size="16" font-weight="bold" fill="#dc2626" text-anchor="middle">DIFFERENT SIGNS</text>
-    <text x="417" y="102" font-family="monospace" font-size="26" font-weight="900" fill="#334155" text-anchor="middle">+ −</text>
-    <text x="417" y="138" font-family="monospace" font-size="26" font-weight="900" fill="#334155" text-anchor="middle">− +</text>
-    <line x1="327" y1="152" x2="507" y2="152" stroke="#fecaca" stroke-width="2"/>
-    <text x="417" y="190" font-family="monospace" font-size="30" font-weight="900" fill="#dc2626" text-anchor="middle">= −</text>
-    <text x="417" y="214" font-family="sans-serif" font-size="13" font-weight="bold" fill="#ef4444" text-anchor="middle">← move LEFT</text>
+    <line x1="112" y1="44" x2="126" y2="44" stroke="${RULE}" stroke-width="2"/>
+    <line x1="112" y1="80" x2="126" y2="80" stroke="${RULE}" stroke-width="2"/>
+    <line x1="106" y1="116" x2="126" y2="116" stroke="${INK}" stroke-width="2.5"/>
+    <line x1="112" y1="152" x2="126" y2="152" stroke="${RULE}" stroke-width="2"/>
+    <line x1="112" y1="188" x2="126" y2="188" stroke="${RULE}" stroke-width="2"/>
+
+    <text x="102" y="49" font-family="${FONT}" font-size="17" font-weight="bold" fill="${BLUE}" text-anchor="end">10</text>
+    <text x="102" y="85" font-family="${FONT}" font-size="17" font-weight="bold" fill="${BLUE}" text-anchor="end">5</text>
+    <text x="98" y="121" font-family="${FONT}" font-size="17" font-weight="900" fill="${INK}" text-anchor="end">0</text>
+    <text x="102" y="157" font-family="${FONT}" font-size="17" font-weight="bold" fill="${RED}" text-anchor="end">-5</text>
+    <text x="102" y="193" font-family="${FONT}" font-size="17" font-weight="bold" fill="${RED}" text-anchor="end">-10</text>
+    <text x="102" y="22" font-family="${FONT}" font-size="14" font-weight="bold" fill="${RULE}" text-anchor="end">°C</text>
+
+    <line x1="152" y1="116" x2="300" y2="116" stroke="${INK}" stroke-width="1.6" stroke-dasharray="5 4"/>
+    <text x="298" y="110" font-family="${FONT}" font-size="15" font-weight="bold" fill="${INK}" text-anchor="end">zero</text>
+
+    <text x="176" y="50" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">above zero</text>
+    <text x="176" y="74" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">higher</text>
+    <text x="176" y="98" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">warmer</text>
+    <text x="176" y="152" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">below zero</text>
+    <text x="176" y="176" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">lower</text>
+    <text x="176" y="200" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">colder</text>
   </svg>`,
 
-  // Generic orientation: left = smaller, right = larger.
-  NOTES_NUMBER_LINE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
-    <line x1="250" y1="58" x2="80" y2="58" stroke="#ef4444" stroke-width="3" stroke-linecap="round" marker-end="url(#ah-red)"/>
-    <line x1="270" y1="58" x2="440" y2="58" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" marker-end="url(#ah-blue)"/>
-    <text x="150" y="46" font-family="sans-serif" font-size="13" font-weight="bold" fill="#ef4444" text-anchor="middle">smaller</text>
-    <text x="370" y="46" font-family="sans-serif" font-size="13" font-weight="bold" fill="#3b82f6" text-anchor="middle">larger</text>
-    ${axis(TICKS_INTRO)}
-    <circle cx="260" cy="90" r="5" fill="#10b981"/>
+  // ───────────────────────────────────────────────────────────────────────────
+  // One symbol, two jobs — and two different English words for it.
+  // ───────────────────────────────────────────────────────────────────────────
+  SIGN_OR_OPERATION: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 230" class="w-full h-full">
+    ${plate(620, 230)}
+    <rect x="22" y="26" width="266" height="178" rx="16" fill="${BLUE_T}" stroke="${BLUE}" stroke-width="2.5"/>
+    <text x="155" y="62" font-family="${FONT}" font-size="14" font-weight="bold" fill="${BLUE}" text-anchor="middle">IT IS A SIGN</text>
+    <text x="155" y="118" font-family="${FONT}" font-size="42" font-weight="900" fill="${INK}" text-anchor="middle">-5</text>
+    <text x="155" y="150" font-family="${FONT}" font-size="14" font-weight="bold" fill="${INK}" text-anchor="middle">it belongs to the 5</text>
+    <text x="155" y="182" font-family="${FONT}" font-size="20" font-weight="bold" fill="${KEY}" text-anchor="middle">negative five</text>
+
+    <rect x="332" y="26" width="266" height="178" rx="16" fill="${TEAL_T}" stroke="${TEAL}" stroke-width="2.5"/>
+    <text x="465" y="62" font-family="${FONT}" font-size="14" font-weight="bold" fill="${TEAL}" text-anchor="middle">IT IS AN OPERATION</text>
+    <text x="465" y="118" font-family="${FONT}" font-size="42" font-weight="900" fill="${INK}" text-anchor="middle">8 - 5</text>
+    <text x="465" y="150" font-family="${FONT}" font-size="14" font-weight="bold" fill="${INK}" text-anchor="middle">it tells you to take away</text>
+    <text x="465" y="182" font-family="${FONT}" font-size="20" font-weight="bold" fill="${KEY}" text-anchor="middle">eight minus five</text>
   </svg>`,
 
-  // −3 + −4 = −7 : start at −3, jump 4 LEFT.
-  NOTES_ADD_NEG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
-    <path d="M 283.3 82 Q 190 48 96.7 82" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#ah-red)"/>
-    <text x="190" y="44" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">− 4 (left)</text>
-    ${axis(TICKS_ADD)}
-    <circle cx="283.3" cy="90" r="6" fill="#3b82f6"/>
-    <circle cx="96.7" cy="90" r="6" fill="#ef4444"/>
+  // ───────────────────────────────────────────────────────────────────────────
+  // Adding a negative: -3 + (-4) = -7. Start at -3, jump 4 to the LEFT.
+  // Ticks run -8 … 2.
+  // ───────────────────────────────────────────────────────────────────────────
+  ADD_NEG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 215" class="w-full h-full">
+    ${lineBase()}
+    <path d="M 330 106 Q 218 44 106 106" fill="none" stroke="${RED}" stroke-width="3.5" marker-end="url(#mi-red)"/>
+    <text x="218" y="40" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RED}" text-anchor="middle">4 to the left</text>
+    <circle cx="330" cy="118" r="7" fill="${BLUE}"/>
+    <circle cx="106" cy="118" r="7" fill="${RED}"/>
+
+    <text x="50" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-8</text>
+    <text x="106" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${RED}" text-anchor="middle">-7</text>
+    <text x="162" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-6</text>
+    <text x="218" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-5</text>
+    <text x="274" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-4</text>
+    <text x="330" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${BLUE}" text-anchor="middle">-3</text>
+    <text x="386" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-2</text>
+    <text x="442" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-1</text>
+    <text x="498" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${INK}" text-anchor="middle">0</text>
+    <text x="554" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">1</text>
+    <text x="610" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">2</text>
+
+    <text x="330" y="192" font-family="${FONT}" font-size="24" font-weight="900" fill="${INK}" text-anchor="middle">-3 + (-4) = -7</text>
   </svg>`,
 
-  // 2 − −5 = 2 + 5 = 7 : start at 2, jump 5 RIGHT (add the inverse).
-  NOTES_SUB_NEG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
-    <path d="M 176 82 Q 281 48 386 82" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#ah-green)"/>
-    <text x="281" y="44" font-family="sans-serif" font-size="14" font-weight="bold" fill="#10b981" text-anchor="middle">+ 5 (right)</text>
-    ${axis(TICKS_SUB)}
-    <circle cx="176" cy="90" r="6" fill="#3b82f6"/>
-    <circle cx="386" cy="90" r="6" fill="#10b981"/>
+  // ───────────────────────────────────────────────────────────────────────────
+  // Subtracting a positive: -6 - 3 = -9. Ticks run -10 … 0.
+  // ───────────────────────────────────────────────────────────────────────────
+  SUB_POS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 215" class="w-full h-full">
+    ${lineBase()}
+    <path d="M 274 106 Q 190 44 106 106" fill="none" stroke="${RED}" stroke-width="3.5" marker-end="url(#mi-red)"/>
+    <text x="190" y="40" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RED}" text-anchor="middle">3 to the left</text>
+    <circle cx="274" cy="118" r="7" fill="${BLUE}"/>
+    <circle cx="106" cy="118" r="7" fill="${RED}"/>
+
+    <text x="50" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-10</text>
+    <text x="106" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${RED}" text-anchor="middle">-9</text>
+    <text x="162" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-8</text>
+    <text x="218" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-7</text>
+    <text x="274" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${BLUE}" text-anchor="middle">-6</text>
+    <text x="330" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-5</text>
+    <text x="386" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-4</text>
+    <text x="442" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-3</text>
+    <text x="498" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-2</text>
+    <text x="554" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-1</text>
+    <text x="610" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${INK}" text-anchor="middle">0</text>
+
+    <text x="330" y="192" font-family="${FONT}" font-size="24" font-weight="900" fill="${INK}" text-anchor="middle">-6 - 3 = -9</text>
   </svg>`,
 
-  // −6 − 3 = −9 : subtracting a positive, move LEFT.
-  NOTES_SUB_POS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
-    <path d="M 218 82 Q 155 48 92 82" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#ah-red)"/>
-    <text x="155" y="44" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">− 3 (left)</text>
-    ${axis(TICKS_SUBPOS)}
-    <circle cx="218" cy="90" r="6" fill="#3b82f6"/>
-    <circle cx="92" cy="90" r="6" fill="#ef4444"/>
+  // ───────────────────────────────────────────────────────────────────────────
+  // Subtracting a negative (Draw This): 2 - (-5) = 2 + 5 = 7. Ticks run -1 … 9.
+  // ───────────────────────────────────────────────────────────────────────────
+  SUB_NEG: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 215" class="w-full h-full">
+    ${lineBase()}
+    <path d="M 218 106 Q 358 40 498 106" fill="none" stroke="${GREEN}" stroke-width="3.5" marker-end="url(#mi-green)"/>
+    <text x="358" y="36" font-family="${FONT}" font-size="19" font-weight="bold" fill="${GREEN}" text-anchor="middle">5 to the right</text>
+    <circle cx="218" cy="118" r="7" fill="${BLUE}"/>
+    <circle cx="498" cy="118" r="7" fill="${GREEN}"/>
+
+    <text x="50" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-1</text>
+    <text x="106" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${INK}" text-anchor="middle">0</text>
+    <text x="162" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">1</text>
+    <text x="218" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${BLUE}" text-anchor="middle">2</text>
+    <text x="274" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">3</text>
+    <text x="330" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">4</text>
+    <text x="386" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">5</text>
+    <text x="442" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">6</text>
+    <text x="498" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${GREEN}" text-anchor="middle">7</text>
+    <text x="554" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">8</text>
+    <text x="610" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">9</text>
+
+    <text x="330" y="192" font-family="${FONT}" font-size="24" font-weight="900" fill="${INK}" text-anchor="middle">2 - (-5) = 2 + 5 = 7</text>
   </svg>`,
 
-  // Word problem 1: 4 − 9 = −5 (temperature drops 9 from 4). Jump 9 LEFT.
-  NOTES_WP1: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
-    <path d="M 400 82 Q 242 40 85 82" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#ah-red)"/>
-    <text x="242" y="40" font-family="sans-serif" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle">− 9 (drop)</text>
-    ${axis(TICKS_WP1)}
-    <circle cx="400" cy="90" r="6" fill="#3b82f6"/>
-    <text x="400" y="132" font-family="sans-serif" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle">noon</text>
-    <circle cx="85" cy="90" r="6" fill="#ef4444"/>
-    <text x="85" y="132" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ef4444" text-anchor="middle">midnight</text>
+  // ───────────────────────────────────────────────────────────────────────────
+  // Two signs standing next to each other combine into one.
+  // ───────────────────────────────────────────────────────────────────────────
+  TWO_SIGNS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 250" class="w-full h-full">
+    ${plate(620, 250)}
+    <rect x="22" y="24" width="266" height="200" rx="16" fill="${GREEN_T}" stroke="${GREEN}" stroke-width="2.5"/>
+    <text x="155" y="56" font-family="${FONT}" font-size="17" font-weight="bold" fill="${GREEN}" text-anchor="middle">SAME SIGNS</text>
+    <text x="155" y="100" font-family="${FONT}" font-size="28" font-weight="900" fill="${INK}" text-anchor="middle">+ +</text>
+    <text x="155" y="136" font-family="${FONT}" font-size="28" font-weight="900" fill="${INK}" text-anchor="middle">- -</text>
+    <line x1="58" y1="150" x2="252" y2="150" stroke="${GREEN}" stroke-width="1.6"/>
+    <text x="155" y="186" font-family="${FONT}" font-size="30" font-weight="900" fill="${GREEN}" text-anchor="middle">= +</text>
+    <text x="155" y="210" font-family="${FONT}" font-size="14" font-weight="bold" fill="${KEY}" text-anchor="middle">move right</text>
+
+    <rect x="332" y="24" width="266" height="200" rx="16" fill="${RED_T}" stroke="${RED}" stroke-width="2.5"/>
+    <text x="465" y="56" font-family="${FONT}" font-size="17" font-weight="bold" fill="${RED}" text-anchor="middle">DIFFERENT SIGNS</text>
+    <text x="465" y="100" font-family="${FONT}" font-size="28" font-weight="900" fill="${INK}" text-anchor="middle">+ -</text>
+    <text x="465" y="136" font-family="${FONT}" font-size="28" font-weight="900" fill="${INK}" text-anchor="middle">- +</text>
+    <line x1="368" y1="150" x2="562" y2="150" stroke="${RED}" stroke-width="1.6"/>
+    <text x="465" y="186" font-family="${FONT}" font-size="30" font-weight="900" fill="${RED}" text-anchor="middle">= -</text>
+    <text x="465" y="210" font-family="${FONT}" font-size="14" font-weight="bold" fill="${KEY}" text-anchor="middle">move left</text>
   </svg>`,
 
-  // Word problem 2: distance from −15 to 20 = 35 (how much warmer). Span RIGHT.
-  NOTES_WP2: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" class="w-full h-full drop-shadow-md">${MARKERS}
-    <path d="M 50 78 Q 260 40 470 78" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#ah-green)"/>
-    <text x="260" y="40" font-family="sans-serif" font-size="14" font-weight="bold" fill="#10b981" text-anchor="middle">+ 35 warmer</text>
-    ${axis(TICKS_WP2)}
-    <circle cx="50" cy="90" r="6" fill="#3b82f6"/>
-    <text x="62" y="132" font-family="sans-serif" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle">freezer</text>
-    <circle cx="470" cy="90" r="6" fill="#ef4444"/>
-    <text x="458" y="132" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ef4444" text-anchor="middle">room</text>
+  // ───────────────────────────────────────────────────────────────────────────
+  // "Subtract 5 from 8" — the English says the numbers in the opposite order
+  // to the calculation. The crossing arrows are the whole point of the figure.
+  // ───────────────────────────────────────────────────────────────────────────
+  WORD_ORDER: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 240" class="w-full h-full">
+    ${plate(620, 240)}${MARKERS}
+    <rect x="30" y="30" width="560" height="56" rx="12" fill="${TEAL_T}" stroke="${TEAL}" stroke-width="2"/>
+    <text x="150" y="68" font-family="${FONT}" font-size="24" font-weight="bold" fill="${INK}" text-anchor="middle">Subtract</text>
+    <text x="262" y="68" font-family="${FONT}" font-size="26" font-weight="900" fill="${RED}" text-anchor="middle">5</text>
+    <text x="345" y="68" font-family="${FONT}" font-size="24" font-weight="bold" fill="${INK}" text-anchor="middle">from</text>
+    <text x="440" y="68" font-family="${FONT}" font-size="26" font-weight="900" fill="${BLUE}" text-anchor="middle">8</text>
+
+    <path d="M 262 96 C 262 130 372 130 372 156" fill="none" stroke="${RED}" stroke-width="3" marker-end="url(#mi-red)"/>
+    <path d="M 440 96 C 440 130 262 130 262 156" fill="none" stroke="${BLUE}" stroke-width="3" marker-end="url(#mi-blue)"/>
+
+    <text x="262" y="200" font-family="${FONT}" font-size="34" font-weight="900" fill="${BLUE}" text-anchor="middle">8</text>
+    <text x="317" y="200" font-family="${FONT}" font-size="34" font-weight="900" fill="${INK}" text-anchor="middle">-</text>
+    <text x="372" y="200" font-family="${FONT}" font-size="34" font-weight="900" fill="${RED}" text-anchor="middle">5</text>
+    <text x="470" y="200" font-family="${FONT}" font-size="24" font-weight="bold" fill="${KEY}" text-anchor="start">they swap</text>
   </svg>`,
 
-  // Real-world context: a thermometer as a vertical number line (−10 … 10 °C).
-  NOTES_THERMOMETER: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 240" class="w-full h-full drop-shadow-md">
-    <text x="30" y="20" font-family="sans-serif" font-size="13" font-weight="bold" fill="#64748b" text-anchor="middle">°C</text>
-    <rect x="72" y="30" width="16" height="176" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
-    <rect x="74" y="86" width="12" height="120" fill="#ef4444"/>
-    <circle cx="80" cy="210" r="16" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
-    ${[['10',30],['5',70],['0',110,true],['-5',150],['-10',190]].map(([lab,y,bold]) => `
-      <line x1="66" y1="${y}" x2="72" y2="${y}" stroke="#94a3b8" stroke-width="2"/>
-      <text x="60" y="${y+4}" font-family="monospace" font-size="12" font-weight="${bold?'900':'bold'}" fill="${bold?'#10b981':'#64748b'}" text-anchor="end">${lab}</text>`).join('')}
-    <line x1="92" y1="158" x2="118" y2="158" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
-    <text x="122" y="162" font-family="monospace" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="start">-6</text>
-    <path d="M 108 158 L 108 90" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#therm-up)"/>
-    <defs><marker id="therm-up" viewBox="0 0 10 10" refX="5" refY="3" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 10 L5 0 L10 10 z" fill="#10b981"/></marker></defs>
-    <text x="135" y="128" font-family="sans-serif" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">+9</text>
-    <text x="122" y="90" font-family="monospace" font-size="12" font-weight="bold" fill="#10b981" text-anchor="start">3</text>
-  </svg>`,
+  // ───────────────────────────────────────────────────────────────────────────
+  // "The difference between -3 and 4" is the gap, and a gap is never negative.
+  // The contrast line underneath is the question students confuse it with.
+  // ───────────────────────────────────────────────────────────────────────────
+  DIFFERENCE_GAP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 250" class="w-full h-full">
+    ${plate(660, 250)}${MARKERS}
+    <line x1="20" y1="118" x2="640" y2="118" stroke="${INK}" stroke-width="3" stroke-linecap="round" marker-start="url(#mi-blue)" marker-end="url(#mi-blue)"/>
+    ${ticks(X)}
+    <rect x="162" y="104" width="392" height="28" rx="8" fill="${GREEN_T}"/>
+    <line x1="162" y1="72" x2="554" y2="72" stroke="${GREEN}" stroke-width="3" marker-start="url(#mi-green)" marker-end="url(#mi-green)"/>
+    <line x1="162" y1="72" x2="162" y2="104" stroke="${GREEN}" stroke-width="1.6" stroke-dasharray="4 3"/>
+    <line x1="554" y1="72" x2="554" y2="104" stroke="${GREEN}" stroke-width="1.6" stroke-dasharray="4 3"/>
+    <text x="358" y="56" font-family="${FONT}" font-size="20" font-weight="900" fill="${GREEN}" text-anchor="middle">7 steps apart</text>
 
-  // Addition table for the "copy and complete" question — BLANK (question) form.
-  WB_ADD_TABLE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 170" class="w-full h-full">
-    <rect x="20" y="20" width="210" height="130" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="90" y1="20" x2="90" y2="150" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="160" y1="20" x2="160" y2="150" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="20" y1="63" x2="230" y2="63" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="20" y1="106" x2="230" y2="106" stroke="#cbd5e1" stroke-width="2"/>
-    <rect x="20" y="20" width="70" height="43" fill="#eef2ff"/>
-    <text x="55" y="48" font-family="monospace" font-size="18" font-weight="900" fill="#1e293b" text-anchor="middle">+</text>
-    <text x="125" y="48" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">4</text>
-    <text x="195" y="48" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">-5</text>
-    <text x="55" y="91" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">2</text>
-    <text x="55" y="134" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">-6</text>
-    <text x="125" y="91" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
-    <text x="195" y="91" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
-    <text x="125" y="134" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
-    <text x="195" y="134" font-family="monospace" font-size="16" fill="#94a3b8" text-anchor="middle">?</text>
-  </svg>`,
+    <circle cx="162" cy="118" r="7" fill="${RED}"/>
+    <circle cx="554" cy="118" r="7" fill="${BLUE}"/>
 
-  // Addition table — SOLVED form: the four blanks filled, highlighted green.
-  WB_ADD_TABLE_SOLVED: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 170" class="w-full h-full">
-    <rect x="20" y="20" width="210" height="130" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="90" y1="20" x2="90" y2="150" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="160" y1="20" x2="160" y2="150" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="20" y1="63" x2="230" y2="63" stroke="#cbd5e1" stroke-width="2"/>
-    <line x1="20" y1="106" x2="230" y2="106" stroke="#cbd5e1" stroke-width="2"/>
-    <rect x="20" y="20" width="70" height="43" fill="#eef2ff"/>
-    <rect x="90" y="63" width="70" height="43" fill="#f0fdf4"/>
-    <rect x="160" y="63" width="70" height="43" fill="#f0fdf4"/>
-    <rect x="90" y="106" width="70" height="44" fill="#f0fdf4"/>
-    <rect x="160" y="106" width="70" height="44" fill="#f0fdf4"/>
-    <text x="55" y="48" font-family="monospace" font-size="18" font-weight="900" fill="#1e293b" text-anchor="middle">+</text>
-    <text x="125" y="48" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">4</text>
-    <text x="195" y="48" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">-5</text>
-    <text x="55" y="91" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">2</text>
-    <text x="55" y="134" font-family="monospace" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">-6</text>
-    <text x="125" y="91" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">6</text>
-    <text x="195" y="91" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">-3</text>
-    <text x="125" y="134" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">-2</text>
-    <text x="195" y="134" font-family="monospace" font-size="16" font-weight="900" fill="#10b981" text-anchor="middle">-11</text>
+    <text x="50" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-5</text>
+    <text x="106" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-4</text>
+    <text x="162" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${RED}" text-anchor="middle">-3</text>
+    <text x="218" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-2</text>
+    <text x="274" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">-1</text>
+    <text x="330" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${INK}" text-anchor="middle">0</text>
+    <text x="386" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">1</text>
+    <text x="442" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">2</text>
+    <text x="498" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">3</text>
+    <text x="554" y="152" font-family="${FONT}" font-size="19" font-weight="900" fill="${BLUE}" text-anchor="middle">4</text>
+    <text x="610" y="152" font-family="${FONT}" font-size="19" font-weight="bold" fill="${RULE}" text-anchor="middle">5</text>
+
+    <text x="330" y="196" font-family="${FONT}" font-size="21" font-weight="900" fill="${GREEN}" text-anchor="middle">the difference is 7</text>
+    <text x="330" y="226" font-family="${FONT}" font-size="20" font-weight="bold" fill="${RED}" text-anchor="middle">but -3 - 4 = -7</text>
   </svg>`,
-};
+}

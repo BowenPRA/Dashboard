@@ -5,12 +5,10 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import NumberDrill from './tasks/NumberDrill';
 
-// The 1.2 plan ladder (§5.4): operands only, three rungs.
-const DRILL = {
+// Two ladders so both drill modes can be smoke-tested. Pick with ?mode=addsub.
+const MULT = {
   mode: 'long-mult',
   title: 'Two-Digit Multiplication', titleVn: 'Nhân số có hai chữ số',
-  intro: 'Fill in one box at a time. The grid checks each digit as you go.',
-  introVn: 'Điền từng ô một. Lưới sẽ kiểm tra từng chữ số khi em làm.',
   ladder: [
     { level: 'Warm-up', levelVn: 'Khởi động', items: [[23, 12], [31, 21], [42, 13]] },
     { level: 'Carries', levelVn: 'Có nhớ', items: [[47, 26], [68, 34], [59, 47]] },
@@ -18,7 +16,19 @@ const DRILL = {
   ],
 };
 
+const ADDSUB = {
+  mode: 'column-add-sub',
+  title: 'Column Add & Subtract', titleVn: 'Cộng & Trừ theo cột',
+  ladder: [
+    { level: 'Warm-up', levelVn: 'Khởi động', items: [[24, 13, '+'], [46, 32, '-'], [35, 24, '+']] },
+    { level: 'Regroup', levelVn: 'Có nhớ / mượn', items: [[47, 28, '+'], [63, 45, '-'], [72, 59, '-']] },
+    { level: 'Stretch', levelVn: 'Nâng cao', items: [[268, 47, '+'], [402, 158, '-']] },
+  ],
+};
+
 function Harness() {
+  const params = new URLSearchParams(window.location.search);
+  const DRILL = params.get('mode') === 'addsub' ? ADDSUB : MULT;
   return (
     <NumberDrill
       pool={DRILL}

@@ -62,6 +62,7 @@ const EN = {
   helped: 'Solved — but a box or two had to be shown.',
   empty: 'Type a digit in every blue box first.',
   carryNote: 'The small box is the carry into that column.',
+  borrowNote: 'The small box is the borrow: 1 when this column took ten from its left.',
   scoreLine: 'items cleared',
   heldNote: 'Clear this level to open the next.',
   reasons: {
@@ -69,6 +70,8 @@ const EN = {
     forgotcarry: 'Right multiplication — but you forgot to add the carry from the column on its right.',
     addwrong: 'Add this column again, and include the little carried digit above it.',
     carrywrong: 'The carry is the tens digit you take to the next column on the left.',
+    subwrong: 'Subtract this column again — and if you borrowed, take one off the top digit first.',
+    borrowwrong: 'The borrow is 1 when the top digit was too small and had to take ten from its left.',
   },
 };
 
@@ -86,6 +89,7 @@ const VN = {
   helped: 'Đã giải xong — nhưng có một hai ô phải hiện đáp án.',
   empty: 'Hãy điền một chữ số vào mỗi ô xanh trước.',
   carryNote: 'Ô nhỏ là số nhớ mang vào cột đó.',
+  borrowNote: 'Ô nhỏ là số mượn: bằng 1 khi cột này phải mượn mười từ cột bên trái.',
   scoreLine: 'bài đã hoàn thành',
   heldNote: 'Hoàn thành cấp này để mở cấp tiếp theo.',
   reasons: {
@@ -93,6 +97,8 @@ const VN = {
     forgotcarry: 'Nhân đúng rồi — nhưng em quên cộng số nhớ từ cột bên phải.',
     addwrong: 'Cộng lại cột này, và nhớ cộng cả số nhớ nhỏ ở phía trên.',
     carrywrong: 'Số nhớ là chữ số hàng chục em mang sang cột bên trái.',
+    subwrong: 'Trừ lại cột này — nếu đã mượn, hãy bớt một ở chữ số trên trước.',
+    borrowwrong: 'Số mượn bằng 1 khi chữ số trên quá nhỏ và phải mượn mười từ cột bên trái.',
   },
 };
 
@@ -119,24 +125,29 @@ function cellsOf(stage) {
 
 /** The mistake behind a wrong DIGIT box, most specific first. */
 function diagnoseDigit(stage, col, typed) {
+  if (stage.op === '-') return 'subwrong';
   const noCarry = (((col.digit - col.carryIn) % 10) + 10) % 10; // the digit if the carry were dropped
   if (col.carryIn > 0 && typed === noCarry) return 'forgotcarry';
   return stage.kind === 'sum' ? 'addwrong' : 'times';
 }
+/** The reason for a wrong small (carry/borrow) box, by operation. */
+const carryReason = (stage) => (stage.op === '-' ? 'borrowwrong' : 'carrywrong');
 
 /* ------------------------------------------------------------- component */
 
 export default function NumberDrill({ pool, onComplete, onQuit }) {
   // Flatten the ladder into an ordered list, remembering each item's rung so we
   // can gate progression and show a banner when a new level opens.
+  const mode = pool?.mode || 'long-mult';
   const flat = useMemo(() => {
     const ladder = pool?.ladder || [];
     const items = [];
     ladder.forEach((rung, ri) => {
-      (rung.items || []).forEach(([a, b], ii) => {
+      // A long-mult item is [a, b]; a column-add-sub item is [a, b, op].
+      (rung.items || []).forEach(([a, b, op = '+'], ii) => {
         items.push({
-          id: `L${ri}-${a}x${b}-${ii}`,
-          a, b, ri,
+          id: `L${ri}-${a}${op}${b}-${ii}`,
+          a, b, op, ri,
           level: rung.level, levelVn: rung.levelVn,
           isRungStart: ii === 0,
           isRungEnd: ii === (rung.items.length - 1),
@@ -165,7 +176,7 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
 
   const t = lang === 'vn' ? VN : EN;
   const item = flat[pos];
-  const model = useMemo(() => (item ? modelOf(item.a, item.b) : null), [item]);
+  const model = useMemo(() => (item ? modelOf(mode, item.a, item.b, item.op) : null), [item, mode]);
   const stage = model?.stages[stageIdx];
 
   useEffect(() => { firstBox.current?.focus(); }, [stageIdx, pos]);
@@ -214,7 +225,8 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
 
       const count = (nextWrongs[c.id] || 0) + 1;
       nextWrongs[c.id] = count;
-      newPositions.push(c.kind === 'carry' ? 'carry' : (stage.kind === 'sum' ? 'sum' : `partial-${stage.place}`));
+      const carryPos = stage.op === '-' ? 'borrow' : 'carry';
+      newPositions.push(c.kind === 'carry' ? carryPos : (stage.kind === 'sum' ? 'sum' : `partial-${stage.place}`));
 
       if (count >= 2) {
         // Wrong twice: reveal it, lock it, and mark the item as helped.
@@ -222,7 +234,7 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
         nextEntries[c.id] = String(c.value);
         nowHelped = true;
       } else {
-        nextErrors[c.id] = c.kind === 'carry' ? 'carrywrong' : diagnoseDigit(stage, c.col, typed);
+        nextErrors[c.id] = c.kind === 'carry' ? carryReason(stage) : diagnoseDigit(stage, c.col, typed);
       }
     }
 
@@ -323,8 +335,9 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
                 <FixedCell key={c} digit={c < aLen ? digitAt(item.a, c) : null} />
               ))}
             </GridRow>
-            {/* multiplier, with × on the far left and the active digit lit */}
-            <GridRow cols={cols} op="×">
+            {/* second operand, with the operator on the far left; for long-mult
+                the active multiplier digit is lit during its partial-product stage */}
+            <GridRow cols={cols} op={model.opSymbol}>
               {cols.map((c) => (
                 <FixedCell key={c}
                   digit={c < bLen ? digitAt(item.b, c) : null}
@@ -334,7 +347,7 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
 
             <div className="h-0.5 bg-slate-800 dark:bg-slate-200 rounded-full my-1.5" />
 
-            {/* one row per partial product */}
+            {/* one row per partial product (long-mult only; empty for add/subtract) */}
             {model.partials.map((pr) => (
               <GridRow key={pr.rowKey} cols={cols}>
                 {cols.map((c) => (
@@ -344,12 +357,12 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
               </GridRow>
             ))}
 
-            {model.sumRow && (
+            {model.answerRow && (
               <>
-                <div className="h-0.5 bg-slate-800 dark:bg-slate-200 rounded-full my-1.5" />
-                <GridRow cols={cols} op="=">
+                {model.partials.length > 0 && <div className="h-0.5 bg-slate-800 dark:bg-slate-200 rounded-full my-1.5" />}
+                <GridRow cols={cols} op={model.kind === 'mult' ? '=' : ''}>
                   {cols.map((c) => (
-                    <StageCell key={c} col={c} row={model.sumRow} rowKey="sum"
+                    <StageCell key={c} col={c} row={model.answerRow} rowKey="sum"
                       active={!itemDone && stage?.rowKey === 'sum'} ctx={boxCtx} />
                   ))}
                 </GridRow>
@@ -357,7 +370,9 @@ export default function NumberDrill({ pool, onComplete, onQuit }) {
             )}
           </div>
 
-          <p className="text-center text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-3">{t.carryNote}</p>
+          <p className="text-center text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-3">
+            {mode === 'column-add-sub' && item.op === '-' ? t.borrowNote : t.carryNote}
+          </p>
         </div>
 
         {/* verdict + a named reason per distinct mistake */}

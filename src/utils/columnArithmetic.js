@@ -66,18 +66,75 @@ export function buildSum(partials, W) {
   return { rowKey: 'sum', cols };
 }
 
-/** Everything derived for one problem: the rows to draw and the stages to walk. */
-export function modelOf(a, b) {
+/**
+ * A single column addition or subtraction, column by column right to left.
+ * Each column carries the digit and the small mark above it — a CARRY for '+'
+ * (the ten brought into this column from its right) or a BORROW for '-' (the
+ * ten this column had to give to its right). Both are 0/1 and sit in the same
+ * `carryIn` slot with the same `carryBox` layout, so one grid renders both.
+ * Subtraction assumes a >= b (the drill teaches the algorithm, not signed
+ * answers — the sign work lives in the deck).
+ */
+export function buildAddSub(a, b, op) {
+  const cols = [];
+  const aLen = String(a).length;
+  const bLen = String(b).length;
+  if (op === '+') {
+    let carry = 0;
+    for (let c = 0; c < Math.max(aLen, bLen) || carry > 0; c++) {
+      const entering = carry;
+      const s = (digitAt(a, c) || 0) + (digitAt(b, c) || 0) + entering;
+      cols.push({ col: c, digit: s % 10, carryIn: entering, carryBox: c > 0 });
+      carry = Math.floor(s / 10);
+    }
+  } else {
+    let borrow = 0;
+    for (let c = 0; c < aLen; c++) {
+      const incoming = borrow;              // this column owes a ten to its right
+      const top = (digitAt(a, c) || 0) - incoming;
+      const bd = digitAt(b, c) || 0;
+      let digit;
+      if (top < bd) { digit = top + 10 - bd; borrow = 1; } else { digit = top - bd; borrow = 0; }
+      cols.push({ col: c, digit, carryIn: incoming, carryBox: c > 0 });
+    }
+  }
+  return { rowKey: 'sum', cols };
+}
+
+/** The long-multiplication model: multiplicand, ×multiplier, partial rows, sum. */
+function multModel(a, b) {
   const bDig = digitsUnitsFirst(b);
   const partials = bDig.map((d, place) => buildPartial(a, d, place));
   const W = String(a * b).length;
-  const sumRow = partials.length > 1 ? buildSum(partials, W) : null;
-  const rows = sumRow ? [...partials, sumRow] : partials;
+  const answerRow = partials.length > 1 ? buildSum(partials, W) : null;
+  const rows = answerRow ? [...partials, answerRow] : partials;
   const stages = rows.map((r) => ({
     kind: r.rowKey === 'sum' ? 'sum' : 'partial',
     place: r.place,
     rowKey: r.rowKey,
     cols: [...r.cols].sort((x, y) => x.col - y.col),
   }));
-  return { a, b, W, partials, sumRow, rows, stages };
+  return { kind: 'mult', opSymbol: '×', a, b, W, partials, answerRow, stages };
+}
+
+/** The column add/subtract model: one operand row, one op-row, one answer row. */
+function addSubModel(a, b, op) {
+  const answerRow = buildAddSub(a, b, op);
+  const stages = [{
+    kind: 'sum', op, place: 0, rowKey: 'sum',
+    cols: [...answerRow.cols].sort((x, y) => x.col - y.col),
+  }];
+  return { kind: 'addsub', opSymbol: op, op, a, b, W: answerRow.cols.length, partials: [], answerRow, stages };
+}
+
+/**
+ * Everything derived for one problem, keyed by mode. Every intermediate cell is
+ * computed here, never authored: `long-mult` derives partials/carries/sum,
+ * `column-add-sub` derives the carry or borrow per column. Returns a uniform
+ * shape — `partials` (possibly empty), `answerRow`, `stages`, `opSymbol`, `W`.
+ */
+export function modelOf(mode, a, b, op = '+') {
+  if (mode === 'long-mult') return multModel(a, b);
+  if (mode === 'column-add-sub') return addSubModel(a, b, op);
+  throw new Error(`unknown drill mode "${mode}"`);
 }

@@ -471,7 +471,7 @@ for (const trackId of TRACK_IDS) {
     //    NumberDrill.jsx grows to support them.
     if (unit.drill) {
       const at = `${label}: drill`;
-      const DRILL_MODES = ['long-mult'];
+      const DRILL_MODES = ['long-mult', 'column-add-sub'];
       const d = unit.drill;
       if (!DRILL_MODES.includes(d.mode)) {
         err(`${at}: mode "${d.mode}" — NumberDrill.jsx implements ${DRILL_MODES.join('/')}`);
@@ -479,29 +479,34 @@ for (const trackId of TRACK_IDS) {
       if (!d.title || !d.titleVn) err(`${at} is missing a bilingual title`);
       const ladder = d.ladder || [];
       if (!ladder.length) err(`${at} has an empty ladder`);
+      const inRange = (n) => Number.isInteger(n) && n >= 2 && n <= 9999;
       ladder.forEach((rung, ri) => {
         const rat = `${at} rung ${ri + 1}`;
         if (!rung.level || !rung.levelVn) err(`${rat} is missing a bilingual level name (level/levelVn)`);
         const items = rung.items || [];
         if (!items.length) err(`${rat} has no items`);
-        // long-mult: each item is an operand PAIR, both positive integers in a
-        // range the column method can actually lay out (up to 4 digits), and at
-        // least one multi-digit — a 1×1 fact is a times-table drill, not this.
-        if (d.mode === 'long-mult') {
-          items.forEach((it, ii) => {
-            const iat = `${rat} item ${ii + 1}`;
-            if (!Array.isArray(it) || it.length !== 2) {
-              err(`${iat}: long-mult items are [a, b] operand pairs`);
-              return;
-            }
-            for (const n of it) {
-              if (!Number.isInteger(n) || n < 2 || n > 9999) {
-                err(`${iat}: operand ${n} must be a whole number from 2 to 9999`);
-              }
-            }
+        items.forEach((it, ii) => {
+          const iat = `${rat} item ${ii + 1}`;
+          if (!Array.isArray(it)) { err(`${iat}: an item must be an array of operands`); return; }
+          if (d.mode === 'long-mult') {
+            // [a, b] operand pair, both in range, at least one multi-digit — a
+            // 1×1 fact is a times-table drill, not a column multiplication.
+            if (it.length !== 2) { err(`${iat}: long-mult items are [a, b] operand pairs`); return; }
+            for (const n of it) if (!inRange(n)) err(`${iat}: operand ${n} must be a whole number from 2 to 9999`);
             if (it.every((n) => n < 10)) err(`${iat}: (${it.join(', ')}) is a single-digit fact, not a column multiplication`);
-          });
-        }
+          } else {
+            // column-add-sub: [a, b, op]; op is + or -; at least one multi-digit;
+            // subtraction must not go negative (the drill teaches the algorithm,
+            // not signed answers — the sign work lives in the deck).
+            const [a, b, op] = it;
+            if (it.length !== 3 || (op !== '+' && op !== '-')) {
+              err(`${iat}: column-add-sub items are [a, b, '+'|'-']`); return;
+            }
+            if (!inRange(a) || !inRange(b)) err(`${iat}: operands ${a},${b} must be whole numbers from 2 to 9999`);
+            if (a < 10 && b < 10) err(`${iat}: (${a}, ${b}) is single-digit, not a column sum`);
+            if (op === '-' && a < b) err(`${iat}: ${a} - ${b} is negative — put the larger number first`);
+          }
+        });
       });
     }
 

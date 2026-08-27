@@ -14,7 +14,8 @@ import { getTrack } from './data/index';
 import { getTask } from './tasks/taskRegistry';
 
 const TRACK = 'Y7_MATH';
-const UNIT = 'U01_2';
+// ?unit=U01_1 to preview a different unit; defaults to U01_2.
+const UNIT = new URLSearchParams(window.location.search).get('unit') || 'U01_2';
 
 const CASES = [
   ['NOTES', 'Deck · 14 slides, 5 checks, TranslateWidget'],
