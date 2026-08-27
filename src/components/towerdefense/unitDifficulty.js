@@ -91,6 +91,10 @@ export const TRACK_LEVELS = {
       mapId: 'GAUNTLET', themeId: 'NIGHT', tier: 5, waveMod: 'BOSS',
       mapName: 'The Long March',
       blurb: 'The final march. Queens and broods, the whole way down.',
+      // Tier 5 would also ban SPLASH; keep it. Against a boss rush that spawns
+      // swarms of adds, removing crowd-clear makes the finale unwinnable rather
+      // than hard — the very trap the difficulty ladder warns about. NITRO only.
+      bannedTowers: ['NITRO'],
     },
   },
 };

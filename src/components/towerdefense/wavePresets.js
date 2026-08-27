@@ -78,31 +78,38 @@ export const MAP_LAYOUTS = {
 // applies it to a fresh copy; with no modifier it returns SET_1 untouched, so
 // every level and track that doesn't opt in is completely unaffected.
 // =====================================================================
+// A modifier changes the KIND of fight, not its raw magnitude — the tier alone
+// sets how hard a unit is, so these are tuned to keep the wave-10 HP pressure
+// roughly in line with an unmodified wave at the same tier (verified in the
+// balance model). Over-inflating counts here is what made unit 1.4 spike harder
+// than 1.5; keep additions modest and let the flavour do the work.
 export const WAVE_MODIFIERS = {
   SWARM: {
     label: 'Swarm',
     icon: '🐜',
     blurb: 'Light infantry floods the road. Splash, chain and frost towers earn their keep.',
+    // More bodies, but ants are cheap HP — this tests crowd-clear, not raw tonnage.
     scale: {
-      ANT:  { count: 1.7, interval: 0.6 },
-      WASP: { count: 1.5, interval: 0.7 },
+      ANT:  { count: 1.6, interval: 0.65 },
+      WASP: { count: 1.35, interval: 0.75 },
     },
   },
   SIEGE: {
     label: 'Siege',
     icon: '🛡️',
     blurb: 'Armored heavies lead every assault. Snipers punch through armor; light fire bounces off.',
+    // Thin the trash, thicken the armour — a strategy shift toward armour pen,
+    // only a small net HP bump so it never out-muscles the next (higher) tier.
     scale: {
-      ANT:       { count: 0.7 },
-      BEETLE:    { count: 1.8 },
-      QUEEN:     { count: 1.6 },
-      GIANT_ANT: { count: 1.5 },
+      ANT:    { count: 0.6 },
+      BEETLE: { count: 1.35 },
     },
   },
   TIDE: {
     label: 'Relentless',
     icon: '🌊',
     blurb: 'No breathing room — every wave presses in faster than the last. Slows buy you time.',
+    // Pure tempo: same enemies, tighter spacing. Adds zero HP, all pressure.
     scale: {
       ANT:    { interval: 0.6 },
       WASP:   { interval: 0.6 },
@@ -114,10 +121,12 @@ export const WAVE_MODIFIERS = {
     label: 'Boss Rush',
     icon: '👑',
     blurb: 'Queens and broods on every front. Concentrate your firepower — spread thin and they walk through.',
+    // The finale leans heavy on purpose, but moderated so it stays a hard fight
+    // rather than an instant wall (crowd-clear is NOT banned here — see U01_6).
     scale: {
-      QUEEN:     { count: 1.9 },
-      GIANT_ANT: { count: 2.0 },
-      BEETLE:    { count: 1.3 },
+      QUEEN:     { count: 1.5 },
+      GIANT_ANT: { count: 1.6 },
+      BEETLE:    { count: 1.2 },
     },
   },
 };

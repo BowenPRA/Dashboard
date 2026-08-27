@@ -33,9 +33,11 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
     [track, unitId, pool]
   );
 
-  // Study pays for the defence, and harder units hand out a thinner purse.
+  // Study pays for the defence, and harder units hand out a thinner purse — but
+  // never below a floor that buys a real opening (a few towers), so a low-XP
+  // unlock on a hard unit still gets a playable start rather than one sentry.
   const startingCredits = Math.max(
-    20,
+    100,
     Math.round(unitXP * 2 * (gameConfig.creditMultiplier || 1))
   );
 

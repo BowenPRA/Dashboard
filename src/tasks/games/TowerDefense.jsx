@@ -558,7 +558,12 @@ export default function TowerDefense({
   function confirmExit() {
     setShowExitConfirm(false);
     persistBest();
-    onComplete(g.score);
+    // Submit the BEST run, not whatever score is on screen at exit. Without this,
+    // a great run followed by "Play Again" and a weaker run would report the weak
+    // score to the leaderboard — persistBest has already folded the best into
+    // bestRef, and recordAttempt keeps the server-side max, so this is the honest
+    // high score for the unit.
+    onComplete(Math.max(g.score, bestRef.current));
     onQuit();
   }
 
