@@ -9,7 +9,7 @@ function formatScore(num) {
 
 export default function HUD({
   credits, lives, wave, totalWaves, score, bestScore, speed,
-  gameState, waveInProgress, autoPlay, tierLabel,
+  gameState, waveInProgress, autoPlay, tierLabel, nextWavePreview,
   onStartWave, onToggleAutoPlay, onSetSpeed, onQuit
 }) {
   return (
@@ -98,6 +98,20 @@ export default function HUD({
         >
           Auto
         </button>
+
+        {/* Incoming-wave preview: know what's coming before you commit. */}
+        {nextWavePreview && nextWavePreview.length > 0 && (
+          <div className="hidden sm:flex items-center gap-2 pl-2.5 ml-0.5 border-l-2 border-slate-700" title="Enemies in the next wave">
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 leading-none">Next</span>
+            <div className="flex items-center gap-1.5">
+              {nextWavePreview.map(e => (
+                <span key={e.type} className="flex items-center gap-0.5 text-xs font-black text-slate-200 tabular-nums">
+                  <span className="text-sm leading-none" aria-hidden>{e.emoji}</span>{e.count}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* RIGHT: Desktop Speed & Exit */}

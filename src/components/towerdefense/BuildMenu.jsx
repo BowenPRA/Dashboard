@@ -80,12 +80,13 @@ export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSel
       {/* Scrollable list of towers */}
       <div className="flex-1 overflow-x-auto md:overflow-visible flex flex-row md:flex-col gap-2 md:gap-3 items-center md:items-stretch custom-scrollbar h-[72px] md:h-auto pb-1 md:pb-0 relative">
         
-        {ids.map(id => {
+        {ids.map((id, idx) => {
           const t = TOWERS[id];
           if (!t) return null;
           const theme = TOWER_THEME[id];
           const canAfford = credits >= t.cost;
           const isSelected = activeBuilder?.typeId === id;
+          const hotkey = idx + 1;
 
           let cls;
           if (isSelected) {
@@ -105,6 +106,12 @@ export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSel
               disabled={!canAfford}
               className={`group relative h-16 md:h-auto aspect-square md:w-full rounded-2xl transition-all flex flex-col items-center justify-center gap-1 p-2 shrink-0 ${cls}`}
             >
+              {/* Hotkey hint (desktop) — matches the 1–6 keyboard shortcut */}
+              {hotkey <= 6 && (
+                <span className="hidden md:flex absolute top-1 left-1 w-4 h-4 items-center justify-center rounded-md bg-black/25 text-white/80 text-[9px] font-black tabular-nums leading-none pointer-events-none">
+                  {hotkey}
+                </span>
+              )}
               <TowerVisual typeId={id} size="sm" dimmed={!canAfford} />
 
               <div className={`flex items-center justify-center gap-0.5 px-1.5 py-0.5 rounded-lg mt-0.5 text-[10px] font-black tabular-nums bg-black/20 ${!canAfford && 'text-slate-400'}`}>

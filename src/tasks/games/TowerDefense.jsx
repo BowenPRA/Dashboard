@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { TOWERS, ENEMIES, getSellValue } from '../../components/towerdefense/gameData';
+import { TOWERS, TOWER_ORDER, ENEMIES, getSellValue } from '../../components/towerdefense/gameData';
 import { MAP_LAYOUTS, WAVE_PRESETS, buildWaveSet } from '../../components/towerdefense/wavePresets';
 import GameBoard from '../../components/towerdefense/GameBoard';
 import BuildMenu from '../../components/towerdefense/BuildMenu';
@@ -11,6 +11,22 @@ import { useGameEngine } from '../../components/towerdefense/useGameEngine';
 
 const CHALLENGE_DURATION = 15;
 const ALL_TOWER_IDS = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO'];
+
+// For the "incoming wave" HUD preview — a friendly face per enemy type, shown in
+// a fixed order so the readout stays stable from wave to wave.
+const ENEMY_EMOJI = { ANT: '🐜', WASP: '🐝', BEETLE: '🪲', QUEEN: '👑', GIANT_ANT: '🕷️' };
+const ENEMY_PREVIEW_ORDER = ['ANT', 'WASP', 'BEETLE', 'QUEEN', 'GIANT_ANT'];
+
+/** Collapse a wave's spawn groups into one count per enemy type, for the preview. */
+function summarizeWave(wave) {
+  if (!Array.isArray(wave)) return null;
+  const totals = {};
+  for (const grp of wave) totals[grp.type] = (totals[grp.type] || 0) + grp.count;
+  const out = ENEMY_PREVIEW_ORDER
+    .filter(t => totals[t])
+    .map(t => ({ type: t, count: totals[t], emoji: ENEMY_EMOJI[t] || '👾' }));
+  return out.length ? out : null;
+}
 
 function buildPathSet(path) {
   const s = new Set();
@@ -67,6 +83,13 @@ export default function TowerDefense({
     return ALL_TOWER_IDS.filter(t => !banned.includes(t));
   }, [gameConfig.bannedTowers]);
 
+  // The order the BuildMenu shows towers in — also the 1–6 hotkey order, so the
+  // number badge on each button matches the key that builds it.
+  const buildableOrder = useMemo(
+    () => TOWER_ORDER.filter(id => allowedTowers.includes(id)),
+    [allowedTowers]
+  );
+
   // The 50 authored waves for this level, reshaped by the unit's composition
   // modifier (Swarm/Siege/…). With no modifier this is the shared SET_1 itself,
   // so every level and track that doesn't opt in is byte-for-byte unchanged.
@@ -75,11 +98,15 @@ export default function TowerDefense({
 
   const pathSet = useMemo(() => buildPathSet(layout.path), [layout.path]);
 
+  // Straight from the unit's Vocab task (unit.realWords). We carry the example
+  // sentence and the Vietnamese gloss too, so the challenge can reinforce the
+  // term after answering rather than just testing it. Words with no definition
+  // are dropped so a half-authored entry can't produce a blank prompt.
   const vocab = useMemo(() => {
-    if (pool && pool.length > 0) {
-      return pool.map(w => ({ word: w.word, def: w.def || w.vnDef || '' }));
-    }
-    return [{ word: 'Default', def: 'Missing vocab pool' }];
+    const words = (pool || [])
+      .filter(w => w?.word && (w.def || w.vnDef))
+      .map(w => ({ word: w.word, def: w.def || w.vnDef || '', sent: w.sent || '', vn: w.vn || '' }));
+    return words.length > 0 ? words : null;
   }, [pool]);
 
   const activeThemeId = useMemo(() => {
@@ -147,6 +174,9 @@ export default function TowerDefense({
   const [challengeTimeLeft, setChallengeTimeLeft] = useState(0);
   const [challengeShakeKey, setChallengeShakeKey] = useState(0);
   const challengeActiveRef = useRef(false);
+  // Latches once a challenge is answered so the reward/penalty is paid exactly
+  // once; cleared when the next challenge opens.
+  const challengeResolvedRef = useRef(false);
 
   const boardWrapperRef = useRef(null);
   const [boardScale, setBoardScale] = useState(1);
@@ -208,7 +238,8 @@ export default function TowerDefense({
     }
     
     challengeActiveRef.current = true;
-    setChallenge({ mode, word: item.word, def: item.def, choices });
+    challengeResolvedRef.current = false;
+    setChallenge({ mode, word: item.word, def: item.def, sent: item.sent, vn: item.vn, choices });
     setChallengeInput('');
     setChallengeTimeLeft(CHALLENGE_DURATION);
   }
@@ -217,6 +248,19 @@ export default function TowerDefense({
     challengeActiveRef.current = false;
     setChallenge(null);
     setChallengeInput('');
+  }
+
+  // Every answer ends by revealing the term (word + sentence + gloss) so it is
+  // learned, not just tested. The modal stays up on a `result` for a beat before
+  // an effect closes it; the reward/penalty is applied once. The ref guard makes
+  // a double call (e.g. the timer firing as the player clicks, or StrictMode's
+  // double-invoke) a no-op so the bolt/penalty can't be paid twice.
+  function resolveChallenge(correct, penalty) {
+    if (!challenge || challengeResolvedRef.current) return;
+    challengeResolvedRef.current = true;
+    if (correct) awardChallengeWin();
+    else if (penalty) punishChallengeFail();
+    setChallenge(cur => (cur ? { ...cur, result: { correct } } : cur));
   }
 
   function awardChallengeWin() {
@@ -240,11 +284,12 @@ export default function TowerDefense({
   // rather than in the effect body, so running out of time is handled as the
   // event it is instead of a state change made during render commit.
   useEffect(() => {
-    if (!challenge || challengeTimeLeft <= 0) return;
+    if (!challenge || challenge.result || challengeTimeLeft <= 0) return;
     const t = setTimeout(() => {
       if (challengeTimeLeft <= 1) {
-        if (challenge.mode === 'CHOICE') punishChallengeFail();
-        closeChallenge();
+        // Running out reveals the word too; only CHOICE carries the spawn penalty
+        // (typing is left forgiving, as it was before the reveal existed).
+        resolveChallenge(false, challenge.mode === 'CHOICE');
       } else {
         setChallengeTimeLeft(s => s - 1);
       }
@@ -252,6 +297,51 @@ export default function TowerDefense({
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [challenge, challengeTimeLeft]);
+
+  // Hold the reveal for a beat, then close. Keyed on the result so it arms once.
+  useEffect(() => {
+    if (!challenge?.result) return;
+    const t = setTimeout(closeChallenge, 1600);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [challenge?.result]);
+
+  // Keyboard controls (desktop QoL). Space/Enter starts the next wave, 1–6 pick a
+  // tower to build, Esc cancels. Suppressed while the vocab challenge input has
+  // focus so typing an answer never fires a hotkey.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (challengeActiveRef.current) return;
+      if (g.gameState !== 'PLAYING') return;
+
+      if (e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        if (!g.waveInProgress) handleStartWave();
+        return;
+      }
+      if (e.code === 'Escape') {
+        setActiveBuilder(null);
+        setSelectedTowerId(null);
+        setHoverCell({ row: -1, col: -1, valid: false });
+        return;
+      }
+      const n = Number(e.key);
+      if (Number.isInteger(n) && n >= 1 && n <= buildableOrder.length) {
+        const typeId = buildableOrder[n - 1];
+        const conf = TOWERS[typeId];
+        if (conf && g.credits >= conf.cost) {
+          setActiveBuilder(prev => (prev?.typeId === typeId ? null : { typeId }));
+          setSelectedTowerId(null);
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buildableOrder, g]);
 
   function handleStartWave() {
     if (g.waveInProgress || g.gameState !== 'PLAYING') return;
@@ -354,23 +444,22 @@ export default function TowerDefense({
 
   function handleChallengeSubmit(e) {
     e.preventDefault();
-    if (!challenge || challenge.mode !== 'TYPE') return;
+    if (!challenge || challenge.mode !== 'TYPE' || challenge.result) return;
     const guess = challengeInput.trim().toLowerCase();
     if (!guess) return;
-    if (guess === challenge.word.toLowerCase()) { awardChallengeWin(); closeChallenge(); }
+    if (guess === challenge.word.toLowerCase()) resolveChallenge(true, false);
     else { setChallengeShakeKey(k => k + 1); setChallengeInput(''); }
   }
 
   function handleChallengeChoice(choice) {
-    if (!challenge || challenge.mode !== 'CHOICE') return;
-    if (choice.toLowerCase() === challenge.word.toLowerCase()) awardChallengeWin();
-    else punishChallengeFail();
-    closeChallenge();
+    if (!challenge || challenge.mode !== 'CHOICE' || challenge.result) return;
+    const correct = choice.toLowerCase() === challenge.word.toLowerCase();
+    resolveChallenge(correct, !correct);
   }
 
   function handleChallengeDismiss() {
-    punishChallengeFail();
-    closeChallenge();
+    if (challenge?.result) return;
+    resolveChallenge(false, true);
   }
 
   // A run also ends by winning or losing, not only by exiting.
@@ -389,6 +478,7 @@ export default function TowerDefense({
       towersVersion: g.towersVersion + 1, creepsVersion: g.creepsVersion + 1
     });
     challengeActiveRef.current = false;
+    challengeResolvedRef.current = false;
     setSelectedTowerId(null);
     setActiveBuilder(null);
     setChallenge(null);
@@ -420,6 +510,12 @@ export default function TowerDefense({
 
   const selectedTower = g.towers.find(t => t.id === selectedTowerId) || null;
 
+  // What the "Next" button will unleash — shown so the player can buy the right
+  // counter before committing. Only while a wave isn't already running.
+  const nextWavePreview = (!g.waveInProgress && g.gameState === 'PLAYING' && g.wave < waves.length)
+    ? summarizeWave(waves[g.wave])
+    : null;
+
   return (
     <div className="fixed inset-0 z-[100] flex flex-col bg-slate-900 text-white font-sans overflow-hidden">
       <HUD
@@ -434,6 +530,7 @@ export default function TowerDefense({
         waveInProgress={g.waveInProgress}
         autoPlay={autoPlayRef.current}
         tierLabel={gameConfig.tierLabel}
+        nextWavePreview={nextWavePreview}
         onStartWave={handleStartWave}
         onToggleAutoPlay={() => { autoPlayRef.current = !autoPlayRef.current; render(); }}
         onSetSpeed={(s) => { g.speed = s; render(); }}

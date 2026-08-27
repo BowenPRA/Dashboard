@@ -1,5 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { Zap, Clock, Keyboard, ListChecks, BookOpen, X } from 'lucide-react';
+import { Zap, Clock, Keyboard, ListChecks, BookOpen, X, Check } from 'lucide-react';
+
+// Bold the target word wherever it appears in its example sentence, matching any
+// inflected form (multiple → multiples) so the reveal highlights the term in use.
+function highlightWord(sentence, word) {
+  if (!sentence || !word) return sentence || '';
+  const stem = word.trim().replace(/[^a-zA-Z]/g, '');
+  if (stem.length < 3) return sentence;
+  // split keeps the captured matches; a separate non-global regex does the
+  // per-part test so there's no shared lastIndex to trip over.
+  const parts = sentence.split(new RegExp(`(${stem}[a-z]*)`, 'ig'));
+  const isMatch = new RegExp(`^${stem}[a-z]*$`, 'i');
+  return parts.map((p, i) =>
+    isMatch.test(p)
+      ? <mark key={i} className="bg-transparent text-[#1CB0F6] font-black">{p}</mark>
+      : <span key={i}>{p}</span>
+  );
+}
 
 export default function VocabChallenge({
   challenge,
@@ -16,7 +33,7 @@ export default function VocabChallenge({
   const cardRef = useRef(null);
 
   useEffect(() => {
-    if (challenge?.mode === 'TYPE' && inputRef.current) inputRef.current.focus();
+    if (challenge?.mode === 'TYPE' && !challenge?.result && inputRef.current) inputRef.current.focus();
   }, [challenge]);
 
   useEffect(() => {
@@ -29,6 +46,48 @@ export default function VocabChallenge({
   }, [shakeKey]);
 
   if (!challenge) return null;
+
+  // Reveal / reinforcement state: whatever the player did, we show the term, its
+  // example sentence and the Vietnamese gloss for a beat so the word is learned,
+  // not merely answered. Set by the game screen after an answer resolves.
+  if (challenge.result) {
+    const { correct } = challenge.result;
+    return (
+      <div className="fixed inset-0 z-[120] flex items-center justify-center px-4 animate-in fade-in duration-200 pointer-events-none">
+        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" />
+        <div className={`relative z-10 pointer-events-auto bg-white rounded-[2rem] border-b-8 w-full max-w-lg overflow-hidden p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-300 ${correct ? 'border-[#58A700]' : 'border-rose-300'}`}>
+          <div className="flex items-center gap-2 mb-5">
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center border-b-4 ${correct ? 'bg-[#d7ffb8] border-[#a8e585]' : 'bg-rose-100 border-rose-200'}`}>
+              {correct ? <Check className="w-5 h-5 text-[#58A700]" strokeWidth={4} /> : <BookOpen className="w-5 h-5 text-rose-500" strokeWidth={3} />}
+            </div>
+            <div className={`text-sm font-black uppercase tracking-widest ${correct ? 'text-[#58A700]' : 'text-rose-500'}`}>
+              {correct ? 'Correct! +1 Bolt' : 'The word was'}
+            </div>
+          </div>
+
+          <div className="text-center mb-4">
+            <div className="text-4xl sm:text-5xl font-black text-slate-800 capitalize tracking-tight">{challenge.word}</div>
+            {challenge.vn && (
+              <div className="text-lg font-bold text-slate-400 mt-1">{challenge.vn}</div>
+            )}
+          </div>
+
+          <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3 mb-2">
+            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1.5">
+              <BookOpen className="w-3.5 h-3.5" strokeWidth={3} /> Definition
+            </div>
+            <div className="text-slate-700 font-bold leading-snug text-sm sm:text-base">{challenge.def}</div>
+          </div>
+
+          {challenge.sent && (
+            <div className="px-4 py-2 text-slate-500 font-medium italic leading-snug text-sm sm:text-base">
+              “{highlightWord(challenge.sent, challenge.word)}”
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const pct = Math.max(0, Math.min(100, (timeLeft / maxTime) * 100));
   const lowTime = timeLeft <= 5;
@@ -58,12 +117,12 @@ export default function VocabChallenge({
                <Zap className="w-5 h-5 text-indigo-600 fill-indigo-600" />
             </div>
             <div>
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Vocab Bolt</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Key Term · Vocab Bolt</div>
               <div className="text-sm font-black text-slate-800 flex items-center gap-1.5">
                 {challenge.mode === 'TYPE' ? (
-                  <><Keyboard className="w-4 h-4 text-indigo-500" strokeWidth={3} /> Type it</>
+                  <><Keyboard className="w-4 h-4 text-indigo-500" strokeWidth={3} /> Type the word</>
                 ) : (
-                  <><ListChecks className="w-4 h-4 text-indigo-500" strokeWidth={3} /> Pick one</>
+                  <><ListChecks className="w-4 h-4 text-indigo-500" strokeWidth={3} /> Pick the word</>
                 )}
               </div>
             </div>
