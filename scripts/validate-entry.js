@@ -471,7 +471,7 @@ for (const trackId of TRACK_IDS) {
     //    NumberDrill.jsx grows to support them.
     if (unit.drill) {
       const at = `${label}: drill`;
-      const DRILL_MODES = ['long-mult', 'column-add-sub', 'times-sprint'];
+      const DRILL_MODES = ['long-mult', 'column-add-sub', 'times-sprint', 'long-div'];
       const d = unit.drill;
       if (!DRILL_MODES.includes(d.mode)) {
         err(`${at}: mode "${d.mode}" — NumberDrill.jsx implements ${DRILL_MODES.join('/')}`);
@@ -498,6 +498,14 @@ for (const trackId of TRACK_IDS) {
             // [a, b] single times-table fact — small operands, timed for recall.
             if (it.length !== 2) { err(`${iat}: times-sprint items are [a, b] fact pairs`); return; }
             for (const n of it) if (!Number.isInteger(n) || n < 2 || n > 12) err(`${iat}: fact operand ${n} must be a whole number from 2 to 12`);
+          } else if (d.mode === 'long-div') {
+            // [D, d] dividend and divisor. D multi-digit; divisor 2..99. The
+            // bus-stop view assumes D >= d so there is real work to show.
+            if (it.length !== 2) { err(`${iat}: long-div items are [dividend, divisor] pairs`); return; }
+            const [D, dv] = it;
+            if (!Number.isInteger(D) || D < 10 || D > 99999) err(`${iat}: dividend ${D} must be a whole number from 10 to 99999`);
+            if (!Number.isInteger(dv) || dv < 2 || dv > 99) err(`${iat}: divisor ${dv} must be a whole number from 2 to 99`);
+            if (D < dv) err(`${iat}: dividend ${D} is smaller than divisor ${dv} — nothing to divide`);
           } else {
             // column-add-sub: [a, b, op]; op is + or -; at least one multi-digit;
             // subtraction must not go negative (the drill teaches the algorithm,

@@ -38,10 +38,20 @@ const SPRINT = {
   ],
 };
 
+const DIV = {
+  mode: 'long-div',
+  title: 'Long Division', titleVn: 'Chia dài',
+  ladder: [
+    { level: 'Warm-up', levelVn: 'Khởi động', items: [[84, 4], [96, 6], [72, 3]] },
+    { level: 'Carries', levelVn: 'Có nhớ', items: [[912, 24], [645, 15], [704, 8]] },
+    { level: 'Stretch', levelVn: 'Nâng cao', items: [[100, 7], [853, 9]] },
+  ],
+};
+
 function Harness() {
   const params = new URLSearchParams(window.location.search);
   const m = params.get('mode');
-  const DRILL = m === 'addsub' ? ADDSUB : m === 'sprint' ? SPRINT : MULT;
+  const DRILL = m === 'addsub' ? ADDSUB : m === 'sprint' ? SPRINT : m === 'div' ? DIV : MULT;
   return (
     <NumberDrill
       pool={DRILL}

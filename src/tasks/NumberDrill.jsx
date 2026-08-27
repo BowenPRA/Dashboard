@@ -4,7 +4,7 @@ import {
   Lightbulb, RotateCcw, Lock, Trophy, Sparkles,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
-import { digitAt, modelOf } from '../utils/columnArithmetic';
+import { digitAt, modelOf, buildLongDiv } from '../utils/columnArithmetic';
 
 /* ------------------------------------------------------------------ *
  * NUMBER GYM — column arithmetic, one digit at a time.
@@ -140,6 +140,7 @@ const carryReason = (stage) => (stage.op === '-' ? 'borrowwrong' : 'carrywrong')
 // times-sprint is a timed table of single facts, so it gets its own view.
 export default function NumberDrill(props) {
   if (props.pool?.mode === 'times-sprint') return <TimesSprint {...props} />;
+  if (props.pool?.mode === 'long-div') return <LongDiv {...props} />;
   return <ColumnDrill {...props} />;
 }
 
@@ -656,6 +657,269 @@ function TimesSprint({ pool, onComplete, onQuit }) {
 }
 
 const SLATE_TS = '#94a3b8';
+
+/* --------------------------------------------------------- long-div view */
+
+const DEN = {
+  title: 'Number Gym', level: 'Level', check: 'Check', next: 'Next', finish: 'Finish',
+  continue: 'Continue to', bankHere: 'Finish & bank XP', levelClear: 'clear!', unlocked: 'unlocked',
+  clean: 'Every box right first time. Full marks for this one.', helped: 'Solved — but a box or two had to be shown.',
+  empty: 'Fill in every blue box first.', scoreLine: 'items cleared', heldNote: 'Clear this level to open the next.',
+  step: 'Step', of: 'of', dividing: 'Now dividing', bringDown: 'bring the next digit down',
+  quotientIs: 'Quotient', remainderIs: 'remainder', into: 'How many whole times does',
+  reasons: {
+    divwrong: 'How many whole times does the divisor go into the number above? That is the quotient digit.',
+    prodwrong: 'Multiply your quotient digit by the divisor to get the number you take away.',
+    remwrong: 'Subtract the product from the number above — what is left is carried to the next digit.',
+  },
+};
+const DVN = {
+  title: 'Phòng Gym Số học', level: 'Cấp', check: 'Kiểm tra', next: 'Tiếp', finish: 'Kết thúc',
+  continue: 'Tiếp tục lên', bankHere: 'Kết thúc & nhận XP', levelClear: 'hoàn thành!', unlocked: 'đã mở',
+  clean: 'Mọi ô đúng ngay lần đầu. Trọn điểm cho bài này.', helped: 'Đã giải xong — nhưng có một hai ô phải hiện đáp án.',
+  empty: 'Hãy điền vào mọi ô xanh trước.', scoreLine: 'bài đã hoàn thành', heldNote: 'Hoàn thành cấp này để mở cấp tiếp theo.',
+  step: 'Bước', of: 'trên', dividing: 'Đang chia', bringDown: 'hạ chữ số tiếp theo xuống',
+  quotientIs: 'Thương', remainderIs: 'số dư', into: 'Số chia đi vào bao nhiêu lần trong',
+  reasons: {
+    divwrong: 'Số chia đi vào số ở trên được bao nhiêu lần trọn vẹn? Đó là chữ số thương.',
+    prodwrong: 'Nhân chữ số thương với số chia để có số cần trừ đi.',
+    remwrong: 'Trừ tích khỏi số ở trên — phần còn lại được hạ xuống cùng chữ số tiếp theo.',
+  },
+};
+
+/** A single long-division input: quotient digit (1 wide) or product/remainder. */
+function DivBox({ value, onChange, onEnter, state, wide, refEl, aria }) {
+  const border = state === 'locked' ? '#58cc02' : state === 'error' ? '#ff4b4b' : state === 'live' ? '#f97316' : null;
+  return (
+    <input
+      ref={refEl}
+      value={value ?? ''}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => { if (e.key === 'Enter') onEnter(); }}
+      readOnly={state !== 'live'}
+      disabled={state === 'dim'}
+      aria-label={aria}
+      inputMode="numeric" maxLength={wide ? 4 : 1}
+      className={`${wide ? 'w-14' : 'w-10'} h-11 sm:h-12 rounded-lg border-2 text-center font-mono font-black text-xl tabular-nums outline-none transition-colors
+        ${state === 'locked' ? 'bg-[#58cc02]/10 text-[#3e7500] dark:text-[#8ee000]'
+          : state === 'live' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900'
+            : 'bg-slate-100 dark:bg-slate-900/60 text-slate-300 dark:text-slate-700 border-slate-200 dark:border-slate-800'}`}
+      style={border ? { borderColor: border } : undefined}
+    />
+  );
+}
+
+function LongDiv({ pool, onComplete, onQuit }) {
+  const flat = useMemo(() => {
+    const items = [];
+    (pool?.ladder || []).forEach((rung, ri) => {
+      (rung.items || []).forEach(([D, d], ii) => {
+        items.push({
+          id: `L${ri}-${D}d${d}-${ii}`, D, d, ri,
+          level: rung.level, levelVn: rung.levelVn,
+          isRungEnd: ii === (rung.items.length - 1), isLast: false,
+        });
+      });
+    });
+    if (items.length) items[items.length - 1].isLast = true;
+    return items;
+  }, [pool]);
+
+  const [lang, setLang] = useState('en');
+  const [pos, setPos] = useState(0);
+  const [stageIdx, setStageIdx] = useState(0);
+  const [entries, setEntries] = useState({});
+  const [locked, setLocked] = useState({});
+  const [errors, setErrors] = useState({});
+  const [wrongs, setWrongs] = useState({});
+  const [helped, setHelped] = useState(false);
+  const [itemDone, setItemDone] = useState(false);
+  const [results, setResults] = useState({});
+  const [flash, setFlash] = useState(null);
+  const [ended, setEnded] = useState(false);
+  const firstBox = useRef(null);
+
+  const t = lang === 'vn' ? DVN : DEN;
+  const item = flat[pos];
+  const model = useMemo(() => (item ? buildLongDiv(item.D, item.d) : null), [item]);
+  const steps = model?.steps || [];
+  const stage = steps[stageIdx];
+
+  useEffect(() => { firstBox.current?.focus(); }, [stageIdx, pos]);
+
+  if (!flat.length || !model) {
+    return (
+      <div className="h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4">
+          <Construction className="w-8 h-8 text-orange-500" strokeWidth={2.5} />
+        </div>
+        <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 mb-2">No drill yet</h2>
+        <button onClick={onQuit} className="mt-4 px-6 py-3 bg-[#f97316] text-white rounded-xl font-black text-base uppercase tracking-widest border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px]">Return to Dashboard</button>
+      </div>
+    );
+  }
+
+  const cid2 = (s, which) => `s${s}${which}`;
+  const liveCells = itemDone ? [] : [
+    { id: cid2(stageIdx, 'q'), kind: 'q', value: stage.q, single: true },
+    { id: cid2(stageIdx, 'p'), kind: 'product', value: stage.product },
+    { id: cid2(stageIdx, 'r'), kind: 'rem', value: stage.rem },
+  ];
+  const say = (kind, text) => { setFlash({ kind, text }); setTimeout(() => setFlash((f) => (f && f.text === text ? null : f)), 3500); };
+
+  const check = () => {
+    if (itemDone) return;
+    const missing = liveCells.some((c) => !locked[c.id] &&
+      (c.single ? Number.isNaN(parseDigit(entries[c.id], false)) : Number.isNaN(parseWhole(entries[c.id]))));
+    if (missing) { say('bad', t.empty); return; }
+    const nextLocked = { ...locked }, nextErrors = {}, nextWrongs = { ...wrongs }, nextEntries = { ...entries };
+    let nowHelped = helped;
+    for (const c of liveCells) {
+      if (nextLocked[c.id]) continue;
+      const typed = c.single ? parseDigit(entries[c.id], false) : parseWhole(entries[c.id]);
+      if (typed === c.value) { nextLocked[c.id] = true; nextEntries[c.id] = String(c.value); continue; }
+      const count = (nextWrongs[c.id] || 0) + 1; nextWrongs[c.id] = count;
+      if (count >= 2) { nextLocked[c.id] = true; nextEntries[c.id] = String(c.value); nowHelped = true; }
+      else nextErrors[c.id] = c.kind === 'q' ? 'divwrong' : c.kind === 'product' ? 'prodwrong' : 'remwrong';
+    }
+    setLocked(nextLocked); setErrors(nextErrors); setWrongs(nextWrongs); setEntries(nextEntries);
+    if (nowHelped !== helped) setHelped(nowHelped);
+    if (!liveCells.every((c) => nextLocked[c.id])) { say('bad', ' '); return; }
+    setFlash(null);
+    if (stageIdx + 1 < steps.length) setStageIdx((s) => s + 1);
+    else { setResults((r) => ({ ...r, [item.id]: { score: nowHelped ? 0.5 : 1 } })); setItemDone(true); }
+  };
+
+  const resetItem = () => { setStageIdx(0); setEntries({}); setLocked({}); setErrors({}); setWrongs({}); setHelped(false); setItemDone(false); setFlash(null); };
+  const goNext = () => { setPos((p) => p + 1); resetItem(); };
+  const finish = () => {
+    if (ended) return; setEnded(true);
+    const total = flat.length;
+    const cleared = flat.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
+    const raw = total ? Math.round((cleared / total) * 10) : 0;
+    const log = flat.map((it) => ({ itemId: it.id, correct: results[it.id]?.score === 1 }));
+    onComplete?.(raw, null, { items: log });
+  };
+  const edit = (id, text) => { setEntries((s) => ({ ...s, [id]: text })); if (errors[id]) setErrors((e) => { const n = { ...e }; delete n[id]; return n; }); };
+
+  const cleared = flat.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
+  const errorList = [...new Set(Object.values(errors).filter(Boolean))];
+  const dDigits = String(item.D).split('');
+  const stateOf = (id) => locked[id] ? 'locked' : errors[id] ? 'error' : (liveCells.some((c) => c.id === id) ? 'live' : 'dim');
+  const qId = cid2(stageIdx, 'q'), pId = cid2(stageIdx, 'p'), rId = cid2(stageIdx, 'r');
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
+      <TopBar onQuit={onQuit}
+        modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
+        current={pos + 1} total={flat.length} lang={lang}
+        onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+
+      <div className="flex-1 w-full max-w-2xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 rounded-xl px-3 py-1.5 border-2" style={{ borderColor: ORANGE, backgroundColor: `${ORANGE}14` }}>
+            <Grid3x3 className="w-4 h-4" style={{ color: ORANGE }} strokeWidth={2.5} />
+            <span className="font-black text-sm text-slate-800 dark:text-slate-100">{t.level} {item.ri + 1}: {lang === 'vn' ? (item.levelVn || item.level) : item.level}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-slate-400">
+            <RotateCcw className="w-3.5 h-3.5" strokeWidth={3} /> {cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / {flat.length} {t.scoreLine}
+          </div>
+        </div>
+
+        {/* The bus stop: quotient boxes over the bar, divisor and dividend under it */}
+        <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-4 sm:p-6 overflow-x-auto">
+          <div className="mx-auto w-fit">
+            {/* quotient row */}
+            <div className="flex items-end justify-end gap-1.5 pl-[3.5rem]">
+              {steps.map((s, i) => {
+                const id = cid2(i, 'q');
+                const st = i < stageIdx ? 'locked' : (i === stageIdx && !itemDone) ? stateOf(id) : (itemDone ? 'locked' : 'dim');
+                return <DivBox key={id} value={itemDone || i < stageIdx ? String(s.q) : (entries[id] ?? '')}
+                  onChange={(v) => edit(id, v)} onEnter={check} state={st} aria={`q${i}`}
+                  refEl={i === stageIdx && liveCells[0]?.id === id ? firstBox : undefined} />;
+              })}
+            </div>
+            {/* bar + divisor + dividend */}
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-[3rem] text-right font-mono font-black text-2xl text-slate-700 dark:text-slate-200">{item.d}</span>
+              <div className="flex items-center border-l-[3px] border-t-[3px] border-slate-800 dark:border-slate-200 rounded-tl-md pl-2 pt-1 gap-1.5">
+                {dDigits.map((dg, i) => (
+                  <span key={i} className={`w-10 h-11 sm:h-12 flex items-center justify-center font-mono font-black text-2xl tabular-nums ${i === stageIdx && !itemDone ? 'text-orange-600 dark:text-orange-300' : 'text-slate-800 dark:text-slate-100'}`}>{dg}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* the working step: product and remainder */}
+        {!itemDone && (
+          <div className="rounded-2xl border-2 shadow-sm p-3 sm:p-4" style={{ borderColor: ORANGE, backgroundColor: `${ORANGE}0d` }}>
+            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+              {t.step} {stageIdx + 1} {t.of} {steps.length} · {t.dividing} {stage.current}
+            </div>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-3 font-mono font-black text-lg text-slate-700 dark:text-slate-200">
+              <span>{stage.current} ÷ {item.d} → type the digit above the bar ·</span>
+              <DivBox value={entries[qId] ?? '?'} onChange={() => {}} state="dim" />
+              <span>× {item.d} =</span>
+              <DivBox value={entries[pId] ?? ''} onChange={(v) => edit(pId, v)} onEnter={check} state={stateOf(pId)} wide aria="product" />
+              <span className="mx-1">·</span>
+              <span>{stage.current} −</span>
+              <DivBox value={entries[pId] ?? '?'} onChange={() => {}} state="dim" wide />
+              <span>=</span>
+              <DivBox value={entries[rId] ?? ''} onChange={(v) => edit(rId, v)} onEnter={check} state={stateOf(rId)} wide aria="rem" />
+            </div>
+          </div>
+        )}
+
+        <div className="min-h-[2rem] flex flex-col gap-2">
+          {itemDone && (
+            <div className="flex items-center gap-2 rounded-xl border-2 p-2.5" style={{ borderColor: '#58cc02', backgroundColor: 'rgba(88,204,2,0.12)' }}>
+              <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: '#58cc02' }} strokeWidth={2.5} />
+              <span className="font-black text-sm text-slate-800 dark:text-slate-100">
+                {results[item.id]?.score === 1 ? t.clean : t.helped} {' '}
+                {t.quotientIs} {model.quotient}{model.remainder ? `, ${t.remainderIs} ${model.remainder}` : ''}.
+              </span>
+            </div>
+          )}
+          {flash?.kind === 'bad' && flash.text.trim() && (
+            <div className="flex items-start gap-2 font-bold text-sm" style={{ color: RED }}><XCircle className="w-5 h-5 shrink-0 mt-0.5" strokeWidth={2.5} />{flash.text}</div>
+          )}
+          {errorList.map((code) => (
+            <div key={code} className="flex items-start gap-2 rounded-xl border-2 p-2.5" style={{ borderColor: AMBER, backgroundColor: `${AMBER}1a` }}>
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" style={{ color: AMBER }} strokeWidth={2.5} />
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-200 leading-snug">{t.reasons[code]}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-end gap-3">
+          {!itemDone ? (
+            <button onClick={check} className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#f97316] border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px] flex items-center gap-2">
+              <Grid3x3 className="w-4 h-4" strokeWidth={3} /> {t.check}
+            </button>
+          ) : item.isLast ? (
+            <button onClick={finish} className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#58cc02] border-b-[4px] border-[#3e7500] active:border-b-0 active:translate-y-[4px] flex items-center gap-2">
+              <Trophy className="w-4 h-4" strokeWidth={3} /> {t.finish}
+            </button>
+          ) : item.isRungEnd ? (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full">
+              <div className="flex-1 flex items-center gap-2 rounded-xl px-3 py-2 border-2" style={{ borderColor: '#58cc02', backgroundColor: 'rgba(74,139,35,0.14)' }}>
+                <Sparkles className="w-4 h-4 shrink-0" style={{ color: '#58cc02' }} strokeWidth={2.5} />
+                <span className="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100">
+                  {t.level} {item.ri + 1} {t.levelClear} {flat[pos + 1]?.level ? `“${lang === 'vn' ? (flat[pos + 1].levelVn || flat[pos + 1].level) : flat[pos + 1].level}” ${t.unlocked}.` : ''}
+                </span>
+              </div>
+              <button onClick={finish} className="px-4 py-3 rounded-xl font-black text-xs uppercase tracking-widest bg-slate-100 dark:bg-slate-700 border-b-[4px] border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 active:border-b-0 active:translate-y-[4px]">{t.bankHere}</button>
+              <button onClick={goNext} className="px-5 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-white bg-[#f97316] border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px] flex items-center justify-center gap-2">{t.continue} {t.level} {item.ri + 2} <ArrowRight className="w-4 h-4" strokeWidth={3} /></button>
+            </div>
+          ) : (
+            <button onClick={goNext} className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#58cc02] border-b-[4px] border-[#3e7500] active:border-b-0 active:translate-y-[4px] flex items-center gap-2">{t.next} <ArrowRight className="w-4 h-4" strokeWidth={3} /></button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ cells */
 

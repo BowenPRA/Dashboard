@@ -22,3 +22,4 @@ Every real (non-drawn) image used in the app, with its source and license. See
 | `public/images/Y7_MATH/U01_1/snail.jpg` | A snail, for the snail-in-the-well problem | Zachi Evenor | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Snail.jpg) | CC BY 2.0 |
 | `public/images/Y7_MATH/U01_3/bus.jpg` | City buses at a stop, for the two-buses LCM problem | PjotrMahh1 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Buses) | CC BY-SA 4.0 |
 | `public/images/Y7_MATH/U01_3/hotdog.jpg` | Hot dogs, for the George hot-dogs-and-buns LCM problem | Hekatlys | [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Hot_dogs) | CC0 |
+| `public/images/Y7_MATH/U01_4/books.jpg` | Books on a shelf, for the bookshelf fraction-simplifying problem | Nick-D | [Wikimedia Commons](https://commons.wikimedia.org/wiki/Category:Bookshelves) | CC BY-SA 4.0 |

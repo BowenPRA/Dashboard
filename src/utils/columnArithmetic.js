@@ -138,3 +138,39 @@ export function modelOf(mode, a, b, op = '+') {
   if (mode === 'column-add-sub') return addSubModel(a, b, op);
   throw new Error(`unknown drill mode "${mode}"`);
 }
+
+/**
+ * The bus-stop (long division) method for D ÷ d, one dividend digit at a time.
+ * Each step brings the next digit down beside the running remainder, divides to
+ * get a quotient digit, multiplies back, and subtracts. Every value is derived,
+ * so the task only ever stores the two operands.
+ *
+ *   step = {
+ *     pos,        // which dividend digit (0 = leftmost)
+ *     digit,      // the dividend digit brought down
+ *     current,    // remainderIn * 10 + digit — the number now being divided
+ *     q,          // quotient digit = floor(current / d)
+ *     product,    // q * d — subtracted from current
+ *     rem,        // current - product — carried to the next step
+ *   }
+ *
+ * Works for exact division (final rem 0, used by 1.4) and division with a
+ * remainder (final rem > 0, used by 1.5). `d` is a one- or two-digit divisor.
+ */
+export function buildLongDiv(D, d) {
+  const digits = String(D).split('').map(Number);
+  const steps = [];
+  let rem = 0;
+  digits.forEach((digit, pos) => {
+    const current = rem * 10 + digit;
+    const q = Math.floor(current / d);
+    const product = q * d;
+    rem = current - product;
+    steps.push({ pos, digit, current, q, product, rem });
+  });
+  return {
+    D, d, steps,
+    quotient: Math.floor(D / d),
+    remainder: D % d,
+  };
+}
