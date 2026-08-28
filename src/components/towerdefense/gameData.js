@@ -6,57 +6,122 @@
 // =====================================================================
 
 // ---------- Enemies ----------
+// The five entries below are ROLE SLOTS, not literally insects: SWARM, FLYER,
+// TANK, BOSS and SPAWNER. Every wave, every difficulty multiplier and the
+// spawner's add-behaviour key off these five keys, so their *stats* are the one
+// balance surface the whole game is tuned against. A map theme then paints a
+// TRIBE over the slots (see ENEMY_SKINS) — a different name and a different
+// drawing per role — while the stats stay identical, so no theme is secretly
+// harder than another. The keys stay ANT/WASP/… for the insect tribe so nothing
+// that references them by name had to change.
+//
+// Balance pass (Y7 feedback: "too hard"): the heavy units shed some HP and armor
+// so a light defence can still chew through a Beetle/Queen before it walks the
+// board. Swarm/flyer HP is left alone — they die in one hit already.
 export const ENEMIES = {
   ANT: {
     name: "Worker Ant",
-    color: "bg-red-200", 
+    color: "bg-red-200",
     border: "border-red-400",
     hp: 30,
     speed: 1.1,
     reward: 1,
-    radius: 12, 
+    radius: 12,
     damageReduction: 0
   },
   WASP: {
     name: "Wasp",
     color: "bg-yellow-300",
     border: "border-yellow-500",
-    hp: 70, 
+    hp: 64,
     speed: 1.7,
-    reward: 3, 
-    radius: 14, 
+    reward: 3,
+    radius: 14,
     damageReduction: 0
   },
   BEETLE: {
     name: "Stag Beetle",
     color: "bg-amber-800",
     border: "border-amber-950",
-    hp: 400, 
+    hp: 340,
     speed: 0.6,
-    reward: 5, 
-    radius: 20, 
-    damageReduction: 20 
+    reward: 5,
+    radius: 20,
+    damageReduction: 14
   },
   QUEEN: {
     name: "Queen Brood",
     color: "bg-purple-600",
     border: "border-purple-800",
-    hp: 2500, 
+    hp: 2100,
     speed: 0.45,
     reward: 10,
-    radius: 28, 
-    damageReduction: 30 
+    radius: 28,
+    damageReduction: 24
   },
   GIANT_ANT: {
     name: "Broodmother",
     color: "bg-red-900",
     border: "border-red-950",
-    hp: 5000, 
-    speed: 0.75, 
+    hp: 4200,
+    speed: 0.75,
     reward: 15,
-    radius: 34, 
-    damageReduction: 40 
+    radius: 34,
+    damageReduction: 30
   }
+};
+
+// ---------- Enemy tribes (per map theme) ----------
+// A skin overrides only the *appearance* of a role slot — its name, the artwork
+// key InsectVisual draws, and its on-board radius (purely cosmetic; combat uses
+// centre points, never the radius). Stats come from ENEMIES[slot], so a Frost
+// Golem and a Stag Beetle are exactly as tough as each other. `visual` values
+// map to cases in TowerVisual's InsectVisual.
+export const ENEMY_SKINS = {
+  INSECT: {
+    ANT:       { name: 'Worker Ant',  visual: 'ANT',        radius: 12 },
+    WASP:      { name: 'Wasp',        visual: 'WASP',       radius: 14 },
+    BEETLE:    { name: 'Stag Beetle', visual: 'BEETLE',     radius: 20 },
+    QUEEN:     { name: 'Queen Brood', visual: 'QUEEN',      radius: 28 },
+    GIANT_ANT: { name: 'Broodmother', visual: 'GIANT_ANT',  radius: 34 },
+  },
+  // ICE arenas — the Frostkin. Brittle-looking but the same threat as insects.
+  FROST: {
+    ANT:       { name: 'Snowflea',    visual: 'ICE_FLEA',   radius: 12 },
+    WASP:      { name: 'Frost Moth',  visual: 'ICE_MOTH',   radius: 15 },
+    BEETLE:    { name: 'Ice Golem',   visual: 'ICE_GOLEM',  radius: 21 },
+    QUEEN:     { name: 'Frost Matron',visual: 'ICE_MATRON', radius: 28 },
+    GIANT_ANT: { name: 'Glacier Titan',visual: 'ICE_TITAN', radius: 34 },
+  },
+  // NIGHT arenas — the Nightfall, an undead host.
+  NIGHT: {
+    ANT:       { name: 'Shade',       visual: 'NIGHT_SHADE',  radius: 12 },
+    WASP:      { name: 'Vampire Bat', visual: 'NIGHT_BAT',    radius: 15 },
+    BEETLE:    { name: 'Bone Knight', visual: 'NIGHT_KNIGHT', radius: 21 },
+    QUEEN:     { name: 'Necromancer', visual: 'NIGHT_NECRO',  radius: 28 },
+    GIANT_ANT: { name: 'Bone Colossus',visual: 'NIGHT_COLOSSUS', radius: 34 },
+  },
+};
+
+// Which tribe defends which map theme. Anything not listed falls back to insects.
+export const THEME_TRIBE = {
+  STANDARD: 'INSECT',
+  DESERT:   'INSECT',
+  ICE:      'FROST',
+  NIGHT:    'NIGHT',
+};
+
+/** The name + artwork + radius for a role slot under a given tribe. */
+export function enemySkin(typeKey, tribeId = 'INSECT') {
+  const tribe = ENEMY_SKINS[tribeId] || ENEMY_SKINS.INSECT;
+  return tribe[typeKey] || ENEMY_SKINS.INSECT[typeKey] || { name: typeKey, visual: typeKey, radius: 16 };
+}
+
+// Preview icons per tribe, in slot order — used by the HUD's incoming-wave strip.
+export const TRIBE_PREVIEW_EMOJI = {
+  INSECT: { ANT: '🐜', WASP: '🐝', BEETLE: '🪲', QUEEN: '👑', GIANT_ANT: '🕷️' },
+  FROST:  { ANT: '❄️', WASP: '🦋', BEETLE: '🗿', QUEEN: '⛄', GIANT_ANT: '🏔️' },
+  NIGHT:  { ANT: '👻', WASP: '🦇', BEETLE: '💀', QUEEN: '🧙', GIANT_ANT: '🧟' },
 };
 
 // ---------- Towers ----------
@@ -72,7 +137,7 @@ export const TOWERS = {
     accent: "bg-sky-500",
     ring: "ring-sky-400",
     defaultTargeting: 'FIRST',
-    base: { range: 3.2, damage: 9, cooldown: 800 },
+    base: { range: 3.2, damage: 10, cooldown: 800 },
     upgrades: {
       rate:    { cost: 30, label: "Rapid Fire", desc: "Fires twice as fast" },
       damage:  { cost: 45, label: "Sharp Tips", desc: "+200% damage" },
@@ -92,7 +157,7 @@ export const TOWERS = {
     accent: "bg-emerald-500",
     ring: "ring-emerald-400",
     defaultTargeting: 'STRONG',
-    base: { range: 6, damage: 65, cooldown: 3800 },
+    base: { range: 6, damage: 65, cooldown: 3400 },
     upgrades: {
       rate:      { cost: 120, label: "Quick Reload",   desc: "Fires 35% faster" },
       damage:    { cost: 110, label: "Heavy Caliber",  desc: "+100% damage" },
@@ -106,14 +171,14 @@ export const TOWERS = {
     id: 'SPLASH',
     name: "Mortar",
     emoji: "💣",
-    cost: 100, 
+    cost: 90,
     type: 'SPLASH',
     desc: "Lobs explosives for area damage",
     gradient: "from-rose-400 to-rose-600",
     accent: "bg-rose-500",
     ring: "ring-rose-400",
     defaultTargeting: 'FIRST',
-    base: { range: 3.5, damage: 18, splashRadius: 1.5, cooldown: 1600 },
+    base: { range: 3.5, damage: 20, splashRadius: 1.5, cooldown: 1600 },
     upgrades: {
       rate:      { cost: 90,  label: "Auto Loader",  desc: "Fires 35% faster" },
       damage:    { cost: 120, label: "Heavy Shells", desc: "+90% damage" },
@@ -134,7 +199,7 @@ export const TOWERS = {
     accent: "bg-cyan-400",
     ring: "ring-cyan-400",
     defaultTargeting: 'FIRST',
-    base: { range: 2.5, damage: 6, slowPercent: 0.45, slowDuration: 1500, cooldown: 1500 },
+    base: { range: 2.5, damage: 6, slowPercent: 0.5, slowDuration: 1500, cooldown: 1500 },
     upgrades: {
       rate:      { cost: 70,  label: "Frostpulse",    desc: "Fires 35% faster" },
       damage:    { cost: 60,  label: "Permafrost",    desc: "Slow lasts 60% longer" },
@@ -148,7 +213,7 @@ export const TOWERS = {
     id: 'CHAIN',
     name: "Tesla",
     emoji: "⚡",
-    cost: 140, 
+    cost: 130,
     type: 'CHAIN',
     desc: "Lightning chains between enemies",
     gradient: "from-amber-300 to-amber-500",
@@ -181,10 +246,39 @@ export const TOWERS = {
       range:   { cost: 150, label: "Eagle Eye Aura",  desc: "Buffed towers gain +1.5 range" },
       passive: { cost: 350, label: "Overcharge",  desc: "Buffed towers also gain +30% damage" }
     }
+  },
+
+  // ---- The Unicorn: a singleton super-weapon you aim by hand. ----
+  // It does not auto-fire. It charges while you play, and when the horn glows you
+  // pick a point on the map and unleash a piercing rainbow lance from the horn
+  // through that point, clean across the board — ignoring armour and hitting
+  // every enemy on the line. One per board (see `singleton`); the engine tracks
+  // its charge in g.unicornCharge and the firing lives in useGameEngine.
+  UNICORN: {
+    id: 'UNICORN',
+    name: "Prisma",
+    emoji: "🦄",
+    cost: 200,
+    type: 'UNICORN',
+    singleton: true,
+    desc: "Charges as you play. When the horn glows, aim a piercing rainbow lance across the whole board — pierces armor, hits every enemy on the line.",
+    gradient: "from-fuchsia-400 to-violet-500",
+    accent: "bg-fuchsia-500",
+    ring: "ring-fuchsia-400",
+    // range is nominal (the lance spans the whole map); the range ring is hidden
+    // for the unicorn since "everywhere on a line" isn't a circle.
+    base: { range: 99, chargeTime: 11000, damage: 220, beamWidth: 0.75 },
+    upgrades: {
+      rate:      { cost: 120, label: "Aurora Core",     desc: "Charges 35% faster" },
+      damage:    { cost: 150, label: "Prismatic Blast", desc: "+150% beam damage" },
+      range:     { cost: 110, label: "Wide Spectrum",   desc: "Beam is twice as wide" },
+      targeting: { cost: 130, label: "Auto-Prism",      desc: "Fires itself at the biggest crowd the moment it charges" },
+      passive:   { cost: 200, label: "Twin Rainbow",    desc: "Fires a second crossing lance and chills every enemy it touches" }
+    }
   }
 };
 
-export const TOWER_ORDER = ['DART', 'SNIPER', 'FROST', 'SPLASH', 'CHAIN', 'NITRO'];
+export const TOWER_ORDER = ['DART', 'SNIPER', 'FROST', 'SPLASH', 'CHAIN', 'NITRO', 'UNICORN'];
 
 // ---------- Stat helpers ----------
 
@@ -251,12 +345,22 @@ export function getEffectiveStats(tower, allTowers = []) {
       stats.rangeBoost = !!u.range;
       break;
 
+    case 'UNICORN':
+      if (u.rate)   stats.chargeTime = Math.round(stats.chargeTime * 0.65);
+      if (u.damage) stats.damage     = Math.round(stats.damage * 2.5);
+      if (u.range)  stats.beamWidth  = stats.beamWidth * 2;
+      stats.autoAim = !!u.targeting;
+      stats.twin    = !!u.passive;
+      break;
+
     default:
       break;
   }
 
-  // Apply Adjacency & Nitro Buffs automatically if the board state is provided
-  if (allTowers.length > 0 && tower.typeId !== 'NITRO') {
+  // Apply Adjacency & Nitro Buffs automatically if the board state is provided.
+  // The unicorn is a manual super-weapon, deliberately untouched by auras so its
+  // beam damage reads exactly as the panel shows it.
+  if (allTowers.length > 0 && tower.typeId !== 'NITRO' && tower.typeId !== 'UNICORN') {
     
     // Adjacency for DART
     if (tower.typeId === 'DART') {

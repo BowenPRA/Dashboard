@@ -111,13 +111,20 @@ export const TRACK_LEVELS = {
  * Tower bans arrive late and stay light: banning the crowd-clear towers on top
  * of doubled enemy HP makes the late waves unwinnable rather than hard.
  */
+// Balance pass (Y7 feedback: "too hard"). The ladder is gentler across the board:
+// more starting lives, a flatter HP curve (top tier 1.68× rather than 1.95×), a
+// looser economy, and — crucially — the top tier no longer bans SPLASH. Banning
+// the crowd-clear tower on top of scaled-up swarms is exactly the "hard becomes
+// unwinnable" trap the notes below warn about, so only the support tower (NITRO)
+// is ever taken away, and only from the mid tiers up. scoreMul is untouched: a
+// harder unit is still worth more on the leaderboard.
 export const DIFFICULTY_TIERS = [
-  { label: 'Recruit',   lives: 25, creditMul: 1.15, hpMul: 1.00, speedMul: 1.00, rewardMul: 1.00, scoreMul: 1.00, bannedTowers: [] },
-  { label: 'Cadet',     lives: 22, creditMul: 1.05, hpMul: 1.15, speedMul: 1.00, rewardMul: 1.00, scoreMul: 1.15, bannedTowers: [] },
-  { label: 'Operative', lives: 20, creditMul: 1.00, hpMul: 1.30, speedMul: 1.03, rewardMul: 0.95, scoreMul: 1.30, bannedTowers: [] },
-  { label: 'Specialist',lives: 18, creditMul: 0.95, hpMul: 1.50, speedMul: 1.06, rewardMul: 0.90, scoreMul: 1.50, bannedTowers: ['NITRO'] },
-  { label: 'Veteran',   lives: 15, creditMul: 0.90, hpMul: 1.70, speedMul: 1.10, rewardMul: 0.85, scoreMul: 1.75, bannedTowers: ['NITRO'] },
-  { label: 'Commander', lives: 12, creditMul: 0.85, hpMul: 1.95, speedMul: 1.15, rewardMul: 0.80, scoreMul: 2.00, bannedTowers: ['NITRO', 'SPLASH'] },
+  { label: 'Recruit',   lives: 30, creditMul: 1.25, hpMul: 1.00, speedMul: 1.00, rewardMul: 1.00, scoreMul: 1.00, bannedTowers: [] },
+  { label: 'Cadet',     lives: 26, creditMul: 1.15, hpMul: 1.10, speedMul: 1.00, rewardMul: 1.00, scoreMul: 1.15, bannedTowers: [] },
+  { label: 'Operative', lives: 24, creditMul: 1.05, hpMul: 1.22, speedMul: 1.00, rewardMul: 1.00, scoreMul: 1.30, bannedTowers: [] },
+  { label: 'Specialist',lives: 20, creditMul: 1.00, hpMul: 1.38, speedMul: 1.03, rewardMul: 0.95, scoreMul: 1.50, bannedTowers: ['NITRO'] },
+  { label: 'Veteran',   lives: 18, creditMul: 0.95, hpMul: 1.52, speedMul: 1.06, rewardMul: 0.92, scoreMul: 1.75, bannedTowers: ['NITRO'] },
+  { label: 'Commander', lives: 16, creditMul: 0.90, hpMul: 1.68, speedMul: 1.08, rewardMul: 0.90, scoreMul: 2.00, bannedTowers: ['NITRO'] },
 ];
 
 const MAX_TIER = DIFFICULTY_TIERS.length - 1;

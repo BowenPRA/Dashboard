@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { TOWERS, TOWER_ORDER, ENEMIES, getSellValue } from '../../components/towerdefense/gameData';
+import { TOWERS, TOWER_ORDER, ENEMIES, getSellValue, getEffectiveStats, THEME_TRIBE, TRIBE_PREVIEW_EMOJI } from '../../components/towerdefense/gameData';
 import { MAP_LAYOUTS, WAVE_PRESETS, buildWaveSet } from '../../components/towerdefense/wavePresets';
 import GameBoard from '../../components/towerdefense/GameBoard';
 import BuildMenu from '../../components/towerdefense/BuildMenu';
@@ -11,7 +11,7 @@ import { useGameEngine } from '../../components/towerdefense/useGameEngine';
 import { mathChallengeFor } from '../../components/towerdefense/mathChallenges';
 
 const CHALLENGE_DURATION = 15;
-const ALL_TOWER_IDS = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO'];
+const ALL_TOWER_IDS = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO', 'UNICORN'];
 
 // How often a unit that has BOTH bolts fires the maths one. Slightly maths-heavy
 // because it is a maths course; vocab still shows up often enough to reinforce.
@@ -38,19 +38,19 @@ function buildNumericChoices(answer) {
   return [...opts].map(String);
 }
 
-// For the "incoming wave" HUD preview — a friendly face per enemy type, shown in
-// a fixed order so the readout stays stable from wave to wave.
-const ENEMY_EMOJI = { ANT: '🐜', WASP: '🐝', BEETLE: '🪲', QUEEN: '👑', GIANT_ANT: '🕷️' };
+// For the "incoming wave" HUD preview — a friendly face per role slot, shown in a
+// fixed order so the readout stays stable from wave to wave. The face follows the
+// arena's tribe (insects / frostkin / nightfall).
 const ENEMY_PREVIEW_ORDER = ['ANT', 'WASP', 'BEETLE', 'QUEEN', 'GIANT_ANT'];
 
-/** Collapse a wave's spawn groups into one count per enemy type, for the preview. */
-function summarizeWave(wave) {
+/** Collapse a wave's spawn groups into one count per role slot, for the preview. */
+function summarizeWave(wave, emojiMap) {
   if (!Array.isArray(wave)) return null;
   const totals = {};
   for (const grp of wave) totals[grp.type] = (totals[grp.type] || 0) + grp.count;
   const out = ENEMY_PREVIEW_ORDER
     .filter(t => totals[t])
-    .map(t => ({ type: t, count: totals[t], emoji: ENEMY_EMOJI[t] || '👾' }));
+    .map(t => ({ type: t, count: totals[t], emoji: (emojiMap && emojiMap[t]) || '👾' }));
   return out.length ? out : null;
 }
 
@@ -148,6 +148,11 @@ export default function TowerDefense({
     return requestedTheme;
   }, [gameConfig.themeId, themeId]);
 
+  // The enemy tribe that defends this arena, derived from the theme. Drives both
+  // the engine's spawns (skins) and the HUD's incoming-wave icons.
+  const tribeId = useMemo(() => THEME_TRIBE[activeThemeId] || 'INSECT', [activeThemeId]);
+  const previewEmoji = TRIBE_PREVIEW_EMOJI[tribeId] || TRIBE_PREVIEW_EMOJI.INSECT;
+
   const basicEnemyType = useMemo(() => {
     return waves?.[0]?.[0]?.type || Object.keys(ENEMIES)[0];
   }, [waves]);
@@ -158,8 +163,9 @@ export default function TowerDefense({
   const engineConfig = useMemo(() => ({
     waves,
     generateInfiniteWave: WAVE_PRESETS.INFINITE_GENERATOR,
-    difficulty: gameConfig.difficulty
-  }), [waves, gameConfig.difficulty]);
+    difficulty: gameConfig.difficulty,
+    tribeId
+  }), [waves, gameConfig.difficulty, tribeId]);
 
   const gRef = useRef(null);
   
@@ -174,6 +180,9 @@ export default function TowerDefense({
       fireCooldowns: {}, nextId: 1, challengeTimer: Infinity, wave5ChallengeSpawned: false,
       usedVocab: {}, // Changed from [] to {} to track usage per mode
       autoPlayDelay: 0,
+      // Unicorn super-weapon: charge (ms) accrues in the engine; unicornFire is a
+      // one-shot {row,col} the player queues by aiming, consumed on the next frame.
+      unicornCharge: 0, unicornFire: null,
       // Stamped on every build/sell/upgrade so the effective-stats cache and the
       // memoised tower layer know the board actually changed; creepsVersion is
       // the same signal for spawns and deaths.
@@ -191,6 +200,11 @@ export default function TowerDefense({
   const [activeBuilder, setActiveBuilder] = useState(null);
   const [hoverCell, setHoverCell] = useState({ row: -1, col: -1, valid: false });
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  // True while the player is aiming the unicorn's rainbow lance: the next board
+  // tap fires it. Read through a ref by the memoised board handlers.
+  const [aiming, setAiming] = useState(false);
+  const aimingRef = useRef(false);
+  useEffect(() => { aimingRef.current = aiming; }, [aiming]);
 
   const autoPlayRef = useRef(false);
   // Read once, lazily — an effect that setState'd on mount showed 0 for a frame
@@ -387,6 +401,7 @@ export default function TowerDefense({
       if (e.code === 'Escape') {
         setActiveBuilder(null);
         setSelectedTowerId(null);
+        setAiming(false);
         setHoverCell({ row: -1, col: -1, valid: false });
         return;
       }
@@ -394,9 +409,11 @@ export default function TowerDefense({
       if (Number.isInteger(n) && n >= 1 && n <= buildableOrder.length) {
         const typeId = buildableOrder[n - 1];
         const conf = TOWERS[typeId];
-        if (conf && g.credits >= conf.cost) {
+        const soldOut = conf?.singleton && g.towers.some(t => t.typeId === typeId);
+        if (conf && !soldOut && g.credits >= conf.cost) {
           setActiveBuilder(prev => (prev?.typeId === typeId ? null : { typeId }));
           setSelectedTowerId(null);
+          setAiming(false);
         }
       }
     };
@@ -433,11 +450,27 @@ export default function TowerDefense({
   useEffect(() => { hoverCellRef.current = hoverCell; }, [hoverCell]);
 
   const handleCellClick = useCallback((r, c, isPath) => {
+    // Aiming the unicorn: the tap picks the target line and queues the shot for
+    // the engine (which fires it on the next frame). Path cells are fair game —
+    // the lance sweeps right over the road.
+    if (aimingRef.current) {
+      g.unicornFire = { row: r, col: c };
+      setAiming(false);
+      setHoverCell({ row: -1, col: -1, valid: false });
+      render();
+      return;
+    }
     const builder = activeBuilderRef.current;
     if (builder) {
       if (isPath) return;
       if (g.towers.some(t => t.row === r && t.col === c)) return;
       const conf = TOWERS[builder.typeId];
+      // Singleton towers (the unicorn) — only ever one on the board.
+      if (conf.singleton && g.towers.some(t => t.typeId === builder.typeId)) {
+        setActiveBuilder(null);
+        setHoverCell({ row: -1, col: -1, valid: false });
+        return;
+      }
       if (g.credits < conf.cost) return;
       g.credits -= conf.cost;
       g.towers.push({ id: g.nextId++, typeId: builder.typeId, row: r, col: c, upgrades: {} });
@@ -449,6 +482,13 @@ export default function TowerDefense({
   }, [g, render]);
 
   const handleCellHover = useCallback((r, c, isPath) => {
+    // While aiming, track the pointer so the rainbow aim line follows it.
+    if (aimingRef.current) {
+      const hc = hoverCellRef.current;
+      if (hc.row === r && hc.col === c) return;
+      setHoverCell({ row: r, col: c, valid: true });
+      return;
+    }
     const builder = activeBuilderRef.current;
     const hc = hoverCellRef.current;
     if (!builder) {
@@ -491,6 +531,16 @@ export default function TowerDefense({
     delete g.fireCooldowns[t.id];
     setSelectedTowerId(null);
     render();
+  }
+
+  // Enter aim mode for the unicorn (called by the FIRE button when it's charged).
+  // Clears any build/selection so the board is clear to pick a target.
+  function handleStartAim() {
+    if (!unicornReady) return;
+    setActiveBuilder(null);
+    setSelectedTowerId(null);
+    setHoverCell({ row: -1, col: -1, valid: false });
+    setAiming(true);
   }
 
   function handleUseBolt() {
@@ -536,12 +586,14 @@ export default function TowerDefense({
       waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false,
       usedVocab: {}, // Reset the tracker dictionary entirely
       autoPlayDelay: 0,
+      unicornCharge: 0, unicornFire: null,
       towersVersion: g.towersVersion + 1, creepsVersion: g.creepsVersion + 1
     });
     challengeActiveRef.current = false;
     challengeResolvedRef.current = false;
     setSelectedTowerId(null);
     setActiveBuilder(null);
+    setAiming(false);
     setChallenge(null);
     setChallengeInput('');
     render();
@@ -576,10 +628,18 @@ export default function TowerDefense({
 
   const selectedTower = g.towers.find(t => t.id === selectedTowerId) || null;
 
+  // Live unicorn charge, recomputed each frame (this component re-renders every
+  // frame while the loop runs). Drives the board ring, the panel bar and whether
+  // the FIRE button is armed.
+  const unicornTower = g.towers.find(t => t.typeId === 'UNICORN') || null;
+  const unicornStats = unicornTower ? getEffectiveStats(unicornTower, g.towers) : null;
+  const unicornChargePct = unicornTower ? Math.min(1, g.unicornCharge / (unicornStats?.chargeTime || 1)) : 0;
+  const unicornReady = !!unicornTower && unicornChargePct >= 1;
+
   // What the "Next" button will unleash — shown so the player can buy the right
   // counter before committing. Only while a wave isn't already running.
   const nextWavePreview = (!g.waveInProgress && g.gameState === 'PLAYING' && g.wave < waves.length)
-    ? summarizeWave(waves[g.wave])
+    ? summarizeWave(waves[g.wave], previewEmoji)
     : null;
 
   return (
@@ -616,14 +676,24 @@ export default function TowerDefense({
                onCellClick={handleCellClick} onCellHover={handleCellHover}
                onCellLeave={handleCellLeave}
                onTowerClick={handleTowerClick} themeId={activeThemeId}
+               unicorn={unicornTower} unicornChargePct={unicornChargePct} aiming={aiming}
              />
           </div>
+
+          {/* Aiming banner — the whole board is a target while this is up. */}
+          {aiming && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-violet-600 text-white font-black text-xs sm:text-sm uppercase tracking-widest shadow-2xl border-b-4 border-fuchsia-800 animate-pulse">
+              <span className="text-base">🦄</span>
+              Tap a target to fire · <span className="opacity-80">Esc to cancel</span>
+            </div>
+          )}
         </main>
 
         <div className="order-2 flex h-auto md:h-full z-20">
           <UpgradePanel
             tower={selectedTower} towers={g.towers} credits={g.credits}
             onUpgrade={handleUpgrade} onSell={handleSell} onClose={() => setSelectedTowerId(null)}
+            unicornChargePct={unicornChargePct} unicornReady={unicornReady} onFireUnicorn={handleStartAim}
           />
         </div>
 
@@ -631,6 +701,7 @@ export default function TowerDefense({
           <BuildMenu
             allowedTowers={allowedTowers} credits={g.credits}
             activeBuilder={activeBuilder} bolts={g.bolts} onUseBolt={handleUseBolt}
+            builtTypes={g.towers.map(t => t.typeId)}
             onSelect={(b) => setActiveBuilder(prev => prev?.typeId === b.typeId ? null : b)}
           />
         </div>

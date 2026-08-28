@@ -174,13 +174,57 @@ const NitroAlien = ({ className, hasPassive }) => (
   </svg>
 );
 
+const UnicornBlook = ({ className, hasPassive }) => (
+  <svg viewBox="0 0 200 200" className={className}>
+    <defs>
+      <linearGradient id="uni-horn" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#f43f5e" />
+        <stop offset="25%" stopColor="#f59e0b" />
+        <stop offset="50%" stopColor="#facc15" />
+        <stop offset="70%" stopColor="#22c55e" />
+        <stop offset="100%" stopColor="#6366f1" />
+      </linearGradient>
+      <linearGradient id="uni-mane" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#a855f7" />
+        <stop offset="50%" stopColor="#ec4899" />
+        <stop offset="100%" stopColor="#38bdf8" />
+      </linearGradient>
+    </defs>
+    <g id="unicorn-blook">
+      {/* Mane */}
+      <path d="M70,55 Q35,60 45,110 Q55,90 68,100 Q58,125 72,140 L95,120 Z" fill="url(#uni-mane)" />
+      {/* Ears */}
+      <polygon points="80,45 92,20 100,48" fill="#f5e9ff" />
+      <polygon points="120,45 132,22 110,48" fill="#f5e9ff" />
+      {/* Head */}
+      <path d="M78,60 Q100,40 128,58 Q150,72 140,120 Q128,158 100,158 Q72,152 70,110 Q70,78 78,60 Z" fill="#fdf2ff" stroke="#efd6ff" strokeWidth="3" />
+      {/* Muzzle */}
+      <ellipse cx="112" cy="128" rx="26" ry="20" fill="#fbe8ff" />
+      <ellipse cx="120" cy="132" rx="4" ry="5" fill="#d8a7e8" />
+      {/* Eye */}
+      <circle cx="106" cy="92" r="9" fill="#3b1d4e" />
+      <circle cx="103" cy="89" r="3" fill="#fff" />
+      {/* Horn */}
+      <polygon points="104,52 118,10 112,52" fill="url(#uni-horn)" stroke="#fff" strokeWidth="1.5" />
+      <path d="M106,44 L116,44 M107,36 L115,36 M108,28 L114,28" stroke="#fff" strokeWidth="1.5" opacity="0.8" />
+      {hasPassive && (
+        <g id="twin-sparkle">
+          <path d="M52,40 l3,7 l7,3 l-7,3 l-3,7 l-3,-7 l-7,-3 l7,-3 z" fill="#facc15" />
+          <path d="M158,150 l2.5,6 l6,2.5 l-6,2.5 l-2.5,6 l-2.5,-6 l-6,-2.5 l6,-2.5 z" fill="#38bdf8" />
+        </g>
+      )}
+    </g>
+  </svg>
+);
+
 const VISUALS = {
-  DART:   { Blook: DartHedgehog },
-  SNIPER: { Blook: SniperOwl },
-  SPLASH: { Blook: SplashHippo },
-  FROST:  { Blook: FrostFox },
-  CHAIN:  { Blook: ChainEel },
-  NITRO:  { Blook: NitroAlien }
+  DART:    { Blook: DartHedgehog },
+  SNIPER:  { Blook: SniperOwl },
+  SPLASH:  { Blook: SplashHippo },
+  FROST:   { Blook: FrostFox },
+  CHAIN:   { Blook: ChainEel },
+  NITRO:   { Blook: NitroAlien },
+  UNICORN: { Blook: UnicornBlook }
 };
 
 const SIZES = {
@@ -370,6 +414,153 @@ export const InsectVisual = memo(({ type }) => {
           <circle cx="57" cy="14" r="4" fill="#fca5a5" />
         </svg>
       );
+
+    // ===================== FROSTKIN (ICE arenas) =====================
+    case 'ICE_FLEA': // swarm
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+          <g className="td-leg-l"><path d="M50,55 L22,40" stroke="#0369a1" strokeWidth="4" fill="none" strokeLinecap="round"/></g>
+          <g className="td-leg-r"><path d="M50,55 L78,40" stroke="#0369a1" strokeWidth="4" fill="none" strokeLinecap="round"/></g>
+          <g className="td-leg-l"><path d="M50,60 L20,72" stroke="#0369a1" strokeWidth="4" fill="none" strokeLinecap="round"/></g>
+          <g className="td-leg-r"><path d="M50,60 L80,72" stroke="#0369a1" strokeWidth="4" fill="none" strokeLinecap="round"/></g>
+          <ellipse cx="50" cy="60" rx="20" ry="24" fill="#7dd3fc" />
+          <circle cx="50" cy="32" r="14" fill="#e0f2fe" />
+          <circle cx="44" cy="30" r="3" fill="#0c4a6e" />
+          <circle cx="56" cy="30" r="3" fill="#0c4a6e" />
+          <path d="M50,44 L50,80 M38,58 L62,58 M40,50 L60,66 M60,50 L40,66" stroke="#e0f7ff" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      );
+    case 'ICE_MOTH': // flyer
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+          <ellipse className="td-wing-l" cx="26" cy="45" rx="22" ry="13" fill="#bae6fd" opacity="0.9" />
+          <ellipse className="td-wing-r" cx="74" cy="45" rx="22" ry="13" fill="#bae6fd" opacity="0.9" />
+          <ellipse className="td-wing-l" cx="30" cy="62" rx="14" ry="9" fill="#e0f2fe" opacity="0.85" />
+          <ellipse className="td-wing-r" cx="70" cy="62" rx="14" ry="9" fill="#e0f2fe" opacity="0.85" />
+          <circle cx="50" cy="28" r="10" fill="#e2e8f0" />
+          <ellipse cx="50" cy="58" rx="11" ry="22" fill="#cbd5e1" />
+          <path d="M44,20 L36,8 M56,20 L64,8" stroke="#94a3b8" strokeWidth="3" fill="none" strokeLinecap="round"/>
+          <circle cx="45" cy="27" r="2.5" fill="#1e293b" />
+          <circle cx="55" cy="27" r="2.5" fill="#1e293b" />
+        </svg>
+      );
+    case 'ICE_GOLEM': // tank
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+          <g className="td-leg-l" style={{animationDuration:'0.6s'}}><rect x="30" y="80" width="12" height="18" rx="3" fill="#0ea5e9"/></g>
+          <g className="td-leg-r" style={{animationDuration:'0.6s'}}><rect x="58" y="80" width="12" height="18" rx="3" fill="#0ea5e9"/></g>
+          <polygon points="50,8 70,26 62,40 38,40 30,26" fill="#e0f2fe" stroke="#7dd3fc" strokeWidth="2"/>
+          <rect x="26" y="34" width="48" height="50" rx="10" fill="#38bdf8" stroke="#0284c7" strokeWidth="3"/>
+          <polygon points="30,38 46,50 30,60" fill="#bae6fd" opacity="0.7"/>
+          <polygon points="70,38 54,50 70,66" fill="#bae6fd" opacity="0.5"/>
+          <circle cx="41" cy="55" r="5" fill="#0c4a6e"/>
+          <circle cx="59" cy="55" r="5" fill="#0c4a6e"/>
+          <circle cx="41" cy="54" r="2" fill="#7dd3fc"/>
+          <circle cx="59" cy="54" r="2" fill="#7dd3fc"/>
+        </svg>
+      );
+    case 'ICE_MATRON': // boss
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]">
+          <polygon points="50,4 58,22 42,22" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="1.5"/>
+          <polygon points="34,10 42,26 26,24" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="1.5"/>
+          <polygon points="66,10 58,26 74,24" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="1.5"/>
+          <path d="M28,55 Q50,30 72,55 L64,92 Q50,100 36,92 Z" fill="#7dd3fc" />
+          <path d="M34,60 Q50,44 66,60 L60,86 Q50,92 40,86 Z" fill="#e0f7ff" opacity="0.8"/>
+          <circle cx="50" cy="34" r="15" fill="#e2f5ff" />
+          <circle cx="44" cy="33" r="3" fill="#0369a1" />
+          <circle cx="56" cy="33" r="3" fill="#0369a1" />
+          <path d="M45,42 Q50,46 55,42" stroke="#0369a1" strokeWidth="2" fill="none" strokeLinecap="round"/>
+          <circle cx="40" cy="70" r="3" fill="#bae6fd"/>
+          <circle cx="60" cy="74" r="3" fill="#bae6fd"/>
+        </svg>
+      );
+    case 'ICE_TITAN': // spawner
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_12px_rgba(14,165,233,0.7)]">
+          <polygon points="20,40 34,8 46,40" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="2"/>
+          <polygon points="54,40 66,10 80,40" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="2"/>
+          <polygon points="50,2 60,34 40,34" fill="#f0f9ff" stroke="#0ea5e9" strokeWidth="2"/>
+          <path d="M22,44 L78,44 L70,94 Q50,102 30,94 Z" fill="#0ea5e9" stroke="#0369a1" strokeWidth="3"/>
+          <polygon points="30,50 46,66 30,74" fill="#7dd3fc" opacity="0.7"/>
+          <polygon points="70,50 54,66 70,78" fill="#7dd3fc" opacity="0.5"/>
+          <circle cx="40" cy="62" r="6" fill="#082f49"/>
+          <circle cx="60" cy="62" r="6" fill="#082f49"/>
+          <circle cx="40" cy="60" r="2.5" fill="#7dd3fc"/>
+          <circle cx="60" cy="60" r="2.5" fill="#7dd3fc"/>
+          <path d="M36,82 L44,76 L52,82 L60,76 L64,82" stroke="#e0f7ff" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      );
+
+    // ===================== NIGHTFALL (NIGHT arenas) =====================
+    case 'NIGHT_SHADE': // swarm
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+          <path d="M30,45 Q30,18 50,18 Q70,18 70,45 L70,78 Q64,72 58,80 Q52,72 46,80 Q40,72 34,80 L30,72 Z" fill="#c7d2fe" opacity="0.92"/>
+          <circle cx="42" cy="42" r="5" fill="#312e81"/>
+          <circle cx="58" cy="42" r="5" fill="#312e81"/>
+          <path d="M44,56 Q50,62 56,56" stroke="#4338ca" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        </svg>
+      );
+    case 'NIGHT_BAT': // flyer
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+          <path className="td-wing-l" d="M48,45 Q18,25 6,45 Q20,44 16,58 Q30,50 48,58 Z" fill="#4c1d95"/>
+          <path className="td-wing-r" d="M52,45 Q82,25 94,45 Q80,44 84,58 Q70,50 52,58 Z" fill="#4c1d95"/>
+          <ellipse cx="50" cy="52" rx="14" ry="17" fill="#5b21b6"/>
+          <polygon points="40,36 44,24 50,38" fill="#5b21b6"/>
+          <polygon points="60,36 56,24 50,38" fill="#5b21b6"/>
+          <circle cx="44" cy="50" r="4" fill="#f87171"/>
+          <circle cx="56" cy="50" r="4" fill="#f87171"/>
+          <path d="M45,62 L48,58 L50,62 L52,58 L55,62" stroke="#ede9fe" strokeWidth="2" fill="none"/>
+        </svg>
+      );
+    case 'NIGHT_KNIGHT': // tank
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
+          <g className="td-leg-l" style={{animationDuration:'0.6s'}}><rect x="32" y="82" width="10" height="16" rx="3" fill="#334155"/></g>
+          <g className="td-leg-r" style={{animationDuration:'0.6s'}}><rect x="58" y="82" width="10" height="16" rx="3" fill="#334155"/></g>
+          <polygon points="50,6 66,16 62,30 38,30 34,16" fill="#64748b" stroke="#1e293b" strokeWidth="2"/>
+          <rect x="30" y="30" width="40" height="52" rx="8" fill="#475569" stroke="#1e293b" strokeWidth="3"/>
+          <rect x="38" y="40" width="24" height="16" rx="4" fill="#0f172a"/>
+          <circle cx="46" cy="48" r="3" fill="#f87171"/>
+          <circle cx="54" cy="48" r="3" fill="#f87171"/>
+          <path d="M40,64 L60,64 M44,72 L56,72" stroke="#1e293b" strokeWidth="3" strokeLinecap="round"/>
+          <path d="M20,44 L20,80 Q30,86 30,74 L30,50 Z" fill="#334155" stroke="#1e293b" strokeWidth="2"/>
+        </svg>
+      );
+    case 'NIGHT_NECRO': // boss
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_10px_rgba(126,34,206,0.6)]">
+          <path d="M26,52 Q26,20 50,16 Q74,20 74,52 L70,94 Q50,100 30,94 Z" fill="#4c1d95" stroke="#2e1065" strokeWidth="2"/>
+          <path d="M34,50 Q34,26 50,24 Q66,26 66,50 L66,62 Q50,68 34,62 Z" fill="#1e1b4b"/>
+          <circle cx="43" cy="46" r="5" fill="#a3e635"/>
+          <circle cx="57" cy="46" r="5" fill="#a3e635"/>
+          <circle cx="43" cy="46" r="2" fill="#f0fdf4"/>
+          <circle cx="57" cy="46" r="2" fill="#f0fdf4"/>
+          <line x1="78" y1="14" x2="78" y2="92" stroke="#3b2a1a" strokeWidth="4" strokeLinecap="round"/>
+          <circle cx="78" cy="14" r="8" fill="#a3e635" opacity="0.9"/>
+          <circle cx="78" cy="14" r="4" fill="#f0fdf4"/>
+        </svg>
+      );
+    case 'NIGHT_COLOSSUS': // spawner
+      return (
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_12px_rgba(139,92,246,0.7)]">
+          <g className="td-leg-l" style={{animationDuration:'1s'}}><rect x="26" y="80" width="14" height="18" rx="3" fill="#3b2f5e"/></g>
+          <g className="td-leg-r" style={{animationDuration:'1s'}}><rect x="60" y="80" width="14" height="18" rx="3" fill="#3b2f5e"/></g>
+          <polygon points="30,40 22,14 40,32" fill="#e5e7eb"/>
+          <polygon points="70,40 78,14 60,32" fill="#e5e7eb"/>
+          <rect x="24" y="34" width="52" height="52" rx="12" fill="#6d28d9" stroke="#3b0764" strokeWidth="3"/>
+          <circle cx="50" cy="42" r="20" fill="#ede9fe"/>
+          <circle cx="42" cy="42" r="7" fill="#1e1b4b"/>
+          <circle cx="58" cy="42" r="7" fill="#1e1b4b"/>
+          <circle cx="42" cy="42" r="3" fill="#c084fc"/>
+          <circle cx="58" cy="42" r="3" fill="#c084fc"/>
+          <path d="M40,58 L44,54 L48,58 L52,54 L56,58 L60,54" stroke="#1e1b4b" strokeWidth="3" fill="none" strokeLinejoin="round"/>
+          <path d="M40,70 L60,70" stroke="#3b0764" strokeWidth="3" strokeLinecap="round"/>
+        </svg>
+      );
+
     default:
       return null;
   }

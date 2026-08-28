@@ -10,10 +10,11 @@ const TOWER_THEME = {
   SPLASH: { bg: 'bg-[#c21487]', border: 'border-[#9b106c]', text: 'text-white' },
   FROST:  { bg: 'bg-[#8dbcf0]', border: 'border-[#7196c0]', text: 'text-slate-900' },
   CHAIN:  { bg: 'bg-[#f3c40f]', border: 'border-[#c39d0c]', text: 'text-amber-950' },
-  NITRO:  { bg: 'bg-[#8842d0]', border: 'border-[#6d35a6]', text: 'text-white' }
+  NITRO:  { bg: 'bg-[#8842d0]', border: 'border-[#6d35a6]', text: 'text-white' },
+  UNICORN:{ bg: 'bg-[#d946ef]', border: 'border-[#a21caf]', text: 'text-white' }
 };
 
-export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSelect, bolts, onUseBolt }) {
+export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSelect, bolts, onUseBolt, builtTypes = [] }) {
   const ids = TOWER_ORDER.filter(id => allowedTowers.includes(id));
   const [hoveredTower, setHoveredTower] = useState(null);
 
@@ -24,7 +25,7 @@ export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSel
         <div className="text-white font-black text-lg flex items-center justify-between mb-1">
           <span>{t.name}</span>
           <span className="text-slate-400 text-[10px] uppercase tracking-widest bg-slate-800 px-2 py-0.5 rounded">
-            {t.type === 'BUFF' ? 'Support' : t.type === 'SPLASH' ? 'AoE' : t.type}
+            {t.type === 'BUFF' ? 'Support' : t.type === 'SPLASH' ? 'AoE' : t.type === 'UNICORN' ? 'Ultimate' : t.type}
           </span>
         </div>
         <div className="text-slate-400 text-[11px] font-bold mb-3 leading-snug">{t.desc}</div>
@@ -43,13 +44,19 @@ export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSel
               <span className="text-white ml-auto">{(t.base.cooldown/1000).toFixed(1)}s</span>
             </div>
           )}
-          {(t.base.range || t.base.auraRange) && (
+          {t.type === 'UNICORN' ? (
+            <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+              <Maximize2 className="w-3.5 h-3.5 text-violet-400" />
+              <span className="text-slate-300">RNG</span>
+              <span className="text-white ml-auto">MAP</span>
+            </div>
+          ) : (t.base.range || t.base.auraRange) ? (
             <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
               <Maximize2 className="w-3.5 h-3.5 text-violet-400" />
               <span className="text-slate-300">RNG</span>
               <span className="text-white ml-auto">{t.base.range || t.base.auraRange}</span>
             </div>
-          )}
+          ) : null}
           <div className="flex items-center gap-1.5 bg-slate-800 p-1.5 rounded-lg border border-slate-700">
               <Info className="w-3.5 h-3.5 text-amber-400" />
               <span className="text-slate-300">TGT</span>
@@ -84,7 +91,9 @@ export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSel
           const t = TOWERS[id];
           if (!t) return null;
           const theme = TOWER_THEME[id];
-          const canAfford = credits >= t.cost;
+          // A singleton (the unicorn) can only be built once.
+          const soldOut = !!t.singleton && builtTypes.includes(id);
+          const canAfford = credits >= t.cost && !soldOut;
           const isSelected = activeBuilder?.typeId === id;
           const hotkey = idx + 1;
 
@@ -106,17 +115,28 @@ export default function BuildMenu({ allowedTowers, credits, activeBuilder, onSel
               disabled={!canAfford}
               className={`group relative h-16 md:h-auto aspect-square md:w-full rounded-2xl transition-all flex flex-col items-center justify-center gap-1 p-2 shrink-0 ${cls}`}
             >
-              {/* Hotkey hint (desktop) — matches the 1–6 keyboard shortcut */}
-              {hotkey <= 6 && (
+              {/* Hotkey hint (desktop) — matches the 1–7 keyboard shortcut */}
+              {hotkey <= 7 && (
                 <span className="hidden md:flex absolute top-1 left-1 w-4 h-4 items-center justify-center rounded-md bg-black/25 text-white/80 text-[9px] font-black tabular-nums leading-none pointer-events-none">
                   {hotkey}
+                </span>
+              )}
+              {t.singleton && (
+                <span className="absolute top-1 right-1 text-[7px] font-black uppercase tracking-wide bg-black/30 text-white/90 px-1 py-0.5 rounded pointer-events-none leading-none">
+                  {soldOut ? '✓' : '1×'}
                 </span>
               )}
               <TowerVisual typeId={id} size="sm" dimmed={!canAfford} />
 
               <div className={`flex items-center justify-center gap-0.5 px-1.5 py-0.5 rounded-lg mt-0.5 text-[10px] font-black tabular-nums bg-black/20 ${!canAfford && 'text-slate-400'}`}>
-                <Coins className="w-2.5 h-2.5" strokeWidth={3} />
-                {t.cost}
+                {soldOut ? (
+                  <span className="uppercase tracking-wide">Built</span>
+                ) : (
+                  <>
+                    <Coins className="w-2.5 h-2.5" strokeWidth={3} />
+                    {t.cost}
+                  </>
+                )}
               </div>
             </button>
           );

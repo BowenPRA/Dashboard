@@ -1,6 +1,6 @@
 // src/components/towerdefense/useGameEngine.js
 import { useEffect, useRef } from 'react';
-import { TOWERS, ENEMIES, distSq, getStatsMap } from './gameData';
+import { TOWERS, ENEMIES, distSq, getStatsMap, enemySkin } from './gameData';
 
 const TILE_SPEED = 2.0;
 
@@ -71,6 +71,11 @@ export function useGameEngine({
     const SPEED_MUL  = Number(D.speedMul)  > 0 ? Number(D.speedMul)  : 1;
     const REWARD_MUL = Number(D.rewardMul) > 0 ? Number(D.rewardMul) : 1;
     const SCORE_MUL  = Number(D.scoreMul)  > 0 ? Number(D.scoreMul)  : 1;
+
+    // The enemy tribe painted over the role slots for this arena (see gameData's
+    // ENEMY_SKINS). Stats always come from ENEMIES[slot]; the tribe only changes
+    // the name, artwork and on-board size, so every theme is exactly as hard.
+    const TRIBE = engineConfig.tribeId || 'INSECT';
 
     function distAlong(c) {
       if (c.waypointIdx >= layout.path.length - 1) return Infinity;
@@ -223,19 +228,35 @@ export function useGameEngine({
       }
     }
 
-    function spawnCreep(typeKey) {
+    // One creep object, with the active tribe's skin (visual + radius) baked in.
+    // Shared by the wave spawner and the Broodmother's add-spawns so every body
+    // on the board — including summoned ones — wears the arena's tribe.
+    function makeCreep(typeKey, opts = {}) {
       const conf = ENEMIES[typeKey];
+      const skin = enemySkin(typeKey, TRIBE);
+      const hp = Math.max(1, Math.round(conf.hp * HP_MUL));
+      return {
+        id: newId(), typeKey,
+        visual: skin.visual, radius: skin.radius,
+        row: opts.row, col: opts.col,
+        hp, maxHp: hp,
+        speed: conf.speed * SPEED_MUL * (opts.speedMul || 1),
+        waypointIdx: opts.waypointIdx || 0, angle: opts.angle || 0,
+        freezeTimer: 0, slowPercent: 0, burning: 0, burnTick: 0,
+        damageReduction: conf.damageReduction || 0,
+        burnStacks: [], spawnTimer: opts.spawnTimer || 0
+      };
+    }
+
+    function spawnCreep(typeKey) {
       const [sr, sc] = layout.path[0];
       const [nr, nc] = layout.path.length > 1 ? layout.path[1] : [sr, sc];
       const initAngle = Math.atan2(nr - sr, nc - sc) * (180 / Math.PI);
-      const hp = Math.max(1, Math.round(conf.hp * HP_MUL));
 
-      g.creeps.push({
-        id: newId(), typeKey, row: sr, col: sc,
-        hp, maxHp: hp, speed: conf.speed * SPEED_MUL, waypointIdx: 0, angle: initAngle,
-        freezeTimer: 0, slowPercent: 0, burning: 0, burnTick: 0, damageReduction: conf.damageReduction || 0,
-        burnStacks: [], spawnTimer: typeKey === 'GIANT_ANT' ? 2000 : 0
-      });
+      g.creeps.push(makeCreep(typeKey, {
+        row: sr, col: sc, angle: initAngle,
+        spawnTimer: typeKey === 'GIANT_ANT' ? 2000 : 0
+      }));
       // The board only re-renders creeps when the roster changes; movement is
       // applied straight to the DOM. See GameBoard's creep layer.
       g.creepsVersion++;
@@ -244,6 +265,9 @@ export function useGameEngine({
     function fireTower(tower, logicDt, statsMap) {
       const conf = TOWERS[tower.typeId];
       if (conf.type === 'BUFF') return;
+      // The unicorn never auto-fires — it is aimed by hand (or by Auto-Prism),
+      // handled in the charge block of the main loop, not here.
+      if (conf.type === 'UNICORN') return;
       const id = tower.id;
       g.fireCooldowns[id] = (g.fireCooldowns[id] || 0) - logicDt;
       if (g.fireCooldowns[id] > 0) return;
@@ -371,6 +395,49 @@ export function useGameEngine({
       }
     }
 
+    // ---- Unicorn: the aimed rainbow lance ----
+    // A single beam from the horn, through the aim point, out to the far edge of
+    // the board. Everything within `beamWidth` of that infinite line takes full,
+    // armour-ignoring damage. Twin Rainbow adds a second beam at 90° and chills.
+    function emitBeam(uni, stats, angle) {
+      const ux = Math.cos(angle), uy = Math.sin(angle);
+      const width = stats.beamWidth;
+      const dmg = stats.damage || 0;
+      for (const c of g.creeps) {
+        if (c.hp <= 0) continue;
+        const vx = c.col - uni.col, vy = c.row - uni.row;
+        const along = vx * ux + vy * uy;         // distance along the beam
+        if (along < -0.6) continue;               // strictly behind the horn
+        const perp = Math.abs(vx * uy - vy * ux); // distance off the line
+        if (perp <= width) {
+          damageCreep(c, dmg, true, 0);
+          if (stats.twin) {                       // Twin Rainbow also chills
+            c.freezeTimer = Math.max(c.freezeTimer, 1400);
+            c.slowPercent = Math.max(c.slowPercent, 0.5);
+          }
+        }
+      }
+      const length = Math.hypot(layout.rows, layout.cols) + 2;
+      g.projectiles.push({
+        id: newId(), kind: 'RAINBOW_BEAM',
+        row: uni.row, col: uni.col, angle, length, width,
+        life: 430, maxLife: 430
+      });
+    }
+
+    function fireUnicornBeam(uni, stats, aimRow, aimCol) {
+      const angle = Math.atan2(aimRow - uni.row, aimCol - uni.col);
+      emitBeam(uni, stats, angle);
+      if (stats.twin) emitBeam(uni, stats, angle + Math.PI / 2);
+      if (g.particles.length < MAX_PARTICLES) {
+        g.particles.push({
+          id: newId(), row: uni.row, col: uni.col, radius: 1.4,
+          color: 'rgba(236,72,153,0.5)', life: 420, maxLife: 420
+        });
+      }
+      g.unicornCharge = 0;
+    }
+
     function loop(now) {
       raf = requestAnimationFrame(loop);
       
@@ -425,18 +492,14 @@ export function useGameEngine({
         if (c.typeKey === 'GIANT_ANT') {
           c.spawnTimer = (c.spawnTimer || 0) - dt;
           if (c.spawnTimer <= 0 && !c.reachedEnd) {
-            c.spawnTimer = 2000; 
-            const spawnHp = Math.max(1, Math.round(ENEMIES.ANT.hp * HP_MUL));
+            c.spawnTimer = 2000;
             for(let i=0; i<6; i++) {
               const rOff = (Math.random() - 0.5) * 0.5;
               const cOff = (Math.random() - 0.5) * 0.5;
-              g.creeps.push({
-                id: newId(), typeKey: 'ANT', row: c.row + rOff, col: c.col + cOff,
-                hp: spawnHp, maxHp: spawnHp, speed: ENEMIES.ANT.speed * 1.15 * SPEED_MUL,
-                waypointIdx: c.waypointIdx, angle: c.angle,
-                freezeTimer: 0, slowPercent: 0, burning: 0, burnTick: 0, damageReduction: 0,
-                burnStacks: [], spawnTimer: 0
-              });
+              g.creeps.push(makeCreep('ANT', {
+                row: c.row + rOff, col: c.col + cOff,
+                waypointIdx: c.waypointIdx, angle: c.angle, speedMul: 1.15
+              }));
             }
             g.creepsVersion++;
             g.particles.push({ id: newId(), row: c.row, col: c.col, radius: 1.2, color: 'rgba(185,28,28,0.6)', life: 300, maxLife: 300 });
@@ -473,6 +536,35 @@ export function useGameEngine({
       // until the board actually changes) rather than per tower.
       const statsMap = getStatsMap(g.towers, g.towersVersion || 0);
       for (const t of g.towers) fireTower(t, dt, statsMap);
+
+      // Unicorn charge + fire. It builds charge every frame it exists; when full
+      // it fires on the player's aim request, or by itself with Auto-Prism.
+      const uni = g.towers.find(t => t.typeId === 'UNICORN');
+      if (uni) {
+        const uStats = statsMap.get(uni.id);
+        if (uStats) {
+          const full = uStats.chargeTime || 1;
+          if (g.unicornCharge < full) g.unicornCharge = Math.min(full, g.unicornCharge + dt);
+          const ready = g.unicornCharge >= full;
+          if (ready && g.unicornFire) {
+            fireUnicornBeam(uni, uStats, g.unicornFire.row, g.unicornFire.col);
+            g.unicornFire = null;
+          } else if (ready && uStats.autoAim) {
+            // Aim down the densest cluster of live creeps.
+            let target = null, bestN = 0;
+            for (const c of g.creeps) {
+              if (c.hp <= 0) continue;
+              const n = densityAt(c);
+              if (n > bestN) { bestN = n; target = c; }
+            }
+            if (target) fireUnicornBeam(uni, uStats, target.row, target.col);
+          }
+        }
+      } else if (g.unicornCharge || g.unicornFire) {
+        // Unicorn sold — clear its state so a rebuild starts from empty.
+        g.unicornCharge = 0;
+        g.unicornFire = null;
+      }
 
       g.projectiles.forEach(p => {
         p.life -= dt;

@@ -2,7 +2,7 @@
 import React from 'react';
 import {
   Coins, Gauge, Swords, Maximize2, Target, Sparkles,
-  Trash2, Check, Lock, X, ShieldAlert
+  Trash2, Check, Lock, X, ShieldAlert, Wand2
 } from 'lucide-react';
 import { TOWERS, getEffectiveStats, getSellValue } from './gameData';
 import TowerVisual from './TowerVisual';
@@ -16,7 +16,10 @@ const UPGRADE_ICONS = {
   passive:   Sparkles
 };
 
-export default function UpgradePanel({ tower, towers, credits, onUpgrade, onSell, onClose }) {
+export default function UpgradePanel({
+  tower, towers, credits, onUpgrade, onSell, onClose,
+  unicornChargePct = 0, unicornReady = false, onFireUnicorn = () => {}
+}) {
   if (!tower) {
     return (
       <aside className="hidden md:flex order-2 md:order-none w-80 bg-slate-800 border-l-4 border-slate-950 flex-col flex-shrink-0 z-20 shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.3)]">
@@ -33,6 +36,7 @@ export default function UpgradePanel({ tower, towers, credits, onUpgrade, onSell
   const stats = getEffectiveStats(tower, towers);
   const sellValue = getSellValue(tower);
   const upgrades = tower.upgrades || {};
+  const isUnicorn = tConf.type === 'UNICORN';
 
   return (
     <aside className="order-2 md:order-none flex w-full md:w-80 h-auto md:h-full bg-slate-800 md:border-l-4 border-b-4 md:border-b-0 border-slate-950 flex-col md:flex-col flex-shrink-0 z-20 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)] md:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.3)]">
@@ -60,7 +64,15 @@ export default function UpgradePanel({ tower, towers, credits, onUpgrade, onSell
 
         {/* Dynamic Live Stats Strip */}
         <div className="hidden sm:flex md:flex px-4 py-2 md:py-4 bg-slate-900 md:border-b-2 border-l-2 md:border-l-0 border-slate-700 flex-wrap gap-2 md:gap-4 text-xs font-black shadow-inner items-center shrink-0">
-          {tConf.type === 'BUFF' ? (
+          {isUnicorn ? (
+            <>
+              <Stat label="DMG" value={stats.damage} modified={stats.damage !== tConf.base.damage} />
+              <Stat label="CHARGE" value={`${(stats.chargeTime / 1000).toFixed(1)}s`} modified={stats.chargeTime !== tConf.base.chargeTime} />
+              <Stat label="WIDTH" value={stats.beamWidth > tConf.base.beamWidth ? 'WIDE' : 'STD'} modified={stats.beamWidth !== tConf.base.beamWidth} />
+              {stats.autoAim && <Stat label="AUTO" value="ON" modified={true} />}
+              {stats.twin && <Stat label="TWIN" value="ON" modified={true} />}
+            </>
+          ) : tConf.type === 'BUFF' ? (
             <>
               <Stat label="AURA" value={stats.auraRange} modified={stats.auraRange !== tConf.base.auraRange} />
               <Stat label="BOOST" value={`+${Math.round((1 - stats.buff) * 100)}%`} modified={stats.buff !== tConf.base.buff} />
@@ -81,6 +93,40 @@ export default function UpgradePanel({ tower, towers, credits, onUpgrade, onSell
           )}
         </div>
       </div>
+
+      {/* Unicorn charge meter + fire control */}
+      {isUnicorn && (
+        <div className="px-3 py-3 md:px-4 md:py-4 bg-slate-900 border-b-2 md:border-b-0 border-slate-700 flex flex-col gap-2 shrink-0">
+          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+            <span className="text-slate-400">Charge</span>
+            <span className={unicornReady ? 'text-fuchsia-300' : 'text-slate-500'}>
+              {unicornReady ? 'Ready!' : `${Math.round(unicornChargePct * 100)}%`}
+            </span>
+          </div>
+          <div className="h-3 w-full rounded-full bg-slate-800 overflow-hidden border border-slate-700 shadow-inner">
+            <div
+              className="h-full rounded-full transition-[width] duration-100"
+              style={{
+                width: `${Math.min(100, unicornChargePct * 100)}%`,
+                background: unicornReady
+                  ? 'linear-gradient(90deg,#f43f5e,#f59e0b,#facc15,#22c55e,#38bdf8,#a855f7)'
+                  : 'linear-gradient(90deg,#a855f7,#ec4899)'
+              }}
+            />
+          </div>
+          <button
+            onClick={onFireUnicorn}
+            disabled={!unicornReady}
+            className={`w-full flex items-center justify-center gap-2 px-3 py-2.5 md:py-3 rounded-xl font-black text-xs md:text-sm uppercase tracking-widest transition-all border-b-[4px] active:translate-y-[4px] active:border-b-0
+              ${unicornReady
+                ? 'bg-gradient-to-r from-fuchsia-500 to-violet-600 border-fuchsia-800 text-white shadow-[0_0_18px_rgba(217,70,239,0.6)] hover:brightness-110'
+                : 'bg-slate-700 border-slate-800 text-slate-500 cursor-not-allowed opacity-60'}`}
+          >
+            <Wand2 className={`w-4 h-4 md:w-5 md:h-5 ${unicornReady ? 'animate-pulse' : ''}`} strokeWidth={2.5} />
+            {unicornReady ? 'Aim & Fire' : 'Charging…'}
+          </button>
+        </div>
+      )}
 
       {/* Upgrades Scrolling Container */}
       <div className="flex-1 overflow-x-auto md:overflow-y-auto p-2 md:p-4 flex flex-row md:flex-col gap-2 md:gap-3 custom-scrollbar bg-slate-800 border-t-2 md:border-t-0 border-slate-700">

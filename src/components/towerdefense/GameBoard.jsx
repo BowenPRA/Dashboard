@@ -48,6 +48,10 @@ export default function GameBoard({
   layout, towers, creeps, projectiles, floaters, particles, burnZones, decorations,
   lives, maxLives, selectedTowerId, hoveredTowerId, activeBuilder, hoverCell,
   onCellClick, onCellHover, onCellLeave, onTowerClick, themeId = 'STANDARD',
+  // Unicorn super-weapon state, read every frame (this component re-renders per
+  // frame): the placed unicorn tower (or null), its charge 0..1, and whether the
+  // player is currently aiming a beam.
+  unicorn = null, unicornChargePct = 0, aiming = false,
   // Bumped by the game screen whenever a tower is built, sold or upgraded. The
   // engine mutates towers in place, so array identity alone cannot tell the
   // memoised tower layer that an upgrade needs repainting. `creepsVersion` is
@@ -117,7 +121,8 @@ export default function GameBoard({
 
   const rangeTower = towers.find(t => t.id === selectedTowerId) || towers.find(t => t.id === hoveredTowerId);
   const rangeStats = rangeTower ? getEffectiveStats(rangeTower, towers) : null;
-  const rangeVal = rangeStats ? (rangeStats.range || rangeStats.auraRange) : 0;
+  // The unicorn's "range" is the whole map along a line, not a circle — no ring.
+  const rangeVal = (rangeStats && rangeTower.typeId !== 'UNICORN') ? (rangeStats.range || rangeStats.auraRange) : 0;
 
   return (
     <div
@@ -180,7 +185,8 @@ export default function GameBoard({
         if (!tConf) return null;
         const fakeTower = { id: 'temp_builder', typeId: activeBuilder.typeId, row: hoverCell.row, col: hoverCell.col, upgrades: {} };
         const rangeStats = getEffectiveStats(fakeTower, towers);
-        const range = rangeStats.range || rangeStats.auraRange || 0;
+        // The unicorn covers the whole board on a line — its range isn't a circle.
+        const range = activeBuilder.typeId === 'UNICORN' ? 0 : (rangeStats.range || rangeStats.auraRange || 0);
         return (
           <>
             {range > 0 && (
@@ -212,6 +218,11 @@ export default function GameBoard({
         towers={towers} towersVersion={towersVersion}
         selectedTowerId={selectedTowerId}
         hoveredTowerId={hoveredTowerId} onTowerClick={onTowerClick}
+      />
+
+      <UnicornOverlay
+        unicorn={unicorn} chargePct={unicornChargePct} aiming={aiming}
+        hoverCell={hoverCell} width={width} height={height}
       />
 
 
@@ -266,7 +277,45 @@ export default function GameBoard({
                   opacity: Math.max(0, p.life / p.maxLife)
                 }}
               />
-            ) : (
+            ) : p.kind === 'RAINBOW_BEAM' ? (() => {
+              const thick = Math.max(14, (p.width || 0.75) * 2 * CELL_SIZE);
+              const len = (p.length || 20) * CELL_SIZE;
+              const fade = Math.max(0, p.life / p.maxLife);
+              return (
+                <>
+                  {/* Soft rainbow glow */}
+                  <div
+                    className="absolute"
+                    style={{
+                      width: len, height: thick * 1.6, borderRadius: thick,
+                      background: 'linear-gradient(90deg, rgba(244,63,94,0.35), rgba(245,158,11,0.35), rgba(250,204,21,0.35), rgba(34,197,94,0.35), rgba(56,189,248,0.35), rgba(99,102,241,0.35))',
+                      transform: `translate(0, ${-thick * 0.8}px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
+                      filter: 'blur(6px)', opacity: fade
+                    }}
+                  />
+                  {/* Rainbow core */}
+                  <div
+                    className="absolute"
+                    style={{
+                      width: len, height: thick, borderRadius: thick,
+                      background: 'linear-gradient(90deg, #f43f5e, #f59e0b, #facc15, #22c55e, #38bdf8, #6366f1, #a855f7)',
+                      transform: `translate(0, ${-thick / 2}px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
+                      opacity: fade
+                    }}
+                  />
+                  {/* White-hot center line */}
+                  <div
+                    className="absolute"
+                    style={{
+                      width: len, height: Math.max(3, thick * 0.22), borderRadius: 999,
+                      background: 'rgba(255,255,255,0.95)',
+                      transform: `translate(0, ${-Math.max(1.5, thick * 0.11)}px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
+                      opacity: fade
+                    }}
+                  />
+                </>
+              );
+            })() : (
               <div
                 className="rounded-full border border-white/50"
                 style={{
@@ -335,6 +384,11 @@ const Creep = memo(function Creep({ creep, registry }) {
 
   if (!eConf) return null;
 
+  // The tribe skin (set at spawn) decides the artwork and on-board size; the slot
+  // (typeKey) still owns the armour badge, since armour is a balance stat.
+  const radius = creep.radius || eConf.radius;
+  const visual = creep.visual || creep.typeKey;
+
   return (
     <div
       ref={ref}
@@ -350,13 +404,13 @@ const Creep = memo(function Creep({ creep, registry }) {
         data-visual
         className="flex items-center justify-center relative creep-visual"
         style={{
-          width: eConf.radius * 2.5,
-          height: eConf.radius * 2.5,
+          width: radius * 2.5,
+          height: radius * 2.5,
           transform: `rotate(${(creep.angle || 0) + 90}deg)`,
           filter: 'none'
         }}
       >
-        <InsectVisual type={creep.typeKey} />
+        <InsectVisual type={visual} />
       </div>
 
       <div data-status className="absolute -top-8 text-xs" style={{ display: 'none' }} />
@@ -459,6 +513,70 @@ const TowerLayer = memo(function TowerLayer({ towers, towersVersion, selectedTow
     );
   });
 });
+
+/**
+ * The unicorn's on-board furniture: a charge ring that fills around the tower, a
+ * pulsing rainbow glow once it is ready, and a rainbow aim line from the horn
+ * through the pointer while the player is aiming a beam.
+ */
+function UnicornOverlay({ unicorn, chargePct, aiming, hoverCell, width, height }) {
+  if (!unicorn) return null;
+  const cx = unicorn.col * CELL_SIZE + CELL_SIZE / 2;
+  const cy = unicorn.row * CELL_SIZE + CELL_SIZE / 2;
+  const ready = chargePct >= 1;
+  const R = 22;
+  const circ = 2 * Math.PI * R;
+  const pct = Math.max(0, Math.min(1, chargePct));
+
+  let aim = null;
+  if (aiming && ready && hoverCell && hoverCell.row >= 0) {
+    const hx = hoverCell.col * CELL_SIZE + CELL_SIZE / 2;
+    const hy = hoverCell.row * CELL_SIZE + CELL_SIZE / 2;
+    const dx = hx - cx, dy = hy - cy;
+    const d = Math.hypot(dx, dy) || 1;
+    const far = width + height;
+    aim = { ex: cx + (dx / d) * far, ey: cy + (dy / d) * far };
+  }
+
+  return (
+    <>
+      {aim && (
+        <svg className="absolute inset-0 pointer-events-none z-30" width={width} height={height}>
+          <defs>
+            <linearGradient id="uni-aim" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#f43f5e" />
+              <stop offset="35%" stopColor="#facc15" />
+              <stop offset="65%" stopColor="#22c55e" />
+              <stop offset="100%" stopColor="#6366f1" />
+            </linearGradient>
+          </defs>
+          <line x1={cx} y1={cy} x2={aim.ex} y2={aim.ey} stroke="url(#uni-aim)" strokeWidth="7" strokeLinecap="round" opacity="0.45" />
+          <line x1={cx} y1={cy} x2={aim.ex} y2={aim.ey} stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 12" opacity="0.9" />
+        </svg>
+      )}
+
+      <div
+        className="absolute pointer-events-none z-30"
+        style={{ transform: `translate(${cx}px, ${cy}px) translate(-50%, -50%)`, width: 64, height: 64 }}
+      >
+        {ready && (
+          <div className="absolute inset-[-10px] rounded-full animate-ping"
+               style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.4), rgba(236,72,153,0.15), transparent 70%)' }} />
+        )}
+        <svg viewBox="0 0 64 64" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
+          <circle cx="32" cy="32" r={R} fill="none" stroke="rgba(15,23,42,0.55)" strokeWidth="4" />
+          <circle
+            cx="32" cy="32" r={R} fill="none"
+            stroke={ready ? '#facc15' : '#e879f9'} strokeWidth="4" strokeLinecap="round"
+            strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)}
+            style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+          />
+        </svg>
+        {ready && <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-lg animate-bounce">✨</div>}
+      </div>
+    </>
+  );
+}
 
 function PortalMarker({ row, col, kind, healthPct }) {
   const isIn = kind === 'in';
