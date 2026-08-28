@@ -503,8 +503,23 @@ export default function TowerDefense({
 
   const handleTowerClick = useCallback((id) => {
     if (activeBuilderRef.current) { setActiveBuilder(null); return; }
+    // A tower tap while aiming cancels the aim rather than selecting.
+    if (aimingRef.current) { setAiming(false); return; }
+    // Tapping the unicorn is how you fire it: if it's charged, that tap arms aim
+    // mode and the next square-tap draws the beam. While it's still charging, the
+    // tap selects it as normal so its upgrades stay reachable.
+    const t = g.towers.find(x => x.id === id);
+    if (t && t.typeId === 'UNICORN') {
+      const st = getEffectiveStats(t, g.towers);
+      if (g.unicornCharge >= (st?.chargeTime || Infinity)) {
+        setSelectedTowerId(null);
+        setHoverCell({ row: -1, col: -1, valid: false });
+        setAiming(true);
+        return;
+      }
+    }
     setSelectedTowerId(id);
-  }, []);
+  }, [g]);
 
   const handleCellLeave = useCallback(
     () => setHoverCell({ row: -1, col: -1, valid: false }), []
@@ -531,16 +546,6 @@ export default function TowerDefense({
     delete g.fireCooldowns[t.id];
     setSelectedTowerId(null);
     render();
-  }
-
-  // Enter aim mode for the unicorn (called by the FIRE button when it's charged).
-  // Clears any build/selection so the board is clear to pick a target.
-  function handleStartAim() {
-    if (!unicornReady) return;
-    setActiveBuilder(null);
-    setSelectedTowerId(null);
-    setHoverCell({ row: -1, col: -1, valid: false });
-    setAiming(true);
   }
 
   function handleUseBolt() {
@@ -693,7 +698,7 @@ export default function TowerDefense({
           <UpgradePanel
             tower={selectedTower} towers={g.towers} credits={g.credits}
             onUpgrade={handleUpgrade} onSell={handleSell} onClose={() => setSelectedTowerId(null)}
-            unicornChargePct={unicornChargePct} unicornReady={unicornReady} onFireUnicorn={handleStartAim}
+            unicornChargePct={unicornChargePct} unicornReady={unicornReady}
           />
         </div>
 

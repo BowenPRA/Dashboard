@@ -18,7 +18,7 @@ const UPGRADE_ICONS = {
 
 export default function UpgradePanel({
   tower, towers, credits, onUpgrade, onSell, onClose,
-  unicornChargePct = 0, unicornReady = false, onFireUnicorn = () => {}
+  unicornChargePct = 0, unicornReady = false
 }) {
   if (!tower) {
     return (
@@ -94,37 +94,18 @@ export default function UpgradePanel({
         </div>
       </div>
 
-      {/* Unicorn charge meter + fire control */}
+      {/* Unicorn firing hint — the rainbow ring on the board is the charge gauge,
+          and firing is done there (tap the unicorn to aim, tap a square to fire). */}
       {isUnicorn && (
-        <div className="px-3 py-3 md:px-4 md:py-4 bg-slate-900 border-b-2 md:border-b-0 border-slate-700 flex flex-col gap-2 shrink-0">
-          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-            <span className="text-slate-400">Charge</span>
-            <span className={unicornReady ? 'text-fuchsia-300' : 'text-slate-500'}>
-              {unicornReady ? 'Ready!' : `${Math.round(unicornChargePct * 100)}%`}
-            </span>
+        <div className="px-3 py-2.5 md:px-4 md:py-3 bg-slate-900 border-b-2 md:border-b-0 border-slate-700 flex items-center gap-2.5 shrink-0">
+          <Wand2 className={`w-5 h-5 shrink-0 ${unicornReady ? 'text-fuchsia-400 animate-pulse' : 'text-slate-500'}`} strokeWidth={2.5} />
+          <div className="text-[11px] font-bold leading-snug">
+            {unicornReady ? (
+              <span className="text-fuchsia-300">Charged! Tap the unicorn, then tap a target to fire.</span>
+            ) : (
+              <span className="text-slate-400">Charging {Math.round(unicornChargePct * 100)}% — the rainbow ring fills as it powers up.</span>
+            )}
           </div>
-          <div className="h-3 w-full rounded-full bg-slate-800 overflow-hidden border border-slate-700 shadow-inner">
-            <div
-              className="h-full rounded-full transition-[width] duration-100"
-              style={{
-                width: `${Math.min(100, unicornChargePct * 100)}%`,
-                background: unicornReady
-                  ? 'linear-gradient(90deg,#f43f5e,#f59e0b,#facc15,#22c55e,#38bdf8,#a855f7)'
-                  : 'linear-gradient(90deg,#a855f7,#ec4899)'
-              }}
-            />
-          </div>
-          <button
-            onClick={onFireUnicorn}
-            disabled={!unicornReady}
-            className={`w-full flex items-center justify-center gap-2 px-3 py-2.5 md:py-3 rounded-xl font-black text-xs md:text-sm uppercase tracking-widest transition-all border-b-[4px] active:translate-y-[4px] active:border-b-0
-              ${unicornReady
-                ? 'bg-gradient-to-r from-fuchsia-500 to-violet-600 border-fuchsia-800 text-white shadow-[0_0_18px_rgba(217,70,239,0.6)] hover:brightness-110'
-                : 'bg-slate-700 border-slate-800 text-slate-500 cursor-not-allowed opacity-60'}`}
-          >
-            <Wand2 className={`w-4 h-4 md:w-5 md:h-5 ${unicornReady ? 'animate-pulse' : ''}`} strokeWidth={2.5} />
-            {unicornReady ? 'Aim & Fire' : 'Charging…'}
-          </button>
         </div>
       )}
 

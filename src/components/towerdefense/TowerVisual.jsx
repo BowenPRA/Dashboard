@@ -174,43 +174,59 @@ const NitroAlien = ({ className, hasPassive }) => (
   </svg>
 );
 
+// A clear left-facing horse head: long muzzle, pointed ear, flowing rainbow mane
+// down the neck and a spiral horn from the brow.
 const UnicornBlook = ({ className, hasPassive }) => (
   <svg viewBox="0 0 200 200" className={className}>
     <defs>
-      <linearGradient id="uni-horn" x1="0" y1="0" x2="1" y2="1">
+      <linearGradient id="uni-horn" x1="0" y1="1" x2="0" y2="0">
         <stop offset="0%" stopColor="#f43f5e" />
-        <stop offset="25%" stopColor="#f59e0b" />
-        <stop offset="50%" stopColor="#facc15" />
-        <stop offset="70%" stopColor="#22c55e" />
+        <stop offset="30%" stopColor="#f59e0b" />
+        <stop offset="55%" stopColor="#facc15" />
+        <stop offset="78%" stopColor="#22c55e" />
         <stop offset="100%" stopColor="#6366f1" />
       </linearGradient>
-      <linearGradient id="uni-mane" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id="uni-mane" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stopColor="#a855f7" />
-        <stop offset="50%" stopColor="#ec4899" />
+        <stop offset="45%" stopColor="#ec4899" />
         <stop offset="100%" stopColor="#38bdf8" />
       </linearGradient>
     </defs>
     <g id="unicorn-blook">
-      {/* Mane */}
-      <path d="M70,55 Q35,60 45,110 Q55,90 68,100 Q58,125 72,140 L95,120 Z" fill="url(#uni-mane)" />
-      {/* Ears */}
-      <polygon points="80,45 92,20 100,48" fill="#f5e9ff" />
-      <polygon points="120,45 132,22 110,48" fill="#f5e9ff" />
-      {/* Head */}
-      <path d="M78,60 Q100,40 128,58 Q150,72 140,120 Q128,158 100,158 Q72,152 70,110 Q70,78 78,60 Z" fill="#fdf2ff" stroke="#efd6ff" strokeWidth="3" />
-      {/* Muzzle */}
-      <ellipse cx="112" cy="128" rx="26" ry="20" fill="#fbe8ff" />
-      <ellipse cx="120" cy="132" rx="4" ry="5" fill="#d8a7e8" />
+      {/* Mane down the back of the neck */}
+      <path d="M112,58 Q150,70 150,120 Q152,162 126,180 Q150,150 137,120 Q150,95 118,80 Q132,69 112,58 Z" fill="url(#uni-mane)" />
+      <path d="M118,72 Q142,97 131,129 Q140,151 121,168 Q131,140 120,120 Q129,98 107,85 Z" fill="#c084fc" opacity="0.65" />
+
+      {/* Head + neck silhouette, muzzle to the left */}
+      <path d="M34,118 C29,107 34,97 45,95 L59,91 C65,68 79,56 97,55 C106,55 112,60 114,68 C138,76 150,104 149,150 L120,176 C109,177 99,174 93,167 C69,163 59,149 54,137 L47,131 C39,127 35,124 34,118 Z"
+            fill="#fdf2ff" stroke="#efd6ff" strokeWidth="3" />
+
+      {/* Muzzle shading */}
+      <path d="M34,118 C29,107 34,97 45,95 L60,92 C58,104 55,116 52,126 L47,131 C39,127 35,124 34,118 Z" fill="#fbe8ff" />
+
+      {/* Ear */}
+      <polygon points="112,62 122,30 136,60" fill="#fdf2ff" stroke="#efd6ff" strokeWidth="3" />
+      <polygon points="117,56 123,40 130,56" fill="#f0abfc" />
+
+      {/* Forelock tuft at the brow */}
+      <path d="M95,56 Q108,47 119,58 Q110,66 99,64 Z" fill="url(#uni-mane)" />
+
+      {/* Spiral horn */}
+      <polygon points="93,54 80,2 106,52" fill="url(#uni-horn)" stroke="#fff" strokeWidth="1.5" />
+      <path d="M92,44 L100,42 M90,34 L98,32 M88,24 L95,22 M86,14 L92,13" stroke="#fff" strokeWidth="1.6" opacity="0.85" />
+
       {/* Eye */}
-      <circle cx="106" cy="92" r="9" fill="#3b1d4e" />
-      <circle cx="103" cy="89" r="3" fill="#fff" />
-      {/* Horn */}
-      <polygon points="104,52 118,10 112,52" fill="url(#uni-horn)" stroke="#fff" strokeWidth="1.5" />
-      <path d="M106,44 L116,44 M107,36 L115,36 M108,28 L114,28" stroke="#fff" strokeWidth="1.5" opacity="0.8" />
+      <ellipse cx="83" cy="90" rx="6.5" ry="9" fill="#3b1d4e" />
+      <circle cx="81" cy="86" r="2.4" fill="#fff" />
+
+      {/* Nostril + mouth on the muzzle */}
+      <ellipse cx="45" cy="110" rx="4" ry="5.5" fill="#d8a7e8" />
+      <path d="M36,122 Q44,128 52,124" stroke="#d8a7e8" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+
       {hasPassive && (
         <g id="twin-sparkle">
-          <path d="M52,40 l3,7 l7,3 l-7,3 l-3,7 l-3,-7 l-7,-3 l7,-3 z" fill="#facc15" />
-          <path d="M158,150 l2.5,6 l6,2.5 l-6,2.5 l-2.5,6 l-2.5,-6 l-6,-2.5 l6,-2.5 z" fill="#38bdf8" />
+          <path d="M150,38 l3,7 l7,3 l-7,3 l-3,7 l-3,-7 l-7,-3 l7,-3 z" fill="#facc15" />
+          <path d="M40,58 l2.5,6 l6,2.5 l-6,2.5 l-2.5,6 l-2.5,-6 l-6,-2.5 l6,-2.5 z" fill="#38bdf8" />
         </g>
       )}
     </g>

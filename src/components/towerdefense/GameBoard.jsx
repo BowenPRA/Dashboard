@@ -564,12 +564,22 @@ function UnicornOverlay({ unicorn, chargePct, aiming, hoverCell, width, height }
                style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.4), rgba(236,72,153,0.15), transparent 70%)' }} />
         )}
         <svg viewBox="0 0 64 64" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="32" cy="32" r={R} fill="none" stroke="rgba(15,23,42,0.55)" strokeWidth="4" />
+          <defs>
+            <linearGradient id="uni-ring" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#f43f5e" />
+              <stop offset="25%" stopColor="#f59e0b" />
+              <stop offset="45%" stopColor="#facc15" />
+              <stop offset="65%" stopColor="#22c55e" />
+              <stop offset="85%" stopColor="#38bdf8" />
+              <stop offset="100%" stopColor="#a855f7" />
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r={R} fill="none" stroke="rgba(15,23,42,0.55)" strokeWidth="5" />
           <circle
             cx="32" cy="32" r={R} fill="none"
-            stroke={ready ? '#facc15' : '#e879f9'} strokeWidth="4" strokeLinecap="round"
+            stroke="url(#uni-ring)" strokeWidth="5" strokeLinecap="round"
             strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)}
-            style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+            style={{ transition: 'stroke-dashoffset 0.1s linear', filter: ready ? 'drop-shadow(0 0 4px rgba(236,72,153,0.9))' : 'none' }}
           />
         </svg>
         {ready && <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-lg animate-bounce">✨</div>}
