@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, Loader2, Flame, CheckCircle2, Circle, Sun, Moon, Coffee,
   ClipboardCheck, Dumbbell, CalendarDays, ArrowRight, AlertTriangle, Trophy,
@@ -10,6 +10,7 @@ import { getTrackConfig } from '../components/trackRegistry';
 import { Card, Badge, Button } from '../components/ui';
 import useDarkMode from '../hooks/useDarkMode';
 import { PROGRAM, BENCHMARK } from '../utils/studyPlanConfig';
+import { hasStudyPlan } from '../utils/studyPlanAccess';
 import {
   todayISO, dayName, evaluateDay, weekOf, computeStreak, missedThisWeek,
   totalStudyDays, fromDayISO,
@@ -363,6 +364,10 @@ export default function Today() {
       </div>
     );
   }
+
+  // The plan is for the two GED-sprint students only. Anyone else who reaches
+  // /today directly (old link, typed URL) is sent back to their track menu.
+  if (!hasStudyPlan(user)) return <Navigate to="/home" replace />;
 
   return (
     <PlanScreen

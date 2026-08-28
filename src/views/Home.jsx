@@ -4,6 +4,7 @@ import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffe
 import { TRACK_REGISTRY, getTrackConfig } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
+import { hasStudyPlan } from '../utils/studyPlanAccess';
 import { planForDate, todayISO } from '../utils/studyPlan';
 import useDarkMode from '../hooks/useDarkMode';
 
@@ -11,6 +12,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [isDark, toggleDarkMode] = useDarkMode();
   const [visibleTracks, setVisibleTracks] = useState([]);
+  const [showPlan, setShowPlan] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // The banner only needs the plan, not the progress behind it — /today owns
@@ -27,6 +29,10 @@ export default function Home() {
       // user_metadata value so no existing student loses their enrolment.
       const enrolled = session?.user?.app_metadata?.enrolled_tracks
         ?? session?.user?.user_metadata?.enrolled_tracks;
+
+      // The daily plan is for the two GED-sprint students only; everyone else
+      // never sees the card.
+      setShowPlan(hasStudyPlan(session?.user));
 
       if (isPreviewAccount(session?.user)) {
         // Preview/QA account: every track, regardless of enrolment.
@@ -76,8 +82,10 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Today's plan — the intended way in. The tracks below stay available
-            for free study, but the assignment is what the day is measured on. */}
+        {/* Today's plan — the intended way in for the two GED-sprint students.
+            The tracks below stay available for free study, but the assignment is
+            what the day is measured on. Hidden for every other account. */}
+        {showPlan && (
         <button
           onClick={() => navigate('/today')}
           className="group relative w-full text-left mb-8 p-7 sm:p-8 rounded-[2.5rem] border-2 border-slate-200 dark:border-slate-800 border-b-[8px] bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 active:translate-y-[8px] active:border-b-2 animate-in fade-in slide-in-from-bottom-4 duration-500"
@@ -126,6 +134,7 @@ export default function Home() {
             </div>
           </div>
         </button>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {visibleTracks.map((t, index) => {
