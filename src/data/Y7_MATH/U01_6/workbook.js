@@ -52,10 +52,15 @@ export const workbook = [
         answer: '$64$', answerVn: '$64$',
       },
       {
-        id: 'p3', prompt: 'Between which two whole numbers does $\\sqrt{50}$ lie?', promptVn: '$\\sqrt{50}$ nằm giữa hai số nguyên nào?',
+        id: 'p3', type: 'fill_blank',
+        prompt: 'Between which two whole numbers does $\\sqrt{50}$ lie? Put the smaller one first.',
+        promptVn: '$\\sqrt{50}$ nằm giữa hai số nguyên nào? Điền số nhỏ trước.',
+        textParts: ['$\\sqrt{50}$ lies between ', ' and ', ''],
+        textPartsVn: ['$\\sqrt{50}$ nằm giữa ', ' và ', ''],
+        blanks: { '1': { correct: '7', width: 2 }, '2': { correct: '8', width: 2 } },
         solution: ['50 is between the squares $49 = 7^2$ and $64 = 8^2$.', 'So $\\sqrt{50}$ is between 7 and 8.'],
         solutionVn: ['50 nằm giữa hai số chính phương $49 = 7^2$ và $64 = 8^2$.', 'Vậy $\\sqrt{50}$ nằm giữa 7 và 8.'],
-        answer: '7 and 8', answerVn: '7 and 8',
+        answer: '7 and 8', answerVn: '7 và 8',
       },
       {
         id: 'p4', prompt: 'Work out $\\sqrt{121} + \\sqrt[3]{8}$.', promptVn: 'Tính $\\sqrt{121} + \\sqrt[3]{8}$.',
@@ -76,10 +81,15 @@ export const workbook = [
     tierVn: 'Nâng cao',
     questions: [
       {
-        id: 'c1', prompt: '64 is on the list of squares **and** the list of cubes. Work out both $\\sqrt{64}$ and $\\sqrt[3]{64}$.', promptVn: '64 có trong bảng bình phương **và** bảng lập phương. Tính cả $\\sqrt{64}$ và $\\sqrt[3]{64}$.',
+        id: 'c1', type: 'fill_blank',
+        prompt: '64 is on the list of squares **and** the list of cubes. Work out both roots.',
+        promptVn: '64 có trong bảng bình phương **và** bảng lập phương. Tính cả hai căn.',
+        textParts: ['$\\sqrt{64} =$ ', '$\\qquad \\sqrt[3]{64} =$ ', ''],
+        textPartsVn: ['$\\sqrt{64} =$ ', '$\\qquad \\sqrt[3]{64} =$ ', ''],
+        blanks: { '1': { correct: '8', width: 2 }, '2': { correct: '4', width: 2 } },
         solution: ['$8 × 8 = 64$, so $\\sqrt{64} = 8$.', '$4 × 4 × 4 = 64$, so $\\sqrt[3]{64} = 4$.'],
         solutionVn: ['$8 × 8 = 64$, nên $\\sqrt{64} = 8$.', '$4 × 4 × 4 = 64$, nên $\\sqrt[3]{64} = 4$.'],
-        answer: '8 and 4', answerVn: '8 and 4',
+        answer: '8 and 4', answerVn: '8 và 4',
       },
       {
         id: 'c2', prompt: 'Mr Bowen tiles a wall with **576 square tiles** in a perfect square. How many tiles run along the bottom?', promptVn: 'Thầy Bowen lát một bức tường bằng **576 viên gạch vuông** thành một hình vuông hoàn hảo. Cạnh dưới có bao nhiêu viên gạch?',
@@ -88,7 +98,14 @@ export const workbook = [
         answer: '$24$', answerVn: '$24$',
       },
       {
-        id: 'c3', prompt: '$\\sqrt{45}$ lies between 6 and 7. Is it closer to **6** or to **7**? Explain.', promptVn: '$\\sqrt{45}$ nằm giữa 6 và 7. Nó gần **6** hay gần **7** hơn? Giải thích.',
+        id: 'c3', type: 'mcq',
+        prompt: '$\\sqrt{45}$ lies between 6 and 7. Is it closer to **6** or to **7**?',
+        promptVn: '$\\sqrt{45}$ nằm giữa 6 và 7. Nó gần **6** hay gần **7** hơn?',
+        options: [
+          { val: '6', text: 'Closer to $6$', textVn: 'Gần $6$ hơn' },
+          { val: '7', text: 'Closer to $7$', textVn: 'Gần $7$ hơn' },
+        ],
+        correct: '7',
         solution: ['Compare 45 with the two squares: $36 = 6^2$ and $49 = 7^2$.', '45 is much closer to 49 than to 36, so $\\sqrt{45}$ is closer to **7**.'],
         solutionVn: ['So sánh 45 với hai số chính phương: $36 = 6^2$ và $49 = 7^2$.', '45 gần 49 hơn nhiều so với 36, nên $\\sqrt{45}$ gần **7** hơn.'],
         answer: '7', answerVn: '7',

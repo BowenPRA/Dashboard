@@ -10,7 +10,16 @@ export const workbook = [
     tierVn: 'Trọng tâm',
     questions: [
       {
-        id: 'f1', prompt: 'Find the **lowest common multiple** of 3 and 4.', promptVn: 'Tìm **bội số chung nhỏ nhất** của 3 và 4.',
+        id: 'f1', type: 'mcq',
+        prompt: 'Which number is the **lowest common multiple** of 3 and 4 — the smallest number in **both** times-tables?',
+        promptVn: 'Số nào là **bội số chung nhỏ nhất** của 3 và 4 — số nhỏ nhất có trong **cả hai** bảng cửu chương?',
+        options: [
+          { val: 'a', text: '$7$' },
+          { val: 'b', text: '$12$' },
+          { val: 'c', text: '$24$' },
+          { val: 'd', text: '$1$' },
+        ],
+        correct: 'b',
         solution: ['Multiples of 3: 3, 6, 9, **12**, … Multiples of 4: 4, 8, **12**, …', 'The lowest number in both lists is $12$.'],
         solutionVn: ['Bội số của 3: 3, 6, 9, **12**, … Bội số của 4: 4, 8, **12**, …', 'Số nhỏ nhất có trong cả hai là $12$.'],
         answer: '$12$', answerVn: '$12$',
@@ -58,7 +67,11 @@ export const workbook = [
         answer: '$28$', answerVn: '$28$',
       },
       {
-        id: 'p4', prompt: 'Write the first **three common multiples** of 4 and 6.', promptVn: 'Viết **ba bội số chung** đầu tiên của 4 và 6.',
+        id: 'p4', type: 'fill_blank',
+        prompt: 'Write the first **three common multiples** of 4 and 6, smallest first.',
+        promptVn: 'Viết **ba bội số chung** đầu tiên của 4 và 6, từ nhỏ đến lớn.',
+        textParts: ['', ' , ', ' , ', ''], textPartsVn: ['', ' , ', ' , ', ''],
+        blanks: { '1': { correct: '12', width: 3 }, '2': { correct: '24', width: 3 }, '3': { correct: '36', width: 3 } },
         solution: ['The common multiples are the numbers in both lists of multiples.', 'They are $12, 24, 36$.'],
         solutionVn: ['Bội số chung là những số có trong cả hai danh sách bội số.', 'Đó là $12, 24, 36$.'],
         answer: '$12, 24, 36$', answerVn: '$12, 24, 36$',

@@ -73,10 +73,62 @@ export const workbook = [
 ];
 ```
 
-Field notes:
+### Answer types (`type`)
 
-- `prompt` / `solution` steps support the **same markdown-lite + KaTeX** as lessons:
-  `$…$` inline, `$$…$$` block, `**bold**`. Use math markup for *all* notation.
+By default a question shows **one typed box** marked by algebraic equivalence — right
+for a single value (`$-7$`, `$x=6$`, a fraction). For anything that is awkward to type
+on one line, or where recognition suits Year 7 better, set a `type`:
+
+```js
+// Multiple choice — tap one option. Great for Yes/No and concept checks.
+{ id: 'f2', type: 'mcq',
+  prompt: 'What is $-7 × -3$?',
+  options: [ { val: 'a', text: '$21$' }, { val: 'b', text: '$-21$' } ],
+  correct: 'a',                    // matches an option's `val`
+  solution: [ … ], answer: '$21$' }
+
+// Fill-in boxes — a sentence with typed blanks. Each blank marked by equivalence.
+{ id: 'p2', type: 'fill_blank',
+  prompt: 'Fill in the missing number.',
+  textParts: ['$8 +$', '$= 1$'],   // blank n renders AFTER textParts[n-1]
+  blanks: { '1': { correct: '-7', width: 4, accept: [] } },
+  solution: [ … ], answer: '$-7$' }
+
+// Dropdown blanks — a sentence with pick-lists (exact match on `val`).
+{ id: 'q', type: 'inline',
+  textParts: ['The signs are ', ', so the answer is ', ''],
+  blanks: {
+    '1': { options: [ { val: 's', text: 'the same' }, { val: 'd', text: 'different' } ], correct: 's' },
+    '2': { options: [ { val: 'p', text: 'positive' }, { val: 'n', text: 'negative' } ], correct: 'p' },
+  }, … }
+
+// Drag-and-drop — drag chips into targets. `dnd` = unordered, `order` = sequence.
+{ id: 'c1', type: 'dnd',
+  bank: [ { val: '-3', text: '$-3$' }, { val: '4', text: '$4$' }, … ],
+  targets: [ { id: 's1', title: 'sum $= 1$' }, … ],
+  correctSets: { s1: ['-3', '4'], … },   // set per target; order matters only for `order`
+  solution: [ … ], answer: '$-3+4=1,\\ …$' }
+```
+
+- **Which type when.** Yes/No and "which of these" → `mcq`. A missing number in an
+  equation, a simplified fraction (two boxes, no `\frac` to type), "between which two
+  numbers" → `fill_blank`. Sorting numbers into groups, "use each number once",
+  "pick all that apply" → `dnd`/`order`. Sentence completion with a fixed set of
+  words → `inline`. Everything else stays a plain typed box.
+- **Bilingual fields.** `options` items and `bank`/`targets` take an optional `…Vn`
+  (`textVn`, `titleVn`); `textParts` has a parallel `textPartsVn`. All fall back to EN.
+- **Marking.** `fill_blank` blanks are marked by the same equivalence engine as the
+  typed box (so `2/3` works, and `accept` handles word answers); `mcq`/`inline` are
+  exact `val` matches; `dnd` needs the exact set per target (`order` in sequence).
+- Each type is **still scorable** and contributes to the XP share exactly like a typed
+  box. A question with none of these fields and no `answer` (e.g. "copy and complete
+  the table") is worth doing but not worth points.
+
+### Field notes
+
+- `prompt` / `solution` steps and every `text`/`textParts` string support the **same
+  markdown-lite + KaTeX** as lessons: `$…$` inline, `$$…$$` block, `**bold**`. Keep
+  `textParts` content inline (no `$$…$$` block math). Use math markup for *all* notation.
 - `solution` is an **array of steps**, not a paragraph — this is what makes the reveal
   teach. One idea per step; the final step contains the answer.
 - `answer` is the short headline result, shown as a highlighted pill when revealed —

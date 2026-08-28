@@ -46,7 +46,10 @@ export const workbook = [
         answer: '$5$', answerVn: '$5$',
       },
       {
-        id: 'p2', prompt: 'Fill in the missing number: $8 + \\square = 1$.', promptVn: 'Điền số còn thiếu: $8 + \\square = 1$.',
+        id: 'p2', type: 'fill_blank',
+        prompt: 'Fill in the missing number.', promptVn: 'Điền số còn thiếu.',
+        textParts: ['$8 +$', '$= 1$'], textPartsVn: ['$8 +$', '$= 1$'],
+        blanks: { '1': { correct: '-7', width: 4 } },
         solution: ['We need what to add to $8$ to reach $1$, so $\\square = 1 - 8$.', '$1 - 8 = -7$. Check: $8 + -7 = 1$. ✓'],
         solutionVn: ['Cần cộng gì vào $8$ để được $1$, nên $\\square = 1 - 8$.', '$1 - 8 = -7$. Thử lại: $8 + -7 = 1$. ✓'],
         answer: '$-7$', answerVn: '$-7$',
@@ -76,9 +79,19 @@ export const workbook = [
     tierVn: 'Nâng cao',
     questions: [
       {
-        id: 'c1',
-        prompt: 'Use each of $-5, -3, -2, 3, 4, 5$ **once** to complete all three: $\\square + \\square = 1$,  $\\square + \\square = -2$,  $\\square + \\square = 3$.',
-        promptVn: 'Dùng mỗi số $-5, -3, -2, 3, 4, 5$ **một lần** để hoàn thành cả ba: $\\square + \\square = 1$,  $\\square + \\square = -2$,  $\\square + \\square = 3$.',
+        id: 'c1', type: 'dnd',
+        prompt: 'Drag each number into a sum so that every sum is correct. Use **each number once**.',
+        promptVn: 'Kéo mỗi số vào một phép tính sao cho mọi tổng đều đúng. Dùng **mỗi số một lần**.',
+        bank: [
+          { val: '-5', text: '$-5$' }, { val: '-3', text: '$-3$' }, { val: '-2', text: '$-2$' },
+          { val: '3', text: '$3$' }, { val: '4', text: '$4$' }, { val: '5', text: '$5$' },
+        ],
+        targets: [
+          { id: 's1', title: 'sum $= 1$', titleVn: 'tổng $= 1$' },
+          { id: 's2', title: 'sum $= -2$', titleVn: 'tổng $= -2$' },
+          { id: 's3', title: 'sum $= 3$', titleVn: 'tổng $= 3$' },
+        ],
+        correctSets: { s1: ['-3', '4'], s2: ['-5', '3'], s3: ['-2', '5'] },
         solution: ['Every integer is used exactly once across the three sums.', '$-3 + 4 = 1$.', '$-5 + 3 = -2$.', '$-2 + 5 = 3$.'],
         solutionVn: ['Mỗi số nguyên được dùng đúng một lần trong ba phép tính.', '$-3 + 4 = 1$.', '$-5 + 3 = -2$.', '$-2 + 5 = 3$.'],
         answer: '$-3+4=1,\\ \\ -5+3=-2,\\ \\ -2+5=3$', answerVn: '$-3+4=1,\\ \\ -5+3=-2,\\ \\ -2+5=3$',
