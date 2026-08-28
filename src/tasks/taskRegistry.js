@@ -149,8 +149,8 @@ export const TASKS = [
     component: lazy(() => import('./ShortAnswers.jsx')),
     hasContent: (u) => notEmpty(u.shortQA),
     buildPool: (u) => ({ shortQA: u.shortQA || [] }),
-    props: ({ pool, unit, track, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
-      ({ pool, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onQuit }),
+    props: ({ pool, unit, track, savedData, strikes, onAddStrike, onComplete, onProgress, onQuit }) =>
+      ({ pool, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onProgress, onQuit }),
   },
   {
     id: 'DIAGRAMS',
@@ -273,7 +273,7 @@ export const TASKS = [
     component: lazy(() => import('./Workbook.jsx')),
     hasContent: (u) => notEmpty(u.workbook),
     buildPool: (u) => u.workbook || [],
-    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
   {
     id: 'GRAPH',
@@ -333,7 +333,7 @@ export const TASKS = [
     component: lazy(() => import('./NumberDrill.jsx')),
     hasContent: (u) => !!u.drill?.ladder?.length,
     buildPool: (u) => u.drill,
-    props: ({ pool, savedData, onComplete, onQuit }) => ({ pool, savedData, onComplete, onQuit }),
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
   {
     id: 'FACTOR_BLITZ',

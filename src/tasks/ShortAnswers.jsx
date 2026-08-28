@@ -44,9 +44,23 @@ const checkRequiredWordGroup = (wordGroup, text) => {
   return false;
 };
 
-export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
+export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const questions = pool?.shortQA || [];
   const [localAnswers, setLocalAnswers] = useState(savedData);
+
+  // XP already banked from the questions answered with full marks (the ones
+  // stored, and skipped on a later attempt). Used to credit progress the moment a
+  // question is passed and when the student exits, so quitting never zeroes work.
+  const bankedXP = (answers) => {
+    const totalMarks = questions.reduce((s, qq) => s + (qq?.scienceMaxMarks || 2), 0);
+    if (!totalMarks) return 0;
+    const earned = questions.reduce((s, qq, i) => {
+      const a = answers?.[i];
+      const perfect = a && (typeof a === 'string' || a.status === 'perfect');
+      return s + (perfect ? (qq?.scienceMaxMarks || 2) : 0);
+    }, 0);
+    return Math.round((earned / totalMarks) * 20);
+  };
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [gameState, setGameState] = useState('Q'); 
@@ -116,7 +130,9 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       isStrikeFallback: true
     });
 
-    setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'strike_fallback' } }));
+    const next = { ...localAnswers, [currentIndex]: { text: userAnswer.trim(), status: 'strike_fallback' } };
+    setLocalAnswers(next);
+    onProgress?.(bankedXP(next), next);
     setGameState('A');
   };
 
@@ -154,7 +170,9 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
       } catch (e2) {
         console.error("AI Grade Failed twice. Entering Error State.");
         setGameState('SAVED_API_ERROR');
-        setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'api_error' } }));
+        const next = { ...localAnswers, [currentIndex]: { text: userAnswer.trim(), status: 'api_error' } };
+        setLocalAnswers(next);
+        onProgress?.(bankedXP(next), next);
         return;
       }
     }
@@ -197,9 +215,13 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
     });
 
     if (isPerfect) {
-      setLocalAnswers(prev => ({ ...prev, [currentIndex]: { text: userAnswer.trim(), status: 'perfect' } }));
+      const next = { ...localAnswers, [currentIndex]: { text: userAnswer.trim(), status: 'perfect' } };
+      setLocalAnswers(next);
+      // Checkpoint the moment a question is passed, so its marks are banked and
+      // it is skipped next time even if the student exits before finishing.
+      onProgress?.(bankedXP(next), next);
     }
-    
+
     setGameState('A');
   };
 
@@ -326,11 +348,11 @@ export default function ShortAnswers({ pool, onComplete, onQuit, savedData = {},
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans pb-32 transition-colors duration-300">
-      <TopBar 
-        current={currentIndex} 
-        total={questions.length} 
-        onQuit={() => onComplete(0, localAnswers)} 
-        modeTitle="Short Answers" 
+      <TopBar
+        current={currentIndex}
+        total={questions.length}
+        onQuit={() => onComplete(bankedXP(localAnswers), localAnswers)}
+        modeTitle="Short Answers"
       />
 
       <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-6 w-full max-w-4xl mx-auto mt-2 sm:mt-6">

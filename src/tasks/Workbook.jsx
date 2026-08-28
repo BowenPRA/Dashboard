@@ -65,7 +65,7 @@ class WidgetBoundary extends Component {
   render() { return this.state.err ? null : this.props.children; }
 }
 
-export default function Workbook({ pool, onComplete, onQuit }) {
+export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
   const problems = useMemo(() => {
     const groups = Array.isArray(pool) ? pool : [];
     return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn })));
@@ -73,8 +73,11 @@ export default function Workbook({ pool, onComplete, onQuit }) {
 
   const [idx, setIdx] = useState(0);
   const [lang, setLang] = useState('en');
-  const [revealed, setRevealed] = useState(() => new Set());
-  const [results, setResults] = useState({}); // id -> { value, correct, shown }
+  // A correct answer from a previous attempt is restored so it is not asked
+  // again — it shows as already solved (method visible) and the student skips
+  // past it. Only correct answers are persisted, so wrong ones stay retryable.
+  const [results, setResults] = useState(() => savedData || {}); // id -> { value, correct, shown }
+  const [revealed, setRevealed] = useState(() => new Set(Object.keys(savedData || {})));
   const [drafts, setDrafts] = useState({});   // id -> what they have typed so far
 
   const total = problems.length;
@@ -89,20 +92,38 @@ export default function Workbook({ pool, onComplete, onQuit }) {
   const draft = q ? (drafts[q.id] ?? '') : '';
   const setDraft = (v) => setDrafts((prev) => ({ ...prev, [q.id]: v }));
 
-  const grade = (correct, shown = false) =>
-    setResults((prev) => (prev[q.id] ? prev : { ...prev, [q.id]: { value: draft, correct, shown } }));
+  // XP is the share of markable questions answered right before the reveal;
+  // the resume blob keeps only the correct ones so they can be skipped next time.
+  const scoreFrom = (res) => (scorable.length
+    ? Math.round((scorable.filter((p) => res[p.id]?.correct).length / scorable.length) * 10)
+    : 10);
+  const blobFrom = (res) => Object.fromEntries(
+    Object.entries(res).filter(([, r]) => r?.correct).map(([id, r]) => [id, { value: r.value, correct: true }])
+  );
+  const itemsFrom = (res) => scorable.map((p) => ({ itemId: p.id, correct: !!res[p.id]?.correct }));
+
+  const applyResult = (correct, shown) => {
+    if (results[q.id]) return results;
+    const next = { ...results, [q.id]: { value: draft, correct, shown } };
+    setResults(next);
+    return next;
+  };
 
   const check = () => {
     if (!q?.answer || result || !draft.trim()) return;
     // Equivalent expressions count: "10+2x" is right for "2x+10". See mathEquivalence.
-    grade(answersEquivalent(draft, q.answer, q.accept));
+    const correct = answersEquivalent(draft, q.answer, q.accept);
+    const next = applyResult(correct, false);
     setRevealed((prev) => new Set(prev).add(q.id)); // right or wrong, show the method
+    // Checkpoint a correct answer immediately, so exiting keeps it and the next
+    // attempt skips it. A wrong answer changes neither the score nor the blob.
+    if (correct) onProgress?.(scoreFrom(next), blobFrom(next), { items: itemsFrom(next) });
   };
 
   const toggle = () => {
     // Revealing before answering is allowed — it is practice, and a stuck
     // student should be able to read the method. It just doesn't score.
-    if (q.answer && !results[q.id] && !revealed.has(q.id)) grade(false, true);
+    if (q.answer && !results[q.id] && !revealed.has(q.id)) applyResult(false, true);
     setRevealed((prev) => {
       const next = new Set(prev);
       next.has(q.id) ? next.delete(q.id) : next.add(q.id);
@@ -111,13 +132,9 @@ export default function Workbook({ pool, onComplete, onQuit }) {
   };
   const go = (d) => setIdx((i) => Math.max(0, Math.min(total - 1, i + d)));
 
-  /** XP is the share of markable questions answered right before the reveal. */
-  const finish = () => {
-    if (!scorable.length) { onComplete?.(10); return; }
-    const items = scorable.map((p) => ({ itemId: p.id, correct: !!results[p.id]?.correct }));
-    const right = items.filter((i) => i.correct).length;
-    onComplete?.(Math.round((right / scorable.length) * 10), null, { items });
-  };
+  // Save AND leave — used by both "Done" and the quit button, so exiting the
+  // task banks every correct answer rather than discarding the session.
+  const finish = () => onComplete?.(scoreFrom(results), scorable.length ? blobFrom(results) : null, { items: itemsFrom(results) });
 
   useEffect(() => {
     const onKey = (e) => {
@@ -161,7 +178,7 @@ export default function Workbook({ pool, onComplete, onQuit }) {
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(148,163,184,0.35); border-radius: 10px; }
       ` }} />
 
-      <TopBar onQuit={onQuit} modeTitle="Workbook Practice" current={idx + 1} total={total}
+      <TopBar onQuit={finish} modeTitle="Workbook Practice" current={idx + 1} total={total}
         lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
 
       {/* Problem card */}

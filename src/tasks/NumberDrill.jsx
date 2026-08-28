@@ -148,7 +148,7 @@ export default function NumberDrill(props) {
   return <ColumnDrill {...props} />;
 }
 
-function ColumnDrill({ pool, onComplete, onQuit }) {
+function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
   // Flatten the ladder into an ordered list, remembering each item's rung so we
   // can gate progression and show a banner when a new level opens.
   const mode = pool?.mode || 'long-mult';
@@ -173,7 +173,17 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
   }, [pool]);
 
   const [lang, setLang] = useState('en');
-  const [pos, setPos] = useState(0);
+  // Items cleared on a previous attempt are restored and skipped: the drill opens
+  // on the first item still to do, and their scores already count.
+  const [results, setResults] = useState(() => {
+    const init = {};
+    for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
+    return init;
+  });   // itemId -> { score, positions }
+  const [pos, setPos] = useState(() => {
+    const i = flat.findIndex((it) => savedData?.[it.id] == null);
+    return i === -1 ? 0 : i;
+  });
   const [stageIdx, setStageIdx] = useState(0);
   const [entries, setEntries] = useState({});   // cellId -> raw typed text
   const [locked, setLocked] = useState({});     // cellId -> true once accepted
@@ -182,7 +192,6 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
   const [helped, setHelped] = useState(false);  // a cell was revealed this item
   const [positions, setPositions] = useState([]); // wrong-step codes this item
   const [itemDone, setItemDone] = useState(false);
-  const [results, setResults] = useState({});   // itemId -> { score, positions }
   const [flash, setFlash] = useState(null);
   const [ended, setEnded] = useState(false);
   const firstBox = useRef(null);
@@ -274,8 +283,13 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
     } else {
       // Item finished. Record its score: full unless a cell had to be shown.
       const score = nowHelped ? 0.5 : 1;
-      setResults((r) => ({ ...r, [item.id]: { score, positions: [...new Set([...positions, ...newPositions])] } }));
+      const nextResults = { ...results, [item.id]: { score, positions: [...new Set([...positions, ...newPositions])] } };
+      setResults(nextResults);
       setItemDone(true);
+      // Checkpoint the moment an item is cleared, so exiting keeps it and the
+      // next attempt starts on the first item still to do.
+      const { raw, blob, log } = summary(nextResults);
+      onProgress?.(raw, blob, { items: log });
     }
   };
 
@@ -286,17 +300,27 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
 
   const goNext = () => { setPos((p) => p + 1); resetItem(); };
 
+  // The score, resume blob and per-item log for a results map. The blob stores
+  // each cleared item's score so a later attempt can restore and skip it.
+  const summary = (res) => {
+    const total = flat.length;
+    const cleared = flat.reduce((s, it) => s + (res[it.id]?.score || 0), 0);
+    const raw = total ? Math.round((cleared / total) * 10) : 0;
+    const blob = Object.fromEntries(flat.filter((it) => res[it.id]).map((it) => [it.id, res[it.id].score]));
+    const log = flat.map((it) => {
+      const r = res[it.id];
+      return { itemId: it.id, correct: !!r && r.score === 1, positions: r ? r.positions : [] };
+    });
+    return { raw, blob, log };
+  };
+
+  // Save AND leave — used by both "Finish" and the quit button, so exiting banks
+  // every cleared item instead of discarding the session.
   const finish = () => {
     if (ended) return;
     setEnded(true);
-    const total = flat.length;
-    const cleared = flat.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
-    const raw = total ? Math.round((cleared / total) * 10) : 0;
-    const log = flat.map((it) => {
-      const r = results[it.id];
-      return { itemId: it.id, correct: !!r && r.score === 1, positions: r ? r.positions : [] };
-    });
-    onComplete?.(raw, null, { items: log });
+    const { raw, blob, log } = summary(results);
+    onComplete?.(raw, blob, { items: log });
   };
 
   const edit = (id, text) => {
@@ -319,7 +343,7 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
-        onQuit={onQuit}
+        onQuit={finish}
         modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
         current={pos + 1}
         total={flat.length}
@@ -566,7 +590,7 @@ function TimesSprint({ pool, onComplete, onQuit }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={onQuit}
+      <TopBar onQuit={finish}
         modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
         current={rungIdx + 1} total={rungs.length} lang={lang}
         onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
@@ -746,7 +770,7 @@ function LockedNum({ value }) {
   );
 }
 
-function LongDiv({ pool, onComplete, onQuit }) {
+function LongDiv({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
   const flat = useMemo(() => {
     const items = [];
     (pool?.ladder || []).forEach((rung, ri) => {
@@ -763,7 +787,16 @@ function LongDiv({ pool, onComplete, onQuit }) {
   }, [pool]);
 
   const [lang, setLang] = useState('en');
-  const [pos, setPos] = useState(0);
+  // Items cleared on a previous attempt are restored and skipped.
+  const [results, setResults] = useState(() => {
+    const init = {};
+    for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
+    return init;
+  });
+  const [pos, setPos] = useState(() => {
+    const i = flat.findIndex((it) => savedData?.[it.id] == null);
+    return i === -1 ? 0 : i;
+  });
   const [stageIdx, setStageIdx] = useState(0);
   const [entries, setEntries] = useState({});
   const [locked, setLocked] = useState({});
@@ -771,7 +804,6 @@ function LongDiv({ pool, onComplete, onQuit }) {
   const [wrongs, setWrongs] = useState({});
   const [helped, setHelped] = useState(false);
   const [itemDone, setItemDone] = useState(false);
-  const [results, setResults] = useState({});
   const [flash, setFlash] = useState(null);
   const [ended, setEnded] = useState(false);
   const firstBox = useRef(null);
@@ -824,18 +856,32 @@ function LongDiv({ pool, onComplete, onQuit }) {
     if (!liveCells.every((c) => nextLocked[c.id])) { say('bad', ' '); return; }
     setFlash(null);
     if (stageIdx + 1 < steps.length) setStageIdx((s) => s + 1);
-    else { setResults((r) => ({ ...r, [item.id]: { score: nowHelped ? 0.5 : 1 } })); setItemDone(true); }
+    else {
+      const nextResults = { ...results, [item.id]: { score: nowHelped ? 0.5 : 1 } };
+      setResults(nextResults);
+      setItemDone(true);
+      const { raw, blob, log } = summary(nextResults);
+      onProgress?.(raw, blob, { items: log });
+    }
   };
 
   const resetItem = () => { setStageIdx(0); setEntries({}); setLocked({}); setErrors({}); setWrongs({}); setHelped(false); setItemDone(false); setFlash(null); };
   const goNext = () => { setPos((p) => p + 1); resetItem(); };
+  // Score, resume blob and per-item log for a results map — blob stores each
+  // cleared item's score so a later attempt restores and skips it.
+  const summary = (res) => {
+    const total = flat.length;
+    const cleared = flat.reduce((s, it) => s + (res[it.id]?.score || 0), 0);
+    const raw = total ? Math.round((cleared / total) * 10) : 0;
+    const blob = Object.fromEntries(flat.filter((it) => res[it.id]).map((it) => [it.id, res[it.id].score]));
+    const log = flat.map((it) => ({ itemId: it.id, correct: res[it.id]?.score === 1 }));
+    return { raw, blob, log };
+  };
+  // Save AND leave — used by both "Finish" and the quit button.
   const finish = () => {
     if (ended) return; setEnded(true);
-    const total = flat.length;
-    const cleared = flat.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
-    const raw = total ? Math.round((cleared / total) * 10) : 0;
-    const log = flat.map((it) => ({ itemId: it.id, correct: results[it.id]?.score === 1 }));
-    onComplete?.(raw, null, { items: log });
+    const { raw, blob, log } = summary(results);
+    onComplete?.(raw, blob, { items: log });
   };
   const edit = (id, text) => { setEntries((s) => ({ ...s, [id]: text })); if (errors[id]) setErrors((e) => { const n = { ...e }; delete n[id]; return n; }); };
 
@@ -854,7 +900,7 @@ function LongDiv({ pool, onComplete, onQuit }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={onQuit}
+      <TopBar onQuit={finish}
         modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
         current={pos + 1} total={flat.length} lang={lang}
         onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />

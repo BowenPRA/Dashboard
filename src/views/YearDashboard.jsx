@@ -136,6 +136,16 @@ export default function YearDashboard({ track }) {
     setActiveTaskId(null);
   };
 
+  // A mid-task checkpoint: persist the running score and resume blob without
+  // closing the task, so exiting (or a crash) never discards work already done.
+  // `partial` tells recordAttempt not to log a fresh attempt for each question.
+  const handleTaskProgress = (taskId, rawScore, answers = null, meta = {}) => {
+    const unit = UNIT_DATA[activeUnit];
+    const declared = (unit?.phases || []).flatMap((p) => p.tasks).find((t) => t.id === taskId);
+    const task = { ...getTask(taskId), maxXP: declared?.maxXP ?? getTask(taskId)?.defaultMaxXP };
+    saveScore(activeUnit, task.dbKey, normalizeScore(task, rawScore), answers, { ...meta, partial: true });
+  };
+
   // --- active task ----------------------------------------------------------
   const activeTask = activeTaskId ? getTask(activeTaskId) : null;
   const activeUnitData = activeUnit ? UNIT_DATA[activeUnit] : null;
@@ -157,6 +167,7 @@ export default function YearDashboard({ track }) {
         strikes: activeScores.strikes || 0,
         onAddStrike: (n) => addStrike(activeUnit, n),
         onComplete: (score, answers, meta) => handleTaskComplete(activeTask.id, score, answers, meta),
+        onProgress: (score, answers, meta) => handleTaskProgress(activeTask.id, score, answers, meta),
         onQuit: closeTask,
       });
       taskElement = <TaskComponent {...taskProps} />;

@@ -68,9 +68,20 @@ export function recordAttempt(prev, score, answers = null, meta = {}) {
   const value = Number(score) || 0;
   const previous = prev || {};
 
-  const attempts = [...(previous.attempts || []), { score: value, at }].slice(-MAX_ATTEMPTS);
+  // A checkpoint save (`meta.partial`) persists progress in the MIDDLE of a task
+  // — the updated high-water XP and the resume blob — but appends neither a new
+  // attempt nor item rows, so saving after every question never floods those
+  // logs. Quitting or completing the task saves normally, logging one attempt for
+  // the whole session. `current` still climbs on a checkpoint, so partial work
+  // counts toward the unit XP and phase gates immediately; only the study-plan
+  // "today" attempt waits for the session's real save.
+  const partial = !!meta.partial;
 
-  const logged = (meta.items || [])
+  const attempts = partial
+    ? (previous.attempts || [])
+    : [...(previous.attempts || []), { score: value, at }].slice(-MAX_ATTEMPTS);
+
+  const logged = (partial ? [] : (meta.items || []))
     .filter((i) => i && i.itemId != null)
     .map((i) => ({ itemId: String(i.itemId), correct: !!i.correct, at }));
   const items = [...(previous.items || []), ...logged].slice(-MAX_ITEMS);
