@@ -1,0 +1,1 @@
+import{t as e}from"./vendor-DN16R88V.js";var t=RegExp(`[​-‍﻿]`,`g`);function n(n,r){try{let i=e.default||e,a=String(n).replace(t,``);return{html:i.renderToString(a,{throwOnError:!0,displayMode:r})}}catch(e){return{error:e.message}}}export{n as t};
