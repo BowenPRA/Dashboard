@@ -21,7 +21,7 @@ import TopBar from '../components/TopBar';
  * Reads a unit's `factorBlitz`:
  *   {
  *     title, titleVn, intro, introVn,
- *     seconds: 20,                 // optional per-round clock (default 18)
+ *     seconds: 20,                 // optional per-round clock (default 30)
  *     candidates: [2,3,4,…,12],    // optional tile set (default 2…12)
  *     rounds: [24, 36, 30, 48, …], // the target numbers
  *   }
@@ -86,7 +86,7 @@ export default function FactorBlitz({ pool, onComplete, onQuit }) {
     () => (pool?.candidates?.length ? pool.candidates : DEFAULT_CANDIDATES),
     [pool]
   );
-  const seconds = pool?.seconds || 18;
+  const seconds = pool?.seconds || 30;
 
   const [lang, setLang] = useState('en');
   const [roundIdx, setRoundIdx] = useState(0);

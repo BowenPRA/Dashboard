@@ -10,7 +10,7 @@
 export const factorBlitz = {
   title: 'Factor Blitz',
   titleVn: 'Truy Tìm Ước Số',
-  seconds: 18,
+  seconds: 30,
   intro:
     'A number appears. Tap every factor under 13 before the clock runs out — the numbers that divide it exactly. Each tap is a divisibility test: does this number go in with nothing left over?',
   introVn:

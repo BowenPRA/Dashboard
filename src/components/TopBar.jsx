@@ -28,16 +28,20 @@ export default function TopBar({
   return (
     <div className="flex justify-between items-center p-3 sm:p-4 border-b-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm z-20 relative h-16 sm:h-20 transition-colors duration-300 shrink-0">
       
-      {/* Left: Title & Module Identifier */}
-      <div className="flex items-center text-slate-700 dark:text-slate-200 font-black text-lg w-auto md:w-1/4">
-        <div className="flex items-center text-[#1CB0F6]">
-          <BookOpen className="w-6 h-6 mr-2 drop-shadow-sm" strokeWidth={2.5} />
-          <span className="hidden sm:inline whitespace-nowrap tracking-wide">{modeTitle || 'Assessment Module'}</span>
+      {/* Left: Title & Module Identifier.
+          The boxed 1/4-width columns only engage at lg (≥1024) — at tablet
+          portrait (md, 768) w-1/4 was ~192px, too narrow for titles like
+          "Assessment Module" (217px), so the text overflowed into the bar.
+          Below lg the row is a simple title-left / actions-right layout. */}
+      <div className="flex items-center min-w-0 text-slate-700 dark:text-slate-200 font-black text-lg w-auto lg:w-1/4">
+        <div className="flex items-center min-w-0 text-[#1CB0F6]">
+          <BookOpen className="w-6 h-6 mr-2 shrink-0 drop-shadow-sm" strokeWidth={2.5} />
+          <span className="hidden sm:inline truncate tracking-wide">{modeTitle || 'Assessment Module'}</span>
         </div>
       </div>
 
       {/* Center: Gamified 3D Progress Bar */}
-      <div className="flex-1 mx-4 max-w-2xl hidden md:block">
+      <div className="flex-1 mx-4 max-w-2xl hidden lg:block">
         <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-4 sm:h-5 shadow-inner border-2 border-slate-300 dark:border-slate-700 overflow-hidden relative">
           <div 
             className="bg-[#58cc02] h-full transition-all duration-500 ease-out rounded-full relative overflow-hidden" 
@@ -50,7 +54,7 @@ export default function TopBar({
       </div>
 
       {/* Right: Actions & Vital Stats */}
-      <div className="flex items-center justify-end w-auto md:w-1/4 gap-2 sm:gap-3">
+      <div className="flex items-center justify-end shrink-0 w-auto lg:w-1/4 gap-2 sm:gap-3">
         
         {/* Dynamic Countdown Timer */}
         {timeLeft !== undefined && timeLeft > 0 && (

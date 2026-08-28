@@ -10,7 +10,7 @@
 export const factorBlitz = {
   title: 'Factor Blitz',
   titleVn: 'Truy Tìm Ước Số',
-  seconds: 18,
+  seconds: 30,
   intro:
     'A number appears. Tap every factor under 13 before the clock runs out — the numbers that divide it exactly. This is the HCF method at speed: know a number’s factors and the highest common one is easy to spot.',
   introVn:
