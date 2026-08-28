@@ -62,7 +62,7 @@ const EN = {
   helped: 'Solved — but a box or two had to be shown.',
   empty: 'Type a digit in every blue box first.',
   carryNote: 'The small box is the carry into that column.',
-  borrowNote: 'The small box is the borrow: 1 when this column took ten from its left.',
+  borrowNote: 'The small box is the borrow (optional): 1 when this column took ten from its left.',
   scoreLine: 'items cleared',
   heldNote: 'Clear this level to open the next.',
   reasons: {
@@ -89,7 +89,7 @@ const VN = {
   helped: 'Đã giải xong — nhưng có một hai ô phải hiện đáp án.',
   empty: 'Hãy điền một chữ số vào mỗi ô xanh trước.',
   carryNote: 'Ô nhỏ là số nhớ mang vào cột đó.',
-  borrowNote: 'Ô nhỏ là số mượn: bằng 1 khi cột này phải mượn mười từ cột bên trái.',
+  borrowNote: 'Ô nhỏ là số mượn (không bắt buộc): bằng 1 khi cột này phải mượn mười từ cột bên trái.',
   scoreLine: 'bài đã hoàn thành',
   heldNote: 'Hoàn thành cấp này để mở cấp tiếp theo.',
   reasons: {
@@ -116,9 +116,13 @@ const parseDigit = (text, allowBlank) => {
  *  carry box that column owns. Order puts the units column first. */
 function cellsOf(stage) {
   const out = [];
+  // The borrow mark in a subtraction is optional scaffolding, not a graded cell:
+  // a student who reaches the right difference without writing it has not made a
+  // mistake. Carries in +/× stay graded.
+  const borrowOptional = stage.op === '-';
   for (const col of stage.cols) {
     out.push({ id: cid(stage.rowKey, col.col, 'd'), kind: 'digit', value: col.digit, col });
-    if (col.carryBox) out.push({ id: cid(stage.rowKey, col.col, 'c'), kind: 'carry', value: col.carryIn, col });
+    if (col.carryBox) out.push({ id: cid(stage.rowKey, col.col, 'c'), kind: 'carry', value: col.carryIn, col, optional: borrowOptional });
   }
   return out;
 }
@@ -232,6 +236,10 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
       const typed = parseDigit(entries[c.id], c.kind === 'carry');
       if (typed === c.value) { nextLocked[c.id] = true; nextEntries[c.id] = String(c.value); continue; }
 
+      // Optional borrow box (subtraction): a wrong or blank mark is never counted
+      // wrong, never revealed, and never blocks the item — it just stays as typed.
+      if (c.optional) continue;
+
       const count = (nextWrongs[c.id] || 0) + 1;
       nextWrongs[c.id] = count;
       const carryPos = stage.op === '-' ? 'borrow' : 'carry';
@@ -255,8 +263,9 @@ function ColumnDrill({ pool, onComplete, onQuit }) {
     if (newPositions.length) setPositions((p) => [...new Set([...p, ...newPositions])]);
 
     // A revealed cell is now locked, so the stage can still be "all locked" even
-    // when this pass had wrong entries. Advance on that, not on allRight.
-    const everyLocked = liveCells.every((c) => nextLocked[c.id]);
+    // when this pass had wrong entries. Advance on that, not on allRight. Optional
+    // borrow boxes never block: an unfilled one does not hold the item back.
+    const everyLocked = liveCells.every((c) => c.optional || nextLocked[c.id]);
     if (!everyLocked) { say('bad', ' '); return; }
 
     setFlash(null);

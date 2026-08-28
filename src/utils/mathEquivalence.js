@@ -29,6 +29,10 @@ function clean(raw) {
     .replace(/\\ge\b/g, '>=').replace(/\\le\b/g, '<=')
     .replace(/\\times|\\cdot/g, '*')
     .replace(/\\square/g, '')
+    // "≈ 4" is an estimate — the value is what's marked, so students never have
+    // to type the approximate symbol (LaTeX \approx or the unicode ≈/~).
+    .replace(/\\approx\b/g, '')
+    .replace(/[≈~]/g, '')
     .replace(/\$/g, '')
     .replace(/[−–—]/g, '-')     // unicode minus / dashes → hyphen
     .replace(/[·×]/g, '*')
