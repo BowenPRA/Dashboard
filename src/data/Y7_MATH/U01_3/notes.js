@@ -28,13 +28,8 @@ export const notes = [
     eyebrowVn: 'Chương 1 · 1.3',
     title: 'Lowest Common Multiples',
     titleVn: 'Bội số chung nhỏ nhất',
-    card: {
-      icon: 'Pencil',
-      badge: 'Starter · Do this first',
-      badgeVn: 'Khởi động · Làm trước',
-      text: 'Write the first **eight multiples of 4**, then the first **eight multiples of 6**. Keep both lists — you will need them. Then press Next.',
-      textVn: 'Viết **tám bội số đầu của 4**, rồi **tám bội số đầu của 6**. Giữ lại cả hai danh sách — em sẽ cần đến. Rồi bấm Tiếp.',
-    },
+    objective: 'Find the lowest common multiple of two numbers, and use it to work out when repeating events line up again.',
+    objectiveVn: 'Tìm bội số chung nhỏ nhất của hai số, và dùng nó để biết khi nào các sự việc lặp lại cùng xảy ra lần nữa.',
   },
 
   // 2 ─ The hook: when do they meet again? ──────────────────────────────────
@@ -104,16 +99,6 @@ export const notes = [
     textVn: '“a common bird … a common name”',
     sub: 'In everyday English, **common** means **ordinary** — something you see a lot. Does it mean the same thing in maths?',
     subVn: 'Trong tiếng Anh hằng ngày, **common** nghĩa là **bình thường** — thứ em thấy rất nhiều. Trong toán nó có nghĩa như vậy không?',
-    reveal: {
-      label: 'Show me',
-      labelVn: 'Cho em xem',
-      answer:
-        'No. In maths, **common** means **shared** — belonging to **both**.\n\n' +
-        'A **common multiple** is not a multiple you see often. It is a number that is in **both** lists at once.',
-      answerVn:
-        'Không. Trong toán, **common** nghĩa là **chung** — thuộc về **cả hai**.\n\n' +
-        'Một **bội số chung** không phải là bội số em thấy thường xuyên. Đó là số có trong **cả hai** danh sách cùng lúc.',
-    },
     check: {
       id: 'c2',
       q: 'In maths, when a number is a **common** multiple of 4 and 6, that means it is:',
@@ -290,12 +275,6 @@ export const notes = [
     contentVn:
       'Hai chuyến xe buýt rời trạm của thầy Bowen đúng lúc **7:00**. Xe A chạy mỗi **10 phút**, xe B mỗi **15 phút**.\n\n' +
       'Lúc mấy giờ chúng lại cùng rời trạm **một lúc**?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'The LCM of 10 and 15 is $30$, so they leave together again **30 minutes** later — at **7:30**.',
-      answerVn: 'BCNN của 10 và 15 là $30$, vậy chúng lại cùng rời trạm sau **30 phút** — lúc **7:30**.',
-    },
     check: {
       id: 'c5',
       q: 'Bus A leaves every 10 minutes and Bus B every 15 minutes. How many minutes until they next leave together?',
@@ -329,12 +308,6 @@ export const notes = [
     contentVn:
       'Trong một bộ phim cũ, ông George muốn xúc xích và bánh mì **số lượng bằng nhau, không thừa cái nào**. Xúc xích bán gói **8 cái**, bánh mì gói **12 cái**.\n\n' +
       'Số **nhỏ nhất** mỗi loại ông có thể mua là bao nhiêu — và bằng mấy gói?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'The LCM of 8 and 12 is $24$. So **24 of each**: $24 ÷ 8 = 3$ packs of hot dogs and $24 ÷ 12 = 2$ packs of buns.',
-      answerVn: 'BCNN của 8 và 12 là $24$. Vậy **24 cái mỗi loại**: $24 ÷ 8 = 3$ gói xúc xích và $24 ÷ 12 = 2$ gói bánh mì.',
-    },
     check: {
       id: 'c6',
       q: 'Hot dogs come in 8s, buns in 12s. What is the **smallest** number of each George can buy with none left over?',
@@ -357,12 +330,12 @@ export const notes = [
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you leave',
-    eyebrowVn: 'Trước khi ra về',
+    eyebrow: 'Recap',
+    eyebrowVn: 'Ôn lại',
     title: 'Can You Do All Five?',
     titleVn: 'Em làm được cả năm điều này chứ?',
-    content: 'Your notebook should now have **3 definitions** (multiple, common multiple, lowest common multiple) and **the LCM method** written down. Check each one.',
-    contentVn: 'Trong vở của em bây giờ phải có **3 định nghĩa** (bội số, bội số chung, bội số chung nhỏ nhất) và **cách tìm BCNN**. Hãy kiểm tra từng điều.',
+    content: 'You’ve now met **3 definitions** (multiple, common multiple, lowest common multiple) and **the LCM method**. Tick each one you can do.',
+    contentVn: 'Em đã học **3 định nghĩa** (bội số, bội số chung, bội số chung nhỏ nhất) và **cách tìm BCNN**. Hãy tự đánh dấu từng điều em làm được.',
     items: [
       { text: 'Say what a **multiple** is.', textVn: 'Nói được **bội số (multiple)** là gì.' },
       { text: 'Say what **common** means in maths — **shared**, not ordinary.', textVn: 'Nói được **common** trong toán nghĩa là **chung**, không phải bình thường.' },

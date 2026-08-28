@@ -29,13 +29,8 @@ export const notes = [
     eyebrowVn: 'Chương 1 · 1.5',
     title: 'Tests for Divisibility',
     titleVn: 'Dấu hiệu chia hết',
-    card: {
-      icon: 'Pencil',
-      badge: 'Starter · Do this first',
-      badgeVn: 'Khởi động · Làm trước',
-      text: 'No calculator. Which of **24, 35, 90, 91** divide exactly by **2**? Which by **5**? You know how — the real question is *how did you decide so fast?* Then press Next.',
-      textVn: 'Không dùng máy tính. Trong **24, 35, 90, 91**, số nào chia hết cho **2**? Số nào cho **5**? Em biết cách rồi — câu hỏi thật là *vì sao em quyết định nhanh vậy?* Rồi bấm Tiếp.',
-    },
+    objective: 'Check whether a number divides exactly by 2 to 11 — without a calculator.',
+    objectiveVn: 'Kiểm tra xem một số có chia hết cho 2 đến 11 hay không — mà không cần máy tính.',
   },
 
   // 2 ─ The hook: Mr Bowen's number ─────────────────────────────────────────
@@ -301,12 +296,6 @@ export const notes = [
     textVn: 'Chín, không phải mười.',
     sub: 'We have tests for 2, 3, 4, 5, 6, 8, 9, 10 and 11. Which one is **missing**, and why?',
     subVn: 'Ta có dấu hiệu cho 2, 3, 4, 5, 6, 8, 9, 10 và 11. Số nào bị **thiếu**, và vì sao?',
-    reveal: {
-      label: 'Show me',
-      labelVn: 'Cho em xem',
-      answer: '**7.** Every test for 7 is longer than just dividing, so nobody uses one. For 7 you **divide and look at the remainder** — a remainder of 0 means it divides.',
-      answerVn: '**Số 7.** Mọi dấu hiệu cho 7 đều dài hơn cả phép chia, nên không ai dùng. Với 7, em **chia rồi xem số dư** — số dư bằng 0 nghĩa là chia hết.',
-    },
     check: {
       id: 'c4',
       q: 'Why is there no simple test for divisibility by 7?',
@@ -372,12 +361,6 @@ export const notes = [
       'Một số bốn chữ số bắt đầu bằng **2, 7, 4** — nhưng chữ số cuối đã bị xoá.\n\n' +
       '> **2 7 4 ▢**  chia hết cho **9**.\n\n' +
       'Chữ số bị thiếu là số mấy? Chỉ có một đáp án.',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'The digits we can see add to $2 + 7 + 4 = 13$. The next multiple of 9 after 13 is **18**, and $18 − 13 = 5$. So the missing digit is **5**, and the number is 2745.',
-      answerVn: 'Ba chữ số nhìn thấy cộng lại bằng $2 + 7 + 4 = 13$. Bội của 9 kế tiếp sau 13 là **18**, và $18 − 13 = 5$. Vậy chữ số bị thiếu là **5**, và con số là 2745.',
-    },
     check: {
       id: 'c5',
       q: 'The number **2 7 4 ▢** is divisible by 9. What is the missing last digit?',
@@ -400,12 +383,12 @@ export const notes = [
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you leave',
-    eyebrowVn: 'Trước khi ra về',
+    eyebrow: 'Recap',
+    eyebrowVn: 'Ôn lại',
     title: 'Can You Do All Five?',
     titleVn: 'Em làm được cả năm điều này chứ?',
-    content: 'Your notebook should now have **the two key words**, **the three sentences**, and **9 tests** (for 2, 3, 4, 5, 6, 8, 9, 10 and 11). Check none is missing.',
-    contentVn: 'Trong vở của em bây giờ phải có **hai từ khoá**, **ba câu nói cùng một điều**, và **9 dấu hiệu** (cho 2, 3, 4, 5, 6, 8, 9, 10 và 11). Hãy kiểm tra không thiếu cái nào.',
+    content: 'You’ve now met **the two key words**, **the three sentences**, and **9 tests** (for 2, 3, 4, 5, 6, 8, 9, 10 and 11). Tick each one you can do.',
+    contentVn: 'Em đã học **hai từ khoá**, **ba câu nói cùng một điều**, và **9 dấu hiệu** (cho 2, 3, 4, 5, 6, 8, 9, 10 và 11). Hãy tự đánh dấu từng điều em làm được.',
     items: [
       { text: 'Say what **divisible by** means, and the other two sentences that say the same thing.', textVn: 'Nói được **divisible by** nghĩa là gì, và hai câu còn lại nói cùng một điều.' },
       { text: 'Test for **2, 5 and 10** by the last digit.', textVn: 'Kiểm tra **2, 5 và 10** bằng chữ số cuối.' },

@@ -28,13 +28,8 @@ export const notes = [
     eyebrowVn: 'Chương 1 · 1.4',
     title: 'Highest Common Factors',
     titleVn: 'Ước số chung lớn nhất',
-    card: {
-      icon: 'Pencil',
-      badge: 'Starter · Do this first',
-      badgeVn: 'Khởi động · Làm trước',
-      text: 'Find **every pair** of whole numbers that multiplies to **12**, then every pair for **18**. Keep both lists — you will need them. Then press Next.',
-      textVn: 'Tìm **mọi cặp** số nguyên nhân với nhau bằng **12**, rồi mọi cặp cho **18**. Giữ lại cả hai danh sách — em sẽ cần đến. Rồi bấm Tiếp.',
-    },
+    objective: 'Find the highest common factor of two numbers, and use it to make equal groups and simplify fractions.',
+    objectiveVn: 'Tìm ước số chung lớn nhất của hai số, và dùng nó để chia thành các nhóm bằng nhau và rút gọn phân số.',
   },
 
   // 2 ─ The packing hook ────────────────────────────────────────────────────
@@ -181,16 +176,6 @@ export const notes = [
     textVn: 'Bài trước là **nhỏ nhất**. Bài này là **lớn nhất**.',
     sub: 'Why does the book swap ends?',
     subVn: 'Vì sao sách lại đổi đầu như vậy?',
-    reveal: {
-      label: 'Show me',
-      labelVn: 'Cho em xem',
-      answer:
-        'Because one list **stops** and the other **never does**.\n\n' +
-        'Multiples go on for ever, so there is **no highest** one — we ask for the lowest. Factors stop, so there **is** a highest one to ask for.',
-      answerVn:
-        'Vì một danh sách **có điểm dừng**, còn danh sách kia **thì không**.\n\n' +
-        'Bội số kéo dài mãi, nên **không có số lớn nhất** — ta hỏi số nhỏ nhất. Ước số dừng lại, nên **có** số lớn nhất để hỏi.',
-    },
     check: {
       id: 'c3',
       q: 'Why do we ask for the **lowest** common multiple but the **highest** common factor?',
@@ -313,12 +298,6 @@ export const notes = [
     contentVn:
       'Thầy Bowen có hai dải ruy băng: một dải dài **36 cm**, dải kia **48 cm**. Thầy cắt cả hai thành các đoạn bằng nhau, **dài nhất có thể**, và **không thừa mẩu nào**.\n\n' +
       'Mỗi đoạn dài bao nhiêu?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'The HCF of 36 and 48 is $12$, so every piece is **12 cm** — the longest length that fits both, with $36 ÷ 12 = 3$ pieces and $48 ÷ 12 = 4$ pieces.',
-      answerVn: 'ƯCLN của 36 và 48 là $12$, nên mỗi đoạn dài **12 cm** — độ dài lớn nhất chia hết cả hai, cho $36 ÷ 12 = 3$ đoạn và $48 ÷ 12 = 4$ đoạn.',
-    },
     check: {
       id: 'c5',
       q: 'Two ribbons, 36 cm and 48 cm, are cut into equal pieces **as long as possible**, none left over. How long is each piece?',
@@ -402,12 +381,6 @@ export const notes = [
     contentVn:
       'Trên giá có **24 quyển sách**, trong đó **18** quyển là sách toán.\n\n' +
       'Hãy viết phân số chỉ phần sách toán, **ở dạng tối giản**.',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'The fraction is $\\frac{18}{24}$. The HCF of 18 and 24 is $6$, so divide top and bottom by 6: $\\frac{18}{24} = \\frac{3}{4}$. **Three quarters** of the shelf is maths. The HCF is the shortcut that simplifies in one step.',
-      answerVn: 'Phân số là $\\frac{18}{24}$. ƯCLN của 18 và 24 là $6$, nên chia cả tử và mẫu cho 6: $\\frac{18}{24} = \\frac{3}{4}$. **Ba phần tư** giá sách là sách toán. ƯCLN là lối tắt giúp rút gọn chỉ trong một bước.',
-    },
     check: {
       id: 'c6',
       q: '18 of the 24 books are maths books. What is $\\frac{18}{24}$ in its simplest form?',
@@ -430,12 +403,12 @@ export const notes = [
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you leave',
-    eyebrowVn: 'Trước khi ra về',
+    eyebrow: 'Recap',
+    eyebrowVn: 'Ôn lại',
     title: 'Can You Do All Five?',
     titleVn: 'Em làm được cả năm điều này chứ?',
-    content: 'Your notebook should now have the **HCF method** and **the key words** (factor, common factor, HCF, consecutive, conjecture) written down. Check each one.',
-    contentVn: 'Trong vở của em bây giờ phải có **cách tìm ƯCLN** và **các từ khoá** (ước số, ước số chung, ƯCLN, liên tiếp, phỏng đoán). Hãy kiểm tra từng điều.',
+    content: 'You’ve now met the **HCF method** and **the key words** (factor, common factor, HCF, consecutive, conjecture). Tick each one you can do.',
+    contentVn: 'Em đã học **cách tìm ƯCLN** và **các từ khoá** (ước số, ước số chung, ƯCLN, liên tiếp, phỏng đoán). Hãy tự đánh dấu từng điều em làm được.',
     items: [
       { text: 'Say what a **factor** is — and how it differs from a **multiple**.', textVn: 'Nói được **ước số** là gì — và khác **bội số** ra sao.' },
       { text: 'Find the **common factors** of two numbers.', textVn: 'Tìm được **ước số chung** của hai số.' },

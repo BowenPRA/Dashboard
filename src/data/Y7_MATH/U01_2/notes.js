@@ -33,13 +33,8 @@ export const notes = [
     eyebrowVn: 'Chương 1 · 1.2',
     title: 'Multiplying & Dividing Integers',
     titleVn: 'Nhân và Chia Số nguyên',
-    card: {
-      icon: 'Pencil',
-      badge: 'Starter · Do this first',
-      badgeVn: 'Khởi động · Làm trước',
-      text: 'Work out $-3 + -4$ and $-3 - (-4)$. Write the calculation and the answer for both, then press Next.',
-      textVn: 'Hãy tính $-3 + -4$ và $-3 - (-4)$. Viết cả phép tính và đáp án cho cả hai, rồi bấm Tiếp.',
-    },
+    objective: 'Multiply and divide positive and negative integers, and know exactly when “two negatives make a positive” is true.',
+    objectiveVn: 'Nhân và chia số nguyên dương và âm, và biết chính xác khi nào “hai số âm thành số dương” là đúng.',
   },
 
   // 2 ─ What multiplying by a negative means (repeated adding) ──────────────
@@ -171,18 +166,6 @@ export const notes = [
     textVn: '“Two negatives make a positive.”',
     sub: 'Test it on $-3 × -4$, then test it on $-3 + -4$. Does it survive both?',
     subVn: 'Hãy thử với $-3 × -4$, rồi thử với $-3 + -4$. Nó có đúng cả hai lần không?',
-    reveal: {
-      label: 'Show me',
-      labelVn: 'Cho em xem',
-      answer:
-        'For **× and ÷** it is true: $-3 × -4 = 12$.\n\n' +
-        'For **+** it is false: $-3 + -4 = -7$. Adding a negative still sends you left.\n\n' +
-        'The sentence is only safe if you say **which operation** you mean — which is why the rules live on a table headed **× and ÷**.',
-      answerVn:
-        'Với **× và ÷** thì đúng: $-3 × -4 = 12$.\n\n' +
-        'Với **+** thì sai: $-3 + -4 = -7$. Cộng một số âm vẫn đưa em sang trái.\n\n' +
-        'Câu đó chỉ an toàn khi em nói rõ **phép tính nào** — đó là lý do bảng quy tắc có tiêu đề **× và ÷**.',
-    },
     check: {
       id: 'c6',
       q: '“Two negatives make a positive.” On which calculation is this sentence **false**?',
@@ -248,16 +231,6 @@ export const notes = [
     textVn: 'Divide $-20$ by $4$.',
     sub: 'The number being **shared out** is written first here, but the English can hide it. Read carefully before you write the calculation.',
     subVn: 'Số bị **chia ra** được viết trước ở đây, nhưng tiếng Anh có thể giấu nó đi. Hãy đọc kỹ trước khi viết phép tính.',
-    reveal: {
-      label: 'Show me',
-      labelVn: 'Cho em xem',
-      answer:
-        'It is $-20 ÷ 4 = -5$. The number being shared out is **-20** — that is the one that gets cut into equal parts. The $4$ says **how many parts**.\n\n' +
-        'Same trap as last lesson: **subtract 5 from 8** was $8 - 5$, never $5 - 8$. The English order is not the calculation order.',
-      answerVn:
-        'Đó là $-20 ÷ 4 = -5$. Số bị chia là **-20** — đó là số bị cắt thành các phần bằng nhau. Số $4$ cho biết **có bao nhiêu phần**.\n\n' +
-        'Đúng cái bẫy của tiết trước: **subtract 5 from 8** là $8 - 5$, không bao giờ là $5 - 8$. Thứ tự tiếng Anh không phải thứ tự phép tính.',
-    },
     check: {
       id: 'c4',
       q: 'In “divide $-20$ by $4$”, which number is being shared out (divided)?',
@@ -353,12 +326,6 @@ export const notes = [
     contentVn:
       'Ngân hàng thu của thầy Bowen **7 đô mỗi ngày** mà tài khoản của thầy trống rỗng.\n\n' +
       'Tài khoản của thầy đã trống **5 ngày**. Điều đó ảnh hưởng thế nào đến số dư của thầy?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: '$5 × -7 = -35$. His balance has gone **down 35 dollars**.',
-      answerVn: '$5 × -7 = -35$. Số dư của thầy đã **giảm 35 đô**.',
-    },
     check: {
       id: 'c7',
       q: 'Charged $7 a day for 5 days — what has happened to Mr Bowen’s balance?',
@@ -392,12 +359,6 @@ export const notes = [
     contentVn:
       'Thầy Bowen quyết định mua sầu riêng cho cả lớp. Mỗi quả giá **90 000 đồng**. Lớp có **24 học sinh**, và mỗi bạn muốn **3 quả**. Thầy chạy xe **14 km** đến chợ và mất **45 phút** để chọn.\n\n' +
       'Rồi thầy nhớ ra rằng sầu riêng **không được mang lên xe buýt của trường**, nên thầy mua **0 quả**. Thầy Bowen đã tiêu bao nhiêu tiền cho sầu riêng?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'Nothing. **Anything multiplied by 0 is 0**, so not one of the other numbers matters. Read the whole question before you start calculating.',
-      answerVn: 'Không đồng nào. **Bất cứ số nào nhân với 0 đều bằng 0**, nên không con số nào khác có ý nghĩa cả. Hãy đọc hết câu hỏi trước khi bắt đầu tính.',
-    },
     check: {
       id: 'c8',
       q: 'He buys **0 durians**. How much does Mr Bowen spend on durian?',
@@ -420,12 +381,12 @@ export const notes = [
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you leave',
-    eyebrowVn: 'Trước khi ra về',
+    eyebrow: 'Recap',
+    eyebrowVn: 'Ôn lại',
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
-    content: 'Your notebook should now have the **sign table copied** and **the key rules written down**. Check each one.',
-    contentVn: 'Trong vở của em bây giờ phải có **bảng dấu đã chép** và **các quy tắc chính đã viết ra**. Hãy kiểm tra từng điều.',
+    content: 'You’ve now got the **sign table** and **the key rules**. Tick each one you can do.',
+    contentVn: 'Em đã có **bảng dấu** và **các quy tắc chính**. Hãy tự đánh dấu từng điều em làm được.',
     items: [
       { text: 'Say what a **product** is.', textVn: 'Nói được **tích (product)** là gì.' },
       { text: 'Explain why a **positive × a negative** is negative.', textVn: 'Giải thích vì sao **dương × âm** là số âm.' },

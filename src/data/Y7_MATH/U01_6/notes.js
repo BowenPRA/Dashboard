@@ -27,13 +27,8 @@ export const notes = [
     eyebrowVn: 'Chương 1 · 1.6',
     title: 'Square Roots and Cube Roots',
     titleVn: 'Căn bậc hai và căn bậc ba',
-    card: {
-      icon: 'Pencil',
-      badge: 'Starter · Do this first',
-      badgeVn: 'Khởi động · Làm trước',
-      text: 'No calculator. Work out $7 × 7$, then $2 × 2 × 2$. Write both answers, then press Next.',
-      textVn: 'Không dùng máy tính. Tính $7 × 7$, rồi $2 × 2 × 2$. Viết cả hai đáp án, rồi bấm Tiếp.',
-    },
+    objective: 'Find square roots and cube roots by turning squaring and cubing around.',
+    objectiveVn: 'Tìm căn bậc hai và căn bậc ba bằng cách làm ngược phép bình phương và lập phương.',
   },
 
   // 2 ─ The hook: the patio, posed backwards ────────────────────────────────
@@ -271,12 +266,6 @@ export const notes = [
     inlineSvg: DIAGRAMS.BETWEEN_SQUARES,
     content: '45 is not in your list of squares, so $\\sqrt{45}$ is not a whole number. Which **two whole numbers** is it between?',
     contentVn: '45 không nằm trong bảng số chính phương, nên $\\sqrt{45}$ không phải số nguyên. Nó nằm giữa **hai số nguyên** nào?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'Between **6 and 7**. 45 sits between $36 = 6^2$ and $49 = 7^2$, so its root sits between 6 and 7.',
-      answerVn: 'Nằm giữa **6 và 7**. Vì 45 nằm giữa $36 = 6^2$ và $49 = 7^2$, nên căn của nó nằm giữa 6 và 7.',
-    },
     check: {
       id: 'c4',
       q: 'Between which two whole numbers does $\\sqrt{45}$ lie?',
@@ -312,12 +301,6 @@ export const notes = [
       '> Nó nằm giữa **100 và 200**.\n' +
       '> **Căn bậc hai** của nó là bội số của **3**.\n\n' +
       'Con số đó là bao nhiêu?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: '**144.** Between 100 and 200 the only squares are 121 and 144. $\\sqrt{121} = 11$ and $\\sqrt{144} = 12$ — and 12 is the multiple of 3.',
-      answerVn: '**144.** Giữa 100 và 200 chỉ có hai số chính phương là 121 và 144. $\\sqrt{121} = 11$ và $\\sqrt{144} = 12$ — và 12 mới là bội số của 3.',
-    },
     check: {
       id: 'c6',
       q: 'Between 100 and 200, with a square root that is a multiple of 3 — which is Mr Bowen’s number?',
@@ -351,12 +334,6 @@ export const notes = [
     contentVn:
       'Thầy Bowen trồng **dưa hấu hình lập phương** — xếp chồng dễ hơn. Một thùng chứa **3 quả dài, 3 quả rộng và 3 quả cao**.\n\n' +
       'Một thùng chứa được bao nhiêu quả dưa?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: '$3 × 3 × 3 = 27$ watermelons — that is $3^3$. They are real: Japanese farmers grow them inside glass boxes.',
-      answerVn: '$3 × 3 × 3 = 27$ quả dưa — đó là $3^3$. Loại dưa này có thật: nông dân Nhật Bản trồng chúng trong hộp kính.',
-    },
     check: {
       id: 'c7',
       q: 'A crate is 3 watermelons along, 3 across and 3 high. How many does it hold?',
@@ -379,12 +356,12 @@ export const notes = [
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you leave',
-    eyebrowVn: 'Trước khi ra về',
+    eyebrow: 'Recap',
+    eyebrowVn: 'Ôn lại',
     title: 'Can You Do All Four?',
     titleVn: 'Em làm được cả bốn điều này chứ?',
-    content: 'Your notebook should now have **5 key words** and **2 lists** — twelve square numbers and six cube numbers. Check none is missing.',
-    contentVn: 'Trong vở của em bây giờ phải có **5 từ khoá** và **2 bảng số** — mười hai số chính phương và sáu số lập phương. Hãy kiểm tra không thiếu cái nào.',
+    content: 'You’ve now met **5 key words** and **2 lists** — twelve square numbers and six cube numbers. Tick each one you can do.',
+    contentVn: 'Em đã học **5 từ khoá** và **2 bảng số** — mười hai số chính phương và sáu số lập phương. Hãy tự đánh dấu từng điều em làm được.',
     items: [
       { text: 'Say what a **square number** and a **cube number** are, and read $7^2$ and $2^3$ out loud.', textVn: 'Nói được **số chính phương** và **số lập phương** là gì, và đọc to $7^2$ và $2^3$.' },
       { text: 'Work out a **square root** and a **cube root** from your two lists.', textVn: 'Tính được **căn bậc hai** và **căn bậc ba** bằng hai bảng số.' },

@@ -32,13 +32,8 @@ export const notes = [
     eyebrowVn: 'Chương 1 · 1.1',
     title: 'Adding & Subtracting Integers',
     titleVn: 'Cộng và Trừ Số nguyên',
-    card: {
-      icon: 'Pencil',
-      badge: 'Starter · Do this first',
-      badgeVn: 'Khởi động · Làm trước',
-      text: 'Write down **three things** that can be described with a **negative number**, as a full English sentence. Then press Next.',
-      textVn: 'Viết ra **ba thứ** có thể được mô tả bằng **số âm**, thành một câu tiếng Anh hoàn chỉnh. Rồi bấm Tiếp.',
-    },
+    objective: 'Add and subtract positive and negative integers on a number line — and turn an English sentence into the right calculation.',
+    objectiveVn: 'Cộng và trừ số nguyên dương và âm trên trục số — và chuyển một câu tiếng Anh thành đúng phép tính.',
   },
 
   // 2 ─ The number line (thermometer folded in) + CHECK 1 ───────────────────
@@ -193,8 +188,8 @@ export const notes = [
     notes: [
       {
         tone: 'task',
-        badge: 'Your job',
-        badgeVn: 'Nhiệm vụ của em',
+        badge: 'Try this',
+        badgeVn: 'Thử ngay',
         text: 'Test **all four** rules: add a positive, add a negative, subtract a positive, subtract a negative.',
         textVn: 'Thử đủ **bốn** quy tắc: cộng số dương, cộng số âm, trừ số dương, trừ số âm.',
       },
@@ -314,16 +309,6 @@ export const notes = [
     textVn: 'Subtract 5 from 8.',
     sub: 'Write the calculation — not the answer. Which number do you write **first**? The word **from** tells you where you start.',
     subVn: 'Hãy viết phép tính — chưa cần đáp án. Em viết số nào **trước**? Từ **from** cho biết em bắt đầu ở đâu.',
-    reveal: {
-      label: 'Show me',
-      labelVn: 'Cho em xem',
-      answer:
-        'It is $8 - 5 = 3$ — **not** $5 - 8$. In English the two numbers arrive in the **opposite order** to the calculation.\n\n' +
-        'The same trap: **take 7 away from 3** → $3 - 7$.   **6 less than 2** → $2 - 6$.',
-      answerVn:
-        'Đáp án là $8 - 5 = 3$ — **không** phải $5 - 8$. Trong tiếng Anh, hai số xuất hiện theo **thứ tự ngược lại** với phép tính.\n\n' +
-        'Cùng một cái bẫy: **take 7 away from 3** → $3 - 7$.   **6 less than 2** → $2 - 6$.',
-    },
     check: {
       id: 'c6',
       q: 'Which calculation is “Subtract 5 from 8”?',
@@ -401,12 +386,6 @@ export const notes = [
     contentVn:
       'Thầy Bowen đỗ xe ở tầng **B4** — bốn tầng **dưới** mặt đất, tức là tầng $-4$.\n\n' +
       'Thầy bước vào thang máy và đi **lên 9 tầng**. Bây giờ thầy đang ở tầng nào?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: '$-4 + 9 = 5$. He is on **floor 5**.',
-      answerVn: '$-4 + 9 = 5$. Thầy đang ở **tầng 5**.',
-    },
     check: {
       id: 'c7',
       q: 'From floor $-4$, Mr Bowen goes up 9 floors. Which floor is he on now?',
@@ -440,12 +419,6 @@ export const notes = [
     contentVn:
       'Một con ốc sên ở đáy giếng, sâu 12 mét dưới mặt đất, tức là $-12$ m.\n\n' +
       'Mỗi ngày nó bò **lên 3 m**, và mỗi đêm nó tụt **xuống 3 m**. Sau 9 ngày, con ốc sên ở đâu?',
-    reveal: {
-      label: 'Check your answer',
-      labelVn: 'Kiểm tra đáp án',
-      answer: 'Each day: $+3 - 3 = 0$. After 9 days the snail is still at $-12$ m, at the bottom. Some questions are long, but the numbers cancel — read before you calculate.',
-      answerVn: 'Mỗi ngày: $+3 - 3 = 0$. Sau 9 ngày, con ốc sên vẫn ở $-12$ m, dưới đáy giếng. Có những câu hỏi rất dài, nhưng các con số triệt tiêu nhau — hãy đọc trước khi tính.',
-    },
     check: {
       id: 'c5',
       q: 'The snail climbs up 3 m each day and slides down 3 m each night. What is its change in height over **one whole day**?',
@@ -468,12 +441,12 @@ export const notes = [
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you leave',
-    eyebrowVn: 'Trước khi ra về',
+    eyebrow: 'Recap',
+    eyebrowVn: 'Ôn lại',
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
-    content: 'Your notebook should now have the **movement rules** and **the key words** written down. Check each one.',
-    contentVn: 'Trong vở của em bây giờ phải có **các quy tắc di chuyển** và **các từ khoá** đã viết ra. Hãy kiểm tra từng điều.',
+    content: 'You’ve now met the **movement rules** and **the key words**. Tick each one you can do.',
+    contentVn: 'Em đã học **các quy tắc di chuyển** và **các từ khoá**. Hãy tự đánh dấu từng điều em làm được.',
     items: [
       { text: 'Say what an **integer** is, and which side of zero each kind sits.', textVn: 'Nói được **số nguyên** là gì, và mỗi loại nằm phía nào của số không.' },
       { text: 'Move the right way in **all four** cases (add/subtract, positive/negative).', textVn: 'Di chuyển đúng hướng trong **cả bốn** trường hợp (cộng/trừ, dương/âm).' },
