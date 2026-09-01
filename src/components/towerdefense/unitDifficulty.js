@@ -61,6 +61,16 @@ const DEFAULT_ARENA = {
  * one is, so consecutive units never feel like a re-run.
  */
 export const TRACK_LEVELS = {
+  // IGCSE Coordinated Science. First unit is a tier-0 introduction — the "lab"
+  // ICE theme suits electrolysis. Additive: adding a unit here shifts nothing on
+  // any other track. Extend this table (map/theme/tier/waveMod) as units ship.
+  COORD_SCI: {
+    U04_1: {
+      mapId: 'CIRCUIT', themeId: 'ICE', tier: 0,
+      mapName: 'The Electrolysis Lab',
+      blurb: 'Current runs the coolant channels — hold the line while the cell does its work.',
+    },
+  },
   Y7_MATH: {
     U01_1: {
       mapId: 'WAVE', themeId: 'STANDARD', tier: 0,

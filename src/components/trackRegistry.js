@@ -113,6 +113,24 @@ export const TRACK_REGISTRY = [
     },
   },
   {
+    id: 'COORD_SCI',
+    title: 'IGCSE Coordinated Science',
+    desc: 'Cambridge IGCSE 0654',
+    icon: FlaskConical,
+    group: 'Cambridge',
+    // English-only track (the IGCSE exam language). Learner-facing content
+    // carries no Vietnamese `vn*` twins; the validator's bilingual checks are
+    // skipped for tracks that set this. Components fall back to English via
+    // `pick(en, vn)` when a vn field is absent.
+    bilingual: false,
+    theme: {
+      bg: 'bg-teal-500', border: 'border-teal-700', hover: 'hover:bg-teal-400',
+      text: 'text-teal-600 dark:text-teal-400',
+      ambient1: 'bg-teal-400', ambient2: 'bg-cyan-500',
+      glow: 'hover:border-teal-400 dark:hover:border-teal-600',
+    },
+  },
+  {
     id: 'Y8',
     title: 'Year 8 Science',
     desc: 'Biology & Chemistry',

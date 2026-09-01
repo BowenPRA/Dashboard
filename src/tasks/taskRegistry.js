@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3, Zap
+  Move3d, Grid3x3, Zap, FlaskConical
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -354,6 +354,27 @@ export const TASKS = [
     component: lazy(() => import('./FactorBlitz.jsx')),
     hasContent: (u) => !!u.factorBlitz?.rounds?.length,
     buildPool: (u) => u.factorBlitz,
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'SYMBOL_EQ',
+    nativeMax: 10,
+    // p1–p18 are taken (p5 is reserved as a workbook question id); p19 is next.
+    dbKey: 'p19',
+    // "Turn the word equation into a balanced symbol equation." The student
+    // picks a formula and a coefficient for each reactant/product slot; the
+    // component parses every chosen formula into atom counts and DERIVES whether
+    // the equation both uses the right species and balances — the same
+    // derive-don't-store rule Number Gym / Graph It / Vectors follow. Item shape
+    // is documented in src/tasks/SymbolEquation.jsx.
+    label: 'Equations',
+    icon: FlaskConical,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#026e88]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./SymbolEquation.jsx')),
+    hasContent: (u) => notEmpty(u.symbolEq),
+    buildPool: (u) => u.symbolEq || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];

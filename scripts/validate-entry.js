@@ -77,6 +77,10 @@ for (const trackId of TRACK_IDS) {
     const unit = data[m.id];
     const label = `${trackId}/${m.id}`;
     const dir = path.join(DATA, trackId, m.id);
+    // A track may opt out of bilingual content (`bilingual: false` in the track
+    // registry) — e.g. an English-only IGCSE track. English fields stay
+    // required; the Vietnamese `vn*` twins are skipped for such tracks.
+    const bilingual = TRACK_REGISTRY.find((t) => t.id === trackId)?.bilingual !== false;
 
     // -- meta
     for (const k of ['id', 'title', 'desc', 'track']) if (!unit.meta?.[k]) err(`${label}: meta.${k} is missing`);
@@ -163,7 +167,7 @@ for (const trackId of TRACK_IDS) {
     // -- assessment answer keys
     for (const q of unit.assessment?.questions || []) {
       const at = `${label} ${q.id}`;
-      if (!q.expEn || !q.expVn) err(`${at}: missing bilingual explanation`);
+      if (!q.expEn || (bilingual && !q.expVn)) err(`${at}: missing ${bilingual ? 'bilingual ' : ''}explanation`);
       if (q.type === 'mcq') {
         if (!q.options?.some((o) => o.val === q.correct)) err(`${at}: correct "${q.correct}" is not one of the options`);
       } else if (q.type === 'inline' || q.type === 'fill_blank') {
@@ -213,15 +217,15 @@ for (const trackId of TRACK_IDS) {
           if (!hasLayout && !['concept', 'warmup'].includes(slide.type)) {
             err(`${at} sits on a "${slide.type}" slide — Notes.jsx only renders checks on concept/warmup or layout slides`);
           }
-          if (!slide.check.q || !slide.check.qVn) err(`${at} is missing a bilingual question (q/qVn)`);
-          if (!slide.check.expEn || !slide.check.expVn) err(`${at} is missing a bilingual explanation (expEn/expVn)`);
+          if (!slide.check.q || (bilingual && !slide.check.qVn)) err(`${at} is missing a ${bilingual ? 'bilingual ' : ''}question${bilingual ? ' (q/qVn)' : ''}`);
+          if (!slide.check.expEn || (bilingual && !slide.check.expVn)) err(`${at} is missing a ${bilingual ? 'bilingual ' : ''}explanation${bilingual ? ' (expEn/expVn)' : ''}`);
           const opts = slide.check.options || [];
           if (opts.length < 2) err(`${at} has ${opts.length} option(s) — needs at least 2`);
           if (!opts.some((o) => o.val === slide.check.correct)) {
             err(`${at}: correct "${slide.check.correct}" is not one of the options`);
           }
           for (const o of opts) {
-            if (!o.text || !o.textVn) err(`${at}: option "${o.val}" is missing a bilingual label (text/textVn)`);
+            if (!o.text || (bilingual && !o.textVn)) err(`${at}: option "${o.val}" is missing a ${bilingual ? 'bilingual ' : ''}label${bilingual ? ' (text/textVn)' : ''}`);
           }
         }
       });
@@ -255,7 +259,8 @@ for (const trackId of TRACK_IDS) {
 
     // -- bilingual coverage
     for (const w of unit.realWords || []) {
-      for (const k of ['word', 'vn', 'def', 'vnDef', 'sent', 'vnSent']) {
+      const keys = bilingual ? ['word', 'vn', 'def', 'vnDef', 'sent', 'vnSent'] : ['word', 'def', 'sent'];
+      for (const k of keys) {
         if (!w[k]) err(`${label}: vocab "${w.word || '?'}" missing ${k}`);
       }
     }
@@ -280,7 +285,7 @@ for (const trackId of TRACK_IDS) {
         if (opts.length < 2) err(`${at} is an MCQ with ${opts.length} option(s) — needs at least 2`);
         if (!opts.some((o) => o.val === d.correct)) err(`${at}: correct "${d.correct}" is not one of the options`);
         for (const o of opts) if (!o.text) err(`${at}: option "${o.val}" has no text`);
-        if (!d.expEn || !d.expVn) err(`${at} is missing a bilingual explanation (expEn/expVn)`);
+        if (!d.expEn || (bilingual && !d.expVn)) err(`${at} is missing a ${bilingual ? 'bilingual ' : ''}explanation${bilingual ? ' (expEn/expVn)' : ''}`);
         if (d.marks !== undefined && !(d.marks > 0)) err(`${at}: marks must be a positive number`);
         if (d.markScheme || d.modelAnswer) warn(`${at} is an MCQ but also carries modelAnswer/markScheme — those are ignored`);
       } else {
