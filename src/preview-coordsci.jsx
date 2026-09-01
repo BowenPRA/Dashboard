@@ -13,6 +13,7 @@ const UNIT = new URLSearchParams(window.location.search).get('unit') || 'U04_1';
 const CASES = [
   ['NOTES', 'Notes · 18 slides, 5 checks'],
   ['WORD_REC', 'Vocab · 11 key words'],
+  ['FORMULA_WRITE', 'Formulae · 6 name→formula builds'],
   ['SYMBOL_EQ', 'Equations · 6 word→symbol builds'],
   ['WORKBOOK', 'Practice · 12 questions in 3 tiers'],
   ['SHORT_ANSWERS', 'Questions · 5 reasoning items'],

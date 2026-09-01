@@ -357,6 +357,25 @@ export const TASKS = [
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
   {
+    id: 'FORMULA_WRITE',
+    nativeMax: 10,
+    // p1–p19 are taken (p5 is reserved as a workbook question id); p20 is next.
+    dbKey: 'p20',
+    // "Turn the name into a formula." The step before writing equations: the
+    // student sets each ion's charge (superscript) and the subscripts that make
+    // the compound neutral. Correctness is derived from the charges + counts, not
+    // a stored string. Item shape is in src/tasks/FormulaWrite.jsx.
+    label: 'Formulae',
+    icon: FlaskConical,
+    color: { bg: 'bg-[#0891b2]', border: 'border-[#0e7490]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./FormulaWrite.jsx')),
+    hasContent: (u) => notEmpty(u.formulaWrite),
+    buildPool: (u) => u.formulaWrite || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
     id: 'SYMBOL_EQ',
     nativeMax: 10,
     // p1–p18 are taken (p5 is reserved as a workbook question id); p19 is next.

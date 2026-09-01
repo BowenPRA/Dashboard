@@ -13,6 +13,7 @@
 // so the audio generator never over-reads the realWords array (see the Y7 note).
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
+import { formulaWrite } from './formulaWrite.js';
 import { symbolEq } from './symbolEq.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
@@ -42,6 +43,7 @@ export const U04_1_DATA = {
       title: 'Gate 1: Apply',
       threshold: 15,
       tasks: [
+        { id: 'FORMULA_WRITE', dbKey: 'p20', maxXP: 20 },
         { id: 'SYMBOL_EQ', dbKey: 'p19', maxXP: 20 },
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 10 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
@@ -239,6 +241,7 @@ export const U04_1_DATA = {
 
   notes: notes,
   workbook: workbook,
+  formulaWrite: formulaWrite,
   symbolEq: symbolEq,
   assessment: assessment,
   games: games,

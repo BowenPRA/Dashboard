@@ -288,11 +288,17 @@ export const notes = [
     eyebrow: 'At the cathode (−)',
     title: 'What Happens to the Lead Ions',
     content:
-      'The lead ions ($\\text{Pb}^{2+}$) are positive, so they travel to the negative **cathode**.',
-    reveal: {
-      label: 'To turn into lead metal, do they gain or lose electrons — and how many?',
-      prompt: 'A $\\text{Pb}^{2+}$ ion is missing 2 electrons. A lead atom has none missing.',
-      answer: 'They **gain 2 electrons** each. Gaining electrons is **reduction**, and the result is neutral lead metal:  $\\text{Pb}^{2+} + 2\\text{e}^- \\rightarrow \\text{Pb}$.',
+      'The lead ions ($\\text{Pb}^{2+}$) are positive, so they travel to the negative **cathode**. A $\\text{Pb}^{2+}$ ion is short of 2 electrons; a lead atom is not.',
+    check: {
+      id: 'c6',
+      q: 'To turn into lead metal at the cathode, what do the $\\text{Pb}^{2+}$ ions do?',
+      options: [
+        { val: 'A', text: 'Gain 2 electrons (reduction)' },
+        { val: 'B', text: 'Lose 2 electrons (oxidation)' },
+        { val: 'C', text: 'Gain just 1 electron' },
+      ],
+      correct: 'A',
+      expEn: 'A $\\text{Pb}^{2+}$ ion is missing 2 electrons, so it gains 2 to become neutral lead. Gaining electrons is reduction: $\\text{Pb}^{2+} + 2\\text{e}^- \\rightarrow \\text{Pb}$.',
     },
   },
 
@@ -304,11 +310,17 @@ export const notes = [
     eyebrow: 'At the anode (+)',
     title: 'What Happens to the Bromide Ions',
     content:
-      'The bromide ions ($\\text{Br}^-$) are negative, so they travel to the positive **anode**.',
-    reveal: {
-      label: 'To turn into bromine gas, do they gain or lose electrons?',
-      prompt: 'A $\\text{Br}^-$ ion has 1 extra electron. Two of them join to make one $\\text{Br}_2$ molecule.',
-      answer: 'Each **loses 1 electron**. Losing electrons is **oxidation**, and two bromine atoms pair up:  $2\\text{Br}^- \\rightarrow \\text{Br}_2 + 2\\text{e}^-$.',
+      'The bromide ions ($\\text{Br}^-$) are negative, so they travel to the positive **anode**. Each $\\text{Br}^-$ carries 1 extra electron, and two of them join to make one $\\text{Br}_2$ molecule.',
+    check: {
+      id: 'c7',
+      q: 'To turn into bromine gas at the anode, what do the $\\text{Br}^-$ ions do?',
+      options: [
+        { val: 'A', text: 'Each loses 1 electron (oxidation)' },
+        { val: 'B', text: 'Each gains 1 electron (reduction)' },
+        { val: 'C', text: 'They stay unchanged' },
+      ],
+      correct: 'A',
+      expEn: 'Each $\\text{Br}^-$ has one extra electron; losing it is oxidation, and two bromine atoms pair up: $2\\text{Br}^- \\rightarrow \\text{Br}_2 + 2\\text{e}^-$.',
     },
   },
 
@@ -357,10 +369,16 @@ export const notes = [
     content:
       'Every molten binary salt splits the same way — the metal goes to the cathode, the non-metal to the anode.\n\n' +
       '> **The rule to copy:** metal (or hydrogen) forms at the **cathode (−)**; the non-metal forms at the **anode (+)**.',
-    reveal: {
-      label: 'Predict the two products for each: sodium chloride (NaCl), potassium iodide (KI), zinc chloride (ZnCl₂).',
-      prompt: 'Split each into its metal and its non-metal. Metal → cathode, non-metal → anode.',
-      answer: '**NaCl** → sodium (Na) at the cathode, chlorine ($\\text{Cl}_2$) at the anode.  •  **KI** → potassium (K) + iodine ($\\text{I}_2$).  •  **ZnCl₂** → zinc (Zn) + chlorine ($\\text{Cl}_2$).',
+    check: {
+      id: 'c8',
+      q: 'For molten sodium chloride (NaCl), what forms at the cathode (−)?',
+      options: [
+        { val: 'A', text: 'Sodium — the metal' },
+        { val: 'B', text: 'Chlorine gas' },
+        { val: 'C', text: 'Hydrogen gas' },
+      ],
+      correct: 'A',
+      expEn: 'Metal to the cathode: sodium (Na). Chlorine ($\\text{Cl}_2$), the non-metal, forms at the anode.',
     },
   },
 
@@ -371,10 +389,17 @@ export const notes = [
     icon: 'HelpCircle',
     eyebrow: 'Coursebook discussion question 1',
     title: 'Why Must the Substance Be Liquid or Molten?',
-    content: 'Use what you know about **ionic bonding** to explain why electrolysis only works on a molten or dissolved compound — never a solid.',
-    reveal: {
-      label: 'Answer in a full sentence',
-      answer: 'An ionic compound is a lattice of **charged ions**. In a **solid** they are locked in fixed positions and cannot move, so no charge can flow. Only when it is **molten or dissolved** are the ions **free to move** to the electrodes — so only then can it conduct and be broken down.',
+    content: 'Think about **ionic bonding**: why does electrolysis only work on a molten or dissolved compound, never a solid?',
+    check: {
+      id: 'c9',
+      q: 'Why can a solid ionic compound not be electrolysed, but a molten one can?',
+      options: [
+        { val: 'A', text: 'In the solid the ions are locked in a fixed lattice; only when molten are they free to move' },
+        { val: 'B', text: 'A solid contains no ions at all' },
+        { val: 'C', text: 'A solid is simply too cold to react' },
+      ],
+      correct: 'A',
+      expEn: 'Electrolysis needs ions free to move to the electrodes. In a solid lattice the ions are held in fixed positions; melting or dissolving frees them.',
     },
   },
 
@@ -385,11 +410,17 @@ export const notes = [
     icon: 'Droplet',
     eyebrow: 'Coursebook discussion question 2',
     title: 'What Comes Out of Salty Water (Brine)?',
-    content: 'Back to the beaker from the start. **Brine** is sodium chloride dissolved in water. Thinking about the ions present, predict what could be produced when it is electrolysed.',
-    reveal: {
-      label: 'Predict, then check',
-      prompt: 'The ions from the salt are Na⁺ and Cl⁻ — but the water matters too.',
-      answer: '**Chlorine gas** forms at the anode (from the $\\text{Cl}^-$ ions) and **hydrogen gas** forms at the cathode (from the water, not the sodium). **Sodium hydroxide** is left behind in the solution. These three — chlorine, hydrogen and sodium hydroxide — are hugely valuable industrial chemicals.',
+    content: 'Back to the beaker from the start. **Brine** is sodium chloride dissolved in water — so the ions present are Na⁺, Cl⁻, and the water itself matters too.',
+    check: {
+      id: 'c10',
+      q: 'When brine (salty water) is electrolysed, what forms at the cathode (−)?',
+      options: [
+        { val: 'A', text: 'Hydrogen gas — from the water, because sodium is too reactive' },
+        { val: 'B', text: 'Sodium metal' },
+        { val: 'C', text: 'Chlorine gas' },
+      ],
+      correct: 'A',
+      expEn: 'Sodium is too reactive to be discharged, so hydrogen from the water forms at the cathode. Chlorine forms at the anode, and sodium hydroxide is left in solution.',
     },
   },
 
@@ -400,10 +431,17 @@ export const notes = [
     icon: 'Scale',
     eyebrow: 'Coursebook discussion question 3',
     title: 'Why Does Industry Care?',
-    content: 'For the processes we have met — electrolysis, electroplating, the hydrogen fuel cell — suggest why each is **economically important**, thinking about what it produces.',
-    reveal: {
-      label: 'Discuss, then reveal',
-      answer: 'Electrolysis is the **only way to extract very reactive metals** such as aluminium and sodium from their ores. Electrolysis of brine makes **chlorine and sodium hydroxide** for industry. **Electroplating** puts a thin protective or decorative metal coat on cheaper objects. And the **hydrogen–oxygen fuel cell** turns a reaction straight into electricity with only water as waste — a possible replacement for petrol.',
+    content: 'Think about the processes we have met — electrolysis, electroplating, the hydrogen fuel cell — and what each one produces that industry needs.',
+    check: {
+      id: 'c11',
+      q: 'What makes electrolysis so important to industry?',
+      options: [
+        { val: 'A', text: 'It is the only way to extract very reactive metals such as aluminium from their ores' },
+        { val: 'B', text: 'It is always the cheapest possible process' },
+        { val: 'C', text: 'It is the only way to make a solid melt' },
+      ],
+      correct: 'A',
+      expEn: 'Electrolysis extracts reactive metals (aluminium, sodium) that heating with carbon cannot. It also makes chlorine and sodium hydroxide from brine, and is used for electroplating.',
     },
   },
 
