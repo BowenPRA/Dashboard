@@ -49,13 +49,5 @@ export function Species({ coeff, formula, className = '' }) {
   );
 }
 
-// Shared teal palette so the two tasks match.
-export const CHEM = {
-  teal: '#0087a8',
-  tealDark: '#026e88',
-  tealSoft: 'rgba(0,135,168,0.10)',
-  green: '#58cc02',
-  greenDark: '#3e7500',
-  red: '#ff4b4b',
-  amber: '#f59e0b',
-};
+// The shared teal palette moved to ./chemPalette — this module exports only
+// components, which is what lets fast refresh hot-swap it.

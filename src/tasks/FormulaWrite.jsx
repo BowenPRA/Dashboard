@@ -3,7 +3,8 @@ import {
   FlaskConical, CheckCircle2, XCircle, ArrowRight, Trophy, Construction, RotateCcw, Scale,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
-import { Formula, Ion, CHEM } from './chemWidgets';
+import { Formula, Ion } from './chemWidgets';
+import { CHEM } from './chemPalette';
 
 /* ------------------------------------------------------------------ *
  * FORMULAE — "turn the name into a formula: symbols, charges, subscripts."

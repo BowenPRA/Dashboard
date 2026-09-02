@@ -4,7 +4,8 @@ import {
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { balanceReport } from '../utils/chemFormula';
-import { Formula, Species, CHEM } from './chemWidgets';
+import { Formula, Species } from './chemWidgets';
+import { CHEM } from './chemPalette';
 
 /* ------------------------------------------------------------------ *
  * SYMBOL EQUATIONS — "turn the word equation into a balanced symbol
@@ -137,9 +138,10 @@ export default function SymbolEquation({ pool, onComplete, onQuit }) {
   const gradeItem = () => {
     const built = { reactants: cur.r.filter((s) => s.formula), products: cur.p.filter((s) => s.formula) };
     const formulaeMatch = sameMultiset(built.reactants, item.reactants) && sameMultiset(built.products, item.products);
-    let balanced = false;
-    try { balanced = balanceReport(built.reactants, built.products).balanced; } catch { balanced = false; }
-    const correct = formulaeMatch && balanced;
+    // `safeBalance` is the same call behind the same try/catch this used to
+    // inline — it filters `cur` exactly as `built` does and reports unbalanced
+    // when `balanceReport` throws.
+    const correct = formulaeMatch && safeBalance(cur).balanced;
     setResults((r) => ({ ...r, [idx]: correct }));
     setGraded(true);
   };

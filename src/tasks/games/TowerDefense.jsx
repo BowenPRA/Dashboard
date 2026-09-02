@@ -379,7 +379,6 @@ export default function TowerDefense({
     if (!challenge?.result) return;
     const t = setTimeout(closeChallenge, 1600);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [challenge?.result]);
 
   // Keyboard controls (desktop QoL). Space/Enter starts the next wave, 1–6 pick a
