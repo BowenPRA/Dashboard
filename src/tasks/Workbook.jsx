@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect, Component } from 'react';
-import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, ChevronDown, Lightbulb, GripVertical, CornerDownRight, Check, RotateCcw, HelpCircle } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useRef, Component } from 'react';
+import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, ChevronDown, Lightbulb, GripVertical, CornerDownRight, Check, RotateCcw, HelpCircle, MonitorPlay, Minimize2 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { renderMath } from '../components/notes/renderMath';
 import { answersEquivalent } from '../utils/mathEquivalence';
@@ -139,7 +139,7 @@ const gradeQuestion = (q, value) => {
 };
 
 // --- Multiple choice -------------------------------------------------
-const ChoiceAnswer = ({ q, value, onChange, checked, lang }) => (
+const ChoiceAnswer = ({ q, value, onChange, checked, lang, big = false }) => (
   <div className="flex flex-col gap-3">
     {(q.options || []).map((opt) => {
       const selected = value === opt.val;
@@ -154,11 +154,11 @@ const ChoiceAnswer = ({ q, value, onChange, checked, lang }) => (
       const label = lang === 'vn' && opt.textVn != null ? opt.textVn : opt.text;
       return (
         <button key={opt.val} onClick={() => !checked && onChange(opt.val)} disabled={checked}
-          className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all ${box}`}>
+          className={`w-full rounded-2xl border-2 text-left flex items-center gap-4 transition-all ${big ? 'p-[clamp(1rem,1.6vw,1.6rem)]' : 'p-4'} ${box}`}>
           <span className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 ${dot}`}>
             <span className={`w-3 h-3 rounded-full bg-white transition-transform ${selected || (checked && isRight) ? 'scale-100' : 'scale-0'}`} />
           </span>
-          <span className="font-bold text-lg sm:text-xl text-slate-700 dark:text-slate-200 min-w-0"><RichText text={label} /></span>
+          <span className={`font-bold text-slate-700 dark:text-slate-200 min-w-0 ${big ? 'text-[clamp(1.25rem,2vw,2rem)]' : 'text-lg sm:text-xl'}`}><RichText text={label} /></span>
           {checked && isRight && <CheckCircle2 className="w-6 h-6 ml-auto text-[#58a700] shrink-0" strokeWidth={3} />}
           {checked && selected && !isRight && <XCircle className="w-6 h-6 ml-auto text-rose-400 shrink-0" strokeWidth={3} />}
         </button>
@@ -168,11 +168,11 @@ const ChoiceAnswer = ({ q, value, onChange, checked, lang }) => (
 );
 
 // --- Inline sentence with typed boxes or dropdowns -------------------
-const BlankSentence = ({ q, value, onChange, checked, lang, mode }) => {
+const BlankSentence = ({ q, value, onChange, checked, lang, mode, big = false }) => {
   const parts = (lang === 'vn' && q.textPartsVn) ? q.textPartsVn : (q.textParts || []);
   const answers = value || {};
   return (
-    <div className="text-slate-700 dark:text-slate-200 text-lg sm:text-2xl font-semibold leading-[2.4] bg-slate-50 dark:bg-slate-800/40 p-5 sm:p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700">
+    <div className={`text-slate-700 dark:text-slate-200 font-semibold leading-[2.4] bg-slate-50 dark:bg-slate-800/40 rounded-2xl border-2 border-slate-200 dark:border-slate-700 ${big ? 'text-[clamp(1.4rem,2.2vw,2.2rem)] p-[clamp(1.25rem,2vw,2rem)]' : 'text-lg sm:text-2xl p-5 sm:p-6'}`}>
       {parts.map((part, i) => {
         const key = (i + 1).toString();
         const blank = q.blanks?.[key];
@@ -316,7 +316,7 @@ const DragAnswer = ({ q, value, onChange, checked, lang }) => {
 };
 
 // --- Plain typed box (the default) -----------------------------------
-const TextAnswer = ({ value, onChange, onEnter, checked, correct, lang, result }) => {
+const TextAnswer = ({ value, onChange, onEnter, checked, correct, lang, result, big = false }) => {
   if (checked) {
     return (
       <div className={`flex items-center gap-2.5 px-4 py-3.5 rounded-xl border-2 font-black
@@ -333,18 +333,18 @@ const TextAnswer = ({ value, onChange, onEnter, checked, correct, lang, result }
   return (
     <input value={value} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onEnter(); } }}
       placeholder={lang === 'vn' ? 'Nhập đáp án của bạn' : 'Type your answer'} spellCheck={false} autoComplete="off"
-      className="w-full px-4 py-3.5 rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold text-lg focus:outline-none focus:border-[#1cb0f6]" />
+      className={`w-full rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:outline-none focus:border-[#1cb0f6] ${big ? 'px-6 py-5 text-[clamp(1.3rem,2vw,2rem)]' : 'px-4 py-3.5 text-lg'}`} />
   );
 };
 
 // Choose the widget for a question.
-const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result }) => {
+const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result, big = false }) => {
   const t = q.type || 'text';
-  if (t === 'mcq') return <ChoiceAnswer q={q} value={value} onChange={onChange} checked={checked} lang={lang} />;
-  if (t === 'fill_blank') return <BlankSentence q={q} value={value} onChange={onChange} checked={checked} lang={lang} mode="input" />;
-  if (t === 'inline') return <BlankSentence q={q} value={value} onChange={onChange} checked={checked} lang={lang} mode="select" />;
+  if (t === 'mcq') return <ChoiceAnswer q={q} value={value} onChange={onChange} checked={checked} lang={lang} big={big} />;
+  if (t === 'fill_blank') return <BlankSentence q={q} value={value} onChange={onChange} checked={checked} lang={lang} mode="input" big={big} />;
+  if (t === 'inline') return <BlankSentence q={q} value={value} onChange={onChange} checked={checked} lang={lang} mode="select" big={big} />;
   if (t === 'dnd' || t === 'order') return <DragAnswer q={q} value={value} onChange={onChange} checked={checked} lang={lang} />;
-  return <TextAnswer value={value} onChange={onChange} onEnter={onEnter} checked={checked} correct={result?.correct} lang={lang} result={result} />;
+  return <TextAnswer value={value} onChange={onChange} onEnter={onEnter} checked={checked} correct={result?.correct} lang={lang} result={result} big={big} />;
 };
 
 // `title` lets a unit run TWO workbook tasks (WORKBOOK and WORKBOOK_B, one per
@@ -363,6 +363,36 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
   const [results, setResults] = useState(() => savedData || {}); // id -> { value, correct, shown }
   const [revealed, setRevealed] = useState(() => new Set(Object.keys(savedData || {})));
   const [drafts, setDrafts] = useState({});   // id -> what they have entered so far
+  // Projector mode, the same affordance the lesson decks carry: real fullscreen
+  // plus a bigger set of type, so a problem can be worked at a desk from a
+  // phone-sized card OR read across a room from a TV.
+  const [isDisplayMode, setIsDisplayMode] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const onChange = () => { if (!document.fullscreenElement) setIsDisplayMode(false); };
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+
+  const toggleDisplayMode = async () => {
+    if (isDisplayMode) {
+      if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
+      setIsDisplayMode(false);
+      return;
+    }
+    // The big type is the point; the fullscreen is a bonus. Some browsers and
+    // embedded views refuse the Fullscreen API outright, and a Project button
+    // that silently does nothing there would be worse than one that just makes
+    // the problem bigger — so the mode is entered either way.
+    try {
+      await containerRef.current?.requestFullscreen();
+    } catch (err) {
+      console.warn('Fullscreen unavailable; showing the large layout only.', err);
+    }
+    setIsDisplayMode(true);
+  };
+  const leaveFullscreen = () => { if (document.fullscreenElement) document.exitFullscreen(); };
 
   const total = problems.length;
   const q = problems[idx];
@@ -419,7 +449,10 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
   // Save AND leave — used by both "Done" and the quit button, so exiting the
   // task banks every correct answer rather than discarding the session.
-  const finish = () => onComplete?.(scoreFrom(results), scorable.length ? blobFrom(results) : null, { items: itemsFrom(results) });
+  const finish = () => {
+    leaveFullscreen();
+    onComplete?.(scoreFrom(results), scorable.length ? blobFrom(results) : null, { items: itemsFrom(results) });
+  };
 
   useEffect(() => {
     const onKey = (e) => {
@@ -457,38 +490,40 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
   const checked = !!result; // widget frozen + marked once there is any result
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans overflow-hidden transition-colors duration-300">
+    <div ref={containerRef} className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans overflow-hidden transition-colors duration-300">
       <style dangerouslySetInnerHTML={{ __html: `
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(148,163,184,0.35); border-radius: 10px; }
       ` }} />
 
-      <TopBar onQuit={finish} modeTitle={title} current={idx + 1} total={total}
-        lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+      {!isDisplayMode && (
+        <TopBar onQuit={finish} modeTitle={title} current={idx + 1} total={total}
+          lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+      )}
 
       {/* Problem card */}
-      <div className="flex-1 flex justify-center items-center overflow-hidden p-3 sm:p-6 lg:p-8 min-h-0">
-        <div key={idx} className="w-full max-w-3xl h-full flex flex-col bg-white dark:bg-slate-900 rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-[0.99] duration-300">
+      <div className={`flex-1 flex justify-center items-center overflow-hidden min-h-0 ${isDisplayMode ? 'p-2 sm:p-4' : 'p-3 sm:p-6 lg:p-8'}`}>
+        <div key={idx} className={`w-full h-full flex flex-col bg-white dark:bg-slate-900 rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-[0.99] duration-300 ${isDisplayMode ? 'max-w-[100rem]' : 'max-w-3xl'}`}>
 
         {/* Header strip */}
-        <div className={`${theme.bg} px-5 sm:px-7 py-3 sm:py-4 flex items-center justify-between text-white flex-shrink-0 border-b-4 border-black/10`}>
-          <span className="font-black uppercase tracking-widest text-sm sm:text-base drop-shadow-sm">{tierLabel}</span>
-          <span className="font-black text-xs sm:text-sm bg-white/20 rounded-full px-3 py-1 border border-white/30">
+        <div className={`${theme.bg} flex items-center justify-between text-white flex-shrink-0 border-b-4 border-black/10 ${isDisplayMode ? 'px-[clamp(1.5rem,3vw,3rem)] py-[clamp(0.75rem,1.4vw,1.4rem)]' : 'px-5 sm:px-7 py-3 sm:py-4'}`}>
+          <span className={`font-black uppercase tracking-widest drop-shadow-sm ${isDisplayMode ? 'text-[clamp(1rem,1.5vw,1.6rem)]' : 'text-sm sm:text-base'}`}>{tierLabel}</span>
+          <span className={`font-black bg-white/20 rounded-full px-3 py-1 border border-white/30 ${isDisplayMode ? 'text-[clamp(0.85rem,1.2vw,1.3rem)]' : 'text-xs sm:text-sm'}`}>
             {lang === 'vn' ? 'Câu' : 'Question'} {idx + 1} / {total}
           </span>
         </div>
 
         {/* Body — prompt, answer widget, feedback, then solution */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8 space-y-5">
+        <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3.5rem)] space-y-[clamp(1rem,1.8vw,2rem)]' : 'p-5 sm:p-8 space-y-5'}`}>
           {/* Prompt */}
-          <div className="text-slate-800 dark:text-slate-100 font-semibold text-xl sm:text-2xl leading-relaxed">
+          <div className={`text-slate-800 dark:text-slate-100 font-semibold leading-relaxed ${isDisplayMode ? 'text-[clamp(1.6rem,2.7vw,3rem)]' : 'text-xl sm:text-2xl'}`}>
             <RichText text={prompt} />
           </div>
 
           {/* Diagram (swaps to solved on reveal) */}
           {diagram && (
             <div className="flex flex-col items-center">
-              <div className="w-full max-w-sm bg-white dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-4 shadow-sm">
+              <div className={`w-full bg-white dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-4 shadow-sm ${isDisplayMode ? 'max-w-3xl' : 'max-w-sm'}`}>
                 <WidgetBoundary>
                   <div key={isRevealed ? 'solved' : 'blank'} className="w-full flex justify-center animate-in fade-in duration-300" dangerouslySetInnerHTML={{ __html: diagram }} />
                 </WidgetBoundary>
@@ -505,13 +540,13 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
           {/* Answer widget — where the student works */}
           {answerable && (
             <div className="pt-1">
-              <AnswerWidget q={q} value={draft} onChange={setDraft} onEnter={check} checked={checked} lang={lang} result={result} />
+              <AnswerWidget q={q} value={draft} onChange={setDraft} onEnter={check} checked={checked} lang={lang} result={result} big={isDisplayMode} />
             </div>
           )}
 
           {/* Feedback banner after a real Check (skip for a bare "shown" peek) */}
           {checked && !result.shown && (
-            <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 font-black text-sm sm:text-base
+            <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 font-black ${isDisplayMode ? 'text-[clamp(1.05rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}
               ${result.correct
                 ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3d8b00] dark:text-lime-300'
                 : 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'}`}>
@@ -523,13 +558,13 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
           {/* Solution */}
           {isRevealed && (
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-5 sm:p-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className={`bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-top-2 duration-300 ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2.25rem)]' : 'p-5 sm:p-6'}`}>
               <div className={`text-[10px] sm:text-xs font-black uppercase tracking-widest mb-3 ${theme.text}`}>
                 {lang === 'vn' ? 'Lời giải' : 'Solution'}
               </div>
               <ol className="space-y-3">
                 {steps.map((step, si) => (
-                  <li key={si} className="flex gap-3 text-slate-700 dark:text-slate-300 font-medium text-base sm:text-lg leading-relaxed">
+                  <li key={si} className={`flex gap-3 text-slate-700 dark:text-slate-300 font-medium leading-relaxed ${isDisplayMode ? 'text-[clamp(1.15rem,1.9vw,1.9rem)]' : 'text-base sm:text-lg'}`}>
                     <span className="flex-shrink-0 w-6 h-6 mt-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-xs font-black flex items-center justify-center">{si + 1}</span>
                     <span className="min-w-0"><RichText text={step} /></span>
                   </li>
@@ -538,7 +573,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
               {answer && (
                 <div className="mt-5 flex items-center gap-2 flex-wrap">
                   <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400">{lang === 'vn' ? 'Đáp án' : 'Answer'}</span>
-                  <span className="inline-flex items-center bg-[#58cc02]/10 border-2 border-[#58cc02]/40 text-[#3d8b00] dark:text-[#7bd42f] font-black rounded-xl px-4 py-1.5 text-lg sm:text-xl">
+                  <span className={`inline-flex items-center bg-[#58cc02]/10 border-2 border-[#58cc02]/40 text-[#3d8b00] dark:text-[#7bd42f] font-black rounded-xl px-4 py-1.5 ${isDisplayMode ? 'text-[clamp(1.3rem,2.1vw,2.1rem)]' : 'text-lg sm:text-xl'}`}>
                     <RichText text={answer} />
                   </span>
                 </div>
@@ -591,7 +626,16 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
       {/* Bottom navigation */}
       <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 p-3 sm:p-5 flex-shrink-0">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+        <div className={`mx-auto flex items-center justify-between gap-4 ${isDisplayMode ? 'max-w-[100rem]' : 'max-w-3xl'}`}>
+          {/* Project to a TV — the same affordance the lesson decks carry, and
+              the way out of it once you are in. */}
+          <button onClick={toggleDisplayMode}
+            title={isDisplayMode ? 'Leave fullscreen' : 'Project to TV (fullscreen)'}
+            className="hidden md:flex items-center justify-center gap-2 px-4 h-12 sm:h-14 rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-[#1cb0f6] active:border-b-2 active:translate-y-[2px] transition-all">
+            {isDisplayMode ? <Minimize2 className="w-5 h-5" strokeWidth={2.5} /> : <MonitorPlay className="w-5 h-5" strokeWidth={2.5} />}
+            <span className="text-xs font-black uppercase tracking-widest">{isDisplayMode ? 'Exit' : 'Project'}</span>
+          </button>
+
           <button onClick={() => go(-1)} disabled={idx === 0}
             className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-30 disabled:pointer-events-none bg-white dark:bg-slate-900">
             <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={3} />

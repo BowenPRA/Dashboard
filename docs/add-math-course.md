@@ -95,6 +95,12 @@ export const polyDiv = {
   coefficients → a missing power → the first remainder → a leading coefficient ≠ 1 → a
   non-monic divisor → a quadratic divisor. `AM_3A` uses eight, three of them with
   remainders.
+- **On completion the whole division is re-set in LaTeX**, the way the book prints it,
+  under a "Copy this into your book" heading — then the two finished statements,
+  `P(x) = D(x)Q(x) + R(x)` and the fraction form. `divisionLatex()` builds it: KaTeX
+  has no `\cline`, so instead of an array each cell is a `\mathrlap` over a `\phantom`
+  of the widest term in that column, which gives true columns *and* lets `\underline`
+  rule only the part of the row the working reaches. Nothing there is authored either.
 
 ---
 

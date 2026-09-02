@@ -286,6 +286,106 @@ export function checkDivision(dividend, divisor) {
 }
 
 /**
+ * The completed division, typeset the way the textbook prints it: the quotient
+ * over the bar, the divisor outside the bracket, and each product underlined
+ * above the line it leaves behind.
+ *
+ * HOW THE COLUMNS LINE UP. KaTeX has no `\cline`, so a real column grid cannot
+ * draw a rule under part of a row. Instead every line is left-aligned and pushed
+ * right by a `\phantom` of the DIVIDEND's own terms for the powers that line
+ * does not reach. The phantom is built from the same strings the dividend line
+ * renders, so the offsets are exact rather than eyeballed, and a row always
+ * starts at the left edge of its own power column — which is how the book sets
+ * it out. The sign between columns is a binary operator with its own spacing, so
+ * a row whose leading term is positive still reserves that slot (`\phantom{+}`).
+ *
+ * Returns one `\begin{array}{l}…\end{array}` string, ready for SafeBlockMath.
+ */
+export function divisionLatex(model, { v = 'x' } = {}) {
+  const D = model.dividend;
+  const V = model.divisor;
+  const n = degreeOf(D);
+
+  const divisorTex = polyLatex(V, { v });
+  // Everything left of the dividend: the divisor and the bracket.
+  const PRE = `\\phantom{${divisorTex}\\,\\big)\\,}`;
+
+  /**
+   * One cell, written as it appears in that column: the leading column of the
+   * whole division carries no operator, every other column carries a binary
+   * + or −. A row whose own leading term is positive still reserves the
+   * operator slot, so it starts where the column starts and not half a glyph in.
+   */
+  const cellTex = (coef, deg, { rowLead = false } = {}) => {
+    if (deg >= n) return termLatex(coef, deg, { v, lead: true });
+    const op = coef < 0 ? '{}- ' : rowLead ? '\\phantom{{}+{}}' : '{}+ ';
+    return `${op}${termBody(coef, deg, v)}`;
+  };
+
+  // Each column is padded to the widest term that will ever appear in it, so no
+  // cell can spill into its neighbour. Width is judged on the term BODY with the
+  // markup stripped ("2x^{2}" → "2x2"): every body in a column is the same shape
+  // — digits, x, the same superscript — so glyph count orders them correctly,
+  // which a raw string length would not (a `\phantom{…}` is long and narrow).
+  const vis = (s) => s.replace(/[{}^\\]/g, '').length;
+  const widest = new Map();
+  const note = (deg, coef) => {
+    const b = termBody(coef, deg, v);
+    if (!widest.has(deg) || vis(b) > vis(widest.get(deg))) widest.set(deg, b);
+  };
+  for (let d = n; d >= 0; d -= 1) note(d, coefAt(D, d));
+  for (const s of model.steps) {
+    note(s.qDeg, s.qCoef);
+    for (const c of [...s.prod, ...s.diff, ...s.bring]) note(c.deg, c.coef);
+  }
+  // Only the leading column sits flush against the bracket; every other column
+  // reserves the operator that separates it from the one before.
+  const pad = new Map(
+    [...widest.entries()].map(([deg, body]) => [deg, `${deg >= n ? '' : '{}+ '}${body}`])
+  );
+
+  /**
+   * A whole line, one fixed-width slot per power. `\mathrlap` draws the cell at
+   * the slot's left edge without taking any width, and the `\phantom` behind it
+   * sets the slot — which is how a KaTeX line gets true columns without an
+   * array (an array cannot carry a rule under only part of a row).
+   */
+  const line = (cells, { underline = false, wrap = null } = {}) => {
+    const has = new Map(cells.map((c) => [c.deg, c]));
+    const hi = cells.length ? cells[0].deg : n;
+    const lo = cells.length ? cells[cells.length - 1].deg : 0;
+    const before = [];  // columns above this row — empty
+    const span = [];    // the columns the row actually occupies
+    const after = [];   // columns below it — empty again
+    for (let d = n; d >= 0; d -= 1) {
+      const slot = `\\phantom{${pad.get(d)}}`;
+      const c = has.get(d);
+      const tex = c ? `\\mathrlap{${cellTex(c.coef, d, { rowLead: d === hi })}}${slot}` : slot;
+      (d > hi ? before : d >= lo ? span : after).push(tex);
+    }
+    // Only the columns the row reaches are underlined — the rule stops where the
+    // working stops, exactly as it is ruled on paper.
+    const mid = span.join('');
+    const body = `${before.join('')}${underline ? `\\underline{${mid}}` : mid}${after.join('')}`;
+    return wrap ? wrap(body) : `${PRE}${body}`;
+  };
+
+  const lines = [
+    line(model.steps.map((s) => ({ deg: s.qDeg, coef: s.qCoef }))),
+    // The dividend is snapped to the same columns, then wrapped in the bracket.
+    line(
+      Array.from({ length: n + 1 }, (_, i) => ({ deg: n - i, coef: coefAt(D, n - i) })),
+      { wrap: (b) => `${divisorTex}\\,\\overline{\\smash{\\big)}\\,${b}}` }
+    ),
+  ];
+  for (const s of model.steps) {
+    lines.push(line(s.prod, { underline: true }));
+    lines.push(line([...s.diff, ...s.bring]));
+  }
+  return `\\begin{array}{l}${lines.join(' \\\\[3pt] ')}\\end{array}`;
+}
+
+/**
  * The finished statement, both ways round:
  *   product   P(x) = (divisor)(quotient) + remainder
  *   fraction  P(x)/(divisor) = quotient + remainder/(divisor)

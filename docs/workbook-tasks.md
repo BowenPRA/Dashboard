@@ -182,6 +182,11 @@ like the lesson deck (this is the shape we want; do not go back to a scrolling l
 - Still practice, not an exam: **no integrity lockdown, no strikes, unlimited time**,
   and prompt text stays selectable. The mark exists so the XP means something, not to
   police anyone.
+- **Projector mode**, the same affordance the lesson deck carries: a **Project**
+  button in the bottom nav goes fullscreen, hides the TopBar, widens the card and
+  scales the prompt, the options, the typed box and the solution steps up with
+  `clamp()`. **Exit** (or Esc) returns. Where a browser refuses the Fullscreen API
+  the large layout is applied anyway, so the button is never a dead control.
 - Fully responsive; the problem body scrolls inside its card, never the page.
 
 ---
