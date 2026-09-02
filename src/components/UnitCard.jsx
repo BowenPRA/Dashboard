@@ -7,7 +7,7 @@ import {
   Boxes, Layers, ScanEye
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
-import { ARCADE_KEY } from '../utils/progressSchema';
+import { ARCADE_KEYS } from '../utils/progressSchema';
 
 const IconMap = {
   "Award": Award, "GraduationCap": GraduationCap, "BookOpen": BookOpen,
@@ -36,8 +36,13 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
   const strikes = scores.strikes || 0;
   const isAILocked = strikes >= 3;
 
-  // Raw arcade high score, kept outside the XP keys — see progressSchema.
-  const arcadeBest = scores[ARCADE_KEY]?.current || 0;
+  // Raw arcade high score, kept outside the XP keys — see progressSchema. The
+  // arcade has a board per cabinet; this one badge is "your best arcade run on
+  // this unit", so it takes whichever game they did better at.
+  const arcadeBest = ARCADE_KEYS.reduce(
+    (best, key) => Math.max(best, scores[key]?.current || 0),
+    0
+  );
 
   const getTrophyStyles = (xp) => {
     if (xp === 100) return { 

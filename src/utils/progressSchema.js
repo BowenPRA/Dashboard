@@ -28,19 +28,52 @@
 export const VOCAB_KEY = '__vocab';
 
 /**
- * Where a unit's raw arcade high score lives, beside the task records.
+ * Where a unit's raw arcade high scores live, beside the task records.
  *
- * It is deliberately not a dbKey: the GAMES task's XP is clamped to a few
- * points, so the unclamped score needs its own home for the shared per-unit
+ * They are deliberately not dbKeys: the GAMES task's XP is clamped to a few
+ * points, so the unclamped score needs its own home for the per-unit
  * leaderboard to be able to rank anyone. Never counted as unit XP.
+ *
+ * ONE KEY PER CABINET. The arcade has two games that score on completely
+ * different scales and reward completely different skills, so pooling them into
+ * one board would rank a good Tower Defense run against a good Survivor run and
+ * mean nothing. `ARCADE_KEY` keeps its historic name and its historic contents —
+ * every Tower Defense score ever saved is already under `GAMES`, so splitting
+ * the boards needed a NEW key rather than a migration of the old one.
  */
 export const ARCADE_KEY = 'GAMES';
+export const SURVIVOR_KEY = 'SURVIVOR';
+
+/**
+ * The arcade's leaderboards, declared once.
+ *
+ * `key` is where the score lives in a unit's progress and what the server's
+ * `get_unit_leaderboard(target_unit_id, target_key)` reads; `id` is what the
+ * hub's tab state uses. Adding a third cabinet means adding a row here, adding
+ * the key to the SQL function's allow-list, and nothing else.
+ */
+export const ARCADE_BOARDS = [
+  { id: 'TD',       key: ARCADE_KEY,   label: 'Tower Defense' },
+  { id: 'SURVIVOR', key: SURVIVOR_KEY, label: 'Swarm Survivor' },
+];
+
+/** Every progress key that holds a raw arcade score. */
+export const ARCADE_KEYS = ARCADE_BOARDS.map(b => b.key);
+
+/**
+ * True for a key that names a real leaderboard.
+ *
+ * Guards the write in `saveScore`: which board a score lands on arrives inside
+ * `meta`, and an unchecked value there would let a caller write any key it liked
+ * into a unit's progress — including one that shadows a task's dbKey.
+ */
+export const isArcadeKey = (key) => ARCADE_KEYS.includes(key);
 
 /** Keys inside a track's progress that are not units. */
 const RESERVED_TRACK_KEYS = [VOCAB_KEY];
 
 /** Keys inside a unit's progress that are not task dbKeys. */
-const RESERVED_UNIT_KEYS = ['strikes', ARCADE_KEY];
+const RESERVED_UNIT_KEYS = ['strikes', ...ARCADE_KEYS];
 
 /** True for keys that address a real unit. Use before iterating a track. */
 export const isUnitKey = (key) => !RESERVED_TRACK_KEYS.includes(key);

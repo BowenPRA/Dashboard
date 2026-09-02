@@ -8,7 +8,7 @@ import TowerDefense from './games/TowerDefense';
 import Survivor from './games/Survivor';
 import TowerVisual from '../components/towerdefense/TowerVisual';
 import { arcadeConfig } from '../components/towerdefense/unitDifficulty';
-import { ARCADE_KEY } from '../utils/progressSchema';
+import { ARCADE_KEY, SURVIVOR_KEY, ARCADE_BOARDS, ARCADE_KEYS } from '../utils/progressSchema';
 
 export default function Games({ pool, unitId, track, scores, onComplete, onQuit }) {
   const [view, setView] = useState('MENU');
@@ -17,10 +17,14 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
   const [leaderboard, setLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const [leaderboardError, setLeaderboardError] = useState(null);
+  // Which cabinet's board is on screen. The two games score on different scales,
+  // so they rank separately and the student picks which one to look at.
+  const [boardId, setBoardId] = useState(ARCADE_BOARDS[0].id);
+  const [boardPending, setBoardPending] = useState(false);
 
-  // The arcade key holds the raw game score, not unit XP — counting it here
+  // The arcade keys hold raw game scores, not unit XP — counting them here
   // would let one good run bankroll the next.
-  const IGNORED = [ARCADE_KEY, 'games', 'strikes'];
+  const IGNORED = [...ARCADE_KEYS, 'games', 'strikes'];
   const unitXP = Object.entries(scores || {})
     .filter(([key]) => !IGNORED.includes(key))
     .reduce((sum, [, section]) => sum + (Number(section?.current) || 0), 0);
@@ -42,14 +46,22 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
     Math.round(unitXP * 2 * (gameConfig.creditMultiplier || 1))
   );
 
-  const fetchScores = async () => {
+  const fetchScores = async (id = boardId) => {
+    const board = ARCADE_BOARDS.find(b => b.id === id) || ARCADE_BOARDS[0];
+    setBoardId(id);
     setLoadingLeaderboard(true);
     setLeaderboardError(null);
-    const { data, error } = await getGlobalGameLeaderboard(unitId, 5); 
-    
+    setBoardPending(false);
+
+    const { data, error, pending } = await getGlobalGameLeaderboard(unitId, 5, board.key);
+
     if (error) {
       setLeaderboardError('Failed to synchronize with network.');
+      setLeaderboard([]);
     } else {
+      // `pending` means the server function that reads this board has not been
+      // installed yet — a setup step, not a fault. Saying so beats a red error.
+      setBoardPending(!!pending);
       setLeaderboard(data || []);
     }
     setLoadingLeaderboard(false);
@@ -62,7 +74,7 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
       return;
     }
     if (mode === 'LEADERBOARD') {
-      fetchScores();
+      fetchScores(boardId);
       setView('LEADERBOARD');
       return;
     }
@@ -85,8 +97,12 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
   // with a separate supabase round-trip used to lose the score: saveScore
   // rewrites the whole progress JSON from React state, which knows nothing about
   // an out-of-band write, so the next task saved anywhere clobbered it.
-  const handleGameComplete = (score) => {
-    if (onComplete) onComplete(score, null, { arcadeScore: score });
+  //
+  // `arcadeKey` decides WHICH board the run lands on — the two cabinets keep
+  // separate high scores, so a Survivor run can never displace a Tower Defense
+  // one (or be ranked against it).
+  const handleGameComplete = (score, arcadeKey) => {
+    if (onComplete) onComplete(score, null, { arcadeScore: score, arcadeKey });
   };
 
   if (view === 'TD') {
@@ -96,7 +112,7 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
         unitId={unitId}
         gameConfig={gameConfig}
         startingCredits={startingCredits}
-        onComplete={handleGameComplete}
+        onComplete={(score) => handleGameComplete(score, ARCADE_KEY)}
         onQuit={() => setView('MENU')}
       />
     );
@@ -112,7 +128,7 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
         unitId={unitId}
         gameConfig={gameConfig}
         startingCredits={startingCredits}
-        onComplete={handleGameComplete}
+        onComplete={(score) => handleGameComplete(score, SURVIVOR_KEY)}
         onQuit={() => setView('MENU')}
       />
     );
@@ -315,15 +331,28 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
                 <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center justify-center drop-shadow-md">
                   <Award className="w-8 h-8 sm:w-10 sm:h-10 text-[#FFC800] mr-2 sm:mr-4" /> Global Leaderboard
                 </h2>
-                {/* One board per unit, shared by both cabinets: the score that
-                    counts is the best arcade run on this unit, whichever game
-                    it came from. Two boards would need a schema change on the
-                    server-side leaderboard function, and would also split a
-                    small class in half. */}
                 <p className="text-slate-400 font-bold tracking-widest uppercase mt-2 text-xs sm:text-sm">Top 5 Commanders • Sector {unitId}</p>
-                <p className="text-slate-500 font-bold mt-1 text-[11px] sm:text-xs">Best run from either game counts</p>
               </div>
               <div className="w-16"></div> 
+            </div>
+
+            {/* One tab per cabinet. The two games score on completely different
+                scales and reward completely different skills, so a single pooled
+                board would rank a good defence against a good escape and tell a
+                student nothing about either. */}
+            <div className="flex justify-center gap-3 mb-6">
+              {ARCADE_BOARDS.map(b => (
+                <button
+                  key={b.id}
+                  onClick={() => fetchScores(b.id)}
+                  className={`px-5 sm:px-7 py-3 rounded-2xl font-black uppercase tracking-widest text-xs sm:text-sm border-b-4 transition-all active:border-b-0 active:translate-y-[4px]
+                    ${b.id === boardId
+                      ? 'bg-[#FFC800] text-amber-950 border-[#D1A300]'
+                      : 'bg-slate-800 text-slate-400 border-slate-950 hover:bg-slate-700 hover:text-white'}`}
+                >
+                  {b.label}
+                </button>
+              ))}
             </div>
 
             <div className="flex-1 bg-slate-800 border-4 border-slate-900 rounded-[2.5rem] p-4 sm:p-6 shadow-2xl overflow-y-auto">
@@ -337,6 +366,14 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
                   <X className="w-16 h-16 text-rose-500 mb-4" />
                   <h3 className="text-2xl font-black text-white mb-2">Network Error</h3>
                   <p className="text-slate-400 font-medium">{leaderboardError}</p>
+                </div>
+              ) : boardPending ? (
+                <div className="h-full flex flex-col items-center justify-center text-center min-h-[400px] px-6">
+                  <Lock className="w-16 h-16 text-slate-600 mb-4" />
+                  <h3 className="text-2xl font-black text-white mb-2">Board Not Online Yet</h3>
+                  <p className="text-slate-400 font-medium max-w-sm">
+                    Scores are being recorded — this board switches on once your teacher finishes setting it up.
+                  </p>
                 </div>
               ) : leaderboard.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center min-h-[400px]">

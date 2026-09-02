@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
-import { recordAttempt, mergeVocab, VOCAB_KEY, ARCADE_KEY } from './progressSchema';
+import { recordAttempt, mergeVocab, VOCAB_KEY, ARCADE_KEY, isArcadeKey } from './progressSchema';
 
 // The single Supabase client for the whole app. Having a second createClient in
 // another module spins up a second GoTrueClient on the same storage key, which
@@ -14,16 +14,40 @@ const supabaseUrl = nodeEnv.REACT_APP_SUPABASE_URL || import.meta.env.VITE_SUPAB
 const supabaseKey = nodeEnv.REACT_APP_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-export const getGlobalGameLeaderboard = async (unitId, limit = 5) => {
+/**
+ * The top scores for one unit on one of the arcade's boards.
+ *
+ * `boardKey` is a progress key (see ARCADE_BOARDS) and reaches the server as the
+ * RPC's second argument, so each cabinet ranks on its own board.
+ *
+ * The two-argument function is `docs/leaderboard-split.sql`, which has to be
+ * applied by hand in the Supabase SQL editor — DDL cannot be run from the app.
+ * Until someone does, the deployed site would otherwise show a network error on
+ * a board that is simply not built yet, so this distinguishes the two cases:
+ * PostgREST answers PGRST202 ("no function matches") when the new signature is
+ * missing, and only then does this fall back. The old one-argument function read
+ * the Tower Defense key and nothing else, so it can still answer honestly for
+ * that board; for any newer board it reports `pending`, which the hub shows as
+ * "not switched on yet" rather than as a failure.
+ */
+export const getGlobalGameLeaderboard = async (unitId, limit = 5, boardKey = ARCADE_KEY) => {
+  const topN = (rows) => (rows || []).sort((a, b) => b.score - a.score).slice(0, limit);
+
   try {
     const { data, error } = await supabase.rpc('get_unit_leaderboard', {
-      target_unit_id: unitId
+      target_unit_id: unitId,
+      target_key: boardKey,
     });
+    if (!error) return { data: topN(data), error: null };
 
-    if (error) throw error;
+    if (error.code !== 'PGRST202') throw error;
 
-    const sortedData = (data || []).sort((a, b) => b.score - a.score).slice(0, limit);
-    return { data: sortedData, error: null };
+    if (boardKey === ARCADE_KEY) {
+      const legacy = await supabase.rpc('get_unit_leaderboard', { target_unit_id: unitId });
+      if (legacy.error) throw legacy.error;
+      return { data: topN(legacy.data), error: null };
+    }
+    return { data: null, error: null, pending: true };
   } catch (err) {
     console.error('Failed to parse leaderboard profiles:', err);
     return { data: null, error: err.message };
@@ -119,10 +143,18 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       // The arcade reports a raw game score in the thousands, but its task XP is
       // clamped to a handful of points — so the leaderboard cannot read the XP
       // key or every student would be tied. The unclamped score is kept beside
-      // it under GAMES, in this same update so it survives the next save.
+      // it, in this same update so it survives the next save.
+      //
+      // `meta.arcadeKey` names which cabinet's board it belongs on. It is
+      // validated rather than trusted: it decides a key written into the
+      // progress JSON, and an unrecognised value would either invent a board
+      // nothing reads or shadow a real task record. Anything unknown falls back
+      // to the Tower Defense board, which is where an arcade score went before
+      // there was a second game.
       if (meta.arcadeScore != null) {
-        newProgress[track][unitId][ARCADE_KEY] = recordAttempt(
-          newProgress[track][unitId][ARCADE_KEY], meta.arcadeScore
+        const boardKey = isArcadeKey(meta.arcadeKey) ? meta.arcadeKey : ARCADE_KEY;
+        newProgress[track][unitId][boardKey] = recordAttempt(
+          newProgress[track][unitId][boardKey], meta.arcadeScore
         );
       }
 
