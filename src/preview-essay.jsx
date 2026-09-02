@@ -28,6 +28,46 @@ const REPLIES = {
     ],
     analysisOfArgumentation:
       'You weigh the two measured results against each other and point out that Source 1 never says who pays for the free service — that is real evaluation, not summary.',
+    // Quotes here must appear verbatim in whatever is typed into the response
+    // box, or the workshop will (correctly) drop them. Type the sample response
+    // in src/preview-essay-sample.txt to exercise every card.
+    revisions: [
+      {
+        quote: 'the buses is free',
+        correction: 'the buses are free',
+        kind: 'Subject-verb agreement',
+        why: '"Buses" is more than one, so the verb must be "are".',
+        rule: 'Plural subject takes are, were, have',
+      },
+      {
+        quote: 'Source 2 give evidence',
+        correction: 'Source 2 gives evidence',
+        kind: 'Subject-verb agreement',
+        why: 'One source is singular, so the verb needs an -s.',
+        rule: 'Singular subject takes verb + s',
+      },
+      {
+        quote: 'expensive, because of this the town',
+        correction: 'expensive. Because of this, the town',
+        kind: 'Comma splice',
+        why: 'Two complete sentences cannot be joined with only a comma.',
+        rule: 'Join full sentences with a full stop',
+      },
+      {
+        quote: 'they had to buy new vehicle',
+        correction: 'they had to buy new vehicles',
+        kind: 'Plural noun',
+        why: 'More than one vehicle was bought, so add -s.',
+        rule: 'Countable nouns need a plural -s',
+      },
+      {
+        quote: 'In conclusion i think',
+        correction: 'In conclusion, I think',
+        kind: 'Capital letter',
+        why: 'The word "I" is always a capital, and the opening phrase takes a comma.',
+        rule: 'Always write I with a capital letter',
+      },
+    ],
     conventionIssues: [
       '"the buses is free" — subject-verb agreement',
       '"Source 2 give evidence" — missing -s',
@@ -86,6 +126,32 @@ const REPLIES = {
   },
 };
 
+/**
+ * A response containing, verbatim, every quote the "Strong — 5/6" reply flags.
+ *
+ * The response box blocks paste under exam conditions, which makes typing 200
+ * words by hand the only way into Part 2 — so the harness writes it in through
+ * React's own value setter instead.
+ */
+const SAMPLE = `Free buses is an idea that both sources talk about, but they do not agree about the cost.
+
+Source 1 argues that a town should not charge for public transport at all. It says that in Elmwood the ridership rose by thirty percent in one year after the fares were removed. That number is real evidence and it is hard to argue with. However the writer never says who pays for the service once the fares are gone, and that silence is the weakest part of the argument.
+
+Source 2 give evidence from Marsden instead. When the buses became busy there, they had to buy new vehicle that the town had not budgeted for, and running the service became expensive, because of this the town had to cut money from other services. This is a stronger case because it follows the money all the way to the end.
+
+Also when the buses is free some people ride for one stop when they would have walked before, so the buses get crowded without helping anyone travel further.
+
+In conclusion i think Source 2 is better supported, because it answers the question about cost that Source 1 leaves open.`;
+
+/** Writes into a controlled React textarea the way a keyboard would. */
+const fillResponse = () => {
+  const box = document.querySelector('textarea');
+  if (!box) return;
+  const setValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+  setValue.call(box, SAMPLE);
+  box.dispatchEvent(new Event('input', { bubbles: true }));
+};
+
 // Stubbed at module scope so the real fetch path inside aiGrader still runs,
 // with the picked reply read at call time.
 let activeReply = 'Strong — 5/6';
@@ -115,6 +181,12 @@ function Harness() {
             {k}
           </button>
         ))}
+        <button
+          onClick={fillResponse}
+          className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-emerald-600 text-white"
+        >
+          Fill sample
+        </button>
         <button
           onClick={() => setNonce((n) => n + 1)}
           className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-slate-800 text-white"

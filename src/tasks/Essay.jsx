@@ -4,6 +4,7 @@ import {
   Clock, Lightbulb, Undo2, Redo2, Lock, ScrollText, Quote, AlertTriangle, Scale
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import RevisionWorkshop from './essay/RevisionWorkshop';
 
 import { gradeEssay } from '../utils/aiGrader';
 import { EmptyState } from '../components/ui';
@@ -64,6 +65,30 @@ const MIN_CHARS = 100;
 const GED_MIN_WORDS = 150;
 const GED_TIME_UP_MIN_WORDS = 40;
 const GED_TARGET_WORDS = [300, 500];
+
+/* -------------------------------------------------------------------------- *
+ * How the task's 10 points are split
+ *
+ * A GED essay task is two pieces of work: the response, and the revision that
+ * follows it. Paying only for the response says the revision is optional, and
+ * anything optional after a 45-minute essay does not get done — which is a
+ * shame, because for a second-language writer the revision is where most of the
+ * marks on test day are actually won.
+ *
+ * The task still emits out of 10 (its registry nativeMax), so unit XP totals and
+ * every phase gate derived from them are untouched by this split.
+ * -------------------------------------------------------------------------- */
+const SCORE_XP = 8;     // scaled from the /6 trait score
+const REVISION_XP = 2;  // earned by making the corrections yourself
+
+/** Full marks for a clean essay or a complete revision; half for most of one. */
+const revisionXPOf = (revision) => {
+  if (!revision) return 0;
+  const { fixed = 0, total = 0 } = revision;
+  if (total === 0 || fixed >= total) return REVISION_XP;
+  if (fixed >= Math.ceil(total / 2)) return Math.round(REVISION_XP / 2);
+  return 0;
+};
 
 export default function Essay({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
   const currentQ = pool?.essay || pool;
@@ -234,6 +259,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
         wordCount: countWords(trimmed),
         evidenceCited: [],
         conventionIssues: [],
+        revisions: [],
         scoreNotes: [],
         nonScorableReason: '',
         isPerfect: false,
@@ -356,6 +382,8 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
         evidenceCited: aiData.evidenceCited || [],
         analysisOfArgumentation: aiData.analysisOfArgumentation || '',
         conventionIssues: aiData.conventionIssues || [],
+        // The same errors as applicable edits, for Part 2.
+        revisions: aiData.revisions || [],
         scoreNotes: aiData.scoreNotes || [],
         nonScorableReason: aiData.nonScorableReason || '',
         isPerfect,
@@ -401,22 +429,47 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     setGameState('A');
   };
 
-  const handleNext = () => {
+  /**
+   * `revision` is the result of Part 2, or null when there was no Part 2 to do
+   * (a re-entered perfect attempt, a disabled grader, a non-scorable response).
+   */
+  const handleNext = (revision = null) => {
     let finalXP = 0;
+    let answers = localAnswers;
 
     if (gameState === 'SAVED_PERFECT') {
       finalXP = 10;
     } else if (feedback?.mode === 'ged') {
-      // GED total is out of 6; scale to the task's 0-10.
-      finalXP = Math.round((feedback.gedTotal / 6) * 10);
+      // GED total is out of 6; scale to the score's share of the task's 0-10,
+      // and add what the revision earned.
+      finalXP = Math.round((feedback.gedTotal / 6) * SCORE_XP) + revisionXPOf(revision);
+      if (revision) {
+        answers = {
+          0: {
+            ...(localAnswers[0] || {}),
+            text: feedback.originalAnswer,
+            status: feedback.isPerfect ? 'perfect' : (localAnswers[0]?.status || 'graded'),
+            revised: revision.revisedText,
+            revisionFixed: revision.fixed,
+            revisionTotal: revision.total,
+          },
+        };
+        setLocalAnswers(answers);
+      }
     } else if (feedback) {
       finalXP = Math.ceil((feedback.pointsEarned / feedback.maxPoints) * 10);
     } else if (gameState === 'SAVED_API_ERROR') {
       finalXP = 0;
     }
 
-    onComplete(finalXP, localAnswers);
+    onComplete(finalXP, answers);
   };
+
+  // Part 2 runs whenever there is a real score to learn from. A disabled grader
+  // or a non-scorable response has produced no usable edits, so those go
+  // straight to the end rather than into an empty workshop.
+  const hasRevisionStep =
+    feedback?.mode === 'ged' && !feedback.isStrikeFallback && !feedback.nonScorableReason;
 
   // Labels adapt to the subject for the non-GED (legacy) results view. A science
   // unit gets "Science Feedback"; anything else gets neutral "Content Feedback".
@@ -507,7 +560,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
   const completeButton = (
     <button
-      onClick={handleNext}
+      onClick={() => handleNext()}
       className="flex items-center px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-indigo-800 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
     >
       Complete Section <ArrowRight className="w-6 h-6 ml-3" />
@@ -519,9 +572,20 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       <TopBar
         current={0}
         total={1}
-        onQuit={() => onComplete(0, localAnswers)}
+        onQuit={() => handleNext()}
         modeTitle={isGedTrack ? "Extended Response" : "Essay Writing"}
       />
+
+      {/* Part 2 drops the two-pane exam layout: the sources have done their job,
+          and a sentence being rewritten deserves the whole screen. */}
+      {gameState === 'REVISE' ? (
+        <RevisionWorkshop
+          originalText={feedback?.originalAnswer || ''}
+          revisions={feedback?.revisions || []}
+          onBackToScore={() => setGameState('A')}
+          onFinish={(revision) => handleNext(revision)}
+        />
+      ) : (
 
       <div className={`${isGedTrack ? 'max-w-[92rem]' : 'max-w-7xl'} mx-auto p-4 sm:p-6 mt-2 sm:mt-6`}>
 
@@ -757,7 +821,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                    </p>
                 </div>
                 <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
-                   <button onClick={handleNext} className="flex items-center px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-orange-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm">
+                   <button onClick={() => handleNext()} className="flex items-center px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-orange-700 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm">
                      Complete Section <ArrowRight className="w-6 h-6 ml-3" />
                    </button>
                 </div>
@@ -969,9 +1033,38 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                   </div>
                 )}
 
-                <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
-                  {completeButton}
-                </div>
+                {/* The report is only half the task. Reading "watch your verb
+                    endings" changes nothing; Part 2 is where the student
+                    actually rewrites the sentences that lost the marks. */}
+                {hasRevisionStep ? (
+                  <div className="bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-indigo-900 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
+                    <span className="block text-[11px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">
+                      Part 2 of 2 · Revision
+                    </span>
+                    <h4 className="text-2xl font-black text-slate-800 dark:text-white leading-snug mb-2">
+                      {(feedback.revisions || []).length > 0
+                        ? `Now fix the ${feedback.revisions.length} mistake${feedback.revisions.length === 1 ? '' : 's'} the examiner marked`
+                        : 'Now take your essay away'}
+                    </h4>
+                    <p className="text-[15px] font-medium text-slate-500 dark:text-slate-400 leading-relaxed mb-6 max-w-2xl">
+                      {(feedback.revisions || []).length > 0
+                        ? 'You will be shown exactly what is wrong and exactly what to write instead, one sentence at a time. Rewrite each one and you finish with a corrected essay you can copy out — and the last of this task’s marks.'
+                        : 'The examiner found no errors worth correcting. Collect your essay and the last of this task’s marks.'}
+                    </p>
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => setGameState('REVISE')}
+                        className="flex items-center px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-lg tracking-widest uppercase border-b-[5px] border-indigo-800 active:border-b-0 active:translate-y-[5px] transition-all shadow-sm"
+                      >
+                        Start Part 2 <ArrowRight className="w-6 h-6 ml-3" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
+                    {completeButton}
+                  </div>
+                )}
 
               </div>
             )}
@@ -1105,6 +1198,8 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
           </div>
         </div>
       </div>
+
+      )}
     </div>
   );
 }
