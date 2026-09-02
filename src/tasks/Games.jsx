@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import {
   X, Shield, Trophy, Lock, Loader2, Users, Award, ChevronLeft,
-  Crown, Medal, Map as MapIcon, Heart, Ban, Coins, Swords
+  Crown, Medal, Map as MapIcon, Heart, Ban, Coins, Swords, Skull, Timer, Sparkles
 } from 'lucide-react';
 import { getGlobalGameLeaderboard } from '../utils/supabaseClient';
 import TowerDefense from './games/TowerDefense';
+import Survivor from './games/Survivor';
 import TowerVisual from '../components/towerdefense/TowerVisual';
 import { arcadeConfig } from '../components/towerdefense/unitDifficulty';
 import { ARCADE_KEY } from '../utils/progressSchema';
@@ -55,8 +56,8 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
   };
 
   const handleModeSelect = (mode) => {
-    if (mode === 'SURVIVOR' || mode === 'WALL') {
-      setToast(`${mode === 'SURVIVOR' ? 'Survivor' : 'The Wall'} Mode is currently in development!`);
+    if (mode === 'WALL') {
+      setToast('The Wall Mode is currently in development!');
       setTimeout(() => setToast(null), 3000);
       return;
     }
@@ -65,8 +66,8 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
       setView('LEADERBOARD');
       return;
     }
-    if (mode === 'TD') {
-      setView('TD');
+    if (mode === 'TD' || mode === 'SURVIVOR') {
+      setView(mode);
     }
   };
 
@@ -90,13 +91,29 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
 
   if (view === 'TD') {
     return (
-      <TowerDefense 
-        pool={pool} 
-        unitId={unitId} 
+      <TowerDefense
+        pool={pool}
+        unitId={unitId}
         gameConfig={gameConfig}
         startingCredits={startingCredits}
-        onComplete={handleGameComplete} 
-        onQuit={() => setView('MENU')} 
+        onComplete={handleGameComplete}
+        onQuit={() => setView('MENU')}
+      />
+    );
+  }
+
+  // The second cabinet. It takes the identical props: the same purse, the same
+  // arena config and the same completion callback, so a unit that has one game
+  // has both without authoring anything extra.
+  if (view === 'SURVIVOR') {
+    return (
+      <Survivor
+        pool={pool}
+        unitId={unitId}
+        gameConfig={gameConfig}
+        startingCredits={startingCredits}
+        onComplete={handleGameComplete}
+        onQuit={() => setView('MENU')}
       />
     );
   }
@@ -118,11 +135,13 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05]"></div>
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
+      {/* Scrolls rather than clips: with two full mission cards the menu is taller
+          than a laptop viewport, and a clipped card is an unreachable game. */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 overflow-y-auto">
         
         {/* MENU VIEW */}
         {view === 'MENU' && (
-          <div className="w-full max-w-5xl animate-in zoom-in-95 duration-300">
+          <div className="w-full max-w-5xl my-auto animate-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between mb-12">
               <div>
                 <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg mb-2">Arcade Hub</h1>
@@ -230,11 +249,48 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
                 </div>
               </button>
 
-              <button onClick={() => handleModeSelect('SURVIVOR')} className="relative group bg-slate-800 p-6 sm:p-8 rounded-[3rem] border-b-[8px] border-slate-950 active:border-b-0 active:translate-y-[8px] transition-all text-left opacity-80 hover:opacity-100 overflow-hidden h-full flex flex-col">
-                <div className="absolute top-6 right-6 bg-slate-700 text-slate-300 text-[10px] sm:text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-slate-600 shadow-inner">Coming Soon</div>
-                <Lock className="w-12 h-12 text-slate-500 mb-8" strokeWidth={2.5} />
-                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2">Survivor</h2>
-                <p className="text-slate-400 font-bold text-sm sm:text-base">One life. Endless waves.</p>
+              {/* Swarm Survivor — the same unit, the same purse, the same
+                  leaderboard, played from inside the swarm instead of above it. */}
+              <button onClick={() => handleModeSelect('SURVIVOR')} className="relative group bg-[#EA2B2B] p-6 sm:p-8 rounded-[3rem] border-b-[8px] border-[#a81c1c] active:border-b-0 active:translate-y-[8px] transition-all text-left overflow-hidden shadow-lg flex flex-col h-full">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:scale-125 transition-transform duration-700 pointer-events-none"></div>
+
+                <div className="flex items-center gap-4 mb-8 drop-shadow-md relative z-10">
+                  <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center border-b-4 border-black/10 shrink-0">
+                    <Skull className="w-7 h-7 text-white" strokeWidth={3} />
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-black text-white drop-shadow-sm tracking-tight">Swarm Survivor</h2>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-3 text-white/90 font-bold text-sm sm:text-base mb-6 relative z-10">
+                  <div className="flex items-center gap-2 bg-black/15 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
+                    <Swords className="w-4 h-4 text-white" strokeWidth={2.5} />
+                    <span>{gameConfig.tierLabel}</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-black/15 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
+                    <Timer className="w-4 h-4 text-white" strokeWidth={2.5} />
+                    <span>4 min to the boss</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-black/15 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
+                    <Sparkles className="w-4 h-4 text-[#FFC800]" strokeWidth={2.5} />
+                    <span>Level up · pick upgrades</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10 mb-8 text-white/85 font-medium text-sm sm:text-base leading-snug bg-black/15 border-l-4 border-white/30 rounded-r-xl px-4 py-3">
+                  You are the tower now. Walk, dodge and let your weapons fire themselves — every level-up
+                  question you answer lets you <span className="font-black">choose</span> what you become.
+                </div>
+
+                <div className="flex items-center justify-between mt-auto relative z-10">
+                  <div className="bg-white text-[#EA2B2B] font-black uppercase tracking-widest text-sm sm:text-base px-6 py-3 rounded-2xl shadow-sm border-b-4 border-slate-200 group-hover:scale-105 transition-transform">
+                    Play
+                  </div>
+                  <div className="text-white font-black text-sm sm:text-base flex items-center gap-2 bg-black/15 px-4 py-2.5 rounded-2xl border border-white/10 shadow-inner">
+                    <span className="uppercase tracking-widest text-[10px] sm:text-xs text-white/80 pt-0.5">Loadout</span>
+                    <span className="text-xl leading-none">{startingCredits}</span>
+                    <Coins className="w-5 h-5 text-[#FFC800] drop-shadow-sm" fill="currentColor" strokeWidth={1.5} />
+                  </div>
+                </div>
               </button>
 
               <button onClick={() => handleModeSelect('WALL')} className="relative group bg-slate-800 p-6 sm:p-8 rounded-[3rem] border-b-[8px] border-slate-950 active:border-b-0 active:translate-y-[8px] transition-all text-left opacity-80 hover:opacity-100 overflow-hidden h-full flex flex-col">
@@ -259,7 +315,13 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
                 <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center justify-center drop-shadow-md">
                   <Award className="w-8 h-8 sm:w-10 sm:h-10 text-[#FFC800] mr-2 sm:mr-4" /> Global Leaderboard
                 </h2>
+                {/* One board per unit, shared by both cabinets: the score that
+                    counts is the best arcade run on this unit, whichever game
+                    it came from. Two boards would need a schema change on the
+                    server-side leaderboard function, and would also split a
+                    small class in half. */}
                 <p className="text-slate-400 font-bold tracking-widest uppercase mt-2 text-xs sm:text-sm">Top 5 Commanders • Sector {unitId}</p>
+                <p className="text-slate-500 font-bold mt-1 text-[11px] sm:text-xs">Best run from either game counts</p>
               </div>
               <div className="w-16"></div> 
             </div>

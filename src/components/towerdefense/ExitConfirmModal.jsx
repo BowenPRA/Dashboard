@@ -2,7 +2,19 @@
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 
-export default function ExitConfirmModal({ open, onCancel, onConfirm }) {
+/**
+ * Shared by both arcade cabinets, so what is being abandoned is a prop.
+ *
+ * The default is Tower Defense's wording, which is what every existing caller
+ * gets without changing a line; Swarm Survivor passes its own, because "your
+ * towers will be lost" is nonsense in a game where the towers are you.
+ */
+export default function ExitConfirmModal({
+  open,
+  onCancel,
+  onConfirm,
+  message = "Your towers will be lost and your wave progress won't be saved.",
+}) {
   if (!open) return null;
 
   return (
@@ -20,7 +32,7 @@ export default function ExitConfirmModal({ open, onCancel, onConfirm }) {
           </div>
           <h2 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Leave the battle?</h2>
           <p className="text-base font-bold text-slate-500 leading-snug">
-            Your towers will be lost and your wave progress won't be saved.
+            {message}
           </p>
         </div>
 
