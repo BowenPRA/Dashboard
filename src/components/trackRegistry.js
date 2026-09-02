@@ -66,6 +66,11 @@ export const TRACK_REGISTRY = [
     desc: 'Cambridge IGCSE 0606',
     icon: Sigma,
     group: 'Cambridge',
+    // English-only, for the same reason as COORD_SCI: 0606 is sat in English and
+    // its notation IS the vocabulary. Learner-facing content carries no `vn*`
+    // twins and the validator's bilingual checks are skipped; components fall
+    // back to English through `pick(en, vn)`.
+    bilingual: false,
     theme: {
       bg: 'bg-cyan-500', border: 'border-cyan-700', hover: 'hover:bg-cyan-400',
       text: 'text-cyan-600 dark:text-cyan-400',

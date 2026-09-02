@@ -14,6 +14,7 @@ import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/taskRegistry.js';
 import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solutionOf, frText } from '../src/utils/linearEquation.js';
 import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
+import { checkDivision } from '../src/utils/polynomial.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
 
 const ROOT = process.cwd();
@@ -550,6 +551,30 @@ for (const trackId of TRACK_IDS) {
           err(`${rat}: ${n} has no factor in the candidate grid — the round would show nothing to tap`);
         }
       });
+    }
+
+    // -- Long Division: only the dividend and the divisor are authored, and
+    //    PolyDivision.jsx derives every quotient term, product row and
+    //    subtraction from them. So the risk is never a wrong answer key — it is
+    //    an item the student cannot finish: a divisor whose leading coefficient
+    //    does not divide through leaves a box asking for 0.5, and a dividend of
+    //    lower degree than the divisor has nothing to divide at all. Both look
+    //    perfectly fine in the data. checkDivision re-derives the item with the
+    //    same code the task grades with and reports either.
+    if (unit.polyDiv) {
+      const at = `${label}: polyDiv`;
+      const pd = unit.polyDiv;
+      if (!pd.title) err(`${at} is missing a title`);
+      const items = pd.items || [];
+      if (!items.length) err(`${at} has no items`);
+      const seenIds = new Set();
+      for (const it of items) {
+        const iat = `${at} ${it.id || '?'}`;
+        if (!it.id) err(`${at}: an item has no id`);
+        else if (seenIds.has(it.id)) err(`${iat}: duplicate id`);
+        seenIds.add(it.id);
+        for (const p of checkDivision(it.dividend, it.divisor)) err(`${iat}: ${p}`);
+      }
     }
 
     // -- diagram references resolve

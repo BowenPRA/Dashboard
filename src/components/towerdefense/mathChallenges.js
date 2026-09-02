@@ -90,8 +90,46 @@ function roots() {
   return { prompt: `∛${r * r * r} = ?`, answer: r };
 }
 
+// AM_3A — the Factor Theorem. Either substitute a small value into a cubic, or
+// decide whether a linear expression is a factor. Both are the same move —
+// "put x = c in and see what falls out" — which is exactly what makes the
+// theorem quick enough for a fifteen-second popup. Coefficients are kept small
+// so the arithmetic stays mental.
+function factorTheorem() {
+  const sup = { 2: '²', 3: '³' };
+  const term = (coef, deg) => {
+    if (coef === 0) return '';
+    const mag = Math.abs(coef);
+    const body = deg === 0 ? `${mag}` : `${mag === 1 ? '' : mag}x${sup[deg] || ''}`;
+    return `${coef < 0 ? ` ${MINUS} ` : ' + '}${body}`;
+  };
+  // Leading coefficient is always 1, so the cubic reads like a textbook one.
+  const b = ri(-4, 4);
+  const c = ri(-6, 6);
+  const k = [-2, -1, 1, 2][ri(0, 3)];
+  const linear = k < 0 ? `(x + ${-k})` : `(x ${MINUS} ${k})`;
+  const at = (dd) => k ** 3 + b * k ** 2 + c * k + dd;
+
+  if (Math.random() < 0.55) {
+    // Force P(k) = 0 half the time, and miss it by a little the rest.
+    const isFactor = Math.random() < 0.5;
+    const d = -(k ** 3 + b * k ** 2 + c * k) + (isFactor ? 0 : [1, -1, 2, -2, 3][ri(0, 4)]);
+    const poly = `x³${term(b, 2)}${term(c, 1)}${term(d, 0)}`;
+    return {
+      prompt: `Is ${linear} a factor of ${poly}?`,
+      answer: at(d) === 0 ? 'Yes' : 'No',
+      choices: ['Yes', 'No'],
+    };
+  }
+  const d = ri(-8, 8);
+  const poly = `x³${term(b, 2)}${term(c, 1)}${term(d, 0)}`;
+  const shown = k < 0 ? `${MINUS}${-k}` : `${k}`;
+  return { prompt: `P(x) = ${poly}.  P(${shown}) = ?`, answer: at(d) };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
+  AM_3A: factorTheorem,
   U01_1: intAddSub,
   U01_2: intMulDiv,
   U01_3: lcm,

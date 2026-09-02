@@ -75,6 +75,27 @@ def speechify(text):
     t = t.replace('\\times', ' times ').replace('\\div', ' divided by ')
     t = t.replace('\\%', ' percent ').replace('%', ' percent ')
     t = t.replace('\\$', ' dollars ')
+    # Named commands that carry meaning in the maths decks. These must be expanded
+    # BEFORE the catch-all strip below, which would otherwise delete the word and
+    # leave the sentence saying nothing: "\deg(P) \leq q" came out as "(P) q".
+    t = re.sub(r'\\text\s*\{([^{}]*)\}', r'\1', t)
+    t = re.sub(r'\\(?:left|right)\s*', '', t)
+    t = t.replace('\\ldots', ' and so on ').replace('\\dots', ' and so on ')
+    t = t.replace('\\pm', ' plus or minus ')
+    t = t.replace('\\leq', ' is less than or equal to ').replace('\\le', ' is less than or equal to ')
+    t = t.replace('\\geq', ' is greater than or equal to ').replace('\\ge', ' is greater than or equal to ')
+    t = t.replace('\\neq', ' is not equal to ')
+    t = t.replace('\\deg', ' the degree of ')
+    t = t.replace('\\max', ' the larger of ')
+    t = re.sub(r'\\sqrt\s*\{([^{}]*)\}', r' the square root of \1 ', t)
+    # Powers and subscripts. A voice reading "x caret 2" is useless in a lesson
+    # that is nothing but powers, so they are spoken the way a teacher says them.
+    t = re.sub(r'\^\s*\{?\s*2\s*\}?', ' squared ', t)
+    t = re.sub(r'\^\s*\{?\s*3\s*\}?', ' cubed ', t)
+    t = re.sub(r'\^\s*\{([^{}]*)\}', r' to the power \1 ', t)
+    t = re.sub(r'\^\s*(-?\w+)', r' to the power \1 ', t)
+    t = re.sub(r'_\s*\{([^{}]*)\}', r' sub \1 ', t)
+    t = re.sub(r'_\s*(\w+)', r' sub \1 ', t)
     # Drop any remaining LaTeX commands, stray backslashes, braces and $.
     t = re.sub(r'\\[a-zA-Z]+', '', t)
     t = t.replace('\\', '')

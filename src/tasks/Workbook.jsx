@@ -347,7 +347,9 @@ const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result }) =>
   return <TextAnswer value={value} onChange={onChange} onEnter={onEnter} checked={checked} correct={result?.correct} lang={lang} result={result} />;
 };
 
-export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
+// `title` lets a unit run TWO workbook tasks (WORKBOOK and WORKBOOK_B, one per
+// textbook exercise) without both bars reading "Workbook Practice".
+export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice' }) {
   const problems = useMemo(() => {
     const groups = Array.isArray(pool) ? pool : [];
     return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn })));
@@ -461,7 +463,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(148,163,184,0.35); border-radius: 10px; }
       ` }} />
 
-      <TopBar onQuit={finish} modeTitle="Workbook Practice" current={idx + 1} total={total}
+      <TopBar onQuit={finish} modeTitle={title} current={idx + 1} total={total}
         lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
 
       {/* Problem card */}

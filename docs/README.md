@@ -9,6 +9,32 @@ status* section so it can be closed deliberately.
 
 ## Guides
 
+### ⭐ Start here — the active plan
+
+- **[GED-SPRINT.md](GED-SPRINT.md)** — the operating doc for the 6-week GED sprint. The
+  situation, the unit shape, the structural changes, the day-by-day module grid, and the
+  build order. **If any other doc disagrees with it, it wins.**
+
+### The standard (read first)
+
+- [lesson-standard.md](lesson-standard.md) — **the bar every projected lesson is held to.**
+  The seven principles, the spine of a lesson, house style, build order and definition of
+  done, distilled from the Science 1.1 / 1.2 and Math 1.1 decks in the sibling `lessons`
+  repo. This is the *method*; the per-artefact guides below are the *reference*.
+- [lesson-renderer-gap.md](lesson-renderer-gap.md) — what `Notes.jsx` cannot yet render
+  that the standard asks for, ranked, with the suggested waves of work.
+- [ged-sprint-plan.md](ged-sprint-plan.md) — **the 4–6 week run-up to the test.** What the
+  four GED tests actually weight, the full module map per track (including what to reskin
+  from Y7–Y9), the ten units to build if only ten get built, the daily 3-hour shape, and
+  the test-booking order. Start here when the question is "what do we do next week".
+- [ged-unit-shape.md](ged-unit-shape.md) — which tasks a GED unit carries, in which phase,
+  per track. What each of the twelve tasks is actually worth on the test, what to cut, and
+  the migration checklist for the nine existing GED units.
+- [independent-learning.md](independent-learning.md) — **what the app must replace now that
+  there is no teacher in the room.** Pacing, checking and retrieval; the GED readiness gap;
+  and the seven principles for a solo ESL learner. Read alongside the standard: that one is
+  the bar for the teaching, this one for everything around it.
+
 ### Year 7 Cambridge Math (new)
 
 - [y7-math-course.md](y7-math-course.md) — **start here.** The course spine: how a
@@ -24,6 +50,14 @@ status* section so it can be closed deliberately.
 - [math-widgets.md](math-widgets.md) — interactive math widgets: the two attach
   mechanisms, the house style, a generic Y7 widget catalog, and the widget-system pass.
 - [lesson-plans.md](lesson-plans.md) — the one-page teacher lesson plan and its template.
+
+### IGCSE Additional Mathematics (new)
+
+- [add-math-course.md](add-math-course.md) — **start here** for the `ADD_MATH` track
+  (Cambridge 0606): the English-only rule and the enrolment gotcha, the three-gate unit
+  shape, why each coursebook exercise becomes its own task, how to author a `POLY_DIV`
+  long-division item, which note fields accept block maths, and the per-unit checklist.
+  The **`AM_3A` polynomials unit is the reference exemplar.**
 
 ### Content quality (all tracks)
 

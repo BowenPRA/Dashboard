@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3, Zap, FlaskConical
+  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -273,7 +273,7 @@ export const TASKS = [
     component: lazy(() => import('./Workbook.jsx')),
     hasContent: (u) => notEmpty(u.workbook),
     buildPool: (u) => u.workbook || [],
-    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Practice' }),
   },
   {
     id: 'GRAPH',
@@ -395,6 +395,47 @@ export const TASKS = [
     hasContent: (u) => notEmpty(u.symbolEq),
     buildPool: (u) => u.symbolEq || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'POLY_DIV',
+    nativeMax: 10,
+    // p1–p20 are taken (p5 is reserved as a workbook question id); p21 is next.
+    dbKey: 'p21',
+    // "Set the division out and work down the columns." The student is given a
+    // dividend and a divisor as coefficient arrays and fills the written long
+    // division one move at a time — divide, multiply, subtract, and the app
+    // brings down. Every quotient term, product row and subtraction is DERIVED
+    // by utils/polynomial.js, the same derive-don't-store rule Number Gym,
+    // Graph It and Vectors follow. Item shape is in src/tasks/PolyDivision.jsx.
+    label: 'Long Division',
+    icon: Divide,
+    color: { bg: 'bg-[#4338ca]', border: 'border-[#312e81]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./PolyDivision.jsx')),
+    hasContent: (u) => !!u.polyDiv?.items?.length,
+    buildPool: (u) => u.polyDiv,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'WORKBOOK_B',
+    nativeMax: 10,
+    // p1–p21 are taken (p5 is reserved as a workbook question id); p22 is next.
+    dbKey: 'p22',
+    // A SECOND Workbook slot, reading `u.workbookB` and rendering with the same
+    // screen as WORKBOOK. A unit that covers two textbook sections wants each
+    // exercise to be its own task on the card — separately scored, separately
+    // resumable — rather than one twenty-question list the student has to hold
+    // in their head. Nothing about the format differs; only the data key does.
+    label: 'Book Problems',
+    icon: Library,
+    color: { bg: 'bg-[#f43f5e]', border: 'border-[#be123c]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./Workbook.jsx')),
+    hasContent: (u) => notEmpty(u.workbookB),
+    buildPool: (u) => u.workbookB || [],
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Book Problems' }),
   },
 ];
 

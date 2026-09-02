@@ -61,6 +61,15 @@ const DEFAULT_ARENA = {
  * one is, so consecutive units never feel like a re-run.
  */
 export const TRACK_LEVELS = {
+  // IGCSE Additional Mathematics. AM_3A is the first unit, so it opens on the
+  // gentlest board with the full armoury; later chapters climb from here.
+  ADD_MATH: {
+    AM_3A: {
+      mapId: 'JUNCTION', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Factor Works',
+      blurb: 'Two roads split at the junction — like a cubic splitting into its factors. Cover both, or neither holds.',
+    },
+  },
   // IGCSE Coordinated Science. First unit is a tier-0 introduction — the "lab"
   // ICE theme suits electrolysis. Additive: adding a unit here shifts nothing on
   // any other track. Extend this table (map/theme/tier/waveMod) as units ship.
