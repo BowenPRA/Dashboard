@@ -227,7 +227,7 @@ const BlankSentence = ({ q, value, onChange, checked, lang, mode, big = false })
 };
 
 // --- Drag-and-drop into targets (unordered match / ordered sequence) --
-const DragAnswer = ({ q, value, onChange, checked, lang }) => {
+const DragAnswer = ({ q, value, onChange, checked, lang, big = false }) => {
   const [picked, setPicked] = useState(null);
   const [dragged, setDragged] = useState(null);
   const placements = value || {};
@@ -262,7 +262,7 @@ const DragAnswer = ({ q, value, onChange, checked, lang }) => {
             : bank.map((it) => (
               <button key={it.val} draggable onClick={() => setPicked(picked?.val === it.val ? null : it)}
                 onDragStart={(e) => { setDragged(it); e.dataTransfer.effectAllowed = 'move'; }}
-                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-b-[4px] font-bold cursor-grab active:cursor-grabbing transition-all
+                className={`flex items-center gap-1.5 rounded-xl border-2 border-b-[4px] font-bold cursor-grab active:cursor-grabbing transition-all ${big ? 'px-5 py-3.5 text-[clamp(1.1rem,1.7vw,1.7rem)]' : 'px-4 py-2.5'}
                   ${picked?.val === it.val ? 'bg-[#1cb0f6] border-[#1899d6] text-white scale-105' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:-translate-y-0.5'}`}>
                 <GripVertical className="w-4 h-4 opacity-40" strokeWidth={3} /><RichText text={label(it)} />
               </button>
@@ -279,7 +279,7 @@ const DragAnswer = ({ q, value, onChange, checked, lang }) => {
               className={`flex flex-col sm:flex-row items-stretch rounded-2xl border-2 overflow-hidden transition-all bg-white dark:bg-slate-800
                 ${active ? 'border-[#1cb0f6] ring-4 ring-[#1cb0f6]/20 cursor-pointer' : 'border-slate-200 dark:border-slate-700'}`}>
               <div className="bg-slate-50 dark:bg-slate-900 border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-slate-700 p-3 flex items-center justify-center sm:w-2/5 shrink-0">
-                <span className="font-black text-slate-500 dark:text-slate-400 text-center text-sm sm:text-base"><RichText text={lang === 'vn' && target.titleVn != null ? target.titleVn : target.title} /></span>
+                <span className={`font-black text-slate-500 dark:text-slate-400 text-center ${big ? 'text-[clamp(1.05rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}`}><RichText text={lang === 'vn' && target.titleVn != null ? target.titleVn : target.title} /></span>
               </div>
               <div className="flex-1 p-3 min-h-[64px] flex flex-wrap gap-2 items-center">
                 {here.length === 0 && (
@@ -343,7 +343,7 @@ const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result, big 
   if (t === 'mcq') return <ChoiceAnswer q={q} value={value} onChange={onChange} checked={checked} lang={lang} big={big} />;
   if (t === 'fill_blank') return <BlankSentence q={q} value={value} onChange={onChange} checked={checked} lang={lang} mode="input" big={big} />;
   if (t === 'inline') return <BlankSentence q={q} value={value} onChange={onChange} checked={checked} lang={lang} mode="select" big={big} />;
-  if (t === 'dnd' || t === 'order') return <DragAnswer q={q} value={value} onChange={onChange} checked={checked} lang={lang} />;
+  if (t === 'dnd' || t === 'order') return <DragAnswer q={q} value={value} onChange={onChange} checked={checked} lang={lang} big={big} />;
   return <TextAnswer value={value} onChange={onChange} onEnter={onEnter} checked={checked} correct={result?.correct} lang={lang} result={result} big={big} />;
 };
 

@@ -403,10 +403,13 @@ export default function PolyDivision({ pool, onComplete, onQuit, savedData = {},
             <div className="text-white text-[15px] sm:text-[23px] -my-2">
               <SafeBlockMath math={`\\text{Divide }\\;${polyLatex(model.dividend)}\\;\\text{ by }\\;${polyLatex(model.divisor)}`} />
             </div>
-            {(item.note || (pos === 0 && pool?.intro)) && (
-              <p className="text-[13px] sm:text-sm font-bold text-white/80 leading-snug mt-1">
-                {item.note || pool.intro}
-              </p>
+            {/* The pool's intro orients a first-timer; every item's own note
+                says what is new about THIS one. Both, on problem one. */}
+            {pos === 0 && pool?.intro && (
+              <p className="text-[13px] sm:text-sm font-bold text-white/70 leading-snug mt-1">{pool.intro}</p>
+            )}
+            {item.note && (
+              <p className="text-[13px] sm:text-sm font-bold text-white/85 leading-snug mt-1">{item.note}</p>
             )}
           </div>
 

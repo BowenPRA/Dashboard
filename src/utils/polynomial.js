@@ -282,6 +282,23 @@ export function checkDivision(dividend, divisor) {
   if (degreeOf(model.remainder) >= M) {
     problems.push('remainder degree is not below the divisor degree');
   }
+
+  // The finished screen prints the whole division as LaTeX. A builder that
+  // throws, or that emits unbalanced braces, would render as a red KaTeX error
+  // at the moment the student finishes — the worst possible time to find out.
+  try {
+    const tex = divisionLatex(model);
+    let depth = 0;
+    for (let i = 0; i < tex.length; i += 1) {
+      if (tex[i] === '\\') { i += 1; continue; }
+      if (tex[i] === '{') depth += 1;
+      else if (tex[i] === '}') depth -= 1;
+      if (depth < 0) break;
+    }
+    if (depth !== 0) problems.push('the LaTeX for this division has unbalanced braces');
+  } catch (e) {
+    problems.push(`the LaTeX for this division could not be built — ${e.message}`);
+  }
   return problems;
 }
 
