@@ -202,9 +202,15 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                 </div>
               )}
 
-              {progressData && TRACK_IDS.map((trackId) => {
+              {progressData && [
+                ...TRACK_IDS,
+                // Any progress key that isn't a registered track still gets a
+                // section, so nothing a student has done can silently vanish
+                // from this drawer (the failure mode that hid newer tracks).
+                ...Object.keys(progressData).filter((k) => !TRACK_IDS.includes(k)),
+              ].map((trackId) => {
                 const trackData = progressData[trackId];
-                if (!trackData || Object.keys(trackData).length === 0) return null;
+                if (!trackData || Object.keys(trackData).filter(isUnitKey).length === 0) return null;
 
                 return (
                   <div key={trackId} className="space-y-6">

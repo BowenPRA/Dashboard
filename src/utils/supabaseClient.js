@@ -81,6 +81,7 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
         .single();
 
       const validTracks = TRACK_REGISTRY.map(t => t.id);
+      const isTrackKey = (key) => validTracks.includes(key);
       let dbProgress = data?.progress || {};
       let needsUpdate = false;
       const newFormat = {};
@@ -89,13 +90,21 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
         newFormat[t] = dbProgress[t] || {};
       });
 
-      const isSuperOldFormat = !Object.keys(dbProgress).some(key => ['Y8', 'Y9', 'ESL', 'GED', 'GED_MATH', 'GED_ENG', 'ADD_MATH', 'GED_HISTORY'].includes(key)) && Object.keys(dbProgress).length > 0;
+      // "Super old" = the pre-track flat format, where the top level was keyed by
+      // unit id, not track id. It is detected by the ABSENCE of any recognized
+      // track key — tested against the LIVE registry, never a hardcoded subset.
+      // (The old subset omitted COORD_SCI / Y7_MATH / AOPS / PHYSICS, so a blob
+      // holding only those tracks was misread as legacy and shoved whole under
+      // GED_MATH — which is how newer tracks vanished from the teacher drawer.)
+      const isSuperOldFormat =
+        Object.keys(dbProgress).length > 0 &&
+        !Object.keys(dbProgress).some(isTrackKey);
 
       if (isSuperOldFormat) {
         newFormat['GED_MATH'] = dbProgress;
         needsUpdate = true;
       } else {
-        const hasInvalidKeys = Object.keys(dbProgress).some(key => !validTracks.includes(key));
+        const hasInvalidKeys = Object.keys(dbProgress).some(key => !isTrackKey(key));
         if (hasInvalidKeys) {
           if (dbProgress['GED'] && Object.keys(newFormat['GED_ENG']).length === 0) {
             newFormat['GED_ENG'] = dbProgress['GED'];
@@ -106,6 +115,19 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
             if (!dbProgress[t]) needsUpdate = true;
           });
         }
+      }
+
+      // Repair students corrupted by the old stale-list bug: their newer-track
+      // progress was nested one level too deep, under GED_MATH. A GED_MATH
+      // "unit" whose key is itself a real track id can only be that misplaced
+      // data (real unit ids are never track ids), so lift each one back out —
+      // without clobbering any legitimate progress already at the top level.
+      for (const key of Object.keys(newFormat['GED_MATH'] || {})) {
+        if (!isTrackKey(key)) continue;
+        const misplaced = newFormat['GED_MATH'][key] || {};
+        newFormat[key] = { ...misplaced, ...(newFormat[key] || {}) };
+        delete newFormat['GED_MATH'][key];
+        needsUpdate = true;
       }
 
       setAllProgress(newFormat);
