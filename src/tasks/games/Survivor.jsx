@@ -196,6 +196,7 @@ function SurvivorRun({
       kills: run.kills,
       level: run.hero.level,
       time: fmtTime(run.t),
+      bosses: run.bossKills,
     });
     onBank(score);
   }, [onBank]);
@@ -319,12 +320,12 @@ function SurvivorRun({
 
       {ended && (
         <RunEndModal
-          outcome={ended.outcome}
           score={ended.score}
           best={bestScore}
           kills={ended.kills}
           time={ended.time}
           level={ended.level}
+          bosses={ended.bosses}
           onRetry={onRetry}
           onExit={() => onFinish(Math.max(ended.score, bestScore))}
         />

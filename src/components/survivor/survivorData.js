@@ -29,11 +29,14 @@ import { TOWERS } from '../towerdefense/gameData';
 // ---------- World ----------
 
 export const WORLD = {
-  width: 2200,
-  height: 1500,
-  // Enemies spawn on a ring just past the visible edge and walk inward. Bounded
-  // rather than endless: a student who simply runs away gets cornered, which is
-  // the pressure the whole game is built on.
+  // A big open arena — students asked for more room to run, and the swarm still
+  // finds you because it spawns on a ring around YOU, not at the map's edges, so
+  // a bigger field only buys kiting space, never a place to hide forever.
+  width: 3200,
+  height: 2200,
+  // Enemies spawn on a ring just past the visible edge and walk inward. The
+  // world is still bounded: a student who simply runs gets cornered at a wall
+  // eventually, which is the pressure the whole game is built on.
   spawnMargin: 120,
 };
 
@@ -105,23 +108,34 @@ export const timeScale = (ms) => 1 + 0.16 * (ms / 60000);
 // ---------- The run ----------
 
 export const RUN = {
-  // Four minutes to the boss, and a fight of maybe one more.
+  // Swarm Survivor is ENDLESS. It runs until you fall — there is no win screen.
   //
-  // The genre's own runs are half an hour. This one is played in a lesson break
-  // by a student who has just finished a unit, so it is built to be FINISHED —
-  // a five-minute arc with a real ending beats a thirty-minute one nobody sees
-  // the end of. It is also what makes "kill the Broodmother" a goal rather than
-  // a rumour, which is the thing that gets a class talking about it.
-  /** When the boss walks in. Everything before this is the climb. */
+  // The first four minutes are a climb to the first Broodmother; after that the
+  // swarm only gets heavier and more Broodmothers keep coming. Beating a boss is
+  // a spike in the climb, not the end of it, so the goal is simply to last as
+  // long as you can and post a score. Students asked for exactly this: a run
+  // that ends because the swarm got you, not because a boss did.
+  /** When the FIRST Broodmother walks in. Everything before it is the climb. */
   bossAtMs: 4 * 60 * 1000,
-  /** Mini-bosses (the QUEEN slot) before that. */
+  /** After a Broodmother FALLS, how long until the next one arrives (a breather). */
+  bossEveryMs: 150000,
+  /** Each successive Broodmother is this much tougher than the first, so they
+   *  keep pace with a hero who has been levelling the whole time. */
+  bossHpGrowth: 0.6,
+  /** Score for felling a Broodmother, multiplied by which number it is. */
+  bossBonus: 2500,
+  /** Health a fallen Broodmother drops — the reward that keeps an endless run
+   *  alive, the way an elite's orb does but bigger. */
+  bossHeal: 60,
+  /** Mini-bosses (the QUEEN slot) in the opening climb, before the first boss. */
   eliteAtMs: [130000, 190000],
-  /** The boss speeds up if it is being kited rather than fought. */
+  /** In the endless phase, an elite on this drumbeat — their heal orbs are what
+   *  make a long run survivable. */
+  eliteEveryMs: 55000,
+  /** A Broodmother speeds up if it is kited rather than fought (timed per boss). */
   enrageAfterMs: 120000,
   /** Points per second survived, before the tier multiplier. */
   scorePerSecond: 8,
-  /** Killing the boss ends the run a winner. */
-  victoryScore: 3000,
   /** Answering a level-up question correctly, matching TD's Vocab Bolt. */
   challengeScore: 50,
 };
@@ -148,9 +162,19 @@ export const SPAWN_PHASES = [
   { atMs: 120000, interval: 780,  burst: 3, pool: ['ANT', 'WASP', 'WASP', 'BEETLE'] },
   { atMs: 170000, interval: 700,  burst: 3, pool: ['ANT', 'ANT', 'WASP', 'BEETLE'] },
   { atMs: 210000, interval: 640,  burst: 4, pool: ['ANT', 'WASP', 'WASP', 'BEETLE', 'BEETLE'] },
-  // Once the boss is on the field the adds thin out — the fight should be about
-  // the boss, not about the thirty ants standing between you and it.
+  // The first-boss window: the adds thin out so that fight is about the boss,
+  // not about the thirty ants standing between you and it.
   { atMs: 240000, interval: 950,  burst: 2, pool: ['ANT', 'WASP', 'BEETLE'] },
+  // The endless phase. Density climbs again after the first boss and keeps
+  // climbing; combined with timeScale (which never stops raising enemy HP) and
+  // ever-tougher recurring Broodmothers, the run gets genuinely harder for as
+  // long as a student can hold on. The LIMITS.enemies cap keeps the field from
+  // ever becoming an unrenderable wall, so the ceiling is difficulty, not lag.
+  { atMs: 285000, interval: 620,  burst: 4, pool: ['ANT', 'WASP', 'WASP', 'BEETLE', 'BEETLE'] },
+  { atMs: 345000, interval: 560,  burst: 4, pool: ['ANT', 'WASP', 'BEETLE', 'BEETLE'] },
+  { atMs: 420000, interval: 520,  burst: 5, pool: ['ANT', 'ANT', 'WASP', 'WASP', 'BEETLE', 'BEETLE'] },
+  { atMs: 510000, interval: 470,  burst: 5, pool: ['ANT', 'WASP', 'WASP', 'BEETLE', 'BEETLE'] },
+  { atMs: 615000, interval: 430,  burst: 6, pool: ['ANT', 'WASP', 'WASP', 'BEETLE', 'BEETLE'] },
 ];
 
 /**

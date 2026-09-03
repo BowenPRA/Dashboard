@@ -14,7 +14,7 @@ import {
 import TowerVisual from '../towerdefense/TowerVisual';
 import { TOWERS } from '../towerdefense/gameData';
 import {
-  HEROES, LOADOUT_ITEMS, loadoutCost, WEAPONS, MAX_WEAPON_LEVEL, RUN,
+  HEROES, LOADOUT_ITEMS, loadoutCost, WEAPONS, MAX_WEAPON_LEVEL,
 } from './survivorData';
 import { normalizeAnswer } from './survivorChallenges';
 import { fmtTime, fmtScore } from './format';
@@ -207,7 +207,7 @@ export function SurvivorHUD({ hud, onQuit }) {
   const hpPct = Math.max(0, hud.hp / hud.maxHp);
   const xpPct = Math.max(0, Math.min(1, hud.xp / hud.xpNext));
   const boss = hud.boss;
-  const toBoss = Math.max(0, RUN.bossAtMs - hud.t);
+  const toBoss = hud.nextBossInMs;
 
   return (
     <>
@@ -244,7 +244,7 @@ export function SurvivorHUD({ hud, onQuit }) {
         <div className="flex items-center gap-2 sm:gap-3 ml-auto shrink-0">
           <div className="flex flex-col items-center px-2">
             <div className="text-[9px] font-black uppercase tracking-widest text-slate-500 leading-none flex items-center gap-1">
-              <Clock className="w-3 h-3" strokeWidth={3} />{hud.bossSpawned ? 'Boss' : 'Time'}
+              <Clock className="w-3 h-3" strokeWidth={3} />{hud.bossAlive ? 'Boss' : 'Time'}
             </div>
             <div className="text-white font-black text-lg leading-tight tabular-nums">{fmtTime(hud.t)}</div>
           </div>
@@ -282,11 +282,12 @@ export function SurvivorHUD({ hud, onQuit }) {
         </div>
       )}
 
-      {/* Countdown to the boss, once it is close enough to matter. */}
-      {!hud.bossSpawned && toBoss < 30000 && (
+      {/* Countdown to the NEXT Broodmother, once it is close enough to matter —
+          shown before the first one and again between every recurring boss. */}
+      {!hud.bossAlive && toBoss > 0 && toBoss < 30000 && (
         <div className="relative z-20 py-1.5 text-center bg-rose-950/80 border-b-2 border-rose-900 shrink-0">
           <span className="font-black uppercase tracking-widest text-xs text-rose-300 animate-pulse">
-            Broodmother in {fmtTime(toBoss)}
+            {hud.bossCount > 0 ? 'Another ' : ''}Broodmother in {fmtTime(toBoss)}
           </span>
         </div>
       )}
@@ -481,21 +482,25 @@ export function LevelUpModal({ level, cards, challenge, onPick }) {
 // RESULTS
 // =====================================================================
 
-export function RunEndModal({ outcome, score, best, kills, time, level, onRetry, onExit }) {
-  const won = outcome === 'WON';
+export function RunEndModal({ score, best, kills, time, level, bosses = 0, onRetry, onExit }) {
+  // Every run ends the same way now — the swarm wins eventually. The screen
+  // celebrates how FAR you got: how long you lasted and how many Broodmothers
+  // fell first.
   return (
     <div className="fixed inset-0 z-[160] flex items-center justify-center bg-slate-950/92 backdrop-blur-sm p-4">
       <div className="bg-white rounded-[2rem] border-b-8 border-slate-200 p-8 text-center max-w-md w-full shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-        <div className="text-6xl mb-4">{won ? '🏆' : '💀'}</div>
+        <div className="text-6xl mb-4">{bosses > 0 ? '🛡️' : '💀'}</div>
         <div className="text-3xl font-black text-slate-800 mb-2 tracking-tight">
-          {won ? 'Broodmother Down' : 'Overwhelmed'}
+          You Held On
         </div>
         <div className="text-base font-bold text-slate-500 mb-6">
-          {won ? 'You held the line to the very end.' : 'The swarm got through.'}
+          {bosses > 0
+            ? `The swarm finally got through — but ${bosses} Broodmother${bosses > 1 ? 's' : ''} fell first.`
+            : 'The swarm got through. Study up, kit out, and last longer next time.'}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mb-5">
-          {[['Time', time], ['Kills', kills], ['Level', level]].map(([label, value]) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+          {[['Time', time], ['Kills', kills], ['Level', level], ['Bosses', bosses]].map(([label, value]) => (
             <div key={label} className="bg-slate-100 rounded-2xl py-3">
               <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</div>
               <div className="text-xl font-black text-slate-700 tabular-nums">{value}</div>

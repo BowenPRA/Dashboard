@@ -87,9 +87,17 @@ export function createRun({ hero, loadout, difficulty = {} }) {
     pops: [],
     fx: [],
 
+    // The endless boss scheduler. `bossTimer` counts down to the next
+    // Broodmother; it starts at the first-boss time and is reset to bossEveryMs
+    // each time a boss FALLS, so there is a breather between fights rather than a
+    // pile-up. `bossCount` is how many have spawned — it drives both their
+    // escalating health and the score a kill is worth.
     boss: null,
-    bossSpawned: false,
+    bossTimer: RUN.bossAtMs,
+    bossCount: 0,   // Broodmothers SPAWNED — drives their escalating health.
+    bossKills: 0,   // Broodmothers FELLED — what the results screen celebrates.
     eliteIdx: 0,
+    eliteTimer: RUN.eliteEveryMs,
     phaseIdx: 0,
     spawnTimer: 900,
     swarmTimer: SWARM_EVENT.firstAtMs,
@@ -178,7 +186,12 @@ export function hudSnapshot(g) {
     revives: h.revives,
     t: g.t,
     score: g.score,
-    bossSpawned: g.bossSpawned,
+    // Endless: there is no single "boss spawned" moment. The HUD tracks whether
+    // one is on the field right now, how long until the next, and how many have
+    // been felled.
+    bossAlive: !!g.boss,
+    nextBossInMs: g.boss ? 0 : Math.max(0, g.bossTimer),
+    bossCount: g.bossCount,
     boss: g.boss ? { hp: g.boss.hp, maxHp: g.boss.maxHp } : null,
     squad: g.weapons.map(w => ({ id: w.id, level: w.level })),
   };
@@ -313,19 +326,37 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         g.shake = Math.max(g.shake, 10);
       }
 
-      // Mini-bosses on a schedule, then the Broodmother.
+      // Mini-bosses on a schedule through the opening climb...
       while (g.eliteIdx < RUN.eliteAtMs.length && g.t >= RUN.eliteAtMs[g.eliteIdx]) {
         g.eliteIdx++;
         const p = ringPoint(640);
         spawnAt('QUEEN', p.x, p.y, { force: true, elite: true });
         pop('ELITE INCOMING', g.hero.x, g.hero.y - 110, '#a855f7');
       }
+      // ...and then, once the endless phase is on, an elite on a steady drumbeat,
+      // so the heal orbs they drop keep a long run survivable.
+      if (g.t >= RUN.bossAtMs) {
+        g.eliteTimer -= dt;
+        if (g.eliteTimer <= 0) {
+          g.eliteTimer += RUN.eliteEveryMs;
+          const p = ringPoint(640);
+          spawnAt('QUEEN', p.x, p.y, { force: true, elite: true });
+          pop('ELITE INCOMING', g.hero.x, g.hero.y - 110, '#a855f7');
+        }
+      }
 
-      if (!g.bossSpawned && g.t >= RUN.bossAtMs) {
-        g.bossSpawned = true;
+      // The Broodmother — and then more of them. The run NEVER ends on a boss;
+      // each is a spike in an endless climb. The next arrives bossEveryMs after
+      // the last one falls (the timer is reset on the kill), and each is tougher
+      // by bossHpGrowth so it keeps pace with a hero who has kept levelling.
+      g.bossTimer -= dt;
+      if (g.bossTimer <= 0 && !g.boss) {
         const p = ringPoint(600);
-        g.boss = spawnAt('GIANT_ANT', p.x, p.y, { force: true, boss: true, sizeMul: 1.35 });
-        pop('THE BROODMOTHER', g.hero.x, g.hero.y - 120, '#ef4444');
+        const hpMul = 1 + RUN.bossHpGrowth * g.bossCount;
+        g.boss = spawnAt('GIANT_ANT', p.x, p.y, { force: true, boss: true, sizeMul: 1.35, hpMul });
+        if (g.boss) g.boss.spawnT = g.t;
+        g.bossCount += 1;
+        pop(g.bossCount === 1 ? 'THE BROODMOTHER' : 'ANOTHER BROODMOTHER', g.hero.x, g.hero.y - 120, '#ef4444');
         g.shake = 16;
       }
     }
@@ -366,11 +397,16 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       fx('burst', e.x, e.y, e.r * 1.2, 320, conf.boss ? '#ef4444' : '#fbbf24');
 
       if (e.boss) {
+        // A boss dying does NOT end the run — it clears the slot, banks a bonus
+        // that grows with each Broodmother felled, starts the breather before the
+        // next one, and drops a big heal so the kill is what sustains a long run.
         g.boss = null;
-        g.score += Math.round(RUN.victoryScore * D.scoreMul);
-        g.state = 'WON';
-        g.outcome = 'WON';
+        g.bossKills += 1;
+        g.score += Math.round(RUN.bossBonus * g.bossKills * D.scoreMul);
+        g.bossTimer = RUN.bossEveryMs;
         g.shake = 20;
+        pop('BROODMOTHER DOWN', e.x, e.y - 40, '#fbbf24');
+        g.gems.push({ id: newId(), x: e.x, y: e.y, value: 0, heal: RUN.bossHeal, vx: 0, vy: 0, big: true });
       } else if (e.elite) {
         // An elite drops a health orb — the only healing in the run that is not
         // bought with a level-up, so killing one is always worth the risk.
@@ -691,9 +727,11 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         let mul = 1;
         if (e.slowT > 0) { e.slowT -= dt; mul = 1 - e.slowPct; }
 
-        // The boss loses patience with being kited.
+        // The boss loses patience with being kited — timed from ITS OWN spawn, so
+        // every recurring Broodmother enrages the same way rather than all of the
+        // later ones arriving already enraged.
         let speed = e.speed;
-        if (e.boss && g.t > RUN.bossAtMs + RUN.enrageAfterMs) speed *= 1.35;
+        if (e.boss && e.spawnT != null && g.t - e.spawnT > RUN.enrageAfterMs) speed *= 1.35;
 
         const dx = h.x - e.x, dy = h.y - e.y;
         const dist = Math.hypot(dx, dy) || 1;
@@ -893,7 +931,8 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       for (const f of g.fx) f.life -= dt;
       compact(g.fx, f => f.life > 0);
 
-      if (g.state === 'DEAD' || g.state === 'WON') endRef.current?.(g.outcome, g.score);
+      // The only way a run ends is death — there is no victory state any more.
+      if (g.state === 'DEAD') endRef.current?.(g.outcome, g.score);
     }
 
     // ---- rAF -----------------------------------------------------------
