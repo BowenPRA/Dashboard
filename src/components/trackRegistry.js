@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2 } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -174,11 +174,33 @@ export const TRACK_REGISTRY = [
       glow: 'hover:border-amber-400 dark:hover:border-amber-600',
     },
   },
+  {
+    // The arcade is a track so it routes, appears on Home and gets its own
+    // preserved progress bucket (the gold wallet + per-level leaderboards) — but
+    // it holds no lessons. Its games are unlocked with gold earned by studying
+    // every OTHER track, so it is never part of a student's enrolment and is
+    // added to Home for everyone by hand. `/ARCADE` is served by a bespoke view,
+    // not the unit dashboard (see App.jsx).
+    id: 'ARCADE',
+    title: 'Arcade',
+    desc: 'Spend gold you earn by studying',
+    icon: Gamepad2,
+    group: 'Arcade',
+    theme: {
+      bg: 'bg-indigo-500', border: 'border-indigo-700', hover: 'hover:bg-indigo-400',
+      text: 'text-indigo-600 dark:text-indigo-400',
+      ambient1: 'bg-indigo-500', ambient2: 'bg-fuchsia-500',
+      glow: 'hover:border-indigo-400 dark:hover:border-indigo-600',
+    },
+  },
 ];
+
+/** The arcade's track id — its progress bucket, folder key and route. */
+export const ARCADE_TRACK_ID = 'ARCADE';
 
 export const TRACK_IDS = TRACK_REGISTRY.map((t) => t.id);
 
 export const getTrackConfig = (id) => TRACK_REGISTRY.find((t) => t.id === id);
 
 /** Display order for grouped views. */
-export const TRACK_GROUPS = ['GED', 'Cambridge', 'Physics', 'Problem Solving', 'Foundation'];
+export const TRACK_GROUPS = ['GED', 'Cambridge', 'Physics', 'Problem Solving', 'Foundation', 'Arcade'];

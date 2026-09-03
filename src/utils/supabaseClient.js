@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
-import { recordAttempt, mergeVocab, VOCAB_KEY, ARCADE_KEY, isArcadeKey } from './progressSchema';
+import { recordAttempt, mergeVocab, VOCAB_KEY, WALLET_KEY, ARCADE_KEY, isArcadeKey } from './progressSchema';
+import { ARCADE_TRACK_ID } from '../components/trackRegistry';
 
 // The single Supabase client for the whole app. Having a second createClient in
 // another module spins up a second GoTrueClient on the same storage key, which
@@ -170,6 +171,30 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
     });
   };
 
+  /**
+   * Charge a play. Gold spent is a single running total in the arcade track's
+   * wallet — always the arcade bucket, whatever `track` this hook was opened
+   * for. Gold earned is derived from XP (see arcade/economy.js), so nothing but
+   * this total needs saving. Returns the new spent total from the functional
+   * update so a caller can act on it without waiting for a re-render.
+   */
+  const spendGold = (cost) => {
+    let nextSpent = 0;
+    setAllProgress(prev => {
+      const newProgress = JSON.parse(JSON.stringify(prev));
+      if (!newProgress[ARCADE_TRACK_ID]) newProgress[ARCADE_TRACK_ID] = {};
+      const wallet = newProgress[ARCADE_TRACK_ID][WALLET_KEY] || { spent: 0 };
+      nextSpent = (Number(wallet.spent) || 0) + (Number(cost) || 0);
+      newProgress[ARCADE_TRACK_ID][WALLET_KEY] = { ...wallet, spent: nextSpent };
+
+      supabase.from('students').update({ progress: newProgress }).eq('id', user.id)
+        .then(({ error }) => { if (error) console.error("Supabase Save Error:", error); });
+
+      return newProgress;
+    });
+    return nextSpent;
+  };
+
   const addStrike = async (unitId, newStrikes) => {
     setAllProgress(prev => {
       const newProgress = JSON.parse(JSON.stringify(prev));
@@ -195,6 +220,7 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
     unitScores: allProgress[track] || {},
     isLoadingDB,
     saveScore,
+    spendGold,
     addStrike,
     handleLogout
   };

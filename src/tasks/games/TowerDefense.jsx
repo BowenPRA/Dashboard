@@ -96,6 +96,11 @@ export default function TowerDefense({
   pool = [],
   startingCredits = 150,
   unitId = 'default',
+  // Which unit's arithmetic generator the Maths Bolt uses. It defaults to
+  // `unitId` so a unit's own arcade is unchanged, but the standalone Arcade
+  // passes a DIFFERENT id here — the level (unitId) owns the leaderboard while
+  // the questions follow what the student is studying (see arcade/questionSource).
+  mathUnitId = unitId,
   themeId = 'STANDARD',
   onQuit = () => window.history.back(),
   onComplete = () => {}
@@ -137,7 +142,7 @@ export default function TowerDefense({
 
   // The unit's arithmetic question generator (maths tracks only); null elsewhere,
   // leaving those units on vocab-only challenges exactly as before.
-  const mathGen = useMemo(() => mathChallengeFor(unitId), [unitId]);
+  const mathGen = useMemo(() => mathChallengeFor(mathUnitId), [mathUnitId]);
 
   const activeThemeId = useMemo(() => {
     const requestedTheme = gameConfig.themeId || themeId;

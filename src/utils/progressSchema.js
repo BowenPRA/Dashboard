@@ -28,6 +28,17 @@
 export const VOCAB_KEY = '__vocab';
 
 /**
+ * The arcade wallet, kept in the ARCADE track's progress beside its level
+ * scores: `{ spent }`, the running total of gold a student has paid to play.
+ *
+ * Gold EARNED is derived from XP and never stored (see arcade/economy.js), so
+ * this single number is the whole persisted economy. It sits under the arcade
+ * track because that bucket is preserved verbatim by the loader — a top-level
+ * key would be dropped when progress is normalised to the track list.
+ */
+export const WALLET_KEY = '__wallet';
+
+/**
  * Where a unit's raw arcade high scores live, beside the task records.
  *
  * They are deliberately not dbKeys: the GAMES task's XP is clamped to a few
@@ -70,7 +81,7 @@ export const ARCADE_KEYS = ARCADE_BOARDS.map(b => b.key);
 export const isArcadeKey = (key) => ARCADE_KEYS.includes(key);
 
 /** Keys inside a track's progress that are not units. */
-const RESERVED_TRACK_KEYS = [VOCAB_KEY];
+const RESERVED_TRACK_KEYS = [VOCAB_KEY, WALLET_KEY];
 
 /** Keys inside a unit's progress that are not task dbKeys. */
 const RESERVED_UNIT_KEYS = ['strikes', ...ARCADE_KEYS];

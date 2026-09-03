@@ -44,6 +44,11 @@ export default function Survivor({
   pool = [],
   startingCredits = 150,
   unitId = 'default',
+  // Which unit's arithmetic generator the level-up questions use. Defaults to
+  // `unitId`; the standalone Arcade passes a different id so the level owns the
+  // leaderboard while questions follow the student's study (see Survivor's
+  // twin, TowerDefense.jsx, and arcade/questionSource.js).
+  mathUnitId = unitId,
   onQuit = () => {},
   onComplete = () => {},
 }) {
@@ -116,7 +121,7 @@ export default function Survivor({
       themeId={themeId}
       gameConfig={gameConfig}
       pool={pool}
-      unitId={unitId}
+      mathUnitId={mathUnitId}
       bestScore={bestScore}
       onBank={bankBest}
       onRetry={() => setRunId(n => n + 1)}
@@ -131,7 +136,7 @@ export default function Survivor({
 // =====================================================================
 
 function SurvivorRun({
-  deployed, sprites, themeId, gameConfig, pool, unitId, bestScore, onBank, onRetry, onFinish,
+  deployed, sprites, themeId, gameConfig, pool, mathUnitId, bestScore, onBank, onRetry, onFinish,
 }) {
   const hero = useMemo(
     () => HEROES.find(h => h.typeId === deployed.heroId) || HEROES[0],
@@ -166,7 +171,7 @@ function SurvivorRun({
   const [showHint, setShowHint] = useState(true);
 
   // The unit's own question bank — its vocabulary and its arithmetic generator.
-  const nextChallenge = useMemo(() => makeChallengeBank(pool, unitId), [pool, unitId]);
+  const nextChallenge = useMemo(() => makeChallengeBank(pool, mathUnitId), [pool, mathUnitId]);
 
   // ---- engine callbacks ------------------------------------------------
 

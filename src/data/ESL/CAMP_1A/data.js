@@ -37,8 +37,7 @@ export const CAMP_1A_DATA = {
       title: "Phase 2: Mastery",
       threshold: 55,
       tasks: [
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 20 },
-        { id: "GAMES", dbKey: "p12", maxXP: 5 }
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 25 }
       ]
     }
   ],

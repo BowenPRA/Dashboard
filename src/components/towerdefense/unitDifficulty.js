@@ -80,6 +80,46 @@ export const TRACK_LEVELS = {
       blurb: 'Current runs the coolant channels — hold the line while the cell does its work.',
     },
   },
+  // The standalone Arcade track (see src/views/Arcade.jsx). Its "units" are not
+  // lessons — they are the game's own campaign, a designed six-level ladder both
+  // cabinets share. Level ids are `ARC_*`, deliberately unlike any lesson unit
+  // id, so each level keeps its own per-cabinet leaderboard without colliding
+  // with a real unit. The in-game vocab/maths questions are NOT drawn from these
+  // levels; they come from what the student is currently studying (see
+  // arcade/questionSource.js), which is why no realWords live here.
+  ARCADE: {
+    ARC_1: {
+      mapId: 'WAVE', themeId: 'STANDARD', tier: 0,
+      mapName: 'Serpentine Valley',
+      blurb: 'A long switchback through open grassland — room to warm up with the full armoury.',
+    },
+    ARC_2: {
+      mapId: 'JUNCTION', themeId: 'DESERT', tier: 1,
+      mapName: 'The Crossroads',
+      blurb: 'Two roads cross in the dunes. Hold the junction — the stream passes it twice — and you hold the field.',
+    },
+    ARC_3: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Labyrinth',
+      blurb: 'A winding night maze, and it is crawling.',
+    },
+    ARC_4: {
+      mapId: 'CIRCUIT', themeId: 'ICE', tier: 3, waveMod: 'SIEGE',
+      mapName: 'Cryo Lab',
+      blurb: 'Armored heavies grind down the coolant channels.',
+    },
+    ARC_5: {
+      mapId: 'COMB', themeId: 'STANDARD', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Foundry',
+      blurb: 'Wave after wave folds through the works, and they never slow down.',
+    },
+    ARC_6: {
+      mapId: 'GAUNTLET', themeId: 'NIGHT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Long March',
+      blurb: 'The final march. Queens and broods, the whole way down.',
+      bannedTowers: ['NITRO'],
+    },
+  },
   Y7_MATH: {
     U01_1: {
       mapId: 'WAVE', themeId: 'STANDARD', tier: 0,
@@ -147,6 +187,16 @@ export const DIFFICULTY_TIERS = [
 ];
 
 const MAX_TIER = DIFFICULTY_TIERS.length - 1;
+
+/**
+ * The arcade campaign's levels, in play order. The view resolves each one's
+ * full config with `arcadeConfig('ARCADE', id)`; this list only fixes the order
+ * and the level number a student sees.
+ */
+export const ARCADE_LEVELS = Object.keys(TRACK_LEVELS.ARCADE).map((id, i) => ({
+  id,
+  level: i + 1,
+}));
 
 /**
  * Places a unit on the ladder from its id.

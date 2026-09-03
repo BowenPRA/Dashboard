@@ -463,6 +463,11 @@ export function resolveTask(declared) {
 /** All resolved tasks for a unit, flattened across phases, with lock state. */
 export function resolveUnitTasks(unit, unitXP = 0, scores = {}) {
   return (unit?.phases || []).flatMap((phase) => {
+    // The in-unit arcade tile is gone: the games now live only in the standalone
+    // Arcade track, where playing costs gold (src/views/Arcade.jsx). Units still
+    // DECLARE the GAMES task — it is a 0-XP reward, so dropping it here changes no
+    // XP total or phase gate — but it never renders or launches from a unit. Undo
+    // this one filter to bring the free in-unit games back.
     // An optional `requires: '<TASK_ID>'` gates a phase on another task having
     // been ATTEMPTED, not scored — a progress record exists once recordAttempt
     // writes one, even for a score of zero. The arcade uses it: the game unlocks
@@ -471,6 +476,7 @@ export function resolveUnitTasks(unit, unitXP = 0, scores = {}) {
     const gateKey = phase.requires ? resolveTask({ id: phase.requires })?.dbKey : null;
     const gateUnmet = gateKey ? !scores?.[gateKey] : false;
     return (phase.tasks || [])
+      .filter((t) => t.id !== 'GAMES')
       .map((t) => {
         const resolved = resolveTask(t);
         if (!resolved) return null;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee } from 'lucide-react';
-import { TRACK_REGISTRY, getTrackConfig } from '../components/trackRegistry';
+import { TRACK_REGISTRY, getTrackConfig, ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
@@ -23,6 +23,15 @@ export default function Home() {
     // Students with no explicit enrolment see the full GED programme.
     const defaultTracks = TRACK_REGISTRY.filter(t => t.group === 'GED');
 
+    // The Arcade is open to everyone regardless of enrolment — it is where gold
+    // earned across the other tracks is spent — so it is appended to whatever
+    // set a student would otherwise see, and always last.
+    const withArcade = (tracks) => {
+      const arcade = TRACK_REGISTRY.find(t => t.id === ARCADE_TRACK_ID);
+      const rest = tracks.filter(t => t.id !== ARCADE_TRACK_ID);
+      return arcade ? [...rest, arcade] : rest;
+    };
+
     const fetchUserAndTracks = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       // Prefer app_metadata (where teachers now set it); fall back to any legacy
@@ -36,12 +45,12 @@ export default function Home() {
 
       if (isPreviewAccount(session?.user)) {
         // Preview/QA account: every track, regardless of enrolment.
-        setVisibleTracks(TRACK_REGISTRY);
+        setVisibleTracks(withArcade(TRACK_REGISTRY));
       } else if (Array.isArray(enrolled) && enrolled.length > 0) {
-        // RBAC: only show enrolled tracks
-        setVisibleTracks(TRACK_REGISTRY.filter(t => enrolled.includes(t.id)));
+        // RBAC: only show enrolled tracks (plus the Arcade).
+        setVisibleTracks(withArcade(TRACK_REGISTRY.filter(t => enrolled.includes(t.id))));
       } else {
-        setVisibleTracks(defaultTracks);
+        setVisibleTracks(withArcade(defaultTracks));
       }
       setLoading(false);
     };

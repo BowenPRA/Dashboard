@@ -42,8 +42,7 @@ export const MATH_1A_DATA = {
       tasks: [
         { id: "DIAGRAMS", dbKey: "p7", maxXP: 15 },
         { id: "ESSAY", dbKey: "p8", maxXP: 15 },
-        { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 },
-        { id: "GAMES", dbKey: "p12", maxXP: 15 }
+        { id: "ASSESSMENT", dbKey: "p9", maxXP: 30 }
       ]
     }
   ],
