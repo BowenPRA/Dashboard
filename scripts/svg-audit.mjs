@@ -14,10 +14,18 @@ const PAD = 6; // px of breathing room required inside a rect
 const factor = (weight) => (weight === '900' ? 0.60 : weight === 'bold' ? 0.57 : 0.52);
 const widthOf = (s, size, weight) => s.length * size * factor(weight);
 
-/** Extract `KEY: \`...\`` template blocks by scanning for the closing backtick. */
+/**
+ * Extract `KEY: \`...\`` template blocks by scanning for the closing backtick.
+ *
+ * Both authoring styles count. Most decks declare diagrams inline in the DIAGRAMS
+ * object (`KEY: \`<svg…\``), but the chemistry and Add Maths decks build each one
+ * as its own `const KEY = \`<svg…\`` first so the SVG can interpolate shared
+ * helpers, then list them in the export. Matching only the first style meant
+ * those files reported "0 findings" because nothing was ever read.
+ */
 function extractBlocks(src) {
   const out = [];
-  const re = /^[ \t]*([A-Z_0-9]+):[ \t]*`/gm;
+  const re = /^[ \t]*(?:const[ \t]+)?([A-Z_0-9]+)[ \t]*[:=][ \t]*`/gm;
   let m;
   while ((m = re.exec(src))) {
     const start = re.lastIndex;

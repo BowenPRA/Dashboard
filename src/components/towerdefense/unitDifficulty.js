@@ -79,6 +79,14 @@ export const TRACK_LEVELS = {
       mapName: 'The Electrolysis Lab',
       blurb: 'Current runs the coolant channels — hold the line while the cell does its work.',
     },
+    // C5.01 is the second unit, so it steps up to tier 1 on a harder board. The
+    // DESERT theme is the point: this unit is about heat leaving and entering a
+    // system, and the gauntlet is the hottest run on the campaign.
+    U05_1: {
+      mapId: 'GAUNTLET', themeId: 'DESERT', tier: 1,
+      mapName: 'The Furnace Run',
+      blurb: 'A long open corridor with nowhere to hide from the heat. Everything you release has to go somewhere.',
+    },
   },
   // The standalone Arcade track (see src/views/Arcade.jsx). Its "units" are not
   // lessons — they are the game's own campaign, a designed six-level ladder both

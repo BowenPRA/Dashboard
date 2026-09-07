@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library
+  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -436,6 +436,30 @@ export const TASKS = [
     hasContent: (u) => notEmpty(u.workbookB),
     buildPool: (u) => u.workbookB || [],
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Book Problems' }),
+  },
+  {
+    id: 'ENERGY_PROFILE',
+    nativeMax: 10,
+    // p1–p22 are taken (p5 is reserved as a workbook question id); p23 is next.
+    dbKey: 'p23',
+    // "Draw the reaction pathway." The Cambridge worked example asks a student to
+    // DRAW an energy level diagram; this is that, made live. They move the
+    // products line above or below the fixed reactants line, drag out the
+    // activation-energy hump (which has to clear BOTH lines), and label ΔH
+    // negative or positive — and the diagram redraws under their hands. Every
+    // judgement is DERIVED from the geometry by src/utils/energyProfile.js, the
+    // same derive-don't-store rule Number Gym / Graph It / Equations follow, and
+    // `checkItem` refuses an item whose ΔH contradicts its stated type. Item
+    // shape is documented in src/tasks/EnergyProfile.jsx.
+    label: 'Energy Diagrams',
+    icon: AreaChart,
+    color: { bg: 'bg-[#c8102e]', border: 'border-[#8f0b20]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./EnergyProfile.jsx')),
+    hasContent: (u) => notEmpty(u.energyProfile),
+    buildPool: (u) => u.energyProfile || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];
 

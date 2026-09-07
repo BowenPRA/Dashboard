@@ -10,17 +10,41 @@ import { getTask, resolveTask } from './tasks/taskRegistry';
 const TRACK = 'COORD_SCI';
 const UNIT = new URLSearchParams(window.location.search).get('unit') || 'U04_1';
 
-const CASES = [
-  ['NOTES', 'Notes · 18 slides, 5 checks'],
-  ['WORD_REC', 'Vocab · 11 key words'],
-  ['FORMULA_WRITE', 'Formulae · 6 name→formula builds'],
-  ['SYMBOL_EQ', 'Equations · 6 word→symbol builds'],
-  ['WORKBOOK', 'Practice · 12 questions in 3 tiers'],
-  ['SHORT_ANSWERS', 'Questions · 5 reasoning items'],
-  ['DIAGRAMS', 'Source Analysis · copper sulfate cell'],
-  ['ASSESSMENT', 'Quiz · 8 MCQ, 10 minutes'],
-  ['GAMES', 'Arcade · tower defense'],
-];
+/**
+ * The task list is DERIVED from whatever unit is loaded, not hardcoded — the
+ * harness used to list U04_1's tasks by hand, which silently offered a task the
+ * unit did not have (and hid one it did) as soon as `?unit=` pointed elsewhere.
+ * Each row shows how many items the task actually built, so an empty pool is
+ * visible before you open it.
+ */
+function casesFor(unit) {
+  return (unit?.phases || []).flatMap((p) => (p.tasks || []).map((t) => t.id));
+}
+
+/** Rough item count for a pool in any of the shapes the registry hands out. */
+function sizeOf(pool) {
+  if (Array.isArray(pool)) {
+    // Workbook pools are tiers of questions; everything else is a flat list.
+    const nested = pool.reduce((s, x) => s + (Array.isArray(x?.questions) ? x.questions.length : 0), 0);
+    return nested || pool.length;
+  }
+  // The wrapper shapes — { shortQA }, { diagrams }, { questions }, { items }.
+  if (pool && typeof pool === 'object') {
+    const arr = Object.values(pool).find(Array.isArray);
+    return arr ? sizeOf(arr) : 0;
+  }
+  return 0;
+}
+
+const countOf = (def, unit) => {
+  // The arcade's pool is its game config, not a list of anything countable.
+  if (def.id === 'GAMES') return null;
+  const direct = sizeOf(def?.buildPool?.(unit, { track: TRACK, unitId: UNIT }));
+  if (direct) return direct;
+  // ASSESSMENT hands the component an empty pool and reads the unit itself.
+  if (def.id === 'ASSESSMENT') return sizeOf(unit?.assessment?.questions) || null;
+  return null;
+};
 
 function Harness() {
   const [open, setOpen] = useState(null);
@@ -51,15 +75,22 @@ function Harness() {
       <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-1">Coordinated Science harness</h1>
       <p className="text-slate-500 font-bold mb-6">{TRACK} · {UNIT} “{unit?.meta?.title}”, mounted without auth.</p>
       <div className="grid gap-3 sm:grid-cols-2 max-w-3xl">
-        {CASES.map(([taskId, label]) => (
-          <button
-            key={taskId}
-            onClick={() => setOpen(taskId)}
-            className="text-left p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:border-teal-400">
-            <div className="text-[11px] font-black uppercase tracking-widest text-teal-500">{taskId}</div>
-            <div className="font-black text-slate-800 dark:text-slate-100">{label}</div>
-          </button>
-        ))}
+        {casesFor(unit).map((taskId) => {
+          const def = getTask(taskId);
+          const n = def ? countOf(def, unit) : null;
+          return (
+            <button
+              key={taskId}
+              onClick={() => setOpen(taskId)}
+              className="text-left p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:border-teal-400">
+              <div className="text-[11px] font-black uppercase tracking-widest text-teal-500">{taskId}</div>
+              <div className="font-black text-slate-800 dark:text-slate-100">
+                {def?.label || 'unknown task'}
+                {n != null && <span className="font-bold text-slate-400"> · {n} item{n === 1 ? '' : 's'}</span>}
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

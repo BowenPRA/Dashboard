@@ -16,6 +16,10 @@ import {
   // deck references has to be here.
   Magnet, Compass, Move3d, GitMerge, Triangle, Columns3, ListChecks, PenTool, Languages,
   Scissors,
+  // Chemistry / energetics, plus three names the electrolysis deck was already
+  // asking for (Grid3x3, Move, ArrowLeftRight) and quietly getting Info for.
+  Flame, Snowflake, Thermometer, AreaChart, Mountain, Sigma, Unlink, PenLine, Eye,
+  ArrowLeftRight, ArrowUpDown, Grid3x3, Move,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -48,6 +52,8 @@ const ICONS = {
   Vote, Coins, Map, Gavel,
   Magnet, Compass, Move3d, GitMerge, Triangle, Columns3, ListChecks, PenTool, Languages,
   Scissors,
+  Flame, Snowflake, Thermometer, AreaChart, Mountain, Sigma, Unlink, PenLine, Eye,
+  ArrowLeftRight, ArrowUpDown, Grid3x3, Move,
 };
 
 /** Render a lucide icon by name (falls back to Info). */
