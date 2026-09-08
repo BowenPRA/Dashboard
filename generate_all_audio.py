@@ -88,6 +88,17 @@ def speechify(text):
     t = t.replace('\\deg', ' the degree of ')
     t = t.replace('\\max', ' the larger of ')
     t = re.sub(r'\\sqrt\s*\{([^{}]*)\}', r' the square root of \1 ', t)
+    # KaTeX spacing commands. Left alone, `\;` survives the catch-all strip as a
+    # bare semicolon, which the voice reads as a pause in the middle of a sum.
+    t = re.sub(r'\\[;,:!]', ' ', t)
+    t = t.replace('\\iff', ' is equivalent to ').replace('\\Leftrightarrow', ' is equivalent to ')
+    t = t.replace('\\Rightarrow', ' so ').replace('\\quad', ' ')
+    # Modulus bars. The Add Maths decks set them as plain pipes (|2x - 1|), and a
+    # voice reads a bare pipe as nothing at all — which turns "the modulus of 2x
+    # minus 1 is less than 3" into a different, wrong sentence. Matched in pairs,
+    # and only over a short run, so a stray bar cannot swallow a paragraph. This
+    # runs BEFORE the catch-all strip below, which would otherwise delete them.
+    t = re.sub(r'\|([^|\n]{1,40})\|', r' the modulus of \1 ', t)
     # Powers and subscripts. A voice reading "x caret 2" is useless in a lesson
     # that is nothing but powers, so they are spoken the way a teacher says them.
     t = re.sub(r'\^\s*\{?\s*2\s*\}?', ' squared ', t)

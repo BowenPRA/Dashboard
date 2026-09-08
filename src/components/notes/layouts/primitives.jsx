@@ -20,6 +20,11 @@ import {
   // asking for (Grid3x3, Move, ArrowLeftRight) and quietly getting Info for.
   Flame, Snowflake, Thermometer, AreaChart, Mountain, Sigma, Unlink, PenLine, Eye,
   ArrowLeftRight, ArrowUpDown, Grid3x3, Move,
+  // Modulus equations and inequalities (ADD_MATH AM_4A): comparing two graphs,
+  // splitting an equation into cases, squaring, and the two answer shapes an
+  // inequality can take.
+  GitCompare, Split, Superscript, LineChart, ShieldAlert, Milestone, Minimize2,
+  Activity, Route, Star,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -54,6 +59,8 @@ const ICONS = {
   Scissors,
   Flame, Snowflake, Thermometer, AreaChart, Mountain, Sigma, Unlink, PenLine, Eye,
   ArrowLeftRight, ArrowUpDown, Grid3x3, Move,
+  GitCompare, Split, Superscript, LineChart, ShieldAlert, Milestone, Minimize2,
+  Maximize2, Activity, Route, Star,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

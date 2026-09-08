@@ -127,9 +127,56 @@ function factorTheorem() {
   return { prompt: `P(x) = ${poly}.  P(${shown}) = ?`, answer: at(d) };
 }
 
+// AM_4A — Modulus Equations and Inequalities. Three moves, all of which a
+// student who has done the unit can do in their head: evaluate a modulus, undo
+// one (which is where the SECOND answer lives, and forgetting it is the mistake
+// the unit exists to kill), and read the far end of a "less than" interval.
+// Every answer is a whole number.
+function modulus() {
+  const r = Math.random();
+
+  if (r < 0.4) {
+    // Evaluate. The subtraction sits inside the bars half the time and outside
+    // the other half, which is exactly the pair students confuse.
+    const a = ri(-12, 12);
+    const b = ri(-12, 12);
+    if (Math.random() < 0.5) {
+      return { prompt: `|${lead(a)} ${MINUS} ${operand(b)}| = ?`, answer: Math.abs(a - b) };
+    }
+    return { prompt: `|${lead(a)}| ${MINUS} |${lead(b)}| = ?`, answer: Math.abs(a) - Math.abs(b) };
+  }
+
+  if (r < 0.7) {
+    // |x + b| = k. Asking for one named root forces the student to produce BOTH
+    // and then pick, rather than stopping at the easy branch.
+    const b = nz(-9, 9);
+    const k = ri(1, 9);
+    const roots = [-b - k, -b + k];
+    const wantLarger = Math.random() < 0.5;
+    const inner = b < 0 ? `x ${MINUS} ${Math.abs(b)}` : `x + ${b}`;
+    return {
+      prompt: `|${inner}| = ${k}.  ${wantLarger ? 'Larger' : 'Smaller'} value of x = ?`,
+      answer: wantLarger ? roots[1] : roots[0],
+    };
+  }
+
+  // |x − c| < k, largest or smallest INTEGER inside the interval. The interval
+  // is c − k < x < c + k and the bounds are whole numbers, so the extreme
+  // integers are one step inside them.
+  const c = ri(-8, 8);
+  const k = ri(2, 9);
+  const wantLargest = Math.random() < 0.5;
+  const inner = c < 0 ? `x + ${Math.abs(c)}` : `x ${MINUS} ${c}`;
+  return {
+    prompt: `|${inner}| < ${k}.  ${wantLargest ? 'Largest' : 'Smallest'} integer x = ?`,
+    answer: wantLargest ? c + k - 1 : c - k + 1,
+  };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
   AM_3A: factorTheorem,
+  AM_4A: modulus,
   U01_1: intAddSub,
   U01_2: intMulDiv,
   U01_3: lcm,

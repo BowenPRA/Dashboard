@@ -75,6 +75,15 @@ export const TRACK_LEVELS = {
       mapName: 'The Factor Works',
       blurb: 'Two roads split at the junction — like a cubic splitting into its factors. Cover both, or neither holds.',
     },
+    // Chapter 4 steps up to tier 2. The map is the point: a modulus inequality
+    // splits the number line into an inside and an outside, and the spiral is
+    // the board where holding the middle and holding the edge are two different
+    // jobs.
+    AM_4A: {
+      mapId: 'SPIRAL', themeId: 'DESERT', tier: 2,
+      mapName: 'The Absolute Line',
+      blurb: 'Distance from the centre is all that counts here — and it is never negative. Hold the inside, or hold both ends.',
+    },
   },
   // IGCSE Coordinated Science. First unit is a tier-0 introduction — the "lab"
   // ICE theme suits electrolysis. Additive: adding a unit here shifts nothing on

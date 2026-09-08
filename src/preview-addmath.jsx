@@ -1,35 +1,42 @@
-// Dev-only harness for the ADD_MATH track: the AM_3A tasks mounted straight from
-// unit data, so they can be checked without Supabase auth. Entry point:
-// preview-addmath.html. Not part of the production build.
+// Dev-only harness for the ADD_MATH track: one unit's tasks mounted straight
+// from unit data, so they can be checked without Supabase auth. Entry point:
+// preview-addmath.html, `?unit=AM_4A` to pick a unit. Not part of the
+// production build.
 //
 // The extra "DIAGRAMS" case is not a task — it lays every SVG in the unit's
 // diagrams.js on one page, which is the only practical way to check curve
 // clipping and label placement after an edit.
+//
+// Both the diagram gallery and the task list follow ?unit. They used to be
+// pinned to AM_3A, so opening a second unit here silently showed the first
+// one's pictures — the kind of quiet wrongness this harness exists to catch.
 import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getTrack } from './data/index';
 import { getTask, resolveTask } from './tasks/taskRegistry';
-import { DIAGRAMS } from './data/ADD_MATH/AM_3A/diagrams.js';
 
 const params = new URLSearchParams(window.location.search);
 const TRACK = 'ADD_MATH';
 const UNIT = params.get('unit') || 'AM_3A';
+
+const DIAGRAM_MODULES = import.meta.glob('./data/ADD_MATH/*/diagrams.js', { eager: true });
+const DIAGRAMS = DIAGRAM_MODULES[`./data/ADD_MATH/${UNIT}/diagrams.js`]?.DIAGRAMS || {};
 
 // `?done=pd1,pd2` seeds savedData so a task resumes part-way through — the only
 // practical way to reach the eighth long division without working the first
 // seven by hand.
 const SAVED = Object.fromEntries((params.get('done') || '').split(',').filter(Boolean).map((id) => [id, 1]));
 
-const CASES = [
-  ['NOTES', 'Notes · 24 slides, 10 checks'],
-  ['WORD_REC', 'Vocab · 14 key words'],
-  ['POLY_DIV', 'Long Division · 8 divisions, 3 with remainders'],
-  ['WORKBOOK', 'Practice · Exercise 3.1, 12 questions'],
-  ['WORKBOOK_B', 'Book Problems · Exercise 3.3, 12 questions'],
-  ['ASSESSMENT', 'Quiz · 10 MCQ, 12 minutes'],
-  ['GAMES', 'Arcade · The Factor Works'],
-];
+// The task list is whatever the unit declares, in gate order, so a unit that
+// drops a task or adds one needs no edit here.
+const casesFor = (unit) =>
+  (unit?.phases || []).flatMap((phase) =>
+    (phase.tasks || []).map((t) => {
+      const def = getTask(t.id);
+      return [t.id, `${def?.label || t.id} · ${phase.title} · ${t.maxXP} XP`];
+    })
+  );
 
 function Gallery({ onBack }) {
   return (
@@ -80,7 +87,7 @@ function Harness() {
       <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-1">Additional Mathematics harness</h1>
       <p className="text-slate-500 font-bold mb-6">{TRACK} · {UNIT} “{unit?.meta?.title}”, mounted without auth.</p>
       <div className="grid gap-3 sm:grid-cols-2 max-w-3xl">
-        {[...CASES, ['DIAGRAMS', 'Every SVG in this unit, on one page']].map(([taskId, label]) => (
+        {[...casesFor(unit), ['DIAGRAMS', 'Every SVG in this unit, on one page']].map(([taskId, label]) => (
           <button
             key={taskId}
             onClick={() => setOpen(taskId)}

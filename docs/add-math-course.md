@@ -2,8 +2,14 @@
 
 How to build a unit of the Cambridge IGCSE **Additional Mathematics 0606** track.
 
-**Reference exemplar: `src/data/ADD_MATH/AM_3A`** (Polynomials, Division and the Factor
-Theorem — coursebook §3.1–3.3). When in doubt, copy its structure.
+**Reference exemplars:**
+
+- **`src/data/ADD_MATH/AM_3A`** (Polynomials, Division and the Factor Theorem —
+  coursebook §3.1–3.3). The full shape, including a production task. When in doubt,
+  copy its structure.
+- **`src/data/ADD_MATH/AM_4A`** (Modulus Equations and Inequalities — §4.1–4.2). The
+  shape for a topic with **no** production task, and the reference for authoring
+  answers the marking engine can actually mark (§3.1).
 
 Read with [lesson-standard.md](lesson-standard.md) (the bar for the teaching),
 [workbook-tasks.md](workbook-tasks.md) (the practice schema) and
@@ -38,6 +44,12 @@ how to spot a factor without dividing. §3.4 onwards is the next unit.
 Total 105 XP against a 100 XP unit (`unitXPOf` caps the payout), so a student can drop a
 few marks anywhere and still finish.
 
+**The production task is optional.** Some topics have a single mechanical procedure worth
+drilling — long division, completing the square — and those get one. Modulus equations do
+not: the work *is* the exercise questions. `AM_4A` therefore runs
+`WORKBOOK` 30 + `WORKBOOK_B` 35 in Gate 1 and nothing else, which reaches the same 105.
+Do not invent a task to fill the slot.
+
 **Re-derive the gates whenever the task mix changes.** A progression gate must sit at or
 below **80% of the XP available before it** — `npm run validate` fails otherwise, and a
 gate that is merely *reachable* locks out anyone who is not perfect. See
@@ -59,6 +71,10 @@ Both render with `src/tasks/Workbook.jsx` and take the schema in
 
 - **Transcribe the questions faithfully, write the method ourselves.** The book prints
   answers, not working. The worked steps are the value we add.
+- **Cover every part.** One item per lettered part (`f1a`, `f1b`, …), in book order. A
+  section's exercise goes in whole: `AM_4A` carries all 17 parts of Exercise 4.1 and all
+  30 of Exercise 4.2. Both Workbook slots checkpoint each correct answer through
+  `onProgress`, so a thirty-question task does not have to be finished in one sitting.
 - **"Factorise completely" is never a typed box.** Answers are marked by algebraic
   equivalence (sampling, in `utils/mathEquivalence.js`), so the *expanded* form tests as
   equal to the factorised one and would be marked correct. Use `mcq` with factored
@@ -66,6 +82,39 @@ Both render with `src/tasks/Workbook.jsx` and take the schema in
 
 Attach a graph with `inlineSvg` wherever a question is about roots — a cubic's three
 crossings and its three factors should be on screen together.
+
+### 3.1 Choosing a question type the marking engine can mark
+
+`utils/mathEquivalence.js` parses four answer shapes and falls back to a normalised
+**string compare** for anything else. That fallback is the trap: it looks like it works,
+and then marks a right answer wrong because the student spaced it differently. Author to
+what the engine actually understands:
+
+| Answer shape | Use | Why |
+|---|---|---|
+| one value, `x = 6`, a fraction | typed box | parsed and compared numerically |
+| one inequality, `x > \dfrac{2}{3}` | typed box | side-swaps and sign flips handled |
+| a chain, `-1 < x < 2` | typed box | compound relations are handled natively |
+| **two values**, `x = \dfrac{1}{3}` or `x = 1` | `fill_blank`, one box each | see below |
+| **two rays**, `x < -1` or `x > 4` | `fill_blank`, signs printed in `textParts` | see below |
+| "which of these" / a described graph | `mcq` | nothing to type |
+
+**The engine has no idea what "or" means.** An answer containing it trips `isWordy` and
+drops into the string compare, so `x < -1 or x > 4` and `x>4 or x<-1` are different
+answers. Split it into one blank per value and print the inequality signs in `textParts`
+(`'$x < $ ', ' or $x > $ ', '.'`), which marks each blank independently *and* drills the
+thing the section tests: knowing the answer's shape before you know its numbers. For two
+plain values, label the boxes **Smaller** and **Larger** so the order is the question's
+rather than a guess.
+
+**Write fractions as `\dfrac` or `\frac`, never `\tfrac`.** `clean()` rewrites the
+first two into division and leaves `\tfrac` alone, which silently drops that answer into
+the string compare. (`\tfrac` is fine anywhere the string is only *displayed* — prompts,
+solution steps, the `answer` pill of a `fill_blank` question.)
+
+Verify before shipping: walk every item in `preview-addmath.html` and type each answer in,
+or run the answers through `answersEquivalent` in a scratch script. A wrong `correct`
+field passes `npm run validate` — the validator does not read workbook answer keys.
 
 ---
 
@@ -129,9 +178,10 @@ Standard `layout` slides ([math-lessons.md](math-lessons.md), the layout compone
 `npm run sync-audio` (edge-tts, free, needs internet) fills only **missing** files, so
 **delete a unit's audio folder before regenerating it** after a content edit.
 `speechify()` in `generate_all_audio.py` reads `x^2` as "x squared", `x^3` as "cubed",
-`\deg`/`\leq`/`\pm`/`\sqrt` as words, and subscripts as "sub n". Anything it does not know
-is deleted, so if a slide narrates oddly, teach `speechify` the command rather than
-rewording the maths.
+`\deg`/`\leq`/`\pm`/`\sqrt`/`\iff` as words, a matched pair of pipes as "the modulus of",
+and subscripts as "sub n". Anything it does not know is deleted, so if a slide narrates
+oddly, teach `speechify` the command rather than rewording the maths — a bare `|` used to
+be read as nothing at all, which turned every sentence in `AM_4A` into a different one.
 
 ---
 
@@ -156,19 +206,26 @@ Add the unit to `TRACK_LEVELS.ADD_MATH` in
 `src/components/towerdefense/unitDifficulty.js` (map, theme, tier, blurb), and give it a
 Maths Bolt generator in `src/components/towerdefense/mathChallenges.js` keyed by unit id.
 `AM_3A`'s generator asks "is (x − c) a factor of …?" and "P(c) = ?" — the factor theorem at
-fifteen-second speed. Answers must be an integer or Yes/No; verify a new generator against
-an independent oracle before shipping it.
+fifteen-second speed; `AM_4A`'s evaluates a modulus, asks for one named root of
+`|x + b| = k`, and asks for the extreme integer inside `|x − c| < k`. Answers must be an
+integer or Yes/No; verify a new generator against an independent oracle before shipping it
+— parse the generated prompt back from its own text and recompute, rather than trusting
+the generator's own arithmetic.
 
 ---
 
 ## 8. Checklist for a new unit
 
 - [ ] `src/data/ADD_MATH/<UNIT>/` with `data.js`, `notes.js`, `diagrams.js`, the two
-      workbook files, the production task's data, `assessment.js`, `games.js`
+      workbook files, the production task's data if the topic has one, `assessment.js`,
+      `games.js`
 - [ ] `meta.track === 'ADD_MATH'` and `meta.id` matches the folder
 - [ ] English only — no `vn*` fields anywhere
 - [ ] Tasks total ≥ 100 XP; every gate ≤ 80% of the XP before it
 - [ ] ≥ 2 `check` questions in the deck (aim for one every second or third slide)
+- [ ] Every part of both exercises is covered, one item per lettered part
+- [ ] Every answer key marks: two-value and two-ray answers are `fill_blank`, fractions
+      are `\dfrac`, and each one has actually been typed in the preview harness (§3.1)
 - [ ] Assessment key spread across A/B/C/D; every distractor is a nameable mistake
 - [ ] `npm run audit:svg ADD_MATH` clean
 - [ ] `npm run validate` green
