@@ -1,5 +1,10 @@
 # Math Lessons — the Projected TV Lesson (`notes.js`)
 
+> **Read [lesson-standard.md](lesson-standard.md) first.** That is the method and the
+> quality bar; this file is the field reference for what the renderer reads today. Where
+> the two disagree the standard wins — notably the "8–13 slides" ceiling in §1 below,
+> which the exemplar decks supersede (they run 20–25 lighter slides).
+
 How to build the lesson a teacher projects on the classroom TV. This is the `Notes`
 activity ([src/tasks/Notes.jsx](../src/tasks/Notes.jsx)) — a slide deck with a
 fullscreen **"Project"** mode, an **EN/VN** toggle, KaTeX math, and embedded widgets.

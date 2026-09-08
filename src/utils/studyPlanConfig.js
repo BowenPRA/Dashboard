@@ -103,6 +103,7 @@ export const CONTENT_BLUEPRINT = {
     { id: 'MATH_0E', title: 'Geometry & Measurement', strand: 'Quantitative' },
     { id: 'MATH_1A', title: 'Expressions & Equations', strand: 'Algebraic' },
     { id: 'MATH_1B', title: 'Linear Equations & Graphing', strand: 'Algebraic' },
+    { id: 'MATH_1C', title: 'Equations with Fractions', strand: 'Algebraic' },
   ],
   GED_SCIENCE: [
     { id: 'SCI_0A', title: 'Reading Science: Data & Method', strand: 'Practices', critical: true },
@@ -124,3 +125,18 @@ export const SUBJECT_LABEL = {
 
 /** Tracks the plan draws from, in the order the teacher ranks them by risk. */
 export const PLAN_TRACKS = ['GED_ENG', 'GED_HISTORY', 'GED_MATH', 'GED_SCIENCE'];
+
+/**
+ * Per-track override for which unit the rotation cycle treats as position
+ * zero, instead of `unitsOf`'s plain alphabetical-by-id order.
+ *
+ * Vi Khoi had already worked ahead into ENG_0A (Pronouns) before this daily
+ * plan existed, banking most of its lifetime XP. Assigning it as literally
+ * day one of the plan leaves too little unscored practice for him to clear
+ * the day's 40-fresh-XP bar. ENG_0B has more headroom. The rotation still
+ * reaches ENG_0A eventually — it wraps to the end of the cycle rather than
+ * being dropped — just after the other units have had their turn.
+ */
+export const ROTATION_START = {
+  GED_ENG: 'ENG_0B',
+};

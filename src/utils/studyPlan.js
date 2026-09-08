@@ -19,7 +19,7 @@
 import { getTrack } from '../data/index';
 import { resolveTask } from '../tasks/taskRegistry';
 import {
-  PROGRAM, WEEK_PATTERN, BENCHMARK, CONTENT_BLUEPRINT, PLAN_TRACKS, SUBJECT_LABEL,
+  PROGRAM, WEEK_PATTERN, BENCHMARK, CONTENT_BLUEPRINT, PLAN_TRACKS, SUBJECT_LABEL, ROTATION_START,
 } from './studyPlanConfig';
 
 // --- dates ------------------------------------------------------------------
@@ -97,6 +97,21 @@ export function unitsOf(track) {
 }
 
 /**
+ * `unitsOf`, rotated so `ROTATION_START[track]` (if configured) lands at
+ * index 0 instead of whatever sorts first alphabetically.
+ *
+ * Only the rotation cursor below should use this — coverage/build-queue
+ * views keep `unitsOf`'s plain order, since reordering those listings would
+ * be a cosmetic side effect nobody asked for.
+ */
+function rotationUnitsOf(track) {
+  const ids = unitsOf(track);
+  const start = ROTATION_START[track];
+  const i = start ? ids.indexOf(start) : -1;
+  return i > 0 ? [...ids.slice(i), ...ids.slice(0, i)] : ids;
+}
+
+/**
  * How many times this track has already come up before a given slot, counting
  * from day one of the block.
  *
@@ -154,7 +169,7 @@ export function planForDate(iso) {
 
   const weekday = dayIndex % WEEK_PATTERN.length;
   base.assignments = WEEK_PATTERN[weekday].slots.map((track, slotIndex) => {
-    const units = unitsOf(track);
+    const units = rotationUnitsOf(track);
     if (units.length === 0) {
       return { slotIndex, track, subject: SUBJECT_LABEL[track] || track, unitId: null, missing: true };
     }
