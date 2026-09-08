@@ -59,6 +59,22 @@ status* section so it can be closed deliberately.
   long-division item, which note fields accept block maths, and the per-unit checklist.
   The **`AM_3A` polynomials unit is the reference exemplar.**
 
+### Cambridge Upper Primary Technology (proposal)
+
+- [digital-skills-course.md](digital-skills-course.md) — **start here** for the
+  proposed `PRIMARY_TECH` track (everyday computer skills, Stages 4–6): why a
+  **simulated computer** is the only honest way to assess "can use a browser", the
+  `SIM` engine and its six skins, the cheap `POINT_IT` task to build first, the
+  14-unit course map, and how to present a practical skill (show → do → judge,
+  generic interfaces, and the real-machine transfer card).
+- [primary-tech/BUILD-PLAN.md](primary-tech/BUILD-PLAN.md) — the ordered work list for
+  that track: seven steps from "the track exists" to the last skin, each one
+  independently finishable, validatable and committable.
+- [primary-computing-course.md](primary-computing-course.md) — **shelved.** The
+  *programming* path for the same age group (algorithms, block coding, binary, packet
+  routing) with its own five task proposals. Kept as enrichment / a future lower-
+  secondary track; build the practical track above first.
+
 ### Content quality (all tracks)
 
 - [question-quality.md](question-quality.md) — writing and grading Short Answer,
