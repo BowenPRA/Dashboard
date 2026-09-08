@@ -8,8 +8,9 @@ How to build a unit of the Cambridge IGCSE **Additional Mathematics 0606** track
   coursebook §3.1–3.3). The full shape, including a production task. When in doubt,
   copy its structure.
 - **`src/data/ADD_MATH/AM_4A`** (Modulus Equations and Inequalities — §4.1–4.2). The
-  shape for a topic with **no** production task, and the reference for authoring
-  answers the marking engine can actually mark (§3.1).
+  reference for authoring answers the marking engine can actually mark (§3.1), and
+  for a production task built out of the section's own method rather than bolted on
+  (§4.1).
 
 Read with [lesson-standard.md](lesson-standard.md) (the bar for the teaching),
 [workbook-tasks.md](workbook-tasks.md) (the practice schema) and
@@ -44,11 +45,14 @@ how to spot a factor without dividing. §3.4 onwards is the next unit.
 Total 105 XP against a 100 XP unit (`unitXPOf` caps the payout), so a student can drop a
 few marks anywhere and still finish.
 
-**The production task is optional.** Some topics have a single mechanical procedure worth
-drilling — long division, completing the square — and those get one. Modulus equations do
-not: the work *is* the exercise questions. `AM_4A` therefore runs
-`WORKBOOK` 30 + `WORKBOOK_B` 35 in Gate 1 and nothing else, which reaches the same 105.
-Do not invent a task to fill the slot.
+**Pick the production task from the topic, not from the slot.** Some topics have a
+mechanical procedure worth drilling and get a dedicated screen (`POLY_DIV`, §4). Some have
+a *graphical* method the exam expects, and get `GRAPH` (§4.1). If a topic has neither, run
+the two Workbook slots alone and let them carry the XP — an invented task teaches nothing.
+
+`AM_4A` runs `GRAPH` 25 + `WORKBOOK` 30 + `WORKBOOK_B` 35 in Gate 1, so it totals 130
+against the 100 XP cap. That is deliberate: forty-seven exercise parts is a lot of sitting,
+and the overflow means a student can drop a whole task and still finish the unit.
 
 **Re-derive the gates whenever the task mix changes.** A progression gate must sit at or
 below **80% of the XP available before it** — `npm run validate` fails otherwise, and a
@@ -151,6 +155,47 @@ export const polyDiv = {
   of the widest term in that column, which gives true columns *and* lets `\underline`
   rule only the part of the row the working reaches. Nothing there is authored either.
 
+### 4.1 `GRAPH` — the Graph It task, and its modulus curve
+
+`src/tasks/GraphPlot.jsx`, data in `graphPlot.js`, `dbKey: 'p15'`. The student reads an
+equation and **clicks lattice points** on a grid — production, not recognition, so unlike
+an MCQ it cannot be won by elimination.
+
+An item names a curve and a list of steps; **the task derives every target from the
+curve**, so there is no answer key to get wrong:
+
+```js
+{
+  id: 'gp1_minus',
+  equation: 'y = |x - 3|',                          // KaTeX, shown big
+  curve: { kind: 'modulus', a: 1, h: 3, k: 0 },     // y = a|x − h| + k
+  grid: { xMin: -2, xMax: 8, yMin: -2, yMax: 6 },
+  note: 'The corner sits where the inside is zero.',
+  steps: [{ kind: 'vertex' }, { kind: 'meets', at: 2 }],
+}
+```
+
+- **Two curve kinds.** `'quadratic'` (the default) is `y = a(x − h)² + k`; `'modulus'` is
+  `y = a|x − h| + k`. The letters mean the same thing in both — **(h, k) is the vertex and
+  `a` is the stretch** — and `src/utils/graphCurve.js` solves both against a horizontal
+  line with one function.
+- **Step kinds**: `vertex`, `zeros`, `meets` (`at: <y of the line>`), `point`
+  (`at: [x, y]`, the only step that names a coordinate).
+- **`meets` is the point of the task for a modulus unit.** The line `y = k` is drawn and
+  the student clicks the crossings — which *is* solving `|ax + b| = k` graphically, and
+  the pair of points is also the boundary of the matching inequality. Set two `meets`
+  steps at different levels on one V and the student reads two answers off one picture.
+- **A step with no targets is legitimate and valuable.** A V whose vertex sits above the
+  axis has no zeros, and the student answers with the *"It never reaches that line"*
+  button. That is the clearest picture of "a modulus is never negative" in the course, so
+  spend an item on it — `AM_4A` spends two.
+- **Author for the click.** Every target must be a whole-number point inside the grid, and
+  a `meets` level must be inside it too or the line is never drawn. `npm run validate`
+  re-derives all of it and refuses an unanswerable item.
+- **Order the items so each adds one idea**: the two vertex signs, a vertical shift, a
+  coefficient (`|2x − 4|` has to be read as `2|x − 2|`), a steeper one, both transforms
+  with two levels, then the V that clears the axis.
+
 ---
 
 ## 5. The notes deck
@@ -223,6 +268,7 @@ the generator's own arithmetic.
 - [ ] English only — no `vn*` fields anywhere
 - [ ] Tasks total ≥ 100 XP; every gate ≤ 80% of the XP before it
 - [ ] ≥ 2 `check` questions in the deck (aim for one every second or third slide)
+- [ ] The production task, if the topic has one, is the topic's own method (§4, §4.1)
 - [ ] Every part of both exercises is covered, one item per lettered part
 - [ ] Every answer key marks: two-value and two-ray answers are `fill_blank`, fractions
       are `\dfrac`, and each one has actually been typed in the preview harness (§3.1)

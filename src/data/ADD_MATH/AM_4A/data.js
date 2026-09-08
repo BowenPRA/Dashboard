@@ -6,17 +6,18 @@
 //
 // Gate structure, following AM_3A:
 //   Gate 0 (Learn)  — Notes + Vocab                                  20 XP
-//   Gate 1 (Apply)  — Practice (Exercise 4.1) + Book Problems (4.2)  65 XP
+//   Gate 1 (Apply)  — Graph It + Practice (Ex 4.1) + Book Problems (4.2)  90 XP
 //   Gate 2 (Quiz)   — the Quiz and the Games arcade, unlocked together      20 XP
 //
-// Tasks total 105 XP against a 100 XP unit (unitXPOf caps the payout), so a
-// student can drop a few marks anywhere and still finish. There is no separate
-// production task here — unlike AM_3A's long division, this topic has no single
-// mechanical procedure to drill, and the value is in the forty-seven worked
-// exercise questions, which is why the two Workbook slots carry most of the XP.
+// Tasks total 130 XP against a 100 XP unit (unitXPOf caps the payout), so a
+// student can drop a whole task and still finish. Most of it sits on the two
+// Workbook slots because most of the work is the forty-seven exercise parts;
+// GRAPH is the production task, and it is the section's own method rather than
+// a drill bolted on — see graphPlot.js.
 // Module properties are written out in full (`notes: notes,`) so the audio
 // generator never over-reads the realWords array.
 import { notes } from './notes.js';
+import { graphPlot } from './graphPlot.js';
 import { workbook } from './workbook.js';
 import { workbookB } from './workbookB.js';
 import { assessment } from './assessment.js';
@@ -45,17 +46,23 @@ export const AM_4A_DATA = {
       // Exercise 4.1 is seventeen parts and Exercise 4.2 is thirty, so Book
       // Problems carries the larger share. Both tasks checkpoint every correct
       // answer, so neither has to be finished in one sitting.
+      //
+      // GRAPH sits here rather than in Gate 2 because it teaches the exercises
+      // rather than testing them: placing the crossings of a V and a horizontal
+      // line IS solving a modulus equation graphically, and a student should be
+      // able to do it BEFORE working through forty-seven written parts.
       id: 'practice',
       title: 'Gate 1: Apply',
       threshold: 15,
       tasks: [
+        { id: 'GRAPH', dbKey: 'p15', maxXP: 25 },
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 30 },
         { id: 'WORKBOOK_B', dbKey: 'p22', maxXP: 35 },
       ],
     },
     {
-      // The Quiz and the arcade share one gate: both open at 60 XP, which is 71%
-      // of the 85 available before it (the 80% cap in docs/ged-unit-shape.md).
+      // The Quiz and the arcade share one gate: both open at 60 XP, which is 55%
+      // of the 110 available before it (the 80% cap in docs/ged-unit-shape.md).
       // GAMES stays 0 XP — a reward the unit unlocks, not a task paid for by it.
       id: 'mastery',
       title: 'Gate 2: Quiz & Arcade',
@@ -145,6 +152,7 @@ export const AM_4A_DATA = {
   ],
 
   notes: notes,
+  graphPlot: graphPlot,
   workbook: workbook,
   workbookB: workbookB,
   assessment: assessment,

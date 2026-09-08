@@ -13,7 +13,7 @@ import { getTrack, contentProblems } from '../src/data/index.js';
 import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/taskRegistry.js';
 import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solutionOf, frText } from '../src/utils/linearEquation.js';
-import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
+import { rootsOf, vertexOf, yAt, levelOf, kindOf, CURVE_KINDS } from '../src/utils/graphCurve.js';
 import { checkDivision } from '../src/utils/polynomial.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
 import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
@@ -351,7 +351,7 @@ for (const trackId of TRACK_IDS) {
     //    impossible on screen.
     if ((unit.graphPlot || []).length) {
       const seenIds = new Set();
-      const KINDS = ['vertex', 'zeros', 'point'];
+      const KINDS = ['vertex', 'zeros', 'meets', 'point'];
       const DEFAULT_GRID = { xMin: -7, xMax: 7, yMin: -6, yMax: 8 };
       for (const g of unit.graphPlot) {
         const at = `${label}: graphPlot ${g.id}`;
@@ -364,7 +364,13 @@ for (const trackId of TRACK_IDS) {
           err(`${at}: curve must be { a, h, k } numbers`);
           continue;
         }
-        if (!c.a) err(`${at}: a = 0 is a straight line, not a parabola`);
+        if (c.kind !== undefined && !CURVE_KINDS.includes(c.kind)) {
+          err(`${at}: curve kind "${c.kind}" — GraphPlot.jsx draws ${CURVE_KINDS.join('/')}`);
+          continue;
+        }
+        if (!c.a) {
+          err(`${at}: a = 0 is a straight line, not a ${kindOf(c) === 'modulus' ? 'modulus graph' : 'parabola'}`);
+        }
         const grid = { ...DEFAULT_GRID, ...(g.grid || {}) };
         const onGrid = ([x, y]) =>
           x >= grid.xMin && x <= grid.xMax && y >= grid.yMin && y <= grid.yMax;
@@ -375,9 +381,18 @@ for (const trackId of TRACK_IDS) {
           let targets;
           if (st.kind === 'vertex') targets = [vertexOf(c)];
           else if (st.kind === 'zeros') targets = rootsOf(c).map((x) => [x, 0]);
-          else {
+          else if (st.kind === 'meets') {
+            // The step draws the line y = at and asks for the crossings, so the
+            // line has to be somewhere the student can actually see it — a level
+            // off the top of the grid is a question about an invisible line.
+            if (typeof st.at !== 'number') { err(`${at}: a meets step needs at: <number>, the y of the line`); continue; }
+            if (st.at < grid.yMin || st.at > grid.yMax) {
+              err(`${at}: meets line y = ${st.at} is outside the grid ${JSON.stringify(grid)}, so it is never drawn`);
+            }
+            targets = levelOf(c, st.at).map((x) => [x, st.at]);
+          } else {
             if (!Array.isArray(st.at) || st.at.length !== 2) { err(`${at}: a point step needs at: [x, y]`); continue; }
-            if (!st.label || !st.labelVn) err(`${at}: a point step needs a bilingual label`);
+            if (!st.label || (bilingual && !st.labelVn)) err(`${at}: a point step needs a ${bilingual ? 'bilingual ' : ''}label`);
             if (Math.abs(yAt(c, st.at[0]) - st.at[1]) > 1e-9) {
               err(`${at}: point (${st.at.join(', ')}) is not on the curve — the curve gives y = ${yAt(c, st.at[0])}`);
             }
@@ -387,10 +402,15 @@ for (const trackId of TRACK_IDS) {
             if (!isLattice(tp)) err(`${at}: ${st.kind} target (${tp.join(', ')}) is not a whole-number point, so it cannot be clicked`);
             if (!onGrid(tp)) err(`${at}: ${st.kind} target (${tp.join(', ')}) is outside the grid ${JSON.stringify(grid)}`);
           }
-          // A "no zeros" step is legitimate and is answered with the button, but
-          // only if the curve really does miss the axis.
-          if (st.kind === 'zeros' && targets.length === 0 && -c.k / c.a >= 0) {
+          // A step with no targets is legitimate — it is answered with the
+          // "there are none" button, and for a modulus graph whose vertex sits
+          // above the axis it is the best picture of "no solution" there is. It
+          // just has to be TRUE, so re-derive it the way the screen will.
+          if (st.kind === 'zeros' && targets.length === 0 && rootsOf(c).length) {
             err(`${at}: zeros step has no targets but the curve does cross the axis`);
+          }
+          if (st.kind === 'meets' && targets.length === 0 && levelOf(c, st.at).length) {
+            err(`${at}: meets step has no targets but the curve does reach y = ${st.at}`);
           }
         }
       }

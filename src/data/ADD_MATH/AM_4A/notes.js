@@ -56,11 +56,6 @@ export const notes = [
     eyebrow: 'Chapter 4 · Equations, inequalities and graphs',
     title: 'Modulus Equations and Inequalities',
     objective: 'I can solve equations and inequalities containing modulus signs, by algebra and by reading a graph, and I know which method each shape needs.',
-    card: {
-      icon: 'Pencil',
-      badge: 'Warm-Up · Do this now in your book',
-      text: 'Write down the value of $|7|$, $|-7|$, $|0|$ and $|3 - 10|$. **Four numbers, ten seconds.** Notice that only one of them could ever have come out negative — and it did not.',
-    },
   },
 
   {

@@ -3,7 +3,7 @@ import { Construction, Target, Crosshair, CheckCircle2, XCircle, Ban, ArrowRight
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import TopBar from '../components/TopBar';
-import { rootsOf } from '../utils/parabola';
+import { rootsOf, levelOf, vertexOf, kindOf } from '../utils/graphCurve';
 
 /* ------------------------------------------------------------------ *
  * GRAPH PLOT — "put the key points on the grid".
@@ -17,19 +17,31 @@ import { rootsOf } from '../utils/parabola';
  *   [{
  *      id: 'gp1',
  *      equation: 'y = (x - 3)^2 - 4',        // KaTeX source, shown big
- *      curve: { a: 1, h: 3, k: -4 },         // the truth
+ *      curve: { kind: 'quadratic', a: 1, h: 3, k: -4 },   // the truth
  *      grid: { xMin, xMax, yMin, yMax },     // optional, defaults below
  *      steps: [ { kind: 'vertex' },
  *               { kind: 'zeros' },
+ *               { kind: 'meets', at: 4 },
  *               { kind: 'point', at: [0, 5], label, labelVn } ],
  *      note, noteVn,                          // optional one-line hint
  *   }]
  *
+ * TWO CURVE KINDS, one screen. `kind: 'quadratic'` (the default, so older items
+ * are untouched) is y = a(x − h)² + k; `kind: 'modulus'` is y = a|x − h| + k.
+ * Both put the vertex at (h, k) and both are solved for a horizontal line by
+ * the same `levelOf` — see src/utils/graphCurve.js.
+ *
+ * THE `meets` STEP is "where does the graph cross the line y = k?", which is
+ * what solving an equation graphically actually is. The line is drawn while the
+ * step is live, the targets are derived, and a line the curve never reaches is
+ * answered with the same button the zeros step uses — a modulus graph whose
+ * vertex sits above the axis is the clearest picture of "no solution" there is.
+ *
  * THE ANSWERS ARE DERIVED FROM `curve`, NOT TYPED BY THE AUTHOR — the vertex is
- * (h, k) and the zeros are h ± sqrt(-k/a), computed here. An author cannot get
- * them wrong, and an edit to the equation cannot leave a stale answer key
- * behind. Only a `point` step carries a coordinate, and validate-entry.js
- * checks that it really sits on the curve.
+ * (h, k) and every crossing comes out of `levelOf`. An author cannot get them
+ * wrong, and an edit to the equation cannot leave a stale answer key behind.
+ * Only a `point` step carries a coordinate, and validate-entry.js checks that it
+ * really sits on the curve.
  *
  * SCORING: one mark per step, and a step only pays if it was clean — a wrong
  * click costs that step even though the student stays on it until it is right.
@@ -64,9 +76,13 @@ const EN = {
   title: 'Graph It',
   vertex: 'Click the VERTEX',
   vertexSub: 'the turning point of the curve',
+  vertexSubAbs: 'the corner — where the expression inside the bars is zero',
   zeros: 'Click every crossing on the x-axis',
   zerosSub: 'there may be two, one, or none — you decide',
+  meets: 'Click every point where the graph meets',
+  meetsSub: 'the same question as solving that equation',
   noZerosBtn: 'It has no zeros',
+  noMeetBtn: 'It never reaches that line',
   point: 'Click',
   step: 'Step',
   of: 'of',
@@ -75,6 +91,7 @@ const EN = {
   next: 'Next question',
   finish: 'Finish',
   noZerosWrong: 'This one does cross the axis — find where.',
+  noMeetWrong: 'This one does reach that line — find where.',
   clickedWrong: 'Not that point. Look at the equation again.',
   youPlaced: 'you placed',
   goodOne: 'Yes — one down. Keep looking.',
@@ -90,9 +107,13 @@ const VN = {
   title: 'Vẽ Đồ Thị',
   vertex: 'Bấm vào ĐỈNH',
   vertexSub: 'điểm quay đầu của đường cong',
+  vertexSubAbs: 'điểm gấp khúc — nơi biểu thức trong dấu giá trị tuyệt đối bằng 0',
   zeros: 'Bấm vào mọi giao điểm trên trục x',
   zerosSub: 'có thể hai, một, hoặc không có — em tự quyết định',
+  meets: 'Bấm vào mọi điểm mà đồ thị cắt',
+  meetsSub: 'cũng chính là giải phương trình đó',
   noZerosBtn: 'Đồ thị không có nghiệm',
+  noMeetBtn: 'Đồ thị không bao giờ chạm đường đó',
   point: 'Bấm vào',
   step: 'Bước',
   of: 'trên',
@@ -101,6 +122,7 @@ const VN = {
   next: 'Câu tiếp theo',
   finish: 'Kết thúc',
   noZerosWrong: 'Đồ thị này CÓ cắt trục x — hãy tìm chỗ đó.',
+  noMeetWrong: 'Đồ thị này CÓ chạm đường đó — hãy tìm chỗ đó.',
   clickedWrong: 'Không phải điểm đó. Hãy nhìn lại phương trình.',
   youPlaced: 'em đã đặt',
   goodOne: 'Đúng — được một điểm. Tìm tiếp nhé.',
@@ -129,10 +151,14 @@ const Math$ = ({ math, display = false }) => {
 
 /** The points a step wants, derived from the curve wherever possible. */
 function targetsFor(step, curve) {
-  if (step.kind === 'vertex') return [[curve.h, curve.k]];
+  if (step.kind === 'vertex') return [vertexOf(curve)];
   if (step.kind === 'zeros') return rootsOf(curve).map((x) => [x, 0]);
+  if (step.kind === 'meets') return levelOf(curve, step.at).map((x) => [x, step.at]);
   return [step.at];
 }
+
+/** Steps answered by clicking crossings, and so by the "there are none" button. */
+const isCrossingStep = (step) => step.kind === 'zeros' || step.kind === 'meets';
 
 const same = (p, q) => Math.abs(p[0] - q[0]) < 1e-6 && Math.abs(p[1] - q[1]) < 1e-6;
 
@@ -195,9 +221,13 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
   const stepTitle =
     step.kind === 'vertex' ? t.vertex
       : step.kind === 'zeros' ? t.zeros
-        : `${t.point} ${lang === 'vn' ? (step.labelVn || step.label) : step.label}`;
+        : step.kind === 'meets' ? `${t.meets} y = ${num(step.at)}`
+          : `${t.point} ${lang === 'vn' ? (step.labelVn || step.label) : step.label}`;
   const stepSub =
-    step.kind === 'vertex' ? t.vertexSub : step.kind === 'zeros' ? t.zerosSub : '';
+    step.kind === 'vertex'
+      ? (kindOf(item.curve) === 'modulus' ? t.vertexSubAbs : t.vertexSub)
+      : step.kind === 'zeros' ? t.zerosSub
+        : step.kind === 'meets' ? t.meetsSub : '';
 
   const say = (kind, text) => {
     setFlash({ kind, text });
@@ -319,10 +349,15 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
     }
   };
 
-  const clickNoZeros = () => {
+  /**
+   * "There are none." Legitimate for a zeros step whose curve misses the axis
+   * and for a meets step whose line sits on the wrong side of the vertex —
+   * which for a modulus graph is the picture of an equation with no solution.
+   */
+  const clickNoCrossings = () => {
     if (done) return;
     if (targets.length === 0) closeStep(dirty);
-    else { setDirty(true); say('bad', t.noZerosWrong); }
+    else { setDirty(true); say('bad', step.kind === 'meets' ? t.noMeetWrong : t.noZerosWrong); }
   };
 
   const nextItem = () => {
@@ -342,14 +377,26 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
     }
   };
 
-  /** The finished curve, drawn only once the student has placed everything. */
+  /**
+   * The finished curve, drawn only once the student has placed everything.
+   *
+   * A modulus graph is sampled like the parabola but its vertex is forced into
+   * the path, because a corner that falls between two samples draws as a
+   * bevel — and the corner is the point the whole item is about.
+   */
   const curvePath = () => {
     const { a, h, k } = item.curve;
+    const isAbs = kindOf(item.curve) === 'modulus';
+    const xs = [];
+    for (let i = 0; i <= 400; i++) xs.push(grid.xMin + (i / 400) * cols);
+    if (isAbs && h > grid.xMin && h < grid.xMax) {
+      xs.push(h);
+      xs.sort((p, q) => p - q);
+    }
     let d = '';
     let pen = false;
-    for (let i = 0; i <= 400; i++) {
-      const x = grid.xMin + (i / 400) * cols;
-      const y = a * (x - h) * (x - h) + k;
+    for (const x of xs) {
+      const y = isAbs ? a * Math.abs(x - h) + k : a * (x - h) * (x - h) + k;
       if (y < grid.yMin || y > grid.yMax) { pen = false; continue; }
       d += `${pen ? 'L' : 'M'}${X(x).toFixed(1)},${Y(y).toFixed(1)} `;
       pen = true;
@@ -379,6 +426,12 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
   };
 
   const itemResult = results[item.id];
+  // Levels from every `meets` step reached so far — all of them once the item
+  // is finished, which is what makes a two-level item worth setting.
+  const levelLines = item.steps
+    .slice(0, done ? item.steps.length : stepIdx + 1)
+    .filter((st) => st.kind === 'meets')
+    .map((st) => st.at);
   const allPlaced = item.steps.flatMap((s) => targetsFor(s, item.curve));
   const earlierPlaced = item.steps.slice(0, stepIdx).flatMap((s) => targetsFor(s, item.curve));
   const shown = done ? allPlaced : [...earlierPlaced, ...placed];
@@ -502,6 +555,18 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
               </g>
             )}
 
+            {/* The line a `meets` step is about. Drawn the moment the step
+                opens and left there afterwards, so the finished picture
+                explains its own answers. */}
+            {levelLines.map((L) => (
+              <g key={`lvl${L}`} pointerEvents="none">
+                <line x1={PAD} y1={Y(L)} x2={W - PAD} y2={Y(L)} stroke={AMBER} strokeWidth="2.6"
+                  strokeLinecap="round" strokeDasharray="9 6" opacity="0.85" />
+                <text x={W - PAD - 6} y={Y(L) - 9} textAnchor="end" fontSize="14" fontWeight="800"
+                  fontFamily="ui-monospace, monospace" fill={AMBER}>y = {num(L)}</text>
+              </g>
+            ))}
+
             <line x1={PAD} y1={Y(0)} x2={W - PAD} y2={Y(0)} strokeWidth="2.4" className="stroke-slate-700 dark:stroke-slate-300" />
             <line x1={X(0)} y1={PAD} x2={X(0)} y2={H - PAD} strokeWidth="2.4" className="stroke-slate-700 dark:stroke-slate-300" />
             <text x={W - PAD + 10} y={Y(0) + 5} textAnchor="middle" fontSize="14" fontWeight="800" fontStyle="italic" className="fill-slate-400">x</text>
@@ -595,12 +660,12 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
               <span className="font-mono text-sm normal-case tracking-normal">{pair(aim[0], aim[1])}</span>
             </button>
           )}
-          {!done && step.kind === 'zeros' && (
+          {!done && isCrossingStep(step) && (
             <button
-              onClick={clickNoZeros}
+              onClick={clickNoCrossings}
               className="shrink-0 px-4 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-white bg-slate-500 dark:bg-slate-600 border-b-[4px] border-slate-700 active:border-b-0 active:translate-y-[4px] flex items-center gap-2">
               <Ban className="w-4 h-4" strokeWidth={3} />
-              {t.noZerosBtn}
+              {step.kind === 'meets' ? t.noMeetBtn : t.noZerosBtn}
             </button>
           )}
           {done && (
