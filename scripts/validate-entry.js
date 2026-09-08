@@ -16,6 +16,7 @@ import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solution
 import { rootsOf, vertexOf, yAt } from '../src/utils/parabola.js';
 import { checkDivision } from '../src/utils/polynomial.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
+import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -300,6 +301,12 @@ for (const trackId of TRACK_IDS) {
       // came from — the house rule, and the only defence of its licence.
       if (d.imageFile && !d.credit) warn(`${at} shows ${d.imageFile} with no credit`);
     }
+
+    // -- Find It: the region a prompt points at has to exist, be reachable and
+    //    be big enough for a fingertip. A prompt whose `target` names no region
+    //    renders as a question with no correct answer, and nothing about reading
+    //    the data shows it — this track's version of a wrong answer key.
+    for (const p of checkPointIt(unit.pointIt)) err(`${label}: pointIt ${p}`);
 
     // -- Balance equations: every one must parse, be solvable by the strategy
     //    the unit teaches, and not quietly change its own answer. A broken

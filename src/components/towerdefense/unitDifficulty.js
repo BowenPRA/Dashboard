@@ -37,6 +37,12 @@ export const TRACK_ARENAS = {
     mapName: 'Cryo Lab',
     blurb: 'Coolant channels cut in hard right angles across the lab floor.',
   },
+  PRIMARY_TECH: {
+    mapId: 'CIRCUIT',
+    themeId: 'NIGHT',
+    mapName: 'The Motherboard',
+    blurb: 'Traces run the board in hard right angles. Hold the lanes and the machine keeps running.',
+  },
 };
 
 const DEFAULT_ARENA = {

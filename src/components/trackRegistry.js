@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2 } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2, MonitorSmartphone } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -133,6 +133,25 @@ export const TRACK_REGISTRY = [
       text: 'text-teal-600 dark:text-teal-400',
       ambient1: 'bg-teal-400', ambient2: 'bg-cyan-500',
       glow: 'hover:border-teal-400 dark:hover:border-teal-600',
+    },
+  },
+  {
+    id: 'PRIMARY_TECH',
+    title: 'Technology',
+    desc: 'Everyday computer skills',
+    icon: MonitorSmartphone,
+    group: 'Cambridge',
+    // Bilingual, unlike COORD_SCI and ADD_MATH. Those are English-only because
+    // the exam is. Here the opposite argument applies twice over: the student is
+    // nine, AND the interface words ("address bar", "attachment", "shut down")
+    // are half of what the course teaches — so they need the English and the
+    // Vietnamese. See docs/digital-skills-course.md §5.3.
+    bilingual: true,
+    theme: {
+      bg: 'bg-sky-500', border: 'border-sky-700', hover: 'hover:bg-sky-400',
+      text: 'text-sky-600 dark:text-sky-400',
+      ambient1: 'bg-sky-400', ambient2: 'bg-blue-500',
+      glow: 'hover:border-sky-400 dark:hover:border-sky-600',
     },
   },
   {

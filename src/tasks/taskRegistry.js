@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart
+  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -459,6 +459,31 @@ export const TASKS = [
     component: lazy(() => import('./EnergyProfile.jsx')),
     hasContent: (u) => notEmpty(u.energyProfile),
     buildPool: (u) => u.energyProfile || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'POINT_IT',
+    nativeMax: 10,
+    // p1–p23 are taken (p5 is reserved as a workbook question id); p24 is next.
+    // p24–p26 belong to the Technology track (POINT_IT, SIM, TYPE_GYM — see
+    // docs/primary-tech/BUILD-PLAN.md); the shelved programming plan starts at p27.
+    dbKey: 'p24',
+    // "Click the address bar." An authored picture of an application window with
+    // clickable regions over it, worked one prompt at a time. The mark is DERIVED
+    // from which region the click lands in (src/utils/pointIt.js) — the same
+    // derive-don't-store rule Number Gym / Graph It / Equations follow — and a
+    // wrong click is answered by NAME ("that is the search box inside the page,
+    // not the address bar"), which is the lesson rather than a red X. `checkItem`
+    // refuses a prompt whose target names no region, so an unpassable prompt
+    // cannot ship. Item shape is documented in src/tasks/PointIt.jsx.
+    label: 'Find It',
+    icon: MousePointerClick,
+    color: { bg: 'bg-[#0ea5e9]', border: 'border-[#0369a1]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./PointIt.jsx')),
+    hasContent: (u) => notEmpty(u.pointIt),
+    buildPool: (u) => u.pointIt || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];

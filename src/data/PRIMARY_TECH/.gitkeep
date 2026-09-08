@@ -1,0 +1,4 @@
+Units for the Technology track land here as src/data/PRIMARY_TECH/<UNIT>/data.js.
+src/data/index.js discovers them by glob and groups them by the meta.track each
+one declares, so there is no list to edit — but an empty directory does not
+survive git, hence this file. Delete it once the first unit ships.
