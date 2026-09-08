@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getStudentDetail, updateStudent, setProgress } from '../utils/adminApi';
+import { getStudentDetail, updateStudent, setProgress, assignStudents } from '../utils/adminApi';
 import { getTrack } from '../data/index';
 import { TRACK_IDS, TRACK_REGISTRY } from './trackRegistry';
 import { TASKS, resolveUnitTasks } from '../tasks/taskRegistry';
@@ -24,8 +24,8 @@ const declaredTasks = (trackId, unitId) => {
   return unit ? resolveUnitTasks(unit) : [];
 };
 
-export default function StudentProfileDrawer({ isOpen, onClose, studentId, studentName }) {
-  const [detail, setDetail] = useState(null); // { progress, name, pra_id, enrolled_tracks, role }
+export default function StudentProfileDrawer({ isOpen, onClose, studentId, studentName, classes = [] }) {
+  const [detail, setDetail] = useState(null); // { progress, name, pra_id, enrolled_tracks, role, class_id }
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -35,7 +35,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
   const [busyUnit, setBusyUnit] = useState(null); // `${track}/${unit}` while a bulk op runs
 
   const [showEdit, setShowEdit] = useState(false);
-  const [form, setForm] = useState({ name: '', pin: '', tracks: [] });
+  const [form, setForm] = useState({ name: '', pin: '', tracks: [], classId: '' });
   const [savingProfile, setSavingProfile] = useState(false);
 
   const progressData = detail?.progress || null;
@@ -52,7 +52,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
         const d = await getStudentDetail(studentId);
         if (!alive) return;
         setDetail(d);
-        setForm({ name: d.name || '', pin: '', tracks: d.enrolled_tracks || [] });
+        setForm({ name: d.name || '', pin: '', tracks: d.enrolled_tracks || [], classId: d.class_id || '' });
       } catch (err) {
         if (alive) setError(err.message || 'Could not load this student.');
       } finally {
@@ -110,7 +110,12 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
         pin: form.pin.trim() || undefined,
         enrolledTracks: form.tracks,
       });
-      setDetail((prev) => ({ ...prev, name: form.name.trim() || prev.name, enrolled_tracks: form.tracks }));
+      // Class membership lives on the students table, not auth metadata, so it
+      // is a separate call — only made when it actually changed.
+      if ((form.classId || null) !== (detail?.class_id || null)) {
+        await assignStudents(form.classId || null, [studentId]);
+      }
+      setDetail((prev) => ({ ...prev, name: form.name.trim() || prev.name, enrolled_tracks: form.tracks, class_id: form.classId || null }));
       setForm((f) => ({ ...f, pin: '' }));
       setShowEdit(false);
     } catch (err) {
@@ -194,6 +199,19 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                       })}
                     </div>
                   </div>
+                  {classes.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Class</label>
+                      <select
+                        value={form.classId}
+                        onChange={(e) => setForm((f) => ({ ...f, classId: e.target.value }))}
+                        className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-800 dark:text-white focus:outline-none focus:border-indigo-400 appearance-none cursor-pointer"
+                      >
+                        <option value="">— No class —</option>
+                        {classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+                    </div>
+                  )}
                   <button onClick={saveProfile} disabled={savingProfile}
                     className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest border-b-[4px] border-indigo-800 active:border-b-0 active:translate-y-[4px] disabled:opacity-50 transition-all">
                     {savingProfile ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" strokeWidth={2.5} />}

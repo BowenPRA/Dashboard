@@ -32,3 +32,13 @@ export const getStudentDetail = (studentId) => post('getStudentDetail', { studen
 export const createStudent = (student) => post('createStudent', student);
 export const updateStudent = (patch) => post('updateStudent', patch);
 export const setProgress = (studentId, ops) => post('setProgress', { studentId, ops });
+
+// Classes: teacher-managed groups of students. A class carries the courses
+// (enrolled tracks) and study-plan flag a teacher wants applied to everyone in
+// it; `bulkEnroll` is the deliberate step that pushes those onto each member.
+export const listClasses = () => post('listClasses', {});
+export const createClass = (cls) => post('createClass', cls);
+export const updateClass = (patch) => post('updateClass', patch);
+export const deleteClass = (classId) => post('deleteClass', { classId });
+export const assignStudents = (classId, studentIds) => post('assignStudents', { classId, studentIds });
+export const bulkEnroll = (classId, overrides = {}) => post('bulkEnroll', { classId, ...overrides });
