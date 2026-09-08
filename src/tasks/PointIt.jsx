@@ -31,6 +31,10 @@ import { checkAll, gradeClick, regionById, rectOf, viewBoxOf } from '../utils/po
  *     regions: [
  *       { id, rect: [x, y, w, h], label, labelVn, misfire?, misfireVn? },
  *     ],
+ *
+ * A region's `label` is spoken back to the student ("Yes — that is <label>."), so
+ * it carries its own article: 'the address bar', 'a link', but 'Shut down' for a
+ * button whose name is the label.
  *     prompts: [ { ask, askVn, target } ],   // target is a region id
  *   }
  *
@@ -65,11 +69,13 @@ const EN = {
   of: 'of',
   found: 'found',
   hint: 'Tap the part of the picture the question asks for.',
-  right: 'Yes — that is the',
+  // No article here: a region's `label` carries its own, because "Shut down" and
+  // "the address bar" cannot both follow one fixed prefix.
+  right: 'Yes — that is',
   tryAgain: 'Not that one. Try again.',
-  thatIs: 'That is the',
+  thatIs: 'That is',
   offWindow: 'That is the background, not part of the window.',
-  revealed: 'Here it is — the',
+  revealed: 'Here it is —',
   lastTry: 'One more try.',
   next: 'Next',
   finish: 'Finish',

@@ -38,7 +38,26 @@ function extractBlocks(src) {
     out.push([m[1], src.slice(start, i)]);
     re.lastIndex = i + 1;
   }
-  return out;
+  return resolveRefs(out);
+}
+
+/**
+ * Splice one block into another where it is interpolated as `${NAME}`.
+ *
+ * A unit that draws two views of the same interface factors the shared parts out
+ * into their own template (`const CHROME = \`…\``) and interpolates it. Without
+ * this pass the fragment is audited on its own — where it has no viewBox, so it
+ * is skipped entirely — and the labels inside it are never checked in ANY
+ * picture. The audit reported a clean pass over drawings a third of which it had
+ * not read. One substitution pass is enough for the nesting depth this is for;
+ * a self-reference is left alone rather than looped on.
+ */
+function resolveRefs(blocks) {
+  const by = new Map(blocks);
+  return blocks.map(([name, svg]) => [
+    name,
+    svg.replace(/\$\{([A-Z_0-9]+)\}/g, (whole, ref) => (ref === name ? whole : by.get(ref) ?? whole)),
+  ]);
 }
 
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").trim();

@@ -2,27 +2,19 @@
 // mounted straight from unit data so it can be checked without Supabase auth.
 // Entry point: preview-tech.html. Not part of the production build.
 //
-// Until the first real unit lands in src/data/PRIMARY_TECH/ there is nothing to
-// mount, so the harness falls back to the sample unit in preview-tech-demo.js.
-// It prefers a real unit the moment one exists — `?unit=T01` picks one by id.
+// The track now has real units, so the stand-in unit this harness shipped with
+// (src/preview-tech-demo.js, deleted) is gone: the browser picture it carried
+// lives in src/data/PRIMARY_TECH/T07/diagrams.js, where `npm run audit:svg` can
+// see it. Units are listed from the content graph, so a new one appears here the
+// moment it lands.
 import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getTrack } from './data/index';
 import { getTask, resolveTask } from './tasks/taskRegistry';
-import { DEMO_UNIT } from './preview-tech-demo';
 
 const TRACK = 'PRIMARY_TECH';
 const WANTED = new URLSearchParams(window.location.search).get('unit');
-
-/** The unit to mount: the one asked for, else the first real one, else the sample. */
-function loadUnit() {
-  const { data, meta } = getTrack(TRACK);
-  if (WANTED && data[WANTED]) return [WANTED, data[WANTED], true];
-  const first = meta[0]?.id;
-  if (first) return [first, data[first], true];
-  return [DEMO_UNIT.meta.id, DEMO_UNIT, false];
-}
 
 /** Task list DERIVED from the loaded unit, so it can never offer a task the unit lacks. */
 function casesFor(unit) {
@@ -60,23 +52,40 @@ const countOf = (def, unit, unitId) => {
 };
 
 function Harness() {
+  const { data, meta } = getTrack(TRACK);
+  const [unitId, setUnitId] = useState(WANTED && data[WANTED] ? WANTED : meta[0]?.id);
   const [open, setOpen] = useState(null);
-  const [unitId, unit, real] = loadUnit();
+  const unit = data[unitId];
+
+  if (!unit) {
+    return (
+      <div className="min-h-screen bg-slate-100 dark:bg-slate-950 p-8">
+        <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-2">Technology harness</h1>
+        <p className="text-amber-600 dark:text-amber-400 font-bold">
+          No units in <code className="font-mono">src/data/PRIMARY_TECH/</code> yet.
+        </p>
+      </div>
+    );
+  }
 
   if (open) {
     const def = getTask(open);
-    const resolved = resolveTask({ id: open });
+    // Resolve against the task AS THE UNIT DECLARES IT, not against a bare id.
+    // resolveTask({ id }) falls back to defaultMaxXP, so the harness reported a
+    // perfect Find It run as 15/15 XP while T01 actually pays 25 — the exact
+    // number this screen exists to check.
+    const declared = (unit.phases || []).flatMap((p) => p.tasks || []).find((t) => t.id === open);
+    const resolved = resolveTask(declared || { id: open });
     const pool = def.buildPool(unit, { track: TRACK, unitId });
     const ctx = {
       pool, unit, unitId, track: TRACK,
       scores: {}, savedData: {}, strikes: 0, maxXP: resolved.maxXP,
       // The XP the task would actually award is worked out here rather than just
-      // logging the raw score, because "does it award XP" is the done-condition
-      // for this step and a raw 10 tells you nothing about the 15-XP tile.
+      // logging the raw score: "does it award XP" is a done-condition for this
+      // track, and a raw 10 tells you nothing about a 25-XP tile.
       onComplete: (score, _b, log) => {
         const xp = Math.round(((Number(score) || 0) / (def.nativeMax || 10)) * resolved.maxXP);
         console.log(`[harness] ${open} complete — raw ${score}/${def.nativeMax} = ${xp}/${resolved.maxXP} XP`, log);
-        window.alert(`${def.label}: ${xp} / ${resolved.maxXP} XP`);
         setOpen(null);
       },
       onProgress: (d) => console.log(`[harness] ${open} progress`, d),
@@ -94,13 +103,22 @@ function Harness() {
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 p-8">
       <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-1">Technology harness</h1>
-      <p className="text-slate-500 font-bold mb-2">{TRACK} · {unitId} “{unit?.meta?.title}”, mounted without auth.</p>
-      {!real && (
-        <p className="text-amber-600 dark:text-amber-400 font-bold mb-6 max-w-2xl">
-          No unit in <code className="font-mono">src/data/PRIMARY_TECH/</code> yet — showing the sample from{' '}
-          <code className="font-mono">src/preview-tech-demo.js</code>. It disappears on its own once a real unit ships.
-        </p>
-      )}
+      <p className="text-slate-500 font-bold mb-5">{TRACK}, mounted without auth.</p>
+
+      <div className="flex flex-wrap gap-2 mb-6">
+        {meta.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => setUnitId(m.id)}
+            className={`px-4 py-2 rounded-xl font-black text-sm border-2 border-b-[4px] transition-all
+              ${m.id === unitId
+                ? 'bg-sky-500 border-sky-700 text-white'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-sky-400'}`}>
+            {m.id} · {m.title}
+          </button>
+        ))}
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-2 max-w-3xl">
         {casesFor(unit).map((taskId) => {
           const def = getTask(taskId);

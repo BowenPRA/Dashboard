@@ -5,7 +5,26 @@ What [lesson-standard.md](lesson-standard.md) asks for, versus what
 bringing Dashboard lessons up to the bar set by the `lessons` repo's Science 1.1 / 1.2 and
 Math 1.1 decks.
 
-Nothing here is built. This document exists so the build is deliberate.
+> **Status note (2026-09-08).** §1 below is now largely *historical*: the nine `layout`
+> slides were ported from the `lessons` repo and live in
+> `src/components/notes/layouts/`. The table's "Dashboard today ✗" column predates that.
+> What follows immediately below is the part that is still true.
+
+## 0. Layout traps found in authoring
+
+Two things a layout accepts silently and then does not do. Both were found by measuring
+while authoring `PRIMARY_TECH/T01` and `T07`, and both cost a slide its point.
+
+- **`CompareLayout` ignores `inlineSvg`.** It maps only over `columns`, so a diagram set
+  on a compare slide is dropped with no warning. `GED_ENG/ENG_1A` has the dead field on
+  its `TOPIC_VS_MAIN` slide. Give the diagram its own `showcase` slide, or teach the
+  comparison entirely inside the two columns.
+- **A `check` on a `showcase` shrinks the picture past readable.** The check block takes
+  its height out of the media area: a showcase with a caption draws its SVG at ~0.75 of
+  the slide, the same slide with a check at ~0.40. On a drawn interface a 16px label then
+  renders at about 6px. Where the picture exists to be *read*, put the check on its own
+  slide after it — splitting is free, a picture nobody can read is not
+  ([lesson-standard.md](lesson-standard.md) §1.4).
 
 ---
 
