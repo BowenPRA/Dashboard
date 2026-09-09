@@ -5,8 +5,12 @@ import { Loader2 } from 'lucide-react';
 const MathGraph = lazy(() => import('../components/math/MathGraph'));
 const ParabolaLab = lazy(() => import('../components/math/ParabolaLab'));
 const VectorLab = lazy(() => import('../components/math/VectorLab'));
+// The Technology track's simulator, in demo mode: the SAME engine and skin the
+// Try It task uses, driving itself through an authored script while the deck
+// explains it. Build once, use twice (docs/digital-skills-course.md §5.1).
+const AppSimDemo = lazy(() => import('../tasks/appsim/AppSimDemo'));
 
-const KNOWN = ['MathGraph', 'ParabolaLab', 'VectorLab'];
+const KNOWN = ['MathGraph', 'ParabolaLab', 'VectorLab', 'AppSim'];
 
 export default function WidgetRenderer({ config, lang = 'en' }) {
   if (!config) return null;
@@ -35,6 +39,7 @@ export default function WidgetRenderer({ config, lang = 'en' }) {
           language has to travel with the config. */}
       {type === 'ParabolaLab' && <ParabolaLab {...params} lang={lang} />}
       {type === 'VectorLab' && <VectorLab {...params} lang={lang} />}
+      {type === 'AppSim' && <AppSimDemo {...params} lang={lang} />}
 
       {/* Fallback for unrecognized dynamically requested widgets */}
       {!KNOWN.includes(type) && (

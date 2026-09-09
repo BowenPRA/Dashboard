@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick
+  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -484,6 +484,31 @@ export const TASKS = [
     component: lazy(() => import('./PointIt.jsx')),
     hasContent: (u) => notEmpty(u.pointIt),
     buildPool: (u) => u.pointIt || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'SIM',
+    nativeMax: 10,
+    // p1–p24 are taken (p5 is reserved as a workbook question id); p25 is next,
+    // and p24–p26 belong to the Technology track — POINT_IT, SIM, TYPE_GYM.
+    dbKey: 'p25',
+    // "Try It." A fake computer fills the pane, the student does a real job in
+    // it, and the app checks the STATE the machine ends up in — never which
+    // control was clicked, so Ctrl+S, Save As and the right-click menu all pass.
+    // That is the derive-don't-store rule applied to a desktop: there is no
+    // answer key to author and none to get wrong, because the answer is whatever
+    // the simulated machine ends up in. The engine is src/utils/appSim.js, and
+    // its `checkItem` refuses an item whose authored solution does not reach the
+    // goal — or whose goal is already met before the student touches anything.
+    // Item shape is documented in src/tasks/AppSim.jsx.
+    label: 'Try It',
+    icon: MonitorSmartphone,
+    color: { bg: 'bg-[#0284c7]', border: 'border-[#075985]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./AppSim.jsx')),
+    hasContent: (u) => notEmpty(u.sim),
+    buildPool: (u) => u.sim || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];

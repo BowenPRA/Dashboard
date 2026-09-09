@@ -6,10 +6,13 @@ into steps that can each be finished, validated and committed on their own.
 
 Every step ends green: `npm run validate && npm run lint && npm run build`.
 
-**Progress.** Steps 0, 1 and 2 are done (2026-09-08): the track is registered, `POINT_IT`
-ships with `preview-tech.html`, and **T1** and **T7** are authored and playable. Step 3,
-the simulator engine, is next. Two things found while authoring step 2 are worth knowing
-before writing another deck — a `check` on a `showcase` slide shrinks its picture past
+**Progress.** Steps 0-4 are done (0-2 on 2026-09-08, 3 and T4 on 2026-09-09): the track is
+registered; `POINT_IT` ships with `preview-tech.html`; **T1**, **T7** and **T4** are
+authored and playable; and the simulator engine, the `files` skin, the `SIM` task, the
+`AppSim` notes widget and the solvability self-check are all in. **T5 · Folders and
+Finding** is what remains of step 4; step 5 is the `mail` skin and `TYPE_GYM`.
+
+Two things found while authoring step 2 are worth knowing before writing another deck — a `check` on a `showcase` slide shrinks its picture past
 readable, and `CompareLayout` silently drops `inlineSvg`; both are recorded in
 [../lesson-renderer-gap.md](../lesson-renderer-gap.md) §0.
 

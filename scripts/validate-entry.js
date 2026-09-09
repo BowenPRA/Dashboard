@@ -17,6 +17,7 @@ import { rootsOf, vertexOf, yAt, levelOf, kindOf, CURVE_KINDS } from '../src/uti
 import { checkDivision } from '../src/utils/polynomial.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
 import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
+import { checkAll as checkSim } from '../src/utils/appSim.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -307,6 +308,14 @@ for (const trackId of TRACK_IDS) {
     //    renders as a question with no correct answer, and nothing about reading
     //    the data shows it — this track's version of a wrong answer key.
     for (const p of checkPointIt(unit.pointIt)) err(`${label}: pointIt ${p}`);
+
+    // -- Try It: every authored sim item must be SOLVABLE. checkAll replays the
+    //    item's own solution through the engine and asserts the goal evaluates
+    //    met — and separately refuses an item whose goal is already met before
+    //    the student touches anything. An unsolvable sim item is this track's
+    //    version of a wrong answer key: nothing about reading the data shows it,
+    //    because the answer is a state the machine has to be driven into.
+    for (const p of checkSim(unit.sim)) err(`${label}: sim ${p}`);
 
     // -- Balance equations: every one must parse, be solvable by the strategy
     //    the unit teaches, and not quietly change its own answer. A broken
