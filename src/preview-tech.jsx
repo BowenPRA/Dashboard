@@ -11,7 +11,9 @@ import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getTrack } from './data/index';
-import { getTask, resolveTask } from './tasks/taskRegistry';
+import { getTask, resolveTask, unitXPOf } from './tasks/taskRegistry';
+import { getTrackConfig, unitGateOf } from './components/trackRegistry';
+import UnitCard from './components/UnitCard';
 
 const TRACK = 'PRIMARY_TECH';
 const WANTED = new URLSearchParams(window.location.search).get('unit');
@@ -50,6 +52,90 @@ const countOf = (def, unit, unitId) => {
   if (def.id === 'ASSESSMENT') return sizeOf(unit?.assessment?.questions) || null;
   return null;
 };
+
+/**
+ * The track's Home listing, with the previous unit's XP dialled by hand.
+ *
+ * PRIMARY_TECH gates each unit on the one before it (`unitGate` in the track
+ * registry), and that lock only shows up on the dashboard — which needs auth.
+ * This mounts the real UnitCard through the real `unitGateOf`, so the locked
+ * state can be looked at without logging in and without a student sitting at
+ * 49 XP to produce it.
+ */
+function UnitLadder({ meta, data }) {
+  const [firstXP, setFirstXP] = useState(0);
+  const [expanded, setExpanded] = useState(null);
+  const theme = getTrackConfig(TRACK)?.theme || {};
+
+  // Spread the dialled XP across the unit's real tasks, filling each to its own
+  // maxXP the way a student would. Parking it all on one task instead looks
+  // right until the dial passes that task's ceiling: unitXPOf clamps per task,
+  // so a 50 dropped on a 25-XP tile reads back as 25 and the rig would open the
+  // gate on a number the card never showed.
+  const scoresFor = (unit, target) => {
+    const out = {};
+    let left = target;
+    for (const t of (unit.phases || []).flatMap((p) => p.tasks || [])) {
+      if (left <= 0) break;
+      const def = resolveTask(t);
+      if (!def?.maxXP) continue;
+      const give = Math.min(def.maxXP, left);
+      out[def.dbKey] = { current: give };
+      left -= give;
+    }
+    return out;
+  };
+
+  const firstUnit = data[meta[0]?.id];
+  const firstScores = firstUnit ? scoresFor(firstUnit, firstXP) : {};
+  // What the FIRST unit's card actually reports — the same number the gate must
+  // read, or the rig is testing something the student never sees.
+  const firstActual = firstUnit ? unitXPOf(firstUnit, firstScores) : 0;
+
+  return (
+    <div className="mb-10">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">
+          {meta[0]?.id} XP
+        </span>
+        {[0, 25, 49, 50, 100].map((xp) => (
+          <button
+            key={xp}
+            onClick={() => setFirstXP(xp)}
+            className={`px-3 py-1.5 rounded-lg font-black text-xs border-2 border-b-[3px]
+              ${xp === firstXP
+                ? 'bg-sky-500 border-sky-700 text-white'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}`}>
+            {xp}
+          </button>
+        ))}
+        <span className="text-xs font-bold text-slate-400">reads back as {firstActual} · gate opens at {getTrackConfig(TRACK)?.unitGate} XP</span>
+      </div>
+      {meta.map((m, i) => {
+        const unit = data[m.id];
+        const scores = i === 0 ? firstScores : {};
+        const prevXP = i === 1 ? firstActual : 0;
+        const gate = unitGateOf(TRACK, i, prevXP);
+        const unitLock = gate.locked
+          ? { need: gate.need, prevTitle: meta[i - 1]?.title || '', prevXP }
+          : null;
+        return (
+          <UnitCard
+            key={m.id}
+            unit={{ ...unit, id: m.id, meta: { ...unit.meta, description: m.desc } }}
+            scores={scores}
+            currentTheme={theme}
+            startMode={(unitId, taskId) => console.log('[harness] startMode', unitId, taskId)}
+            isExpanded={expanded === m.id}
+            onToggle={() => setExpanded(expanded === m.id ? null : m.id)}
+            needsWork={false}
+            unitLock={unitLock}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 function Harness() {
   const { data, meta } = getTrack(TRACK);
@@ -104,6 +190,8 @@ function Harness() {
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 p-8">
       <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-1">Technology harness</h1>
       <p className="text-slate-500 font-bold mb-5">{TRACK}, mounted without auth.</p>
+
+      <UnitLadder meta={meta} data={data} />
 
       <div className="flex flex-wrap gap-2 mb-6">
         {meta.map((m) => (

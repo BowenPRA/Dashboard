@@ -1,7 +1,7 @@
 // src/data/PRIMARY_TECH/T07/notes.js
 // T7 Inside a Browser — the lesson deck (NOTES, 10 XP).
 //
-// Eleven slides, three embedded checks (docs/lesson-standard.md). The unit has one
+// Twelve slides, three embedded checks (docs/lesson-standard.md). The unit has one
 // job at its centre, Applied-Digital-Skills style: go to a website you were
 // given, open a second tab, go back, bookmark it, download a file and find it
 // after. Every slide is a step of that job rather than a tour of features.
@@ -45,6 +45,49 @@ export const notes = [
       text: 'Someone gives you a website on a piece of paper: **www.schoolsite.org**. Where exactly do you type it?',
       textVn: 'Ai đó đưa em một địa chỉ web trên tờ giấy: **www.schoolsite.org**. Em gõ nó vào đúng chỗ nào?',
     },
+  },
+  {
+    // Before you can look at a browser you have to find one, and the icon is how
+    // a nine-year-old finds it. Three names, because the answer genuinely
+    // depends on the machine in front of them — and a way out if none of the
+    // three is on screen.
+    layout: 'gallery',
+    icon: 'Globe',
+    accent: '#0ea5e9',
+    columns: 3,
+    tone: 'plant',
+    copyLabel: 'Look for one of these',
+    copyLabelVn: 'Hãy tìm một trong những cái này',
+    title: 'Which one is the browser?',
+    titleVn: 'Cái nào là trình duyệt?',
+    content: 'A browser is a **program**, so it has an **icon** you click — and different computers come with different ones. All three of these do the same job.\n\n**Not sure which you have?** Type **internet** into the **search box** on the taskbar, the one you met last unit. The computer will show you the browser it has.',
+    contentVn: 'Trình duyệt là một **chương trình**, nên nó có một **biểu tượng** để em bấm vào — và mỗi máy tính lại có sẵn loại khác nhau. Cả ba cái này đều làm cùng một việc.\n\n**Không chắc máy mình có cái nào?** Hãy gõ **internet** vào **ô tìm kiếm** trên thanh tác vụ, chính cái ô em đã học ở bài trước. Máy tính sẽ chỉ ra trình duyệt mà nó có.',
+    items: [
+      {
+        inlineSvg: DIAGRAMS.CHROME_ICON,
+        term: 'Google Chrome',
+        tag: 'Most common',
+        tagVn: 'Phổ biến nhất',
+        text: 'The one you will meet most often. It runs on **almost any** computer, phone or tablet.',
+        textVn: 'Loại em sẽ gặp nhiều nhất. Nó chạy trên **hầu hết** máy tính, điện thoại hay máy tính bảng.',
+      },
+      {
+        inlineSvg: DIAGRAMS.EDGE_ICON,
+        term: 'Microsoft Edge',
+        tag: 'Windows',
+        tagVn: 'Windows',
+        text: 'Already there on a **Windows** computer, so it is often the one at school.',
+        textVn: 'Có sẵn trên máy tính **Windows**, nên thường là loại có ở trường.',
+      },
+      {
+        inlineSvg: DIAGRAMS.SAFARI_ICON,
+        term: 'Safari',
+        tag: 'Apple',
+        tagVn: 'Apple',
+        text: 'Already there on an **Apple** computer, iPad or iPhone.',
+        textVn: 'Có sẵn trên máy tính **Apple**, iPad hoặc iPhone.',
+      },
+    ],
   },
   {
     layout: 'showcase',

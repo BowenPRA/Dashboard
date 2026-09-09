@@ -22,7 +22,14 @@ const IconMap = {
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card
 // and the launcher cannot drift apart.
 
-export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false }) {
+/**
+ * `unitLock` is `{ need, prevTitle, prevXP }` when the PREVIOUS unit has not
+ * scored enough to open this one (a `unitGate` track — see trackRegistry), and
+ * null whenever the unit is available. The card then refuses to expand: the
+ * phase locks inside it are about pacing within a unit, while this one is about
+ * the order the units are taken in, so it has to sit outside them.
+ */
+export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false, unitLock = null }) {
   if (!unit) return null;
 
   const { title, description, icon } = unit.meta || {};
@@ -135,18 +142,34 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
         ${unitXP < 60 && unitXP !== 100 ? 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700' : ''}
       `}>
         
-        <div onClick={onToggle} className={`p-6 sm:p-8 relative group flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer`}>
+        <div
+          onClick={unitLock ? undefined : onToggle}
+          className={`p-6 sm:p-8 relative group flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${unitLock ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
           
-          <div className="relative z-10 flex items-center w-full md:w-auto">
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] ${unitThemeColor} group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 flex-shrink-0`}>
-              <HeaderIcon className={`w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-sm`} strokeWidth={2.5} />
+          <div className={`relative z-10 flex items-center w-full md:w-auto ${unitLock ? 'opacity-60' : ''}`}>
+            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] flex-shrink-0 transition-transform duration-300
+              ${unitLock ? 'bg-slate-300 border-slate-400 dark:bg-slate-700 dark:border-slate-800' : `${unitThemeColor} group-hover:scale-110 group-hover:-rotate-6`}`}>
+              {unitLock
+                ? <Lock className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-sm" strokeWidth={2.5} />
+                : <HeaderIcon className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-sm" strokeWidth={2.5} />}
             </div>
-            
+
             <div className="ml-4 sm:ml-6">
               <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-1 flex items-center flex-wrap gap-3 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
                 {title || 'Unit Title'}
               </h2>
-              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm sm:text-base tracking-wide">{description || 'Complete the tasks below.'}</p>
+              {/* A locked unit says what opens it, not what is in it — naming the
+                  unit before it and the number needed is the only thing the
+                  student can act on from here. */}
+              {unitLock ? (
+                <p className="text-slate-500 dark:text-slate-400 font-bold text-sm sm:text-base tracking-wide">
+                  Score <span className="text-slate-700 dark:text-slate-200">{unitLock.need} XP</span> in
+                  {' '}<span className="text-slate-700 dark:text-slate-200">{unitLock.prevTitle}</span> to unlock
+                  {' '}<span className="text-slate-400 dark:text-slate-500">({unitLock.prevXP} so far)</span>
+                </p>
+              ) : (
+                <p className="text-slate-500 dark:text-slate-400 font-bold text-sm sm:text-base tracking-wide">{description || 'Complete the tasks below.'}</p>
+              )}
             </div>
           </div>
           
@@ -195,16 +218,20 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
             </div>
 
             <div className={`flex w-10 h-10 sm:w-14 sm:h-14 rounded-full items-center justify-center border-2 shadow-sm transition-all duration-300 border-b-[4px]
-              ${isExpanded 
-                ? 'bg-[#1cb0f6] border-[#1899d6] text-white translate-x-0 opacity-100'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 sm:translate-x-4 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-hover:bg-[#1cb0f6] sm:group-hover:border-[#1899d6] sm:group-hover:text-white'
+              ${unitLock
+                ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700'
+                : isExpanded
+                  ? 'bg-[#1cb0f6] border-[#1899d6] text-white translate-x-0 opacity-100'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 sm:translate-x-4 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-hover:bg-[#1cb0f6] sm:group-hover:border-[#1899d6] sm:group-hover:text-white'
               }`}>
-              {isExpanded ? <ChevronUp className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} /> : <ChevronDown className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} />}
+              {unitLock
+                ? <Lock className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={3} />
+                : isExpanded ? <ChevronUp className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} /> : <ChevronDown className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} />}
             </div>
           </div>
         </div>
 
-        {isExpanded && (
+        {isExpanded && !unitLock && (
           <div className="animate-in slide-in-from-top-4 duration-300 border-t-2 border-slate-100 dark:border-slate-800 pb-4">
             {isAILocked && (
               <div className="mx-6 sm:mx-8 mt-8 bg-rose-100 dark:bg-rose-900/40 border-2 border-rose-300 dark:border-rose-800 p-4 rounded-[1.5rem] flex items-start shadow-sm">

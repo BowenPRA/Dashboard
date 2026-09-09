@@ -147,6 +147,14 @@ export const TRACK_REGISTRY = [
     // are half of what the course teaches — so they need the English and the
     // Vietnamese. See docs/digital-skills-course.md §5.3.
     bilingual: true,
+    // Unit-to-unit progression: every unit after the first stays locked until
+    // the one before it has scored at least this much XP. Unique to this track
+    // so far — the skills here are strictly cumulative (you cannot be taught to
+    // download a file before you can find the file you saved), unlike a maths
+    // track whose units can be taken in any order. 50 of a unit's 100 is
+    // roughly "did the Learn and Do phases", not "finished it", so a student is
+    // never stuck behind a task they cannot pass.
+    unitGate: 50,
     theme: {
       bg: 'bg-sky-500', border: 'border-sky-700', hover: 'hover:bg-sky-400',
       text: 'text-sky-600 dark:text-sky-400',
@@ -220,6 +228,24 @@ export const ARCADE_TRACK_ID = 'ARCADE';
 export const TRACK_IDS = TRACK_REGISTRY.map((t) => t.id);
 
 export const getTrackConfig = (id) => TRACK_REGISTRY.find((t) => t.id === id);
+
+/**
+ * Whether a unit is held shut by the PREVIOUS unit's score.
+ *
+ * A track opts in with `unitGate: <xp>`; tracks without it are untouched and
+ * every unit stays open, which is how every track behaved before this existed.
+ * The first unit in a track's listing is never gated — there is nothing before
+ * it to earn XP in.
+ *
+ * `index` and `previousUnitXP` come from the caller's own ordering (the unit
+ * listing is sorted by id in src/data/index.js), so this stays a pure function
+ * of two numbers and cannot disagree with what the student is looking at.
+ */
+export function unitGateOf(trackId, index, previousUnitXP = 0) {
+  const need = getTrackConfig(trackId)?.unitGate || 0;
+  if (!need || index <= 0) return { locked: false, need: 0 };
+  return { locked: previousUnitXP < need, need };
+}
 
 /** Display order for grouped views. */
 export const TRACK_GROUPS = ['GED', 'Cambridge', 'Physics', 'Problem Solving', 'Foundation', 'Arcade'];

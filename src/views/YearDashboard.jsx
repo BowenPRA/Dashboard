@@ -4,7 +4,7 @@ import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Constructio
 
 import { useStudentProgress } from '../utils/supabaseClient';
 import UnitCard from '../components/UnitCard';
-import { getTrackConfig } from '../components/trackRegistry';
+import { getTrackConfig, unitGateOf } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
 import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
 import { isPreviewAccount } from '../utils/previewAccount';
@@ -246,17 +246,33 @@ export default function YearDashboard({ track }) {
               <EmptyTrack title={trackTitle} theme={currentTheme} />
             ) : (() => {
               let firstIncompleteFound = false;
+              // Carries the previous unit's score down the list so a track with
+              // `unitGate` can hold each unit shut until the one before it is
+              // half done. Tracks without the setting see `unitLock` null.
+              let prevUnitXP = 0;
+              let prevUnitTitle = '';
 
-              return META_DATA.map((metaUnit) => {
+              return META_DATA.map((metaUnit, unitIndex) => {
                 const contentData = UNIT_DATA[metaUnit.id] || {};
                 const scores = unitScores?.[metaUnit.id] || {};
                 const unitXP = unitXPOf(contentData, scores);
 
-                const isInProgress = unitXP > 0 && unitXP < 100;
-                const isNext = unitXP === 0 && !firstIncompleteFound;
-                if (unitXP < 100) firstIncompleteFound = true;
+                const gate = unitGateOf(track, unitIndex, prevUnitXP);
+                // Preview/QA accounts ignore this exactly as they ignore phase
+                // locks, so the whole track stays walkable for checking.
+                const unitLock = gate.locked && !previewAll
+                  ? { need: gate.need, prevTitle: prevUnitTitle, prevXP: prevUnitXP }
+                  : null;
+                prevUnitXP = unitXP;
+                prevUnitTitle = metaUnit.title;
 
-                const needsWork = isInProgress || isNext;
+                const isInProgress = unitXP > 0 && unitXP < 100;
+                // A locked unit is not the one to nudge them towards, and it
+                // must not consume the "next up" slot from the unit that is.
+                const isNext = unitXP === 0 && !firstIncompleteFound && !unitLock;
+                if (unitXP < 100 && !unitLock) firstIncompleteFound = true;
+
+                const needsWork = (isInProgress || isNext) && !unitLock;
 
                 const combinedUnitPayload = {
                   ...contentData,
@@ -284,6 +300,7 @@ export default function YearDashboard({ track }) {
                       onToggle={() => setExpandedUnit(activeExpandedUnit === metaUnit.id ? 'NONE' : metaUnit.id)}
                       needsWork={needsWork}
                       previewAll={previewAll}
+                      unitLock={unitLock}
                     />
                   </div>
                 );

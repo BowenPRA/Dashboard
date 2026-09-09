@@ -135,9 +135,44 @@ const DOWNLOADS_FOLDER = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7
   <text x="234" y="272" font-family="sans-serif" font-size="14" fill="${MUTED}">3 items</text>
 </svg>`;
 
+/* ---------------------------------------------------------------------------
+ * Browser app icons.
+ *
+ * These are AUTHORED, SIMPLIFIED marks in the house palette — a tri-colour ring,
+ * a swoosh, a compass — not reproductions of the Chrome, Edge or Safari logos,
+ * which are trademarks we have no licence to redraw (docs/svg-diagrams.md §7,
+ * and the same stance §5.2 of the course doc takes on screenshots). They carry
+ * the shape and the colour family a nine-year-old actually navigates by, and the
+ * real NAME is printed under each one, which is the part that has to transfer.
+ * ------------------------------------------------------------------------- */
+
+const CHROME_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="w-full h-full">
+  <path d="M 32 32 L 7.75 18 A 28 28 0 0 1 56.25 18 Z" fill="#ef4444"/>
+  <path d="M 32 32 L 56.25 18 A 28 28 0 0 1 32 60 Z" fill="#f59e0b"/>
+  <path d="M 32 32 L 32 60 A 28 28 0 0 1 7.75 18 Z" fill="#10b981"/>
+  <circle cx="32" cy="32" r="13" fill="#ffffff"/>
+  <circle cx="32" cy="32" r="10" fill="#3b82f6"/>
+</svg>`;
+
+const EDGE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="w-full h-full">
+  <circle cx="32" cy="32" r="28" fill="#0e7490"/>
+  <path d="M 17 43 Q 29 19 53 26 Q 38 23 30 35 Q 24 45 35 51 Q 22 51 17 43 Z" fill="#67e8f9"/>
+</svg>`;
+
+const SAFARI_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="w-full h-full">
+  <circle cx="32" cy="32" r="28" fill="#0ea5e9"/>
+  <circle cx="32" cy="32" r="21" fill="#f8fafc"/>
+  <path d="M 46 18 L 34 34 L 30 30 Z" fill="#ef4444"/>
+  <path d="M 18 46 L 30 30 L 34 34 Z" fill="#94a3b8"/>
+  <circle cx="32" cy="32" r="2.5" fill="#1e293b"/>
+</svg>`;
+
 // Written out longhand, not as shorthand properties: the validator resolves a
 // DIAGRAMS.KEY reference by looking for `  KEY:` in this file.
 export const DIAGRAMS = {
+  CHROME_ICON: CHROME_ICON,
+  EDGE_ICON: EDGE_ICON,
+  SAFARI_ICON: SAFARI_ICON,
   BROWSER_ANATOMY: BROWSER_ANATOMY,
   AFTER_DOWNLOAD: AFTER_DOWNLOAD,
   ADDRESS_VS_SEARCH: ADDRESS_VS_SEARCH,
