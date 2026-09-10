@@ -1,16 +1,18 @@
 // src/data/Y7_SCI/U02_1/notes.js
-// 2.1 Solids, Liquids and Gases — a self-study reduction of TWO classroom
-// decks (C:\Users\bowen\lessons, content/y7-science/U02_1a and U02_1b): the
-// three states and their properties, then the particle theory that explains
-// them. 22 layout slides, 5 checks.
+// 2.1 Solids, Liquids and Gases — self-study deck rebuilt to the engagement
+// plan (docs/y7-science/ENGAGEMENT-PLAN.md). 22 layout slides; 6 scored items
+// — four interactive activities (sort · predict · sort · hotspot) and two
+// checks.
 //
-// Reduced from 43 classroom slides. The first half collects BEHAVIOUR — pour
-// it, squash it, watch it fill a balloon — and the second half is the one idea
-// that explains all of it. The predictions the class voted on (the syringes,
-// the sponge) fold into the slides that settle them; the Word Wall game, the
-// stand-up-you-are-the-particles activity and both homeworks go; the vacuum
-// keeps its drawn diagram and loses the Earth photograph. Every photograph is
-// credited in docs/credits.md. The `check:` block is always the LAST key.
+// The old deck opened with "write two solids, two liquids and two gases on
+// paper"; this one opens with a sort you do on screen, with sand and mercury
+// built in as the traps. The syringe vote becomes a `predict` the reveal
+// slide pays off; the particle facts become a second `sort`; the "Two Rules"
+// slide gets a `hotspot` on the diagram it already shows. The ruler-and-copy
+// table task and the "draw three boxes" homework are gone — the table and
+// the recap stay, on screen, with a tap-to-check reveal instead of a pencil.
+// Every photograph is credited in docs/credits.md. The `check:` or
+// `activity:` block is always the LAST key on its slide.
 import { DIAGRAMS } from './diagrams.js';
 import { DIAGRAMS as PARTICLES } from './diagramsB.js';
 import { assetUrl } from '../../../utils/assetPaths';
@@ -26,7 +28,7 @@ const WATER = '#2f7fb0';
 const VIOLET = '#8b6bb1';
 
 export const notes = [
-  // 1 ─ Hero + starter ──────────────────────────────────────────────────────
+  // 1 ─ Hero ────────────────────────────────────────────────────────────────
   {
     layout: 'hero',
     color: TEAL,
@@ -40,26 +42,50 @@ export const notes = [
     objective: 'Sort any substance by testing its properties, not by how it looks — and explain those properties with one idea: everything is made of particles, arranged three ways.',
     objectiveVn: 'Phân loại bất kỳ chất nào bằng cách kiểm tra tính chất của nó, không phải vẻ ngoài — và giải thích những tính chất đó bằng một ý tưởng: mọi thứ đều tạo nên từ các hạt, sắp xếp theo ba cách.',
     card: {
-      icon: 'Pencil',
-      badge: 'Starter · 3 minutes',
-      badgeVn: 'Khởi động · 3 phút',
-      text: 'In your notebook, write **two solids, two liquids and two gases**. Six things. Rule: none of them may be water.',
-      textVn: 'Viết vào vở **hai chất rắn, hai chất lỏng và hai chất khí**. Sáu thứ. Một điều kiện: không được chọn nước.',
+      icon: 'MousePointerClick',
+      badge: 'In this lesson',
+      badgeVn: 'Trong bài này',
+      text: 'You will **sort**, **predict** and **tap** your way through it. Six things are scored — the sort on the next slide is the first.',
+      textVn: 'Em sẽ **sắp xếp**, **dự đoán** và **chạm** trong suốt bài học. Sáu mục được tính điểm — bài sắp xếp ở slide sau là mục đầu tiên.',
     },
   },
 
-  // 2 ─ The hook: sand pours ────────────────────────────────────────────────
+  // 2 ─ The starter: SORT ───────────────────────────────────────────────────
   {
-    layout: 'showcase',
+    layout: 'statement',
     accent: PURPLE,
-    icon: 'Users',
-    eyebrow: 'Decide before you go on — and write down why',
-    eyebrowVn: 'Quyết định trước khi tiếp tục — và viết ra lý do',
-    title: 'Sand Pours Like Water. Is Sand a Liquid?',
-    titleVn: 'Cát chảy giống như nước. Vậy cát có phải chất lỏng không?',
-    image: img('hourglass.jpg'),
-    caption: 'It flows through a narrow neck. It takes the shape of whatever you put it in. You can pour it from one hand to the other. Decide: **solid or liquid** — and be ready to say **why**.',
-    captionVn: 'Nó chảy qua một cổ hẹp. Nó mang hình dạng của bất cứ thứ gì em đựng nó vào. Em có thể rót nó từ tay này sang tay kia. Hãy quyết định: **chất rắn hay chất lỏng** — và sẵn sàng nói **vì sao**.',
+    icon: 'Boxes',
+    eyebrow: 'Sort by what it DOES, not what it looks like',
+    eyebrowVn: 'Phân loại theo điều nó LÀM, không phải vẻ ngoài',
+    title: 'Solid, Liquid or Gas?',
+    titleVn: 'Chất rắn, chất lỏng hay chất khí?',
+    label: 'Six things to sort',
+    labelVn: 'Sáu thứ cần sắp xếp',
+    labelIcon: 'Sparkles',
+    text: 'Some of these will trick you. Test each one: can it be poured? Does it keep its own shape?',
+    textVn: 'Một vài thứ sẽ đánh lừa em. Hãy kiểm tra từng thứ: rót được không? Có giữ hình dạng riêng không?',
+    sub: 'Drag each card into Solid, Liquid or Gas.',
+    subVn: 'Kéo mỗi thẻ vào Chất rắn, Chất lỏng hoặc Chất khí.',
+    activity: {
+      id: 'a1', type: 'sort',
+      prompt: 'Sort these six into the right state.',
+      promptVn: 'Sắp xếp sáu thứ này vào đúng trạng thái.',
+      bins: [
+        { id: 'solid', name: 'Solid', nameVn: 'Chất rắn' },
+        { id: 'liquid', name: 'Liquid', nameVn: 'Chất lỏng' },
+        { id: 'gas', name: 'Gas', nameVn: 'Chất khí' },
+      ],
+      cards: [
+        { id: 'ice', name: 'Ice', nameVn: 'Nước đá', bin: 'solid' },
+        { id: 'sand', name: 'Sand', nameVn: 'Cát', bin: 'solid' },
+        { id: 'mercury', name: 'Mercury', nameVn: 'Thuỷ ngân', bin: 'liquid' },
+        { id: 'honey', name: 'Honey', nameVn: 'Mật ong', bin: 'liquid' },
+        { id: 'air', name: 'The air around you', nameVn: 'Không khí quanh em', bin: 'gas' },
+        { id: 'helium', name: 'Helium in a balloon', nameVn: 'Khí heli trong bóng bay', bin: 'gas' },
+      ],
+      explain: 'Sand pours, but every single grain keeps its own shape and cannot be squashed — sand is a solid. Mercury is a metal, but it pours and takes the shape of its container — mercury is a liquid. You sort by what a substance **does**, never by what it looks like or what it is made of.',
+      explainVn: 'Cát chảy được, nhưng mỗi hạt cát vẫn giữ hình dạng riêng và không thể bị bóp nhỏ — cát là chất rắn. Thuỷ ngân là kim loại, nhưng nó rót được và mang hình dạng vật chứa — thuỷ ngân là chất lỏng. Em phân loại theo điều một chất **làm**, không bao giờ theo vẻ ngoài hay chất liệu của nó.',
+    },
   },
 
   // 3 ─ Everything here is matter + CHECK 1 ─────────────────────────────────
@@ -159,7 +185,7 @@ export const notes = [
     ],
   },
 
-  // 6 ─ Gases + CHECK 2 ─────────────────────────────────────────────────────
+  // 6 ─ Gases ───────────────────────────────────────────────────────────────
   {
     layout: 'split',
     accent: VIOLET,
@@ -183,28 +209,47 @@ export const notes = [
         textVn: '**Chất khí:** **không có hình dạng riêng** · **lấp đầy** mọi vật chứa kín · dễ dàng bị **nén (compressed)** · **thể tích có thể thay đổi** · nó rất nhẹ.',
       },
     ],
-    check: {
-      id: 'c2',
-      q: 'Which state of matter **keeps the same volume** but **takes the shape of its container**?',
-      qVn: 'Trạng thái nào **giữ nguyên thể tích** nhưng **mang hình dạng của vật chứa**?',
+  },
+
+  // 7 ─ Which plunger moves? PREDICT ────────────────────────────────────────
+  {
+    layout: 'statement',
+    accent: TEAL,
+    icon: 'Zap',
+    eyebrow: 'Predict before you see the reveal',
+    eyebrowVn: 'Dự đoán trước khi xem đáp án',
+    title: 'Which Plunger Moves?',
+    titleVn: 'Cần đẩy nào sẽ di chuyển?',
+    label: 'The syringe test',
+    labelVn: 'Thử nghiệm xi-lanh',
+    labelIcon: 'Target',
+    text: 'Two syringes, both holes blocked with a thumb. Push each plunger as hard as you can.',
+    textVn: 'Hai xi-lanh, cả hai lỗ đều bị bịt bằng ngón tay cái. Đẩy mạnh từng cần đẩy.',
+    sub: 'Choose your prediction, then check the next slide.',
+    subVn: 'Chọn dự đoán của em, rồi xem slide sau để kiểm tra.',
+    activity: {
+      id: 'a2', type: 'predict',
+      prompt: 'Which plunger moves?',
+      promptVn: 'Cần đẩy nào sẽ di chuyển?',
       options: [
-        { val: 'A', text: 'A solid', textVn: 'Chất rắn' },
-        { val: 'B', text: 'A gas', textVn: 'Chất khí' },
-        { val: 'C', text: 'A liquid', textVn: 'Chất lỏng' },
+        { val: 'water', name: 'Only the water plunger', nameVn: 'Chỉ cần đẩy bên nước' },
+        { val: 'air', name: 'Only the air plunger', nameVn: 'Chỉ cần đẩy bên không khí' },
+        { val: 'both', name: 'Both plungers', nameVn: 'Cả hai cần đẩy' },
+        { val: 'neither', name: 'Neither plunger', nameVn: 'Không cần đẩy nào cả' },
       ],
-      correct: 'C',
-      expEn: 'A **liquid** borrows the container’s shape but stays 50 cm³ whatever the container. A solid keeps both its shape and its volume; a gas keeps neither — it fills the whole container and its volume can change.',
-      expVn: '**Chất lỏng** mượn hình dạng vật chứa nhưng vẫn là 50 cm³ dù đựng trong gì. Chất rắn giữ cả hình dạng lẫn thể tích; chất khí không giữ cái nào — nó lấp đầy cả vật chứa và thể tích có thể thay đổi.',
+      correct: 'air',
+      explain: 'Only the **air** plunger moves. Air can be squashed into a smaller space because its particles have huge gaps between them. The water plunger will not budge — water’s particles already touch, so there is no gap left to close.',
+      explainVn: 'Chỉ cần đẩy bên **không khí** di chuyển. Không khí có thể bị ép vào khoảng nhỏ hơn vì các hạt của nó có khoảng trống rất lớn ở giữa. Cần đẩy bên nước không nhúc nhích — các hạt nước đã chạm nhau, không còn khoảng trống nào để khép lại.',
     },
   },
 
-  // 7 ─ The syringes + CHECK 3 ──────────────────────────────────────────────
+  // 8 ─ The reveal: only the air moves ──────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
     icon: 'Zap',
-    eyebrow: 'Predict first: one syringe of water, one of air, both holes blocked, push hard',
-    eyebrowVn: 'Dự đoán trước: một xi-lanh nước, một xi-lanh không khí, bịt cả hai lỗ, đẩy mạnh',
+    eyebrow: 'The reveal',
+    eyebrowVn: 'Kết quả',
     title: 'Only the Air Moves',
     titleVn: 'Chỉ có không khí di chuyển',
     ratio: 50,
@@ -213,11 +258,11 @@ export const notes = [
     content:
       'The water plunger will not budge, however hard you lean on it. The air plunger slides in easily — and springs back the moment you let go.\n\n' +
       'The air was **compressed**: it was squashed into a smaller space. Nothing escaped, and nothing was added. Only the amount of room it took up changed.\n\n' +
-      'This is the one property that separates a gas from **both** of the others.',
+      'This is the one property that separates a gas from **both** of the others. How close was your prediction?',
     contentVn:
       'Cần đẩy bên nước không nhúc nhích, dù em có tì mạnh đến đâu. Cần đẩy bên không khí trượt vào dễ dàng — và bật ngược lại ngay khi em buông tay.\n\n' +
       'Không khí đã bị **nén (compressed)**: nó bị ép vào một khoảng nhỏ hơn. Không có gì thoát ra, cũng không có gì thêm vào. Chỉ có lượng không gian nó chiếm là thay đổi.\n\n' +
-      'Đây là tính chất duy nhất tách chất khí ra khỏi **cả hai** trạng thái kia.',
+      'Đây là tính chất duy nhất tách chất khí ra khỏi **cả hai** trạng thái kia. Dự đoán của em gần đến đâu?',
     notes: [
       {
         tone: 'write',
@@ -225,22 +270,9 @@ export const notes = [
         textVn: '**Nén (compressed):** bị ép vào một khoảng không gian nhỏ hơn. **Chỉ chất khí mới có thể bị nén.**',
       },
     ],
-    check: {
-      id: 'c3',
-      q: 'Which state of matter can be **compressed** (squashed into a smaller space)?',
-      qVn: 'Trạng thái nào có thể bị **nén** (ép vào khoảng không gian nhỏ hơn)?',
-      options: [
-        { val: 'A', text: 'A solid', textVn: 'Chất rắn' },
-        { val: 'B', text: 'A gas', textVn: 'Chất khí' },
-        { val: 'C', text: 'A liquid', textVn: 'Chất lỏng' },
-      ],
-      correct: 'B',
-      expEn: 'Only a **gas** — the air plunger moved, the water plunger did not. Solids and liquids both keep their volume, so neither can be squashed into a smaller space.',
-      expVn: 'Chỉ **chất khí** — cần đẩy bên không khí di chuyển, bên nước thì không. Chất rắn và chất lỏng đều giữ nguyên thể tích, nên không thể bị ép vào khoảng nhỏ hơn.',
-    },
   },
 
-  // 8 ─ You cannot tell by looking ──────────────────────────────────────────
+  // 9 ─ You cannot tell by looking ──────────────────────────────────────────
   {
     layout: 'compare',
     accent: ORANGE,
@@ -271,42 +303,39 @@ export const notes = [
     ],
   },
 
-  // 9 ─ Four questions, three states (draw this) ────────────────────────────
+  // 10 ─ One table, three states ────────────────────────────────────────────
   {
     layout: 'split',
     accent: ORANGE,
     icon: 'Grid3x3',
-    eyebrow: 'Rulers out — you will use this sheet all unit',
-    eyebrowVn: 'Lấy thước ra — em sẽ dùng bảng này suốt cả chương',
-    title: 'Four Questions, Three States',
-    titleVn: 'Bốn câu hỏi, ba trạng thái',
+    eyebrow: 'Everything so far, on one grid',
+    eyebrowVn: 'Mọi thứ đã học, gọn trong một bảng',
+    title: 'One Table, Three States',
+    titleVn: 'Một bảng, ba trạng thái',
     ratio: 45,
     side: 'left',
     inlineSvg: DIAGRAMS.STATES_TABLE,
-    drawThis: true,
     content:
-      'Everything so far, on one grid. Rule it up properly, with a ruler, and copy the ticks and crosses exactly.\n\n' +
-      'Then answer the book’s questions from your own table:\n\n' +
+      'Every property from the last few slides, in one place. Study the ticks and crosses, then check yourself against these questions:\n\n' +
       '> **1.** What are the three states of matter?\n' +
       '> **2.** Which state can be compressed easily?\n' +
       '> **3.** Which state cannot be poured?\n' +
       '> **4.** List the properties of solids.',
     contentVn:
-      'Tất cả những gì đã học, gọn trong một bảng. Hãy kẻ cẩn thận bằng thước, và chép đúng các dấu tích và dấu chéo.\n\n' +
-      'Rồi trả lời các câu hỏi trong sách từ chính bảng của em:\n\n' +
+      'Mọi tính chất từ các slide trước, gói gọn trong một bảng. Hãy xem kỹ các dấu tích và dấu chéo, rồi tự kiểm tra bằng những câu hỏi sau:\n\n' +
       '> **1.** Ba trạng thái của vật chất là gì?\n' +
       '> **2.** Trạng thái nào dễ bị nén?\n' +
       '> **3.** Trạng thái nào không rót được?\n' +
       '> **4.** Liệt kê các tính chất của chất rắn.',
     reveal: {
-      label: 'Check',
-      labelVn: 'Kiểm tra',
+      label: 'Check yourself',
+      labelVn: 'Tự kiểm tra',
       answer: '**1.** Solid, liquid and gas.\n**2.** A gas.\n**3.** A solid.\n**4.** Keeps the same shape · keeps the same volume · cannot be compressed · cannot be poured.',
       answerVn: '**1.** Chất rắn, chất lỏng và chất khí.\n**2.** Chất khí.\n**3.** Chất rắn.\n**4.** Giữ nguyên hình dạng · giữ nguyên thể tích · không nén được · không rót được.',
     },
   },
 
-  // 10 ─ Hypothesis and theory ──────────────────────────────────────────────
+  // 11 ─ Hypothesis and theory ──────────────────────────────────────────────
   {
     layout: 'callout',
     accent: ORANGE,
@@ -330,20 +359,6 @@ export const notes = [
     ],
   },
 
-  // 11 ─ The ink: the smell from the kitchen, answered ──────────────────────
-  {
-    layout: 'showcase',
-    accent: PURPLE,
-    icon: 'Droplets',
-    eyebrow: 'Your bedroom door is shut, somebody cooks, and a minute later you can smell it — how?',
-    eyebrowVn: 'Cửa phòng đóng kín, có người nấu ăn, một phút sau em ngửi thấy — bằng cách nào?',
-    title: 'One Drop of Ink, in Still Water',
-    titleVn: 'Một giọt mực, trong nước đứng yên',
-    image: img('diffusion.jpg'),
-    caption: 'Nobody stirred this. One drop of ink went in at the top, and it is spreading **by itself**, into every part of the glass. Leave it an hour and the whole glass will be pale grey. Whatever the ink is made of, it is **moving on its own** — and so is whatever came out of that kitchen.',
-    captionVn: 'Không ai khuấy cả. Một giọt mực rơi vào từ trên, và nó đang **tự lan ra**, đến mọi phần của cốc. Để một tiếng thì cả cốc sẽ ngả màu xám nhạt. Dù mực được tạo nên từ gì đi nữa, thứ đó **đang tự chuyển động** — và thứ bay ra từ căn bếp kia cũng vậy.',
-  },
-
   // 12 ─ Particle theory ────────────────────────────────────────────────────
   {
     layout: 'callout',
@@ -355,10 +370,10 @@ export const notes = [
     titleVn: 'Một ý tưởng giải thích tất cả',
     content:
       'All matter — the rock, the sea, the air, your hand — is made of **particles**: pieces far too small to see.\n\n' +
-      'They are the **same particles** in a solid, a liquid and a gas; the only thing that changes is **how they are arranged and how they move**. That is the whole theory, and it explains the syringes, the ink, the smell from the kitchen, and every row of your table.',
+      'They are the **same particles** in a solid, a liquid and a gas; the only thing that changes is **how they are arranged and how they move**. That is the whole theory, and it explains the syringes, the smell from the kitchen, and every row of your table.',
     contentVn:
       'Mọi vật chất — đá, biển, không khí, bàn tay em — đều tạo nên từ các **hạt (particles)**: những mảnh quá nhỏ để nhìn thấy.\n\n' +
-      'Đó là **cùng những hạt ấy** trong chất rắn, chất lỏng và chất khí; thứ duy nhất thay đổi là **cách chúng sắp xếp và chuyển động**. Đó là toàn bộ học thuyết, và nó giải thích hai chiếc xi-lanh, giọt mực, mùi thức ăn từ bếp, và mọi hàng trong bảng của em.',
+      'Đó là **cùng những hạt ấy** trong chất rắn, chất lỏng và chất khí; thứ duy nhất thay đổi là **cách chúng sắp xếp và chuyển động**. Đó là toàn bộ học thuyết, và nó giải thích hai chiếc xi-lanh, mùi thức ăn từ bếp, và mọi hàng trong bảng của em.',
     notes: [
       {
         tone: 'write',
@@ -368,28 +383,7 @@ export const notes = [
     ],
   },
 
-  // 13 ─ Evidence: the salt cube ────────────────────────────────────────────
-  {
-    layout: 'split',
-    accent: STONE,
-    icon: 'Microscope',
-    eyebrow: 'Evidence you can hold in your hand',
-    eyebrowVn: 'Bằng chứng em có thể cầm trên tay',
-    title: 'Why Is Every Grain of Salt a Cube?',
-    titleVn: 'Vì sao mỗi hạt muối đều là một khối lập phương?',
-    ratio: 45,
-    image: img('salt.jpg'),
-    content:
-      'Nobody cut these. This is table salt from a kitchen, under a microscope — and the grains are **cubes**, with square corners, every single time.\n\n' +
-      'Particles are far too small to see. But if the theory is right, and the particles of a solid really are stacked in a **fixed, regular pattern**, then that pattern should sometimes show up on the **outside**.\n\n' +
-      'Here it is. The grain is a cube because the particles inside it are stacked in cubes.',
-    contentVn:
-      'Không ai cắt chúng cả. Đây là muối ăn trong bếp, nhìn dưới kính hiển vi — và các hạt đều là **khối lập phương**, góc vuông vắn, lần nào cũng vậy.\n\n' +
-      'Các hạt thì quá nhỏ để nhìn thấy. Nhưng nếu học thuyết đúng, và các hạt trong chất rắn thật sự xếp theo một **khuôn mẫu cố định, đều đặn**, thì khuôn mẫu ấy đôi khi phải lộ ra ở **bên ngoài**.\n\n' +
-      'Đây chính là nó. Hạt muối là khối lập phương vì các hạt bên trong nó xếp thành khối lập phương.',
-  },
-
-  // 14 ─ Particles in a solid ───────────────────────────────────────────────
+  // 13 ─ Particles in a solid ───────────────────────────────────────────────
   {
     layout: 'split',
     accent: STONE,
@@ -418,7 +412,7 @@ export const notes = [
     ],
   },
 
-  // 15 ─ Particles in a liquid ──────────────────────────────────────────────
+  // 14 ─ Particles in a liquid ──────────────────────────────────────────────
   {
     layout: 'split',
     accent: WATER,
@@ -447,7 +441,7 @@ export const notes = [
     ],
   },
 
-  // 16 ─ Particles in a gas + CHECK 4 ───────────────────────────────────────
+  // 15 ─ Particles in a gas ─────────────────────────────────────────────────
   {
     layout: 'split',
     accent: VIOLET,
@@ -462,11 +456,11 @@ export const notes = [
     content:
       'Now the particles do **not** touch. They are far apart, moving quickly in every direction, and nothing holds them together.\n\n' +
       'A gas does not have fewer particles — the **space between them** has become enormous.\n\n' +
-      'They spread out by themselves until every corner is filled. That is the ink, and that is the smell from the kitchen.',
+      'They spread out by themselves until every corner is filled — that is why a smell can reach every corner of a room by itself.',
     contentVn:
       'Bây giờ các hạt **không** chạm nhau. Chúng ở xa nhau, chuyển động nhanh theo mọi hướng, và không có gì giữ chúng lại.\n\n' +
       'Chất khí không hề có ít hạt hơn — mà **khoảng cách giữa chúng** đã trở nên rất lớn.\n\n' +
-      'Chúng tự lan ra cho đến khi lấp đầy mọi góc. Đó là giọt mực, và đó là mùi thức ăn từ căn bếp.',
+      'Chúng tự lan ra cho đến khi lấp đầy mọi góc — đó là lý do một mùi hương có thể tự lan đến mọi góc trong phòng.',
     notes: [
       {
         tone: 'write',
@@ -474,22 +468,47 @@ export const notes = [
         textVn: '**Trong chất khí:** các hạt **không chạm nhau**. Chúng ở **xa nhau** và **tự lan ra** để lấp đầy không gian chứa chúng.',
       },
     ],
-    check: {
-      id: 'c4',
-      q: 'In which state of matter do the particles **not touch** each other?',
-      qVn: 'Trong trạng thái nào các hạt **không chạm** nhau?',
-      options: [
-        { val: 'A', text: 'A gas', textVn: 'Chất khí' },
-        { val: 'B', text: 'A liquid', textVn: 'Chất lỏng' },
-        { val: 'C', text: 'A solid', textVn: 'Chất rắn' },
+  },
+
+  // 16 ─ Which state does each fact describe? SORT ─────────────────────────
+  {
+    layout: 'statement',
+    accent: VIOLET,
+    icon: 'Layers',
+    eyebrow: 'Sort the facts, not the words',
+    eyebrowVn: 'Sắp xếp sự kiện, không phải từ ngữ',
+    title: 'Which State Does Each Fact Describe?',
+    titleVn: 'Mỗi sự kiện mô tả trạng thái nào?',
+    label: 'Six particle facts',
+    labelVn: 'Sáu sự kiện về hạt',
+    labelIcon: 'Layers',
+    text: 'You have just met all three arrangements. Sort each fact into the state it describes.',
+    textVn: 'Em vừa tìm hiểu cả ba cách sắp xếp. Hãy sắp xếp mỗi sự kiện vào trạng thái nó mô tả.',
+    sub: 'Drag each card into Solid, Liquid or Gas.',
+    subVn: 'Kéo mỗi thẻ vào Chất rắn, Chất lỏng hoặc Chất khí.',
+    activity: {
+      id: 'a3', type: 'sort',
+      prompt: 'Sort these particle facts into the right state.',
+      promptVn: 'Sắp xếp các sự kiện về hạt này vào đúng trạng thái.',
+      bins: [
+        { id: 'solid', name: 'Solid', nameVn: 'Chất rắn' },
+        { id: 'liquid', name: 'Liquid', nameVn: 'Chất lỏng' },
+        { id: 'gas', name: 'Gas', nameVn: 'Chất khí' },
       ],
-      correct: 'A',
-      expEn: 'In a **gas** the particles are far apart with huge spaces between them. In a solid **and** a liquid the particles touch — the difference between those two is only how strongly they are held.',
-      expVn: 'Trong **chất khí** các hạt ở xa nhau với khoảng trống rất lớn ở giữa. Trong chất rắn **và** chất lỏng các hạt đều chạm nhau — khác biệt giữa hai trạng thái đó chỉ là chúng được giữ chặt đến đâu.',
+      cards: [
+        { id: 'fixed', name: 'Fixed pattern, vibrating on the spot', nameVn: 'Khuôn mẫu cố định, dao động tại chỗ', bin: 'solid' },
+        { id: 'strong', name: 'Held together strongly', nameVn: 'Liên kết chặt với nhau', bin: 'solid' },
+        { id: 'slide', name: 'Touching, but sliding past each other', nameVn: 'Chạm nhau, nhưng trượt qua nhau', bin: 'liquid' },
+        { id: 'weak', name: 'Held together weakly', nameVn: 'Liên kết yếu với nhau', bin: 'liquid' },
+        { id: 'apart', name: 'Far apart, spread out', nameVn: 'Ở xa nhau, lan rộng ra', bin: 'gas' },
+        { id: 'compress', name: 'Can be compressed', nameVn: 'Có thể bị nén', bin: 'gas' },
+      ],
+      explain: 'Solid particles sit in a **fixed pattern**, held **strongly** — they can only vibrate. Liquid particles still **touch** but are held **weakly**, so they slide past one another. Gas particles are **far apart** with almost nothing holding them, so the huge gaps between them can be squashed smaller — only a gas can be **compressed**.',
+      explainVn: 'Các hạt trong chất rắn nằm trong một **khuôn mẫu cố định**, liên kết **chặt** — chúng chỉ có thể dao động. Các hạt trong chất lỏng vẫn **chạm nhau** nhưng liên kết **yếu**, nên chúng trượt qua nhau. Các hạt trong chất khí ở **xa nhau**, gần như không có gì giữ chúng lại, nên khoảng trống lớn giữa chúng có thể bị ép nhỏ lại — chỉ chất khí mới có thể **bị nén**.',
     },
   },
 
-  // 17 ─ Two rules that explain the whole table ─────────────────────────────
+  // 17 ─ Two rules that explain the whole table + HOTSPOT ──────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -502,11 +521,11 @@ export const notes = [
     side: 'left',
     inlineSvg: PARTICLES.THREE_ARRANGEMENTS,
     content:
-      'Every tick and cross you drew comes out of these two sentences. Read them slowly — they are short, and they are doing a great deal of work.\n\n' +
-      'Then hold them against the three boxes. A solid fails both. A liquid passes the first and fails the second. A gas passes both.',
+      'Every tick and cross you saw comes out of these two sentences. Read them slowly — they are short, and they are doing a great deal of work.\n\n' +
+      'Then hold them against the three boxes on the left. A solid fails both. A liquid passes the first and fails the second. A gas passes both.',
     contentVn:
-      'Mọi dấu tích và dấu chéo em vẽ đều suy ra từ hai câu này. Hãy đọc chậm — chúng ngắn, nhưng làm được rất nhiều việc.\n\n' +
-      'Rồi đối chiếu chúng với ba ô vuông. Chất rắn trượt cả hai. Chất lỏng đạt câu đầu và trượt câu sau. Chất khí đạt cả hai.',
+      'Mọi dấu tích và dấu chéo em thấy đều suy ra từ hai câu này. Hãy đọc chậm — chúng ngắn, nhưng làm được rất nhiều việc.\n\n' +
+      'Rồi đối chiếu chúng với ba ô vuông bên trái. Chất rắn trượt cả hai. Chất lỏng đạt câu đầu và trượt câu sau. Chất khí đạt cả hai.',
     notes: [
       {
         tone: 'write',
@@ -514,6 +533,20 @@ export const notes = [
         textVn: 'Vật chất chỉ **chảy** (rót được) khi các hạt có thể **trượt qua nhau**.\n\nVật chất chỉ **đổi thể tích** khi các hạt có thể **giãn ra hoặc xích lại gần nhau**.',
       },
     ],
+    activity: {
+      id: 'a4', type: 'hotspot',
+      prompt: 'Tap the box that shows a GAS.',
+      promptVn: 'Chạm vào ô thể hiện CHẤT KHÍ.',
+      svg: PARTICLES.THREE_ARRANGEMENTS, viewBox: '0 0 900 360',
+      targets: [
+        { id: 'solid', x: 160, y: 166, r: 95, name: 'the solid box', nameVn: 'ô chất rắn' },
+        { id: 'liquid', x: 450, y: 166, r: 95, name: 'the liquid box', nameVn: 'ô chất lỏng' },
+        { id: 'gas', x: 740, y: 166, r: 95, name: 'the gas box', nameVn: 'ô chất khí' },
+      ],
+      correct: 'gas',
+      explain: 'The **gas** box: particles far apart, no pattern, nothing holding them together. The solid box packs particles into a tight grid; the liquid box has particles touching but jumbled, with no pattern.',
+      explainVn: 'Ô **chất khí**: các hạt ở xa nhau, không có khuôn mẫu, không gì giữ chúng lại. Ô chất rắn xếp các hạt thành lưới chặt; ô chất lỏng có các hạt chạm nhau nhưng lộn xộn, không khuôn mẫu.',
+    },
   },
 
   // 18 ─ The pull between them ──────────────────────────────────────────────
@@ -547,7 +580,7 @@ export const notes = [
     ],
   },
 
-  // 19 ─ Why the air plunger moved + CHECK 5 ────────────────────────────────
+  // 19 ─ Why the air plunger moved + CHECK 2 ────────────────────────────────
   {
     layout: 'split',
     accent: VIOLET,
@@ -573,7 +606,7 @@ export const notes = [
       },
     ],
     check: {
-      id: 'c5',
+      id: 'c2',
       q: 'Why can a gas be compressed but a liquid cannot?',
       qVn: 'Vì sao chất khí nén được mà chất lỏng thì không?',
       options: [
@@ -635,31 +668,31 @@ export const notes = [
       label: 'Page 34, Questions 3 and 4 — the strengths and the weaknesses',
       labelVn: 'Trang 34, Câu hỏi 3 và 4 — điểm mạnh và điểm yếu',
       answer:
-        '**Strengths:** one simple idea explains shape, volume, pouring, compressing, the smell from the kitchen and the ink in the glass — and it makes **predictions we can test**, like the two syringes.\n\n' +
+        '**Strengths:** one simple idea explains shape, volume, pouring, compressing, the smell from the kitchen and how a solid can pass the tick-and-cross test — and it makes **predictions we can test**, like the two syringes.\n\n' +
         '**Weaknesses:** nobody has ever seen a particle, so we are believing in something invisible. The picture also makes particles look like hard little balls, which they are not. And it says nothing about **why** the forces between them are strong or weak — that is Year 8.',
       answerVn:
-        '**Điểm mạnh:** một ý tưởng đơn giản giải thích được hình dạng, thể tích, việc rót, việc nén, mùi thức ăn từ bếp và giọt mực trong cốc — và nó đưa ra **dự đoán có thể kiểm chứng**, như hai chiếc xi-lanh.\n\n' +
+        '**Điểm mạnh:** một ý tưởng đơn giản giải thích được hình dạng, thể tích, việc rót, việc nén, mùi thức ăn từ bếp và cả cách một chất rắn vượt qua bài kiểm tra tích-chéo — và nó đưa ra **dự đoán có thể kiểm chứng**, như hai chiếc xi-lanh.\n\n' +
         '**Điểm yếu:** chưa ai từng nhìn thấy một hạt, nên ta đang tin vào thứ vô hình. Hình vẽ cũng khiến các hạt trông như những viên bi cứng, mà thật ra không phải vậy. Và nó không nói gì về **vì sao** lực giữa chúng mạnh hay yếu — điều đó là của Lớp 8.',
     },
   },
 
-  // 22 ─ Draw this + recap ──────────────────────────────────────────────────
+  // 22 ─ Recap ───────────────────────────────────────────────────────────────
   {
     layout: 'stack',
     variant: 'checklist',
     accent: TEAL,
     icon: 'CheckCircle2',
     columns: 2,
-    eyebrow: 'Before you go on · draw the three boxes',
-    eyebrowVn: 'Trước khi tiếp tục · vẽ ba ô vuông',
+    eyebrow: 'Before you go on',
+    eyebrowVn: 'Trước khi tiếp tục',
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
     content:
-      '> **Draw this:** rule three large squares across a clean page and label them **Solid · Liquid · Gas**. Draw the particles inside each one, and around each box write that state’s properties from your table. Leave space — you add to it in 2.2.\n\n' +
-      'Exit question: a sealed bottle of air and a sealed bottle of water, both exactly full. **Which has more empty space inside?** Say why, using the word *particles*.',
+      'You sorted substances by behaviour, predicted a syringe, sorted particle facts and tapped the gas box. Six things were scored along the way — how many did you get right?\n\n' +
+      'Next: the Vocab, then **Label It** — you will put every label on these diagrams yourself.',
     contentVn:
-      '> **Vẽ hình này:** kẻ ba ô vuông lớn ngang một trang giấy sạch và ghi tên **Solid · Liquid · Gas**. Vẽ các hạt vào trong từng ô, và quanh mỗi ô viết các tính chất của trạng thái đó từ bảng của em. Chừa chỗ trống — em sẽ viết thêm ở bài 2.2.\n\n' +
-      'Câu hỏi ra về: một chai không khí và một chai nước đậy kín, cả hai đều đầy. **Chai nào có nhiều khoảng trống hơn?** Hãy nói vì sao, dùng từ *particles*.',
+      'Em đã phân loại các chất theo cách hành xử, dự đoán về xi-lanh, sắp xếp các sự kiện về hạt, và chạm vào ô chất khí. Sáu mục được tính điểm trong suốt bài — em đúng được bao nhiêu?\n\n' +
+      'Tiếp theo: Từ vựng, rồi **Gắn nhãn** — em sẽ tự đặt mọi nhãn lên những hình này.',
     items: [
       { text: 'Classify any substance as a **solid, liquid or gas** by what it does, not how it looks.', textVn: 'Phân loại bất kỳ chất nào thành **rắn, lỏng hay khí** theo điều nó làm, không phải vẻ ngoài.' },
       { text: 'List the **properties** of solids, liquids and gases.', textVn: 'Liệt kê **tính chất** của chất rắn, chất lỏng và chất khí.' },

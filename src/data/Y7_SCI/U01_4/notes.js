@@ -1,14 +1,19 @@
 // src/data/Y7_SCI/U01_4/notes.js
-// 1.4 Cells, Tissues and Organs — a self-study reduction of the classroom
-// deck (C:\Users\bowen\lessons, content/y7-science/U01_4). 17 layout slides,
-// 5 checks.
+// 1.4 Cells, Tissues and Organs — rebuilt to the engagement plan
+// (docs/y7-science/ENGAGEMENT-PLAN.md). 18 layout slides; 6 scored items — three
+// interactive activities (hotspot · sort · order) and three checks.
 //
-// The spine is one ladder, climbed once, with ONE example on every rung:
-// ciliated cell → ciliated epithelium → a lung → the breathing system → you.
-// Reduced from 22 classroom slides: the "one leaf" guess folds into the slide
-// that answers it, the "lungs alone" question folds into the organ-system
-// callout, the group organ relay and the homework go. Every photograph is
-// credited in docs/credits.md. The `check:` block is always the LAST key.
+// The classroom deck opened with "draw a body outline on paper"; this one opens
+// with a tap on the body itself. The spine is still one ladder, climbed once,
+// with one example on every rung — ciliated cell → ciliated epithelium →
+// a lung → the breathing system → you — but the student now sorts and orders
+// that ladder instead of only reading it. Every classroom-only instruction
+// (stand up, point on yourself, the organ relay, "write two sentences",
+// "your notebook should now have…") has been removed or turned into something
+// the student does on screen; the one exception is the five-level ladder
+// draw-this, kept as the plan allows. Every photograph is credited in
+// docs/credits.md. A `check:` or `activity:` block is always the LAST key on
+// its slide, and never both on the same slide.
 import { DIAGRAMS } from './diagrams.js';
 import { LevelDrillWidget } from './widgets.jsx';
 import { assetUrl } from '../../../utils/assetPaths';
@@ -22,7 +27,7 @@ const GREEN = '#4a8b23';
 const CRIMSON = '#c2185b';
 
 export const notes = [
-  // 1 ─ Hero + starter ──────────────────────────────────────────────────────
+  // 1 ─ Hero ────────────────────────────────────────────────────────────────
   {
     layout: 'hero',
     color: TEAL,
@@ -36,37 +41,46 @@ export const notes = [
     objective: 'Explain the words tissue, organ, organ system and organism, and put a real example on every rung of the ladder from one cell up to a whole living thing.',
     objectiveVn: 'Giải thích các từ mô, cơ quan, hệ cơ quan và sinh vật, và đặt một ví dụ thật lên mỗi bậc thang từ một tế bào lên đến cả một cơ thể sống.',
     card: {
-      icon: 'Pencil',
-      badge: 'Starter · 4 minutes',
-      badgeVn: 'Khởi động · 4 phút',
-      text: 'Draw an outline of a human body. Then sketch and label these five organs inside it: **brain · heart · stomach · intestine · lungs**. A rough drawing is fine.',
-      textVn: 'Vẽ hình phác một cơ thể người. Rồi vẽ và ghi tên năm cơ quan này bên trong: **brain (não) · heart (tim) · stomach (dạ dày) · intestine (ruột) · lungs (phổi)**. Vẽ nháp là được.',
+      icon: 'MousePointerClick',
+      badge: 'In this lesson',
+      badgeVn: 'Trong bài này',
+      text: 'You will **tap**, **sort** and **order** your way up the ladder from one cell to a whole body. Six things are scored — the diagram on the next slide is the first.',
+      textVn: 'Em sẽ **chạm**, **sắp xếp** và **xếp thứ tự** để leo lên bậc thang từ một tế bào đến cả cơ thể. Sáu mục được tính điểm — hình ở slide sau là mục đầu tiên.',
     },
   },
 
-  // 2 ─ Check the drawing ───────────────────────────────────────────────────
+  // 2 ─ Where is your stomach: HOTSPOT ─────────────────────────────────────
   {
-    layout: 'split',
+    layout: 'statement',
     accent: TEAL,
-    icon: 'CheckCircle2',
-    eyebrow: 'Getting started · check your drawing',
-    eyebrowVn: 'Khởi động · kiểm tra hình vẽ của em',
-    title: 'Did You Put Them in the Right Places?',
-    titleVn: 'Em đã đặt chúng đúng chỗ chưa?',
-    ratio: 40,
-    inlineSvg: DIAGRAMS.HUMAN_ORGANS,
-    content: 'Nobody gets all five exactly right, and that is fine. The **stomach** sits higher than most people draw it, and the **intestines** fill nearly the whole space below it.',
-    contentVn: 'Không ai đặt đúng cả năm cơ quan, và điều đó không sao. **Dạ dày** nằm cao hơn hầu hết mọi người vẽ, và **ruột** chiếm gần hết khoảng trống bên dưới.',
-    notes: [
-      {
-        tone: 'task',
-        badge: 'Stand up',
-        badgeVn: 'Đứng lên',
-        icon: 'Users',
-        text: 'Point to each one **on yourself**, saying its name in English: brain — lungs — heart — stomach — intestines. Then sit down.',
-        textVn: 'Chỉ vào từng cơ quan **trên cơ thể em**, nói tên bằng tiếng Anh: brain — lungs — heart — stomach — intestines. Rồi ngồi xuống.',
-      },
-    ],
+    icon: 'Target',
+    eyebrow: 'Tap the diagram',
+    eyebrowVn: 'Chạm vào hình',
+    title: 'Where Is Your Stomach?',
+    titleVn: 'Dạ dày của em ở đâu?',
+    label: 'Guess first',
+    labelVn: 'Đoán trước',
+    labelIcon: 'Target',
+    text: 'Most people place it **too low**, somewhere near the belly button.',
+    textVn: 'Hầu hết mọi người đặt nó **quá thấp**, gần chỗ rốn.',
+    sub: 'Tap where you think the stomach really is. You get two tries.',
+    subVn: 'Chạm vào chỗ em nghĩ dạ dày thật sự nằm. Em có hai lần thử.',
+    activity: {
+      id: 'a1', type: 'hotspot',
+      prompt: 'Tap the **stomach**.',
+      promptVn: 'Chạm vào **dạ dày**.',
+      svg: DIAGRAMS.HUMAN_ORGANS, viewBox: '0 0 700 420',
+      targets: [
+        { id: 'stomach', x: 332, y: 300, r: 26, name: 'the stomach', nameVn: 'dạ dày' },
+        { id: 'brain', x: 322, y: 58, r: 26, name: 'the brain', nameVn: 'não' },
+        { id: 'lungs', x: 328, y: 220, r: 26, name: 'the lungs', nameVn: 'phổi' },
+        { id: 'heart', x: 358, y: 254, r: 26, name: 'the heart', nameVn: 'tim' },
+        { id: 'intestines', x: 392, y: 368, r: 26, name: 'the intestines', nameVn: 'ruột' },
+      ],
+      correct: 'stomach',
+      explain: 'The **stomach** sits much higher than most people think — just under the ribs, about where the lungs end. Nearly the whole space below it belongs to the **intestines**.',
+      explainVn: '**Dạ dày** nằm cao hơn nhiều so với hầu hết mọi người nghĩ — ngay dưới xương sườn, gần chỗ phổi kết thúc. Gần như toàn bộ khoảng trống bên dưới nó thuộc về **ruột**.',
+    },
   },
 
   // 3 ─ The hook: one ciliated cell ─────────────────────────────────────────
@@ -74,13 +88,13 @@ export const notes = [
     layout: 'showcase',
     accent: PURPLE,
     icon: 'Users',
-    eyebrow: 'Two minutes — write a reason before you go on',
-    eyebrowVn: 'Hai phút — viết một lý do trước khi tiếp tục',
+    eyebrow: 'Look closely, then decide',
+    eyebrowVn: 'Nhìn kỹ, rồi quyết định',
     title: 'Could This One Cell Keep Your Lungs Clean?',
     titleVn: 'Một tế bào này có giữ sạch phổi em được không?',
     inlineSvg: DIAGRAMS.ONE_CILIATED_CELL,
-    caption: 'You met this cell last lesson. Its cilia beat about **twelve times every second**, sweeping dust and germs up and away from your lungs. Here is exactly one of them. Would **one** be enough? Write down a reason.',
-    captionVn: 'Em đã gặp tế bào này tiết trước. Lông rung của nó đập khoảng **mười hai lần mỗi giây**, quét bụi và vi khuẩn ra xa khỏi phổi. Đây là đúng một tế bào như vậy. **Một** cái có đủ không? Hãy viết ra một lý do.',
+    caption: 'You met this cell last lesson. Its cilia beat about **twelve times every second**, sweeping dust and germs up and away from your lungs. Here is exactly one of them. Would **one** be enough?',
+    captionVn: 'Em đã gặp tế bào này tiết trước. Lông rung của nó đập khoảng **mười hai lần mỗi giây**, quét bụi và vi khuẩn ra xa khỏi phổi. Đây là đúng một tế bào như vậy. **Một** cái có đủ không?',
   },
 
   // 4 ─ Millions side by side (key word: tissue) + CHECK 1 ──────────────────
@@ -136,8 +150,8 @@ export const notes = [
     content: 'The lining of a real windpipe. Every cell along that edge is the **same kind** of cell, and the **fuzzy dark band** on top is millions of cilia.\n\nIts name is **ciliated epithelium** — and *epithelium* just means a tissue that covers a surface.',
     contentVn: 'Lớp lót của một khí quản thật. Mọi tế bào dọc mép đó đều **cùng một loại**, và **dải sẫm lởm chởm** phía trên là hàng triệu lông rung.\n\nTên của nó là **biểu mô có lông rung (ciliated epithelium)** — và *epithelium* chỉ có nghĩa là mô phủ lên một bề mặt.',
     reveal: {
-      label: 'Page 23, Question 1 — what is this tissue’s function?',
-      labelVn: 'Trang 23, Câu hỏi 1 — chức năng của mô này là gì?',
+      label: 'What is this tissue’s function?',
+      labelVn: 'Chức năng của mô này là gì?',
       answer: 'To **keep the airways clean**: the cilia sweep mucus, and all the dust and germs trapped in it, **up and away from the lungs**. One ciliated cell does that job in one tiny spot. The tissue does it along the whole tube.',
       answerVn: 'Để **giữ sạch đường thở**: lông rung quét chất nhầy, cùng toàn bộ bụi và vi khuẩn dính trong đó, **lên và ra xa khỏi phổi**. Một tế bào có lông rung làm việc đó ở một điểm nhỏ. Cả mô làm việc đó dọc toàn bộ ống.',
     },
@@ -163,7 +177,7 @@ export const notes = [
       'Hãy xem điều gì làm nó thành một mô: mọi tế bào đều **cùng loại**, chúng **nối liền nhau** không có khe hở, và cùng nhau làm **một nhiệm vụ** — che phủ và bảo vệ bề mặt.',
   },
 
-  // 7 ─ You have held this tissue + CHECK 2 ─────────────────────────────────
+  // 7 ─ You have held this tissue ────────────────────────────────────────────
   {
     layout: 'compare',
     accent: GREEN,
@@ -192,22 +206,9 @@ export const notes = [
         captionVn: 'Cũng lớp da đó, phóng to lên. Nó **dày đúng một tế bào**, và mọi tế bào đều xếp sát vào nhau như gạch trong một bức tường. Đó là một mô.',
       },
     ],
-    check: {
-      id: 'c2',
-      q: 'What makes the onion skin a **tissue**?',
-      qVn: 'Điều gì làm lớp da hành thành một **mô**?',
-      options: [
-        { val: 'A', text: 'It is made of many different kinds of cell', textVn: 'Nó được tạo nên từ nhiều loại tế bào khác nhau' },
-        { val: 'B', text: 'It is one kind of cell, joined edge to edge, doing one job', textVn: 'Nó là một loại tế bào, nối liền nhau, cùng làm một nhiệm vụ' },
-        { val: 'C', text: 'It is green', textVn: 'Nó có màu xanh' },
-      ],
-      correct: 'B',
-      expEn: 'A tissue is **similar** cells (the same kind), joined together, doing **one job** — here, covering and protecting the surface. Many different kinds of cell working together would be an organ. And it is not green: onion cells have no chloroplasts.',
-      expVn: 'Mô là các tế bào **giống nhau** (cùng loại), nối liền nhau, làm **một nhiệm vụ** — ở đây là che phủ và bảo vệ bề mặt. Nhiều loại tế bào khác nhau cùng làm việc thì là cơ quan. Và nó không xanh: tế bào hành không có lục lạp.',
-    },
   },
 
-  // 8 ─ Two kinds of tissue (English) + CHECK 3 ─────────────────────────────
+  // 8 ─ Two kinds of tissue (English) ───────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -218,50 +219,16 @@ export const notes = [
     titleVn: 'Hai loại "tissue"',
     ratio: 46,
     content:
-      'Ask for **a tissue** in a shop and you get a paper handkerchief. That is the everyday meaning, and it is **countable**: one tissue, two tissues, a box of tissues.\n\n' +
-      'In science, **tissue** means a group of similar cells — and it is usually **uncountable**: we say *muscle tissue*, not *a muscle tissue*.\n\n' +
+      'Ask for **a tissue** in a shop and you get a paper handkerchief. That is the everyday meaning, and it is **countable**: one tissue, two tissues, a box of tissues. “Mr Bowen sneezed, so he took a tissue out of the box.”\n\n' +
+      'In science, **tissue** means a group of similar cells — and it is usually **uncountable**: we say *muscle tissue*, not *a muscle tissue*. “The wall of the stomach contains muscle tissue.”\n\n' +
       'Same five letters, completely different meaning.',
     contentVn:
-      'Xin **a tissue** ở cửa hàng thì em nhận được một tờ khăn giấy. Đó là nghĩa đời thường, và nó **đếm được**: one tissue, two tissues, a box of tissues.\n\n' +
-      'Trong khoa học, **tissue** nghĩa là một nhóm tế bào giống nhau — và nó thường **không đếm được**: ta nói *muscle tissue*, chứ không nói *a muscle tissue*.\n\n' +
+      'Xin **a tissue** ở cửa hàng thì em nhận được một tờ khăn giấy. Đó là nghĩa đời thường, và nó **đếm được**: one tissue, two tissues, a box of tissues. “Mr Bowen sneezed, so he took a tissue out of the box.” (Thầy Bowen hắt hơi, nên thầy lấy một tờ khăn giấy ra khỏi hộp.)\n\n' +
+      'Trong khoa học, **tissue** nghĩa là một nhóm tế bào giống nhau — và nó thường **không đếm được**: ta nói *muscle tissue*, chứ không nói *a muscle tissue*. “The wall of the stomach contains muscle tissue.” (Thành dạ dày chứa mô cơ.)\n\n' +
       'Cùng năm chữ cái, nghĩa hoàn toàn khác.',
-    notes: [
-      {
-        tone: 'write',
-        badge: 'Page 23, Question 2',
-        badgeVn: 'Trang 23, Câu hỏi 2',
-        text: 'Write **two sentences of your own**. In the first, use *tissue* with its **everyday** meaning. In the second, use *tissue* with its **scientific** meaning.',
-        textVn: 'Viết **hai câu của riêng em**. Câu đầu dùng *tissue* với nghĩa **đời thường**. Câu sau dùng *tissue* với nghĩa **khoa học**.',
-      },
-    ],
-    reveal: {
-      label: 'If you are stuck — two examples',
-      labelVn: 'Nếu em bí — hai ví dụ',
-      answer:
-        '**Everyday:** “Mr Bowen sneezed, so he took **a tissue** out of the box.”\n\n' +
-        '**Scientific:** “The wall of the stomach contains **muscle tissue**.”\n\n' +
-        'Now write two different ones. Do not copy these.',
-      answerVn:
-        '**Đời thường:** “Mr Bowen sneezed, so he took **a tissue** out of the box.” (Thầy Bowen hắt hơi, nên thầy lấy một tờ khăn giấy ra khỏi hộp.)\n\n' +
-        '**Khoa học:** “The wall of the stomach contains **muscle tissue**.” (Thành dạ dày chứa mô cơ.)\n\n' +
-        'Bây giờ hãy viết hai câu khác. Đừng chép hai câu này.',
-    },
-    check: {
-      id: 'c3',
-      q: 'Which sentence uses *tissue* with its **scientific** meaning?',
-      qVn: 'Câu nào dùng *tissue* với nghĩa **khoa học**?',
-      options: [
-        { val: 'A', text: 'She wiped her nose with a tissue.', textVn: 'She wiped her nose with a tissue.' },
-        { val: 'B', text: 'Please pass me the box of tissues.', textVn: 'Please pass me the box of tissues.' },
-        { val: 'C', text: 'The lining of the windpipe is a tissue made of ciliated cells.', textVn: 'The lining of the windpipe is a tissue made of ciliated cells.' },
-      ],
-      correct: 'C',
-      expEn: 'Only C means a **group of similar cells**. A and B are paper handkerchiefs — the everyday, countable meaning.',
-      expVn: 'Chỉ câu C mang nghĩa **một nhóm tế bào giống nhau**. A và B là khăn giấy — nghĩa đời thường, đếm được.',
-    },
   },
 
-  // 9 ─ One leaf, four tissues (key word: organ) + CHECK 4 ──────────────────
+  // 9 ─ One leaf, four tissues (key word: organ) + CHECK 2 ──────────────────
   {
     layout: 'split',
     accent: GREEN,
@@ -273,8 +240,8 @@ export const notes = [
     ratio: 45,
     side: 'left',
     inlineSvg: DIAGRAMS.LEAF_SECTION,
-    content: 'Guess first. Last lesson you drew the palisade cell, and it lives in a leaf — so a leaf has palisade tissue. Is that all?\n\nNo. Flat **epidermis** on top and underneath, protecting the leaf. Tall **palisade** cells packed with chloroplasts, catching the light. Loose **spongy** cells with air gaps, letting gases move around.\n\nFour tissues, four jobs, one leaf.',
-    contentVn: 'Đoán trước. Tiết trước em đã vẽ tế bào mô giậu, và nó nằm trong lá — vậy lá có mô giậu. Chỉ có thế thôi sao?\n\nKhông. **Biểu bì** dẹt ở trên và ở dưới, bảo vệ lá. Tế bào **mô giậu** cao chứa đầy lục lạp, bắt lấy ánh sáng. Tế bào **mô xốp** lỏng lẻo có khe khí, cho khí di chuyển.\n\nBốn loại mô, bốn nhiệm vụ, một chiếc lá.',
+    content: 'Guess first. Last lesson you met the palisade cell, and it lives in a leaf — so a leaf has palisade tissue. Is that all?\n\nNo. Flat **epidermis** on top and underneath, protecting the leaf. Tall **palisade** cells packed with chloroplasts, catching the light. Loose **spongy** cells with air gaps, letting gases move around.\n\nFour tissues, four jobs, one leaf.',
+    contentVn: 'Đoán trước. Tiết trước em đã gặp tế bào mô giậu, và nó nằm trong lá — vậy lá có mô giậu. Chỉ có thế thôi sao?\n\nKhông. **Biểu bì** dẹt ở trên và ở dưới, bảo vệ lá. Tế bào **mô giậu** cao chứa đầy lục lạp, bắt lấy ánh sáng. Tế bào **mô xốp** lỏng lẻo có khe khí, cho khí di chuyển.\n\nBốn loại mô, bốn nhiệm vụ, một chiếc lá.',
     notes: [
       {
         tone: 'write',
@@ -283,7 +250,7 @@ export const notes = [
       },
     ],
     check: {
-      id: 'c4',
+      id: 'c2',
       q: 'Why is a leaf an **organ** and not a tissue?',
       qVn: 'Vì sao lá là một **cơ quan** chứ không phải một mô?',
       options: [
@@ -325,8 +292,8 @@ export const notes = [
     content: 'Your brain contains neurones **and** several other kinds of cell. Your heart, stomach and lungs are organs too — each one built from several tissues.\n\nLook for the two dark **lungs**, the pale **heart** shadow between them, and the black **bubble of gas** at the top of the stomach, bottom left.',
     contentVn: 'Não em chứa tế bào thần kinh **và** vài loại tế bào khác nữa. Tim, dạ dày và phổi cũng là cơ quan — mỗi cái tạo nên từ nhiều loại mô.\n\nHãy tìm hai lá **phổi** sẫm màu, bóng **tim** nhạt màu ở giữa, và **bọt khí** đen ở đỉnh dạ dày, phía dưới bên trái.',
     reveal: {
-      label: 'Which of your five starter organs can you NOT see here?',
-      labelVn: 'Cơ quan nào trong năm cơ quan khởi động em KHÔNG nhìn thấy ở đây?',
+      label: 'Which of your starter organs can you NOT see here?',
+      labelVn: 'Cơ quan nào ở slide trước em KHÔNG nhìn thấy ở đây?',
       answer: 'The **brain** — it is above the picture — and the **intestines**, which are below it. An X-ray of the chest shows the lungs, the heart and the very top of the stomach.',
       answerVn: '**Não** — nó nằm phía trên bức ảnh — và **ruột**, nằm phía dưới. Phim X-quang ngực cho thấy phổi, tim và phần đỉnh dạ dày.',
     },
@@ -363,7 +330,7 @@ export const notes = [
     ],
   },
 
-  // 13 ─ Organ system, organism + CHECK 5 ───────────────────────────────────
+  // 13 ─ Organ system, organism + CHECK 3 ───────────────────────────────────
   {
     layout: 'callout',
     accent: ORANGE,
@@ -386,13 +353,13 @@ export const notes = [
       },
     ],
     reveal: {
-      label: 'Organ relay — how many organs can you name in 90 seconds?',
-      labelVn: 'Tiếp sức cơ quan — em kể được bao nhiêu cơ quan trong 90 giây?',
-      answer: '**brain · heart · lungs · stomach · intestines · liver · kidneys · skin · eyes · ears · tongue · bones · muscles**. And yes — your **skin** is an organ. It is the biggest one you have.',
-      answerVn: '**brain (não) · heart (tim) · lungs (phổi) · stomach (dạ dày) · intestines (ruột) · liver (gan) · kidneys (thận) · skin (da) · eyes (mắt) · ears (tai) · tongue (lưỡi) · bones (xương) · muscles (cơ)**. Và đúng vậy — **da** của em là một cơ quan. Nó là cơ quan lớn nhất em có.',
+      label: 'More organs you have',
+      labelVn: 'Thêm các cơ quan em có',
+      answer: 'Besides the five you started with: **liver · kidneys · skin · eyes · ears · tongue**. Yes — your **skin** is an organ. It is the biggest one you have.',
+      answerVn: 'Ngoài năm cơ quan em bắt đầu với: **liver (gan) · kidneys (thận) · skin (da) · eyes (mắt) · ears (tai) · tongue (lưỡi)**. Đúng vậy — **da** của em là một cơ quan. Nó là cơ quan lớn nhất em có.',
     },
     check: {
-      id: 'c5',
+      id: 'c3',
       q: 'Which of these is an **organ system**?',
       qVn: 'Cái nào sau đây là một **hệ cơ quan**?',
       options: [
@@ -406,7 +373,49 @@ export const notes = [
     },
   },
 
-  // 14 ─ The five levels (draw this) ────────────────────────────────────────
+  // 14 ─ Sort them onto the ladder: SORT ────────────────────────────────────
+  {
+    layout: 'statement',
+    accent: PURPLE,
+    icon: 'Boxes',
+    eyebrow: 'Every word, one more time',
+    eyebrowVn: 'Mọi từ, thêm một lần nữa',
+    title: 'Sort Them Onto the Ladder',
+    titleVn: 'Sắp xếp chúng lên bậc thang',
+    label: 'Eight examples, five rungs',
+    labelVn: 'Tám ví dụ, năm bậc thang',
+    labelIcon: 'Layers',
+    text: 'Every example below is one you have already met today.',
+    textVn: 'Mỗi ví dụ dưới đây đều là thứ em đã gặp trong bài hôm nay.',
+    sub: 'Drag each one onto the rung it belongs on.',
+    subVn: 'Kéo mỗi ví dụ vào đúng bậc thang của nó.',
+    activity: {
+      id: 'a2', type: 'sort',
+      prompt: 'Sort these eight examples onto the right rung of the ladder.',
+      promptVn: 'Sắp xếp tám ví dụ này vào đúng bậc thang.',
+      bins: [
+        { id: 'cell', name: 'Cell', nameVn: 'Tế bào' },
+        { id: 'tissue', name: 'Tissue', nameVn: 'Mô' },
+        { id: 'organ', name: 'Organ', nameVn: 'Cơ quan' },
+        { id: 'organsys', name: 'Organ system', nameVn: 'Hệ cơ quan' },
+        { id: 'organism', name: 'Organism', nameVn: 'Sinh vật' },
+      ],
+      cards: [
+        { id: 'cc', name: 'A ciliated cell', nameVn: 'Một tế bào có lông rung', bin: 'cell' },
+        { id: 'ce', name: 'Ciliated epithelium', nameVn: 'Biểu mô có lông rung', bin: 'tissue' },
+        { id: 'oe', name: 'Onion epidermis', nameVn: 'Biểu bì hành tây', bin: 'tissue' },
+        { id: 'lung', name: 'A lung', nameVn: 'Một lá phổi', bin: 'organ' },
+        { id: 'leaf', name: 'A leaf', nameVn: 'Một chiếc lá', bin: 'organ' },
+        { id: 'breath', name: 'The breathing system', nameVn: 'Hệ hô hấp', bin: 'organsys' },
+        { id: 'digest', name: 'The digestive system', nameVn: 'Hệ tiêu hoá', bin: 'organsys' },
+        { id: 'mosq', name: 'A mosquito', nameVn: 'Một con muỗi', bin: 'organism' },
+      ],
+      explain: 'One kind of cell alone is a **cell**. The same kind joined together doing one job is a **tissue**. Several different tissues together are an **organ**. Organs sharing one job form an **organ system**. And any whole living thing — even a mosquito — is an **organism**.',
+      explainVn: 'Một loại tế bào đơn lẻ là một **tế bào**. Cùng loại đó nối liền nhau làm một nhiệm vụ là một **mô**. Nhiều loại mô khác nhau cùng nhau là một **cơ quan**. Các cơ quan chung một nhiệm vụ tạo thành một **hệ cơ quan**. Và bất kỳ cơ thể sống hoàn chỉnh nào — kể cả một con muỗi — là một **sinh vật**.',
+    },
+  },
+
+  // 15 ─ The five levels (draw this) ────────────────────────────────────────
   {
     layout: 'split',
     accent: ORANGE,
@@ -429,7 +438,39 @@ export const notes = [
     ],
   },
 
-  // 15 ─ Which level is it? (widget) ────────────────────────────────────────
+  // 16 ─ Smallest to largest: ORDER ─────────────────────────────────────────
+  {
+    layout: 'statement',
+    accent: PURPLE,
+    icon: 'Repeat',
+    eyebrow: 'Same ladder, shuffled',
+    eyebrowVn: 'Vẫn bậc thang đó, đã bị xáo trộn',
+    title: 'Smallest to Largest',
+    titleVn: 'Từ nhỏ nhất đến lớn nhất',
+    label: 'The ladder’s own examples',
+    labelVn: 'Chính các ví dụ trên bậc thang',
+    labelIcon: 'Repeat',
+    text: 'The five examples from your ladder are shuffled below.',
+    textVn: 'Năm ví dụ trên bậc thang của em bị xáo trộn ở dưới đây.',
+    sub: 'Put them back in order, from the smallest up to the whole living thing.',
+    subVn: 'Xếp lại chúng theo đúng thứ tự, từ nhỏ nhất đến cả một cơ thể sống.',
+    activity: {
+      id: 'a3', type: 'order',
+      prompt: 'Order the ladder’s examples, smallest to largest.',
+      promptVn: 'Xếp thứ tự các ví dụ trên bậc thang, từ nhỏ nhất đến lớn nhất.',
+      steps: [
+        { id: 's1', name: 'A ciliated cell', nameVn: 'Một tế bào có lông rung' },
+        { id: 's2', name: 'Ciliated epithelium', nameVn: 'Biểu mô có lông rung' },
+        { id: 's3', name: 'A lung', nameVn: 'Một lá phổi' },
+        { id: 's4', name: 'The breathing system', nameVn: 'Hệ hô hấp' },
+        { id: 's5', name: 'You', nameVn: 'Em' },
+      ],
+      explain: 'One cell, joined into a tissue, built into an organ, teamed into an organ system, all inside one organism: you. Each level is built out of the one before it.',
+      explainVn: 'Một tế bào, nối thành một mô, tạo nên một cơ quan, hợp thành một hệ cơ quan, tất cả bên trong một sinh vật: chính là em. Mỗi cấp độ được tạo nên từ cấp độ liền trước.',
+    },
+  },
+
+  // 17 ─ Which level is it? (widget) ────────────────────────────────────────
   {
     layout: 'split',
     accent: PURPLE,
@@ -440,14 +481,14 @@ export const notes = [
     titleVn: 'Đây là cấp độ nào?',
     ratio: 42,
     content:
-      'One thing at a time on the screen. Decide which level it is — **1** for a cell, up to **5** for an organism — and say it out loud **before** you press the button.',
+      'One thing at a time on the screen. Decide which level it is — **1** for a cell, up to **5** for an organism — before you press the button.',
     contentVn:
-      'Mỗi lần một thứ hiện trên màn hình. Hãy quyết định đó là cấp độ nào — **1** là tế bào, đến **5** là sinh vật — và nói to **trước khi** bấm nút.',
+      'Mỗi lần một thứ hiện trên màn hình. Hãy quyết định đó là cấp độ nào — **1** là tế bào, đến **5** là sinh vật — trước khi bấm nút.',
     notes: [
       {
         tone: 'task',
-        badge: 'Look at your ladder',
-        badgeVn: 'Nhìn vào sơ đồ của em',
+        badge: 'Use your ladder',
+        badgeVn: 'Dùng sơ đồ của em',
         text: 'Your Draw This has the five levels in the right order. Use it. That is what notes are for.',
         textVn: 'Hình em vừa vẽ có đủ năm cấp độ theo đúng thứ tự. Hãy dùng nó. Ghi chép là để dùng như vậy.',
       },
@@ -455,37 +496,7 @@ export const notes = [
     widget: LevelDrillWidget,
   },
 
-  // 16 ─ Question 3, as a hunt ──────────────────────────────────────────────
-  {
-    layout: 'split',
-    accent: TEAL,
-    icon: 'HelpCircle',
-    eyebrow: 'Learner’s Book, page 24 · Question 3',
-    eyebrowVn: 'Sách học sinh, trang 24 · Câu hỏi 3',
-    title: 'The Answers Are Already in Your Notebook',
-    titleVn: 'Đáp án đã có sẵn trong vở của em',
-    ratio: 55,
-    content:
-      'Choose from: **organism · tissue · organ · organ system**. Say each answer out loud, then **point to where you wrote it** today.\n\n' +
-      '> **a.** A group of similar cells is called a ______ .\n' +
-      '> **b.** An ______ is a structure made of many different tissues.\n' +
-      '> **c.** An ______ is a group of organs that carry out a particular function.\n' +
-      '> **d.** An ______ is a living thing.',
-    contentVn:
-      'Chọn trong: **organism · tissue · organ · organ system**. Nói to từng đáp án, rồi **chỉ vào chỗ em đã viết nó** hôm nay.\n\n' +
-      '> **a.** A group of similar cells is called a ______ .\n' +
-      '> **b.** An ______ is a structure made of many different tissues.\n' +
-      '> **c.** An ______ is a group of organs that carry out a particular function.\n' +
-      '> **d.** An ______ is a living thing.',
-    reveal: {
-      label: 'Check',
-      labelVn: 'Kiểm tra',
-      answer: '**a.** tissue  ·  **b.** organ  ·  **c.** organ system  ·  **d.** organism\n\nIf you could not point to one of them, that is the definition to copy up now.',
-      answerVn: '**a.** tissue (mô)  ·  **b.** organ (cơ quan)  ·  **c.** organ system (hệ cơ quan)  ·  **d.** organism (sinh vật)\n\nNếu em không chỉ được chỗ đã viết một định nghĩa nào đó, thì hãy chép lại đúng định nghĩa ấy ngay bây giờ.',
-    },
-  },
-
-  // 17 ─ Recap ──────────────────────────────────────────────────────────────
+  // 18 ─ Recap ──────────────────────────────────────────────────────────────
   {
     layout: 'stack',
     variant: 'checklist',
@@ -497,14 +508,14 @@ export const notes = [
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
     content:
-      '> Your notebook should now have **1 body outline**, **4 definitions**, **2 sentences of your own**, and **1 labelled ladder**. Check. Exit question: a **jellyfish** has no heart, no lungs and no brain. It is still an organism. So which of the five levels can a living thing manage **without**?',
+      '> Exit question: a **jellyfish** has no heart, no lungs and no brain. It is still an organism. So which of the five levels can a living thing manage **without**?',
     contentVn:
-      '> Trong vở của em bây giờ phải có **1 hình cơ thể**, **4 định nghĩa**, **2 câu của riêng em**, và **1 sơ đồ năm cấp độ có ghi chú**. Hãy kiểm tra. Câu hỏi ra về: một con **sứa** không có tim, không có phổi và không có não. Nó vẫn là một sinh vật. Vậy một cơ thể sống có thể **thiếu** cấp độ nào trong năm cấp độ đó?',
+      '> Câu hỏi ra về: một con **sứa** không có tim, không có phổi và không có não. Nó vẫn là một sinh vật. Vậy một cơ thể sống có thể **thiếu** cấp độ nào trong năm cấp độ đó?',
     items: [
       { text: 'Explain what a **tissue** is, and give one animal and one plant example.', textVn: 'Giải thích **mô** là gì, và nêu một ví dụ ở động vật và một ở thực vật.' },
       { text: 'Explain what an **organ** is, and say why a leaf is one.', textVn: 'Giải thích **cơ quan** là gì, và nói vì sao lá là một cơ quan.' },
       { text: 'Explain what an **organ system** is, and name two of them.', textVn: 'Giải thích **hệ cơ quan** là gì, và kể tên hai hệ.' },
-      { text: 'Name **five human organs** and point to each on yourself.', textVn: 'Kể **năm cơ quan của người** và chỉ vào từng cái trên cơ thể em.' },
+      { text: 'Name **five human organs** and say where each one sits in the body.', textVn: 'Kể **năm cơ quan của người** và nói vị trí của từng cái trong cơ thể.' },
       { text: 'Say the five levels **in order**, from cell up to organism.', textVn: 'Nói năm cấp độ **theo đúng thứ tự**, từ tế bào lên sinh vật.' },
       { text: 'Use the word *tissue* correctly in **both** of its meanings.', textVn: 'Dùng đúng từ *tissue* ở **cả hai** nghĩa của nó.' },
     ],

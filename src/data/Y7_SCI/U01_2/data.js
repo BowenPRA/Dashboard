@@ -1,12 +1,15 @@
 // src/data/Y7_SCI/U01_2/data.js
-// 1.2 Animal Cells — Year 7 Science self-study unit. Seven scored tasks:
-// 130 XP available, capped at 100 (docs/y7-science-course.md §3).
+// 1.2 Animal Cells — Year 7 Science self-study unit, rebuilt to the
+// engagement plan (docs/y7-science/ENGAGEMENT-PLAN.md). Nine scored tasks:
+// 145 XP available, capped at 100 (docs/y7-science-course.md §3). SPELLING
+// is dropped; WORKBOOK and LABEL_IT are new.
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio.
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { workbook } from './workbook.js';
 import { DIAGRAMS } from './diagrams.js';
 
 export const U01_2_DATA = {
@@ -25,22 +28,26 @@ export const U01_2_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 20 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
       ],
     },
     {
+      // 25 of the 35 XP before it (71%). The practice phase is where the
+      // variety lives: a mixed-type workbook, the labelling task, the reading,
+      // the AI-marked questions and diagrams (ENGAGEMENT-PLAN §3).
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 30,
+      threshold: 25,
       tasks: [
-        { id: 'SPELLING', dbKey: 'p2', maxXP: 10 },
-        { id: 'READ_COMP', dbKey: 'p4', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'LABEL_IT', dbKey: 'p28', maxXP: 20 },
+        { id: 'READ_COMP', dbKey: 'p4', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
-        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 20 },
+        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 15 },
       ],
     },
     {
-      // Quiz and arcade share one gate at 80 of the 110 XP before it (73%).
+      // Quiz and arcade share one gate at 80 of the 125 XP before it (64%).
       id: 'mastery',
       title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
@@ -234,7 +241,55 @@ export const U01_2_DATA = {
     },
   ],
 
+  // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
+  // at runtime, a pin where each label's leader line ended. Coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U01_2 <KEY>`. Each bank carries one
+  // or two distractors. SLIDE_PREP's four boxes each get a pin at the hand's
+  // endpoint in that box, with the step name as the answer.
+  labelIt: [
+    {
+      id: 'animal',
+      title: 'Label the animal cell', titleVn: 'Gắn nhãn tế bào động vật',
+      inlineSvg: DIAGRAMS.ANIMAL_CELL, viewBox: '0 0 760 430',
+      pins: [
+        // Pins sit where the printed label was (the outer end of each leader
+        // line), so the line still points at the part.
+        { id: 'p1', x: 650, y: 96, answer: 'membrane' },
+        { id: 'p2', x: 690, y: 176, answer: 'cyto' },
+        { id: 'p3', x: 650, y: 248, answer: 'mito' },
+        { id: 'p4', x: 706, y: 326, answer: 'nucleus' },
+      ],
+      bank: [
+        { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
+        { val: 'cyto', text: 'Cytoplasm', textVn: 'Tế bào chất' },
+        { val: 'mito', text: 'Mitochondrion', textVn: 'Ti thể' },
+        { val: 'nucleus', text: 'Nucleus', textVn: 'Nhân' },
+        { val: 'wall', text: 'Cell wall', textVn: 'Thành tế bào' },
+      ],
+    },
+    {
+      id: 'slide_prep',
+      title: 'Label the steps for making a slide', titleVn: 'Gắn nhãn các bước chuẩn bị tiêu bản',
+      inlineSvg: DIAGRAMS.SLIDE_PREP, viewBox: '0 0 760 240',
+      pins: [
+        { id: 'p1', x: 146, y: 64, answer: 'cheek' },
+        { id: 'p2', x: 290, y: 88, answer: 'slide' },
+        { id: 'p3', x: 476, y: 44, answer: 'stain' },
+        { id: 'p4', x: 662, y: 132, answer: 'coverslip' },
+      ],
+      bank: [
+        { val: 'cheek', text: 'Rub the cotton bud on your cheek', textVn: 'Chà tăm bông vào má' },
+        { val: 'slide', text: 'Rub the bud on the slide', textVn: 'Chà tăm bông lên lam kính' },
+        { val: 'stain', text: 'Add the methylene blue', textVn: 'Nhỏ xanh methylen' },
+        { val: 'coverslip', text: 'Lower the cover slip', textVn: 'Hạ lamen xuống' },
+        { val: 'eyepiece', text: 'Look down the eyepiece', textVn: 'Nhìn qua thị kính' },
+        { val: 'objective', text: 'Choose the smallest objective lens', textVn: 'Chọn vật kính nhỏ nhất' },
+      ],
+    },
+  ],
+
   notes: notes,
+  workbook: workbook,
   assessment: assessment,
   games: games,
 };

@@ -1,0 +1,443 @@
+import React, { useMemo, useRef, useState } from 'react';
+import {
+  CheckCircle2, AlertTriangle, GripVertical, ChevronUp, ChevronDown, Target,
+  Sparkles, XCircle, CornerDownRight, MousePointerClick,
+} from 'lucide-react';
+import { stripLabels } from '../../utils/labelIt';
+
+/**
+ * An interactive activity on a Notes slide — the self-study replacement for
+ * "on your whiteboard" and "hands up". Scored like a check: one item, right or
+ * wrong, recorded once. The slide cannot be left until it is done.
+ *
+ * Types (schema in docs/y7-science/ENGAGEMENT-PLAN.md §2.1):
+ *   sort      tap/drag cards into bins        correct = every card right on the first check
+ *   order     arrange shuffled steps          correct = every step in place on the first check
+ *   estimate  slider guess, then reveal       correct = within tolerance
+ *   hotspot   tap the named part on an SVG    correct = hit within two tries
+ *   predict   choose, then see the reveal     correct = the `correct` option, or always if none
+ *
+ * `result` is `{ correct, done, ... }` from the deck's answer map; `onResult`
+ * is called exactly once with it. Field names avoid `text`/`content` so the
+ * narration generator does not read the cards aloud.
+ */
+
+const GREEN = '#58cc02';
+const RED = '#ff4b4b';
+
+const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
+
+/** Deterministic shuffle so a slide shows the same order every visit. */
+function seededShuffle(list, seed) {
+  let h = 2166136261;
+  for (const ch of String(seed)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const rand = () => { h ^= h << 13; h >>>= 0; h ^= h >> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(rand() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  // never hand back the original order for an ordering task
+  if (out.length > 2 && out.every((x, i) => x === list[i])) out.push(out.shift());
+  return out;
+}
+
+const T = {
+  en: {
+    check: 'Check', done: 'Done', tapCard: 'Tap a card, then tap its bin', dropHere: 'Tap to place',
+    allPlaced: 'All placed', lockIn: 'Lock in my guess', yourGuess: 'Your guess', answer: 'Answer',
+    tapPart: 'Tap the diagram', tries: 'Try again — one more go', correct: 'Correct', notQuite: 'Not quite', missed: 'Not on a part',
+    shouldBe: 'should be', choose: 'Choose one', reveal: 'See what happens', up: 'Move up', down: 'Move down',
+    close: 'Close!', wayOff: 'Not close', spotOn: 'Spot on',
+  },
+  vn: {
+    check: 'Kiểm tra', done: 'Xong', tapCard: 'Chạm một thẻ, rồi chạm vào ô của nó', dropHere: 'Chạm để đặt',
+    allPlaced: 'Đã đặt hết', lockIn: 'Chốt dự đoán', yourGuess: 'Dự đoán của em', answer: 'Đáp án',
+    tapPart: 'Chạm vào hình', tries: 'Thử lại — còn một lần', correct: 'Chính xác', notQuite: 'Chưa đúng', missed: 'Không trúng bộ phận nào',
+    shouldBe: 'phải là', choose: 'Chọn một', reveal: 'Xem điều gì xảy ra', up: 'Lên', down: 'Xuống',
+    close: 'Gần đúng!', wayOff: 'Chưa gần', spotOn: 'Chính xác',
+  },
+};
+
+// ── shared chrome ────────────────────────────────────────────────────────────
+
+function Header({ activity, lang, parseText, isDisplayMode }) {
+  return (
+    <>
+      <div className={`flex items-center text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest mb-2 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
+        <MousePointerClick className="w-4 h-4 mr-2" strokeWidth={3} />
+        {lang === 'vn' ? 'Hoạt động' : 'Try it'}
+      </div>
+      <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug mb-3 ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
+        {parseText(pickL(lang, activity.prompt, activity.promptVn))}
+      </div>
+    </>
+  );
+}
+
+function Verdict({ ok, lang, children }) {
+  const t = T[lang] || T.en;
+  return (
+    <div className={`rounded-xl border-2 mt-3 p-3 ${ok ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'}`}>
+      <div className={`flex items-center font-black uppercase tracking-widest text-[10px] lg:text-xs mb-1 ${ok ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
+        {ok ? <CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} /> : <AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />}
+        {ok ? t.correct : t.notQuite}
+      </div>
+      <div className={`font-bold leading-relaxed text-sm lg:text-base ${ok ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>{children}</div>
+    </div>
+  );
+}
+
+const btn = 'px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-xs border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
+const primary = `${btn} bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159bd9]`;
+
+// ── sort ─────────────────────────────────────────────────────────────────────
+
+function SortActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const cards = useMemo(() => seededShuffle(activity.cards || [], activity.id || 'sort'), [activity]);
+  const [placed, setPlaced] = useState(result?.placed || {});   // cardId -> binId
+  const [picked, setPicked] = useState(null);
+  const [dragged, setDragged] = useState(null);
+  const checked = !!result?.done;
+
+  const bank = cards.filter((c) => !placed[c.id]);
+  const put = (cardId, binId) => {
+    if (checked) return;
+    setPlaced((p) => ({ ...p, [cardId]: binId }));
+    setPicked(null); setDragged(null);
+  };
+  const unput = (cardId) => {
+    if (checked) return;
+    setPlaced((p) => { const n = { ...p }; delete n[cardId]; return n; });
+  };
+  const check = () => {
+    const wrong = cards.filter((c) => placed[c.id] !== c.bin).map((c) => c.id);
+    onResult({ done: true, correct: wrong.length === 0, placed, wrong });
+  };
+
+  const chip = (c, inBin) => {
+    const ok = checked ? placed[c.id] === c.bin : null;
+    const style = checked
+      ? (ok ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-[#ffdfe0] border-[#ea2b2b] text-[#c9362a]')
+      : picked === c.id
+        ? 'bg-[#1cb0f6] border-[#1899d6] text-white scale-105'
+        : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:-translate-y-0.5';
+    return (
+      <button
+        key={c.id}
+        draggable={!checked}
+        onDragStart={(e) => { setDragged(c.id); e.dataTransfer.effectAllowed = 'move'; }}
+        onClick={(e) => { e.stopPropagation(); if (checked) return; if (inBin) unput(c.id); else setPicked(picked === c.id ? null : c.id); }}
+        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 border-b-[4px] font-bold text-sm transition-all cursor-pointer ${style}`}
+      >
+        {!checked && !inBin && <GripVertical className="w-4 h-4 opacity-40" strokeWidth={3} />}
+        {parseText(pickL(lang, c.name, c.nameVn))}
+        {checked && !ok && (
+          <span className="ml-1 text-[10px] uppercase tracking-widest opacity-80">
+            → {pickL(lang, activity.bins.find((b) => b.id === c.bin)?.name, activity.bins.find((b) => b.id === c.bin)?.nameVn)}
+          </span>
+        )}
+        {checked && (ok ? <CheckCircle2 className="w-4 h-4" strokeWidth={3} /> : <XCircle className="w-4 h-4" strokeWidth={3} />)}
+      </button>
+    );
+  };
+
+  return (
+    <div>
+      {!checked && (
+        <div className="flex flex-wrap gap-2 items-center justify-center p-3 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40 min-h-[56px] mb-3">
+          {bank.length === 0
+            ? <span className="text-slate-400 font-black uppercase tracking-widest text-xs flex items-center gap-2"><CheckCircle2 className="w-4 h-4" />{t.allPlaced}</span>
+            : bank.map((c) => chip(c, false))}
+        </div>
+      )}
+      <div className={`grid gap-2 ${activity.bins.length > 2 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
+        {activity.bins.map((bin) => {
+          const here = cards.filter((c) => placed[c.id] === bin.id);
+          const active = !!picked && !checked;
+          return (
+            <div
+              key={bin.id}
+              onClick={() => picked && put(picked, bin.id)}
+              onDragOver={(e) => { e.preventDefault(); }}
+              onDrop={(e) => { e.preventDefault(); if (dragged) put(dragged, bin.id); }}
+              className={`rounded-2xl border-2 overflow-hidden bg-white dark:bg-slate-800 transition-all ${active ? 'border-[#1cb0f6] ring-4 ring-[#1cb0f6]/20 cursor-pointer' : 'border-slate-200 dark:border-slate-700'}`}
+            >
+              <div className="bg-slate-50 dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-700 px-3 py-2 font-black text-slate-600 dark:text-slate-300 text-sm text-center">
+                {parseText(pickL(lang, bin.name, bin.nameVn))}
+              </div>
+              <div className="p-2.5 min-h-[56px] flex flex-wrap gap-2 items-center">
+                {here.length === 0 && (
+                  <span className={`flex items-center gap-1.5 font-black uppercase tracking-widest text-[10px] ${active ? 'text-[#1cb0f6] animate-pulse' : 'text-slate-300 dark:text-slate-600'}`}>
+                    <CornerDownRight className="w-3.5 h-3.5" />{active ? t.dropHere : t.tapCard}
+                  </span>
+                )}
+                {here.map((c) => chip(c, true))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {!checked && (
+        <div className="mt-3 flex justify-end">
+          <button onClick={check} disabled={bank.length > 0} className={primary}>{t.check}</button>
+        </div>
+      )}
+      {checked && (
+        <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>
+      )}
+    </div>
+  );
+}
+
+// ── order ────────────────────────────────────────────────────────────────────
+
+function OrderActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const steps = activity.steps || [];
+  const [order, setOrder] = useState(() => result?.order || seededShuffle(steps.map((s) => s.id), activity.id || 'order'));
+  const [dragged, setDragged] = useState(null);
+  const checked = !!result?.done;
+  const byId = Object.fromEntries(steps.map((s) => [s.id, s]));
+
+  const move = (from, to) => {
+    if (checked || to < 0 || to >= order.length) return;
+    setOrder((o) => { const n = [...o]; const [x] = n.splice(from, 1); n.splice(to, 0, x); return n; });
+  };
+  const check = () => {
+    const correct = order.every((id, i) => id === steps[i].id);
+    onResult({ done: true, correct, order });
+  };
+
+  return (
+    <div>
+      <ol className="flex flex-col gap-2">
+        {order.map((id, i) => {
+          const s = byId[id];
+          if (!s) return null;
+          const ok = checked ? steps[i].id === id : null;
+          const style = checked
+            ? (ok ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-[#ffdfe0] border-[#ea2b2b] text-[#c9362a]')
+            : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200';
+          return (
+            <li
+              key={id}
+              draggable={!checked}
+              onDragStart={() => setDragged(i)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => { e.preventDefault(); if (dragged != null) move(dragged, i); setDragged(null); }}
+              className={`flex items-center gap-3 rounded-xl border-2 border-b-[4px] px-3 py-2 font-bold text-sm transition-all ${style}`}
+            >
+              <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-500 flex items-center justify-center font-black text-xs shrink-0">{i + 1}</span>
+              <span className="flex-1">{parseText(pickL(lang, s.name, s.nameVn))}</span>
+              {checked
+                ? (ok ? <CheckCircle2 className="w-5 h-5" strokeWidth={3} /> : <span className="text-[10px] uppercase tracking-widest">{t.shouldBe} #{steps.findIndex((x) => x.id === id) + 1}</span>)
+                : (
+                  <span className="flex gap-1">
+                    <button onClick={() => move(i, i - 1)} disabled={i === 0} className="p-1 rounded-lg border-2 border-slate-200 dark:border-slate-600 disabled:opacity-30" title={t.up}><ChevronUp className="w-4 h-4" strokeWidth={3} /></button>
+                    <button onClick={() => move(i, i + 1)} disabled={i === order.length - 1} className="p-1 rounded-lg border-2 border-slate-200 dark:border-slate-600 disabled:opacity-30" title={t.down}><ChevronDown className="w-4 h-4" strokeWidth={3} /></button>
+                  </span>
+                )}
+            </li>
+          );
+        })}
+      </ol>
+      {!checked && <div className="mt-3 flex justify-end"><button onClick={check} className={primary}>{t.check}</button></div>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
+// ── estimate ─────────────────────────────────────────────────────────────────
+
+function EstimateActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const { min = 0, max = 100, step = 1, answer, unit = '' } = activity;
+  const [value, setValue] = useState(result?.guess ?? Math.round(((min + max) / 2) / step) * step);
+  const checked = !!result?.done;
+  const tol = activity.tolerance ?? 0.2;
+  const fmt = (n) => `${Number(n).toLocaleString()}${unit ? ` ${unit}` : ''}`;
+  const pct = (n) => `${((n - min) / (max - min)) * 100}%`;
+
+  const lock = () => {
+    const off = Math.abs(value - answer);
+    const within = off <= Math.max(Math.abs(answer) * tol, step / 2);
+    onResult({ done: true, correct: within, guess: value });
+  };
+  const closeness = () => {
+    const off = Math.abs((result?.guess ?? value) - answer) / Math.max(Math.abs(answer), 1);
+    if (off <= tol / 4) return t.spotOn;
+    if (off <= tol) return t.close;
+    return t.wayOff;
+  };
+
+  return (
+    <div>
+      <div className="relative pt-8 pb-2 px-2">
+        {checked && (
+          <div className="absolute top-0 -translate-x-1/2 flex flex-col items-center" style={{ left: `calc(${pct(answer)} * 0.96 + 2%)` }}>
+            <span className="px-2 py-0.5 rounded-lg bg-[#58cc02] text-white text-[10px] font-black uppercase tracking-widest whitespace-nowrap">{t.answer}: {fmt(answer)}</span>
+            <span className="w-0.5 h-3 bg-[#58cc02]" />
+          </div>
+        )}
+        <input
+          type="range" min={min} max={max} step={step} value={value} disabled={checked}
+          onChange={(e) => setValue(Number(e.target.value))}
+          className="w-full accent-[#1cb0f6] h-3 cursor-pointer"
+        />
+        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">
+          <span>{fmt(min)}</span><span>{fmt(max)}</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between gap-3 mt-2">
+        <div className="font-black text-slate-800 dark:text-slate-100 text-lg">
+          <span className="text-[10px] uppercase tracking-widest text-slate-400 mr-2">{t.yourGuess}</span>{fmt(value)}
+        </div>
+        {!checked && <button onClick={lock} className={primary}>{t.lockIn}</button>}
+      </div>
+      {checked && (
+        <Verdict ok={result.correct} lang={lang}>
+          <span className="mr-2 px-2 py-0.5 rounded-lg bg-white/60 dark:bg-slate-900/40 text-[10px] uppercase tracking-widest">{closeness()}</span>
+          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+        </Verdict>
+      )}
+    </div>
+  );
+}
+
+// ── hotspot ──────────────────────────────────────────────────────────────────
+
+function HotspotActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const svgRef = useRef(null);
+  const [tries, setTries] = useState(result?.tries || 0);
+  const [last, setLast] = useState(null);
+  const checked = !!result?.done;
+  const vbParts = String(activity.viewBox || '0 0 100 100').split(/[\s,]+/).map(Number);
+  const vb = { x: vbParts[0], y: vbParts[1], w: vbParts[2], h: vbParts[3] };
+  const targets = activity.targets || [];
+  const answer = targets.find((x) => x.id === activity.correct);
+  const bareSvg = useMemo(() => stripLabels(activity.svg), [activity.svg]);
+
+  const toView = (e) => {
+    const svg = svgRef.current;
+    if (!svg?.getScreenCTM) return null;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    return { x: pt.x, y: pt.y };
+  };
+  const hitAt = (p) => targets.find((tg) => Math.hypot(p.x - tg.x, p.y - tg.y) <= (tg.r || 30));
+
+  const tap = (e) => {
+    if (checked) return;
+    const p = toView(e);
+    if (!p) return;
+    const hit = hitAt(p);
+    const n = tries + 1;
+    setTries(n);
+    setLast({ ...p, hit });
+    if (hit?.id === activity.correct) onResult({ done: true, correct: true, tries: n });
+    else if (n >= 2) onResult({ done: true, correct: false, tries: n });
+  };
+
+  return (
+    <div>
+      {/* Sized by height first: the footer has ~40vh, and a diagram that needs
+          scrolling to see cannot be tapped. Printed labels are stripped so the
+          diagram never answers its own question. */}
+      <div className="relative mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-white"
+        style={{ aspectRatio: `${vb.w} / ${vb.h}`, width: `min(100%, ${((vb.w / vb.h) * 38).toFixed(1)}vh)` }}>
+        <div className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full" dangerouslySetInnerHTML={{ __html: bareSvg }} />
+        <svg ref={svgRef} viewBox={activity.viewBox} preserveAspectRatio="xMidYMid meet" onClick={tap}
+          className={`absolute inset-0 w-full h-full touch-manipulation ${checked ? '' : 'cursor-crosshair'}`}>
+          <rect x={vb.x} y={vb.y} width={vb.w} height={vb.h} fill="transparent" />
+          {last && !checked && (
+            <circle cx={last.x} cy={last.y} r={vb.w / 40} fill={`${RED}33`} stroke={RED} strokeWidth={vb.w / 200} pointerEvents="none" />
+          )}
+          {checked && answer && (
+            <circle cx={answer.x} cy={answer.y} r={answer.r || 30} fill={result.correct ? `${GREEN}33` : `${RED}22`} stroke={result.correct ? GREEN : RED} strokeWidth={vb.w / 150} pointerEvents="none" />
+          )}
+          {checked && last && !result.correct && (
+            <circle cx={last.x} cy={last.y} r={vb.w / 40} fill={`${RED}33`} stroke={RED} strokeWidth={vb.w / 200} strokeDasharray="6 4" pointerEvents="none" />
+          )}
+        </svg>
+      </div>
+      {!checked && (
+        <div className="mt-2 text-center text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-2">
+          <Target className="w-4 h-4" />
+          {tries === 0 ? t.tapPart : `${last?.hit ? pickL(lang, last.hit.name, last.hit.nameVn) : t.missed} — ${t.tries}`}
+        </div>
+      )}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
+// ── predict ──────────────────────────────────────────────────────────────────
+
+function PredictActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const [chosen, setChosen] = useState(result?.chosen || null);
+  const checked = !!result?.done;
+  const scored = activity.correct != null;
+
+  const reveal = () => {
+    onResult({ done: true, correct: scored ? chosen === activity.correct : true, chosen });
+  };
+
+  return (
+    <div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {(activity.options || []).map((o) => {
+          const isChosen = chosen === o.val;
+          const isRight = scored && o.val === activity.correct;
+          let style = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[#1cb0f6]';
+          if (isChosen && !checked) style = 'bg-[#1cb0f6] border-[#1899d6] text-white';
+          if (checked) {
+            if (isRight || (!scored && isChosen)) style = 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]';
+            else if (isChosen) style = 'bg-[#ffdfe0] border-[#ea2b2b] text-[#c9362a]';
+            else style = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 opacity-60';
+          }
+          return (
+            <button key={o.val} disabled={checked} onClick={() => setChosen(o.val)}
+              className={`text-left rounded-xl border-2 border-b-[4px] p-3 font-bold text-sm transition-all ${style}`}>
+              {parseText(pickL(lang, o.name, o.nameVn))}
+            </button>
+          );
+        })}
+      </div>
+      {!checked && (
+        <div className="mt-3 flex justify-end">
+          <button onClick={reveal} disabled={!chosen} className={primary}><Sparkles className="w-4 h-4 inline mr-1.5 -mt-0.5" />{t.reveal}</button>
+        </div>
+      )}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
+// ── dispatcher ───────────────────────────────────────────────────────────────
+
+export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false }) {
+  if (!activity) return null;
+  const common = { activity, lang, result, onResult, parseText };
+  let body;
+  switch (activity.type) {
+    case 'sort': body = <SortActivity {...common} />; break;
+    case 'order': body = <OrderActivity {...common} />; break;
+    case 'estimate': body = <EstimateActivity {...common} />; break;
+    case 'hotspot': body = <HotspotActivity {...common} />; break;
+    case 'predict': body = <PredictActivity {...common} />; break;
+    default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
+  }
+  return (
+    <div>
+      <Header activity={activity} lang={lang} parseText={parseText} isDisplayMode={isDisplayMode} />
+      {body}
+    </div>
+  );
+}
+
+export { ACTIVITY_TYPES } from '../../utils/activity';

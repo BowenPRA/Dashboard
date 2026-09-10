@@ -1,18 +1,19 @@
 // src/data/Y7_SCI/U02_2/notes.js
-// 2.2 Changes of State — a self-study reduction of TWO classroom decks
-// (C:\Users\bowen\lessons, content/y7-science/U02_2a and U02_2b) plus the
-// classroom's interactive particle model (U02_model_states): the five change
-// words and the English that carries them, then measuring volume and
-// temperature and the heating-water investigation. 20 layout slides, 5 checks.
+// 2.2 Changes of State — the self-study deck, rebuilt to the engagement plan
+// (docs/y7-science/ENGAGEMENT-PLAN.md). 19 layout slides; 6 scored items —
+// four interactive activities (order · estimate · hotspot · predict) and two
+// checks — across five different activity/question types.
 //
-// Reduced from 36 classroom slides. The pairs card game becomes a reveal; the
-// verb/noun pairs fold into the cycle diagram; the two reading-scale questions
-// fold into the slides that teach the scale; the practical is kept as a method
-// to learn and a result to explain, because the graph — the temperature stops
-// climbing at the boiling point — is the payoff of the whole unit. The
-// StateModel widget is the one thing a still slide cannot do: run the change.
-// Every photograph is credited in docs/credits.md. The `check:` block is
-// always the LAST key.
+// The classroom deck opened with "draw the particles on paper"; this one
+// opens with the water-cycle order activity. Every "on paper / in your
+// notebook / copy this" instruction is gone — the "Which Change of State?"
+// paper exercise moved into the Workbook as a match and a sort, and the
+// "finish the sentences" cloze became the predict activity plus a Workbook
+// dropdown. The safety note stays, and the apparatus slide keeps the deck's
+// one "draw this". The StateModel widget is the one thing a still slide
+// cannot do: run the change. Every photograph is credited in
+// docs/credits.md. A slide's `check:` or `activity:` block is always the
+// LAST key, and no slide carries both.
 import { DIAGRAMS } from './diagrams.js';
 import { DIAGRAMS as MEASURE } from './diagramsB.js';
 import { StateModel } from './widgets.jsx';
@@ -22,7 +23,6 @@ const img = (f) => assetUrl(`images/Y7_SCI/U02_2/${f}`);
 
 const TEAL = '#0087a8';
 const PURPLE = '#5c2483';
-const ORANGE = '#c25e12';
 const RED = '#c8102e';
 // Change words coloured by DIRECTION, matching the diagrams: heating changes
 // are warm orange; cooling changes are cool blue.
@@ -30,7 +30,7 @@ const HEAT = '#c25e12';
 const COOL = '#1a5fa8';
 
 export const notes = [
-  // 1 ─ Hero + starter ──────────────────────────────────────────────────────
+  // 1 ─ Hero ────────────────────────────────────────────────────────────────
   {
     layout: 'hero',
     color: TEAL,
@@ -44,21 +44,53 @@ export const notes = [
     objective: 'Name the five changes of state as journeys from one state to another, tell evaporating from boiling, measure a volume and a temperature accurately, and explain why heated water stops getting hotter at 100 °C.',
     objectiveVn: 'Gọi tên năm sự chuyển thể như những hành trình từ trạng thái này sang trạng thái khác, phân biệt bay hơi với sôi, đo thể tích và nhiệt độ chính xác, và giải thích vì sao nước đun không nóng thêm khi đến 100 °C.',
     card: {
-      icon: 'Pencil',
-      badge: 'Starter · 3 minutes',
-      badgeVn: 'Khởi động · 3 phút',
-      text: 'On one line in your notebook, draw the **particles** of a **solid**, a **liquid** and a **gas** — the three pictures from last unit. From memory.',
-      textVn: 'Trên một dòng trong vở, hãy vẽ các **hạt** của một **chất rắn**, một **chất lỏng** và một **chất khí** — ba hình của chương trước. Vẽ từ trí nhớ.',
+      icon: 'MousePointerClick',
+      badge: 'In this lesson',
+      badgeVn: 'Trong bài này',
+      text: 'You will **order**, **guess**, **tap** and **predict** your way through it. Six things are scored — water’s journey on the next slide is the first.',
+      textVn: 'Em sẽ **sắp xếp**, **đoán**, **chạm** và **dự đoán** trong suốt bài học. Sáu mục được tính điểm — hành trình của nước ở slide sau là mục đầu tiên.',
     },
   },
 
-  // 2 ─ The hook: the same water, three times ───────────────────────────────
+  // 2 ─ Starter: ORDER — water's journey ───────────────────────────────────
+  {
+    layout: 'statement',
+    accent: TEAL,
+    icon: 'ArrowLeftRight',
+    eyebrow: 'Water’s journey',
+    eyebrowVn: 'Hành trình của nước',
+    title: 'Ice to Steam, and Back',
+    titleVn: 'Từ đá đến hơi, và trở lại',
+    label: 'Order it',
+    labelVn: 'Sắp xếp',
+    labelIcon: 'Sparkles',
+    text: 'The same water can end up **ice**, **liquid** or **steam** — depending only on how much heat it has.',
+    textVn: 'Cùng một lượng nước có thể trở thành **đá**, **chất lỏng** hoặc **hơi** — chỉ tùy vào lượng nhiệt nó có.',
+    sub: 'Drag the five changes into the order they would happen as ice is heated all the way to steam, then cooled all the way back to ice.',
+    subVn: 'Kéo năm sự chuyển thể vào đúng thứ tự khi đá được đun nóng cho tới thành hơi, rồi làm lạnh trở lại thành đá.',
+    activity: {
+      id: 'a1', type: 'order',
+      prompt: 'Put water’s journey from ice to steam, and back again, in order.',
+      promptVn: 'Sắp xếp hành trình của nước từ đá đến hơi, rồi trở lại, theo đúng thứ tự.',
+      steps: [
+        { id: 'melt', name: 'Melting — ice becomes water', nameVn: 'Nóng chảy — đá thành nước' },
+        { id: 'evap', name: 'Evaporating — some of it slowly turns to vapour as it warms', nameVn: 'Bay hơi — một phần từ từ biến thành hơi khi nước ấm lên' },
+        { id: 'boil', name: 'Boiling — heated hard, it rapidly turns to steam', nameVn: 'Sôi — bị đun mạnh, nhanh chóng biến thành hơi' },
+        { id: 'cond', name: 'Condensing — the steam cools and turns back to water', nameVn: 'Ngưng tụ — hơi nguội đi và trở lại thành nước' },
+        { id: 'freeze', name: 'Freezing — the water cools and turns back to ice', nameVn: 'Đông đặc — nước nguội đi và trở lại thành đá' },
+      ],
+      explain: 'Heating drives the first three changes — melting, evaporating, boiling. Cooling reverses the journey — condensing, then freezing — back to where it started.',
+      explainVn: 'Đun nóng thúc đẩy ba sự thay đổi đầu — nóng chảy, bay hơi, sôi. Làm lạnh đảo ngược hành trình — ngưng tụ, rồi đông đặc — trở lại điểm xuất phát.',
+    },
+  },
+
+  // 3 ─ The hook: the same water, three times ───────────────────────────────
   {
     layout: 'showcase',
     accent: PURPLE,
     icon: 'HelpCircle',
-    eyebrow: 'Think first — write an answer before you go on',
-    eyebrowVn: 'Nghĩ trước — viết câu trả lời trước khi tiếp tục',
+    eyebrow: 'Think first — the next few slides explain it',
+    eyebrowVn: 'Nghĩ trước — vài slide sau sẽ giải thích',
     title: 'The Same Water, Three Times',
     titleVn: 'Vẫn là nước đó, ba lần',
     image: img('melt.jpg'),
@@ -66,7 +98,7 @@ export const notes = [
     captionVn: 'Em để một viên đá trên bàn. Một giờ sau nó thành một **vũng nước** nhỏ. Đến trưa vũng nước **biến mất**. Suốt thời gian đó vẫn là cùng một lượng nước. **Nó đã đi đâu — hai lần?**',
   },
 
-  // 3 ─ Heat in, heat out + CHECK 1 ─────────────────────────────────────────
+  // 4 ─ Heat in, heat out ───────────────────────────────────────────────────
   {
     layout: 'callout',
     accent: TEAL,
@@ -88,22 +120,9 @@ export const notes = [
         textVn: '**Sự chuyển thể (change of state):** khi một chất chuyển từ trạng thái này sang trạng thái khác — ví dụ, từ rắn sang lỏng. **Đun nóng** và **làm lạnh** gây ra sự chuyển thể.',
       },
     ],
-    check: {
-      id: 'c1',
-      q: 'What causes a substance to change from one state to another?',
-      qVn: 'Điều gì khiến một chất chuyển từ trạng thái này sang trạng thái khác?',
-      options: [
-        { val: 'A', text: 'Heating it or cooling it', textVn: 'Đun nóng hoặc làm lạnh nó' },
-        { val: 'B', text: 'Pouring it into a different container', textVn: 'Rót nó vào một vật chứa khác' },
-        { val: 'C', text: 'Stirring it', textVn: 'Khuấy nó' },
-      ],
-      correct: 'A',
-      expEn: 'Heating puts energy **into** the particles and cooling takes it **out**; enough of either changes the state. A new container only changes a liquid’s shape, and stirring changes nothing.',
-      expVn: 'Đun nóng đưa năng lượng **vào** các hạt và làm lạnh lấy nó **ra**; đủ một trong hai sẽ đổi trạng thái. Vật chứa mới chỉ đổi hình dạng chất lỏng, còn khuấy thì không đổi gì.',
-    },
   },
 
-  // 4 ─ Melting and freezing ────────────────────────────────────────────────
+  // 5 ─ Melting and freezing ────────────────────────────────────────────────
   {
     layout: 'split',
     accent: HEAT,
@@ -129,7 +148,7 @@ export const notes = [
     ],
   },
 
-  // 5 ─ Evaporation ─────────────────────────────────────────────────────────
+  // 6 ─ Evaporation ─────────────────────────────────────────────────────────
   {
     layout: 'callout',
     accent: HEAT,
@@ -153,7 +172,7 @@ export const notes = [
     ],
   },
 
-  // 6 ─ Boiling + CHECK 2 ───────────────────────────────────────────────────
+  // 7 ─ Boiling + CHECK 1 ───────────────────────────────────────────────────
   {
     layout: 'split',
     accent: HEAT,
@@ -178,7 +197,7 @@ export const notes = [
       },
     ],
     check: {
-      id: 'c2',
+      id: 'c1',
       q: 'What are the melting point and the boiling point of water?',
       qVn: 'Nhiệt độ nóng chảy và nhiệt độ sôi của nước là bao nhiêu?',
       options: [
@@ -192,7 +211,7 @@ export const notes = [
     },
   },
 
-  // 7 ─ Evaporating or boiling? + CHECK 3 ───────────────────────────────────
+  // 8 ─ Evaporating or boiling? + CHECK 2 ───────────────────────────────────
   {
     layout: 'compare',
     accent: PURPLE,
@@ -224,7 +243,7 @@ export const notes = [
       },
     ],
     check: {
-      id: 'c3',
+      id: 'c2',
       q: 'Wet clothes dry on a washing line on a warm day. Which change of state is this?',
       qVn: 'Quần áo ướt khô trên dây phơi vào một ngày ấm. Đây là sự chuyển thể nào?',
       options: [
@@ -238,7 +257,7 @@ export const notes = [
     },
   },
 
-  // 8 ─ Condensation ────────────────────────────────────────────────────────
+  // 9 ─ Condensation ────────────────────────────────────────────────────────
   {
     layout: 'split',
     accent: COOL,
@@ -265,34 +284,59 @@ export const notes = [
     ],
   },
 
-  // 9 ─ The whole section on one diagram (draw this; verb/noun folded in) ───
+  // 10 ─ ESTIMATE — how warm is a warm bath? ────────────────────────────────
+  {
+    layout: 'statement',
+    accent: PURPLE,
+    icon: 'Thermometer',
+    eyebrow: 'Guess the temperature',
+    eyebrowVn: 'Đoán nhiệt độ',
+    title: 'How Warm Is a Warm Bath?',
+    titleVn: 'Bồn tắm ấm nóng bao nhiêu?',
+    label: 'Estimate',
+    labelVn: 'Ước lượng',
+    labelIcon: 'Sparkles',
+    text: 'You now know water **freezes at 0 °C** and **boils at 100 °C** — two fixed points on the scale.',
+    textVn: 'Em vừa biết nước **đông đặc ở 0 °C** và **sôi ở 100 °C** — hai mốc cố định trên thang nhiệt độ.',
+    sub: 'Where does a warm bath sit between them? Slide to your guess.',
+    subVn: 'Bồn tắm ấm nằm ở đâu giữa hai mốc đó? Kéo thanh trượt đến dự đoán của em.',
+    activity: {
+      id: 'a2', type: 'estimate',
+      prompt: 'A warm bath is about how many °C?',
+      promptVn: 'Một bồn tắm ấm có nhiệt độ khoảng bao nhiêu °C?',
+      min: 0, max: 100, step: 1, unit: '°C', answer: 40, tolerance: 0.25,
+      explain: 'About **40 °C** — much warmer than a warm room (around 20 °C), but nowhere near boiling (100 °C). Hot enough to feel warm on skin, cool enough not to burn.',
+      explainVn: 'Khoảng **40 °C** — ấm hơn nhiều so với phòng ấm (khoảng 20 °C), nhưng còn cách xa điểm sôi (100 °C). Đủ nóng để cảm thấy ấm trên da, đủ mát để không bị bỏng.',
+    },
+  },
+
+  // 11 ─ The whole section on one diagram (verb/noun folded in) ────────────
   {
     layout: 'split',
     accent: HEAT,
     icon: 'Repeat',
-    eyebrow: 'Rulers out — this is the sheet you keep',
-    eyebrowVn: 'Lấy thước ra — đây là bảng em giữ lại',
+    eyebrow: 'The reference diagram',
+    eyebrowVn: 'Sơ đồ tham khảo',
     title: 'The Whole Section on One Diagram',
     titleVn: 'Cả bài gọn trong một sơ đồ',
     ratio: 40,
     inlineSvg: DIAGRAMS.STATE_CYCLE,
-    drawThis: true,
     content:
-      'Rule up the three boxes and copy all five change words onto the arrows. Heating drives the changes to the right, cooling brings them back to the left.\n\n' +
+      'Every arrow on this diagram is one of the five words you now know. Heating drives the changes to the **right**; cooling brings them back to the **left**.\n\n' +
       'English gives every change **two** words: a **doing word** (*the ice melts*) and a **naming word** (*melting is a change of state*). You **boil** the water; **boiling** is the change. Say the pair, not just one half.',
     contentVn:
-      'Kẻ ba ô và chép cả năm từ chuyển thể lên các mũi tên. Đun nóng đẩy các thay đổi sang phải, làm lạnh đưa chúng về trái.\n\n' +
+      'Mỗi mũi tên trên sơ đồ này là một trong năm từ em vừa học. Đun nóng đẩy các thay đổi sang **phải**; làm lạnh đưa chúng về **trái**.\n\n' +
       'Tiếng Anh cho mỗi sự chuyển thể **hai** từ: một **động từ** (*the ice melts*) và một **danh từ** (*melting is a change of state*). Em **boil** nước; **boiling** là sự thay đổi. Hãy nói cả cặp, đừng chỉ một nửa.',
     notes: [
       {
         tone: 'write',
-        text: 'Copy the five pairs: **melt → melting**, **freeze → freezing**, **boil → boiling**, **evaporate → evaporation**, **condense → condensation**.',
-        textVn: 'Chép năm cặp: **melt → melting** (nóng chảy), **freeze → freezing** (đông đặc), **boil → boiling** (sôi), **evaporate → evaporation** (bay hơi), **condense → condensation** (ngưng tụ).',
+        text: 'The five pairs, doing word → naming word: **melt → melting**, **freeze → freezing**, **boil → boiling**, **evaporate → evaporation**, **condense → condensation**.',
+        textVn: 'Năm cặp, động từ → danh từ: **melt → melting** (nóng chảy), **freeze → freezing** (đông đặc), **boil → boiling** (sôi), **evaporate → evaporation** (bay hơi), **condense → condensation** (ngưng tụ).',
       },
     ],
   },
 
-  // 10 ─ The particle model (widget) ────────────────────────────────────────
+  // 12 ─ The particle model (widget) ────────────────────────────────────────
   {
     layout: 'split',
     accent: PURPLE,
@@ -311,45 +355,11 @@ export const notes = [
     widget: StateModel,
   },
 
-  // 11 ─ Which change of state? (from … to …) ───────────────────────────────
-  {
-    layout: 'split',
-    accent: PURPLE,
-    icon: 'ArrowLeftRight',
-    eyebrow: 'Learner’s Book, page 36 · Activity 2.2.1',
-    eyebrowVn: 'Sách học sinh, trang 36 · Hoạt động 2.2.1',
-    title: 'Which Change of State?',
-    titleVn: 'Đây là sự chuyển thể nào?',
-    ratio: 56,
-    content:
-      'On paper, write each change as **from** [state] **to** [state]: *melt, freeze, boil, evaporate, condense*.\n\n' +
-      'Then name the change in each of these, in a full sentence — *“This is …”*:\n\n' +
-      '> **1.** Drops of water appear on the outside of a cold bottle.\n' +
-      '> **2.** A puddle turns to ice overnight.\n' +
-      '> **3.** A chocolate bar goes soft and runny in your hand.',
-    contentVn:
-      'Viết ra giấy mỗi sự thay đổi dưới dạng **from (từ)** [trạng thái] **to (sang)** [trạng thái]: *melt, freeze, boil, evaporate, condense*.\n\n' +
-      'Rồi gọi tên sự thay đổi trong mỗi tình huống sau, bằng một câu đầy đủ — *“This is …”*:\n\n' +
-      '> **1.** Các giọt nước xuất hiện ở mặt ngoài một chai lạnh.\n' +
-      '> **2.** Một vũng nước đóng thành băng qua đêm.\n' +
-      '> **3.** Một thanh sô-cô-la mềm ra và chảy trong tay em.',
-    reveal: {
-      label: 'Check',
-      labelVn: 'Kiểm tra',
-      answer:
-        '**melt** — from solid to liquid · **freeze** — from liquid to solid · **boil** — from liquid to gas · **evaporate** — from liquid to gas · **condense** — from gas to liquid\n\n' +
-        '**1.** Condensation — water vapour in the air cools on the cold bottle and turns to liquid.\n**2.** Freezing — the water changes from a liquid to a solid.\n**3.** Melting — the chocolate changes from a solid to a liquid.',
-      answerVn:
-        '**melt** — từ rắn sang lỏng · **freeze** — từ lỏng sang rắn · **boil** — từ lỏng sang khí · **evaporate** — từ lỏng sang khí · **condense** — từ khí sang lỏng\n\n' +
-        '**1.** Ngưng tụ — hơi nước trong không khí gặp lạnh trên chai và biến thành lỏng.\n**2.** Đông đặc — nước chuyển từ lỏng sang rắn.\n**3.** Nóng chảy — sô-cô-la chuyển từ rắn sang lỏng.',
-    },
-  },
-
-  // 12 ─ Reading a measuring cylinder ───────────────────────────────────────
+  // 13 ─ Reading a measuring cylinder: HOTSPOT ──────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
-    icon: 'Beaker',
+    icon: 'Target',
     eyebrow: 'Two students measure the same water: one writes 50, the other 47. Who is wrong?',
     eyebrowVn: 'Hai học sinh đo cùng một lượng nước: một bạn viết 50, bạn kia 47. Ai sai?',
     title: 'Reading a Measuring Cylinder',
@@ -359,10 +369,10 @@ export const notes = [
     inlineSvg: MEASURE.MENISCUS,
     content:
       'You measure the **volume** of a liquid with a **measuring cylinder**. The surface of the liquid curves up at the edges — that curve is the **meniscus**.\n\n' +
-      'Read from the **bottom** of the curve, with your **eye level** with it. Look from above and you read too high; from below, too low.',
+      'Read from the **bottom** of the curve, with your **eye level** with it. Look from above and you read too high; from below, too low. Tap the diagram to try it.',
     contentVn:
       'Em đo **thể tích (volume)** của chất lỏng bằng một **ống đong (measuring cylinder)**. Mặt chất lỏng cong lên ở mép — đường cong đó là **mặt khum (meniscus)**.\n\n' +
-      'Đọc ở **đáy** của đường cong, với **mắt ngang tầm (eye level)** với nó. Nhìn từ trên xuống thì đọc quá cao; nhìn từ dưới lên thì quá thấp.',
+      'Đọc ở **đáy** của đường cong, với **mắt ngang tầm (eye level)** với nó. Nhìn từ trên xuống thì đọc quá cao; nhìn từ dưới lên thì quá thấp. Chạm vào hình để thử.',
     notes: [
       {
         tone: 'write',
@@ -370,34 +380,26 @@ export const notes = [
         textVn: '**Ống đong (measuring cylinder):** dụng cụ để đo thể tích chất lỏng.\n**Mặt khum (meniscus):** mặt cong của chất lỏng. Đọc ở **đáy** của nó, với **mắt ngang tầm**.',
       },
     ],
-  },
-
-  // 13 ─ What volume is in each one? ────────────────────────────────────────
-  {
-    layout: 'split',
-    accent: ORANGE,
-    icon: 'HelpCircle',
-    eyebrow: 'Learner’s Book, page 37 · Question 1',
-    eyebrowVn: 'Sách học sinh, trang 37 · Câu hỏi 1',
-    title: 'What Volume Is in Each One?',
-    titleVn: 'Mỗi ống chứa thể tích bao nhiêu?',
-    ratio: 56,
-    inlineSvg: MEASURE.CYLINDERS_Q1,
-    content:
-      'Read each cylinder the way you just learned: **eye level**, at the **bottom of the meniscus**. Each small line is **10 cm³**.\n\n' +
-      'Write your three answers in your notebook, with the units — **cm³** — every time.',
-    contentVn:
-      'Đọc mỗi ống theo cách em vừa học: **mắt ngang tầm**, ở **đáy mặt khum**. Mỗi vạch nhỏ là **10 cm³**.\n\n' +
-      'Viết ba đáp án vào vở, kèm đơn vị — **cm³** — mỗi lần.',
-    reveal: {
-      label: 'Check',
-      labelVn: 'Kiểm tra',
-      answer: '**A** = 20 cm³\n**B** = 60 cm³\n**C** = 90 cm³',
-      answerVn: '**A** = 20 cm³\n**B** = 60 cm³\n**C** = 90 cm³',
+    activity: {
+      id: 'a3', type: 'hotspot',
+      prompt: 'Tap where you read the volume — the bottom of the meniscus.',
+      promptVn: 'Chạm vào nơi em đọc thể tích — đáy mặt khum.',
+      svg: MEASURE.MENISCUS, viewBox: '0 0 760 430',
+      targets: [
+        // The curve runs (152,216) → (258,216) with its lowest point at the
+        // cylinder's centre line (205, ~220); the decoy is the edge where the
+        // liquid meets the glass.
+        { id: 'bottom', x: 205, y: 221, r: 28, name: 'the bottom of the meniscus', nameVn: 'đáy mặt khum' },
+        { id: 'top', x: 256, y: 214, r: 15, name: 'the edge of the curve', nameVn: 'mép của đường cong' },
+        { id: 'eye', x: 620, y: 223, r: 30, name: 'your eye', nameVn: 'mắt em' },
+      ],
+      correct: 'bottom',
+      explain: 'You read the **bottom of the meniscus**, at eye level. Reading from the top of the curve — or looking down on it from above — gives the wrong number.',
+      explainVn: 'Em đọc ở **đáy mặt khum**, ngang tầm mắt. Đọc ở đỉnh đường cong — hoặc nhìn từ trên xuống — sẽ cho ra con số sai.',
     },
   },
 
-  // 14 ─ Reading a thermometer + CHECK 4 ────────────────────────────────────
+  // 14 ─ Reading a thermometer ───────────────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -423,41 +425,28 @@ export const notes = [
       },
     ],
     reveal: {
-      label: 'Page 38, Question 2 — three thermometers to read',
-      labelVn: 'Trang 38, Câu hỏi 2 — ba nhiệt kế để đọc',
-      answer: 'The three thermometers in the book read **A** = 25 °C, **B** = 15 °C, **C** = 40 °C — always at the top of the liquid, always with the units.',
-      answerVn: 'Ba nhiệt kế trong sách chỉ **A** = 25 °C, **B** = 15 °C, **C** = 40 °C — luôn đọc ở đỉnh cột chất lỏng, luôn kèm đơn vị.',
-    },
-    check: {
-      id: 'c4',
-      q: 'Where exactly do you read a measuring cylinder, and where do you read a thermometer?',
-      qVn: 'Em đọc ống đong ở đâu, và đọc nhiệt kế ở đâu?',
-      options: [
-        { val: 'A', text: 'Cylinder: top of the curve. Thermometer: bottom of the liquid.', textVn: 'Ống đong: đỉnh đường cong. Nhiệt kế: đáy cột chất lỏng.' },
-        { val: 'B', text: 'Both: wherever is easiest to see', textVn: 'Cả hai: chỗ nào dễ nhìn nhất' },
-        { val: 'C', text: 'Cylinder: bottom of the meniscus. Thermometer: top of the liquid. Both at eye level.', textVn: 'Ống đong: đáy mặt khum. Nhiệt kế: đỉnh cột chất lỏng. Cả hai ngang tầm mắt.' },
-      ],
-      correct: 'C',
-      expEn: 'The cylinder is read at the **bottom of the meniscus**, the thermometer at the **top of the liquid** — and both with your **eye level** with the reading, or two people get two different numbers from the same water.',
-      expVn: 'Ống đong đọc ở **đáy mặt khum**, nhiệt kế đọc ở **đỉnh cột chất lỏng** — và cả hai với **mắt ngang tầm** vạch đọc, nếu không hai người sẽ ra hai con số khác nhau từ cùng một lượng nước.',
+      label: 'This thermometer reads',
+      labelVn: 'Nhiệt kế này chỉ',
+      answer: '**22 °C** — always at the top of the liquid, always with the units.',
+      answerVn: '**22 °C** — luôn đọc ở đỉnh cột chất lỏng, luôn kèm đơn vị.',
     },
   },
 
-  // 15 ─ Safety and the apparatus ───────────────────────────────────────────
+  // 15 ─ The apparatus (the one draw-this) ──────────────────────────────────
   {
     layout: 'split',
     accent: PURPLE,
     icon: 'FlaskConical',
-    eyebrow: 'Predict first: we heat water and read the temperature every minute — does it get hotter forever?',
-    eyebrowVn: 'Dự đoán trước: ta đun nước và đọc nhiệt độ mỗi phút — nước có nóng lên mãi không?',
+    eyebrow: 'Learner’s Book, page 39 · The set-up',
+    eyebrowVn: 'Sách học sinh, trang 39 · Bộ dụng cụ',
     title: 'The Apparatus',
     titleVn: 'Bộ dụng cụ',
     ratio: 45,
     side: 'left',
     inlineSvg: MEASURE.APPARATUS,
     drawThis: true,
-    content: 'Write your prediction down. Then draw the whole set-up and label every part. The one thing that matters: the thermometer bulb sits **in** the water, not touching the bottom of the beaker — so it measures the water, not the glass.',
-    contentVn: 'Viết dự đoán của em ra. Rồi vẽ toàn bộ bộ dụng cụ và ghi nhãn từng bộ phận. Điều quan trọng nhất: bầu nhiệt kế nằm **trong** nước, không chạm đáy cốc — để nó đo nhiệt độ của nước, chứ không phải của thủy tinh.',
+    content: 'The one thing that matters: the thermometer bulb sits **in** the water, not touching the bottom of the beaker — so it measures the water, not the glass. Draw the whole set-up and label every part.',
+    contentVn: 'Điều quan trọng nhất: bầu nhiệt kế nằm **trong** nước, không chạm đáy cốc — để nó đo nhiệt độ của nước, chứ không phải của thủy tinh. Vẽ toàn bộ bộ dụng cụ và ghi nhãn từng bộ phận.',
     notes: [
       {
         tone: 'homework',
@@ -480,18 +469,49 @@ export const notes = [
     title: 'What to Do',
     titleVn: 'Các bước tiến hành',
     inlineSvg: MEASURE.RESULTS_TABLE,
-    content: 'Rule up the results table before you light the Bunsen, so you are ready to write a number the moment you read one.',
-    contentVn: 'Kẻ sẵn bảng kết quả trước khi châm đèn Bunsen, để em sẵn sàng ghi số ngay khi đọc được.',
+    content: 'Follow the method below, then read what the graph shows on the next slide.',
+    contentVn: 'Làm theo các bước dưới đây, rồi xem đồ thị cho thấy điều gì ở slide sau.',
     steps: [
       { text: 'Measure **150 cm³** of water accurately into the beaker.', textVn: 'Đong chính xác **150 cm³** nước vào cốc.' },
       { text: 'Put the thermometer bulb **in the water**, held so it does **not touch the bottom**.', textVn: 'Đặt bầu nhiệt kế **trong nước**, giữ sao cho nó **không chạm đáy**.' },
-      { text: 'Read the temperature and **record it** in your table at 0 minutes.', textVn: 'Đọc nhiệt độ và **ghi vào bảng** ở phút 0.' },
+      { text: 'Read the temperature and **record it** in the results table at 0 minutes.', textVn: 'Đọc nhiệt độ và **ghi vào bảng** ở phút 0.' },
       { text: 'Light the Bunsen and heat the water. Read the temperature **every minute**.', textVn: 'Châm đèn Bunsen và đun nước. Đọc nhiệt độ **mỗi phút**.' },
       { text: 'Keep going until the water is **boiling** hard.', textVn: 'Tiếp tục cho đến khi nước **sôi** mạnh.' },
     ],
   },
 
-  // 17 ─ It stops at the boiling point + CHECK 5 ────────────────────────────
+  // 17 ─ PREDICT — what happens next? (before the heating curve) ───────────
+  {
+    layout: 'statement',
+    accent: TEAL,
+    icon: 'HelpCircle',
+    eyebrow: 'Predict first',
+    eyebrowVn: 'Dự đoán trước',
+    title: 'What Happens Next?',
+    titleVn: 'Điều gì xảy ra tiếp theo?',
+    label: 'Predict',
+    labelVn: 'Dự đoán',
+    labelIcon: 'Sparkles',
+    text: 'You keep heating the water. It reaches **100 °C** and starts boiling hard — bubbles everywhere, the Bunsen still roaring underneath.',
+    textVn: 'Em tiếp tục đun nước. Nó đạt **100 °C** và bắt đầu sôi mạnh — bọt khí khắp nơi, đèn Bunsen vẫn cháy dữ dội bên dưới.',
+    sub: 'What happens to the temperature now?',
+    subVn: 'Bây giờ điều gì xảy ra với nhiệt độ?',
+    activity: {
+      id: 'a4', type: 'predict',
+      prompt: 'The Bunsen is still on and the water is boiling hard. What does the temperature do?',
+      promptVn: 'Đèn Bunsen vẫn cháy và nước đang sôi mạnh. Điều gì xảy ra với nhiệt độ?',
+      options: [
+        { val: 'rise', name: 'Keeps rising past 100 °C', nameVn: 'Tiếp tục tăng vượt quá 100 °C' },
+        { val: 'same', name: 'Stays the same, at 100 °C', nameVn: 'Giữ nguyên, ở 100 °C' },
+        { val: 'fall', name: 'Starts to fall', nameVn: 'Bắt đầu giảm' },
+      ],
+      correct: 'same',
+      explain: 'While water boils, its temperature **stays at 100 °C** — the heat is turning liquid into gas, not making the water hotter. That is the flat part of the graph on the next slide.',
+      explainVn: 'Trong khi nước sôi, nhiệt độ **giữ nguyên ở 100 °C** — nhiệt đang biến chất lỏng thành khí, không làm nước nóng hơn. Đó là phần nằm ngang của đồ thị ở slide sau.',
+    },
+  },
+
+  // 18 ─ It stops at the boiling point ───────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -516,53 +536,6 @@ export const notes = [
         textVn: '**Trục (axis):** một đường trên đồ thị. **Thời gian** nằm trên **trục ngang**; **nhiệt độ** trên **trục dọc**.\nTrong khi nước **sôi**, nhiệt độ của nó **giữ nguyên** ở nhiệt độ sôi (100 °C). Nhiệt biến chất lỏng thành khí thay vì làm tăng nhiệt độ.',
       },
     ],
-    check: {
-      id: 'c5',
-      q: 'The Bunsen is still on, the water is boiling hard. What is happening to the temperature?',
-      qVn: 'Đèn Bunsen vẫn cháy, nước đang sôi mạnh. Điều gì đang xảy ra với nhiệt độ?',
-      options: [
-        { val: 'A', text: 'It keeps rising past 100 °C', textVn: 'Nó tiếp tục tăng vượt quá 100 °C' },
-        { val: 'B', text: 'It stays the same, at 100 °C', textVn: 'Nó giữ nguyên, ở 100 °C' },
-        { val: 'C', text: 'It starts to fall', textVn: 'Nó bắt đầu giảm' },
-      ],
-      correct: 'B',
-      expEn: 'While water boils its temperature **stays at 100 °C**: the heat going in is turning liquid into gas, not making the water hotter. That is the flat part of the graph.',
-      expVn: 'Trong khi nước sôi, nhiệt độ **giữ ở 100 °C**: nhiệt đưa vào đang biến chất lỏng thành khí, không làm nước nóng hơn. Đó là phần nằm ngang của đồ thị.',
-    },
-  },
-
-  // 18 ─ Describe and explain the graph ─────────────────────────────────────
-  {
-    layout: 'split',
-    accent: PURPLE,
-    icon: 'MessageSquare',
-    eyebrow: 'Learner’s Book, page 40 · Describe your graph, then explain it',
-    eyebrowVn: 'Sách học sinh, trang 40 · Mô tả đồ thị, rồi giải thích',
-    title: 'Finish the Sentences',
-    titleVn: 'Hoàn thành các câu',
-    ratio: 56,
-    content:
-      'Fill each gap on paper, in a full sentence:\n\n' +
-      '> When we heated the water, the temperature ______.\n' +
-      '> The longer we heated it, the ______ the temperature became.\n' +
-      '> When the water started to boil, the temperature ______.\n\n' +
-      'Then: **why** does the temperature stop rising — and **why** is the thermometer held off the bottom of the beaker?',
-    contentVn:
-      'Điền vào mỗi chỗ trống ra giấy, bằng câu đầy đủ:\n\n' +
-      '> When we heated the water, the temperature ______.\n' +
-      '> The longer we heated it, the ______ the temperature became.\n' +
-      '> When the water started to boil, the temperature ______.\n\n' +
-      'Rồi: **vì sao** nhiệt độ ngừng tăng — và **vì sao** nhiệt kế được giữ không chạm đáy cốc?',
-    reveal: {
-      label: 'Check',
-      labelVn: 'Kiểm tra',
-      answer:
-        'When we heated the water, the temperature **went up (rose)**.\nThe longer we heated it, the **higher** the temperature became.\nWhen the water started to boil, the temperature **stayed the same**.\n\n' +
-        'It stops rising because the heat is being used to turn the water into a gas (steam), not to make it hotter. The thermometer is held off the bottom so it measures the temperature of the **water**, not the hotter glass.',
-      answerVn:
-        'When we heated the water, the temperature **went up (rose)** — nhiệt độ tăng lên.\nThe longer we heated it, the **higher** the temperature became — càng đun lâu, nhiệt độ càng cao.\nWhen the water started to boil, the temperature **stayed the same** — khi nước bắt đầu sôi, nhiệt độ giữ nguyên.\n\n' +
-        'Nó ngừng tăng vì nhiệt được dùng để biến nước thành khí (hơi), chứ không phải làm nó nóng hơn. Nhiệt kế được giữ không chạm đáy để nó đo nhiệt độ của **nước**, chứ không phải của lớp thủy tinh nóng hơn.',
-    },
   },
 
   // 19 ─ Recap ──────────────────────────────────────────────────────────────
@@ -577,9 +550,11 @@ export const notes = [
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
     content:
-      '> Your notebook should now have **change of state**, the **five change words with their from → to**, **one labelled cycle diagram**, the **meniscus and thermometer notes**, and **one labelled apparatus drawing**. Check. Exit question: the bathroom mirror goes **foggy** when you shower, then slowly **clears** again. Name the **two** changes of state, in order.',
+      'Next: the Vocab, then **Label It** — you will tap every part of the cycle diagram and the apparatus yourself.\n\n' +
+      'Exit question: the bathroom mirror goes **foggy** when you shower, then slowly **clears** again. Name the **two** changes of state, in order.',
     contentVn:
-      '> Trong vở của em bây giờ phải có **sự chuyển thể**, **năm từ chuyển thể kèm from → to**, **một sơ đồ vòng có ghi nhãn**, **ghi chú về mặt khum và nhiệt kế**, và **một hình bộ dụng cụ có ghi nhãn**. Hãy kiểm tra. Câu hỏi ra về: tấm gương phòng tắm bị **mờ hơi nước** khi em tắm, rồi từ từ **trong trở lại**. Hãy gọi tên **hai** sự chuyển thể, theo thứ tự.',
+      'Tiếp theo: Từ vựng, rồi **Gắn nhãn** — em sẽ tự chạm vào từng bộ phận của sơ đồ vòng và bộ dụng cụ.\n\n' +
+      'Câu hỏi ra về: tấm gương phòng tắm bị **mờ hơi nước** khi em tắm, rồi từ từ **trong trở lại**. Hãy gọi tên **hai** sự chuyển thể, theo thứ tự.',
     items: [
       { text: 'Name the **five changes of state**, each as **from [state] to [state]**.', textVn: 'Kể tên **năm sự chuyển thể**, mỗi cái dưới dạng **from [trạng thái] to [trạng thái]**.' },
       { text: 'Give the **doing word** and the **naming word** for each.', textVn: 'Nêu **động từ** và **danh từ** cho mỗi sự thay đổi.' },

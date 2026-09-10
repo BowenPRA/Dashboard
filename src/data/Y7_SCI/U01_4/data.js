@@ -1,12 +1,16 @@
 // src/data/Y7_SCI/U01_4/data.js
-// 1.4 Cells, Tissues and Organs — Year 7 Science self-study unit. Seven
-// scored tasks: 130 XP available, capped at 100 (docs/y7-science-course.md §3).
+// 1.4 Cells, Tissues and Organs — Year 7 Science self-study unit, rebuilt to
+// the engagement plan (docs/y7-science/ENGAGEMENT-PLAN.md). 145 XP available,
+// capped at 100 (docs/y7-science-course.md §3). WORKBOOK and LABEL_IT replace
+// the old SPELLING task; the deck's three activities (hotspot, sort, order)
+// and three checks live in notes.js.
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio.
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { workbook } from './workbook.js';
 import { DIAGRAMS } from './diagrams.js';
 
 export const U01_4_DATA = {
@@ -25,22 +29,26 @@ export const U01_4_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 20 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
       ],
     },
     {
+      // 25 of the 35 XP before it (71%). The practice phase is where the
+      // variety lives: a mixed-type workbook, the labelling task, the reading,
+      // the AI-marked questions and diagrams (ENGAGEMENT-PLAN §3).
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 30,
+      threshold: 25,
       tasks: [
-        { id: 'SPELLING', dbKey: 'p2', maxXP: 10 },
-        { id: 'READ_COMP', dbKey: 'p4', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'LABEL_IT', dbKey: 'p28', maxXP: 20 },
+        { id: 'READ_COMP', dbKey: 'p4', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
-        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 20 },
+        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 15 },
       ],
     },
     {
-      // Quiz and arcade share one gate at 80 of the 110 XP before it (73%).
+      // Quiz and arcade share one gate at 80 of the 125 XP before it (64%).
       id: 'mastery',
       title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
@@ -235,7 +243,70 @@ export const U01_4_DATA = {
     },
   ],
 
+  // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
+  // at runtime, a pin where each label's leader line ends (or, for the ladder,
+  // where its own text sits). Coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U01_4 <KEY>`. Each bank carries one
+  // distractor.
+  labelIt: [
+    {
+      id: 'ladder',
+      title: 'Label the five levels', titleVn: 'Gắn nhãn năm cấp độ',
+      inlineSvg: DIAGRAMS.LEVELS_LADDER, viewBox: '0 0 820 325',
+      pins: [
+        { id: 'p1', x: 84, y: 212, answer: 'cell' },
+        { id: 'p2', x: 248, y: 212, answer: 'tissue' },
+        { id: 'p3', x: 412, y: 212, answer: 'organ' },
+        { id: 'p4', x: 576, y: 212, answer: 'organsys' },
+        { id: 'p5', x: 740, y: 212, answer: 'organism' },
+      ],
+      bank: [
+        { val: 'cell', text: 'Cell', textVn: 'Tế bào' },
+        { val: 'tissue', text: 'Tissue', textVn: 'Mô' },
+        { val: 'organ', text: 'Organ', textVn: 'Cơ quan' },
+        { val: 'organsys', text: 'Organ system', textVn: 'Hệ cơ quan' },
+        { val: 'organism', text: 'Organism', textVn: 'Sinh vật' },
+        { val: 'organelle', text: 'Organelle', textVn: 'Bào quan' },
+      ],
+    },
+    {
+      id: 'leaf',
+      title: 'Label the leaf section', titleVn: 'Gắn nhãn lát cắt lá',
+      inlineSvg: DIAGRAMS.LEAF_SECTION, viewBox: '0 0 720 380',
+      pins: [
+        { id: 'p1', x: 545, y: 64, answer: 'upper' },
+        { id: 'p2', x: 545, y: 144, answer: 'palisade' },
+        { id: 'p3', x: 545, y: 254, answer: 'spongy' },
+        { id: 'p4', x: 545, y: 334, answer: 'lower' },
+      ],
+      bank: [
+        { val: 'upper', text: 'Upper epidermis', textVn: 'Biểu bì trên' },
+        { val: 'palisade', text: 'Palisade layer', textVn: 'Lớp mô giậu' },
+        { val: 'spongy', text: 'Spongy layer', textVn: 'Lớp mô xốp' },
+        { val: 'lower', text: 'Lower epidermis', textVn: 'Biểu bì dưới' },
+        { val: 'cuticle', text: 'Cuticle', textVn: 'Lớp cutin' },
+      ],
+    },
+    {
+      id: 'respiratory',
+      title: 'Label the breathing system', titleVn: 'Gắn nhãn hệ hô hấp',
+      inlineSvg: DIAGRAMS.RESPIRATORY_SYSTEM, viewBox: '0 0 440 420',
+      pins: [
+        { id: 'p1', x: 335, y: 88, answer: 'nose' },
+        { id: 'p2', x: 335, y: 142, answer: 'windpipe' },
+        { id: 'p3', x: 335, y: 228, answer: 'lungs' },
+      ],
+      bank: [
+        { val: 'nose', text: 'Nose and mouth', textVn: 'Mũi và miệng' },
+        { val: 'windpipe', text: 'Windpipe', textVn: 'Khí quản' },
+        { val: 'lungs', text: 'Lungs', textVn: 'Phổi' },
+        { val: 'diaphragm', text: 'Diaphragm', textVn: 'Cơ hoành' },
+      ],
+    },
+  ],
+
   notes: notes,
+  workbook: workbook,
   assessment: assessment,
   games: games,
 };

@@ -1,13 +1,16 @@
 // src/data/Y7_SCI/U02_1/data.js
 // 2.1 Solids, Liquids and Gases — Year 7 Science self-study unit covering the
-// two classroom lessons 2.1a (properties) and 2.1b (particle theory). Seven
-// scored tasks: 130 XP available, capped at 100 (docs/y7-science-course.md §3).
+// two classroom lessons 2.1a (properties) and 2.1b (particle theory). Rebuilt
+// to the engagement plan (docs/y7-science/ENGAGEMENT-PLAN.md): nine scored
+// tasks, 145 XP available, capped at 100. SPELLING is dropped; WORKBOOK and
+// LABEL_IT are new.
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio.
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { workbook } from './workbook.js';
 import { DIAGRAMS } from './diagrams.js';
 import { DIAGRAMS as PARTICLES } from './diagramsB.js';
 
@@ -30,22 +33,26 @@ export const U02_1_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 20 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
       ],
     },
     {
+      // 25 of the 35 XP before it (71%). The practice phase is where the
+      // variety lives: a mixed-type workbook, the labelling task, the reading,
+      // the AI-marked questions and diagrams (ENGAGEMENT-PLAN §3).
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 30,
+      threshold: 25,
       tasks: [
-        { id: 'SPELLING', dbKey: 'p2', maxXP: 10 },
-        { id: 'READ_COMP', dbKey: 'p4', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'LABEL_IT', dbKey: 'p28', maxXP: 20 },
+        { id: 'READ_COMP', dbKey: 'p4', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
-        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 20 },
+        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 15 },
       ],
     },
     {
-      // Quiz and arcade share one gate at 80 of the 110 XP before it (73%).
+      // Quiz and arcade share one gate at 80 of the 125 XP before it (64%).
       id: 'mastery',
       title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
@@ -247,7 +254,82 @@ export const U02_1_DATA = {
     },
   ],
 
+  // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
+  // at runtime, a pin where each label's leader line ended (or, for a caption
+  // with no leader line, at the label's own text position). Coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U02_1 <KEY> [diagramsB]`. Bank text is
+  // authored fresh — the engine strips the printed <text> at runtime, so what
+  // the bank says never has to match what the diagram prints.
+  labelIt: [
+    {
+      id: 'syringes',
+      title: 'Label the syringe test', titleVn: 'Gắn nhãn thử nghiệm xi-lanh',
+      inlineSvg: DIAGRAMS.SYRINGES, viewBox: '0 0 760 440',
+      pins: [
+        { id: 'p1', x: 200, y: 52, answer: 'water' },
+        { id: 'p2', x: 560, y: 52, answer: 'air' },
+        { id: 'p3', x: 340, y: 104, answer: 'plunger' },
+        { id: 'p4', x: 380, y: 348, answer: 'thumb' },
+        { id: 'p5', x: 200, y: 432, answer: 'nomove' },
+        { id: 'p6', x: 560, y: 432, answer: 'moves' },
+      ],
+      bank: [
+        { val: 'water', text: 'Syringe of water', textVn: 'Xi-lanh chứa nước' },
+        { val: 'air', text: 'Syringe of air', textVn: 'Xi-lanh chứa không khí' },
+        { val: 'plunger', text: 'The plunger', textVn: 'Cần đẩy' },
+        { val: 'thumb', text: 'Thumb blocking the hole', textVn: 'Ngón tay cái bịt lỗ' },
+        { val: 'nomove', text: 'Plunger does not move', textVn: 'Cần đẩy không di chuyển' },
+        { val: 'moves', text: 'Plunger slides in', textVn: 'Cần đẩy trượt vào' },
+        { val: 'compressed', text: 'Compressed', textVn: 'Bị nén' },
+        { val: 'container', text: 'The container', textVn: 'Vật chứa' },
+      ],
+    },
+    {
+      id: 'arrangements',
+      title: 'Label the three arrangements', titleVn: 'Gắn nhãn ba cách sắp xếp',
+      inlineSvg: PARTICLES.THREE_ARRANGEMENTS, viewBox: '0 0 900 360',
+      pins: [
+        { id: 'p1', x: 160, y: 46, answer: 'solid' },
+        { id: 'p2', x: 450, y: 46, answer: 'liquid' },
+        { id: 'p3', x: 740, y: 46, answer: 'gas' },
+        { id: 'p4', x: 160, y: 302, answer: 'fixedpattern' },
+        { id: 'p5', x: 450, y: 302, answer: 'touchslide' },
+        { id: 'p6', x: 740, y: 302, answer: 'farapart' },
+      ],
+      bank: [
+        { val: 'solid', text: 'Solid', textVn: 'Chất rắn' },
+        { val: 'liquid', text: 'Liquid', textVn: 'Chất lỏng' },
+        { val: 'gas', text: 'Gas', textVn: 'Chất khí' },
+        { val: 'fixedpattern', text: 'Held in a fixed pattern', textVn: 'Giữ trong khuôn mẫu cố định' },
+        { val: 'touchslide', text: 'Touching, sliding past each other', textVn: 'Chạm nhau, trượt qua nhau' },
+        { val: 'farapart', text: 'Far apart, no pattern', textVn: 'Ở xa nhau, không khuôn mẫu' },
+        { val: 'vibrating', text: 'Vibrating on the spot only', textVn: 'Chỉ dao động tại chỗ' },
+      ],
+    },
+    {
+      id: 'compressing',
+      title: 'Label why the gas compresses', titleVn: 'Gắn nhãn vì sao chất khí bị nén',
+      inlineSvg: PARTICLES.COMPRESSING_GAS, viewBox: '0 0 820 380',
+      pins: [
+        { id: 'p1', x: 185, y: 66, answer: 'biggaps' },
+        { id: 'p2', x: 635, y: 66, answer: 'smallgaps' },
+        { id: 'p3', x: 410, y: 176, answer: 'push' },
+        { id: 'p4', x: 185, y: 344, answer: 'nothinglost' },
+        { id: 'p5', x: 635, y: 344, answer: 'spaceshrank' },
+      ],
+      bank: [
+        { val: 'biggaps', text: 'Big gaps between particles', textVn: 'Khoảng trống lớn giữa các hạt' },
+        { val: 'smallgaps', text: 'Small gaps between particles', textVn: 'Khoảng trống nhỏ giữa các hạt' },
+        { val: 'push', text: 'Push', textVn: 'Đẩy' },
+        { val: 'nothinglost', text: 'Nothing escapes', textVn: 'Không gì thoát ra' },
+        { val: 'spaceshrank', text: 'Only the gaps shrink', textVn: 'Chỉ khoảng trống nhỏ lại' },
+        { val: 'moreparticles', text: 'More particles added', textVn: 'Thêm hạt vào' },
+      ],
+    },
+  ],
+
   notes: notes,
+  workbook: workbook,
   assessment: assessment,
   games: games,
 };

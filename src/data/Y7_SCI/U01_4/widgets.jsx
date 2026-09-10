@@ -117,7 +117,7 @@ export const LevelDrillWidget = ({ lang = 'en' }) => {
         <div className="flex items-center gap-2 mb-2 flex-shrink-0">
           <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white rounded-full px-2 py-0.5 shrink-0"
             style={{ backgroundColor: PURPLE }}>
-            {pick(lang, 'Fingers up', 'Giơ ngón tay')}
+            {pick(lang, 'Guess first', 'Đoán trước')}
           </span>
           <span className="font-black text-xs sm:text-sm uppercase tracking-[0.12em] truncate" style={{ color: PURPLE }}>
             {pick(lang, 'Which level is it?', 'Đây là cấp độ nào?')}

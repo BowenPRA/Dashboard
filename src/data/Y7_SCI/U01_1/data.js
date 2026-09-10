@@ -10,6 +10,7 @@
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { workbook } from './workbook.js';
 import { DIAGRAMS } from './diagrams.js';
 
 export const U01_1_DATA = {
@@ -28,22 +29,26 @@ export const U01_1_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 20 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
       ],
     },
     {
+      // 25 of the 35 XP before it (71%). The practice phase is where the
+      // variety lives: a mixed-type workbook, the labelling task, the reading,
+      // the AI-marked questions and diagrams (ENGAGEMENT-PLAN §3).
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 30,
+      threshold: 25,
       tasks: [
-        { id: 'SPELLING', dbKey: 'p2', maxXP: 10 },
-        { id: 'READ_COMP', dbKey: 'p4', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'LABEL_IT', dbKey: 'p28', maxXP: 20 },
+        { id: 'READ_COMP', dbKey: 'p4', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
-        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 20 },
+        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 15 },
       ],
     },
     {
-      // Quiz and arcade share one gate at 80 of the 110 XP before it (73%).
+      // Quiz and arcade share one gate at 80 of the 125 XP before it (64%).
       id: 'mastery',
       title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
@@ -237,7 +242,77 @@ export const U01_1_DATA = {
     },
   ],
 
+  // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
+  // at runtime, a pin where each label's leader line ended. Coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U01_1 <KEY>`. Each bank carries one
+  // distractor.
+  labelIt: [
+    {
+      id: 'animal',
+      title: 'Label the animal cell', titleVn: 'Gắn nhãn tế bào động vật',
+      inlineSvg: DIAGRAMS.ANIMAL_CELL, viewBox: '0 0 760 430',
+      pins: [
+        { id: 'p1', x: 231, y: 132, answer: 'membrane' },
+        { id: 'p2', x: 455, y: 175, answer: 'nucleus' },
+        { id: 'p3', x: 256, y: 303, answer: 'mito' },
+        { id: 'p4', x: 478, y: 292, answer: 'cyto' },
+      ],
+      bank: [
+        { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
+        { val: 'nucleus', text: 'Nucleus', textVn: 'Nhân' },
+        { val: 'mito', text: 'Mitochondrion', textVn: 'Ti thể' },
+        { val: 'cyto', text: 'Cytoplasm', textVn: 'Tế bào chất' },
+        { val: 'wall', text: 'Cell wall', textVn: 'Thành tế bào' },
+      ],
+    },
+    {
+      id: 'plant',
+      title: 'Label the plant cell', titleVn: 'Gắn nhãn tế bào thực vật',
+      inlineSvg: DIAGRAMS.PLANT_CELL, viewBox: '0 0 760 470',
+      pins: [
+        { id: 'p1', x: 299, y: 72, answer: 'wall' },
+        { id: 'p2', x: 309, y: 158, answer: 'membrane' },
+        { id: 'p3', x: 330, y: 242, answer: 'cyto' },
+        { id: 'p4', x: 315, y: 318, answer: 'nucleus' },
+        { id: 'p5', x: 426, y: 130, answer: 'vacuole' },
+        { id: 'p6', x: 457, y: 202, answer: 'chloro' },
+        { id: 'p7', x: 458, y: 266, answer: 'mito' },
+      ],
+      bank: [
+        { val: 'wall', text: 'Cell wall', textVn: 'Thành tế bào' },
+        { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
+        { val: 'cyto', text: 'Cytoplasm', textVn: 'Tế bào chất' },
+        { val: 'nucleus', text: 'Nucleus', textVn: 'Nhân' },
+        { val: 'vacuole', text: 'Sap vacuole', textVn: 'Không bào' },
+        { val: 'chloro', text: 'Chloroplast', textVn: 'Lục lạp' },
+        { val: 'mito', text: 'Mitochondrion', textVn: 'Ti thể' },
+        { val: 'cellulose', text: 'Cellulose', textVn: 'Xenlulozơ' },
+      ],
+    },
+    {
+      id: 'microscope',
+      title: 'Label the light microscope', titleVn: 'Gắn nhãn kính hiển vi quang học',
+      inlineSvg: DIAGRAMS.MICROSCOPE_LIGHT, viewBox: '0 0 560 340',
+      pins: [
+        { id: 'p1', x: 208, y: 50, answer: 'eye' },
+        { id: 'p2', x: 216, y: 114, answer: 'eyepiece' },
+        { id: 'p3', x: 224, y: 184, answer: 'objective' },
+        { id: 'p4', x: 230, y: 234, answer: 'specimen' },
+        { id: 'p5', x: 187, y: 294, answer: 'light' },
+      ],
+      bank: [
+        { val: 'eye', text: 'Your eye', textVn: 'Mắt em' },
+        { val: 'eyepiece', text: 'Eyepiece lens', textVn: 'Thị kính' },
+        { val: 'objective', text: 'Objective lens', textVn: 'Vật kính' },
+        { val: 'specimen', text: 'The specimen', textVn: 'Mẫu vật' },
+        { val: 'light', text: 'Light source', textVn: 'Nguồn sáng' },
+        { val: 'knob', text: 'Focusing knob', textVn: 'Núm chỉnh tiêu cự' },
+      ],
+    },
+  ],
+
   notes: notes,
+  workbook: workbook,
   assessment: assessment,
   games: games,
 };

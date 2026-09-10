@@ -1,12 +1,15 @@
 // src/data/Y7_SCI/U01_3/data.js
-// 1.3 Specialised Cells — Year 7 Science self-study unit. Seven scored tasks:
-// 130 XP available, capped at 100 (docs/y7-science-course.md §3).
+// 1.3 Specialised Cells — Year 7 Science self-study unit, rebuilt to the
+// engagement plan (docs/y7-science/ENGAGEMENT-PLAN.md §3): a mixed-type
+// Workbook and a Label It task replace Spelling, and the phases block now
+// matches the exemplar (U01_1) exactly.
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio.
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { workbook } from './workbook.js';
 import { DIAGRAMS } from './diagrams.js';
 
 export const U01_3_DATA = {
@@ -25,22 +28,26 @@ export const U01_3_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 20 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
       ],
     },
     {
+      // 25 of the 35 XP before it (71%). The practice phase is where the
+      // variety lives: a mixed-type workbook, the labelling task, the reading,
+      // the AI-marked questions and diagrams (ENGAGEMENT-PLAN §3).
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 30,
+      threshold: 25,
       tasks: [
-        { id: 'SPELLING', dbKey: 'p2', maxXP: 10 },
-        { id: 'READ_COMP', dbKey: 'p4', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'LABEL_IT', dbKey: 'p28', maxXP: 20 },
+        { id: 'READ_COMP', dbKey: 'p4', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
-        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 20 },
+        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 15 },
       ],
     },
     {
-      // Quiz and arcade share one gate at 80 of the 110 XP before it (73%).
+      // Quiz and arcade share one gate at 80 of the 125 XP before it (64%).
       id: 'mastery',
       title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
@@ -243,7 +250,69 @@ export const U01_3_DATA = {
     },
   ],
 
+  // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
+  // at runtime, a pin where each label's leader line ended. Coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U01_3 <KEY>`. Each bank carries at
+  // least one distractor.
+  labelIt: [
+    {
+      id: 'rbc',
+      title: 'Label the red blood cell', titleVn: 'Gắn nhãn tế bào hồng cầu',
+      inlineSvg: DIAGRAMS.RED_BLOOD_CELL, viewBox: '0 0 700 320',
+      pins: [
+        { id: 'p1', x: 540, y: 74, answer: 'membrane' },
+        { id: 'p2', x: 540, y: 160, answer: 'haemoglobin' },
+        { id: 'p3', x: 540, y: 248, answer: 'no_nucleus' },
+      ],
+      bank: [
+        { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
+        { val: 'haemoglobin', text: 'Cytoplasm full of haemoglobin', textVn: 'Tế bào chất chứa đầy haemoglobin' },
+        { val: 'no_nucleus', text: 'No nucleus — more room inside', textVn: 'Không có nhân — nhiều chỗ hơn bên trong' },
+        { val: 'nucleus', text: 'Nucleus', textVn: 'Nhân' },
+      ],
+    },
+    {
+      id: 'neurone',
+      title: 'Label the neurone', titleVn: 'Gắn nhãn tế bào thần kinh',
+      inlineSvg: DIAGRAMS.NEURONE, viewBox: '0 0 700 300',
+      pins: [
+        { id: 'p1', x: 150, y: 58, answer: 'dendrites' },
+        { id: 'p2', x: 372, y: 92, answer: 'nucleus' },
+        { id: 'p3', x: 300, y: 268, answer: 'membrane' },
+        { id: 'p4', x: 470, y: 268, answer: 'axon' },
+      ],
+      bank: [
+        { val: 'dendrites', text: 'Dendrites', textVn: 'Sợi nhánh' },
+        { val: 'nucleus', text: 'Nucleus', textVn: 'Nhân' },
+        { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
+        { val: 'axon', text: 'Axon', textVn: 'Sợi trục' },
+        { val: 'cyto', text: 'Cytoplasm', textVn: 'Tế bào chất' },
+      ],
+    },
+    {
+      id: 'roothair',
+      title: 'Label the root hair cell', titleVn: 'Gắn nhãn tế bào lông hút',
+      inlineSvg: DIAGRAMS.ROOT_HAIR_CELL, viewBox: '0 0 660 300',
+      pins: [
+        { id: 'p1', x: 150, y: 266, answer: 'nucleus' },
+        { id: 'p2', x: 58, y: 266, answer: 'membrane' },
+        { id: 'p3', x: 58, y: 58, answer: 'wall' },
+        { id: 'p4', x: 300, y: 52, answer: 'vacuole' },
+        { id: 'p5', x: 550, y: 266, answer: 'root_hair' },
+      ],
+      bank: [
+        { val: 'nucleus', text: 'Nucleus', textVn: 'Nhân' },
+        { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
+        { val: 'wall', text: 'Cell wall', textVn: 'Thành tế bào' },
+        { val: 'vacuole', text: 'Vacuole (cell sap)', textVn: 'Không bào (dịch tế bào)' },
+        { val: 'root_hair', text: 'The long root hair', textVn: 'Lông hút dài' },
+        { val: 'chloroplast', text: 'Chloroplast', textVn: 'Lục lạp' },
+      ],
+    },
+  ],
+
   notes: notes,
+  workbook: workbook,
   assessment: assessment,
   games: games,
 };

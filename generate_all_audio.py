@@ -124,7 +124,9 @@ def build_layout_narration(slide):
     document order (title, headings, content, notes, steps, checklist items,
     reveal prompt) but NOT the interactive `check` block or a reveal's hidden
     answer — those would spoil the predict-then-reveal."""
-    s = re.split(r'(?m)^\s*check\s*:\s*\{', slide)[0]
+    # `check:` and `activity:` are both interactive and both sit LAST on a
+    # slide, so everything before them is the teaching and nothing after it is.
+    s = re.split(r'(?m)^\s*(?:check|activity)\s*:\s*\{', slide)[0]
     pieces = []
     for m in re.finditer(
         r'\b(title|subtitle|objective|sub|heading|content|text|prompt|caption)\b\s*:\s*(["\'`])((?:\\.|[^\\])*?)\2',

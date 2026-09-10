@@ -19,6 +19,9 @@ import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../s
 import { checkIntervalItems } from '../src/utils/interval.js';
 import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
 import { checkAll as checkSim } from '../src/utils/appSim.js';
+import { checkAll as checkLabelIt } from '../src/utils/labelIt.js';
+import { checkConfig as checkLabBench } from '../src/utils/labBench.js';
+import { checkActivity } from '../src/utils/activity.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -107,6 +110,10 @@ for (const trackId of TRACK_IDS) {
         }
       }
     }
+
+    // -- Label It diagrams and the Lab Bench config (pure checkers in src/utils)
+    if (unit.labelIt !== undefined) for (const p of checkLabelIt(unit.labelIt)) err(`${label}: labelIt ${p}`);
+    if (unit.labBench !== undefined) for (const p of checkLabBench(unit.labBench)) err(`${label}: ${p}`);
 
     // -- phases and XP
     const resolved = resolveUnitTasks(unit, 0);
@@ -250,12 +257,21 @@ for (const trackId of TRACK_IDS) {
             if (!o.text || (bilingual && !o.textVn)) err(`${at}: option "${o.val}" is missing a ${bilingual ? 'bilingual ' : ''}label${bilingual ? ' (text/textVn)' : ''}`);
           }
         }
+
+        // -- interactive activities (sort/order/estimate/hotspot/predict): scored
+        //    like a check, so a malformed one costs XP the same way.
+        if (slide.activity) {
+          const at = `${label}: notes slide ${i + 1} activity`;
+          if (slide.check) err(`${at}: a slide carries a check OR an activity, not both`);
+          if (!hasLayout) err(`${at} sits on a legacy "${slide.type}" slide — activities render only beneath layout slides`);
+          for (const p of checkActivity(slide.activity, { bilingual })) err(`${at}: ${p}`);
+        }
       });
 
       // NOTES pays out of the check questions in the deck. Zero is allowed —
       // decks written before checks existed still pay on completion — but it
       // means the task is unearned, so say so once per unit.
-      const checkCount = (unit.notes || []).filter((s) => s.check).length;
+      const checkCount = (unit.notes || []).filter((s) => s.check || s.activity).length;
       const notesTask = (unit.phases || []).flatMap((p) => p.tasks || []).some((t) => t.id === 'NOTES');
       if (notesTask && (unit.notes || []).length && checkCount === 0) {
         warn(`${label}: notes deck has no check questions — NOTES pays full XP for reaching the last slide`);

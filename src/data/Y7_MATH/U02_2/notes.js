@@ -35,11 +35,11 @@ export const notes = [
     objective: 'Substitute a number for a letter and find the value — with the times sign put back in, and the order of operations still switched on.',
     objectiveVn: 'Thay một con số vào chỗ chữ cái và tìm giá trị — với dấu nhân được viết lại, và thứ tự phép tính vẫn còn hiệu lực.',
     card: {
-      icon: 'Pencil',
-      badge: 'Starter · 30 seconds',
-      badgeVn: 'Khởi động · 30 giây',
-      text: 'Last lesson a cup held **c ml**, Mr Bowen drank 50 ml, and you had to stop at **c − 50**.\n\nNow you are told: **c = 320**. On paper, write how much is left.',
-      textVn: 'Tiết trước, một cốc chứa **c ml**, thầy Bowen uống 50 ml, và em phải dừng lại ở **c − 50**.\n\nBây giờ em được biết: **c = 320**. Hãy viết ra giấy: còn lại bao nhiêu?',
+      icon: 'MousePointerClick',
+      badge: 'In this lesson',
+      badgeVn: 'Trong bài này',
+      text: 'Last lesson a cup held **c ml**, Mr Bowen drank 50 ml, and you had to stop at **c − 50**. Today somebody tells you what **c** is — and the row finishes. Six things are scored; you will **choose**, **estimate** and **check** your way through them.',
+      textVn: 'Tiết trước, một cốc chứa **c ml**, thầy Bowen uống 50 ml, và em phải dừng lại ở **c − 50**. Hôm nay có người cho em biết **c** bằng bao nhiêu — và dòng tính hoàn thành. Sáu mục được tính điểm; em sẽ **chọn**, **ước lượng** và **kiểm tra** qua từng mục.',
     },
   },
 
@@ -183,6 +183,20 @@ export const notes = [
       answerVn:
         '**a** 12  **b** 20  **c** −4  **d** 1\n\n' +
         'Câu **b** là $4 × 5$, không phải 45. Câu **c** xuống dưới 0, và điều đó hoàn toàn được — em đã học ở Chương 1.',
+    },
+    activity: {
+      id: 'a1',
+      type: 'predict',
+      prompt: 'Now change the number: **n = 10**. What is $4n − 3$? Decide, then lock it in.',
+      promptVn: 'Bây giờ đổi số: **n = 10**. $4n − 3$ bằng bao nhiêu? Quyết định rồi chốt đáp án.',
+      options: [
+        { val: 'stick', name: '4103', nameVn: '4103' },
+        { val: 'right', name: '37', nameVn: '37' },
+        { val: 'left', name: '28', nameVn: '28' },
+      ],
+      correct: 'right',
+      explain: '$4n$ means $4 × 10 = 40$, and then $40 − 3 = 37$. Writing the digits next to each other (4103) is the "sticking" mistake; 28 comes from doing $10 − 3$ first, but the multiplication comes first.',
+      explainVn: '$4n$ nghĩa là $4 × 10 = 40$, rồi $40 − 3 = 37$. Viết các chữ số cạnh nhau (4103) là lỗi "ghép chữ số"; 28 là do làm $10 − 3$ trước, nhưng phép nhân phải làm trước.',
     },
   },
 

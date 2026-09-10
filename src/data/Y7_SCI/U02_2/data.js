@@ -1,14 +1,20 @@
 // src/data/Y7_SCI/U02_2/data.js
 // 2.2 Changes of State — Year 7 Science self-study unit covering the two
 // classroom lessons 2.2a (the five change words) and 2.2b (measuring, and
-// heating water), with the classroom's particle model as a widget. Seven
-// scored tasks: 130 XP available, capped at 100 (docs/y7-science-course.md §3).
+// heating water), with the classroom's particle model as a widget. Rebuilt to
+// docs/y7-science/ENGAGEMENT-PLAN.md: a mixed-type Workbook, Label It on the
+// cycle diagram and the apparatus, and the unit's own Lab Bench (this is the
+// only unit with a measuring skill, so it carries all three generative
+// modes). Nine scored tasks; 160 XP available, capped at 100 — over the
+// usual 150 ceiling, which the plan accepts for the one unit that carries
+// Lab Bench. SPELLING is dropped (ENGAGEMENT-PLAN §3).
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio.
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { workbook } from './workbook.js';
 import { DIAGRAMS } from './diagrams.js';
 import { DIAGRAMS as MEASURE } from './diagramsB.js';
 
@@ -32,22 +38,28 @@ export const U02_2_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 20 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
       ],
     },
     {
+      // 25 of the 35 XP before it (71%). The practice phase is where the
+      // variety lives: a mixed-type workbook, the labelling task, the Lab
+      // Bench, the reading, the AI-marked questions and diagrams
+      // (ENGAGEMENT-PLAN §3).
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 30,
+      threshold: 25,
       tasks: [
-        { id: 'SPELLING', dbKey: 'p2', maxXP: 10 },
-        { id: 'READ_COMP', dbKey: 'p4', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'LABEL_IT', dbKey: 'p28', maxXP: 20 },
+        { id: 'READ_COMP', dbKey: 'p4', maxXP: 15 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
-        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 20 },
+        { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 15 },
+        { id: 'LAB_BENCH', dbKey: 'p29', maxXP: 15 },
       ],
     },
     {
-      // Quiz and arcade share one gate at 80 of the 110 XP before it (73%).
+      // Quiz and arcade share one gate at 80 of the 140 XP before it (57%).
       id: 'mastery',
       title: 'Phase 2: Quiz & Arcade',
       threshold: 80,
@@ -57,6 +69,8 @@ export const U02_2_DATA = {
       ],
     },
   ],
+
+  labBench: { modes: ['cylinder', 'thermometer', 'curve'], rounds: 8, title: 'Lab Bench', titleVn: 'Bàn thí nghiệm' },
 
   realWords: [
     {
@@ -249,7 +263,80 @@ export const U02_2_DATA = {
     },
   ],
 
+  // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
+  // at runtime, a pin where each label's leader line ended (or, for a label
+  // with no leader line, at the label's own text position). Coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U02_2 <KEY>` (and `... <KEY>
+  // diagramsB` for the MEASURE diagrams). Each bank carries a distractor.
+  labelIt: [
+    {
+      id: 'cycle',
+      title: 'Label the changes of state', titleVn: 'Gắn nhãn sự chuyển thể',
+      inlineSvg: DIAGRAMS.STATE_CYCLE, viewBox: '0 0 900 470',
+      pins: [
+        { id: 'p1', x: 145, y: 212, answer: 'solid' },
+        { id: 'p2', x: 450, y: 212, answer: 'liquid' },
+        { id: 'p3', x: 755, y: 212, answer: 'gas' },
+        { id: 'p4', x: 297, y: 166, answer: 'melt' },
+        { id: 'p5', x: 297, y: 286, answer: 'freeze' },
+        // "boiling" and "evaporating" share one arrow on the diagram, so one pin.
+        { id: 'p6', x: 602, y: 166, answer: 'boil' },
+        { id: 'p8', x: 602, y: 286, answer: 'condense' },
+      ],
+      bank: [
+        { val: 'solid', text: 'Solid', textVn: 'Rắn' },
+        { val: 'liquid', text: 'Liquid', textVn: 'Lỏng' },
+        { val: 'gas', text: 'Gas', textVn: 'Khí' },
+        { val: 'melt', text: 'Melting', textVn: 'Nóng chảy' },
+        { val: 'freeze', text: 'Freezing', textVn: 'Đông đặc' },
+        { val: 'boil', text: 'Boiling / evaporating', textVn: 'Sôi / bay hơi' },
+        { val: 'condense', text: 'Condensing', textVn: 'Ngưng tụ' },
+        { val: 'dissolve', text: 'Dissolving', textVn: 'Hòa tan' },
+      ],
+    },
+    {
+      id: 'apparatus',
+      title: 'Label the heating apparatus', titleVn: 'Gắn nhãn bộ dụng cụ đun nóng',
+      inlineSvg: MEASURE.APPARATUS, viewBox: '0 0 820 560',
+      pins: [
+        { id: 'p1', x: 610, y: 158, answer: 'thermometer' },
+        { id: 'p2', x: 610, y: 354, answer: 'beaker' },
+        { id: 'p3', x: 610, y: 400, answer: 'gauze' },
+        { id: 'p4', x: 610, y: 472, answer: 'bunsen' },
+        { id: 'p5', x: 250, y: 536, answer: 'mat' },
+        { id: 'p6', x: 108, y: 150, answer: 'clamp' },
+      ],
+      bank: [
+        { val: 'thermometer', text: 'Thermometer', textVn: 'Nhiệt kế' },
+        { val: 'beaker', text: 'Beaker of water', textVn: 'Cốc nước' },
+        { val: 'gauze', text: 'Gauze on a tripod', textVn: 'Lưới trên giá ba chân' },
+        { val: 'bunsen', text: 'Bunsen burner', textVn: 'Đèn Bunsen' },
+        { val: 'mat', text: 'Heat-proof mat', textVn: 'Tấm lót chịu nhiệt' },
+        { val: 'clamp', text: 'Clamp stand', textVn: 'Giá kẹp' },
+        { val: 'tongs', text: 'Tongs', textVn: 'Kẹp gắp' },
+      ],
+    },
+    {
+      id: 'meniscus',
+      title: 'Label the measuring cylinder', titleVn: 'Gắn nhãn ống đong',
+      inlineSvg: MEASURE.MENISCUS, viewBox: '0 0 760 430',
+      pins: [
+        { id: 'p1', x: 365, y: 134, answer: 'meniscus' },
+        { id: 'p2', x: 240, y: 72, answer: 'scale' },
+        { id: 'p3', x: 620, y: 290, answer: 'eye' },
+      ],
+      bank: [
+        { val: 'meniscus', text: 'The meniscus (curved surface)', textVn: 'Mặt khum (mặt cong)' },
+        { val: 'scale', text: 'The cm³ scale', textVn: 'Thang đo cm³' },
+        { val: 'eye', text: 'Your eye, at eye level', textVn: 'Mắt em, ngang tầm mắt' },
+        { val: 'bulb', text: 'The bulb of a thermometer', textVn: 'Bầu nhiệt kế' },
+        { val: 'base', text: 'The base of the cylinder', textVn: 'Đáy ống đong' },
+      ],
+    },
+  ],
+
   notes: notes,
+  workbook: workbook,
   assessment: assessment,
   games: games,
 };

@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler
+  Ruler, Tag, Beaker
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -538,6 +538,42 @@ export const TASKS = [
     component: lazy(() => import('./IntervalLine.jsx')),
     hasContent: (u) => notEmpty(u.intervals),
     buildPool: (u) => u.intervals || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'LABEL_IT',
+    nativeMax: 10,
+    // p27 was the last key taken; p28 is next.
+    dbKey: 'p28',
+    // The unit's own diagram with its labels stripped off and a pin where each
+    // label pointed; tap a label, tap a pin. Built for the science units, where
+    // "label the diagram" is what the exam asks and what the deck could only
+    // show. Item shape in src/utils/labelIt.js. Resumable per diagram.
+    label: 'Label It',
+    icon: Tag,
+    color: { bg: 'bg-[#0ea5e9]', border: 'border-[#0369a1]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./LabelIt.jsx')),
+    hasContent: (u) => notEmpty(u.labelIt),
+    buildPool: (u) => u.labelIt || [],
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'LAB_BENCH',
+    nativeMax: 10,
+    dbKey: 'p29',
+    // Generative measuring practice: a fresh cylinder / thermometer / heating
+    // curve every round, so re-doing it is practice, not memory. The unit only
+    // declares its modes and round count (src/utils/labBench.js).
+    label: 'Lab Bench',
+    icon: Beaker,
+    color: { bg: 'bg-[#0d9488]', border: 'border-[#0f766e]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./LabBench.jsx')),
+    hasContent: (u) => !!(u.labBench && Array.isArray(u.labBench.modes) && u.labBench.modes.length),
+    buildPool: (u) => u.labBench || null,
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];

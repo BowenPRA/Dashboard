@@ -12,6 +12,9 @@ import Reading from './tasks/Reading';
 import ShortAnswers from './tasks/ShortAnswers';
 import Diagrams from './tasks/Diagrams';
 import Assessment from './tasks/Assessment';
+import Workbook from './tasks/Workbook';
+import LabelIt from './tasks/LabelIt';
+import LabBench from './tasks/LabBench';
 import { getTrack } from './data/index';
 import { getTask } from './tasks/taskRegistry';
 
@@ -21,19 +24,35 @@ const UNIT = PARAMS.get('unit') || 'U01_1';
 // `?slide=N` hands NOTES a resume blob as if the deck had been closed on slide
 // N (1-based), to check the "picked up where you left off" path without auth.
 const RESUME_SLIDE = Number(PARAMS.get('slide')) || 0;
+// `?item=N` opens LABEL_IT on its N-th diagram (1-based) by marking the earlier
+// ones done, to eyeball every item's pin positions without labelling them all.
+const RESUME_ITEM = Number(PARAMS.get('item')) || 0;
+const resumeFor = (open, pool) => {
+  if (open === 'NOTES' && RESUME_SLIDE > 0) return { slide: RESUME_SLIDE - 1, total: pool.length, checks: {} };
+  if (open === 'LABEL_IT' && RESUME_ITEM > 1) {
+    const done = {};
+    pool.slice(0, RESUME_ITEM - 1).forEach((it) => { done[it.id] = { placements: {}, perPin: {}, correct: 0, total: it.pins.length }; });
+    return { done };
+  }
+  return {};
+};
 
 const CASES = [
-  ['NOTES', 'Deck · layout slides, 5 checks, ported widgets'],
+  ['NOTES', 'Deck · layout slides, checks + interactive activities'],
   ['WORD_REC', 'Vocab · key words with audio'],
-  ['SPELLING', 'Spelling · the same words, typed'],
+  ['WORKBOOK', 'Practice · mixed-type questions (sort, order, dropdown, fill-in, typed)'],
+  ['LABEL_IT', 'Label It · pin the labels on the unit diagrams'],
   ['READ_COMP', 'Reading · 3 cloze passages'],
   ['SHORT_ANSWERS', 'Questions · 4 reasoning items (AI-marked)'],
   ['DIAGRAMS', 'Diagrams · 3 label-and-explain items (AI-marked)'],
+  ['LAB_BENCH', 'Lab Bench · generative scale reading (2.2)'],
+  ['SPELLING', 'Spelling · the same words, typed'],
   ['ASSESSMENT', 'Quiz · 6 MCQ, 8 minutes'],
 ];
 
 const SCREENS = {
-  NOTES: Notes, WORD_REC: Recognition, SPELLING: Spell, READ_COMP: Reading,
+  NOTES: Notes, WORD_REC: Recognition, SPELLING: Spell, READ_COMP: Reading, WORKBOOK: Workbook,
+  LABEL_IT: LabelIt, LAB_BENCH: LabBench,
   SHORT_ANSWERS: ShortAnswers, DIAGRAMS: Diagrams, ASSESSMENT: Assessment,
 };
 
@@ -53,9 +72,7 @@ function Harness() {
         unitTitle={unit?.meta?.title}
         track={TRACK}
         unitId={UNIT}
-        savedData={open === 'NOTES' && RESUME_SLIDE > 0
-          ? { slide: RESUME_SLIDE - 1, total: pool.length, checks: {} }
-          : {}}
+        savedData={resumeFor(open, pool)}
         onProgress={(score, blob) => console.log(`${open} checkpoint:`, score, blob)}
         onComplete={(score, _b, log) => { console.log(`${open} completed:`, score, log); setOpen(null); }}
         onQuit={() => setOpen(null)}

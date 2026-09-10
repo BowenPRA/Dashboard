@@ -1,14 +1,13 @@
 // src/data/Y7_SCI/U01_1/notes.js
-// 1.1 Cells — a self-study reduction of the classroom deck
-// (C:\Users\bowen\lessons, content/y7-science/U01_1). 16 layout slides,
-// 5 checks.
+// 1.1 Cells — the self-study deck, rebuilt to the engagement plan
+// (docs/y7-science/ENGAGEMENT-PLAN.md). 16 layout slides; 6 scored items —
+// three interactive activities (estimate · hotspot · sort) and three checks.
 //
-// Reduced from 22 classroom slides: the soda-can question and its working fold
-// into one widget slide; the two Learner's Book scans (the labelled plant cell,
-// the labelled microscope) are dropped because they are not openly licensed
-// and the drawn diagrams carry the same content; the ER "beyond the book"
-// slide and the homework go. Every photograph is credited in docs/credits.md.
-// The `check:` block is always the LAST key.
+// The classroom deck opened with "write a sentence on paper"; this one opens
+// with a guess on a slider that the next two slides pay off. The two
+// Learner's Book scans are not used (not openly licensed); the drawn diagrams
+// carry the content. Every photograph is credited in docs/credits.md. The
+// `check:` or `activity:` block is always the LAST key on its slide.
 import { DIAGRAMS } from './diagrams.js';
 import { ScaleChallengeWidget, CellExplorerWidget } from './widgets.jsx';
 import { assetUrl } from '../../../utils/assetPaths';
@@ -20,7 +19,7 @@ const PURPLE = '#5c2483';
 const GREEN = '#4a8b23';
 
 export const notes = [
-  // 1 ─ Hero + starter ──────────────────────────────────────────────────────
+  // 1 ─ Hero ────────────────────────────────────────────────────────────────
   {
     layout: 'hero',
     color: PURPLE,
@@ -34,40 +33,64 @@ export const notes = [
     objective: 'Define a cell and its organelles, compare animal and plant cells, and explain how a microscope lets us see them.',
     objectiveVn: 'Định nghĩa tế bào và các bào quan, so sánh tế bào động vật với tế bào thực vật, và giải thích kính hiển vi giúp ta nhìn thấy chúng như thế nào.',
     card: {
-      icon: 'Hourglass',
-      badge: 'Starter · 1 minute',
-      badgeVn: 'Khởi động · 1 phút',
-      text: 'On paper, write a **complete sentence** describing how small a cell is. Use a **measurement** (like mm) or a **real-world comparison**.',
-      textVn: 'Viết ra giấy một **câu hoàn chỉnh** mô tả tế bào nhỏ như thế nào. Dùng một **đơn vị đo** (như mm) hoặc một **so sánh thực tế**.',
+      icon: 'MousePointerClick',
+      badge: 'In this lesson',
+      badgeVn: 'Trong bài này',
+      text: 'You will **guess**, **tap** and **sort** your way through it. Six things are scored — the slider on the next slide is the first.',
+      textVn: 'Em sẽ **đoán**, **chạm** và **sắp xếp** trong suốt bài học. Sáu mục được tính điểm — thanh trượt ở slide sau là mục đầu tiên.',
     },
   },
 
-  // 2 ─ The soda can challenge (widget) ─────────────────────────────────────
+  // 2 ─ The soda can challenge: ESTIMATE ─────────────────────────────────────
   {
-    layout: 'split',
+    layout: 'statement',
     accent: PURPLE,
     icon: 'Scale',
     eyebrow: 'The soda can challenge',
     eyebrowVn: 'Thử thách lon nước ngọt',
+    title: 'How Tall Would Mr Bowen Be?',
+    titleVn: 'Thầy Bowen sẽ cao bao nhiêu?',
+    label: 'Imagine',
+    labelVn: 'Hãy tưởng tượng',
+    labelIcon: 'Sparkles',
+    text: 'One **average cell** in Mr Bowen’s body is magnified until it is the size of a **soda can**.',
+    textVn: 'Một **tế bào trung bình** trong cơ thể thầy Bowen được phóng to đến khi bằng một **lon nước ngọt**.',
+    sub: 'Mr Bowen is 178 cm tall. Magnified the same amount, how tall is he now? A building? A mountain? Slide to your guess.',
+    subVn: 'Thầy Bowen cao 178 cm. Phóng to cùng tỉ lệ, thầy cao bao nhiêu? Một toà nhà? Một ngọn núi? Kéo thanh trượt đến dự đoán của em.',
+    activity: {
+      id: 'a1', type: 'estimate',
+      prompt: 'How tall would Mr Bowen be, in kilometres?',
+      promptVn: 'Thầy Bowen sẽ cao bao nhiêu ki-lô-mét?',
+      min: 0, max: 20, step: 0.5, unit: 'km', answer: 10.5, tolerance: 0.3,
+      explain: 'About **10.7 km** — taller than Everest. A soda can is about 6000 times bigger than a cell, so he is 6000 times taller too. The next slide works it out.',
+      explainVn: 'Khoảng **10,7 km** — cao hơn cả Everest. Một lon nước ngọt lớn hơn tế bào khoảng 6000 lần, nên thầy cũng cao hơn 6000 lần. Slide sau sẽ tính ra.',
+    },
+  },
+
+  // 3 ─ Working it out (widget) ────────────────────────────────────────────
+  {
+    layout: 'split',
+    accent: PURPLE,
+    icon: 'Scale',
+    eyebrow: 'The working',
+    eyebrowVn: 'Cách tính',
     title: 'Working It Out',
     titleVn: 'Cùng tính toán',
     ratio: 45,
     content:
-      'Imagine one **average cell** in Mr Bowen’s body was magnified until it was the size of a **soda can**. How big would Mr Bowen be? He is **178 cm** tall. A building? A mountain? Guess first.\n\n' +
-      'Then find the real answer — press through the steps on the right, one at a time.\n\n' +
+      'Press through the steps on the right, one at a time.\n\n' +
       '> **1.** A typical human cell is **0.02 mm** across.\n' +
       '> **2.** A soda can is about **120 mm** tall.\n' +
-      '> **3.** Work out the **scale factor** — how many times bigger?',
+      '> **3.** The **scale factor** is how many times bigger: $120 ÷ 0.02$.',
     contentVn:
-      'Hãy tưởng tượng một **tế bào trung bình** trong cơ thể thầy Bowen được phóng to đến khi bằng một **lon nước ngọt**. Khi đó thầy Bowen sẽ to cỡ nào? Thầy cao **178 cm**. Một toà nhà? Một ngọn núi? Hãy đoán trước.\n\n' +
-      'Rồi tìm đáp án thật — bấm từng bước ở bên phải.\n\n' +
+      'Bấm từng bước ở bên phải.\n\n' +
       '> **1.** Một tế bào người thường rộng **0,02 mm**.\n' +
       '> **2.** Một lon nước ngọt cao khoảng **120 mm**.\n' +
-      '> **3.** Hãy tính **hệ số phóng đại** — lớn hơn bao nhiêu lần?',
+      '> **3.** **Hệ số phóng đại** là lớn hơn bao nhiêu lần: $120 ÷ 0,02$.',
     widget: ScaleChallengeWidget,
   },
 
-  // 3 ─ Taller than Everest + CHECK 1 ───────────────────────────────────────
+  // 4 ─ Taller than Everest ────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: GREEN,
@@ -77,24 +100,11 @@ export const notes = [
     title: 'Taller Than Everest',
     titleVn: 'Cao hơn cả Everest',
     image: img('everest.jpg'),
-    caption: 'Magnified 6000×, Mr Bowen would be **10.68 km** tall. Everest is **8.85 km**. He would stand almost 2 km above the summit — and that is how much bigger a soda can is than one of your cells.',
-    captionVn: 'Phóng đại 6000 lần, thầy Bowen sẽ cao **10,68 km**. Everest cao **8,85 km**. Thầy sẽ đứng cao hơn đỉnh núi gần 2 km — và đó chính là mức chênh lệch giữa một lon nước ngọt và một tế bào của em.',
-    check: {
-      id: 'c1',
-      q: 'A cell is 0.02 mm across and a soda can is 120 mm tall. How many times bigger is the can?',
-      qVn: 'Một tế bào rộng 0,02 mm và một lon nước ngọt cao 120 mm. Cái lon lớn hơn bao nhiêu lần?',
-      options: [
-        { val: 'A', text: '60 times', textVn: '60 lần' },
-        { val: 'B', text: '600 times', textVn: '600 lần' },
-        { val: 'C', text: '6000 times', textVn: '6000 lần' },
-      ],
-      correct: 'C',
-      expEn: '$120 ÷ 0.02 = 6000$. Dividing by a number smaller than 1 makes the answer **bigger** than 120, not smaller — that is why 60 and 600 feel right and are wrong.',
-      expVn: '$120 ÷ 0,02 = 6000$. Chia cho một số nhỏ hơn 1 làm kết quả **lớn hơn** 120, không phải nhỏ hơn — đó là lý do 60 và 600 nghe hợp lý nhưng sai.',
-    },
+    caption: 'Magnified 6000×, Mr Bowen would be **10.68 km** tall. Everest is **8.85 km**. He would stand almost 2 km above the summit — and that is how much bigger a soda can is than one of your cells. How close was your guess?',
+    captionVn: 'Phóng đại 6000 lần, thầy Bowen sẽ cao **10,68 km**. Everest cao **8,85 km**. Thầy sẽ đứng cao hơn đỉnh núi gần 2 km — và đó chính là mức chênh lệch giữa một lon nước ngọt và một tế bào của em. Em đoán gần đến đâu?',
   },
 
-  // 4 ─ How small is small ──────────────────────────────────────────────────
+  // 5 ─ How small is small ─────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: TEAL,
@@ -108,7 +118,7 @@ export const notes = [
     captionVn: 'Mọi thứ bên phải sợi tóc đều cần kính hiển vi. Một tế bào **mỏng hơn sợi tóc khoảng 3 lần**.',
   },
 
-  // 5 ─ Defining the cell + CHECK 2 ─────────────────────────────────────────
+  // 6 ─ Defining the cell + CHECK ──────────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -150,7 +160,7 @@ export const notes = [
     },
   },
 
-  // 6 ─ Same word, two places ───────────────────────────────────────────────
+  // 7 ─ Same word, two places ──────────────────────────────────────────────
   {
     layout: 'compare',
     accent: PURPLE,
@@ -177,7 +187,7 @@ export const notes = [
     ],
   },
 
-  // 7 ─ Inside the tiny room (widget) ───────────────────────────────────────
+  // 8 ─ Inside the tiny room (widget) ──────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -187,10 +197,10 @@ export const notes = [
     ratio: 45,
     content:
       'A classroom has furniture. A human body has organs. In the same way, a cell has tiny structures inside it, and each one has a job.\n\n' +
-      'Tap each part of the cell to find out what it does.',
+      'Tap each part of the cell to find out what it does — you will need them all on the next slide.',
     contentVn:
       'Lớp học có bàn ghế. Cơ thể người có các cơ quan. Tương tự, tế bào có những cấu trúc nhỏ bên trong, và mỗi cái có một nhiệm vụ.\n\n' +
-      'Chạm vào từng bộ phận của tế bào để xem nó làm gì.',
+      'Chạm vào từng bộ phận của tế bào để xem nó làm gì — em sẽ cần tất cả ở slide sau.',
     notes: [
       {
         tone: 'write',
@@ -201,7 +211,41 @@ export const notes = [
     widget: CellExplorerWidget,
   },
 
-  // 8 ─ Every cell has these four + CHECK 3 ─────────────────────────────────
+  // 9 ─ Find the control centre: HOTSPOT ───────────────────────────────────
+  {
+    layout: 'statement',
+    accent: TEAL,
+    icon: 'Target',
+    eyebrow: 'Tap the diagram',
+    eyebrowVn: 'Chạm vào hình',
+    title: 'Find the Boss',
+    titleVn: 'Tìm ông chủ',
+    label: 'Locate',
+    labelVn: 'Xác định vị trí',
+    labelIcon: 'Target',
+    text: 'One organelle **manages everything** the cell does.',
+    textVn: 'Một bào quan **quản lý mọi hoạt động** của tế bào.',
+    sub: 'Tap it on the animal cell below. You get two tries.',
+    subVn: 'Chạm vào nó trên tế bào động vật bên dưới. Em có hai lần thử.',
+    activity: {
+      id: 'a2', type: 'hotspot',
+      prompt: 'Tap the **nucleus** — the control centre of the cell.',
+      promptVn: 'Chạm vào **nhân** — trung tâm điều khiển của tế bào.',
+      svg: DIAGRAMS.ANIMAL_CELL, viewBox: '0 0 760 430',
+      targets: [
+        { id: 'nucleus', x: 405, y: 188, r: 55, name: 'the nucleus', nameVn: 'nhân' },
+        { id: 'mito', x: 272, y: 300, r: 30, name: 'a mitochondrion', nameVn: 'một ti thể' },
+        { id: 'mito2', x: 500, y: 130, r: 30, name: 'a mitochondrion', nameVn: 'một ti thể' },
+        { id: 'cyto', x: 330, y: 250, r: 40, name: 'the cytoplasm', nameVn: 'tế bào chất' },
+        { id: 'membrane', x: 210, y: 150, r: 28, name: 'the cell membrane', nameVn: 'màng tế bào' },
+      ],
+      correct: 'nucleus',
+      explain: 'The **nucleus** is the big purple sphere near the middle: it is the control centre, the "boss" of the cell. The small sausages are mitochondria; the jelly around them is cytoplasm.',
+      explainVn: '**Nhân** là khối cầu tím lớn gần giữa: đó là trung tâm điều khiển, "ông chủ" của tế bào. Những hạt hình xúc xích nhỏ là ti thể; chất thạch quanh chúng là tế bào chất.',
+    },
+  },
+
+  // 10 ─ Every cell has these four + CHECK ─────────────────────────────────
   {
     layout: 'gallery',
     accent: TEAL,
@@ -212,8 +256,8 @@ export const notes = [
     eyebrowVn: 'Những bộ phận tiêu chuẩn',
     title: 'Every Cell Has These Four',
     titleVn: 'Mọi tế bào đều có bốn bộ phận này',
-    content: 'Animal cells and plant cells both have all four. The highlighted part shows you where it sits. Copy all four into your notebook.',
-    contentVn: 'Cả tế bào động vật và thực vật đều có đủ bốn bộ phận. Phần được tô đậm cho em thấy vị trí của nó. Chép cả bốn vào vở.',
+    content: 'Animal cells and plant cells both have all four. The highlighted part shows you where it sits.',
+    contentVn: 'Cả tế bào động vật và thực vật đều có đủ bốn bộ phận. Phần được tô đậm cho em thấy vị trí của nó.',
     items: [
       {
         inlineSvg: DIAGRAMS.ORG_MEMBRANE,
@@ -243,20 +287,20 @@ export const notes = [
     ],
     check: {
       id: 'c3',
-      q: 'Which organelle is the **control centre** of the cell?',
-      qVn: 'Bào quan nào là **trung tâm điều khiển** của tế bào?',
+      q: 'A cell needs energy to move and grow. Which organelle **releases energy from food**?',
+      qVn: 'Tế bào cần năng lượng để chuyển động và lớn lên. Bào quan nào **giải phóng năng lượng từ thức ăn**?',
       options: [
-        { val: 'A', text: 'The cytoplasm', textVn: 'Tế bào chất' },
-        { val: 'B', text: 'The nucleus', textVn: 'Nhân' },
-        { val: 'C', text: 'The cell membrane', textVn: 'Màng tế bào' },
+        { val: 'A', text: 'The cell membrane', textVn: 'Màng tế bào' },
+        { val: 'B', text: 'The mitochondria', textVn: 'Ti thể' },
+        { val: 'C', text: 'The nucleus', textVn: 'Nhân' },
       ],
       correct: 'B',
-      expEn: 'The **nucleus** is the boss: it manages everything the cell does. The cytoplasm is where reactions happen, and the membrane controls what goes in and out.',
-      expVn: '**Nhân** là ông chủ: nó quản lý mọi hoạt động của tế bào. Tế bào chất là nơi diễn ra phản ứng, còn màng kiểm soát những gì ra vào.',
+      expEn: 'The **mitochondria** are where energy is released from food. The nucleus is the boss and the membrane is the gatekeeper — neither makes energy.',
+      expVn: '**Ti thể** là nơi năng lượng được giải phóng từ thức ăn. Nhân là ông chủ và màng là người gác cổng — cả hai đều không tạo năng lượng.',
     },
   },
 
-  // 9 ─ What holds a plant up ───────────────────────────────────────────────
+  // 11 ─ What holds a plant up ─────────────────────────────────────────────
   {
     layout: 'gallery',
     accent: GREEN,
@@ -297,7 +341,7 @@ export const notes = [
     ],
   },
 
-  // 10 ─ How a plant feeds itself + CHECK 4 ─────────────────────────────────
+  // 12 ─ How a plant feeds itself + CHECK ──────────────────────────────────
   {
     layout: 'gallery',
     accent: GREEN,
@@ -345,7 +389,7 @@ export const notes = [
     },
   },
 
-  // 11 ─ Side by side + CHECK 5 ─────────────────────────────────────────────
+  // 13 ─ Side by side: SORT ────────────────────────────────────────────────
   {
     layout: 'compare',
     accent: TEAL,
@@ -366,27 +410,33 @@ export const notes = [
         accent: GREEN,
         icon: 'Leaf',
         inlineSvg: DIAGRAMS.PLANT_CELL,
-        drawThis: true,
-        caption: 'Boxy and stiff. The same four parts, plus a wall, chloroplasts and a big sap vacuole. **Copy this one into your notebook and label all seven parts.**',
-        captionVn: 'Vuông vắn và cứng. Vẫn bốn bộ phận đó, cộng thêm thành tế bào, lục lạp và không bào lớn. **Chép hình này vào vở và chú thích đủ bảy bộ phận.**',
+        caption: 'Boxy and stiff. The same four parts, plus a wall, chloroplasts and a big sap vacuole.',
+        captionVn: 'Vuông vắn và cứng. Vẫn bốn bộ phận đó, cộng thêm thành tế bào, lục lạp và không bào lớn.',
       },
     ],
-    check: {
-      id: 'c5',
-      q: 'Which part is found in a **plant** cell but **not** in an animal cell?',
-      qVn: 'Bộ phận nào có ở tế bào **thực vật** nhưng **không** có ở tế bào động vật?',
-      options: [
-        { val: 'A', text: 'Cell wall', textVn: 'Thành tế bào' },
-        { val: 'B', text: 'Nucleus', textVn: 'Nhân' },
-        { val: 'C', text: 'Cell membrane', textVn: 'Màng tế bào' },
+    activity: {
+      id: 'a3', type: 'sort',
+      prompt: 'Sort the seven parts: which does **every** cell have, and which are **plant cells only**?',
+      promptVn: 'Sắp xếp bảy bộ phận: cái nào **mọi** tế bào đều có, cái nào **chỉ tế bào thực vật** mới có?',
+      bins: [
+        { id: 'all', name: 'Every cell', nameVn: 'Mọi tế bào' },
+        { id: 'plant', name: 'Plant cells only', nameVn: 'Chỉ tế bào thực vật' },
       ],
-      correct: 'A',
-      expEn: 'The **cell wall** (with the chloroplasts and the sap vacuole) is a plant-only extra. Every cell — plant or animal — has a nucleus and a cell membrane.',
-      expVn: '**Thành tế bào** (cùng lục lạp và không bào) là phần chỉ có ở thực vật. Mọi tế bào — thực vật hay động vật — đều có nhân và màng tế bào.',
+      cards: [
+        { id: 'membrane', name: 'Cell membrane', nameVn: 'Màng tế bào', bin: 'all' },
+        { id: 'wall', name: 'Cell wall', nameVn: 'Thành tế bào', bin: 'plant' },
+        { id: 'cyto', name: 'Cytoplasm', nameVn: 'Tế bào chất', bin: 'all' },
+        { id: 'chloro', name: 'Chloroplasts', nameVn: 'Lục lạp', bin: 'plant' },
+        { id: 'nucleus', name: 'Nucleus', nameVn: 'Nhân', bin: 'all' },
+        { id: 'vacuole', name: 'Sap vacuole', nameVn: 'Không bào', bin: 'plant' },
+        { id: 'mito', name: 'Mitochondria', nameVn: 'Ti thể', bin: 'all' },
+      ],
+      explain: 'Membrane, cytoplasm, nucleus and mitochondria are in **every** cell. The stiff wall, the green chloroplasts and the big sap vacuole are the plant-only extras — a plant has no skeleton and cannot go and find food.',
+      explainVn: 'Màng, tế bào chất, nhân và ti thể có trong **mọi** tế bào. Thành cứng, lục lạp xanh và không bào lớn là phần chỉ có ở thực vật — cây không có bộ xương và không thể đi tìm thức ăn.',
     },
   },
 
-  // 12 ─ The same two cells, for real ───────────────────────────────────────
+  // 14 ─ The same two cells, for real ──────────────────────────────────────
   {
     layout: 'compare',
     accent: TEAL,
@@ -415,7 +465,7 @@ export const notes = [
     ],
   },
 
-  // 13 ─ How does it magnify? ───────────────────────────────────────────────
+  // 15 ─ How does it magnify? ──────────────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -429,10 +479,10 @@ export const notes = [
     inlineSvg: DIAGRAMS.MICROSCOPE_LIGHT,
     content:
       'Light shines up through the specimen. Two curved pieces of glass — **lenses** — bend that light, and the image reaching your eye is far bigger than the real thing.\n\n' +
-      'On a real microscope, find: the **eyepiece**, the **coarse and fine focusing knobs**, the **objective lenses**, the **stage** and the **mirror**.',
+      'To see things smaller than a cell — viruses, even single molecules — scientists use an **electron microscope**, which fires a beam of electrons instead of light. An electron is far smaller than a wave of light, so it picks out detail that light slides past.',
     contentVn:
       'Ánh sáng chiếu xuyên qua mẫu vật. Hai miếng thuỷ tinh cong — **thấu kính** — bẻ cong ánh sáng đó, và hình ảnh đến mắt em to hơn vật thật rất nhiều.\n\n' +
-      'Trên kính hiển vi thật, hãy tìm: **thị kính**, **núm chỉnh thô và chỉnh tinh**, **vật kính**, **bàn kính** và **gương**.',
+      'Để nhìn những thứ nhỏ hơn tế bào — virus, thậm chí từng phân tử — các nhà khoa học dùng **kính hiển vi điện tử**, bắn một chùm electron thay cho ánh sáng. Electron nhỏ hơn sóng ánh sáng rất nhiều, nên nó thấy được những chi tiết mà ánh sáng lướt qua mất.',
     notes: [
       {
         tone: 'write',
@@ -442,65 +492,11 @@ export const notes = [
     ],
   },
 
-  // 14 ─ Smaller than a cell ────────────────────────────────────────────────
-  {
-    layout: 'split',
-    accent: PURPLE,
-    icon: 'ScanEye',
-    eyebrow: 'Pushing the limits',
-    eyebrowVn: 'Vượt giới hạn',
-    title: 'Smaller Than a Cell',
-    titleVn: 'Nhỏ hơn cả tế bào',
-    ratio: 45,
-    side: 'left',
-    image: img('electron-microscope.jpg'),
-    content:
-      'To see things smaller than a cell — **viruses**, or even single **molecules** — scientists use an **Electron Microscope** like this one. It fills a room and costs more than a house.\n\n' +
-      'Here is the puzzle. If something is too small for a wave of light to bounce off it, how could this machine possibly see it?',
-    contentVn:
-      'Để nhìn những thứ nhỏ hơn tế bào — **virus**, hay thậm chí từng **phân tử** — các nhà khoa học dùng **Kính hiển vi điện tử** như chiếc này. Nó chiếm cả một căn phòng và đắt hơn một ngôi nhà.\n\n' +
-      'Câu đố là đây. Nếu một vật quá nhỏ để sóng ánh sáng phản xạ lại, thì cỗ máy này nhìn thấy nó bằng cách nào?',
-    reveal: {
-      label: 'Think first, then reveal',
-      labelVn: 'Nghĩ trước, rồi hiện đáp án',
-      answer: 'It fires a beam of **electrons** instead of light. An electron is far smaller than a wave of light, so it can pick out detail that light simply slides past.',
-      answerVn: 'Nó bắn một chùm **electron** thay cho ánh sáng. Electron nhỏ hơn sóng ánh sáng rất nhiều, nên nó thấy được những chi tiết mà ánh sáng lướt qua mất.',
-    },
-    caption: 'A modern electron microscope.',
-    captionVn: 'Một kính hiển vi điện tử hiện đại.',
-  },
-
-  // 15 ─ Models and their limitations ───────────────────────────────────────
-  {
-    layout: 'split',
-    accent: PURPLE,
-    icon: 'GraduationCap',
-    eyebrow: 'Thinking like a scientist',
-    eyebrowVn: 'Tư duy như một nhà khoa học',
-    title: 'Models Are Never the Real Thing',
-    titleVn: 'Mô hình không bao giờ là vật thật',
-    ratio: 45,
-    inlineSvg: DIAGRAMS.MODEL_LIMITS,
-    content:
-      'In class you build physical **models** of these cells out of boxes, bags, beads and modelling clay.\n\n' +
-      'A model helps you think — but a model is never the real thing. Keep asking yourself what yours is missing: the real cell is alive, its parts move, and it is thousands of times smaller.',
-    contentVn:
-      'Trong lớp, các em làm **mô hình** vật lý của tế bào từ hộp, túi, hạt và đất nặn.\n\n' +
-      'Mô hình giúp em tư duy — nhưng mô hình không bao giờ là vật thật. Hãy luôn tự hỏi mô hình của mình còn thiếu gì: tế bào thật thì sống, các bộ phận của nó chuyển động, và nó nhỏ hơn hàng nghìn lần.',
-    notes: [
-      {
-        tone: 'write',
-        text: '**Limitations:** the weaknesses of a scientific model — the ways it is different from the real object.',
-        textVn: '**Hạn chế (limitations):** những điểm yếu của một mô hình khoa học — những chỗ nó khác với vật thật.',
-      },
-    ],
-  },
-
-  // 16 ─ Recap + closer ─────────────────────────────────────────────────────
+  // 16 ─ Models, and the recap ─────────────────────────────────────────────
   {
     layout: 'stack',
     variant: 'checklist',
-    accent: TEAL,
+    accent: PURPLE,
     icon: 'CheckCircle2',
     columns: 2,
     eyebrow: 'Before you go on',
@@ -508,17 +504,17 @@ export const notes = [
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
     content:
-      'Read each line and be honest with yourself. If you could not explain one of them to a friend, that is the part to read again.\n\n' +
-      '> Your notebook should now have **12 definitions** and **1 labelled drawing** in it. Check. Then do the Vocab, and the Practice.',
+      'In class you build physical **models** of cells from boxes, bags and beads. A model helps you think — but a model is never the real thing: the real cell is alive, its parts move, and it is thousands of times smaller. Those differences are the model’s **limitations**.\n\n' +
+      'Next: the Vocab, then **Label It** — you will put every label on these diagrams yourself.',
     contentVn:
-      'Đọc từng dòng và thành thật với chính mình. Nếu có điều nào em chưa giải thích được cho một người bạn, thì hãy đọc lại phần đó.\n\n' +
-      '> Trong vở của em bây giờ phải có **12 định nghĩa** và **1 hình vẽ có chú thích**. Hãy kiểm tra. Rồi làm phần Từ vựng và Luyện tập.',
+      'Trên lớp, các em làm **mô hình** tế bào từ hộp, túi và hạt. Mô hình giúp em tư duy — nhưng không bao giờ là vật thật: tế bào thật thì sống, các bộ phận chuyển động, và nó nhỏ hơn hàng nghìn lần. Những khác biệt đó là **hạn chế** của mô hình.\n\n' +
+      'Tiếp theo: Từ vựng, rồi **Gắn nhãn** — em sẽ tự đặt mọi nhãn lên những hình này.',
     items: [
       { text: 'Say **how small a cell is** — with a number or a comparison.', textVn: 'Nói được **tế bào nhỏ đến mức nào** — bằng con số hoặc phép so sánh.' },
       { text: 'Define a **cell** and an **organelle**, and say where the word "cell" came from.', textVn: 'Định nghĩa **tế bào** và **bào quan**, và nói được từ "cell" bắt nguồn từ đâu.' },
       { text: 'Name the **four parts every cell has**, and what each one does.', textVn: 'Kể được **bốn bộ phận mọi tế bào đều có** và nhiệm vụ của từng cái.' },
-      { text: 'Name the **five plant-only parts**, and why a plant needs them.', textVn: 'Kể được **năm bộ phận chỉ có ở thực vật**, và vì sao cây cần chúng.' },
-      { text: 'Explain what a **microscope** does, and name its main parts.', textVn: 'Giải thích **kính hiển vi** làm gì, và kể tên các bộ phận chính.' },
+      { text: 'Name the **plant-only parts**, and why a plant needs them.', textVn: 'Kể được **các bộ phận chỉ có ở thực vật**, và vì sao cây cần chúng.' },
+      { text: 'Explain what a **microscope** does.', textVn: 'Giải thích **kính hiển vi** làm gì.' },
       { text: 'Explain the **limitations** of a scientific model.', textVn: 'Giải thích **hạn chế** của một mô hình khoa học.' },
     ],
   },

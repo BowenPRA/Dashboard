@@ -9,6 +9,7 @@ import {
 import TopBar from '../components/TopBar';
 import WidgetRenderer from '../components/WidgetRenderer';
 import { SlideLayout } from '../components/notes/layouts';
+import ActivityBlock from '../components/notes/ActivityBlock';
 import { isLayout } from '../components/notes/layouts/helpers.jsx';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 
@@ -240,14 +241,28 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     }
   };
 
-  // Every check question in the deck, with the slide it sits on.
+  // Every scored item in the deck — a `check` question or an interactive
+  // `activity` (sort/order/estimate/hotspot/predict) — with the slide it sits
+  // on. Both score alike: one item, right or wrong.
   const checks = (slides || [])
-    .map((slide, i) => (slide?.check ? { i, check: slide.check } : null))
+    .map((slide, i) => (slide?.check || slide?.activity
+      ? { i, check: slide.check || null, activity: slide.activity || null }
+      : null))
     .filter(Boolean);
 
-  // A slide's check must be answered before it can be left behind — the reveal
-  // is the teaching, so skipping past it would skip the point.
-  const pendingCheck = !!slides?.[currentIndex]?.check && !checkAnswers[currentIndex];
+  // A slide's check or activity must be finished before it can be left behind —
+  // the reveal is the teaching, so skipping past it would skip the point.
+  const pendingCheck = !!(slides?.[currentIndex]?.check || slides?.[currentIndex]?.activity)
+    && !checkAnswers[currentIndex];
+
+  // An activity reports its result once (`{ done, correct, ... }`); it is kept
+  // in the same per-slide map as the check answers so resume covers both.
+  const finishActivity = (index, result) => {
+    if (checkAnswers[index]) return;
+    const next = { ...checkAnswers, [index]: { ...result, correct: !!result?.correct } };
+    setCheckAnswers(next);
+    checkpoint(next, Math.max(furthest, index));
+  };
 
   // Notes is a native-10 task (taskRegistry), so score out of 10. A deck with
   // no check questions pays on completion only, so decks written before checks
@@ -257,8 +272,8 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     const right = checks.filter(({ i }) => answers[i]?.correct).length;
     return Math.round((right / checks.length) * 10);
   };
-  const itemsOf = (answers) => checks.map(({ i, check }) => ({
-    itemId: check.id || `slide-${i + 1}`,
+  const itemsOf = (answers) => checks.map(({ i, check, activity }) => ({
+    itemId: check?.id || activity?.id || `slide-${i + 1}`,
     correct: !!answers[i]?.correct,
   }));
   const blobOf = (answers, slide) => ({ slide, total: slides?.length || 0, checks: answers });
@@ -618,6 +633,20 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                     isDisplayMode={isDisplayMode}
                     parseText={parseInlineText}
                     compact
+                  />
+                </div>
+              )}
+              {/* An interactive activity takes the same footer as a check, but
+                  gets more room — a sort or a hotspot needs it. */}
+              {!slideCheck && currentSlide.activity && (
+                <div className="shrink-0 max-h-[62%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 lg:px-8 py-3">
+                  <ActivityBlock
+                    activity={currentSlide.activity}
+                    lang={lang}
+                    result={slideAnswer}
+                    onResult={(res) => finishActivity(currentIndex, res)}
+                    parseText={parseInlineText}
+                    isDisplayMode={isDisplayMode}
                   />
                 </div>
               )}

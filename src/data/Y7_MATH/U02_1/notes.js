@@ -35,15 +35,15 @@ export const notes = [
     objective: 'Choose a letter to represent a number you cannot count, and turn English sentences into algebra.',
     objectiveVn: 'Chọn một chữ cái để đại diện cho một số không đếm được, và chuyển câu tiếng Anh thành đại số.',
     card: {
-      icon: 'Pencil',
-      badge: 'Starter · 30 seconds',
-      badgeVn: 'Khởi động · 30 giây',
-      text: 'In **Science** you learned that everything is made of **particles**. On paper, write how many particles are in one drop of water. Any number — but write one.',
-      textVn: 'Trong giờ **Khoa học**, em đã học rằng mọi vật đều được tạo nên từ các **hạt (particles)**. Hãy viết ra giấy: một giọt nước có bao nhiêu hạt? Số nào cũng được — nhưng phải viết một số.',
+      icon: 'MousePointerClick',
+      badge: 'In this lesson',
+      badgeVn: 'Trong bài này',
+      text: 'You will **guess**, **sort** and **choose** your way through it. Six things are scored — the question on the next slide is the first.',
+      textVn: 'Em sẽ **đoán**, **sắp xếp** và **chọn** trong suốt bài học. Sáu mục được tính điểm — câu hỏi ở slide sau là mục đầu tiên.',
     },
   },
 
-  // 2 ─ The hook: a real number nobody can count ────────────────────────────
+  // 2 ─ The hook: a real number nobody can count — PREDICT ──────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -56,13 +56,25 @@ export const notes = [
     ratio: 50,
     inlineSvg: DIAGRAMS.PARTICLE_DROP,
     content:
-      'You could not write a real number. Nobody can. That is not because you are bad at Science.\n\n' +
-      'The particles are **really there**, and there is a **real number** of them.\n\n' +
-      '**So how do we write about a number nobody can count?**',
+      'In Science you learned that everything is made of **particles**. Here is one drop of water.\n\n' +
+      'The particles are **really there**, and there is a **real number** of them. So: how many?',
     contentVn:
-      'Em không thể viết ra con số thật. Không ai làm được. Đó không phải vì em học Khoa học kém.\n\n' +
-      'Các hạt **thật sự có ở đó**, và số lượng của chúng là một **con số có thật**.\n\n' +
-      '**Vậy làm sao để viết về một con số mà không ai đếm được?**',
+      'Trong giờ Khoa học em đã học rằng mọi vật đều được tạo nên từ các **hạt**. Đây là một giọt nước.\n\n' +
+      'Các hạt **thật sự có ở đó**, và số lượng của chúng là một **con số có thật**. Vậy: bao nhiêu?',
+    activity: {
+      id: 'a1', type: 'predict',
+      prompt: 'How many particles are in one drop of water?',
+      promptVn: 'Có bao nhiêu hạt trong một giọt nước?',
+      options: [
+        { val: 'thousand', name: 'About a thousand', nameVn: 'Khoảng một nghìn' },
+        { val: 'million', name: 'About a million', nameVn: 'Khoảng một triệu' },
+        { val: 'huge', name: 'A number so big I cannot write it', nameVn: 'Một con số lớn đến mức em không viết được' },
+        { val: 'none', name: 'Nobody knows — there is no number', nameVn: 'Không ai biết — không có con số nào cả' },
+      ],
+      correct: 'huge',
+      explain: 'About **1 500 000 000 000 000 000 000** — a real number, far too big to count. That is not because you are bad at Science. **So how do we write about a number nobody can count?** The next slide gives it a letter.',
+      explainVn: 'Khoảng **1 500 000 000 000 000 000 000** — một con số có thật, quá lớn để đếm. Đó không phải vì em học Khoa học kém. **Vậy làm sao để viết về một con số mà không ai đếm được?** Slide sau sẽ đặt cho nó một chữ cái.',
+    },
   },
 
   // 3 ─ Give It a Letter (key word: represent) + CHECK 1 ────────────────────
@@ -252,6 +264,28 @@ export const notes = [
           '**times as many / as much** (gấp … lần) → nhân · **half as much** (bằng một nửa) → chia cho 2',
       },
     ],
+    activity: {
+      id: 'a2', type: 'sort',
+      prompt: 'Sort the English phrases by the operation they tell you to do.',
+      promptVn: 'Sắp xếp các cụm từ tiếng Anh theo phép tính mà chúng yêu cầu.',
+      bins: [
+        { id: 'add', name: 'Add (+)', nameVn: 'Cộng (+)' },
+        { id: 'sub', name: 'Subtract (−)', nameVn: 'Trừ (−)' },
+        { id: 'mul', name: 'Multiply (×)', nameVn: 'Nhân (×)' },
+        { id: 'div', name: 'Divide (÷)', nameVn: 'Chia (÷)' },
+      ],
+      cards: [
+        { id: 'more', name: '3 more than', nameVn: '3 more than (nhiều hơn 3)', bin: 'add' },
+        { id: 'less', name: '5 less than', nameVn: '5 less than (ít hơn 5)', bin: 'sub' },
+        { id: 'fewer', name: '2 fewer than', nameVn: '2 fewer than (ít hơn 2)', bin: 'sub' },
+        { id: 'times', name: 'four times as many', nameVn: 'four times as many (gấp bốn lần)', bin: 'mul' },
+        { id: 'half', name: 'half as much', nameVn: 'half as much (bằng một nửa)', bin: 'div' },
+        { id: 'total', name: 'the total of', nameVn: 'the total of (tổng của)', bin: 'add' },
+        { id: 'twice', name: 'twice as much', nameVn: 'twice as much (gấp đôi)', bin: 'mul' },
+      ],
+      explain: '**more than** and **the total of** add; **less than** and **fewer than** subtract; **times as many** and **twice** multiply; **half as much** divides by 2. The English chooses the operation — the numbers only come after.',
+      explainVn: '**more than** và **the total of** là cộng; **less than** và **fewer than** là trừ; **times as many** và **twice** là nhân; **half as much** là chia cho 2. Tiếng Anh quyết định phép tính — con số chỉ đến sau.',
+    },
   },
 
   // 8 ─ Four beakers (practice, reveal) ─────────────────────────────────────

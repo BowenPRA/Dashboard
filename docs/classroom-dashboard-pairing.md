@@ -120,8 +120,12 @@ copy. The rules, distilled from doing it eight times (Maths 1.1–2.2, Science
    lucide. Rewrite `import x from './images/…'` to `assetUrl(…)` (there is a
    script for it in the session notes; it is a one-line regex). Drop widgets
    that only work with a room: team timers, YouTube clips, the Word Wall link.
-9. **Dates and "part 1 of 2" leave the hero.** The self-study hero carries the
-   `objective` instead (and the starter as its `card`).
+9. **Dates and "part 1 of 2" leave the hero, and so does the starter task.**
+   The self-study hero carries the `objective` and an "In this lesson" card; the
+   starter becomes an **interactive activity on the next slide** (an
+   `estimate`, `sort`, `hotspot` or `predict` — see
+   [y7-science/ENGAGEMENT-PLAN.md](y7-science/ENGAGEMENT-PLAN.md) §2.1). A
+   student alone with a tablet is never told to write on paper.
 10. **Two classroom lessons → one unit** means one deck of ~20 slides, not two
     decks glued together. Cut the second lesson's recap-of-the-first; keep both
     recaps' items in one closing checklist.

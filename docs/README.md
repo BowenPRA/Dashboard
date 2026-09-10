@@ -55,9 +55,15 @@ status* section so it can be closed deliberately.
 ### Year 7 Cambridge Science (new)
 
 - [y7-science-course.md](y7-science-course.md) — **start here** for the `Y7_SCI` track:
-  the seven-task unit shape (vocab, spelling, cloze reading, reasoning questions,
-  label-and-explain diagrams, quiz, arcade), the per-file recipe, what each task's
-  content looks like, and the course map (1.1–2.2 built).
+  the unit shape (an interactive deck, vocab, a mixed-type Practice workbook, Label It,
+  cloze reading, reasoning questions, label-and-explain diagrams, the generative Lab
+  Bench, quiz, arcade), the per-file recipe, and the course map (1.1–2.2 built).
+- [y7-science/ENGAGEMENT-PLAN.md](y7-science/ENGAGEMENT-PLAN.md) — **why the science
+  units look the way they do.** The six principles (the starter is an interaction, never
+  an instruction; touch the science; never the same twice…), the schemas for slide
+  activities (`sort` · `order` · `estimate` · `hotspot` · `predict`), Label It and Lab
+  Bench, the per-unit brief, and the definition of done. Per-unit plans live in
+  `y7-science/plans/`.
 - [math-lessons.md](math-lessons.md) — the projected TV lesson (`notes.js`): the
   title/warm-up/concept/summary shape, slide schema, discussion & activities,
   concision rules, bilingual, and the small `Notes.jsx` additions needed.
