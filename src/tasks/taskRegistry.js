@@ -2,7 +2,8 @@ import { lazy } from 'react';
 import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
-  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone
+  Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
+  Ruler
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -509,6 +510,31 @@ export const TASKS = [
     component: lazy(() => import('./AppSim.jsx')),
     hasContent: (u) => notEmpty(u.sim),
     buildPool: (u) => u.sim || [],
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'INTERVAL',
+    nativeMax: 10,
+    // p1–p25 are taken (p5 is reserved as a workbook question id), and p26 is
+    // held for the Technology track's TYPE_GYM; p27 is the next free key.
+    dbKey: 'p27',
+    // "Draw it, then write it." One solution set, produced twice: the student
+    // places the endpoints and shades the line, then writes the same set in
+    // interval notation, choosing every bracket. Both stages are marked against
+    // a set DERIVED from the item's inequality by src/utils/interval.js — there
+    // is no answer key to author, and because the drawing is read back through
+    // the same `setFromGraph` the marking uses, the picture and the notation can
+    // never disagree. Nothing is multiple choice: there is nothing to eliminate,
+    // the same rule Graph It, Vectors and Long Division follow. Item shape is
+    // documented in src/tasks/IntervalLine.jsx.
+    label: 'Number Line',
+    icon: Ruler,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./IntervalLine.jsx')),
+    hasContent: (u) => notEmpty(u.intervals),
+    buildPool: (u) => u.intervals || [],
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];

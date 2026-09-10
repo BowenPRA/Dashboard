@@ -25,6 +25,10 @@ import {
   // inequality can take.
   GitCompare, Split, Superscript, LineChart, ShieldAlert, Milestone, Minimize2,
   Activity, Route, Star,
+  // Inequalities and interval notation (ACELLUS ALG_INEQ): the letter that
+  // stands for a range rather than a value, the brackets that write it down,
+  // the endpoint circle, and the flip on a negative.
+  Variable, Brackets, CircleDot, FlipHorizontal2, MoveHorizontal,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -61,6 +65,7 @@ const ICONS = {
   ArrowLeftRight, ArrowUpDown, Grid3x3, Move,
   GitCompare, Split, Superscript, LineChart, ShieldAlert, Milestone, Minimize2,
   Maximize2, Activity, Route, Star,
+  Variable, Brackets, CircleDot, FlipHorizontal2, MoveHorizontal,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

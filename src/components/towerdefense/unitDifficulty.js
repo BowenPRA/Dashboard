@@ -37,6 +37,12 @@ export const TRACK_ARENAS = {
     mapName: 'Cryo Lab',
     blurb: 'Coolant channels cut in hard right angles across the lab floor.',
   },
+  ACELLUS: {
+    mapId: 'SPIRAL',
+    themeId: 'STANDARD',
+    mapName: 'The Long Road',
+    blurb: 'One road that never quite arrives — like an inequality, it keeps going.',
+  },
   PRIMARY_TECH: {
     mapId: 'CIRCUIT',
     themeId: 'NIGHT',

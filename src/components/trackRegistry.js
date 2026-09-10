@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2, MonitorSmartphone } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2, MonitorSmartphone, Variable } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -76,6 +76,28 @@ export const TRACK_REGISTRY = [
       text: 'text-cyan-600 dark:text-cyan-400',
       ambient1: 'bg-cyan-400', ambient2: 'bg-blue-500',
       glow: 'hover:border-cyan-400 dark:hover:border-cyan-600',
+    },
+  },
+  {
+    // The students sitting Acellus Algebra I online. The Acellus lessons show
+    // them an answer box and a green tick; what they arrive with is a screenshot
+    // and "how do this mr bowen". So this track is deliberately NOT more
+    // practice questions — each unit takes the exact item shapes Acellus asks
+    // for and rebuilds the WORKING behind them, one legal move at a time.
+    id: 'ACELLUS',
+    title: 'Acellus Algebra',
+    desc: 'Algebra I — the working behind the answer box',
+    icon: Variable,
+    group: 'Algebra',
+    // Bilingual, like GED_MATH and Y7_MATH. These are Vietnamese students
+    // taking an American course in English: the algebra is rarely what stops
+    // them, and "at most", "no more than", "all real numbers between" is.
+    bilingual: true,
+    theme: {
+      bg: 'bg-purple-500', border: 'border-purple-700', hover: 'hover:bg-purple-400',
+      text: 'text-purple-600 dark:text-purple-400',
+      ambient1: 'bg-purple-400', ambient2: 'bg-fuchsia-500',
+      glow: 'hover:border-purple-400 dark:hover:border-purple-600',
     },
   },
   {
@@ -248,4 +270,4 @@ export function unitGateOf(trackId, index, previousUnitXP = 0) {
 }
 
 /** Display order for grouped views. */
-export const TRACK_GROUPS = ['GED', 'Cambridge', 'Physics', 'Problem Solving', 'Foundation', 'Arcade'];
+export const TRACK_GROUPS = ['GED', 'Cambridge', 'Algebra', 'Physics', 'Problem Solving', 'Foundation', 'Arcade'];

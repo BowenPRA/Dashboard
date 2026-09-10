@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import {
   Scale, RotateCcw, Undo2, Lightbulb, ArrowRight, Construction, PartyPopper, Pencil, Check,
+  FlipHorizontal2,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import {
   fr, frText, parseEquation, coefText, applyMove, isSolved,
   suggestMove, parSteps, groupedOf, lcdOf, isZero, isNeg, neg, toNumber,
+  relOf, relGlyph, isInequality, flipRel, willFlip,
 } from '../utils/linearEquation';
 import { Frac, SideMath, MoveMath } from '../components/math/LinearMath';
 
@@ -46,6 +48,9 @@ const VN = {
   finish: 'Hoàn thành',
   pick: 'Chọn một phép toán, rồi chọn một số',
   stays: 'Cân luôn thăng bằng — vì bạn luôn làm giống nhau ở cả hai vế.',
+  tilts: 'Vế nặng hơn luôn nằm thấp hơn. Làm giống nhau ở cả hai vế thì bên nặng vẫn là bên nặng.',
+  flipped: 'ĐỔI CHIỀU',
+  flipWhy: 'Bạn vừa nhân/chia cả hai vế cho một số âm, nên dấu bất phương trình quay ngược lại.',
   yourAnswer: 'Đáp án',
   hintUsed: 'Đã dùng gợi ý',
   copyTitle: 'Chép vào vở',
@@ -65,6 +70,9 @@ const EN = {
   finish: 'Finish',
   pick: 'Pick an operation, then a number',
   stays: 'The scale stays level — because you always do the same to both sides.',
+  tilts: 'The heavier side stays down. Do the same to both sides and the heavier side is still the heavier side.',
+  flipped: 'SIGN FLIPS',
+  flipWhy: 'You multiplied or divided both sides by a negative, so the inequality turns round.',
   yourAnswer: 'Answer',
   hintUsed: 'Hint used',
   copyTitle: 'Copy this into your notebook',
@@ -160,66 +168,132 @@ function Pan({ side, v = 'x' }) {
   );
 }
 
-/** The beam. It never tilts; that is the entire point. */
+/**
+ * The beam.
+ *
+ * On an EQUATION it never tilts; that is the entire point.
+ *
+ * On an INEQUALITY the point is the opposite one, and just as physical: the
+ * heavier side sits LOWER, and it goes on sitting lower however many times you
+ * do the same thing to both sides. Which is exactly why multiplying by a
+ * negative is the odd one out — it does not add weight to a pan, it turns the
+ * whole comparison round, and the beam swinging the other way is that rule
+ * happening in front of the student rather than being recited at them.
+ *
+ * The tilt is DERIVED from the relation, so it cannot disagree with the sign
+ * printed in the working below.
+ */
 function Beam({ eq }) {
   if (!eq) return null;
   const v = eq.v || 'x';
+  const rel = relOf(eq);
+  // Which pan is the heavy one: "left < right" means the RIGHT pan is heavier.
+  const heavy = rel === '<' || rel === '<=' ? 1 : rel === '>' || rel === '>=' ? -1 : 0;
+  const DROP = 14;
+
   return (
     <div>
       <div className="relative">
-        <div className="h-2.5 rounded-full bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600" />
+        <div
+          className="h-2.5 rounded-full bg-gradient-to-r from-slate-300 via-slate-400 to-slate-300 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 transition-transform duration-500"
+          style={{ transform: `rotate(${heavy * 3.2}deg)` }}
+        />
         <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-3.5 h-3.5 rounded-full bg-slate-500 dark:bg-slate-400 border-2 border-white dark:border-slate-900" />
       </div>
       <div className="flex items-stretch gap-1.5 sm:gap-8">
-        <Pan side={eq.left} v={v} />
-        <div className="flex flex-col items-center pt-5 shrink-0">
-          <div className="w-0 h-0 border-l-[13px] border-r-[13px] border-b-[20px] border-transparent border-b-slate-400 dark:border-b-slate-500" />
-          <div className="w-10 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 -mt-0.5" />
+        <div
+          className="flex-1 min-w-0 flex transition-transform duration-500"
+          style={{ transform: `translateY(${-heavy * DROP}px)` }}
+        >
+          <Pan side={eq.left} v={v} />
         </div>
-        <Pan side={eq.right} v={v} />
+        <div className="flex flex-col items-center pt-5 shrink-0">
+          {heavy === 0 ? (
+            <>
+              <div className="w-0 h-0 border-l-[13px] border-r-[13px] border-b-[20px] border-transparent border-b-slate-400 dark:border-b-slate-500" />
+              <div className="w-10 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 -mt-0.5" />
+            </>
+          ) : (
+            // The relation itself is the fulcrum on an inequality — the symbol
+            // the student has to get right is the thing holding the beam up.
+            <div className="flex flex-col items-center">
+              <span className="text-3xl sm:text-4xl font-black leading-none text-[#7c3aed] dark:text-violet-400 transition-all duration-300">
+                {relGlyph(rel)}
+              </span>
+              <div className="w-10 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1" />
+            </div>
+          )}
+        </div>
+        <div
+          className="flex-1 min-w-0 flex transition-transform duration-500"
+          style={{ transform: `translateY(${heavy * DROP}px)` }}
+        >
+          <Pan side={eq.right} v={v} />
+        </div>
       </div>
     </div>
   );
 }
 
 /** The accumulating written solution: each applied move under both sides. */
-function Working({ history, v = 'x' }) {
+function Working({ history, v = 'x', t }) {
   return (
     <div className="font-mono">
-      {history.map((row, i) => (
-        <div key={i} className="animate-in fade-in slide-in-from-top-1 duration-300">
-          {/* Sides are right/left aligned against the "=" so the equals signs
-              stack down the page, the way the lines sit in a notebook. */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5">
-            <div className="flex justify-end text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
-              <SideMath side={row.eq.left} v={v} />
+      {history.map((row, i) => {
+        // A row's move is the one that produced the NEXT row, so the flip badge
+        // is decided by comparing this row's relation with that one's — there is
+        // no second copy of the rule to fall out of step with the engine.
+        const flipped = row.move && history[i + 1] && history[i + 1].eq.rel !== row.eq.rel;
+        return (
+          <div key={i} className="animate-in fade-in slide-in-from-top-1 duration-300">
+            {/* Sides are right/left aligned against the relation so the signs
+                stack down the page, the way the lines sit in a notebook. */}
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5">
+              <div className="flex justify-end text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
+                <SideMath side={row.eq.left} v={v} />
+              </div>
+              <div className={`text-2xl sm:text-3xl font-black ${
+                relOf(row.eq) === '=' ? 'text-slate-400 dark:text-slate-500' : 'text-[#7c3aed] dark:text-violet-400'
+              }`}>
+                {relGlyph(relOf(row.eq))}
+              </div>
+              <div className="flex justify-start text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
+                <SideMath side={row.eq.right} v={v} />
+              </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-slate-400 dark:text-slate-500">=</div>
-            <div className="flex justify-start text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tabular-nums">
-              <SideMath side={row.eq.right} v={v} />
-            </div>
-          </div>
 
-          {row.move && (
-            <>
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5 mt-1">
-                <div className="flex justify-end text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
-                  <MoveMath move={row.move} v={v} />
+            {row.move && (
+              <>
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5 mt-1">
+                  <div className="flex justify-end text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
+                    <MoveMath move={row.move} v={v} />
+                  </div>
+                  <div className="w-3" />
+                  <div className="flex justify-start text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
+                    <MoveMath move={row.move} v={v} />
+                  </div>
                 </div>
-                <div className="w-3" />
-                <div className="flex justify-start text-lg sm:text-xl font-black text-[#1899d6] dark:text-[#5cc4f7]">
-                  <MoveMath move={row.move} v={v} />
+                <div className="grid grid-cols-[1fr_auto_1fr] gap-3 sm:gap-5 my-2">
+                  <div className="h-0.5 bg-slate-200 dark:bg-slate-700 rounded-full" />
+                  <div className="w-3" />
+                  <div className="h-0.5 bg-slate-200 dark:bg-slate-700 rounded-full" />
                 </div>
-              </div>
-              <div className="grid grid-cols-[1fr_auto_1fr] gap-3 sm:gap-5 my-2">
-                <div className="h-0.5 bg-slate-200 dark:bg-slate-700 rounded-full" />
-                <div className="w-3" />
-                <div className="h-0.5 bg-slate-200 dark:bg-slate-700 rounded-full" />
-              </div>
-            </>
-          )}
-        </div>
-      ))}
+                {/* The one line of a solution a student is most likely to get
+                    wrong on paper. It is written INTO the working, between the
+                    move and its result, so what they copy down carries it too. */}
+                {flipped && (
+                  <div className="flex justify-center my-2 animate-in fade-in zoom-in-95 duration-300">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500 text-white font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-sm font-sans">
+                      <FlipHorizontal2 className="w-4 h-4 shrink-0" strokeWidth={3} />
+                      {t.flipped}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -242,6 +316,8 @@ function Solver({ problem, t, lang, onSolved, footer }) {
   const stepsTaken = history.length - 1;
   const varName = current.v || 'x';
   const opSymbol = OPS.find((o) => o.kind === opKind)?.sym || '+';
+  const unequal = isInequality(current);
+  const flipPreview = willFlip(current, opKind, amount);
 
   // × and ÷ scale the WHOLE side, so "×2x" is not a linear move and must never
   // be constructible. Picking one of those simply drops the variable flag.
@@ -343,14 +419,14 @@ function Solver({ problem, t, lang, onSolved, footer }) {
       {/* ---- the balance ---- */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6 mb-4">
         <Beam eq={current} />
-        <p className="mt-4 text-center text-[11px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
-          <Scale className="w-4 h-4 shrink-0" strokeWidth={2.5} /> {t.stays}
+        <p className="mt-6 text-center text-[11px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
+          <Scale className="w-4 h-4 shrink-0" strokeWidth={2.5} /> {unequal ? t.tilts : t.stays}
         </p>
       </div>
 
       {/* ---- the written working ---- */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-7 mb-4">
-        <Working history={history} v={varName} />
+        <Working history={history} v={varName} t={t} />
         {solved && footer(stepsTaken)}
       </div>
 
@@ -445,15 +521,27 @@ function Solver({ problem, t, lang, onSolved, footer }) {
               The typed amount is still raw text — it may be half-finished, or
               not a number at all — so it prints as typed rather than going
               through the fraction renderer. */}
-          <div className="flex items-center justify-center flex-wrap gap-x-2 text-center text-base font-bold text-slate-400 dark:text-slate-500 mb-3 min-h-7 font-mono">
+          <div className="flex items-center justify-center flex-wrap gap-x-2 text-center text-base font-bold text-slate-400 dark:text-slate-500 mb-1 min-h-7 font-mono">
             {amount && (
               <>
                 <SideMath side={current.left} v={varName} />
                 <span>{opSymbol} {amount}{onX ? varName : ''}</span>
-                <span className="mx-2">=</span>
+                <span className={`mx-2 ${flipPreview ? 'text-rose-500 font-black' : ''}`}>
+                  {relGlyph(flipPreview ? flipRel(relOf(current)) : relOf(current))}
+                </span>
                 <SideMath side={current.right} v={varName} />
                 <span>{opSymbol} {amount}{onX ? varName : ''}</span>
               </>
+            )}
+          </div>
+
+          {/* Warned BEFORE the move, not corrected after it. The student sees the
+              sign they are about to end up with, and why. */}
+          <div className="min-h-6 mb-2">
+            {flipPreview && (
+              <p className="flex items-center justify-center gap-1.5 text-center text-[11px] sm:text-xs font-bold text-rose-500 animate-in fade-in duration-200">
+                <FlipHorizontal2 className="w-4 h-4 shrink-0" strokeWidth={3} /> {t.flipWhy}
+              </p>
             )}
           </div>
 

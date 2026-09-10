@@ -12,10 +12,11 @@ import crypto from 'crypto';
 import { getTrack, contentProblems } from '../src/data/index.js';
 import { TRACK_REGISTRY, TRACK_IDS } from '../src/components/trackRegistry.js';
 import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/taskRegistry.js';
-import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solutionOf, frText } from '../src/utils/linearEquation.js';
+import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solutionOf, frText, relGlyph, statementOf } from '../src/utils/linearEquation.js';
 import { rootsOf, vertexOf, yAt, levelOf, kindOf, CURVE_KINDS } from '../src/utils/graphCurve.js';
 import { checkDivision } from '../src/utils/polynomial.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
+import { checkIntervalItems } from '../src/utils/interval.js';
 import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
 import { checkAll as checkSim } from '../src/utils/appSim.js';
 
@@ -317,6 +318,17 @@ for (const trackId of TRACK_IDS) {
     //    because the answer is a state the machine has to be driven into.
     for (const p of checkSim(unit.sim)) err(`${label}: sim ${p}`);
 
+    // -- Number Line items: only the inequality is authored, and the task
+    //    derives the endpoints, the shading, the interval notation and the
+    //    marking from it. So the risk is never a wrong answer key — it is an
+    //    item the student cannot finish: an endpoint off the drawn line or
+    //    between two ticks cannot be placed at all, and a set with no solutions
+    //    has nothing to draw. checkIntervalItems also runs the round trip the
+    //    whole task rests on (draw the answer, read it back, write it, read it
+    //    back) so a set that does not survive its own notation is caught here
+    //    rather than in front of the student.
+    for (const p of checkIntervalItems(unit.intervals)) err(`${label}: interval ${p}`);
+
     // -- Balance equations: every one must parse, be solvable by the strategy
     //    the unit teaches, and not quietly change its own answer. A broken
     //    equation here is a task the student cannot finish.
@@ -348,7 +360,7 @@ for (const trackId of TRACK_IDS) {
           // — it quietly answers 15/4 and the student, told all course that the
           // answer is a whole number, assumes they have made a mistake. Catching
           // it here is the only place it shows up at all.
-          err(`${at}: "${b.equation}" solves to ${eq.v} = ${frText(solutionOf(cur))}, not a whole number`);
+          err(`${at}: "${b.equation}" solves to ${eq.v} ${relGlyph(statementOf(cur)?.rel)} ${frText(solutionOf(cur))}, not a whole number`);
         }
       }
     }

@@ -1,8 +1,14 @@
 // src/utils/linearEquation.js
 //
-// The model behind the Balance task: a linear equation in one variable, and the
-// legal moves you can make on it. Deliberately separate from the component so
-// the maths can be tested on its own and reused by any later task.
+// The model behind the Balance task: a linear equation OR INEQUALITY in one
+// variable, and the legal moves you can make on it. Deliberately separate from
+// the component so the maths can be tested on its own and reused by any later
+// task.
+//
+// An inequality is not a second kind of object here — it is the same two sides
+// with a different `rel` between them (see "relations" below). Every move is
+// legal on both; the only difference is that scaling by a negative turns the
+// relation round, and `applyMove` does that itself.
 //
 // A side is `a·x + b`, stored as two exact fractions. Exact, not floating point:
 // dividing 15 by 4 has to stay 15/4 and print as a fraction, or a student who
@@ -59,6 +65,35 @@ const lcm = (a, b) => Math.abs(a * b) / (gcd(a, b) || 1);
  */
 export const lcdOf = (eq) =>
   [eq.left.x.d, eq.left.c.d, eq.right.x.d, eq.right.c.d].reduce(lcm, 1);
+
+// ------------------------------------------------------------------ relations
+
+/**
+ * The relation sitting between the two sides. An equation carries `=`; an
+ * inequality carries one of the other four, and everything downstream reads it
+ * from here rather than assuming an equals sign.
+ *
+ * The whole reason this exists is the ONE rule that separates an inequality
+ * from an equation: multiply or divide both sides by a negative number and the
+ * relation turns round. That is a property of the move, not of the student, so
+ * it belongs in the engine — a student cannot forget to flip, and the flip is
+ * something they can watch happen.
+ */
+export const RELATIONS = ['=', '<', '<=', '>', '>='];
+
+const REL_FLIP = { '=': '=', '<': '>', '<=': '>=', '>': '<', '>=': '<=' };
+/** The relation you are left with after multiplying both sides by a negative. */
+export const flipRel = (rel) => REL_FLIP[rel] || '=';
+
+const REL_GLYPH = { '=': '=', '<': '<', '<=': '≤', '>': '>', '>=': '≥' };
+/** How the relation is written on screen — "<=" is drawn as a real ≤. */
+export const relGlyph = (rel) => REL_GLYPH[rel] || '=';
+
+/** The relation an equation carries, defaulting to "=" for older data. */
+export const relOf = (eq) => eq?.rel || '=';
+
+/** True when the statement is an inequality rather than an equation. */
+export const isInequality = (eq) => relOf(eq) !== '=';
 
 // ------------------------------------------------------------------ sides
 
@@ -185,19 +220,30 @@ export function parseSide(src, v = 'x') {
 }
 
 /**
- * Parse a whole equation from "3x + 7 = 22" or "6y = -42".
- * The variable's letter is carried on the equation so everything downstream
- * renders it back the way the author wrote it.
+ * Parse a whole statement from "3x + 7 = 22", "6y = -42", "5x <= -3x + 8" or
+ * "-2x > 6". The variable's letter is carried on the equation so everything
+ * downstream renders it back the way the author wrote it, and so is the
+ * relation — an inequality is the same two sides with a different sign between
+ * them, not a separate kind of object.
+ *
+ * Both spellings of each inequality are accepted: type "<=" or "≤" as you
+ * prefer. They normalise to "<=" so nothing downstream has to know about two.
  */
 export function parseEquation(src) {
-  const [l, r] = String(src).split('=');
-  if (r === undefined) throw new Error('an equation needs an "="');
-  const v = variableOf(src) || 'x';
-  return { left: parseSide(l, v), right: parseSide(r, v), v };
+  const text = String(src).replace(/≤/g, '<=').replace(/≥/g, '>=');
+  const m = text.match(/(<=|>=|<|>|=)/);
+  if (!m) throw new Error('a statement needs an "=" or an inequality sign');
+  const rel = m[1];
+  const at = text.indexOf(rel);
+  const l = text.slice(0, at);
+  const r = text.slice(at + rel.length);
+  if (!l.trim() || !r.trim()) throw new Error(`"${src}" is missing a side`);
+  const v = variableOf(text) || 'x';
+  return { left: parseSide(l, v), right: parseSide(r, v), v, rel };
 }
 
 export const equationText = (eq) =>
-  `${sideText(eq.left, eq.v)} = ${sideText(eq.right, eq.v)}`;
+  `${sideText(eq.left, eq.v)} ${relGlyph(relOf(eq))} ${sideText(eq.right, eq.v)}`;
 
 // ------------------------------------------------------------------ moves
 
@@ -221,8 +267,23 @@ export function applyMove(eq, move) {
     // Multiplying by zero is "legal" but destroys the equation — never allow it.
     throw new Error('that would multiply or divide by zero');
   }
-  return { ...eq, left: apply(eq.left), right: apply(eq.right) };
+  // THE flip. Scaling both sides by a negative number reverses an inequality:
+  // 2 < 5 is true, and −2 < −5 is not. The engine does it, so the student
+  // watches the sign turn round as a CONSEQUENCE of the move they chose rather
+  // than being told to remember a rule. On an equation it is a no-op.
+  const scaledByNegative = (kind === 'mul' || kind === 'div') && isNeg(amount);
+  const rel = scaledByNegative ? flipRel(relOf(eq)) : relOf(eq);
+  return { ...eq, rel, left: apply(eq.left), right: apply(eq.right) };
 }
+
+/**
+ * True when a move WOULD turn the relation round, asked before it is made —
+ * the Balance task's preview line uses it to warn the student a step early.
+ * `amount` is whatever they have typed so far, so it is read as text: a
+ * half-finished "-" is still unambiguously about to be negative.
+ */
+export const willFlip = (eq, kind, amount) =>
+  isInequality(eq) && (kind === 'mul' || kind === 'div') && String(amount).trim().startsWith('-');
 
 /** How the move is written under each side: "- 7", "÷ 3", "+ 2x". */
 export function moveText(move, v = 'x') {
@@ -241,19 +302,31 @@ export function isSolved(eq) {
 export const solutionOf = (eq) => (isOne(eq.left.x) ? eq.right.c : eq.left.c);
 
 /**
- * True when the equation still says the same thing — a guard that the move
+ * The statement rearranged to read "x REL value", or null when the x cancels
+ * away (no solution, or every number). Collecting the x on the left can leave a
+ * NEGATIVE coefficient, and dividing by it flips the relation — which is why
+ * this cannot just divide and keep the sign it started with.
+ */
+export function statementOf(eq) {
+  const x = sub(eq.left.x, eq.right.x);
+  const c = sub(eq.right.c, eq.left.c);
+  if (isZero(x)) return null;
+  return { value: div(c, x), rel: isNeg(x) ? flipRel(relOf(eq)) : relOf(eq) };
+}
+
+/**
+ * True when the statement still says the same thing — a guard that the move
  * engine never silently changes the answer. Used by the tests and by authoring
  * validation, not on the hot path.
+ *
+ * For an inequality "the same thing" includes the DIRECTION: x > 4 and x < 4
+ * have the same boundary and share not one solution between them, so comparing
+ * the value alone would wave through exactly the mistake this unit is about.
  */
 export function sameSolution(a, b) {
-  const solve = (eq) => {
-    const x = sub(eq.left.x, eq.right.x);
-    const c = sub(eq.right.c, eq.left.c);
-    return isZero(x) ? null : div(c, x);
-  };
-  const sa = solve(a), sb = solve(b);
+  const sa = statementOf(a), sb = statementOf(b);
   if (!sa || !sb) return sa === sb;
-  return frEq(sa, sb);
+  return frEq(sa.value, sb.value) && sa.rel === sb.rel;
 }
 
 /**
