@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2, MonitorSmartphone, Variable } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2, MonitorSmartphone, Variable, Microscope } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -137,6 +137,23 @@ export const TRACK_REGISTRY = [
       text: 'text-orange-600 dark:text-orange-400',
       ambient1: 'bg-orange-400', ambient2: 'bg-amber-500',
       glow: 'hover:border-orange-400 dark:hover:border-orange-600',
+    },
+  },
+  {
+    // The self-study twin of the Year 7 Science classroom decks (Cambridge
+    // Lower Secondary Science 7). Bilingual like Y7_MATH: same students, and
+    // the science words ("compress", "evaporate", "organelle") ARE the lesson.
+    id: 'Y7_SCI',
+    title: 'Year 7 Science',
+    desc: 'Cambridge Lower Secondary',
+    icon: Microscope,
+    group: 'Cambridge',
+    bilingual: true,
+    theme: {
+      bg: 'bg-emerald-500', border: 'border-emerald-700', hover: 'hover:bg-emerald-400',
+      text: 'text-emerald-600 dark:text-emerald-400',
+      ambient1: 'bg-emerald-400', ambient2: 'bg-lime-500',
+      glow: 'hover:border-emerald-400 dark:hover:border-emerald-600',
     },
   },
   {

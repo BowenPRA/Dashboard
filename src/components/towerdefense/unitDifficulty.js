@@ -184,6 +184,53 @@ export const TRACK_LEVELS = {
       // than hard — the very trap the difficulty ladder warns about. NITRO only.
       bannedTowers: ['NITRO'],
     },
+    // Unit 2 (Expressions) opens a second chapter. It restarts low — a fresh
+    // campaign should not begin where the last one peaked — and climbs again.
+    U02_1: {
+      mapId: 'JUNCTION', themeId: 'STANDARD', tier: 1,
+      mapName: 'The Crossroads',
+      blurb: 'A new chapter. Two roads cross in open country — hold the junction and you hold the field.',
+    },
+    U02_2: {
+      mapId: 'SPIRAL', themeId: 'DESERT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Sand Maze',
+      blurb: 'A winding maze in the dunes, and it is crawling.',
+    },
+  },
+  // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
+  // like the Maths one. Cells, then particles.
+  Y7_SCI: {
+    U01_1: {
+      mapId: 'WAVE', themeId: 'STANDARD', tier: 0,
+      mapName: 'The Petri Dish',
+      blurb: 'Open ground under the microscope — room to learn the ropes.',
+    },
+    U01_2: {
+      mapId: 'JUNCTION', themeId: 'STANDARD', tier: 1,
+      mapName: 'The Capillary',
+      blurb: 'Two vessels cross. Hold the junction and nothing gets through.',
+    },
+    U01_3: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Root Hair',
+      blurb: 'A winding channel through the dark, and it is crawling.',
+    },
+    U01_4: {
+      mapId: 'CIRCUIT', themeId: 'ICE', tier: 3, waveMod: 'SIEGE',
+      mapName: 'The Organ System',
+      blurb: 'Armored heavies grind down the channels.',
+    },
+    U02_1: {
+      mapId: 'COMB', themeId: 'DESERT', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Particle Lattice',
+      blurb: 'Wave after wave through a fixed lattice, and they never slow down.',
+    },
+    U02_2: {
+      mapId: 'GAUNTLET', themeId: 'ICE', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Boiling Point',
+      blurb: 'The final march through the cold. Queens and broods, the whole way down.',
+      bannedTowers: ['NITRO'],
+    },
   },
 };
 

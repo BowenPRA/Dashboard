@@ -10,8 +10,19 @@ export const basePath = (() => {
   return raw === '/' ? '' : raw.replace(/\/$/, '');
 })();
 
-/** URL for a public/ asset given a path that may or may not start with a slash. */
-export const assetUrl = (p) => (p ? `${basePath}/${String(p).replace(/^\/+/, '')}` : p);
+/**
+ * URL for a public/ asset given a path that may or may not start with a slash.
+ * Idempotent: a path that already carries the base (a Vite `import`ed image, or
+ * a note that was mapped once already) is returned untouched rather than
+ * becoming `/Dashboard//Dashboard/...`.
+ */
+export const assetUrl = (p) => {
+  if (!p) return p;
+  const s = String(p);
+  if (/^(https?:)?\/\//.test(s) || s.startsWith('data:')) return s;
+  if (basePath && (s === basePath || s.startsWith(`${basePath}/`))) return s;
+  return `${basePath}/${s.replace(/^\/+/, '')}`;
+};
 
 /**
  * URL for a vocabulary audio clip.

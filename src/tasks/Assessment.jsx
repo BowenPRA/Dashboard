@@ -563,8 +563,21 @@ export default function Assessment(props) {
 
   const finishAndExit = () => {
     const scorePct = scoreData.correctCount / totalQuestions;
-    const earnedXP = Math.round(scorePct * 20); 
+    const earnedXP = Math.round(scorePct * 20);
     if (typeof onComplete === 'function') onComplete(earnedXP);
+  };
+
+  // A timed quiz is the one task that does NOT save on the way out — an
+  // unfinished sitting is not a score. So leaving mid-test asks first, because
+  // everywhere else in the app the same X now saves.
+  const quitTest = () => {
+    if (phase === 'testing') {
+      const ok = window.confirm(lang === 'vn'
+        ? 'Thoát bài đánh giá? Lần làm này sẽ không được lưu.'
+        : 'Leave the quiz? This attempt will not be saved.');
+      if (!ok) return;
+    }
+    if (typeof onQuit === 'function') onQuit();
   };
 
   const renderPassageWithGlossary = (text) => {
@@ -617,7 +630,8 @@ export default function Assessment(props) {
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 overflow-hidden selection:bg-indigo-100">
       
       <TopBar 
-        onQuit={phase === 'review' ? finishAndExit : onQuit}
+        onQuit={phase === 'review' ? finishAndExit : quitTest}
+        quitLabel={phase === 'testing' ? 'Exit' : 'Save & Quit'}
         modeTitle={phase === 'review' ? (lang === 'vn' ? 'Kết Quả' : 'Results') : (lang === 'vn' ? 'Bài Đánh Giá' : 'Assessment Module')}
         current={phase === 'review' ? scoreData?.correctCount : (phase === 'testing' ? currentIdx + 1 : undefined)}
         total={phase === 'setup' ? undefined : totalQuestions}

@@ -68,7 +68,10 @@ export const TASKS = [
     // Notes scores itself out of 10 from the check questions embedded in the
     // deck (a deck with none still pays on completion — see Notes.jsx), and
     // forwards a per-item log. It must NOT be hardwired to 10 here.
-    props: ({ pool, onComplete, onQuit }) => ({ slides: pool, onComplete, onQuit }),
+    // `savedData`/`onProgress` are the resume round-trip: the deck reopens on
+    // the slide it was closed on, with the checks already answered kept.
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) =>
+      ({ slides: pool, savedData, onComplete, onProgress, onQuit }),
   },
   {
     id: 'WORD_REC',

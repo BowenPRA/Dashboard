@@ -249,6 +249,9 @@ export default function EnergyProfile({ pool, onComplete, onQuit }) {
     onComplete?.(raw, null, { items: log });
   };
 
+  // The X saves whatever has been graded so far; with nothing graded it just closes.
+  const quit = () => (Object.keys(results).length ? finish() : onQuit?.());
+
   const clearedCount = Object.values(results).filter((r) => r.correct).length;
   const truth = profileOf(item);
 
@@ -257,7 +260,7 @@ export default function EnergyProfile({ pool, onComplete, onQuit }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={onQuit} modeTitle={pool?.title || 'Energy Diagrams'} current={idx + 1} total={items.length} />
+      <TopBar onQuit={quit} modeTitle={pool?.title || 'Energy Diagrams'} current={idx + 1} total={items.length} />
 
       <div className="flex-1 w-full max-w-2xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">

@@ -422,6 +422,20 @@ export default function VectorAdd({ pool = [], onComplete, onQuit }) {
     else setDone(true);
   };
 
+  const finishAll = () => {
+    const rows = items.map((it) => results[it.id] || { clean: 0, total: stagesOf(it).length * 2 });
+    const clean = rows.reduce((s, r) => s + r.clean, 0);
+    const total = rows.reduce((s, r) => s + r.total, 0);
+    const log = items.map((it) => {
+      const r = results[it.id];
+      return { itemId: it.id, correct: !!r && r.clean === r.total };
+    });
+    onComplete?.(total ? Math.round((clean / total) * 10) : 0, null, { items: log });
+  };
+
+  // The X saves whatever has been worked so far; with nothing finished it just closes.
+  const quit = () => (Object.keys(results).length ? finishAll() : onQuit?.());
+
   const nextItem = () => {
     if (idx + 1 < items.length) {
       setIdx((i) => i + 1);
@@ -429,14 +443,7 @@ export default function VectorAdd({ pool = [], onComplete, onQuit }) {
       setEntries({}); setLocked({}); setDirty({}); setErrors({});
       setDone(false); setFlash(null); setView('chain');
     } else {
-      const rows = items.map((it) => results[it.id] || { clean: 0, total: stagesOf(it).length * 2 });
-      const clean = rows.reduce((s, r) => s + r.clean, 0);
-      const total = rows.reduce((s, r) => s + r.total, 0);
-      const log = items.map((it) => {
-        const r = results[it.id];
-        return { itemId: it.id, correct: !!r && r.clean === r.total };
-      });
-      onComplete?.(total ? Math.round((clean / total) * 10) : 0, null, { items: log });
+      finishAll();
     }
   };
 
@@ -485,7 +492,7 @@ export default function VectorAdd({ pool = [], onComplete, onQuit }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
-        onQuit={onQuit}
+        onQuit={quit}
         modeTitle={t.title}
         current={idx + 1}
         total={items.length}

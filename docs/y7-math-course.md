@@ -91,8 +91,15 @@ From the workbook contents. Build in book order; each row is one unit folder.
 | 9 | **Sequences & functions** | 9.1 `U09_1` Generating sequences 1 · 9.2 `U09_2` Generating sequences 2 · 9.3 `U09_3` Using the nth term · 9.4 `U09_4` Representing simple functions |
 | 10 | **Percentages** | 10.1 `U10_1` Fractions, decimals & percentages · 10.2 `U10_2` Percentages large & small |
 
-We are starting with **Unit 1 (Integers)** — pages `Y7Math1.1`–`1.3` and the End of
-Unit 1 Test are already in [public/Workbook pages/](../public/Workbook%20pages/).
+**Progress (2026-09-10):** Unit 1 (1.1–1.6) and 2.1–2.2 are built in the self-study
+format of [y7-math/ADAPTATION-PLAN.md](y7-math/ADAPTATION-PLAN.md), each with a
+one-page plan under `y7-math/plans/`. The algebra units (2.1 onward) replace the
+Number Gym with a second workbook, **Book Problems** (`WORKBOOK_B`), in the shapes of
+the exercise itself — see `plans/U02_1.md`. Every unit is the reduction of a classroom
+deck in the sibling `lessons` repo; the pairing rules are in
+[classroom-dashboard-pairing.md](classroom-dashboard-pairing.md). Workbook page scans
+for 1.1–1.3 and the End of Unit 1 Test are in
+[public/Workbook pages/](../public/Workbook%20pages/).
 
 ---
 

@@ -360,20 +360,27 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
     else { setDirty(true); say('bad', step.kind === 'meets' ? t.noMeetWrong : t.noZerosWrong); }
   };
 
+  const finishAll = () => {
+    const rows = items.map((it) => results[it.id] || { clean: 0, total: it.steps.length });
+    const clean = rows.reduce((s, r) => s + r.clean, 0);
+    const total = rows.reduce((s, r) => s + r.total, 0);
+    const log = items.map((it) => ({
+      itemId: it.id,
+      correct: (results[it.id]?.clean || 0) === it.steps.length,
+    }));
+    onComplete?.(total ? Math.round((clean / total) * 10) : 0, null, { items: log });
+  };
+
+  // The X saves whatever has been plotted so far; with nothing finished it just closes.
+  const quit = () => (Object.keys(results).length ? finishAll() : onQuit?.());
+
   const nextItem = () => {
     if (idx + 1 < items.length) {
       setIdx((i) => i + 1);
       setStepIdx(0); setPlaced([]); setMisses([]); setDirty(false); setDone(false);
       setFlash(null); setAim(null); setArmed(false);
     } else {
-      const rows = items.map((it) => results[it.id] || { clean: 0, total: it.steps.length });
-      const clean = rows.reduce((s, r) => s + r.clean, 0);
-      const total = rows.reduce((s, r) => s + r.total, 0);
-      const log = items.map((it) => ({
-        itemId: it.id,
-        correct: (results[it.id]?.clean || 0) === it.steps.length,
-      }));
-      onComplete?.(total ? Math.round((clean / total) * 10) : 0, null, { items: log });
+      finishAll();
     }
   };
 
@@ -441,7 +448,7 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
-        onQuit={onQuit}
+        onQuit={quit}
         modeTitle={t.title}
         current={idx + 1}
         total={items.length}

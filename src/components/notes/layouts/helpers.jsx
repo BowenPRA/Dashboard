@@ -48,9 +48,24 @@ export function parseInlineText(text, { strongClass = STRONG_DEFAULT } = {}) {
     return mathParts.map((m, j) =>
       m.startsWith('$') && m.endsWith('$')
         ? <SafeInlineMath key={`m-${i}-${j}`} math={m.slice(1, -1).trim()} />
-        : <span key={`t-${i}-${j}`}>{m}</span>,
+        : <span key={`t-${i}-${j}`}>{italicise(m, `${i}-${j}`)}</span>,
     );
   });
+}
+
+// `*italic*` inside a plain-text run. The classroom decks write quoted words
+// and sentence frames this way (*"This is …"*), and until now the asterisks
+// printed literally. Single asterisks with no closing partner are left alone,
+// and a run never crosses a line break, so a stray `*` in prose stays a `*`.
+function italicise(text, key) {
+  if (!text || !text.includes('*')) return text;
+  const parts = text.split(/(\*[^*\n]+?\*)/g);
+  if (parts.length === 1) return text;
+  return parts.map((p, k) =>
+    p.length > 2 && p.startsWith('*') && p.endsWith('*')
+      ? <em key={`i-${key}-${k}`}>{p.slice(1, -1)}</em>
+      : p,
+  );
 }
 
 // The `>` bumper: the "copy this into your notebook" cue. Styled as the

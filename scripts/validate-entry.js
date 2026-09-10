@@ -90,6 +90,24 @@ for (const trackId of TRACK_IDS) {
     for (const k of ['id', 'title', 'desc', 'track']) if (!unit.meta?.[k]) err(`${label}: meta.${k} is missing`);
     if (unit.meta.track !== trackId) err(`${label}: meta.track "${unit.meta.track}" != folder "${trackId}"`);
 
+    // -- classroom twin (see src/utils/classroomLink.js). Every entry must name
+    // a course and a lesson slug, or the UnitCard would render a dead link.
+    if (unit.meta.classroom !== undefined) {
+      const list = Array.isArray(unit.meta.classroom) ? unit.meta.classroom : [unit.meta.classroom];
+      list.forEach((c, i) => {
+        if (!c || typeof c !== 'object' || !c.course || !c.slug) err(`${label}: meta.classroom[${i}] needs { course, slug } (title optional)`);
+        else if (!/^[a-z0-9-]+$/.test(c.course) || !/^[A-Za-z0-9_]+$/.test(c.slug)) err(`${label}: meta.classroom[${i}] "${c.course}/${c.slug}" is not a course/slug pair`);
+      });
+      const sibling = path.join(ROOT, '..', 'lessons', 'content');
+      if (fs.existsSync(sibling)) {
+        for (const c of list) {
+          if (c?.course && c?.slug && !fs.existsSync(path.join(sibling, c.course, c.slug, 'index.js'))) {
+            warn(`${label}: meta.classroom points at ${c.course}/${c.slug}, which is not in ../lessons/content`);
+          }
+        }
+      }
+    }
+
     // -- phases and XP
     const resolved = resolveUnitTasks(unit, 0);
     taskCount += resolved.length;

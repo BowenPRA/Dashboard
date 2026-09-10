@@ -171,7 +171,7 @@ export default function FactorBlitz({ pool, onComplete, onQuit }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={onQuit}
+      <TopBar onQuit={onQuit} quitLabel="Exit"
         modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
         current={roundIdx + 1} total={rounds.length} lang={lang}
         onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />

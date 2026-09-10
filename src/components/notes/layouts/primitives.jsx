@@ -29,6 +29,11 @@ import {
   // stands for a range rather than a value, the brackets that write it down,
   // the endpoint circle, and the flip on a negative.
   Variable, Brackets, CircleDot, FlipHorizontal2, MoveHorizontal,
+  // Used by the Y7 Maths/Science decks ported from the classroom app. Keep
+  // this list a superset of the classroom's, or its icons render as Info.
+  Coffee, Minus, Square, Hash, ArrowDownUp, Wind, LayoutGrid, RotateCcw, Box,
+  Bug, Timer, Hammer, Spline, Circle, MapPin, Droplets, Waves, CloudFog, Gauge,
+  Clapperboard, Gamepad2, Presentation, Hand,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -66,6 +71,9 @@ const ICONS = {
   GitCompare, Split, Superscript, LineChart, ShieldAlert, Milestone, Minimize2,
   Maximize2, Activity, Route, Star,
   Variable, Brackets, CircleDot, FlipHorizontal2, MoveHorizontal,
+  Coffee, Minus, Square, Hash, ArrowDownUp, Wind, LayoutGrid, RotateCcw, Box,
+  Bug, Timer, Hammer, Spline, Circle, MapPin, Droplets, Waves, CloudFog, Gauge,
+  Clapperboard, Gamepad2, Presentation, Hand,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

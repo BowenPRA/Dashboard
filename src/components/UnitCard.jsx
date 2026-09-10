@@ -4,10 +4,31 @@ import {
   ChevronDown, ChevronUp, Trophy, Globe, Atom, Leaf, GraduationCap,
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
   Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash,
-  Boxes, Layers, ScanEye
+  Boxes, Layers, ScanEye, History, MonitorPlay, ExternalLink, Variable, Droplets,
+  Thermometer, Sigma
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEYS } from '../utils/progressSchema';
+import { classroomLessonsOf, classroomLessonUrl } from '../utils/classroomLink';
+
+/**
+ * True when a task has work saved that it can pick up again: a resume blob
+ * with something in it, and the task not yet at full marks. The blob is
+ * opaque to the card (each task keeps its own shape), so this is a hint, not
+ * a promise — enough to tell the student "you were in the middle of this".
+ */
+const canResume = (record, maxXP) => {
+  const blob = record?.answers;
+  if (!blob || typeof blob !== 'object' || !(maxXP > 0)) return false;
+  if ((record.current || 0) >= maxXP) return false;
+  if (Array.isArray(blob)) return blob.length > 0;
+  // Notes keeps { slide, total, checks }: in progress past slide one, or with
+  // a check answered. A finished deck saves { slide: 0, checks: {} }.
+  if ('slide' in blob && 'checks' in blob) {
+    return (blob.slide || 0) > 0 || Object.keys(blob.checks || {}).length > 0;
+  }
+  return Object.keys(blob).length > 0;
+};
 
 const IconMap = {
   "Award": Award, "GraduationCap": GraduationCap, "BookOpen": BookOpen,
@@ -16,7 +37,8 @@ const IconMap = {
   "Rocket": Rocket, "Calculator": Calculator, "Dna": Dna, "FlaskConical": FlaskConical,
   "Compass": Compass, "Lightbulb": Lightbulb, "Activity": Activity, "Zap": Zap,
   "Landmark": Landmark, "Magnet": Magnet, "Move3d": Move3d, "Grid3x3": Grid3x3,
-  "Hash": Hash, "Boxes": Boxes, "Layers": Layers, "ScanEye": ScanEye
+  "Hash": Hash, "Boxes": Boxes, "Layers": Layers, "ScanEye": ScanEye,
+  "Variable": Variable, "Droplets": Droplets, "Thermometer": Thermometer, "Sigma": Sigma
 };
 
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card
@@ -108,6 +130,12 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
           }`}
       >
         {isLocked && <Lock className="absolute top-4 right-4 w-5 h-5 text-white/80 drop-shadow-sm" strokeWidth={3} />}
+        {/* Saved work waiting: the task reopens where it was left. */}
+        {!isLocked && canResume(scores[task.dbKey], taskMaxXP) && (
+          <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 text-slate-700 text-[9px] font-black uppercase tracking-widest shadow-sm">
+            <History className="w-3 h-3" strokeWidth={3} /> Continue
+          </span>
+        )}
         <div className="flex flex-col items-center mt-1">
           <TaskIcon className="w-8 h-8 mb-2 drop-shadow-sm" strokeWidth={2.5} />
           <h4 className="font-black text-lg tracking-wide drop-shadow-sm">
@@ -240,6 +268,28 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                   <h4 className="font-black text-rose-800 dark:text-rose-300">AI Safety Lock Engaged</h4>
                   <p className="text-rose-600 dark:text-rose-400 text-sm font-bold mt-1">Due to repeated inappropriate inputs, AI grading has been disabled for this unit.</p>
                 </div>
+              </div>
+            )}
+
+            {/* The classroom twin: the projected deck this unit was taught from.
+                Missed the lesson, or want it again before the tasks? Watch it. */}
+            {classroomLessonsOf(unit.meta).length > 0 && (
+              <div className="mx-6 sm:mx-8 mt-6 flex flex-wrap items-center gap-2">
+                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mr-1">
+                  <MonitorPlay className="w-4 h-4" strokeWidth={2.5} /> From the classroom
+                </span>
+                {classroomLessonsOf(unit.meta).map((c) => (
+                  <a
+                    key={`${c.course}/${c.slug}`}
+                    href={classroomLessonUrl(c)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 border-b-[3px] text-xs font-black text-slate-600 dark:text-slate-300 hover:border-[#1cb0f6] hover:text-[#1899d6] active:border-b-2 active:translate-y-[1px] transition-all"
+                  >
+                    {c.title || `${c.course} · ${c.slug}`}
+                    <ExternalLink className="w-3.5 h-3.5 opacity-60" strokeWidth={2.5} />
+                  </a>
+                ))}
               </div>
             )}
 

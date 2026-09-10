@@ -9,8 +9,11 @@ export default function TopBar({
   progress, 
   modeTitle, 
   timeLeft, 
-  lang, 
-  onLangToggle 
+  lang,
+  onLangToggle,
+  // What the X does. Nearly every task now saves on the way out, so the
+  // default says so; a task that discards (a timed quiz) passes 'Exit'.
+  quitLabel = 'Save & Quit',
 }) {
   const displayScore = current !== undefined ? current : 0;
   const displayTotal = total !== undefined ? total : 0;
@@ -101,11 +104,14 @@ export default function TopBar({
           </div>
         )}
 
-        <button 
-          onClick={onQuit} 
-          className="flex items-center text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 font-black text-sm uppercase tracking-wider transition-colors active:scale-95 group ml-1"
-          title="Save & Quit"
+        {/* Labelled, not just an X: students read a bare X as "close without
+            saving" and were leaving decks half-way through because of it. */}
+        <button
+          onClick={onQuit}
+          className="flex items-center gap-1.5 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 font-black text-[10px] sm:text-xs uppercase tracking-wider transition-colors active:scale-95 group ml-1 px-1.5 sm:px-2.5 py-1.5 rounded-xl border-2 border-transparent hover:border-rose-200 dark:hover:border-rose-900"
+          title={quitLabel}
         >
+          <span className="hidden lg:inline whitespace-nowrap">{quitLabel}</span>
           <XIcon className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={3} />
         </button>
       </div>

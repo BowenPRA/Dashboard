@@ -123,18 +123,43 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
   );
 }
 
-export default function Notes({ slides, onComplete, onQuit }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+/**
+ * The resume blob Notes keeps in `progress[...].answers`:
+ *   { slide, total, checks: { [slideIndex]: { val, correct } } }
+ * `total` guards the restore — if the deck has been re-authored to a different
+ * length since the save, the slide position and the check answers no longer
+ * line up with the slides they were made on, so both are dropped.
+ */
+const restoreFrom = (saved, slides) => {
+  const total = slides?.length || 0;
+  if (!saved || typeof saved !== 'object' || saved.total !== total) return { slide: 0, checks: {} };
+  const slide = Math.min(Math.max(Number(saved.slide) || 0, 0), Math.max(total - 1, 0));
+  const checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {};
+  return { slide, checks };
+};
+
+export default function Notes({ slides, onComplete, onProgress, onQuit, savedData }) {
+  // Resume where the student left off. Students routinely close a deck part
+  // way through (the tablet sleeps, the lesson ends, they tap the X), and
+  // before this every slide read and every check answered was thrown away.
+  const restored = restoreFrom(savedData, slides);
+
+  const [currentIndex, setCurrentIndex] = useState(restored.slide);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
   const [lang, setLang] = useState('en');
   const [isDisplayMode, setIsDisplayMode] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
-  const [checkAnswers, setCheckAnswers] = useState({}); // slide index -> { val, correct }
+  const [checkAnswers, setCheckAnswers] = useState(restored.checks); // slide index -> { val, correct }
+  // Show "picked up where you left off" until the student moves on.
+  const [resumedAt, setResumedAt] = useState(restored.slide > 0 ? restored.slide : null);
 
   const audioRef = useRef(null);
-  const activeAudioUrl = useRef(null); 
+  const activeAudioUrl = useRef(null);
   const containerRef = useRef(null);
+  // The furthest slide this session has reached, so a checkpoint saved from
+  // an earlier slide (after paging back) never moves the resume point backwards.
+  const [furthest, setFurthest] = useState(restored.slide);
 
   const stopAudio = () => {
     if (audioRef.current) {
@@ -215,12 +240,6 @@ export default function Notes({ slides, onComplete, onQuit }) {
     }
   };
 
-  const handleQuit = () => {
-    stopAudio();
-    if (document.fullscreenElement) document.exitFullscreen();
-    if (typeof onQuit === 'function') onQuit();
-  };
-
   // Every check question in the deck, with the slide it sits on.
   const checks = (slides || [])
     .map((slide, i) => (slide?.check ? { i, check: slide.check } : null))
@@ -230,42 +249,95 @@ export default function Notes({ slides, onComplete, onQuit }) {
   // is the teaching, so skipping past it would skip the point.
   const pendingCheck = !!slides?.[currentIndex]?.check && !checkAnswers[currentIndex];
 
+  // Notes is a native-10 task (taskRegistry), so score out of 10. A deck with
+  // no check questions pays on completion only, so decks written before checks
+  // existed keep their XP until they are authored with them.
+  const scoreOf = (answers, finished) => {
+    if (!checks.length) return finished ? 10 : 0;
+    const right = checks.filter(({ i }) => answers[i]?.correct).length;
+    return Math.round((right / checks.length) * 10);
+  };
+  const itemsOf = (answers) => checks.map(({ i, check }) => ({
+    itemId: check.id || `slide-${i + 1}`,
+    correct: !!answers[i]?.correct,
+  }));
+  const blobOf = (answers, slide) => ({ slide, total: slides?.length || 0, checks: answers });
+
+  // A checkpoint: persist the score so far and where to resume, without
+  // logging an attempt. Undefined in the dev harnesses.
+  const checkpoint = (answers, slide) => {
+    onProgress?.(scoreOf(answers, false), blobOf(answers, slide));
+  };
+
   const answerCheck = (index, option, check) => {
-    setCheckAnswers(prev => (
-      prev[index] ? prev : { ...prev, [index]: { val: option.val, correct: option.val === check.correct } }
-    ));
+    if (checkAnswers[index]) return;
+    const next = { ...checkAnswers, [index]: { val: option.val, correct: option.val === check.correct } };
+    setCheckAnswers(next);
+    checkpoint(next, Math.max(furthest, index));
+  };
+
+  const leaveScreen = () => {
+    stopAudio();
+    if (document.fullscreenElement) document.exitFullscreen();
   };
 
   const handleComplete = () => {
-    stopAudio();
-    if (document.fullscreenElement) document.exitFullscreen();
+    leaveScreen();
     if (typeof onComplete !== 'function') return;
+    // Finishing resets the resume point, so the next open starts at the top
+    // with fresh checks: `current` keeps the best score, so a re-read can only
+    // help, and a check answered wrong is worth answering again.
+    onComplete(scoreOf(checkAnswers, true), blobOf({}, 0), { items: itemsOf(checkAnswers) });
+  };
 
-    // A deck with no check questions still pays on completion, so decks written
-    // before checks existed keep their XP until they are authored with them.
-    if (!checks.length) { onComplete(10); return; }
+  // The X button SAVES. A student who has answered a check gets the same
+  // save a finished deck gets (one attempt, the per-item log); one who has
+  // only read ahead keeps their place without logging a zero-score attempt.
+  const handleQuit = () => {
+    leaveScreen();
+    const answered = Object.keys(checkAnswers).length > 0;
+    const slide = Math.max(furthest, currentIndex);
+    if (answered && typeof onComplete === 'function') {
+      onComplete(scoreOf(checkAnswers, false), blobOf(checkAnswers, slide), { items: itemsOf(checkAnswers) });
+      return;
+    }
+    if (slide > 0) checkpoint(checkAnswers, slide);
+    if (typeof onQuit === 'function') onQuit();
+  };
 
-    const items = checks.map(({ i, check }) => ({
-      itemId: check.id || `slide-${i + 1}`,
-      correct: !!checkAnswers[i]?.correct,
-    }));
-    const right = items.filter((it) => it.correct).length;
+  // "Start over": back to slide one with the checks cleared, and the saved
+  // resume point cleared with them so a reload does not bring the old answers back.
+  const restart = () => {
+    stopAudio();
+    setFurthest(0);
+    setResumedAt(null);
+    setCheckAnswers({});
+    setCurrentIndex(0);
+    checkpoint({}, 0);
+  };
 
-    // Notes is a native-10 task (taskRegistry), so score out of 10.
-    onComplete(Math.round((right / items.length) * 10), null, { items });
+  const goTo = (index) => {
+    setResumedAt(null);
+    setCurrentIndex(index);
+    if (index > furthest) {
+      setFurthest(index);
+      // Reaching a new slide is progress worth keeping: save the position so
+      // closing the tab mid-deck reopens on this slide, not slide one.
+      checkpoint(checkAnswers, index);
+    }
   };
 
   const handleNext = () => {
     if (pendingCheck) return;
     if (currentIndex < slides.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      goTo(currentIndex + 1);
     } else {
       handleComplete();
     }
   };
 
   const handlePrev = () => {
-    if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
+    if (currentIndex > 0) goTo(currentIndex - 1);
   };
 
   useEffect(() => {
@@ -846,6 +918,24 @@ export default function Notes({ slides, onComplete, onQuit }) {
           >
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/40"></div>
           </div>
+        </div>
+      )}
+
+      {/* Resume notice: says where the deck reopened, and offers the top. */}
+      {!isDisplayMode && resumedAt !== null && (
+        <div className="bg-[#1cb0f6]/10 dark:bg-[#1cb0f6]/15 border-t-2 border-[#1cb0f6]/30 px-4 py-2 z-20 flex-shrink-0 flex items-center justify-center gap-3 text-xs sm:text-sm font-bold text-[#1899d6] dark:text-[#5cc8ff] animate-in fade-in">
+          <Repeat className="w-4 h-4 shrink-0" strokeWidth={3} />
+          <span>
+            {lang === 'vn'
+              ? `Tiếp tục từ slide ${resumedAt + 1} / ${slides.length}`
+              : `Picked up where you left off — slide ${resumedAt + 1} of ${slides.length}`}
+          </span>
+          <button
+            onClick={restart}
+            className="px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border-2 border-[#1cb0f6]/40 hover:border-[#1cb0f6] text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest text-[10px] sm:text-xs transition-colors"
+          >
+            {lang === 'vn' ? 'Làm lại từ đầu' : 'Start over'}
+          </button>
         </div>
       )}
 

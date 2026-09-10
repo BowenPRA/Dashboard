@@ -35,12 +35,29 @@ status* section so it can be closed deliberately.
   and the seven principles for a solo ESL learner. Read alongside the standard: that one is
   the bar for the teaching, this one for everything around it.
 
+### The classroom twin (read before any Year 7 work)
+
+- [classroom-dashboard-pairing.md](classroom-dashboard-pairing.md) — **the contract
+  between this app and the `classroom` repo** (the projected decks). The two-way links
+  (`meta.classroom` here, `meta.dashboard` there), the naming rule, the ten rules for
+  reducing a taught deck into a self-study unit, how to keep the two sequences in step,
+  and the per-section build loop that ends with both repos deployed.
+
 ### Year 7 Cambridge Math (new)
 
 - [y7-math-course.md](y7-math-course.md) — **start here.** The course spine: how a
   Cambridge section maps to an app unit, the 10-unit course map, one-time setup
   (`Y7_MATH` track, `WORKBOOK` component, lesson warm-up), and the per-section
-  build loop.
+  build loop. Units 1.1–2.2 are built; the self-study format is
+  [y7-math/ADAPTATION-PLAN.md](y7-math/ADAPTATION-PLAN.md), with a one-page plan
+  per unit under `y7-math/plans/`.
+
+### Year 7 Cambridge Science (new)
+
+- [y7-science-course.md](y7-science-course.md) — **start here** for the `Y7_SCI` track:
+  the seven-task unit shape (vocab, spelling, cloze reading, reasoning questions,
+  label-and-explain diagrams, quiz, arcade), the per-file recipe, what each task's
+  content looks like, and the course map (1.1–2.2 built).
 - [math-lessons.md](math-lessons.md) — the projected TV lesson (`notes.js`): the
   title/warm-up/concept/summary shape, slide schema, discussion & activities,
   concision rules, bilingual, and the small `Notes.jsx` additions needed.

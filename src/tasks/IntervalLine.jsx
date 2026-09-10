@@ -647,6 +647,9 @@ export default function IntervalLine({ pool = [], onComplete, onQuit }) {
     onComplete?.(Math.round((earned / (items.length * 2)) * 10), null, { items: log });
   };
 
+  // The X saves whatever has been marked so far; with nothing marked it just closes.
+  const quit = () => (Object.keys(results).length ? finish() : onQuit?.());
+
   const next = () => {
     if (idx < items.length - 1) setIdx((i) => i + 1);
     else finish();
@@ -671,7 +674,7 @@ export default function IntervalLine({ pool = [], onComplete, onQuit }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
-        onQuit={onQuit}
+        onQuit={quit}
         modeTitle={t.title}
         current={idx + 1}
         total={items.length}

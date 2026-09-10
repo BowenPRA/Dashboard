@@ -22,6 +22,7 @@ const CASES = [
   ['NOTES', 'Deck · 14 slides, 5 checks, TranslateWidget'],
   ['WORD_REC', 'Vocab · 6 key words with audio'],
   ['WORKBOOK', 'Practice · 12 questions in 3 tiers'],
+  ['WORKBOOK_B', 'Book Problems · the exercise\'s own shapes (2.1/2.2)'],
   ['NUM_DRILL', 'Number Gym · long-mult, 8 items'],
   ['FACTOR_BLITZ', 'Factor Blitz · timed factor grid (1.4/1.5 only)'],
   ['SHORT_ANSWERS', 'Questions · 4 reasoning items'],
@@ -29,7 +30,7 @@ const CASES = [
 ];
 
 const SCREENS = {
-  NOTES: Notes, WORD_REC: Recognition, WORKBOOK: Workbook,
+  NOTES: Notes, WORD_REC: Recognition, WORKBOOK: Workbook, WORKBOOK_B: Workbook,
   NUM_DRILL: NumberDrill, FACTOR_BLITZ: FactorBlitz,
   SHORT_ANSWERS: ShortAnswers, ASSESSMENT: Assessment,
 };
