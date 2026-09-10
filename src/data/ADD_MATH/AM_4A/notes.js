@@ -2,42 +2,37 @@
 // AM_4A — Modulus Equations and Modulus Inequalities.
 // Cambridge IGCSE Additional Mathematics 0606, sections 4.1 and 4.2.
 //
-// THE SPINE, and why it is in this order:
-//   1–4    what the bars MEAN — distance from zero — and the three facts that
-//          follow: |x| is never negative, |x|² = x², and |−x| = |x|. Slide 4 is
-//          the one the rest of the unit stands on: |p| = |q| is equivalent to
-//          p² = q², because squaring throws away exactly the information the
-//          bars were throwing away anyway.
-//   5–11   section 4.1, equations. The two methods (split into two cases, or
-//          square both sides), the coursebook's three worked examples, and the
-//          picture behind each: one crossing when the arms are parallel, two
-//          when they are not. Slide 10 is load-bearing — it is where "always
-//          check" stops being nagging and becomes a rule with a reason.
-//   12–14  the shapes 4.1 sets that are not |ax+b| = |cx+d|: a SUM of two
-//          moduli, which cannot be squared, and a hidden quadratic in |x|.
-//   15–22  section 4.2, inequalities. The two rules, the two answer SHAPES they
-//          produce (one interval versus two rays), squaring a modulus against a
-//          modulus, and finishing on the sign diagram of a quadratic.
-//   23     the trap that costs the most marks in 4.2: squaring against something
-//          that might be negative.
-//   24–25  a strategy chooser, and the recap checklist.
+// Rewritten 2026-09-10 for a student alone with a screen: shorter slides,
+// one idea each, and the student DOES something on eight of them before the
+// deck tells them the answer. Eighteen scored items — ten checks and eight
+// activities — carry the NOTES score.
+//
+// THE SPINE:
+//   1–5    what the bars MEAN, the three facts and the trap (sorted by the
+//          student, not read), and the rule the section rests on:
+//          |p| = |q| ⇔ p² = q².
+//   6      the picture: a modulus graph is a V with its corner where the
+//          inside is zero — clicked, not told.
+//   7–13   section 4.1, equations: split or square, one crossing or two
+//          (predicted before it is shown), the method put in order, and the
+//          slide the marks live on: substitute back.
+//   14–17  the other 4.1 shapes: modulus = number (solved by clicking), a sum
+//          of moduli, and a quadratic in |x|.
+//   18–25  section 4.2, inequalities: the two rules and the two answer
+//          SHAPES (shaded on a number line by the student), squaring a
+//          modulus against a modulus, finishing on a parabola, and the trap of
+//          squaring against something that may be negative.
+//   26–27  the method chooser (a sort), and the recap.
 //
 // House notes:
-//  · ENGLISH ONLY. ADD_MATH declares `bilingual: false`, so there are no `vn*`
-//    twins; the layouts fall back to English through pick(en, vn).
-//  · `$…$` is inline KaTeX and `$$…$$` is a display block, but `$$…$$` is legal
-//    ONLY in fields rendered by renderContent — a slide's `content`, a callout
-//    body, a `reveal.answer`. In steps[].text, note text, statement text/sub,
-//    gallery item text and every check question it renders as a red error.
-//  · Layout `title` and hero `objective` are plain text — never parsed — so no
-//    markdown and no maths goes in them.
-//  · `check` is always the LAST key on its slide: generate_all_audio.py narrates
-//    everything before it and deliberately stops there, so a check question is
-//    never read aloud before the student has answered it.
-//  · Eleven `check` questions carry the NOTES score, so the XP is earned rather
-//    than paid out for reaching the last slide.
-//  · The modulus bars are plain pipes, `|2x - 1|`. speechify() in
-//    generate_all_audio.py knows to read a matched pair as "the modulus of".
+//  · ENGLISH ONLY — ADD_MATH declares `bilingual: false`; no `vn*` twins.
+//  · `$$…$$` is legal ONLY in renderContent fields (content, callout body,
+//    reveal.answer). steps[].text, note text, statement text/sub, gallery
+//    text, check and activity strings are inline-only.
+//  · `check` or `activity` is always the LAST key on its slide; the audio
+//    generator narrates everything before it and stops there.
+//  · Activity schemas: docs/add-math/notes-and-activities.md. Card and option
+//    fields are `name`/`explain`, never `text`, so they are not narrated.
 import { DIAGRAMS } from './diagrams.js';
 
 const TEAL = '#0087a8';
@@ -58,6 +53,7 @@ export const notes = [
     objective: 'I can solve equations and inequalities containing modulus signs, by algebra and by reading a graph, and I know which method each shape needs.',
   },
 
+  // ── 2 · the definition ──────────────────────────────────────────────────
   {
     layout: 'split',
     accent: TEAL,
@@ -66,11 +62,11 @@ export const notes = [
     eyebrow: 'The definition, in two lines',
     title: 'What the Bars Mean',
     inlineSvg: DIAGRAMS.MODULUS_DEF,
-    content: 'The **modulus** of $x$, written $|x|$, is its **distance from zero**. Distance has no direction, so the answer is never negative:\n\n$$|x| = \\begin{cases} x & \\text{if } x \\geq 0 \\\\ -x & \\text{if } x < 0\\end{cases}$$\n\nThe second line looks wrong the first time you read it. It is not: if $x = -7$ then $-x = 7$, and $7$ is the distance from zero.',
+    content: 'The **modulus** of $x$, written $|x|$, is its **distance from zero**. A distance has no direction, so it is never negative.\n\n$$|x| = \\begin{cases} x & \\text{if } x \\geq 0 \\\\ -x & \\text{if } x < 0\\end{cases}$$\n\nThe second line looks wrong until you try it: if $x = -7$ then $-x = 7$, and $7$ is the distance from zero.',
     notes: [
       {
         tone: 'write',
-        text: 'Read $|x|$ aloud as **"the modulus of x"** or **"mod x"**.\nThe graph of $y = |x|$ is the line $y = x$ with everything below the axis **folded upwards**.',
+        text: 'Read $|x|$ as **"mod x"**. Work out the inside first, then drop the sign.',
       },
     ],
     check: {
@@ -83,33 +79,43 @@ export const notes = [
         { val: 'D', text: '$-13$' },
       ],
       correct: 'B',
-      expEn: 'Work out the inside first: $4 - 9 = -5$. The modulus then takes the distance from zero, which is $5$. A forgets to apply the bars at all; C changes the subtraction into an addition of two moduli, which is a different — and wrong — thing.',
+      expEn: 'Inside first: $4 - 9 = -5$. The bars then give the distance from zero, which is $5$. A forgets the bars; C has added $|4|$ and $|-9|$, which is a different — and wrong — thing.',
     },
   },
 
+  // ── 3 · the facts and the trap, sorted ──────────────────────────────────
   {
-    layout: 'compare',
+    layout: 'statement',
     accent: TEAL,
-    eyebrow: 'Learn the true ones, and refuse the tempting one',
+    icon: 'Scale',
+    eyebrow: 'Before you read the answer, decide for yourself',
     title: 'Three Facts and One Trap',
-    columns: [
-      {
-        heading: 'Always true',
-        icon: 'CheckCircle2',
-        accent: GREEN,
-        content: '$|x| \\geq 0$ — a modulus can never be negative\n\n$|x|^2 = x^2$ — squaring already removes the sign\n\n$|-x| = |x|$ — the bars cannot tell the two apart\n\n$|ab| = |a| \\times |b|$ — moduli survive multiplying',
-        caption: 'These four are the whole toolkit for this chapter.',
-      },
-      {
-        heading: 'Never true',
-        icon: 'AlertTriangle',
-        accent: RED,
-        content: '$|a + b| = |a| + |b|$ — try $a = 3$, $b = -3$: the left side is $0$, the right side is $6$\n\n$|x| = x$ — only for $x \\geq 0$\n\n$|x - 3| = |x| - 3$ — the bars are not a bracket you can multiply out',
-        caption: 'You cannot take a modulus apart across a plus or a minus.',
-      },
-    ],
+    label: 'Try it',
+    labelIcon: 'Hourglass',
+    text: 'Which of these are true for **every** number?',
+    sub: 'Test each one with a negative number before you place it — try $a = 3$ and $b = -3$, or $x = -2$. Then sort.',
+    activity: {
+      id: 'act_sort_facts',
+      type: 'sort',
+      prompt: 'Sort the seven statements. "Always" means true for every real number; "not always" means you can find a number that breaks it.',
+      bins: [
+        { id: 'always', name: 'Always true' },
+        { id: 'not', name: 'Not always true' },
+      ],
+      cards: [
+        { id: 'c1', name: '$|x| \\geq 0$', bin: 'always' },
+        { id: 'c2', name: '$|x|^2 = x^2$', bin: 'always' },
+        { id: 'c3', name: '$|-x| = |x|$', bin: 'always' },
+        { id: 'c4', name: '$|ab| = |a| \\times |b|$', bin: 'always' },
+        { id: 'c5', name: '$|a + b| = |a| + |b|$', bin: 'not' },
+        { id: 'c6', name: '$|x| = x$', bin: 'not' },
+        { id: 'c7', name: '$|x - 3| = |x| - 3$', bin: 'not' },
+      ],
+      explain: 'The bars survive multiplying but not adding. $|3 + (-3)| = 0$ while $|3| + |-3| = 6$; $|x| = x$ only when $x \\geq 0$; and $|x - 3|$ is a distance from $3$, not $|x|$ with $3$ taken off. The four that are always true are the whole toolkit for this chapter.',
+    },
   },
 
+  // ── 4 · the rule ────────────────────────────────────────────────────────
   {
     layout: 'statement',
     accent: GREEN,
@@ -119,49 +125,69 @@ export const notes = [
     label: 'Learn this',
     labelIcon: 'Star',
     text: '$|p| = |q| \\iff p^2 = q^2$',
-    sub: 'Squaring throws away the sign — which is exactly what the bars were throwing away. So the two statements carry the same information, and the squared one has no bars left to worry about.',
+    sub: 'Squaring throws away the sign — which is exactly what the bars were throwing away. Both statements carry the same information, and the squared one has no bars left.',
   },
 
+  // ── 5 · why ─────────────────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: GREEN,
     icon: 'GitCompare',
-    eyebrow: 'Where the rule comes from, and the two it drags with it',
+    eyebrow: 'Where the rule comes from',
     title: 'Why Squaring Is Allowed',
     inlineSvg: DIAGRAMS.EQUIV_BOX,
-    caption: 'Start from $p^2 - q^2 = |p|^2 - |q|^2$, then use the difference of two squares: $p^2 - q^2 = (|p| - |q|)(|p| + |q|)$. The bracket $|p| + |q|$ can never be negative, so the sign of $p^2 - q^2$ is decided entirely by $|p| - |q|$ — which is why all three comparisons survive squaring.',
+    caption: '$p^2 - q^2 = (|p| - |q|)(|p| + |q|)$. The second bracket is never negative, so the sign of $p^2 - q^2$ is decided by $|p| - |q|$ alone. Bigger modulus, bigger square — every time. That is why $<$ and $>$ survive squaring too.',
     check: {
       id: 'chk_why_square',
-      q: 'In the derivation, why does $|p| + |q|$ being non-negative matter?',
+      q: 'In the derivation, why does it matter that $|p| + |q|$ is never negative?',
       options: [
         { val: 'A', text: 'It makes $p^2 - q^2$ equal to zero' },
-        { val: 'B', text: 'It means multiplying by it cannot flip the direction of the comparison' },
+        { val: 'B', text: 'Multiplying by it cannot flip the direction of the comparison' },
         { val: 'C', text: 'It proves $p = q$' },
         { val: 'D', text: 'It lets you cancel the brackets' },
       ],
       correct: 'B',
-      expEn: 'Multiplying an inequality by a positive quantity leaves its direction alone; multiplying by a negative one would reverse it. Because $|p| + |q|$ is never negative, $|p| - |q|$ and $p^2 - q^2$ always have the same sign — so bigger modulus means bigger square, every time.',
+      expEn: 'Multiplying by a positive quantity leaves an inequality alone; multiplying by a negative one reverses it. Because $|p| + |q|$ is never negative, $|p| - |q|$ and $p^2 - q^2$ always have the same sign.',
     },
   },
 
+  // ── 6 · the picture, clicked ────────────────────────────────────────────
+  {
+    layout: 'callout',
+    accent: BLUE,
+    icon: 'LineChart',
+    eyebrow: 'The picture behind every question in this chapter',
+    title: 'A Modulus Graph Is a V',
+    content: 'The graph of $y = |x - 5|$ is the line $y = x - 5$ with everything below the axis **folded upwards**. The fold is the corner, and the corner sits where the **inside is zero** — solve $x - 5 = 0$, do not read the sign off the page.\n\nEvery equation in this chapter is a question about where a V meets something: a line, another V, or a level.',
+    notes: [
+      { tone: 'homework', text: 'The vertex of $y = |x + 2|$ is at $x = -2$, not $+2$. This sign is the single most expensive slip in the chapter.' },
+    ],
+    activity: {
+      id: 'act_plot_vertex',
+      type: 'plot',
+      prompt: 'Click the vertex of this graph. The corner is where the inside of the bars is zero.',
+      equation: 'y = |x - 5|',
+      curve: { kind: 'modulus', a: 1, h: 5, k: 0 },
+      grid: { xMin: -3, xMax: 9, yMin: -2, yMax: 6 },
+      step: { kind: 'vertex' },
+      explain: 'The inside, $x - 5$, is zero at $x = 5$, so the corner is at $(5, 0)$. The arms rise at gradient $1$ on the right and $-1$ on the left.',
+    },
+  },
+
+  // ── 7 · WE1 method 1 ────────────────────────────────────────────────────
   {
     layout: 'steps',
     accent: BLUE,
     icon: 'Split',
     eyebrow: 'Worked example 1 · Method 1',
-    title: 'Splitting Into Two Equations',
-    content: 'Solve $|x - 5| = |x + 1|$.\n\nIf two things have the same modulus they are either **equal** or **exact opposites**. That is two ordinary equations, and you solve both.',
+    title: 'Splitting Into Two Cases',
+    content: 'Solve $|x - 5| = |x + 1|$.\n\nIf two things have the same modulus they are either **equal** or **exact opposites**. That is two ordinary equations — solve both.',
     steps: [
-      { text: 'Write the two cases. The second one negates **one** side only — negating both would just give you the first case back.\n$x - 5 = x + 1$ or $x - 5 = -(x + 1)$' },
-      { text: 'First case: subtract $x$ from both sides.\n$-5 = 1$, which is false. This case gives no solution.' },
+      { text: 'Write the two cases. The second one negates **one** side only — negating both would just give the first case back.\n$x - 5 = x + 1$ or $x - 5 = -(x + 1)$' },
+      { text: 'First case: subtract $x$ from both sides.\n$-5 = 1$, which is false. This case gives nothing.' },
       { text: 'Second case: remove the bracket, flipping both signs inside it.\n$x - 5 = -x - 1$, so $2x = 4$ and $x = 2$.' },
       { text: 'CHECK by substituting back: $|2 - 5| = 3$ and $|2 + 1| = 3$. They agree, so $x = 2$ is genuine.' },
     ],
-    reveal: {
-      label: 'Why did one case collapse?',
-      prompt: 'The case $x - 5 = x + 1$ lost its $x$ altogether. What does that tell you about the two graphs?',
-      answer: 'Both graphs have arms of gradient $+1$ and $-1$. When you set the $+1$ arm of one equal to the $+1$ arm of the other you are asking two **parallel** lines to meet, and they never do. That is why $|x - 5| = |x + 1|$ has only one solution.',
-    },
     check: {
       id: 'chk_split_cases',
       q: 'Which pair of equations correctly splits $|3x - 2| = |x + 4|$?',
@@ -172,25 +198,27 @@ export const notes = [
         { val: 'D', text: '$3x = x$ or $-2 = 4$' },
       ],
       correct: 'A',
-      expEn: 'Two expressions with equal moduli are either equal or opposite, so exactly one side is negated. B negates both sides, which cancels out and just repeats the first equation. C throws away half the solutions.',
+      expEn: 'Equal moduli means equal or opposite, so exactly one side is negated. B negates both sides, which cancels out and repeats the first equation. C throws away half the solutions.',
     },
   },
 
+  // ── 8 · WE1 method 2 ────────────────────────────────────────────────────
   {
     layout: 'steps',
     accent: GREEN,
     icon: 'Superscript',
     eyebrow: 'Worked example 1 · Method 2',
     title: 'Squaring Both Sides',
-    content: 'The same equation, $|x - 5| = |x + 1|$, done with $|p| = |q| \\iff p^2 = q^2$. Both sets of bars disappear in one move.',
+    content: 'The same equation, $|x - 5| = |x + 1|$, using $|p| = |q| \\iff p^2 = q^2$. Both sets of bars disappear in one move.',
     steps: [
-      { text: 'Square both sides. The bars go, and nothing is left to case-split.\n$(x - 5)^2 = (x + 1)^2$' },
-      { text: 'Expand each side in full. Do not cancel the squares — they are the terms that will cancel each other in a moment.\n$x^2 - 10x + 25 = x^2 + 2x + 1$' },
-      { text: 'The $x^2$ terms cancel, which is what makes this equation linear rather than quadratic.\n$-10x + 25 = 2x + 1$' },
-      { text: 'Collect and finish.\n$24 = 12x$, so $x = 2$ — the same single answer Method 1 found.' },
+      { text: 'Square both sides. The bars go, and there is nothing to case-split.\n$(x - 5)^2 = (x + 1)^2$' },
+      { text: 'Expand each side in full — do not cancel the squares yet.\n$x^2 - 10x + 25 = x^2 + 2x + 1$' },
+      { text: 'Now the $x^2$ terms cancel, which is what keeps this equation linear.\n$-10x + 25 = 2x + 1$' },
+      { text: 'Collect and finish.\n$24 = 12x$, so $x = 2$ — the same single answer.' },
     ],
   },
 
+  // ── 9 · one crossing, then a prediction ─────────────────────────────────
   {
     layout: 'showcase',
     accent: BLUE,
@@ -199,30 +227,45 @@ export const notes = [
     title: 'One Crossing, One Solution',
     inlineSvg: DIAGRAMS.WE1_GRAPH,
     drawThis: true,
-    caption: 'Draw $y = |x - 5|$ and $y = |x + 1|$ on one grid. The solution of the equation is the $x$-coordinate where the two graphs cross. There is exactly one crossing, at $x = 2$ — and now you can see why: the arms that did not meet are parallel.',
+    caption: 'Draw $y = |x - 5|$ and $y = |x + 1|$ on one grid. The solution is the $x$-coordinate where the graphs cross — exactly one crossing, at $x = 2$. The arms that never met are **parallel**, which is why the first case collapsed.',
+    activity: {
+      id: 'act_predict_crossings',
+      type: 'predict',
+      prompt: 'Next comes $|2x + 1| = |x - 3|$. Before you see it worked: how many solutions will it have? Think about the gradients of the two V shapes.',
+      options: [
+        { val: 'one', name: 'One — like the example above' },
+        { val: 'two', name: 'Two' },
+        { val: 'none', name: 'None' },
+        { val: 'four', name: 'Four — two from each case' },
+      ],
+      correct: 'two',
+      explain: 'The arms of $y = |2x + 1|$ have gradient $\\pm 2$ and those of $y = |x - 3|$ have gradient $\\pm 1$. No pair of arms is parallel, so every pair meets: two crossings, two solutions.',
+    },
   },
 
+  // ── 10 · WE2 ────────────────────────────────────────────────────────────
   {
     layout: 'steps',
     accent: PURPLE,
     icon: 'Sigma',
     eyebrow: 'Worked example 2 · both methods on a harder one',
     title: 'When There Are Two Answers',
-    content: 'Solve $|2x + 1| = |x - 3|$. This time the gradients differ, so expect **two** solutions — and a quadratic if you square.',
+    content: 'Solve $|2x + 1| = |x - 3|$. The gradients differ, so expect **two** solutions — and a quadratic if you square.',
     steps: [
       { text: 'Method 1, case one: $2x + 1 = x - 3$, so $x = -4$.' },
       { text: 'Method 1, case two: $2x + 1 = -(x - 3) = -x + 3$, so $3x = 2$ and $x = \\tfrac{2}{3}$.' },
       { text: 'Method 2 instead: square both sides.\n$(2x + 1)^2 = (x - 3)^2$, so $4x^2 + 4x + 1 = x^2 - 6x + 9$.' },
-      { text: 'Collect everything on one side — this time the $x^2$ terms do **not** cancel.\n$3x^2 + 10x - 8 = 0$' },
+      { text: 'Collect on one side — this time the $x^2$ terms do **not** cancel.\n$3x^2 + 10x - 8 = 0$' },
       { text: 'Factorise and solve.\n$(3x - 2)(x + 4) = 0$, so $x = \\tfrac{2}{3}$ or $x = -4$ — the same pair.' },
     ],
     reveal: {
       label: 'Check both, the way the mark scheme does',
       prompt: 'Substitute each answer back into the original equation.',
-      answer: 'At $x = -4$: $|2(-4) + 1| = |-7| = 7$ and $|-4 - 3| = |-7| = 7$. At $x = \\tfrac{2}{3}$: $|\\tfrac{4}{3} + 1| = \\tfrac{7}{3}$ and $|\\tfrac{2}{3} - 3| = \\tfrac{7}{3}$. Both hold, so both are genuine solutions.',
+      answer: 'At $x = -4$: $|2(-4) + 1| = 7$ and $|-4 - 3| = 7$. At $x = \\tfrac{2}{3}$: $|\\tfrac{4}{3} + 1| = \\tfrac{7}{3}$ and $|\\tfrac{2}{3} - 3| = \\tfrac{7}{3}$. Both hold, so both are genuine.',
     },
   },
 
+  // ── 11 · two crossings ──────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: PURPLE,
@@ -231,20 +274,9 @@ export const notes = [
     title: 'Two Crossings, Two Solutions',
     inlineSvg: DIAGRAMS.WE2_GRAPH,
     caption: 'One answer, $x = -4$, can be read straight off the grid. The other, $x = \\tfrac{2}{3}$, sits between the lines and could never be read accurately — which is the honest reason the algebra is worth doing even when a graph is available.',
-    check: {
-      id: 'chk_how_many',
-      q: 'Why does $|2x + 1| = |x - 3|$ have two solutions when $|x - 5| = |x + 1|$ had only one?',
-      options: [
-        { val: 'A', text: 'Because the numbers inside the second one are larger' },
-        { val: 'B', text: 'Because the two graphs have different gradients, so both pairs of arms meet' },
-        { val: 'C', text: 'Because one equation is quadratic and the other is not' },
-        { val: 'D', text: 'Because $|2x + 1|$ has a positive sign inside' },
-      ],
-      correct: 'B',
-      expEn: 'A modulus graph has two arms. If both graphs have the same steepness, one pair of arms is parallel and never meets, leaving one crossing. Here the steepnesses are $2$ and $1$, so every pair of arms meets and you get two.',
-    },
   },
 
+  // ── 12 · the two methods, and the squaring method in order ──────────────
   {
     layout: 'showcase',
     accent: TEAL,
@@ -252,21 +284,33 @@ export const notes = [
     eyebrow: 'Choose whichever you trust — both earn full marks',
     title: 'The Two Methods Side by Side',
     inlineSvg: DIAGRAMS.TWO_METHODS,
-    caption: 'Splitting is faster and keeps the algebra linear, but it is easy to drop a case or a sign. Squaring cannot lose a case, because both sets of bars go at once — but it only works when a modulus sits on **each** side of the equals sign.',
+    caption: 'Splitting is faster and stays linear, but it is easy to drop a case or a sign. Squaring cannot lose a case — but it only works when a modulus sits on **each** side of the equals sign.',
+    activity: {
+      id: 'act_order_square',
+      type: 'order',
+      prompt: 'Put the squaring method in the order you would write it.',
+      steps: [
+        { id: 's1', name: 'Square both sides — the bars disappear' },
+        { id: 's2', name: 'Expand each side in full' },
+        { id: 's3', name: 'Collect everything on one side, equal to zero' },
+        { id: 's4', name: 'Factorise (or the x² terms cancel and it is linear)' },
+        { id: 's5', name: 'Solve for x' },
+        { id: 's6', name: 'Substitute each answer back into the ORIGINAL equation' },
+      ],
+      explain: 'Square, expand, collect, factorise, solve — and the check comes last, in the original equation, not in the squared one. The squared equation is the one that cannot tell a real answer from a fake.',
+    },
   },
 
+  // ── 13 · always substitute back ─────────────────────────────────────────
   {
     layout: 'callout',
     accent: RED,
     icon: 'ShieldAlert',
     eyebrow: 'Where the marks go',
     title: 'Always Substitute Back',
-    content: 'Both methods can produce an answer that does not actually work, and squaring is the worse offender: it can invent a solution out of nothing, because it forgets which side was negative.\n\n$$|x| = 2x - 3 \\;\\Rightarrow\\; x^2 = 4x^2 - 12x + 9 \\;\\Rightarrow\\; 3x^2 - 12x + 9 = 0 \\;\\Rightarrow\\; x = 1 \\text{ or } x = 3$$\n\nTest them. At $x = 3$: $|3| = 3$ and $2(3) - 3 = 3$, so that one is real. At $x = 1$: $|1| = 1$ but $2(1) - 3 = -1$, and a modulus is never negative — so $x = 1$ is **not** a solution, even though the algebra produced it.',
+    content: 'Squaring can invent a solution out of nothing, because it forgets which side was negative.\n\n$$|x| = 2x - 3 \\;\\Rightarrow\\; x^2 = 4x^2 - 12x + 9 \\;\\Rightarrow\\; 3x^2 - 12x + 9 = 0 \\;\\Rightarrow\\; x = 1 \\text{ or } x = 3$$\n\nTest them. At $x = 3$: $|3| = 3$ and $2(3) - 3 = 3$ — real. At $x = 1$: $|1| = 1$ but $2(1) - 3 = -1$, and a modulus is never negative — so $x = 1$ is **not** a solution, even though the algebra produced it.',
     notes: [
-      {
-        tone: 'homework',
-        text: 'Write the check into your working as a line of its own, the way the coursebook does. It costs fifteen seconds and it is the difference between two marks and none.',
-      },
+      { tone: 'homework', text: 'Write the check as a line of its own, the way the coursebook does. It is the difference between two marks and none.' },
     ],
     check: {
       id: 'chk_extraneous',
@@ -278,26 +322,48 @@ export const notes = [
         { val: 'D', text: 'A modulus equation can only ever have one answer' },
       ],
       correct: 'B',
-      expEn: 'At $x = 1$ the right-hand side is $-1$, and a modulus can never equal a negative number. Squaring erased that requirement, so the algebra happily returned a value the original equation rejects. C is impossible — the left side is a modulus, so it is never negative.',
+      expEn: 'At $x = 1$ the right-hand side is $-1$, and a modulus can never equal a negative number. Squaring erased that requirement. C is impossible — the left side is a modulus, so it is never negative.',
     },
   },
 
+  // ── 14 · modulus = number, clicked ──────────────────────────────────────
+  {
+    layout: 'callout',
+    accent: AMBER,
+    icon: 'Crosshair',
+    eyebrow: 'The simplest shape of all',
+    title: 'Modulus Equals a Number',
+    content: '$|x - 2| = 3$ asks: which numbers are a distance $3$ from $2$? There are two, one on each side — $x = 5$ and $x = -1$.\n\nOn the graph it is where the V meets the horizontal line $y = 3$. Algebra: $x - 2 = 3$ or $x - 2 = -3$.\n\nIf the number is **negative**, $|x - 2| = -3$, there is nothing to do: the line sits below the V and never touches it.',
+    activity: {
+      id: 'act_plot_meets',
+      type: 'plot',
+      prompt: 'Solve $|x - 2| = 3$ by picture: click every point where the V meets the line.',
+      equation: 'y = |x - 2|',
+      curve: { kind: 'modulus', a: 1, h: 2, k: 0 },
+      grid: { xMin: -4, xMax: 8, yMin: -2, yMax: 6 },
+      step: { kind: 'meets', at: 3 },
+      explain: 'The crossings are $(-1, 3)$ and $(5, 3)$, so $x = -1$ or $x = 5$ — the two numbers a distance $3$ from $2$. The vertex $(2, 0)$ is the midpoint of the two answers, always.',
+    },
+  },
+
+  // ── 15 · WE3 sum of moduli ──────────────────────────────────────────────
   {
     layout: 'steps',
     accent: AMBER,
     icon: 'Layers',
     eyebrow: 'Worked example 3 · a shape you cannot square',
     title: 'A Sum of Two Moduli',
-    content: 'Solve $|x + 4| + |x - 5| = 11$.\n\nThere is no rule for squaring a **sum** of moduli, so this needs the other approach: take the moduli apart one at a time, or split the number line at the points where each one changes rule.',
+    content: 'Solve $|x + 4| + |x - 5| = 11$.\n\nThere is no rule for squaring a **sum** of moduli. Isolate one modulus and split, then split again.',
     steps: [
-      { text: 'Move one modulus across so a single one is alone on the left.\n$|x + 4| = 11 - |x - 5|$' },
-      { text: 'Split on that modulus. Either $x + 4 = 11 - |x - 5|$, or $x + 4 = |x - 5| - 11$.' },
-      { text: 'Take the first: $|x - 5| = 7 - x$. Split again — $x - 5 = 7 - x$ gives $x = 6$; $x - 5 = -(7 - x)$ gives $0 = -2$, which is false.' },
-      { text: 'Take the second: $|x - 5| = x + 15$. Split again — $x - 5 = x + 15$ gives $0 = 20$, false; $x - 5 = -(x + 15)$ gives $2x = -10$ and $x = -5$.' },
-      { text: 'CHECK both. $|6 + 4| + |6 - 5| = 10 + 1 = 11$, and $|-5 + 4| + |-5 - 5| = 1 + 10 = 11$. So $x = 6$ or $x = -5$.' },
+      { text: 'Move one modulus across.\n$|x + 4| = 11 - |x - 5|$' },
+      { text: 'Split on that modulus: $x + 4 = 11 - |x - 5|$, or $x + 4 = |x - 5| - 11$.' },
+      { text: 'First branch: $|x - 5| = 7 - x$. Split again — $x - 5 = 7 - x$ gives $x = 6$; $x - 5 = -(7 - x)$ gives $0 = -2$, false.' },
+      { text: 'Second branch: $|x - 5| = x + 15$. Split again — $x - 5 = x + 15$ is false; $x - 5 = -(x + 15)$ gives $x = -5$.' },
+      { text: 'CHECK both. $|10| + |1| = 11$ and $|-1| + |-10| = 11$. So $x = 6$ or $x = -5$.' },
     ],
   },
 
+  // ── 16 · regions ────────────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: AMBER,
@@ -305,10 +371,10 @@ export const notes = [
     eyebrow: 'The same problem, cut into regions',
     title: 'Critical Values Cut the Line',
     inlineSvg: DIAGRAMS.SUM_REGIONS,
-    caption: 'The alternative method, and the one worth knowing for harder sums. $|x + 4|$ changes rule at $x = -4$ and $|x - 5|$ changes rule at $x = 5$, so the number line falls into three regions. Solve the equation in each region with the bars removed, and keep only the answers that land inside the region that produced them.',
+    caption: 'The method worth knowing for harder sums. $|x + 4|$ changes rule at $x = -4$ and $|x - 5|$ at $x = 5$, so the line falls into three regions. Solve with the bars removed in each region, and keep only the answers that land inside the region that produced them.',
     check: {
       id: 'chk_critical_values',
-      q: 'At which values of $x$ does the expression $|2x + 6| + |x - 1|$ change its rule?',
+      q: 'At which values of $x$ does $|2x + 6| + |x - 1|$ change its rule?',
       options: [
         { val: 'A', text: '$x = 6$ and $x = 1$' },
         { val: 'B', text: '$x = -3$ and $x = 1$' },
@@ -316,10 +382,11 @@ export const notes = [
         { val: 'D', text: '$x = 3$ and $x = -1$' },
       ],
       correct: 'B',
-      expEn: 'A modulus changes rule exactly where the expression inside it is zero. $2x + 6 = 0$ gives $x = -3$, and $x - 1 = 0$ gives $x = 1$. A reads the constants straight off without solving, and C forgets to divide by the $2$.',
+      expEn: 'A modulus changes rule exactly where its inside is zero: $2x + 6 = 0$ gives $x = -3$ and $x - 1 = 0$ gives $x = 1$. A reads the constants off without solving; C forgets to divide by $2$.',
     },
   },
 
+  // ── 17 · hidden quadratic ───────────────────────────────────────────────
   {
     layout: 'split',
     accent: PURPLE,
@@ -328,16 +395,13 @@ export const notes = [
     eyebrow: 'The other 4.1 shape · a quadratic in disguise',
     title: 'When the Modulus Is the Unknown',
     inlineSvg: DIAGRAMS.ABS_QUAD,
-    content: 'Some questions are quadratics whose variable happens to be a modulus. Substitute a letter for the whole modulus, solve the ordinary quadratic, then put the bars back.\n\n$$6|x + 2|^2 + 7|x + 2| - 3 = 0$$\n\nLet $u = |x + 2|$. Then $6u^2 + 7u - 3 = 0$, so $(3u - 1)(2u + 3) = 0$ and $u = \\tfrac{1}{3}$ or $u = -\\tfrac{3}{2}$.\n\n**Reject $u = -\\tfrac{3}{2}$ immediately** — a modulus is never negative. That leaves $|x + 2| = \\tfrac{1}{3}$, so $x = -2 \\pm \\tfrac{1}{3}$.',
+    content: 'Some questions are quadratics whose variable is a modulus. Substitute a letter for the whole modulus, solve, then put the bars back.\n\n$$6|x + 2|^2 + 7|x + 2| - 3 = 0$$\n\nLet $u = |x + 2|$: $6u^2 + 7u - 3 = 0$, so $(3u - 1)(2u + 3) = 0$ and $u = \\tfrac{1}{3}$ or $u = -\\tfrac{3}{2}$.\n\n**Reject $u = -\\tfrac{3}{2}$ at once** — a modulus is never negative. Then $|x + 2| = \\tfrac{1}{3}$ gives $x = -2 \\pm \\tfrac{1}{3}$.',
     notes: [
-      {
-        tone: 'plant',
-        text: 'The graph shown is $y = x^2 - 6|x| + 8$, the same idea with $u = |x|$: solve $u^2 - 6u + 8 = 0$ to get $u = 2$ or $u = 4$, then $|x| = 2$ or $|x| = 4$ gives **four** roots. A modulus inside a quadratic doubles the answers, because each positive $u$ gives two values of $x$.',
-      },
+      { tone: 'plant', text: 'The graph is $y = x^2 - 6|x| + 8$: with $u = |x|$, $u = 2$ or $u = 4$, so **four** roots. Each positive $u$ unfolds into two values of $x$.' },
     ],
     check: {
       id: 'chk_hidden_quad',
-      q: 'Solving $x^2 - 6|x| + 8 = 0$ by letting $u = |x|$ gives $u = 2$ and $u = 4$. How many values of $x$ is that?',
+      q: 'Solving $x^2 - 6|x| + 8 = 0$ with $u = |x|$ gives $u = 2$ and $u = 4$. How many values of $x$ is that?',
       options: [
         { val: 'A', text: 'Two' },
         { val: 'B', text: 'Three' },
@@ -345,10 +409,11 @@ export const notes = [
         { val: 'D', text: 'One' },
       ],
       correct: 'C',
-      expEn: '$|x| = 2$ gives $x = 2$ and $x = -2$; $|x| = 4$ gives $x = 4$ and $x = -4$. Each positive value of $u$ unfolds into two values of $x$, so there are four roots — which is exactly what the graph shows.',
+      expEn: '$|x| = 2$ gives $x = \\pm 2$ and $|x| = 4$ gives $x = \\pm 4$. Four roots — which is what the W-shaped graph shows.',
     },
   },
 
+  // ── 18 · the inequality rules ───────────────────────────────────────────
   {
     layout: 'statement',
     accent: TEAL,
@@ -358,9 +423,10 @@ export const notes = [
     label: 'Learn both',
     labelIcon: 'Star',
     text: '$|p| \\leq q \\iff -q \\leq p \\leq q$',
-    sub: 'and $|p| \\geq q \\iff p \\leq -q$ or $p \\geq q$. A small modulus traps $p$ near zero, which is one interval. A large modulus pushes $p$ away from zero in either direction, which is two separate pieces.',
+    sub: 'and $|p| \\geq q \\iff p \\leq -q$ or $p \\geq q$. A small modulus traps $p$ near zero: one interval. A large modulus pushes $p$ away from zero in either direction: two separate pieces.',
   },
 
+  // ── 19 · less than, shaded ──────────────────────────────────────────────
   {
     layout: 'split',
     accent: GREEN,
@@ -369,27 +435,23 @@ export const notes = [
     eyebrow: 'Worked example 4 · less than',
     title: 'Below the Line Is One Interval',
     inlineSvg: DIAGRAMS.LESS_THAN,
-    content: 'Solve $|2x - 1| < 3$.\n\n**By algebra.** Use $|p| < q \\iff -q < p < q$ and work on all three parts of the chain at once:\n\n$$-3 < 2x - 1 < 3 \\;\\Rightarrow\\; -2 < 2x < 4 \\;\\Rightarrow\\; -1 < x < 2$$\n\n**By graph.** Draw $y = |2x - 1|$ and the line $y = 3$. They meet at $A(-1, 3)$ and $B(2, 3)$. The inequality asks where the V is **below** the line, and that is the stretch between the two crossings.',
+    content: 'Solve $|2x - 1| < 3$.\n\n**By algebra.** $-3 < 2x - 1 < 3$, then add $1$ and halve, all three parts at once:\n\n$$-2 < 2x < 4 \\;\\Rightarrow\\; -1 < x < 2$$\n\n**By graph.** $y = |2x - 1|$ meets $y = 3$ at $x = -1$ and $x = 2$. The V is **below** the line between the crossings.',
     notes: [
-      {
-        tone: 'write',
-        text: 'Whatever you do to the middle you do to all three parts. Adding $1$ across the chain and then halving it keeps every inequality sign pointing the same way, because $2$ is positive.',
-      },
+      { tone: 'write', text: 'Whatever you do to the middle, do to all three parts. Dividing by a **negative** reverses both signs.' },
     ],
-    check: {
-      id: 'chk_less_than',
-      q: 'Solve $|x - 4| \\leq 2$.',
-      options: [
-        { val: 'A', text: '$2 \\leq x \\leq 6$' },
-        { val: 'B', text: '$x \\leq 2$ or $x \\geq 6$' },
-        { val: 'C', text: '$-6 \\leq x \\leq -2$' },
-        { val: 'D', text: '$-2 \\leq x \\leq 2$' },
-      ],
-      correct: 'A',
-      expEn: 'Write $-2 \\leq x - 4 \\leq 2$, then add $4$ to all three parts: $2 \\leq x \\leq 6$. B is the answer to the opposite inequality — a "less than" can never produce two separate pieces. D forgets to add the $4$.',
+    activity: {
+      id: 'act_line_less',
+      type: 'numberline',
+      prompt: 'Now shade the answer to $|x - 4| \\leq 2$ on the number line. Decide the shape first, then the numbers, then whether the ends are included.',
+      display: '|x - 4| \\leq 2',
+      solution: '2 <= x <= 6',
+      min: -2,
+      max: 10,
+      explain: '$-2 \\leq x - 4 \\leq 2$, add $4$: $2 \\leq x \\leq 6$. One interval, closed circles, because "at most 2" includes a distance of exactly $2$. The centre of the interval is $4$ — the vertex of the V.',
     },
   },
 
+  // ── 20 · greater than, shaded ───────────────────────────────────────────
   {
     layout: 'split',
     accent: AMBER,
@@ -398,27 +460,23 @@ export const notes = [
     eyebrow: 'Worked example 5 · greater than',
     title: 'Above the Line Is Two Rays',
     inlineSvg: DIAGRAMS.MORE_THAN,
-    content: 'Solve $|2x + 3| > 4$.\n\n**By algebra.** Use $|p| > q \\iff p < -q$ or $p > q$, and solve the two statements **separately** — they are not a chain and must never be written as one:\n\n$$2x + 3 < -4 \\;\\Rightarrow\\; x < -\\tfrac{7}{2} \\qquad \\text{or} \\qquad 2x + 3 > 4 \\;\\Rightarrow\\; x > \\tfrac{1}{2}$$\n\n**By graph.** $y = |2x + 3|$ meets $y = 4$ at $A(-\\tfrac{7}{2}, 4)$ and $B(\\tfrac{1}{2}, 4)$. The V is **above** the line everywhere outside those two points.',
+    content: 'Solve $|2x + 3| > 4$.\n\n**By algebra.** Two separate statements — never one chain:\n\n$$2x + 3 < -4 \\;\\Rightarrow\\; x < -\\tfrac{7}{2} \\qquad \\text{or} \\qquad 2x + 3 > 4 \\;\\Rightarrow\\; x > \\tfrac{1}{2}$$\n\n**By graph.** The V is **above** $y = 4$ everywhere outside the two crossings.',
     notes: [
-      {
-        tone: 'homework',
-        text: 'Writing this answer as $\\tfrac{1}{2} < x < -\\tfrac{7}{2}$ scores zero. It claims $x$ is bigger than a half **and** smaller than negative three and a half, which nothing is. Two rays need two sentences joined by "or".',
-      },
+      { tone: 'homework', text: 'Writing $\\tfrac{1}{2} < x < -\\tfrac{7}{2}$ scores zero. Nothing is bigger than a half **and** smaller than negative three and a half. Two rays need two statements joined by "or".' },
     ],
-    check: {
-      id: 'chk_more_than',
-      q: 'Solve $|x + 1| > 5$.',
-      options: [
-        { val: 'A', text: '$-6 < x < 4$' },
-        { val: 'B', text: '$x < -6$ or $x > 4$' },
-        { val: 'C', text: '$x < -4$ or $x > 6$' },
-        { val: 'D', text: '$4 < x < -6$' },
-      ],
-      correct: 'B',
-      expEn: 'Split it: $x + 1 < -5$ gives $x < -6$, and $x + 1 > 5$ gives $x > 4$. A solves the "less than" version by mistake. C subtracts the $1$ the wrong way. D writes the right numbers as an impossible chain.',
+    activity: {
+      id: 'act_line_more',
+      type: 'numberline',
+      prompt: 'Shade the answer to $|x + 1| > 5$. Two rays or one interval? Open or closed?',
+      display: '|x + 1| > 5',
+      solution: 'x < -6 or x > 4',
+      min: -10,
+      max: 8,
+      explain: '$x + 1 < -5$ gives $x < -6$; $x + 1 > 5$ gives $x > 4$. Two rays, open circles (strict signs), and the gap between them is centred on $-1$, the vertex.',
     },
   },
 
+  // ── 21 · the two shapes ─────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: TEAL,
@@ -438,26 +496,28 @@ export const notes = [
         { val: 'D', text: 'You cannot solve a modulus inequality with a $3$ in front of the $x$' },
       ],
       correct: 'B',
-      expEn: 'A large modulus pushes the expression away from zero on both sides, so the solution is always two rays joined by "or". The correct answer here is $x \\leq \\tfrac{5}{3}$ or $x \\geq 3$ — the same two numbers, but the outside rather than the inside.',
+      expEn: 'A big modulus pushes the inside away from zero on both sides, so the solution is two rays joined by "or": $x \\leq \\tfrac{5}{3}$ or $x \\geq 3$ — the same numbers, the outside rather than the inside.',
     },
   },
 
+  // ── 22 · WE6 squaring an inequality ─────────────────────────────────────
   {
     layout: 'steps',
     accent: BLUE,
     icon: 'Superscript',
     eyebrow: 'Worked example 6 · a modulus on each side',
     title: 'Squaring an Inequality',
-    content: 'Solve $|2x + 1| \\geq |3 - x|$.\n\nWith a modulus on **both** sides, $|p| \\geq |q| \\iff p^2 \\geq q^2$ applies, and nothing can go wrong: both sides are automatically non-negative, so squaring cannot reverse the sign.',
+    content: 'Solve $|2x + 1| \\geq |3 - x|$.\n\nWith a modulus on **both** sides, $|p| \\geq |q| \\iff p^2 \\geq q^2$ applies safely: both sides are non-negative, so squaring cannot reverse the sign.',
     steps: [
       { text: 'Square both sides.\n$(2x + 1)^2 \\geq (3 - x)^2$' },
-      { text: 'Expand both. Note that $(3-x)^2$ and $(x-3)^2$ are the same thing, so the order inside does not matter once you square.\n$4x^2 + 4x + 1 \\geq 9 - 6x + x^2$' },
-      { text: 'Collect on the side that keeps the $x^2$ coefficient positive — it makes the sign diagram easier to read.\n$3x^2 + 10x - 8 \\geq 0$' },
-      { text: 'Factorise to find the critical values.\n$(3x - 2)(x + 4) \\geq 0$, so the critical values are $\\tfrac{2}{3}$ and $-4$.' },
-      { text: 'Finish on a sketch, not in your head — the next slide shows why.' },
+      { text: 'Expand both. $(3-x)^2$ and $(x-3)^2$ are the same thing.\n$4x^2 + 4x + 1 \\geq 9 - 6x + x^2$' },
+      { text: 'Collect on the side that keeps $x^2$ positive.\n$3x^2 + 10x - 8 \\geq 0$' },
+      { text: 'Factorise for the critical values.\n$(3x - 2)(x + 4) \\geq 0$, so they are $\\tfrac{2}{3}$ and $-4$.' },
+      { text: 'Finish on a sketch, not in your head — next slide.' },
     ],
   },
 
+  // ── 23 · the parabola ───────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: GREEN,
@@ -466,7 +526,7 @@ export const notes = [
     title: 'Read the Answer Off the Parabola',
     inlineSvg: DIAGRAMS.SIGN_PARABOLA,
     drawThis: true,
-    caption: 'Sketch $y = 3x^2 + 10x - 8$: it is a positive quadratic, so it opens upwards and crosses at $-4$ and $\\tfrac{2}{3}$. The question wants $y \\geq 0$, which is where the curve is on or above the axis — the two outer pieces. So $x \\leq -4$ or $x \\geq \\tfrac{2}{3}$.',
+    caption: 'Sketch $y = 3x^2 + 10x - 8$: a positive quadratic, so it opens upwards and crosses at $-4$ and $\\tfrac{2}{3}$. The question wants $y \\geq 0$ — on or above the axis — which is the two outer pieces. So $x \\leq -4$ or $x \\geq \\tfrac{2}{3}$.',
     check: {
       id: 'chk_sign_diagram',
       q: 'For the same parabola, what is the solution of $3x^2 + 10x - 8 < 0$?',
@@ -477,10 +537,11 @@ export const notes = [
         { val: 'D', text: 'There is no solution' },
       ],
       correct: 'B',
-      expEn: 'Below the axis on an upward parabola is the piece **between** the roots, so $-4 < x < \\tfrac{2}{3}$. A is the answer to the "greater than" version. Reversing the inequality swaps inside for outside — it does not change the critical values.',
+      expEn: 'Below the axis on an upward parabola is the piece **between** the roots. Reversing the inequality swaps inside for outside — it does not change the critical values.',
     },
   },
 
+  // ── 24 · WE6 on a graph ─────────────────────────────────────────────────
   {
     layout: 'showcase',
     accent: PURPLE,
@@ -488,9 +549,10 @@ export const notes = [
     eyebrow: 'The same inequality, checked against a picture',
     title: 'Where Blue Sits Above Red',
     inlineSvg: DIAGRAMS.WE6_GRAPH,
-    caption: 'Draw both moduli and find the crossings, at $x = -4$ and $x = \\tfrac{2}{3}$. Then read the question literally: $|2x + 1| \\geq |3 - x|$ asks where the blue graph is **at or above** the red one, which is everything outside the crossings — matching the algebra exactly.',
+    caption: 'Draw both moduli and find the crossings, at $x = -4$ and $x = \\tfrac{2}{3}$. Then read the question literally: $|2x + 1| \\geq |3 - x|$ asks where the blue graph is **at or above** the red one — everything outside the crossings, matching the algebra exactly.',
   },
 
+  // ── 25 · the sign trap ──────────────────────────────────────────────────
   {
     layout: 'split',
     accent: RED,
@@ -499,12 +561,9 @@ export const notes = [
     eyebrow: 'The 4.2 trap that costs the most marks',
     title: 'Squaring Against Something That Might Be Negative',
     inlineSvg: DIAGRAMS.RHS_TRAP,
-    content: 'The rule $|p| \\geq |q| \\iff p^2 \\geq q^2$ needs a modulus on **both** sides. When the other side is an ordinary expression such as $x - 1$, it may be negative, and squaring a negative number makes it positive — so squaring can change the answer.\n\nSolve $|2x - 3| \\leq x - 1$ properly:\n\n$$x - 1 \\geq 0 \\;\\Rightarrow\\; x \\geq 1, \\quad \\text{then} \\quad (2x-3)^2 \\leq (x-1)^2$$\n\nThat gives $3x^2 - 10x + 8 \\leq 0$, so $(3x - 4)(x - 2) \\leq 0$ and $\\tfrac{4}{3} \\leq x \\leq 2$. Both of those already satisfy $x \\geq 1$, so the answer stands.',
+    content: 'The squaring rule needs a modulus on **both** sides. When the other side is an ordinary expression such as $x - 1$, it may be negative, and squaring a negative makes it positive — so squaring can change the answer.\n\nSolve $|2x - 3| \\leq x - 1$ safely: state $x - 1 \\geq 0$ first, so $x \\geq 1$. Then $(2x-3)^2 \\leq (x-1)^2$ gives $(3x - 4)(x - 2) \\leq 0$, so $\\tfrac{4}{3} \\leq x \\leq 2$ — and every value in it satisfies $x \\geq 1$, so the answer stands.',
     notes: [
-      {
-        tone: 'homework',
-        text: 'If the right-hand side can go negative, state the condition **before** you square and check your final answer against it. A "less than" against a negative is impossible; a "greater than" against a negative is automatically true.',
-      },
+      { tone: 'homework', text: 'A "less than" against a negative is impossible; a "greater than" against a negative is automatically true. Say which before you square.' },
     ],
     check: {
       id: 'chk_rhs_sign',
@@ -516,10 +575,11 @@ export const notes = [
         { val: 'D', text: 'Every value of $x$' },
       ],
       correct: 'C',
-      expEn: 'The left side is a distance, so it is always $0$ or more, and nothing that is $0$ or more can be less than or equal to $-4$. Spotting this takes one second and saves a page of squaring. Note that $|3x + 2| \\geq -4$ is the opposite case — it is true for every value of $x$.',
+      expEn: 'The left side is a distance, so it is $0$ or more, and nothing that is $0$ or more is at most $-4$. Note that $|3x + 2| \\geq -4$ is the opposite case: true for every $x$.',
     },
   },
 
+  // ── 26 · method chooser, sorted ─────────────────────────────────────────
   {
     layout: 'steps',
     accent: TEAL,
@@ -528,19 +588,34 @@ export const notes = [
     title: 'Choosing Your Method',
     content: 'Nearly every question in this chapter is one of four shapes. Name the shape first and the method chooses itself.',
     steps: [
-      { text: '**Modulus = modulus**, as in $|2x - 3| = |4 - x|$: square both sides, or split into two cases. Both are safe.' },
-      { text: '**Modulus = number**, as in $|2x - 1| = 7$: split into $2x - 1 = 7$ and $2x - 1 = -7$. If the number is negative, there is no solution at all.' },
-      { text: '**Modulus = expression**, as in $|x| = 2x - 3$: split or square, then CHECK every answer against the original — this is the shape that invents false solutions.' },
-      { text: '**Sum of moduli**, as in $|x + 1| + |2x - 3| = 8$: you cannot square. Isolate one modulus and split twice, or cut the number line at the critical values and solve region by region.' },
-      { text: 'For an inequality, do the matching thing and then ask the shape question: does a "less than" give one interval, and a "greater than" two rays?' },
+      { text: '**Modulus = modulus**, as in $|2x - 3| = |4 - x|$: split into two cases, or square. Both are safe.' },
+      { text: '**Modulus = number**, as in $|2x - 1| = 7$: the inside is $7$ or $-7$. A negative number means no solution.' },
+      { text: '**Modulus = expression**, as in $|x| = 2x - 3$: split or square, then CHECK every answer — this shape invents false ones.' },
+      { text: '**Sum of moduli**, as in $|x + 1| + |2x - 3| = 8$: you cannot square. Isolate and split twice, or cut the line at the critical values.' },
     ],
-    reveal: {
-      label: 'Which shape is $2|x - 3| > |3x + 1|$?',
-      prompt: 'There is a $2$ in front of the first modulus. Does that stop you squaring?',
-      answer: 'No. Both sides are still non-negative, so squaring is legal: $4(x-3)^2 > (3x+1)^2$. Expanding gives $4x^2 - 24x + 36 > 9x^2 + 6x + 1$, so $5x^2 + 30x - 35 < 0$, then $x^2 + 6x - 7 < 0$ and $(x + 7)(x - 1) < 0$ — giving $-7 < x < 1$. A positive number in front of a modulus can also be taken inside it: $2|x-3| = |2x-6|$.',
+    activity: {
+      id: 'act_sort_shapes',
+      type: 'sort',
+      prompt: 'Sort these six questions by shape — the first move follows from the bin.',
+      bins: [
+        { id: 'mm', name: 'Modulus = modulus' },
+        { id: 'mn', name: 'Modulus = number' },
+        { id: 'me', name: 'Modulus = expression' },
+        { id: 'sum', name: 'Sum of moduli' },
+      ],
+      cards: [
+        { id: 'k1', name: '$|2x - 3| = |4 - x|$', bin: 'mm' },
+        { id: 'k2', name: '$|2x - 1| = 7$', bin: 'mn' },
+        { id: 'k3', name: '$|x| = 2x - 3$', bin: 'me' },
+        { id: 'k4', name: '$|x + 1| + |2x - 3| = 8$', bin: 'sum' },
+        { id: 'k5', name: '$|3x + 2| = 2|x|$', bin: 'mm' },
+        { id: 'k6', name: '$|x - 4| = 3x + 1$', bin: 'me' },
+      ],
+      explain: 'A number in front of a modulus ($2|x|$) does not change the shape — it goes inside the bars. What decides the shape is what sits on the OTHER side: a modulus, a bare number, an expression with $x$ in it, or a second modulus added on.',
     },
   },
 
+  // ── 27 · recap ──────────────────────────────────────────────────────────
   {
     layout: 'stack',
     accent: TEAL,
@@ -553,11 +628,11 @@ export const notes = [
       { text: 'State what $|x|$ means, and why it is never negative.' },
       { text: 'Use $|p| = |q| \\iff p^2 = q^2$ to remove two sets of bars at once.' },
       { text: 'Solve $|ax + b| = |cx + d|$ by splitting into two cases.' },
-      { text: 'Solve the same equation by squaring, and factorise the quadratic that results.' },
+      { text: 'Solve the same equation by squaring, and factorise the quadratic.' },
       { text: 'Say how many solutions to expect from the two **gradients**.' },
       { text: 'Substitute every answer back, and reject the ones that fail.' },
       { text: 'Solve a **sum** of two moduli by isolating one, or by regions.' },
-      { text: 'Spot a hidden quadratic in $|x|$, and reject a negative value of the modulus.' },
+      { text: 'Spot a hidden quadratic in $|x|$, and reject a negative modulus.' },
       { text: 'Use $|p| \\leq q \\iff -q \\leq p \\leq q$ and get **one interval**.' },
       { text: 'Use $|p| \\geq q \\iff p \\leq -q$ or $p \\geq q$ and get **two rays**.' },
       { text: 'Finish a squared inequality on a sketch of the parabola.' },
@@ -573,7 +648,7 @@ export const notes = [
         { val: 'D', text: 'No solution, because $5 - 2x$ can be negative' },
       ],
       correct: 'A',
-      expEn: 'It is a "less than or equal to" against a positive number, so it is the small-modulus rule and the answer is a single interval. The chain gives $-12 \\leq -2x \\leq 2$, and dividing by $-2$ **reverses** both signs to give $-1 \\leq x \\leq 6$. D confuses the inside of the bars, which may certainly be negative, with the modulus itself, which may not.',
+      expEn: 'A "less than or equal to" against a positive number is the small-modulus rule: one interval. The chain gives $-12 \\leq -2x \\leq 2$, and dividing by $-2$ **reverses** both signs: $-1 \\leq x \\leq 6$. D confuses the inside of the bars, which may be negative, with the modulus itself, which may not.',
     },
   },
 ];

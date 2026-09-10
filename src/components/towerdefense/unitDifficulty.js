@@ -90,6 +90,14 @@ export const TRACK_LEVELS = {
       mapName: 'The Absolute Line',
       blurb: 'Distance from the centre is all that counts here — and it is never negative. Hold the inside, or hold both ends.',
     },
+    // Cubic sketching stays at tier 2 on a new board: a cubic's path crosses
+    // the axis three times and the gauntlet is the map with three choke
+    // points, one at each crossing.
+    AM_4B: {
+      mapId: 'GAUNTLET', themeId: 'NIGHT', tier: 2,
+      mapName: 'Three Crossings',
+      blurb: 'The road crosses the line three times, and where it only touches, nothing gets through. Know your intercepts.',
+    },
   },
   // IGCSE Coordinated Science. First unit is a tier-0 introduction — the "lab"
   // ICE theme suits electrolysis. Additive: adding a unit here shifts nothing on

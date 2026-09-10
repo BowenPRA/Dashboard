@@ -1,8 +1,10 @@
 // src/data/ADD_MATH/AM_4A/workbook.js
-// The "Practice" task: Exercise 4.1 in full — every part of every question the
-// coursebook sets on solving modulus EQUATIONS. Seventeen items across the
-// three tiers, each with a worked solution (the book prints answers only; the
-// method is what we add).
+// The "Practice" task: the parts of Exercise 4.1 that the Case Solver does not
+// carry. Questions 1a–1d and 1h are worked in the solver, stage by stage; the
+// twelve here are the shapes it cannot stage — fractions inside the bars, a
+// simultaneous pair, the hidden quadratic, sums of moduli, the square-root
+// trick — each with a worked solution (the book prints answers only; the
+// method is what we add). Between the two tasks every part of 4.1 is set.
 //
 // English only — ADD_MATH declares `bilingual: false`.
 //
@@ -24,70 +26,6 @@ export const workbook = [
   {
     tier: 'Focus',
     questions: [
-      {
-        id: 'f1a',
-        type: 'fill_blank',
-        prompt: '**1a** Solve $|2x - 1| = |x|$.',
-        textParts: ['Smaller value: $x = $ ', '.   Larger value: $x = $ ', '.'],
-        blanks: {
-          1: { correct: '$\\dfrac{1}{3}$', width: 6 },
-          2: { correct: '1', width: 6 },
-        },
-        solution: [
-          'Two expressions with equal moduli are either **equal** or **opposite**, so write both cases.',
-          'Case 1: $2x - 1 = x$, so $x = 1$.',
-          'Case 2: $2x - 1 = -x$, so $3x = 1$ and $x = \\dfrac{1}{3}$.',
-          'CHECK: at $x = 1$, $|1| = |1|$. At $x = \\dfrac{1}{3}$, $\\left|-\\dfrac{1}{3}\\right| = \\left|\\dfrac{1}{3}\\right|$. Both work.',
-        ],
-        answer: '$x = \\dfrac{1}{3}$ or $x = 1$',
-      },
-      {
-        id: 'f1b',
-        prompt: '**1b** Solve $|x + 5| = |x - 4|$.',
-        solution: [
-          'Case 1: $x + 5 = x - 4$. The $x$ terms cancel and leave $5 = -4$, which is false — this case gives nothing.',
-          'Case 2: $x + 5 = -(x - 4) = -x + 4$.',
-          'Collect: $2x = -1$, so $x = -\\dfrac{1}{2}$.',
-          'CHECK: $\\left|-\\dfrac{1}{2} + 5\\right| = \\dfrac{9}{2}$ and $\\left|-\\dfrac{1}{2} - 4\\right| = \\dfrac{9}{2}$.',
-          'Only **one** answer, because both graphs have gradient $\\pm 1$ and so one pair of arms is parallel.',
-        ],
-        answer: '$x = -\\dfrac{1}{2}$',
-      },
-      {
-        id: 'f1c',
-        type: 'fill_blank',
-        prompt: '**1c** Solve $|2x - 3| = |4 - x|$.',
-        textParts: ['Smaller value: $x = $ ', '.   Larger value: $x = $ ', '.'],
-        blanks: {
-          1: { correct: '-1', width: 6 },
-          2: { correct: '$\\dfrac{7}{3}$', width: 6 },
-        },
-        solution: [
-          'Case 1: $2x - 3 = 4 - x$, so $3x = 7$ and $x = \\dfrac{7}{3}$.',
-          'Case 2: $2x - 3 = -(4 - x) = x - 4$, so $x = -1$.',
-          'CHECK $x = -1$: $|-5| = 5$ and $|5| = 5$.',
-          'CHECK $x = \\dfrac{7}{3}$: $\\left|\\dfrac{14}{3} - 3\\right| = \\dfrac{5}{3}$ and $\\left|4 - \\dfrac{7}{3}\\right| = \\dfrac{5}{3}$.',
-        ],
-        answer: '$x = -1$ or $x = \\dfrac{7}{3}$',
-      },
-      {
-        id: 'f1d',
-        type: 'fill_blank',
-        prompt: '**1d** Solve $|5x + 1| = |1 - 3x|$.',
-        textParts: ['Smaller value: $x = $ ', '.   Larger value: $x = $ ', '.'],
-        blanks: {
-          1: { correct: '-1', width: 6 },
-          2: { correct: '0', width: 6 },
-        },
-        solution: [
-          'Case 1: $5x + 1 = 1 - 3x$, so $8x = 0$ and $x = 0$.',
-          'Case 2: $5x + 1 = -(1 - 3x) = 3x - 1$, so $2x = -2$ and $x = -1$.',
-          'CHECK $x = 0$: $|1| = 1$ and $|1| = 1$.',
-          'CHECK $x = -1$: $|-4| = 4$ and $|1 + 3| = 4$.',
-          'A solution of $0$ is a real answer, not a "no solution" — do not throw it away.',
-        ],
-        answer: '$x = -1$ or $x = 0$',
-      },
       {
         id: 'f1e',
         type: 'fill_blank',
@@ -144,18 +82,6 @@ export const workbook = [
           'You could also square: $(3x-2)^2 = (2x+5)^2$ gives $5x^2 - 32x - 21 = 0$, which factorises as $(5x + 3)(x - 7) = 0$ — the same pair.',
         ],
         answer: '$x = -\\dfrac{3}{5}$ or $x = 7$',
-      },
-      {
-        id: 'p1h',
-        prompt: '**1h** Solve $|2x - 1| = 2|3 - x|$. (There is only one solution.)',
-        solution: [
-          'The $2$ outside the modulus can be taken **inside** it, because $2$ is positive: $2|3 - x| = |6 - 2x|$.',
-          'Now it is modulus = modulus. Case 1: $2x - 1 = 6 - 2x$, so $4x = 7$ and $x = \\dfrac{7}{4}$.',
-          'Case 2: $2x - 1 = -(6 - 2x) = 2x - 6$. The $2x$ terms cancel and leave $-1 = -6$, which is false.',
-          'So this equation has just one solution.',
-          'CHECK: $\\left|\\dfrac{7}{2} - 1\\right| = \\dfrac{5}{2}$, and $2\\left|3 - \\dfrac{7}{4}\\right| = 2 \\times \\dfrac{5}{4} = \\dfrac{5}{2}$.',
-        ],
-        answer: '$x = \\dfrac{7}{4}$',
       },
       {
         id: 'p1i',

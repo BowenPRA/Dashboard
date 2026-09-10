@@ -1,11 +1,13 @@
 // src/data/ADD_MATH/AM_4A/workbookB.js
-// The "Book Problems" task (WORKBOOK_B): Exercise 4.2 in full — all thirty parts
-// the coursebook sets on solving modulus INEQUALITIES, each worked through.
+// The "Book Problems" task (WORKBOOK_B): Exercise 4.2 on modulus INEQUALITIES,
+// minus the eight parts the Case Solver stages on a number line (3a–c, 3f, 4a,
+// 5b, 5e, 5f). The twenty-two here are worked through in full — the graph
+// questions, the ones with an expression on the right, the squaring ones with
+// a coefficient in front, the constant-k pair and the sum of moduli.
 //
 // This is the second Workbook slot, so it renders with the same screen as the
 // Practice task but is scored and resumed separately — one task per exercise,
-// which is how the book is set and how a student revises. Thirty questions is a
-// long sitting on purpose: it is the exercise, and the task checkpoints every
+// which is how the book is set and how a student revises. It checkpoints every
 // correct answer, so it can be picked up where it was left.
 //
 // MARKING NOTE. The equivalence engine handles a CHAIN like -1 < x < 2 natively,
@@ -76,45 +78,6 @@ export const workbookB = [
         answer: '$x \\leq 1$ or $x \\geq \\dfrac{5}{2}$',
       },
       {
-        id: 'bf3a',
-        type: 'fill_blank',
-        prompt: '**3a** Solve $|2x - 3| > 5$.',
-        textParts: ['$x < $ ', '   or   $x > $ ', '.'],
-        blanks: {
-          1: { correct: '-1', width: 6 },
-          2: { correct: '4', width: 6 },
-        },
-        solution: [
-          'A modulus **greater** than a number means the inside is far from zero in either direction, so use $|p| > q \\iff p < -q$ or $p > q$.',
-          'First branch: $2x - 3 < -5$, so $2x < -2$ and $x < -1$.',
-          'Second branch: $2x - 3 > 5$, so $2x > 8$ and $x > 4$.',
-          'Keep them as two separate statements. Writing $4 < x < -1$ would claim $x$ is bigger than $4$ and smaller than $-1$ at the same time.',
-        ],
-        answer: '$x < -1$ or $x > 4$',
-      },
-      {
-        id: 'bf3b',
-        prompt: '**3b** Solve $|4 - 5x| \\leq 9$.',
-        solution: [
-          'A modulus **at most** a number traps the inside between $-9$ and $9$, so write the chain $-9 \\leq 4 - 5x \\leq 9$.',
-          'Subtract $4$ from all three parts: $-13 \\leq -5x \\leq 5$.',
-          'Divide all three parts by $-5$. Dividing by a negative **reverses** both inequality signs: $\\dfrac{13}{5} \\geq x \\geq -1$.',
-          'Rewrite it reading upwards, which is how an answer is normally presented: $-1 \\leq x \\leq \\dfrac{13}{5}$.',
-        ],
-        answer: '$-1 \\leq x \\leq \\dfrac{13}{5}$',
-      },
-      {
-        id: 'bf3c',
-        prompt: '**3c** Solve $|8 - 3x| < 2$.',
-        solution: [
-          'Write the chain: $-2 < 8 - 3x < 2$.',
-          'Subtract $8$ throughout: $-10 < -3x < -6$.',
-          'Divide by $-3$, reversing both signs: $\\dfrac{10}{3} > x > 2$.',
-          'Turn it around: $2 < x < \\dfrac{10}{3}$.',
-        ],
-        answer: '$2 < x < \\dfrac{10}{3}$',
-      },
-      {
         id: 'bf3d',
         type: 'fill_blank',
         prompt: '**3d** Solve $|2x - 7| > 3$.',
@@ -147,35 +110,11 @@ export const workbookB = [
         ],
         answer: '$x < -3$ or $x > \\dfrac{7}{3}$',
       },
-      {
-        id: 'bf3f',
-        prompt: '**3f** Solve $|5 - 2x| \\leq 7$.',
-        solution: [
-          'Chain it: $-7 \\leq 5 - 2x \\leq 7$.',
-          'Subtract $5$ throughout: $-12 \\leq -2x \\leq 2$.',
-          'Divide by $-2$ and reverse both signs: $6 \\geq x \\geq -1$.',
-          'Written the usual way round, $-1 \\leq x \\leq 6$.',
-        ],
-        answer: '$-1 \\leq x \\leq 6$',
-      },
     ],
   },
   {
     tier: 'Practice',
     questions: [
-      {
-        id: 'bp4a',
-        prompt: '**4a** Solve $|2x - 3| \\leq x - 1$.',
-        inlineSvg: DIAGRAMS.RHS_TRAP,
-        solution: [
-          'The right-hand side is an expression, not a positive number, so **state the condition first**: a modulus is never negative, so we need $x - 1 \\geq 0$, that is $x \\geq 1$.',
-          'Now square both sides: $(2x - 3)^2 \\leq (x - 1)^2$, so $4x^2 - 12x + 9 \\leq x^2 - 2x + 1$.',
-          'Collect: $3x^2 - 10x + 8 \\leq 0$, which factorises as $(3x - 4)(x - 2) \\leq 0$.',
-          'An upward parabola is at or below the axis **between** its roots, so $\\dfrac{4}{3} \\leq x \\leq 2$.',
-          'Finally check against the condition: every value from $\\dfrac{4}{3}$ to $2$ is already at least $1$, so nothing is lost and the answer stands.',
-        ],
-        answer: '$\\dfrac{4}{3} \\leq x \\leq 2$',
-      },
       {
         id: 'bp4b',
         prompt: '**4b** Solve $|5 + x| > 7 - 2x$.',
@@ -219,17 +158,6 @@ export const workbookB = [
         answer: '$x \\leq -1$ or $x \\geq \\dfrac{1}{5}$',
       },
       {
-        id: 'bp5b',
-        prompt: '**5b** Solve $|x + 1| > |x|$.',
-        solution: [
-          'Square both sides: $(x + 1)^2 > x^2$.',
-          '$x^2 + 2x + 1 > x^2$. The $x^2$ terms cancel, which leaves a **linear** inequality.',
-          '$2x + 1 > 0$, so $x > -\\dfrac{1}{2}$.',
-          'That makes sense: the question asks which numbers are further from $-1$ than they are from $0$, and the answer is everything to the right of the midpoint $-\\dfrac{1}{2}$.',
-        ],
-        answer: '$x > -\\dfrac{1}{2}$',
-      },
-      {
         id: 'bp5c',
         prompt: '**5c** Solve $|x| > |3x - 2|$.',
         solution: [
@@ -257,28 +185,6 @@ export const workbookB = [
           'Both critical values are negative, so watch the order — $-1 < -\\dfrac{3}{5}$.',
         ],
         answer: '$x < -1$ or $x > -\\dfrac{3}{5}$',
-      },
-      {
-        id: 'bp5e',
-        prompt: '**5e** Solve $|x + 3| \\geq |2x|$.',
-        solution: [
-          'Square: $(x + 3)^2 \\geq 4x^2$, so $x^2 + 6x + 9 \\geq 4x^2$.',
-          'Collect with $x^2$ positive: $0 \\geq 3x^2 - 6x - 9$, and divide by $3$: $x^2 - 2x - 3 \\leq 0$.',
-          'Factorise: $(x - 3)(x + 1) \\leq 0$.',
-          'At or below the axis is between the roots: $-1 \\leq x \\leq 3$.',
-        ],
-        answer: '$-1 \\leq x \\leq 3$',
-      },
-      {
-        id: 'bp5f',
-        prompt: '**5f** Solve $|2x| < |x - 3|$.',
-        solution: [
-          'Square: $4x^2 < (x - 3)^2 = x^2 - 6x + 9$.',
-          'Collect: $3x^2 + 6x - 9 < 0$, and divide by $3$: $x^2 + 2x - 3 < 0$.',
-          'Factorise: $(x + 3)(x - 1) < 0$.',
-          'Below the axis is between the roots: $-3 < x < 1$.',
-        ],
-        answer: '$-3 < x < 1$',
       },
       {
         id: 'bp6a',

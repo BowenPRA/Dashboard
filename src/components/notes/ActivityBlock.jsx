@@ -4,6 +4,14 @@ import {
   Sparkles, XCircle, CornerDownRight, MousePointerClick,
 } from 'lucide-react';
 import { stripLabels } from '../../utils/labelIt';
+import { plotTargets } from '../../utils/activity';
+import { kindOf } from '../../utils/graphCurve';
+import { parseInequality, sameSet, interval, union, NEG_INF, POS_INF } from '../../utils/interval';
+import { arcsOf } from '../../utils/cubic';
+import NumberLineSVG from '../math/NumberLineSVG.jsx';
+import { regionsOf } from '../../utils/numberLine';
+import CubicFigure from '../math/CubicFigure.jsx';
+import { SafeInlineMath } from './SafeMath.jsx';
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -418,6 +426,213 @@ function PredictActivity({ activity, lang, result, onResult, parseText }) {
   );
 }
 
+// ── plot ─────────────────────────────────────────────────────────────────────
+// Click the key points of a curve on a small lattice — the in-deck version of
+// the Graph It task. The targets are derived from `curve`, never authored.
+
+const SKY = '#1cb0f6';
+const PLOT_GRID = { xMin: -7, xMax: 7, yMin: -6, yMax: 8 };
+const samePt = (p, q) => p[0] === q[0] && p[1] === q[1];
+const pt = (x, y) => `(${x < 0 ? `−${-x}` : x}, ${y < 0 ? `−${-y}` : y})`;
+
+function PlotActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const svgRef = useRef(null);
+  const [placed, setPlaced] = useState(result?.placed || []);
+  const checked = !!result?.done;
+  const grid = { ...PLOT_GRID, ...(activity.grid || {}) };
+  const targets = useMemo(() => plotTargets(activity), [activity]);
+  const step = activity.step || { kind: 'vertex' };
+  const cols = grid.xMax - grid.xMin;
+  const rows = grid.yMax - grid.yMin;
+  const U = 30;
+  const PAD = 22;
+  const W = cols * U + PAD * 2;
+  const H = rows * U + PAD * 2;
+  const X = (x) => PAD + (x - grid.xMin) * U;
+  const Y = (y) => PAD + (grid.yMax - y) * U;
+
+  const toGrid = (e) => {
+    const svg = svgRef.current;
+    if (!svg?.getScreenCTM) return null;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+    const gx = Math.round((p.x - PAD) / U) + grid.xMin;
+    const gy = grid.yMax - Math.round((p.y - PAD) / U);
+    if (gx < grid.xMin || gx > grid.xMax || gy < grid.yMin || gy > grid.yMax) return null;
+    return [gx, gy];
+  };
+  const tap = (e) => {
+    if (checked) return;
+    const p = toGrid(e);
+    if (!p) return;
+    setPlaced((ps) => (ps.some((q) => samePt(q, p)) ? ps.filter((q) => !samePt(q, p)) : [...ps, p]));
+  };
+  const check = (none = false) => {
+    const mine = none ? [] : placed;
+    const correct = mine.length === targets.length && targets.every((tg) => mine.some((p) => samePt(p, tg)));
+    onResult({ done: true, correct, placed: mine, none });
+  };
+
+  // the curve, drawn once the answer is in
+  const curvePath = () => {
+    const { a, h, k } = activity.curve;
+    const isAbs = kindOf(activity.curve) === 'modulus';
+    const xs = [];
+    for (let i = 0; i <= 300; i += 1) xs.push(grid.xMin + (i / 300) * cols);
+    if (isAbs) { xs.push(h); xs.sort((p, q) => p - q); }
+    let d = '';
+    let pen = false;
+    for (const x of xs) {
+      const y = isAbs ? a * Math.abs(x - h) + k : a * (x - h) * (x - h) + k;
+      if (y < grid.yMin || y > grid.yMax) { pen = false; continue; }
+      d += `${pen ? 'L' : 'M'}${X(x).toFixed(1)},${Y(y).toFixed(1)} `;
+      pen = true;
+    }
+    return d.trim();
+  };
+  const label = step.kind === 'vertex' ? (lang === 'vn' ? 'Bấm vào đỉnh' : 'Click the vertex')
+    : step.kind === 'zeros' ? (lang === 'vn' ? 'Bấm vào mọi giao điểm với trục x' : 'Click every crossing on the x-axis')
+      : (lang === 'vn' ? `Bấm vào mọi điểm đồ thị gặp y = ${step.at}` : `Click every point where the graph meets y = ${step.at}`);
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-3 mb-2">
+        <div className="text-lg text-slate-800 dark:text-slate-100"><SafeInlineMath math={activity.equation} /></div>
+        <div className="text-xs font-black uppercase tracking-widest text-[#1899d6] dark:text-[#5cc8ff] flex items-center gap-1.5"><Target className="w-4 h-4" strokeWidth={3} />{label}</div>
+      </div>
+      <div className="mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-white" style={{ width: `min(100%, ${((W / H) * 34).toFixed(1)}vh)` }}>
+        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} onClick={tap} className={`w-full h-auto select-none ${checked ? '' : 'cursor-crosshair'}`} style={{ touchAction: 'manipulation' }}>
+          <rect x="0" y="0" width={W} height={H} fill="#fff" />
+          {Array.from({ length: cols + 1 }, (_, i) => grid.xMin + i).map((x) => <line key={`v${x}`} x1={X(x)} y1={PAD} x2={X(x)} y2={H - PAD} stroke="#e2e8f0" strokeWidth="1" />)}
+          {Array.from({ length: rows + 1 }, (_, i) => grid.yMin + i).map((y) => <line key={`h${y}`} x1={PAD} y1={Y(y)} x2={W - PAD} y2={Y(y)} stroke="#e2e8f0" strokeWidth="1" />)}
+          {step.kind === 'meets' && (
+            <g>
+              <line x1={PAD} y1={Y(step.at)} x2={W - PAD} y2={Y(step.at)} stroke="#f59e0b" strokeWidth="2.4" strokeDasharray="8 5" />
+              <text x={W - PAD - 4} y={Y(step.at) - 7} textAnchor="end" fontSize="12" fontWeight="800" fontFamily="monospace" fill="#d97706">y = {step.at < 0 ? `−${-step.at}` : step.at}</text>
+            </g>
+          )}
+          <line x1={PAD} y1={Y(0)} x2={W - PAD} y2={Y(0)} stroke="#334155" strokeWidth="2" />
+          <line x1={X(0)} y1={PAD} x2={X(0)} y2={H - PAD} stroke="#334155" strokeWidth="2" />
+          {Array.from({ length: cols + 1 }, (_, i) => grid.xMin + i).filter((x) => x !== 0 && x % 2 === 0).map((x) => (
+            <text key={`tx${x}`} x={X(x)} y={Y(0) + 14} textAnchor="middle" fontSize="10" fontWeight="700" fontFamily="monospace" fill="#94a3b8">{x < 0 ? `−${-x}` : x}</text>
+          ))}
+          {Array.from({ length: rows + 1 }, (_, i) => grid.yMin + i).filter((y) => y !== 0 && y % 2 === 0).map((y) => (
+            <text key={`ty${y}`} x={X(0) - 6} y={Y(y) + 4} textAnchor="end" fontSize="10" fontWeight="700" fontFamily="monospace" fill="#94a3b8">{y < 0 ? `−${-y}` : y}</text>
+          ))}
+          {!checked && Array.from({ length: cols + 1 }, (_, i) => grid.xMin + i).map((x) =>
+            Array.from({ length: rows + 1 }, (_, j) => grid.yMin + j).map((y) => <circle key={`d${x}_${y}`} cx={X(x)} cy={Y(y)} r="1.8" fill="#cbd5e1" />))}
+          {checked && <path d={curvePath()} fill="none" stroke={SKY} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />}
+          {checked && targets.map(([x, y]) => (
+            <g key={`t${x}_${y}`}>
+              <circle cx={X(x)} cy={Y(y)} r="8" fill={GREEN} stroke="#fff" strokeWidth="2.5" />
+              <text x={X(x)} y={Y(y) - 12} textAnchor="middle" fontSize="11" fontWeight="800" fontFamily="monospace" fill="#3e7500">{pt(x, y)}</text>
+            </g>
+          ))}
+          {(result?.placed || placed).map(([x, y]) => {
+            const right = targets.some((tg) => samePt(tg, [x, y]));
+            if (checked && right) return null;
+            return (
+              <g key={`p${x}_${y}`}>
+                <circle cx={X(x)} cy={Y(y)} r="7" fill={checked ? RED : SKY} stroke="#fff" strokeWidth="2.5" />
+                {!checked && <text x={X(x)} y={Y(y) - 11} textAnchor="middle" fontSize="11" fontWeight="800" fontFamily="monospace" fill={SKY}>{pt(x, y)}</text>}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+      {!checked && (
+        <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
+          {step.kind !== 'vertex' && (
+            <button onClick={() => check(true)} className={`${btn} bg-slate-500 border-slate-700 text-white`}>{lang === 'vn' ? 'Không có điểm nào' : 'There are none'}</button>
+          )}
+          <button onClick={() => check(false)} disabled={!placed.length} className={primary}>{t.check}</button>
+        </div>
+      )}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
+// ── numberline ───────────────────────────────────────────────────────────────
+// Shade the solution set of an inequality. Marked against the set derived from
+// `solution` by utils/interval.js, read back the way the drawing is read.
+
+function NumberLineActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const min = activity.min ?? -8;
+  const max = activity.max ?? 8;
+  const target = useMemo(() => { try { return parseInequality(activity.solution); } catch { return []; } }, [activity.solution]);
+  const [points, setPoints] = useState(result?.points || []);
+  const [marks, setMarks] = useState(result?.marks || []);
+  const checked = !!result?.done;
+
+  const tapTick = (n) => {
+    if (checked) return;
+    setPoints((ps) => {
+      const at = ps.findIndex((p) => p.x === n);
+      if (at === -1) return ps.length >= 2 ? ps : [...ps, { x: n, closed: false }];
+      if (!ps[at].closed) return ps.map((p, i) => (i === at ? { ...p, closed: true } : p));
+      return ps.filter((_, i) => i !== at);
+    });
+  };
+  const tapRegion = (r) => {
+    if (checked) return;
+    setMarks((ms) => (r.shaded ? ms.filter((m) => !((r.lo === NEG_INF || m > r.lo) && (r.hi === POS_INF || m < r.hi))) : [...ms, r.rep]));
+  };
+  const drawn = () => {
+    const closedAt = (x) => points.find((p) => p.x === x)?.closed;
+    return regionsOf(points, marks, min, max).filter((r) => r.shaded)
+      .map((r) => interval(r.lo, r.hi, r.lo === NEG_INF ? true : !closedAt(r.lo), r.hi === POS_INF ? true : !closedAt(r.hi)))
+      .reduce((acc, iv) => union(acc, [iv]), []);
+  };
+  const check = () => onResult({ done: true, correct: sameSet(drawn(), target), points, marks });
+
+  return (
+    <div>
+      <div className="text-lg text-slate-800 dark:text-slate-100 mb-1"><SafeInlineMath math={activity.display} /></div>
+      <div className="rounded-2xl bg-white dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700 p-2">
+        <NumberLineSVG min={min} max={max} points={points} marks={marks} onTick={tapTick} onPoint={(p) => tapTick(p.x)} onRegion={tapRegion} readOnly={checked} accent="#0e7490" />
+      </div>
+      {!checked && (
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <span className="text-[11px] font-bold text-slate-400">{lang === 'vn' ? 'Chạm một số để đặt vòng tròn (chạm lần nữa: đặc, lần nữa: bỏ). Chạm phía trên trục để tô.' : 'Tap a number for an open circle, again to fill it, again to remove it. Tap above the line to shade.'}</span>
+          <button onClick={check} disabled={!marks.length} className={primary}>{t.check}</button>
+        </div>
+      )}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
+// ── reflect ──────────────────────────────────────────────────────────────────
+// Tap the pieces of a cubic that lie below the axis; they fold up into the
+// modulus graph. Derived from the factors by utils/cubic.js.
+
+function ReflectActivity({ activity, lang, result, onResult, parseText }) {
+  const item = useMemo(() => ({ id: activity.id, factors: activity.factors, k: activity.k, display: activity.display }), [activity]);
+  const below = useMemo(() => arcsOf(item).filter((a) => a.below).map((a) => a.i), [item]);
+  const [sel, setSel] = useState(result?.sel || []);
+  const checked = !!result?.done;
+  const check = () => onResult({ done: true, correct: sel.length === below.length && below.every((i) => sel.includes(i)), sel });
+  return (
+    <div>
+      <div className="mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-white" style={{ maxWidth: '38rem' }}>
+        <CubicFigure item={item} height={240} selected={checked ? below : sel} reflected={checked} arcsTappable={!checked}
+          onArc={(arc) => setSel((s) => (s.includes(arc.i) ? s.filter((i) => i !== arc.i) : [...s, arc.i]))} />
+      </div>
+      {!checked && (
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <span className="text-[11px] font-bold text-slate-400">{sel.length} {lang === 'vn' ? 'đoạn đã chọn' : 'piece(s) selected'}</span>
+          <button onClick={check} disabled={!sel.length} className={primary}>{lang === 'vn' ? 'Phản chiếu' : 'Reflect'}</button>
+        </div>
+      )}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
 // ── dispatcher ───────────────────────────────────────────────────────────────
 
 export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false }) {
@@ -430,6 +645,9 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'estimate': body = <EstimateActivity {...common} />; break;
     case 'hotspot': body = <HotspotActivity {...common} />; break;
     case 'predict': body = <PredictActivity {...common} />; break;
+    case 'plot': body = <PlotActivity {...common} />; break;
+    case 'numberline': body = <NumberLineActivity {...common} />; break;
+    case 'reflect': body = <ReflectActivity {...common} />; break;
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }
   return (

@@ -210,6 +210,19 @@ function compoundEqual(ra, rb) {
 
 // ------------------------------------------------------------------ public API
 
+/**
+ * Compile a typed expression into `{ fn, vars }` — `fn(env)` evaluates it —
+ * or throw when it will not parse. For tasks that need to EVALUATE what a
+ * student typed rather than compare it to a key: the Sketch It factorise
+ * stage checks each typed factor is linear and that the three multiply back
+ * to the polynomial, which no single answer string could express.
+ */
+export function compileExpr(src) {
+  const c = clean(src);
+  if (!c || isWordy(c)) throw new Error('not an expression');
+  return { fn: compile(c), vars: varsOf(c) };
+}
+
 /** Whether `input` equals `answer` (or any `accept` alternate) as maths. */
 export function answersEquivalent(input, answer, accept = []) {
   return [answer, ...(accept || [])].some((cand) => equalOne(input, cand));

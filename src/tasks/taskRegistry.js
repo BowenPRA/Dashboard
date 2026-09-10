@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler, Tag, Beaker
+  Ruler, Tag, Beaker, Split, Spline
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 
@@ -575,6 +575,49 @@ export const TASKS = [
     hasContent: (u) => !!(u.labBench && Array.isArray(u.labBench.modes) && u.labBench.modes.length),
     buildPool: (u) => u.labBench || null,
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  {
+    id: 'MOD_SOLVE',
+    nativeMax: 10,
+    // p1–p29 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
+    // p30 is next.
+    dbKey: 'p30',
+    // "Name the shape, write the cases, solve, then CHECK." A modulus equation
+    // or inequality from the coursebook, worked in the four moves the book
+    // works it in, with every move derived from the coefficients by
+    // utils/modulus.js — the two cases, their solutions, the substitution
+    // check that throws out an extraneous root, and for an inequality the
+    // critical values and the shaded number line. Nothing is authored but
+    // the question. Item shape is in src/tasks/ModulusSolver.jsx.
+    label: 'Case Solver',
+    icon: Split,
+    color: { bg: 'bg-[#0e7490]', border: 'border-[#155e75]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ModulusSolver.jsx')),
+    hasContent: (u) => !!u.modulusSolve?.items?.length,
+    buildPool: (u) => u.modulusSolve,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'CUBIC_SKETCH',
+    nativeMax: 10,
+    dbKey: 'p31',
+    // "Sketch it": a cubic in factorised form, sketched the way the book
+    // sketches it — the x-intercepts from the factors, the y-intercept from
+    // x = 0, the end behaviour from the sign of k, cross-or-touch at each root
+    // — and then, for the modulus, the pieces below the axis tapped and
+    // folded up. utils/cubic.js derives every one of those from the factors.
+    // Item shape is in src/tasks/CubicSketch.jsx.
+    label: 'Sketch It',
+    icon: Spline,
+    color: { bg: 'bg-[#2563eb]', border: 'border-[#1e40af]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./CubicSketch.jsx')),
+    hasContent: (u) => !!u.cubicSketch?.items?.length,
+    buildPool: (u) => u.cubicSketch,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
 ];
 

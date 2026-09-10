@@ -15,6 +15,8 @@ import { TASKS, getTask, resolveUnitTasks, normalizeScore } from '../src/tasks/t
 import { parseEquation, applyMove, suggestMove, isSolved, sameSolution, solutionOf, frText, relGlyph, statementOf } from '../src/utils/linearEquation.js';
 import { rootsOf, vertexOf, yAt, levelOf, kindOf, CURVE_KINDS } from '../src/utils/graphCurve.js';
 import { checkDivision } from '../src/utils/polynomial.js';
+import { checkModulusItems } from '../src/utils/modulus.js';
+import { checkCubicItems } from '../src/utils/cubic.js';
 import { componentsOf, resultantOf, gridFor, closeEnough, ANGLE_TOL } from '../src/utils/vectors.js';
 import { checkIntervalItems } from '../src/utils/interval.js';
 import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
@@ -657,6 +659,24 @@ for (const trackId of TRACK_IDS) {
         seenIds.add(it.id);
         for (const p of checkDivision(it.dividend, it.divisor)) err(`${iat}: ${p}`);
       }
+    }
+
+    // -- Case Solver and Sketch It: both derive every answer from the question
+    //    (utils/modulus.js, utils/cubic.js), so what is checked is that the
+    //    question is answerable — a critical value off the number line, a
+    //    right-hand side that is negative by accident, a printed polynomial
+    //    that is not the product of its factors.
+    if (unit.modulusSolve) {
+      const at = `${label}: modulusSolve`;
+      if (!unit.modulusSolve.title) err(`${at} is missing a title`);
+      if (!(unit.modulusSolve.items || []).length) err(`${at} has no items`);
+      for (const p of checkModulusItems(unit.modulusSolve.items || [])) err(`${at} ${p}`);
+    }
+    if (unit.cubicSketch) {
+      const at = `${label}: cubicSketch`;
+      if (!unit.cubicSketch.title) err(`${at} is missing a title`);
+      if (!(unit.cubicSketch.items || []).length) err(`${at} has no items`);
+      for (const p of checkCubicItems(unit.cubicSketch.items || [])) err(`${at} ${p}`);
     }
 
     // -- diagram references resolve

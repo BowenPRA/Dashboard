@@ -173,10 +173,51 @@ function modulus() {
   };
 }
 
+// AM_4B — Sketching cubic graphs. Three reads off a factorised cubic that a
+// student who has done the unit does in their head: a named x-intercept (the
+// sign trap — (x + 2) crosses at −2), the y-intercept (multiply the constants,
+// and the number in front), and which way the right-hand tail goes (the sign
+// of the product of the x coefficients). The last one is Yes/No so that a
+// fifteen-second popup never needs a full sketch.
+function cubicSketch() {
+  const lin = (p, q) => {
+    const xPart = p === 1 ? 'x' : p === -1 ? `${MINUS}x` : `${p < 0 ? MINUS : ''}${Math.abs(p)}x`;
+    if (q === 0) return xPart;
+    return `${xPart} ${q < 0 ? MINUS : '+'} ${Math.abs(q)}`;
+  };
+  // Three distinct integer roots, one factor possibly written with 2x or a
+  // negative x, exactly as Exercise 4.3 writes them.
+  const roots = [];
+  while (roots.length < 3) { const r = ri(-5, 5); if (!roots.includes(r)) roots.push(r); }
+  const factors = roots.map((r, i) => {
+    const p = i === 0 && Math.random() < 0.4 ? -1 : 1;
+    return [p, -p * r];
+  });
+  const k = Math.random() < 0.3 ? -1 : 1;
+  const text = `${k < 0 ? MINUS : ''}${factors.map(([p, q]) => `(${lin(p, q)})`).join('')}`;
+  const r = Math.random();
+  if (r < 0.4) {
+    const want = Math.random() < 0.5 ? 'Largest' : 'Smallest';
+    const sorted = [...roots].sort((a, b) => a - b);
+    return { prompt: `y = ${text}.  ${want} x-intercept = ?`, answer: want === 'Largest' ? sorted[2] : sorted[0] };
+  }
+  if (r < 0.75) {
+    const y = k * factors.reduce((acc, [, q]) => acc * q, 1);
+    return { prompt: `y = ${text}.  y-intercept = ?`, answer: y };
+  }
+  const leadCoef = k * factors.reduce((acc, [p]) => acc * p, 1);
+  return {
+    prompt: `y = ${text}.  As x → +∞, does y → +∞?`,
+    answer: leadCoef > 0 ? 'Yes' : 'No',
+    choices: ['Yes', 'No'],
+  };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
   AM_3A: factorTheorem,
   AM_4A: modulus,
+  AM_4B: cubicSketch,
   U01_1: intAddSub,
   U01_2: intMulDiv,
   U01_3: lcm,

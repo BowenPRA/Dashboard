@@ -4,20 +4,24 @@
 // sections 4.1 and 4.2. English only: this track is not bilingual, so there are
 // no `vn*` twins.
 //
-// Gate structure, following AM_3A:
-//   Gate 0 (Learn)  — Notes + Vocab                                  20 XP
-//   Gate 1 (Apply)  — Graph It + Practice (Ex 4.1) + Book Problems (4.2)  90 XP
+// Rebuilt 2026-09-10 around tasks that use the screen rather than a page:
+//   Gate 0 (Learn)  — Notes (checks AND eight in-deck activities) + Vocab   20 XP
+//   Gate 1 (Apply)  — Case Solver + Graph It + Practice + Book Problems     90 XP
 //   Gate 2 (Quiz)   — the Quiz and the Games arcade, unlocked together      20 XP
 //
 // Tasks total 130 XP against a 100 XP unit (unitXPOf caps the payout), so a
-// student can drop a whole task and still finish. Most of it sits on the two
-// Workbook slots because most of the work is the forty-seven exercise parts;
-// GRAPH is the production task, and it is the section's own method rather than
-// a drill bolted on — see graphPlot.js.
+// student can drop a whole task and still finish. The production task is the
+// CASE SOLVER: the book's own method — name the shape, split into cases,
+// solve, substitute back (or shade the line) — with every move derived from
+// the coefficients, so the check that kills an extraneous root happens in
+// front of the student with both values on screen. The exercise parts it
+// carries are removed from the two Workbook slots, which keep the shapes the
+// solver does not do (sums of moduli, the hidden quadratic, a constant k).
 // Module properties are written out in full (`notes: notes,`) so the audio
 // generator never over-reads the realWords array.
 import { notes } from './notes.js';
 import { graphPlot } from './graphPlot.js';
+import { modulusSolve } from './modulusSolve.js';
 import { workbook } from './workbook.js';
 import { workbookB } from './workbookB.js';
 import { assessment } from './assessment.js';
@@ -27,7 +31,7 @@ export const AM_4A_DATA = {
   meta: {
     id: 'AM_4A',
     title: 'Modulus Equations & Inequalities',
-    desc: 'Solve equations and inequalities containing modulus signs, by splitting into cases, by squaring both sides, and by reading the answer off two graphs.',
+    desc: 'Solve equations and inequalities containing modulus signs, by splitting into cases, by squaring both sides, and by reading the answer off a graph.',
     track: 'ADD_MATH',
     icon: 'Sigma',
   },
@@ -43,21 +47,18 @@ export const AM_4A_DATA = {
       ],
     },
     {
-      // Exercise 4.1 is seventeen parts and Exercise 4.2 is thirty, so Book
-      // Problems carries the larger share. Both tasks checkpoint every correct
-      // answer, so neither has to be finished in one sitting.
-      //
-      // GRAPH sits here rather than in Gate 2 because it teaches the exercises
-      // rather than testing them: placing the crossings of a V and a horizontal
-      // line IS solving a modulus equation graphically, and a student should be
-      // able to do it BEFORE working through forty-seven written parts.
+      // Case Solver first: it IS the method, staged. Graph It is the picture
+      // behind it. The two Workbook slots carry the rest of the exercises with
+      // worked solutions, and every task here checkpoints, so none has to be
+      // finished in one sitting.
       id: 'practice',
       title: 'Gate 1: Apply',
       threshold: 15,
       tasks: [
-        { id: 'GRAPH', dbKey: 'p15', maxXP: 25 },
-        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 30 },
-        { id: 'WORKBOOK_B', dbKey: 'p22', maxXP: 35 },
+        { id: 'MOD_SOLVE', dbKey: 'p30', maxXP: 25 },
+        { id: 'GRAPH', dbKey: 'p15', maxXP: 20 },
+        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
+        { id: 'WORKBOOK_B', dbKey: 'p22', maxXP: 25 },
       ],
     },
     {
@@ -153,6 +154,7 @@ export const AM_4A_DATA = {
 
   notes: notes,
   graphPlot: graphPlot,
+  modulusSolve: modulusSolve,
   workbook: workbook,
   workbookB: workbookB,
   assessment: assessment,
