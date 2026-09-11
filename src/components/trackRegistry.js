@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Magnet, Gamepad2, MonitorSmartphone, Variable, Microscope } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -114,11 +114,22 @@ export const TRACK_REGISTRY = [
     },
   },
   {
+    // The student sitting Acellus Physics online — the physics twin of the
+    // ACELLUS algebra track, and built on the same rule: each unit rebuilds
+    // the WORKING behind the exact item shapes Acellus shows her. Here the
+    // working is always the same three moves the answer box hides — rearrange
+    // the formula for the unknown, put every number into SI, substitute — so
+    // the track's own task (Isolate It) is exactly that. The id stays
+    // `PHYSICS`: it is the progress bucket, the data folder and the enrolment
+    // key, and the original vectors unit is archived under content-archive/.
     id: 'PHYSICS',
-    title: 'Physics',
-    desc: 'Forces, Vectors & Motion',
-    icon: Magnet,
+    title: 'Acellus Physics',
+    desc: 'Physics — the working behind the answer box',
+    icon: Orbit,
     group: 'Physics',
+    // Bilingual, like the algebra track: the physics is rarely what stops her,
+    // "the tension in the rope at the top of the swing" is.
+    bilingual: true,
     theme: {
       bg: 'bg-indigo-500', border: 'border-indigo-700', hover: 'hover:bg-indigo-400',
       text: 'text-indigo-600 dark:text-indigo-400',

@@ -39,3 +39,13 @@ To bring one back, it needs:
 Audio for the `GED_1A`–`GED_2B` history units already exists at
 `public/audio/_staging_history/` (254 files). It was generated before those lessons
 were shelved, and moves into `public/audio/GED_HISTORY/<UNIT_ID>/` when they migrate.
+
+## `PHYSICS/FORCE_1A/` and `audio/PHYSICS/FORCE_1A/`
+
+The original Physics unit, **Adding Force Vectors** (deck, Vectors task, workbook, quiz),
+with its generated narration. Archived 2026-09-11 when the `PHYSICS` track was rebuilt as
+**Acellus Physics** — one unit per Acellus module, built from the student's own screenshots
+(see `docs/acellus-physics-course.md`). Nothing here is wrong; it was simply not the
+course she is taking. The `VECTOR_ADD` task (`p16`) stays registered, so the unit comes
+back by moving both folders to `src/data/PHYSICS/FORCE_1A/` and
+`public/audio/PHYSICS/FORCE_1A/` — `preview-vectors.html` still mounts it from here.

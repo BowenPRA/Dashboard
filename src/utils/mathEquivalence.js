@@ -34,6 +34,11 @@ function clean(raw) {
     .replace(/\\approx\b/g, '')
     .replace(/[≈~]/g, '')
     .replace(/\$/g, '')
+    // Scientific notation, three ways a physics student types it: 6.24e18,
+    // 6.24×10^{18} (KaTeX braces) and 6.24x10^18. All become 6.24*10^(18).
+    .replace(/(\d)\s*[eE]\s*([+-]?\d+)\b/g, '$1*10^($2)')
+    .replace(/\^\{([^{}]*)\}/g, '^($1)')
+    .replace(/(\d)\s*[xX×]\s*10\s*\^/g, '$1*10^')
     .replace(/[−–—]/g, '-')     // unicode minus / dashes → hyphen
     .replace(/[·×]/g, '*')
     .replace(/[≥]/g, '>=').replace(/[≤]/g, '<=')

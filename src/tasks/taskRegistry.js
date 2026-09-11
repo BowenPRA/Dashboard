@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler, Tag, Beaker, Split, Spline
+  Ruler, Tag, Beaker, Split, Spline, Variable
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -627,6 +627,33 @@ export const TASKS = [
     hasContent: (u) => !!u.cubicSketch?.items?.length,
     buildPool: (u) => u.cubicSketch,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'REARRANGE',
+    nativeMax: 10,
+    // p1–p31 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
+    // p32 is next.
+    dbKey: 'p32',
+    // "Make it the subject, then use it." A physics formula, a target letter
+    // and the given quantities: the student changes the subject one both-sides
+    // move at a time (× ÷ + − square √) with the working building up as a
+    // notebook page, converts every given into SI, and only then substitutes
+    // and calculates. Every chip, hint, substituted line, answer and named
+    // slip is DERIVED from the formula by utils/formula.js — the same
+    // derive-don't-store rule Balance, Graph It and Long Division follow — and
+    // `checkRearrangeItems` refuses an item the taught strategy cannot finish.
+    // Item shape is documented in src/tasks/Rearrange.jsx and
+    // docs/acellus-physics-course.md.
+    label: 'Isolate It',
+    icon: Variable,
+    color: { bg: 'bg-[#4f46e5]', border: 'border-[#3730a3]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./Rearrange.jsx')),
+    hasContent: (u) => !!u.rearrange?.items?.length,
+    buildPool: (u) => u.rearrange,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
 ];
 

@@ -73,6 +73,16 @@ const DEFAULT_ARENA = {
  * one is, so consecutive units never feel like a re-run.
  */
 export const TRACK_LEVELS = {
+  // Acellus Physics. One level per Acellus module; the first opens gently. The
+  // spiral is the point for circular motion — a road that goes round and
+  // round and is falling toward the middle the whole time.
+  PHYSICS: {
+    PHY_CIRC: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Orbit',
+      blurb: 'Everything here goes round and round, and it is falling toward the centre the whole time. Hold the inside of the curve.',
+    },
+  },
   // IGCSE Additional Mathematics. AM_3A is the first unit, so it opens on the
   // gentlest board with the full armoury; later chapters climb from here.
   ADD_MATH: {

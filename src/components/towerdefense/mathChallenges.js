@@ -213,8 +213,36 @@ function cubicSketch() {
   };
 }
 
+// PHYSICS / PHY_CIRC — Circular Motion & Gravity. Three shapes, all answered
+// with a whole number: a unit conversion (the mark this unit loses most), a
+// small centripetal force from F = mv²/r, and the minimum speed over the top
+// v = √(gr) with g taken as 10 so the root is exact.
+function circularMotion() {
+  const r = Math.random();
+  if (r < 0.4) {
+    const kind = ri(0, 2);
+    if (kind === 0) { const k = ri(2, 9); return { prompt: `${k} km = ? m`, answer: k * 1000 }; }
+    if (kind === 1) { const h = ri(2, 5); return { prompt: `${h} hours = ? s`, answer: h * 3600 }; }
+    const k = ri(2, 9);
+    return { prompt: `${k} km/s = ? m/s`, answer: k * 1000 };
+  }
+  if (r < 0.75) {
+    // Pick m and v, then a radius that divides m v² so F is whole.
+    const m = ri(1, 5);
+    const v = ri(2, 6);
+    const mv2 = m * v * v;
+    const divisors = [];
+    for (let d = 1; d <= 12; d++) if (mv2 % d === 0) divisors.push(d);
+    const rad = divisors[ri(0, divisors.length - 1)];
+    return { prompt: `m = ${m} kg, v = ${v} m/s, r = ${rad} m.  F = mv²/r = ? N`, answer: mv2 / rad };
+  }
+  const k = ri(1, 5);
+  return { prompt: `g = 10 m/s², r = ${10 * k * k} m.  Slowest speed over the top, v = √(gr) = ? m/s`, answer: 10 * k };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
+  PHY_CIRC: circularMotion,
   AM_3A: factorTheorem,
   AM_4A: modulus,
   AM_4B: cubicSketch,

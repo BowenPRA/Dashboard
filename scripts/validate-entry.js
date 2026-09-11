@@ -24,6 +24,7 @@ import { checkAll as checkSim } from '../src/utils/appSim.js';
 import { checkAll as checkLabelIt } from '../src/utils/labelIt.js';
 import { checkConfig as checkLabBench } from '../src/utils/labBench.js';
 import { checkActivity } from '../src/utils/activity.js';
+import { checkRearrangeItems } from '../src/utils/formula.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -677,6 +678,18 @@ for (const trackId of TRACK_IDS) {
       if (!unit.cubicSketch.title) err(`${at} is missing a title`);
       if (!(unit.cubicSketch.items || []).length) err(`${at} has no items`);
       for (const p of checkCubicItems(unit.cubicSketch.items || [])) err(`${at} ${p}`);
+    }
+
+    // -- Isolate It: the formula, the target and the givens are authored; the
+    //    moves, the hint, the substituted line and the answer are derived by
+    //    utils/formula.js. So what is checked is that the item is FINISHABLE —
+    //    the taught strategy isolates the target, every symbol has a value in
+    //    a known unit, the asked-for unit measures the target — and that the
+    //    derived rearrangement is actually equivalent to the formula it came
+    //    from, proved numerically. A wrong rearrangement would otherwise mark
+    //    the student's correct answer wrong, and nothing on screen would say so.
+    if (unit.rearrange) {
+      for (const p of checkRearrangeItems(unit.rearrange)) err(`${label}: rearrange ${p}`);
     }
 
     // -- diagram references resolve

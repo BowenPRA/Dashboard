@@ -1,9 +1,11 @@
-// Dev-only harness for the PHYSICS track: the FORCE_1A deck, the Vectors task,
+// Dev-only harness for the ARCHIVED FORCE_1A unit: its deck, the Vectors task,
 // the workbook, and the VectorLab widget on its own.
 //
-// The real screens sit behind Supabase auth, so this mounts them straight from
-// unit data — the same pattern as preview-quad.jsx. Entry point:
-// preview-vectors.html. Not part of the production build.
+// FORCE_1A left the live PHYSICS track on 2026-09-11 (the track became Acellus
+// Physics — see docs/acellus-physics-course.md) and now lives under
+// content-archive/, outside the loader's glob. This harness imports it from
+// there directly so the Vectors task still has somewhere to be exercised.
+// Entry point: preview-vectors.html. Not part of the production build.
 import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
@@ -12,7 +14,7 @@ import VectorAdd from './tasks/VectorAdd';
 import Workbook from './tasks/Workbook';
 import Assessment from './tasks/Assessment';
 import VectorLab from './components/math/VectorLab';
-import { getTrack } from './data/index';
+import { FORCE_1A_DATA } from '../content-archive/PHYSICS/FORCE_1A/data.js';
 import { getTask } from './tasks/taskRegistry';
 
 const CASES = [
@@ -30,7 +32,7 @@ function Harness() {
 
   if (open) {
     const [unitId, taskId] = open;
-    const unit = getTrack('PHYSICS').data[unitId];
+    const unit = FORCE_1A_DATA;
     const def = getTask(taskId);
     const pool = def.buildPool(unit, { track: 'PHYSICS', unitId });
     const Screen = SCREENS[taskId];

@@ -82,6 +82,15 @@ status* section so it can be closed deliberately.
   long-division item, which note fields accept block maths, and the per-unit checklist.
   The **`AM_3A` polynomials unit is the reference exemplar.**
 
+### Acellus Physics (new)
+
+- [acellus-physics-course.md](acellus-physics-course.md) — **start here** for the
+  `PHYSICS` track (Acellus Physics, one unit per Acellus module, built from the student's
+  own screenshots): the three moves the answer box hides, the fixed formula page, the
+  **Isolate It** engine (`REARRANGE`) and its derive-everything item schema, the deck
+  rules for a formula-heavy topic, and the per-unit checklist. The **`PHY_CIRC` circular
+  motion & gravity unit is the reference exemplar.**
+
 ### Cambridge Upper Primary Technology (proposal)
 
 - [digital-skills-course.md](digital-skills-course.md) — **start here** for the

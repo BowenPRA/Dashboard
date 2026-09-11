@@ -41,8 +41,11 @@ export default function StatementLayout({ slide: s, ctx }) {
             )}
             {/* A KaTeX run never wraps, so on a phone a statement like
                 y = (x−1)(x−2)(x−3) ran off the card; one size down, and the
-                box scrolls sideways rather than clipping in the last resort. */}
-            <p className={`font-black text-slate-900 dark:text-slate-50 leading-tight tracking-tight overflow-x-auto ${isDisplayMode ? 'text-[clamp(1.75rem,4vw,4rem)]' : 'text-2xl sm:text-3xl lg:text-4xl'}`}>
+                box scrolls sideways rather than clipping in the last resort.
+                The KaTeX runs are inline-block so a tall fraction (F = mv²/r)
+                grows the line box instead of overflowing it — otherwise the
+                sideways scroll container sprouts a vertical scrollbar too. */}
+            <p className={`font-black text-slate-900 dark:text-slate-50 leading-tight tracking-tight overflow-x-auto overflow-y-hidden pb-3 [&_.katex]:inline-block [&_.katex]:align-middle ${isDisplayMode ? 'text-[clamp(1.75rem,4vw,4rem)]' : 'text-2xl sm:text-3xl lg:text-4xl'}`}>
               {parseInlineText(text)}
             </p>
             {sub && (

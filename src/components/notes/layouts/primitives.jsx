@@ -29,6 +29,9 @@ import {
   // stands for a range rather than a value, the brackets that write it down,
   // the endpoint circle, and the flip on a negative.
   Variable, Brackets, CircleDot, FlipHorizontal2, MoveHorizontal,
+  // Circular motion and gravity (PHYSICS PHY_CIRC): the orbit, the rope, the
+  // planet, and the units the formula sheet is measured in.
+  Orbit, Cable, Earth, Rocket, Weight,
   // Used by the Y7 Maths/Science decks ported from the classroom app. Keep
   // this list a superset of the classroom's, or its icons render as Info.
   Coffee, Minus, Square, Hash, ArrowDownUp, Wind, LayoutGrid, RotateCcw, Box,
@@ -71,6 +74,7 @@ const ICONS = {
   GitCompare, Split, Superscript, LineChart, ShieldAlert, Milestone, Minimize2,
   Maximize2, Activity, Route, Star,
   Variable, Brackets, CircleDot, FlipHorizontal2, MoveHorizontal,
+  Orbit, Cable, Earth, Rocket, Weight,
   Coffee, Minus, Square, Hash, ArrowDownUp, Wind, LayoutGrid, RotateCcw, Box,
   Bug, Timer, Hammer, Spline, Circle, MapPin, Droplets, Waves, CloudFog, Gauge,
   Clapperboard, Gamepad2, Presentation, Hand,
