@@ -86,8 +86,9 @@ activity: {
 The targets are derived from `curve` by `plotTargets` (in `utils/activity.js`, the same
 `graphCurve` functions Graph It uses). Every target must be a whole-number point inside
 the grid, or the validator refuses it. A `zeros` / `meets` step with **no** targets is
-answered with the "There are none" button. Keep the grid small — it renders in the
-slide's footer at about a third of the screen height.
+answered with the "There are none" button. Keep the grid small — on a laptop it renders
+in a column beside the slide (about 40% of the card's width), and on a phone or tablet
+in a footer under it that has at most half the card's height.
 
 ### `numberline` — shade the answer
 
