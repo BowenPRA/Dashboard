@@ -222,16 +222,19 @@ export function Media({ slide, source, ctx, drawThis = (source || slide).drawThi
 // ── Header bar (accent strip + icon + title) ─────────────────────────────────
 export function HeaderBar({ title, icon = 'BookOpen', accent = '#1cb0f6', eyebrow, isDisplayMode = false, action = null }) {
   return (
-    <div className={`text-white flex items-center relative overflow-hidden flex-shrink-0 border-b-4 border-black/10 ${isDisplayMode ? 'p-2 sm:p-3 lg:p-4' : 'p-4 lg:p-6'}`}
+    // Sized as a strip, not a banner: at lg the old p-6 + text-4xl header took
+    // 100px of a card that has ~540px on a laptop, before the slide began.
+    // Display mode (a TV across the room) keeps its own clamp() sizes.
+    <div className={`text-white flex items-center relative overflow-hidden flex-shrink-0 border-b-4 border-black/10 ${isDisplayMode ? 'p-2 sm:p-3 lg:p-4' : 'px-4 py-3 lg:px-5 lg:py-3.5'}`}
       style={{ backgroundColor: accent }}>
-      <div className={`bg-white/20 rounded-xl mr-3 sm:mr-4 shadow-inner border border-white/30 z-10 ${isDisplayMode ? 'p-2' : 'p-2.5 lg:p-3'}`}>
-        <Ic name={icon} className={`drop-shadow-sm ${isDisplayMode ? 'w-6 h-6' : 'w-5 h-5 lg:w-8 lg:h-8'}`} strokeWidth={2.5} />
+      <div className={`bg-white/20 rounded-xl mr-3 sm:mr-4 shadow-inner border border-white/30 z-10 ${isDisplayMode ? 'p-2' : 'p-2 lg:p-2.5'}`}>
+        <Ic name={icon} className={`drop-shadow-sm ${isDisplayMode ? 'w-6 h-6' : 'w-5 h-5 lg:w-6 lg:h-6'}`} strokeWidth={2.5} />
       </div>
       <div className="z-10 min-w-0 flex-1">
         {eyebrow && (
-          <div className={`font-black uppercase tracking-[0.2em] opacity-80 ${isDisplayMode ? 'text-[clamp(0.6rem,0.9vw,0.95rem)]' : 'text-[10px] sm:text-xs'}`}>{eyebrow}</div>
+          <div className={`font-black uppercase tracking-[0.2em] opacity-80 ${isDisplayMode ? 'text-[clamp(0.6rem,0.9vw,0.95rem)]' : 'text-[10px] sm:text-[11px]'}`}>{eyebrow}</div>
         )}
-        <h2 className={`font-black tracking-tight drop-shadow-md truncate ${isDisplayMode ? 'text-[clamp(1.25rem,2vw,2rem)]' : 'text-xl sm:text-2xl lg:text-4xl'}`}>{title}</h2>
+        <h2 className={`font-black tracking-tight drop-shadow-md truncate ${isDisplayMode ? 'text-[clamp(1.25rem,2vw,2rem)]' : 'text-lg sm:text-xl lg:text-2xl'}`}>{title}</h2>
       </div>
       {action && <div className="z-10 ml-3 flex-shrink-0">{action}</div>}
     </div>

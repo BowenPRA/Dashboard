@@ -385,7 +385,7 @@ function HotspotActivity({ activity, lang, result, onResult, parseText }) {
 
 // ── predict ──────────────────────────────────────────────────────────────────
 
-function PredictActivity({ activity, lang, result, onResult, parseText }) {
+function PredictActivity({ activity, lang, result, onResult, parseText, side }) {
   const t = T[lang] || T.en;
   const [chosen, setChosen] = useState(result?.chosen || null);
   const checked = !!result?.done;
@@ -397,7 +397,9 @@ function PredictActivity({ activity, lang, result, onResult, parseText }) {
 
   return (
     <div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      {/* Beside the slide (lg, `side`) the options stack: two columns of
+          sentence-length options in a narrow column wrap into slivers. */}
+      <div className={`grid gap-2 ${side ? 'sm:grid-cols-2 lg:grid-cols-1' : 'sm:grid-cols-2'}`}>
         {(activity.options || []).map((o) => {
           const isChosen = chosen === o.val;
           const isRight = scored && o.val === activity.correct;
@@ -635,9 +637,11 @@ function ReflectActivity({ activity, lang, result, onResult, parseText }) {
 
 // ── dispatcher ───────────────────────────────────────────────────────────────
 
-export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false }) {
+export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false, side = false }) {
   if (!activity) return null;
-  const common = { activity, lang, result, onResult, parseText };
+  // `side`: the block sits in a column beside the slide (Notes.jsx, from lg)
+  // rather than in a full-width footer under it.
+  const common = { activity, lang, result, onResult, parseText, side };
   let body;
   switch (activity.type) {
     case 'sort': body = <SortActivity {...common} />; break;

@@ -29,8 +29,8 @@ export default function TopBar({
   };
 
   return (
-    <div className="flex justify-between items-center p-3 sm:p-4 border-b-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm z-20 relative h-16 sm:h-20 transition-colors duration-300 shrink-0">
-      
+    <div className="flex justify-between items-center px-3 sm:px-4 border-b-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm z-20 relative h-14 sm:h-16 transition-colors duration-300 shrink-0">
+
       {/* Left: Title & Module Identifier.
           The boxed 1/4-width columns only engage at lg (≥1024) — at tablet
           portrait (md, 768) w-1/4 was ~192px, too narrow for titles like
@@ -43,11 +43,14 @@ export default function TopBar({
         </div>
       </div>
 
-      {/* Center: Gamified 3D Progress Bar */}
-      <div className="flex-1 mx-4 max-w-2xl hidden lg:block">
+      {/* Center: Gamified 3D Progress Bar. `min-w-0` lets it give way to the
+          action cluster — on a 1280px laptop with a language toggle, a timer
+          and the score, the right quarter overran and the toggle sat on top
+          of the bar's end. */}
+      <div className="flex-1 min-w-0 mx-4 max-w-2xl hidden lg:block">
         <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-4 sm:h-5 shadow-inner border-2 border-slate-300 dark:border-slate-700 overflow-hidden relative">
-          <div 
-            className="bg-[#58cc02] h-full transition-all duration-500 ease-out rounded-full relative overflow-hidden" 
+          <div
+            className="bg-[#58cc02] h-full transition-all duration-500 ease-out rounded-full relative overflow-hidden"
             style={{ width: `${displayProgress}%` }}
           >
             {/* White light gleam for 3D effect */}
@@ -56,8 +59,9 @@ export default function TopBar({
         </div>
       </div>
 
-      {/* Right: Actions & Vital Stats */}
-      <div className="flex items-center justify-end shrink-0 w-auto lg:w-1/4 gap-2 sm:gap-3">
+      {/* Right: Actions & Vital Stats — a quarter of the bar, or as wide as
+          its contents need, whichever is more. */}
+      <div className="flex items-center justify-end shrink-0 w-auto lg:w-1/4 lg:min-w-max gap-2 sm:gap-3">
         
         {/* Dynamic Countdown Timer */}
         {timeLeft !== undefined && timeLeft > 0 && (

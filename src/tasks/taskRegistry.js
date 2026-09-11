@@ -6,6 +6,14 @@ import {
   Ruler, Tag, Beaker, Split, Spline
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
+import { getTrackConfig } from '../components/trackRegistry';
+
+/**
+ * Does this track carry Vietnamese twins? A track that declares
+ * `bilingual: false` (ADD_MATH, COORD_SCI) has nothing for an EN/VN toggle to
+ * switch to, so the screens that offer one are told to leave it out.
+ */
+const bilingualOf = (track) => getTrackConfig(track)?.bilingual !== false;
 
 /**
  * The one place a task type is defined.
@@ -70,8 +78,8 @@ export const TASKS = [
     // forwards a per-item log. It must NOT be hardwired to 10 here.
     // `savedData`/`onProgress` are the resume round-trip: the deck reopens on
     // the slide it was closed on, with the checks already answered kept.
-    props: ({ pool, savedData, onComplete, onProgress, onQuit }) =>
-      ({ slides: pool, savedData, onComplete, onProgress, onQuit }),
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ slides: pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
   {
     id: 'WORD_REC',
@@ -220,7 +228,7 @@ export const TASKS = [
     component: lazy(() => import('./Assessment.jsx')),
     hasContent: (u) => notEmpty(u.assessment?.questions),
     buildPool: () => [],
-    props: ({ unit, onComplete, onQuit }) => ({ unit, onComplete, onQuit }),
+    props: ({ unit, track, onComplete, onQuit }) => ({ unit, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
   {
     id: 'GAMES',
@@ -277,7 +285,8 @@ export const TASKS = [
     component: lazy(() => import('./Workbook.jsx')),
     hasContent: (u) => notEmpty(u.workbook),
     buildPool: (u) => u.workbook || [],
-    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Practice' }),
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Practice', bilingual: bilingualOf(track) }),
   },
   {
     id: 'GRAPH',

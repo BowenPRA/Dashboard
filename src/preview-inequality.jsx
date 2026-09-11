@@ -82,4 +82,7 @@ function Harness() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<Harness />);
+// Cache the root or HMR logs a duplicate-createRoot error on every edit.
+const el = document.getElementById('root');
+const root = (window.__ineqroot ||= createRoot(el));
+root.render(<Harness />);

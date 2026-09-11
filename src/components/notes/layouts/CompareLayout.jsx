@@ -55,7 +55,7 @@ export default function CompareLayout({ slide: s, ctx }) {
   return (
     <>
       {title && <HeaderBar title={title} icon={s.icon || 'Scale'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />}
-      <div className={`flex-1 min-h-0 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col lg:flex-row gap-3 sm:gap-4 lg:gap-5 ${isDisplayMode ? 'p-[clamp(1.25rem,2.5vw,2.5rem)]' : 'p-3 sm:p-5 lg:p-6'}`}>
+      <div className={`flex-1 min-h-0 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col lg:flex-row gap-3 sm:gap-4 ${isDisplayMode ? 'p-[clamp(1.25rem,2.5vw,2.5rem)]' : 'p-3 sm:p-4 lg:p-5'}`}>
         {columns.map((col, i) => <Column key={i} col={col} ctx={ctx} />)}
       </div>
     </>

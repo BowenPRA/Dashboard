@@ -58,7 +58,7 @@ class WidgetErrorBoundary extends Component {
  * full marks, which taught the student that clicking Next is the goal; the deck
  * now has to ask, and the answer has to be right.
  */
-function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, compact = false }) {
+function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, compact = false, side = false }) {
   const question = lang === 'vn' ? (check.qVn || check.q) : check.q;
   const explanation = lang === 'vn' ? (check.expVn || check.expEn) : (check.expEn || check.expVn);
 
@@ -81,7 +81,9 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
         {parseText(question)}
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
+      {/* In the side panel the options stack in one column: two columns of
+          sentence-length options in a 24rem strip wrap into ragged slivers. */}
+      <div className={`grid gap-2 ${side ? 'sm:grid-cols-2 lg:grid-cols-1' : 'sm:grid-cols-2'}`}>
         {(check.options || []).map((opt) => {
           const label = lang === 'vn' ? (opt.textVn || opt.text) : opt.text;
           const isRight = opt.val === check.correct;
@@ -139,7 +141,11 @@ const restoreFrom = (saved, slides) => {
   return { slide, checks };
 };
 
-export default function Notes({ slides, onComplete, onProgress, onQuit, savedData }) {
+// Activities that read fine in a column beside the slide. A number line needs
+// the full width to be tappable, so it keeps the footer under the slide.
+const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect']);
+
+export default function Notes({ slides, onComplete, onProgress, onQuit, savedData, bilingual = true }) {
   // Resume where the student left off. Students routinely close a deck part
   // way through (the tablet sleeps, the lesson ends, they tap the X), and
   // before this every slide read and every check answered was thrown away.
@@ -422,6 +428,14 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   const showExampleOnRight = hasExample && !hasDiagram;
   const rightPanelExists = hasDiagram || showExampleOnRight;
 
+  // Where a layout slide's check or activity sits. Under the slide it used to
+  // take up to 40% (check) or 62% (activity) of the card, which on a 720px
+  // laptop screen left a showcase diagram twenty pixels tall. Laptops are
+  // wide and short, so from lg the question moves BESIDE the slide and the
+  // slide keeps its full height; narrower screens keep the footer.
+  const slideActivity = !slideCheck && currentSlide.activity ? currentSlide.activity : null;
+  const sidePanel = hasLayout && (!!slideCheck || (slideActivity && SIDE_ACTIVITIES.has(slideActivity.type)));
+
   const labelEn = currentSlide.exampleLabel || 'Example';
   const labelVn = currentSlide.exampleLabelVn || currentSlide.exampleLabel || 'Ví Dụ';
   const displayLabel = lang === 'vn' ? labelVn : labelEn;
@@ -592,62 +606,68 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
       )}
 
       {/* Main Content Area */}
-      <div className={`flex-1 flex justify-center items-center z-10 overflow-hidden relative min-h-0 ${isDisplayMode ? 'p-0' : 'p-3 sm:p-6 lg:p-8'}`}>
-        
-        {/* Animated Wrapper for Cross-fade on slide change */}
-        <div 
+      <div className={`flex-1 flex justify-center items-center z-10 overflow-hidden relative min-h-0 ${isDisplayMode ? 'p-0' : 'p-2.5 sm:p-4 lg:p-5'}`}>
+
+        {/* Animated Wrapper for Cross-fade on slide change. A layout slide
+            with a side panel lays out as a row from lg; the legacy `type`
+            slides render header + body as siblings, so they must stay a
+            column. */}
+        <div
           key={currentIndex}
           className={`w-full max-h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden transition-all duration-500 animate-in fade-in zoom-in-[0.98]
-          ${isDisplayMode 
-            ? 'h-full max-w-none rounded-none border-0' 
-            : `rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 h-full ${(rightPanelExists || hasLayout) ? 'max-w-7xl' : 'max-w-4xl'}`
+          ${sidePanel ? 'lg:flex-row' : ''}
+          ${isDisplayMode
+            ? 'h-full max-w-none rounded-none border-0'
+            : `rounded-2xl lg:rounded-3xl shadow-sm border-2 border-slate-200 dark:border-slate-800 h-full ${(rightPanelExists || hasLayout) ? 'max-w-7xl' : 'max-w-4xl'}`
           }`}
         >
 
           {hasLayout && (
             <>
-              <div className="flex-1 min-h-0 flex flex-col overflow-hidden relative">
+              <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden relative">
                 <SlideLayout name={currentSlide.layout} slide={currentSlide} ctx={layoutCtx} />
-                {/* Autonomous narration: the classroom decks were silent (the
-                    teacher talked). Every layout slide gets a floating Listen
-                    button so a solo student still hears the slide read aloud. */}
-                {!isDisplayMode && currentSlide.audio && (
-                  <button
-                    onClick={() => {
-                      toggleAudio(currentSlide.audio);
-                    }}
-                    className="absolute bottom-3 right-3 z-40 flex items-center justify-center w-10 h-10 rounded-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur text-slate-600 dark:text-slate-300 shadow-md border-2 border-slate-200 dark:border-slate-700 border-b-[3px] opacity-80 hover:opacity-100 active:border-b-[1px] active:translate-y-[2px] transition-all"
-                    title={isPlayingAudio ? 'Stop audio' : 'Listen'}
-                  >
-                    {isPlayingAudio ? <PauseCircle className="w-5 h-5" /> : <PlayCircle className="w-5 h-5" />}
-                  </button>
-                )}
+                {/* Autonomous narration for layout slides lives in the bottom
+                    bar (the Listen button beside Project). It used to float
+                    over the slide's bottom-right corner, where it sat on top
+                    of showcase captions and the last line of every statement. */}
               </div>
+              {/* The check, or the activity: a footer under the slide on a
+                  phone or tablet (capped so the slide keeps at least half the
+                  card), a column beside it from lg. An activity's column is
+                  wider than a check's — a sort has bins, a plot has a grid. */}
               {slideCheck && (
-                <div className="shrink-0 max-h-[40%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 lg:px-8 py-3">
-                  <CheckBlock
-                    check={slideCheck}
-                    lang={lang}
-                    answer={slideAnswer}
-                    onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
-                    isDisplayMode={isDisplayMode}
-                    parseText={parseInlineText}
-                    compact
-                  />
+                <div className={`shrink-0 max-h-[50%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 py-3
+                  lg:max-h-none lg:h-auto lg:w-[34%] lg:max-w-[26rem] lg:border-t-0 lg:border-l-2 lg:px-5 lg:py-5 lg:flex lg:flex-col`}>
+                  {/* my-auto, not justify-center: centring a scroll box's
+                      content clips its top once it overflows. */}
+                  <div className="w-full lg:my-auto">
+                    <CheckBlock
+                      check={slideCheck}
+                      lang={lang}
+                      answer={slideAnswer}
+                      onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
+                      isDisplayMode={isDisplayMode}
+                      parseText={parseInlineText}
+                      compact
+                      side
+                    />
+                  </div>
                 </div>
               )}
-              {/* An interactive activity takes the same footer as a check, but
-                  gets more room — a sort or a hotspot needs it. */}
-              {!slideCheck && currentSlide.activity && (
-                <div className="shrink-0 max-h-[62%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 lg:px-8 py-3">
-                  <ActivityBlock
-                    activity={currentSlide.activity}
-                    lang={lang}
-                    result={slideAnswer}
-                    onResult={(res) => finishActivity(currentIndex, res)}
-                    parseText={parseInlineText}
-                    isDisplayMode={isDisplayMode}
-                  />
+              {slideActivity && (
+                <div className={`shrink-0 max-h-[55%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 py-3
+                  ${sidePanel ? 'lg:max-h-none lg:h-auto lg:w-[42%] lg:max-w-[34rem] lg:border-t-0 lg:border-l-2 lg:px-5 lg:py-5 lg:flex lg:flex-col' : 'lg:px-8'}`}>
+                  <div className="w-full lg:my-auto">
+                    <ActivityBlock
+                      activity={slideActivity}
+                      lang={lang}
+                      result={slideAnswer}
+                      onResult={(res) => finishActivity(currentIndex, res)}
+                      parseText={parseInlineText}
+                      isDisplayMode={isDisplayMode}
+                      side={sidePanel}
+                    />
+                  </div>
                 </div>
               )}
             </>
@@ -911,10 +931,12 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
             <ChevronLeft className="w-5 h-5" strokeWidth={3} />
           </button>
           
-          <div className="flex items-center gap-1 px-1.5 border-r border-l border-white/20">
-            <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === 'en' ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>EN</button>
-            <button onClick={() => setLang('vn')} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === 'vn' ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>VN</button>
-          </div>
+          {bilingual && (
+            <div className="flex items-center gap-1 px-1.5 border-r border-l border-white/20">
+              <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === 'en' ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>EN</button>
+              <button onClick={() => setLang('vn')} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === 'vn' ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>VN</button>
+            </div>
+          )}
 
           {currentSlide.audio && (
             <button 
@@ -970,34 +992,53 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
 
       {/* Standard Bottom Navigation (Hidden in Display Mode) */}
       {!isDisplayMode && (
-        <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 p-3 sm:p-5 z-20 flex-shrink-0 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
+        <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 px-3 py-2 sm:px-5 sm:py-2.5 z-20 flex-shrink-0 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
           <div className="max-w-5xl mx-auto flex items-center justify-between px-1 sm:px-2 gap-3 sm:gap-4">
-            
-            <button 
-              onClick={handlePrev} 
-              disabled={currentIndex === 0}
-              className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-30 disabled:pointer-events-none bg-white dark:bg-slate-900"
-            >
-              <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={3} />
-            </button>
-            
-            <div className="flex items-center gap-2 sm:gap-4">
-              <div className="flex bg-slate-100 dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-1 sm:p-1.5 flex-shrink-0">
-                <button 
-                  onClick={() => setLang('en')} 
-                  className={`px-3 sm:px-6 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === 'en' ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
-                >
-                  EN
-                </button>
-                <button 
-                  onClick={() => setLang('vn')} 
-                  className={`px-3 sm:px-6 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === 'vn' ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
-                >
-                  VN
-                </button>
-              </div>
 
-              <button 
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              className="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-30 disabled:pointer-events-none bg-white dark:bg-slate-900"
+            >
+              <ChevronLeft className="w-6 h-6" strokeWidth={3} />
+            </button>
+
+            <div className="flex items-center gap-2 sm:gap-4">
+              {/* An English-only track (ADD_MATH, COORD_SCI) has no Vietnamese
+                  to switch to; the toggle only offered a button that did nothing. */}
+              {bilingual && (
+                <div className="flex bg-slate-100 dark:bg-slate-800 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-1 flex-shrink-0">
+                  <button
+                    onClick={() => setLang('en')}
+                    className={`px-3 sm:px-5 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === 'en' ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
+                  >
+                    EN
+                  </button>
+                  <button
+                    onClick={() => setLang('vn')}
+                    className={`px-3 sm:px-5 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === 'vn' ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
+                  >
+                    VN
+                  </button>
+                </div>
+              )}
+
+              {/* Narration for a layout slide (the legacy slide types carry
+                  their own button in their header or hero). */}
+              {hasLayout && currentSlide.audio && (
+                <button
+                  onClick={() => toggleAudio(currentSlide.audio)}
+                  className={`flex items-center justify-center px-3 sm:px-4 py-2 rounded-xl transition-all border-2 active:scale-95 ${isPlayingAudio
+                    ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'
+                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 hover:text-[#1cb0f6]'}`}
+                  title={isPlayingAudio ? 'Stop audio' : 'Listen to this slide'}
+                >
+                  {isPlayingAudio ? <Volume2 className="w-5 h-5 sm:mr-2 animate-pulse" strokeWidth={2.5} /> : <PlayCircle className="w-5 h-5 sm:mr-2" strokeWidth={2.5} />}
+                  <span className="hidden sm:inline text-xs font-black uppercase tracking-widest">{isPlayingAudio ? 'Stop' : 'Listen'}</span>
+                </button>
+              )}
+
+              <button
                 onClick={toggleDisplayMode}
                 className="hidden md:flex items-center justify-center px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 hover:text-[#1cb0f6] transition-all border-2 border-slate-200 dark:border-slate-700 active:scale-95"
                 title="Project to TV (Fullscreen)"
@@ -1011,7 +1052,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
               onClick={handleNext}
               disabled={pendingCheck}
               title={pendingCheck ? 'Answer the check question first' : undefined}
-              className={`flex items-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg tracking-widest uppercase transition-all border-b-[4px] active:border-b-0 active:translate-y-[4px] disabled:opacity-40 disabled:pointer-events-none
+              className={`flex items-center px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all border-b-[4px] active:border-b-0 active:translate-y-[4px] disabled:opacity-40 disabled:pointer-events-none
                 ${currentIndex === slides.length - 1
                   ? 'bg-[#58cc02] border-[#58a700] text-white hover:bg-[#46a802]'
                   : 'bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159bd9]'}`}

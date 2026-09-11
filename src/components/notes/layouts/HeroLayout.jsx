@@ -26,7 +26,11 @@ export default function HeroLayout({ slide: s, ctx }) {
   const STRONG_ON_FIELD = 'font-black text-white underline decoration-white/40 underline-offset-4';
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center text-center text-white overflow-y-auto custom-scrollbar min-h-0 p-8 sm:p-12" style={bgStyle}>
+    // The content is centred with an inner `my-auto`, not `justify-center`:
+    // a centred flex child that outgrows a scroll box is clipped at the TOP,
+    // which is where the icon and the unit line sat on a laptop screen.
+    <div className="flex-1 flex flex-col text-center text-white overflow-y-auto custom-scrollbar min-h-0 p-6 sm:p-8 lg:p-10" style={bgStyle}>
+    <div className="my-auto w-full flex flex-col items-center">
       {(brand || s.date) && (
         <div className={`flex items-center justify-center gap-2 flex-wrap ${isDisplayMode ? 'mb-5' : 'mb-4'}`}>
           {brand && (
@@ -38,15 +42,15 @@ export default function HeroLayout({ slide: s, ctx }) {
         </div>
       )}
 
-      <div className={`bg-white/20 mx-auto rounded-[2rem] flex items-center justify-center shadow-inner border-4 border-white/30 ${isDisplayMode ? 'w-32 h-32 mb-8' : 'w-24 h-24 mb-6 sm:mb-8'}`}>
-        <Ic name={s.icon || 'BookOpen'} className={isDisplayMode ? 'w-16 h-16' : 'w-12 h-12'} strokeWidth={2.5} />
+      <div className={`bg-white/20 mx-auto rounded-[2rem] flex items-center justify-center shadow-inner border-4 border-white/30 ${isDisplayMode ? 'w-32 h-32 mb-8' : 'w-20 h-20 mb-5 sm:mb-6'}`}>
+        <Ic name={s.icon || 'BookOpen'} className={isDisplayMode ? 'w-16 h-16' : 'w-10 h-10'} strokeWidth={2.5} />
       </div>
 
       {eyebrow && (
-        <div className={`inline-block bg-white/20 text-white font-black uppercase tracking-[0.2em] rounded-full mb-5 border border-white/30 shadow-inner ${isDisplayMode ? 'text-[clamp(0.9rem,1.4vw,1.4rem)] px-6 py-2' : 'text-xs sm:text-sm px-4 py-1.5'}`}>{eyebrow}</div>
+        <div className={`inline-block bg-white/20 text-white font-black uppercase tracking-[0.2em] rounded-full mb-4 border border-white/30 shadow-inner ${isDisplayMode ? 'text-[clamp(0.9rem,1.4vw,1.4rem)] px-6 py-2' : 'text-[11px] sm:text-xs px-4 py-1.5'}`}>{eyebrow}</div>
       )}
 
-      <h1 className={`font-black tracking-tight mb-6 drop-shadow-md leading-tight ${isDisplayMode ? 'text-[clamp(3rem,6vw,7rem)]' : 'text-4xl lg:text-6xl'}`}>{title || 'Introduction'}</h1>
+      <h1 className={`font-black tracking-tight mb-5 drop-shadow-md leading-tight ${isDisplayMode ? 'text-[clamp(3rem,6vw,7rem)]' : 'text-3xl sm:text-4xl lg:text-5xl'}`}>{title || 'Introduction'}</h1>
 
       {objective ? (
         <div className={`bg-white/15 backdrop-blur-sm rounded-2xl border-2 border-white/25 shadow-inner max-w-3xl mx-auto ${isDisplayMode ? 'px-8 py-6' : 'px-5 py-4'}`}>
@@ -72,6 +76,7 @@ export default function HeroLayout({ slide: s, ctx }) {
           <Reveal reveal={s.reveal} lang={lang} accent="#0f172a" isDisplayMode={isDisplayMode} />
         </div>
       )}
+    </div>
     </div>
   );
 }

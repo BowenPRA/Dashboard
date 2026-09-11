@@ -12,19 +12,21 @@ export default function CalloutLayout({ slide: s, ctx }) {
   const content = pick(s.content, s.contentVn);
 
   return (
-    <div className={`flex-1 flex flex-col items-center justify-center overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-900 min-h-0 ${isDisplayMode ? 'p-[clamp(2rem,5vw,5rem)]' : 'p-6 sm:p-10 lg:p-14'}`}>
-      <div className="relative w-full max-w-4xl mx-auto rounded-[2rem] bg-white/90 dark:bg-slate-800/80 backdrop-blur border-2 shadow-lg"
+    // Centred via the card's `my-auto` (see StatementLayout) so an overflowing
+    // callout scrolls from its heading, not from somewhere in its body.
+    <div className={`flex-1 flex flex-col items-center overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-900 min-h-0 ${isDisplayMode ? 'p-[clamp(2rem,5vw,5rem)]' : 'p-4 sm:p-6 lg:p-8'}`}>
+      <div className="relative w-full max-w-4xl mx-auto my-auto rounded-[2rem] bg-white/90 dark:bg-slate-800/80 backdrop-blur border-2 shadow-lg"
         style={{ borderColor: accent }}>
         {/* accent glow bar */}
         <div className="absolute inset-x-0 top-0 h-1.5 rounded-t-[2rem]" style={{ backgroundColor: accent }} />
-        <div className={isDisplayMode ? 'p-[clamp(2rem,4vw,4rem)]' : 'p-6 sm:p-10'}>
-          <div className="flex items-center gap-4 mb-5">
-            <div className="rounded-2xl flex items-center justify-center shadow-inner shrink-0" style={{ backgroundColor: `${accent}1a`, padding: isDisplayMode ? '1rem' : '0.85rem' }}>
-              <Ic name={s.icon || 'Sparkles'} className={isDisplayMode ? 'w-12 h-12' : 'w-9 h-9'} strokeWidth={2.5} style={{ color: accent }} />
+        <div className={isDisplayMode ? 'p-[clamp(2rem,4vw,4rem)]' : 'p-5 sm:p-8'}>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="rounded-2xl flex items-center justify-center shadow-inner shrink-0" style={{ backgroundColor: `${accent}1a`, padding: isDisplayMode ? '1rem' : '0.75rem' }}>
+              <Ic name={s.icon || 'Sparkles'} className={isDisplayMode ? 'w-12 h-12' : 'w-8 h-8'} strokeWidth={2.5} style={{ color: accent }} />
             </div>
             <div className="min-w-0">
               {eyebrow && <div className="mb-1.5"><Pill accent={accent} isDisplayMode={isDisplayMode}>{eyebrow}</Pill></div>}
-              {title && <h2 className={`font-black tracking-tight text-slate-800 dark:text-slate-100 leading-tight ${isDisplayMode ? 'text-[clamp(1.6rem,3vw,3rem)]' : 'text-2xl sm:text-3xl lg:text-4xl'}`}>{title}</h2>}
+              {title && <h2 className={`font-black tracking-tight text-slate-800 dark:text-slate-100 leading-tight ${isDisplayMode ? 'text-[clamp(1.6rem,3vw,3rem)]' : 'text-xl sm:text-2xl lg:text-3xl'}`}>{title}</h2>}
             </div>
           </div>
 

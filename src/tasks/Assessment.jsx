@@ -638,7 +638,9 @@ export default function Assessment(props) {
         progress={phase === 'testing' ? ((currentIdx) / totalQuestions) * 100 : (phase === 'review' ? 100 : undefined)}
         timeLeft={phase === 'testing' ? timeLeft : undefined}
         lang={lang}
-        onLangToggle={() => setLang(prev => prev === 'en' ? 'vn' : 'en')}
+        // An English-only track (`bilingual: false` in the task registry) has
+        // no Vietnamese to switch to, so it gets no toggle.
+        onLangToggle={props.bilingual === false ? undefined : () => setLang(prev => prev === 'en' ? 'vn' : 'en')}
       />
 
       <div className="flex-1 overflow-hidden flex flex-col relative min-h-0 w-full">

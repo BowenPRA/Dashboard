@@ -415,9 +415,13 @@ function Solver({ problem, t, lang, onSolved, footer }) {
   };
 
   return (
-    <>
+    // One column on a phone; from lg the beam and the working sit on the
+    // left and the controls on the right, pinned in view. Stacked, the
+    // "Do it to both sides" button was 900px down a 720px-tall screen.
+    <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-5">
+      <div className="flex flex-col gap-4 min-w-0">
       {/* ---- the balance ---- */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6 mb-4">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6">
         <Beam eq={current} />
         <p className="mt-6 text-center text-[11px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
           <Scale className="w-4 h-4 shrink-0" strokeWidth={2.5} /> {unequal ? t.tilts : t.stays}
@@ -425,14 +429,15 @@ function Solver({ problem, t, lang, onSolved, footer }) {
       </div>
 
       {/* ---- the written working ---- */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-7 mb-4">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-7">
         <Working history={history} v={varName} t={t} />
         {solved && footer(stepsTaken)}
+      </div>
       </div>
 
       {/* ---- the controls ---- */}
       {!solved && (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6 lg:sticky lg:top-4">
           <div className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 mb-3">{t.pick}</div>
 
           <div className="grid grid-cols-4 gap-2 mb-3">
@@ -571,7 +576,7 @@ function Solver({ problem, t, lang, onSolved, footer }) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -643,7 +648,7 @@ export default function EquationBalance({ pool = [], onComplete, onQuit }) {
         onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))}
       />
 
-      <div className="flex-1 w-full max-w-3xl mx-auto p-4 sm:p-6 pb-10">
+      <div className="flex-1 w-full max-w-3xl lg:max-w-6xl mx-auto p-4 sm:p-5 pb-10">
 
         {prompt && (
           <p className="text-center text-slate-500 dark:text-slate-400 font-bold mb-4">{prompt}</p>

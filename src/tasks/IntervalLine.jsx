@@ -461,9 +461,12 @@ function Item({ item, t, target, onScore, footer }) {
   const done = (graphMsg?.ok || revealed.graph) && (writeMsg?.ok || revealed.write);
 
   return (
-    <>
+    // One column on a phone; from lg the graph sits on the left and the
+    // notation on the right, so both stages of the same set are on screen
+    // together and the second no longer starts below the fold.
+    <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-5">
       {/* ---- stage 1: the picture ---- */}
-      <div className={`bg-white dark:bg-slate-900 rounded-3xl border-2 shadow-sm p-4 sm:p-6 mb-4 transition-colors
+      <div className={`bg-white dark:bg-slate-900 rounded-3xl border-2 shadow-sm p-4 sm:p-6 transition-colors
         ${stage === 'graph' && !graphLocked ? 'border-[#7c3aed]' : 'border-slate-200 dark:border-slate-800'}`}>
         <div className="flex items-center gap-2 mb-3">
           <Ruler className="w-4 h-4 text-[#7c3aed] shrink-0" strokeWidth={3} />
@@ -524,7 +527,8 @@ function Item({ item, t, target, onScore, footer }) {
       </div>
 
       {/* ---- stage 2: the notation ---- */}
-      <div className={`bg-white dark:bg-slate-900 rounded-3xl border-2 shadow-sm p-4 sm:p-6 mb-4 transition-all
+      <div className="flex flex-col gap-4 min-w-0">
+      <div className={`bg-white dark:bg-slate-900 rounded-3xl border-2 shadow-sm p-4 sm:p-6 transition-all
         ${stage === 'write' && !writeLocked ? 'border-[#7c3aed]' : 'border-slate-200 dark:border-slate-800'}
         ${stage === 'graph' ? 'opacity-45 pointer-events-none' : ''}`}>
         <div className="flex items-center gap-2 mb-3">
@@ -595,7 +599,8 @@ function Item({ item, t, target, onScore, footer }) {
       </div>
 
       {done && footer()}
-    </>
+      </div>
+    </div>
   );
 }
 
@@ -682,8 +687,8 @@ export default function IntervalLine({ pool = [], onComplete, onQuit }) {
         onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))}
       />
 
-      <div className="flex-1 w-full max-w-3xl mx-auto p-4 sm:p-6 pb-10">
-        <div className="text-center mb-5">
+      <div className="flex-1 w-full max-w-3xl lg:max-w-6xl mx-auto p-4 sm:p-5 pb-10">
+        <div className="text-center mb-4">
           {prompt && <p className="text-slate-500 dark:text-slate-400 font-bold mb-3">{prompt}</p>}
           {/* The statement, and nothing beside it. An icon here competes with
               the notation for the one thing the student has to read. */}

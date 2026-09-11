@@ -14,8 +14,10 @@ export default function StatementLayout({ slide: s, ctx }) {
   const label = pick(s.label, s.labelVn);
 
   return (
-    <div className={`flex-1 flex flex-col items-center justify-center overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-900 min-h-0 ${isDisplayMode ? 'p-[clamp(2rem,5vw,5rem)]' : 'p-6 sm:p-8 lg:p-10'}`}>
-      <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center gap-5">
+    // Centred via the child's `my-auto`, so a statement taller than the card
+    // scrolls from its top instead of losing its eyebrow above the fold.
+    <div className={`flex-1 flex flex-col items-center overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-900 min-h-0 ${isDisplayMode ? 'p-[clamp(2rem,5vw,5rem)]' : 'p-4 sm:p-6 lg:p-8'}`}>
+      <div className="w-full max-w-4xl mx-auto my-auto flex flex-col items-center text-center gap-4 sm:gap-5">
         {eyebrow && <Pill accent={accent} isDisplayMode={isDisplayMode}>{eyebrow}</Pill>}
 
         {s.icon && (
@@ -30,14 +32,17 @@ export default function StatementLayout({ slide: s, ctx }) {
 
         <div className="relative w-full rounded-[1.75rem] bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-sm"
           style={{ borderLeftWidth: 8, borderLeftColor: accent }}>
-          <div className={isDisplayMode ? 'p-[clamp(1.75rem,3.5vw,3.5rem)]' : 'p-6 sm:p-10'}>
+          <div className={isDisplayMode ? 'p-[clamp(1.75rem,3.5vw,3.5rem)]' : 'p-5 sm:p-8'}>
             {label && (
               <div className={`inline-flex items-center gap-1.5 rounded-full text-white font-black uppercase tracking-widest mb-4 shadow-sm ${isDisplayMode ? 'text-[clamp(0.65rem,1vw,1rem)] px-4 py-1.5' : 'text-[10px] sm:text-xs px-3 py-1'}`} style={{ backgroundColor: accent }}>
                 <Ic name={s.labelIcon || 'Pencil'} className={isDisplayMode ? 'w-4 h-4' : 'w-3.5 h-3.5'} strokeWidth={3} />
                 {label}
               </div>
             )}
-            <p className={`font-black text-slate-900 dark:text-slate-50 leading-tight tracking-tight ${isDisplayMode ? 'text-[clamp(1.75rem,4vw,4rem)]' : 'text-3xl sm:text-4xl lg:text-5xl'}`}>
+            {/* A KaTeX run never wraps, so on a phone a statement like
+                y = (x−1)(x−2)(x−3) ran off the card; one size down, and the
+                box scrolls sideways rather than clipping in the last resort. */}
+            <p className={`font-black text-slate-900 dark:text-slate-50 leading-tight tracking-tight overflow-x-auto ${isDisplayMode ? 'text-[clamp(1.75rem,4vw,4rem)]' : 'text-2xl sm:text-3xl lg:text-4xl'}`}>
               {parseInlineText(text)}
             </p>
             {sub && (

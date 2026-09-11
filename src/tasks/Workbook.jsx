@@ -349,7 +349,9 @@ const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result, big 
 
 // `title` lets a unit run TWO workbook tasks (WORKBOOK and WORKBOOK_B, one per
 // textbook exercise) without both bars reading "Workbook Practice".
-export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice' }) {
+// `bilingual: false` (an English-only track) drops the EN/VN toggle from the
+// top bar — there is nothing for it to switch to.
+export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice', bilingual = true }) {
   const problems = useMemo(() => {
     const groups = Array.isArray(pool) ? pool : [];
     return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn })));
@@ -498,11 +500,11 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
       {!isDisplayMode && (
         <TopBar onQuit={finish} modeTitle={title} current={idx + 1} total={total}
-          lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+          lang={lang} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
       )}
 
       {/* Problem card */}
-      <div className={`flex-1 flex justify-center items-center overflow-hidden min-h-0 ${isDisplayMode ? 'p-2 sm:p-4' : 'p-3 sm:p-6 lg:p-8'}`}>
+      <div className={`flex-1 flex justify-center items-center overflow-hidden min-h-0 ${isDisplayMode ? 'p-2 sm:p-4' : 'p-2.5 sm:p-4 lg:p-5'}`}>
         <div key={idx} className={`w-full h-full flex flex-col bg-white dark:bg-slate-900 rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-[0.99] duration-300 ${isDisplayMode ? 'max-w-[100rem]' : 'max-w-3xl'}`}>
 
         {/* Header strip */}
@@ -514,7 +516,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
         </div>
 
         {/* Body — prompt, answer widget, feedback, then solution */}
-        <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3.5rem)] space-y-[clamp(1rem,1.8vw,2rem)]' : 'p-5 sm:p-8 space-y-5'}`}>
+        <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3.5rem)] space-y-[clamp(1rem,1.8vw,2rem)]' : 'p-4 sm:p-6 space-y-4'}`}>
           {/* Prompt */}
           <div className={`text-slate-800 dark:text-slate-100 font-semibold leading-relaxed ${isDisplayMode ? 'text-[clamp(1.6rem,2.7vw,3rem)]' : 'text-xl sm:text-2xl'}`}>
             <RichText text={prompt} />
@@ -625,7 +627,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
       </div>
 
       {/* Bottom navigation */}
-      <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 p-3 sm:p-5 flex-shrink-0">
+      <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 px-3 py-2 sm:px-5 sm:py-2.5 flex-shrink-0">
         <div className={`mx-auto flex items-center justify-between gap-4 ${isDisplayMode ? 'max-w-[100rem]' : 'max-w-3xl'}`}>
           {/* Project to a TV — the same affordance the lesson decks carry, and
               the way out of it once you are in. */}

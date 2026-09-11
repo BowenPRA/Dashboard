@@ -391,8 +391,14 @@ export default function CubicSketch({ pool, onComplete, onQuit, savedData = {}, 
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={quit} modeTitle={pool?.title || T.title} current={pos + 1} total={items.length} />
 
-      <div className="flex-1 w-full max-w-3xl mx-auto p-4 sm:p-6 pb-10 flex flex-col gap-3">
+      {/* One column on a phone or tablet; two from lg. Stacked, the question
+          card and the figure ran to ~850px before the first input box, so on
+          a laptop the student scrolled past the graph to type and back up to
+          look at it. Side by side, the sketch stays in view (sticky) while
+          the working happens on the right. */}
+      <div className="flex-1 w-full max-w-3xl lg:max-w-6xl mx-auto p-4 sm:p-5 pb-8 flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:items-start lg:gap-5">
 
+        <div className="flex flex-col gap-3 lg:sticky lg:top-4">
         <div className="rounded-2xl border-2 bg-white dark:bg-slate-800 shadow-sm overflow-hidden" style={{ borderColor: INK }}>
           <div className="px-4 sm:px-5 py-3 text-white flex items-center gap-3" style={{ backgroundColor: INK }}>
             <Spline className="w-5 h-5 shrink-0" strokeWidth={2.5} />
@@ -401,7 +407,9 @@ export default function CubicSketch({ pool, onComplete, onQuit, savedData = {}, 
             </div>
             <div className="ml-auto text-[11px] font-black uppercase tracking-widest opacity-80">{cleared} / {items.length} {T.solved}</div>
           </div>
-          <div className="px-4 sm:px-6 py-4 text-center text-2xl sm:text-3xl text-slate-900 dark:text-slate-100">
+          {/* KaTeX never wraps; on a phone the three brackets overran the card,
+              so the box scrolls sideways and the type is one step smaller. */}
+          <div className="px-4 sm:px-6 py-3 text-center text-xl sm:text-3xl text-slate-900 dark:text-slate-100 overflow-x-auto">
             <SafeBlockMath math={questionTex} />
           </div>
           {(item.note || (pos === 0 && pool?.intro)) && (
@@ -414,20 +422,12 @@ export default function CubicSketch({ pool, onComplete, onQuit, savedData = {}, 
           </div>
         </div>
 
-        <div className="min-h-[1.5rem] flex items-center">
-          {flash?.text && (
-            <div className="flex items-center gap-2 font-bold text-sm animate-in fade-in slide-in-from-top-1" style={{ color: flash.kind === 'bad' ? RED : GREEN }}>
-              {flash.kind === 'bad' ? <XCircle className="w-5 h-5 shrink-0" strokeWidth={2.5} /> : <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={2.5} />}
-              {flash.text}
-            </div>
-          )}
-        </div>
-
         {/* The sketch, building up: axes → intercepts → the curve → the modulus */}
         {showFigure && (
           <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white shadow-sm p-2 relative">
             <CubicFigure
               item={item}
+              height={280}
               showCurve={curveVisible}
               showRoots={itemDone || stageIdx > stages.indexOf('roots')}
               showY={itemDone || stageIdx > stages.indexOf('yint')}
@@ -443,6 +443,17 @@ export default function CubicSketch({ pool, onComplete, onQuit, savedData = {}, 
             )}
           </div>
         )}
+        </div>
+
+        <div className="flex flex-col gap-3">
+        <div className="min-h-[1.5rem] flex items-center">
+          {flash?.text && (
+            <div className="flex items-center gap-2 font-bold text-sm animate-in fade-in slide-in-from-top-1" style={{ color: flash.kind === 'bad' ? RED : GREEN }}>
+              {flash.kind === 'bad' ? <XCircle className="w-5 h-5 shrink-0" strokeWidth={2.5} /> : <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={2.5} />}
+              {flash.text}
+            </div>
+          )}
+        </div>
 
         {/* ---------------- factorise ---------------- */}
         {!itemDone && stage === 'factor' && (
@@ -619,6 +630,7 @@ export default function CubicSketch({ pool, onComplete, onQuit, savedData = {}, 
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

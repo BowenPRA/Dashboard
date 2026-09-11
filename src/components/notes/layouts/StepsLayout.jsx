@@ -15,7 +15,7 @@ export default function StepsLayout({ slide: s, ctx }) {
   return (
     <>
       <HeaderBar title={title || ''} icon={s.icon || 'Layers'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />
-      <div className={`flex-1 min-h-0 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-900/50 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-6 lg:p-10'}`}>
+      <div className={`flex-1 min-h-0 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-900/50 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-5 lg:p-6'}`}>
         <div className={`mx-auto flex flex-col ${hasMedia ? 'max-w-6xl lg:flex-row lg:items-start gap-6' : 'max-w-3xl'}`}>
           <div className="flex-1 min-w-0">
             {content && <div className="mb-5">{renderContent(content, { isDisplayMode })}</div>}

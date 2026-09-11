@@ -28,7 +28,7 @@ export default function SplitLayout({ slide: s, ctx }) {
   const twoPane = hasMedia || hasExample;
 
   const TextCol = (
-    <div className={`flex-none h-[45%] lg:h-auto flex flex-col overflow-y-auto custom-scrollbar border-b-2 lg:border-b-0 border-slate-100 dark:border-slate-800 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-6 lg:p-10'} ${twoPane ? `${textW} ${mediaLeft ? 'lg:border-l-2' : 'lg:border-r-2'}` : 'w-full max-w-4xl mx-auto'}`}>
+    <div className={`flex-none h-[45%] lg:h-auto flex flex-col overflow-y-auto custom-scrollbar border-b-2 lg:border-b-0 border-slate-100 dark:border-slate-800 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-5 lg:p-6'} ${twoPane ? `${textW} ${mediaLeft ? 'lg:border-l-2' : 'lg:border-r-2'}` : 'w-full max-w-4xl mx-auto'}`}>
       {content && <div className={hasExample && hasMedia ? 'pb-4 lg:pb-6' : ''}>{renderContent(content, { isDisplayMode })}</div>}
       {s.notes?.length > 0 && (
         <div className="space-y-3 mt-2">
@@ -46,7 +46,7 @@ export default function SplitLayout({ slide: s, ctx }) {
   );
 
   const MediaCol = twoPane && (
-    <div className={`flex-1 w-full ${hasText ? mediaW : 'lg:w-full'} bg-slate-50/50 dark:bg-slate-900/50 flex flex-col items-center justify-center flex-shrink-0 min-h-0 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-3 sm:p-4 lg:p-8'}`}>
+    <div className={`flex-1 w-full ${hasText ? mediaW : 'lg:w-full'} bg-slate-50/50 dark:bg-slate-900/50 flex flex-col items-center justify-center flex-shrink-0 min-h-0 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-3 sm:p-4 lg:p-5'}`}>
       {hasMedia ? (
         <Media slide={s} ctx={ctx} />
       ) : (
