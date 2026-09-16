@@ -25,6 +25,8 @@ import { checkAll as checkLabelIt } from '../src/utils/labelIt.js';
 import { checkConfig as checkLabBench } from '../src/utils/labBench.js';
 import { checkActivity } from '../src/utils/activity.js';
 import { checkRearrangeItems } from '../src/utils/formula.js';
+import { checkVennItems } from '../src/utils/sets.js';
+import { checkSurdItems, checkRationaliseItems } from '../src/utils/surds.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -690,6 +692,20 @@ for (const trackId of TRACK_IDS) {
     //    the student's correct answer wrong, and nothing on screen would say so.
     if (unit.rearrange) {
       for (const p of checkRearrangeItems(unit.rearrange)) err(`${label}: rearrange ${p}`);
+    }
+
+    // -- Set It Out, Surd Breaker, Rationalise It (EXT_MATH): the diagram or
+    //    the surd is authored, everything else derived by utils/sets.js and
+    //    utils/surds.js. Checked: the facts fix every region with whole
+    //    numbers, notation parses and only names the item's sets, elements fit
+    //    their regions, a simplify item has something to simplify, and a
+    //    rationalised answer fits the one-surd answer boxes.
+    for (const [key, check] of [['venn', checkVennItems], ['surds', checkSurdItems], ['rationalise', checkRationaliseItems]]) {
+      if (!unit[key]) continue;
+      const at = `${label}: ${key}`;
+      if (!unit[key].title) err(`${at} is missing a title`);
+      if (!(unit[key].items || []).length) err(`${at} has no items`);
+      for (const p of check(unit[key].items || [])) err(`${at} ${p}`);
     }
 
     // -- diagram references resolve

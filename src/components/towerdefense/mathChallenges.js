@@ -240,8 +240,47 @@ function circularMotion() {
   return { prompt: `g = 10 m/s², r = ${10 * k * k} m.  Slowest speed over the top, v = √(gr) = ? m/s`, answer: 10 * k };
 }
 
+// EXT_MATH / EM_06 — Sets, Surds and Rationalising. Four reads a student who
+// has done the unit does in their head: the number that comes OUT of a root,
+// a region of a Venn diagram whose counts are given in the prompt, the number
+// in front after clearing a single surd from a denominator, and a conjugate
+// pair (which is always a whole number). Every answer is an integer.
+function setsAndSurds() {
+  const FREE = [2, 3, 5, 6, 7, 10, 11, 13, 14, 15]; // square-free radicands
+  const r = Math.random();
+  if (r < 0.35) {
+    // √(a²b) = a√b — asks for a, the number that comes out.
+    const b = FREE[ri(0, FREE.length - 1)];
+    const a = ri(2, Math.max(2, Math.floor(Math.sqrt(400 / b))));
+    return { prompt: `√${a * a * b} = a√${b}.  a = ?`, answer: a };
+  }
+  if (r < 0.6) {
+    // A two-set Venn diagram, counts given in words.
+    const aOnly = ri(3, 15);
+    const both = ri(1, 9);
+    const bOnly = ri(3, 15);
+    const out = ri(0, 8);
+    const kind = ri(0, 2);
+    const stem = `A only ${aOnly}, both ${both}, B only ${bOnly}, outside ${out}.`;
+    if (kind === 0) return { prompt: `${stem}  n(A ∪ B) = ?`, answer: aOnly + both + bOnly };
+    if (kind === 1) return { prompt: `${stem}  n(A) = ?`, answer: aOnly + both };
+    return { prompt: `${stem}  n(ℰ) = ?`, answer: aOnly + both + bOnly + out };
+  }
+  if (r < 0.8) {
+    // am/√m = a√m — asks for the number in front after rationalising.
+    const m = [2, 3, 5, 6, 7][ri(0, 4)];
+    const a = ri(2, 6);
+    return { prompt: `${a * m}/√${m} = a√${m}.  a = ?`, answer: a };
+  }
+  // A conjugate pair: p² − m, always a whole number.
+  const m = [2, 3, 5, 6, 7, 10][ri(0, 5)];
+  const p = ri(3, 9);
+  return { prompt: `(${p} + √${m})(${p} ${MINUS} √${m}) = ?`, answer: p * p - m };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
+  EM_06: setsAndSurds,
   PHY_CIRC: circularMotion,
   AM_3A: factorTheorem,
   AM_4A: modulus,

@@ -37,6 +37,9 @@ import {
   Coffee, Minus, Square, Hash, ArrowDownUp, Wind, LayoutGrid, RotateCcw, Box,
   Bug, Timer, Hammer, Spline, Circle, MapPin, Droplets, Waves, CloudFog, Gauge,
   Clapperboard, Gamepad2, Presentation, Hand,
+  // Sets and surds (EXT_MATH EM_06): the Venn diagram, the root, the fraction,
+  // chance, and the empty set.
+  Blend, SquareRadical, Divide, Dices, CircleSlash, Shapes, MousePointerClick,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -78,6 +81,7 @@ const ICONS = {
   Coffee, Minus, Square, Hash, ArrowDownUp, Wind, LayoutGrid, RotateCcw, Box,
   Bug, Timer, Hammer, Spline, Circle, MapPin, Droplets, Waves, CloudFog, Gauge,
   Clapperboard, Gamepad2, Presentation, Hand,
+  Blend, SquareRadical, Divide, Dices, CircleSlash, Shapes, MousePointerClick,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

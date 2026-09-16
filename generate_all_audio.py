@@ -68,7 +68,11 @@ def speechify(text):
     # In the .js source a literal backslash is written doubled (\\dfrac, \\%),
     # so collapse those first, then handle newline escapes.
     t = text.replace('\\\\', '\\')
-    t = t.replace('\\n', '. ').replace('\n', '. ')
+    # A line break is written in the JS source as the two characters \n. Guard
+    # the replacement: unguarded, it also eats LaTeX commands that begin with n
+    # — `\notin` narrated as ". otin" and `\neq` as ". eq".
+    t = re.sub(r'\\n(?![a-zA-Z])', '. ', t)
+    t = t.replace('\n', '. ')
     # Expand the maths that actually appears in the decks.
     t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
     t = re.sub(r'\\mathbf\s*\{([^{}]*)\}', r'\1', t)
@@ -88,6 +92,25 @@ def speechify(text):
     t = t.replace('\\deg', ' the degree of ')
     t = t.replace('\\max', ' the larger of ')
     t = re.sub(r'\\sqrt\s*\{([^{}]*)\}', r' the square root of \1 ', t)
+    # Set notation (EXT_MATH). These appear both as LaTeX commands and as bare
+    # Unicode in titles and note panels, and an unexpanded symbol is read as
+    # NOTHING at all — "A ∪ B" would narrate as "A B". `\notin` must be handled
+    # before `\in`, and `\in` is guarded so it cannot eat `\infty`.
+    t = t.replace('\\cup', ' union ').replace('\\cap', ' intersection ')
+    t = re.sub(r'\\mathscr\s*\{\s*E\s*\}', ' the universal set ', t)
+    t = t.replace('\\varnothing', ' the empty set ').replace('\\emptyset', ' the empty set ')
+    t = t.replace('\\notin', ' is not an element of ')
+    t = re.sub(r'\\in(?![a-zA-Z])', ' is an element of ', t)
+    t = t.replace('\\subseteq', ' is a subset of ').replace('\\subset', ' is a subset of ')
+    t = t.replace('∪', ' union ').replace('∩', ' intersection ').replace('ℰ', ' the universal set ')
+    t = t.replace('∅', ' the empty set ').replace('∈', ' is an element of ').replace('∉', ' is not an element of ')
+    t = t.replace('⊂', ' is a subset of ').replace('≠', ' is not equal to ')
+    # A prime on a set letter, or after a bracket, is a complement. The lookarounds
+    # keep an English apostrophe ("the book's") out of it.
+    t = re.sub(r"(?<![A-Za-z])([A-Z])['′](?![a-zA-Z])", r'\1 complement ', t)
+    t = t.replace(")'", ') complement ').replace(')′', ') complement ')
+    # A root written as the bare symbol (titles, note panels, sorted cards).
+    t = re.sub(r'√\s*\(?(\d+)\)?', r' root \1 ', t)
     # KaTeX spacing commands. Left alone, `\;` survives the catch-all strip as a
     # bare semicolon, which the voice reads as a pause in the middle of a sum.
     t = re.sub(r'\\[;,:!]', ' ', t)

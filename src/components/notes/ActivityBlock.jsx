@@ -11,6 +11,8 @@ import { arcsOf } from '../../utils/cubic';
 import NumberLineSVG from '../math/NumberLineSVG.jsx';
 import { regionsOf } from '../../utils/numberLine';
 import CubicFigure from '../math/CubicFigure.jsx';
+import VennFigure from '../math/VennFigure.jsx';
+import { regionsOf as vennRegionsOf, sameRegions } from '../../utils/sets';
 import { SafeInlineMath } from './SafeMath.jsx';
 
 /**
@@ -635,6 +637,35 @@ function ReflectActivity({ activity, lang, result, onResult, parseText }) {
   );
 }
 
+// ── venn ─────────────────────────────────────────────────────────────────────
+// Shade the regions a piece of set notation describes. Marked against the
+// region set derived by utils/sets.js; after the check the right regions stay
+// shaded (green when right, amber when shown).
+
+function VennActivity({ activity, lang, result, onResult, parseText }) {
+  const sets = activity.sets || ['A', 'B'];
+  const want = useMemo(() => vennRegionsOf(activity.expr, activity.sets || ['A', 'B']), [activity]);
+  const [sel, setSel] = useState(result?.sel || []);
+  const checked = !!result?.done;
+  const check = () => onResult({ done: true, correct: sameRegions(sel, want), sel });
+  return (
+    <div>
+      <div className="mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-white p-1.5" style={{ maxWidth: '26rem' }}>
+        <VennFigure sets={sets} labels={activity.labels || {}} counts={activity.counts || null}
+          shaded={checked ? want : sel} tone={checked ? (result.correct ? 'good' : 'show') : 'pick'}
+          onRegion={checked ? undefined : (k) => setSel((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]))} />
+      </div>
+      {!checked && (
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <span className="text-[11px] font-bold text-slate-400">{sel.length} {lang === 'vn' ? 'vùng đã tô' : `region${sel.length === 1 ? '' : 's'} shaded — tap to shade or clear`}</span>
+          <button onClick={check} disabled={!sel.length} className={primary}>{(T[lang] || T.en).check}</button>
+        </div>
+      )}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+    </div>
+  );
+}
+
 // ── dispatcher ───────────────────────────────────────────────────────────────
 
 export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false, side = false }) {
@@ -652,6 +683,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'plot': body = <PlotActivity {...common} />; break;
     case 'numberline': body = <NumberLineActivity {...common} />; break;
     case 'reflect': body = <ReflectActivity {...common} />; break;
+    case 'venn': body = <VennActivity {...common} />; break;
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }
   return (

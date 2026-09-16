@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler, Tag, Beaker, Split, Spline, Variable
+  Ruler, Tag, Beaker, Split, Spline, Variable, Blend, SquareRadical
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -655,7 +655,76 @@ export const TASKS = [
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
+  {
+    id: 'VENN',
+    nativeMax: 10,
+    // p1-p32 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
+    // p33-p34 are held for the GED English Find & Fix and Order It tasks, so
+    // p35 is next.
+    dbKey: 'p35',
+    // "Words -> notation -> picture -> number." A Venn diagram from an IGCSE
+    // question - printed with counts, given as facts to fill in, or built from
+    // rules like "multiples of 3" by placing every element - and the questions
+    // asked about it. Each question is turned into notation (picked), the
+    // notation into a picture (the student SHADES the regions), and only then
+    // the picture into a count, a probability or a list. utils/sets.js derives
+    // every region, count, fill order and notation option from the question,
+    // and `checkVennItems` refuses an item that cannot be finished. Item shape
+    // is documented in src/tasks/VennTask.jsx and docs/ext-math/task-engines.md.
+    label: 'Venn Diagrams',
+    icon: Blend,
+    color: { bg: 'bg-[#0f766e]', border: 'border-[#115e59]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./VennTask.jsx')),
+    hasContent: (u) => !!u.venn?.items?.length,
+    buildPool: (u) => u.venn,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'SURD_SIMPLIFY',
+    nativeMax: 10,
+    dbKey: 'p36',
+    // "Find a square, take its root out, ask if you are finished." Simplifying
+    // k*sqrt(n), collecting like surds, and multiplying surds, one move at a
+    // time, with the student's own splits drawn as a root tree. Any square
+    // factor is accepted - the tree simply grows another branch - and the "is
+    // it fully simplified?" decision is its own stage, because that is the mark
+    // the paper takes. Derived by utils/surds.js; `checkSurdItems` refuses an
+    // item with nothing to simplify. Item shape in src/tasks/SurdSimplify.jsx.
+    label: 'Surd Breaker',
+    icon: SquareRadical,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./SurdSimplify.jsx')),
+    hasContent: (u) => !!u.surds?.items?.length,
+    buildPool: (u) => u.surds,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'RATIONALISE',
+    nativeMax: 10,
+    dbKey: 'p37',
+    // "Choose the multiplier, clear the bottom, multiply the top, simplify
+    // fully." Brackets with surds expanded in a 2 x 2 grid (a conjugate pair's
+    // surd cells visibly cancel), then fractions with a single surd or a
+    // two-term bracket on the bottom, rationalised in the moves the mark scheme
+    // pays for. Every cell, conjugate, bottom and simplified answer is derived
+    // by utils/surds.js; `checkRationaliseItems` refuses an item whose answer
+    // would not fit the boxes. Item shape in src/tasks/Rationalise.jsx.
+    label: 'Rationalise It',
+    icon: Divide,
+    color: { bg: 'bg-[#c2410c]', border: 'border-[#9a3412]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./Rationalise.jsx')),
+    hasContent: (u) => !!u.rationalise?.items?.length,
+    buildPool: (u) => u.rationalise,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
 ];
+
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));
 

@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -76,6 +76,28 @@ export const TRACK_REGISTRY = [
       text: 'text-cyan-600 dark:text-cyan-400',
       ambient1: 'bg-cyan-400', ambient2: 'bg-blue-500',
       glow: 'hover:border-cyan-400 dark:hover:border-cyan-600',
+    },
+  },
+  {
+    // Cambridge IGCSE Mathematics 0580, Extended tier, for the student taking
+    // it through Wolsey Hall Oxford. Units follow the Wolsey Hall assignments
+    // (EM_06 is Assignment 06), because the assignment is what arrives on the
+    // teacher's desk as a photo of the working: each unit takes the question
+    // shapes of one assignment and rebuilds the understanding behind them with
+    // fresh numbers, never the assignment's own.
+    id: 'EXT_MATH',
+    title: 'IGCSE Mathematics (Extended)',
+    desc: 'Cambridge IGCSE 0580 · Wolsey Hall assignments',
+    icon: SquareRadical,
+    group: 'Cambridge',
+    // English-only, like ADD_MATH and COORD_SCI: the paper is sat in English
+    // and "complement", "rationalise", "simplify fully" are the marks.
+    bilingual: false,
+    theme: {
+      bg: 'bg-pink-500', border: 'border-pink-700', hover: 'hover:bg-pink-400',
+      text: 'text-pink-600 dark:text-pink-400',
+      ambient1: 'bg-pink-400', ambient2: 'bg-rose-500',
+      glow: 'hover:border-pink-400 dark:hover:border-pink-600',
     },
   },
   {

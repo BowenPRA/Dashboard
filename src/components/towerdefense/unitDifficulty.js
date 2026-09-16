@@ -109,6 +109,17 @@ export const TRACK_LEVELS = {
       blurb: 'The road crosses the line three times, and where it only touches, nothing gets through. Know your intercepts.',
     },
   },
+  // IGCSE Mathematics (Extended). One level per Wolsey Hall assignment. EM_06
+  // opens at tier 1: the student has met the arcade on other tracks, and the
+  // junction is the board for this unit — two roads that split and meet again,
+  // like the two circles of a Venn diagram, or a bracket and its conjugate.
+  EXT_MATH: {
+    EM_06: {
+      mapId: 'JUNCTION', themeId: 'DESERT', tier: 1,
+      mapName: 'The Overlap',
+      blurb: 'Two roads cross in the middle. Hold the overlap and you hold both — miss it and neither is covered.',
+    },
+  },
   // IGCSE Coordinated Science. First unit is a tier-0 introduction — the "lab"
   // ICE theme suits electrolysis. Additive: adding a unit here shifts nothing on
   // any other track. Extend this table (map/theme/tier/waveMod) as units ship.

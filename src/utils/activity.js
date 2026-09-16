@@ -6,12 +6,15 @@
 import { rootsOf as curveRoots, levelOf, vertexOf, CURVE_KINDS } from './graphCurve.js';
 import { parseInequality, normalize } from './interval.js';
 import { checkCubicItems } from './cubic.js';
+import { parseSet, lettersOf, regionsOf, regionKeys } from './sets.js';
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
 // points, an inequality by SHADING the line, a modulus graph by TAPPING the
 // pieces to fold. Schemas in docs/add-math/notes-and-activities.md.
-export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect'];
+// `venn` (IGCSE Extended Mathematics) is set notation answered by SHADING the
+// regions of a Venn diagram. Schema in docs/ext-math/notes-and-widgets.md.
+export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn'];
 
 const bilingualName = (o, bilingual) => o && o.name && (!bilingual || o.nameVn);
 
@@ -134,6 +137,20 @@ export function checkActivity(a, { bilingual = true } = {}) {
 
   if (a.type === 'reflect') {
     for (const p of checkCubicItems([{ id: a.id || 'reflect', factors: a.factors, k: a.k, expanded: a.expanded }])) out.push(`reflect ${p}`);
+  }
+
+  if (a.type === 'venn') {
+    const sets = a.sets || ['A', 'B'];
+    if (![2, 3].includes(sets.length)) out.push('venn sets must be two or three letters');
+    try {
+      const tree = parseSet(a.expr);
+      if (tree.mixed) out.push(`venn expr "${a.expr}" mixes ∪ and ∩ without brackets`);
+      for (const l of lettersOf(tree)) if (!sets.includes(l)) out.push(`venn expr uses ${l}, not one of ${sets.join(', ')}`);
+      if (!out.length && !regionsOf(tree, sets).length) out.push('venn expr covers no region, so there is nothing to shade');
+    } catch (e) {
+      out.push(`venn expr: ${e.message}`);
+    }
+    if (a.counts) for (const k of regionKeys(sets.length)) if (!Number.isInteger(a.counts[k])) out.push(`venn counts["${k}"] must be a whole number`);
   }
   return out;
 }

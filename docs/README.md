@@ -82,6 +82,18 @@ status* section so it can be closed deliberately.
   long-division item, which note fields accept block maths, and the per-unit checklist.
   The **`AM_3A` polynomials unit is the reference exemplar.**
 
+### IGCSE Mathematics, Extended (new)
+
+- [ext-math-course.md](ext-math-course.md) — **start here** for the `EXT_MATH` track
+  (Cambridge 0580 Extended, one unit per Wolsey Hall assignment, built from photographs of
+  the student's own working): why the assignment is never worked in the app, the unit
+  shape, the three engines (**Set It Out**, **Surd Breaker**, **Rationalise It**), the
+  deck rules, and the per-unit checklist. Two companions:
+  [ext-math/task-engines.md](ext-math/task-engines.md) (every screen and its item schema)
+  and [ext-math/notes-and-widgets.md](ext-math/notes-and-widgets.md) (the deck beats, the
+  `venn` activity, the three widgets). The **`EM_06` sets & surds unit is the reference
+  exemplar.**
+
 ### Acellus Physics (new)
 
 - [acellus-physics-course.md](acellus-physics-course.md) — **start here** for the
