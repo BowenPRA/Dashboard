@@ -213,6 +213,42 @@ function cubicSketch() {
   };
 }
 
+// AM_5A — Logarithms and the laws of logs. Three reads a student who has done
+// the unit does in their head, every answer a whole number: evaluate a log
+// (a positive power, or a negative one from a unit fraction), and combine two
+// logs of the same base — a sum or a difference — that land exactly on a power
+// of the base. Subscript digits print the base the way the book does.
+function logLaws() {
+  const SUB = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[Number(d)]).join('');
+  const name = (b) => (b === 10 ? 'lg' : `log${SUB(b)}`);
+  const pick = (list) => list[ri(0, list.length - 1)];
+  const r = Math.random();
+  if (r < 0.35) {
+    // log_b(b^k), b^k kept small enough to know by heart.
+    const [b, k] = pick([[2, ri(2, 7)], [3, ri(2, 4)], [5, ri(2, 3)], [10, ri(2, 5)], [4, ri(2, 3)], [7, 2]]);
+    return { prompt: `${name(b)} ${b ** k} = ?`, answer: k };
+  }
+  if (r < 0.55) {
+    // log_b(1 / b^k) = −k: the sign trap.
+    const [b, k] = pick([[2, ri(1, 5)], [3, ri(1, 3)], [5, ri(1, 2)], [10, ri(1, 3)]]);
+    return { prompt: `${name(b)} (1/${b ** k}) = ?`, answer: -k };
+  }
+  // Two logs that combine to b^k. Sum: split b^k into a factor pair.
+  // Difference: b^k times a small multiplier, minus that multiplier.
+  const [b, k] = pick([[2, ri(3, 6)], [3, ri(2, 4)], [10, ri(2, 3)], [5, 2], [6, 2]]);
+  const target = b ** k;
+  if (Math.random() < 0.5) {
+    const pairs = [];
+    for (let d = 2; d * d <= target; d += 1) if (target % d === 0 && d !== target / d) pairs.push([d, target / d]);
+    if (pairs.length) {
+      const [p, q] = pick(pairs);
+      return { prompt: `${name(b)} ${p} + ${name(b)} ${q} = ?`, answer: k };
+    }
+  }
+  const m = pick([3, 5, 7].filter((x) => x !== b));
+  return { prompt: `${name(b)} ${target * m} ${MINUS} ${name(b)} ${m} = ?`, answer: k };
+}
+
 // PHYSICS / PHY_CIRC — Circular Motion & Gravity. Three shapes, all answered
 // with a whole number: a unit conversion (the mark this unit loses most), a
 // small centripetal force from F = mv²/r, and the minimum speed over the top
@@ -285,6 +321,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   AM_3A: factorTheorem,
   AM_4A: modulus,
   AM_4B: cubicSketch,
+  AM_5A: logLaws,
   U01_1: intAddSub,
   U01_2: intMulDiv,
   U01_3: lcm,

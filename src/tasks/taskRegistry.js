@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler, Tag, Beaker, Split, Spline, Variable, Blend, SquareRadical
+  Ruler, Tag, Beaker, Split, Spline, Variable, Blend, SquareRadical, Superscript
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -721,6 +721,31 @@ export const TASKS = [
     component: lazy(() => import('./Rationalise.jsx')),
     hasContent: (u) => !!u.rationalise?.items?.length,
     buildPool: (u) => u.rationalise,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'LOG_SIMPLIFY',
+    nativeMax: 10,
+    // p1–p37 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
+    // p38 is next.
+    dbKey: 'p38',
+    // "Numbers to logs, powers inside, combine, then ask: is it a number?"
+    // Evaluating a log as the power it asks for, and simplifying a sum of logs
+    // to one log — and then to a number when it is an exact power of the base —
+    // on a ladder of levels that only climbs. Every move is derived with exact
+    // fractions by utils/logs.js, and the power ladder beside the question
+    // shows where the answer sits between the base's powers.
+    // `checkLogItems` refuses an item with nothing to simplify, a power that
+    // leaves a root inside, or levels out of order. Item shape in
+    // src/tasks/LogSimplify.jsx.
+    label: 'Log Simplifier',
+    icon: Superscript,
+    color: { bg: 'bg-[#0284c7]', border: 'border-[#075985]', text: 'text-white' },
+    defaultMaxXP: 35,
+    phase: 'practice',
+    component: lazy(() => import('./LogSimplify.jsx')),
+    hasContent: (u) => !!u.logSimplify?.items?.length,
+    buildPool: (u) => u.logSimplify,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
 ];

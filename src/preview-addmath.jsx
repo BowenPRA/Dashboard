@@ -28,6 +28,12 @@ const DIAGRAMS = DIAGRAM_MODULES[`./data/ADD_MATH/${UNIT}/diagrams.js`]?.DIAGRAM
 // seven by hand.
 const SAVED = Object.fromEntries((params.get('done') || '').split(',').filter(Boolean).map((id) => [id, 1]));
 
+// `?slide=12` resumes the NOTES deck at a slide, as in preview-extmath.jsx. A
+// deck gates Continue on its checks and activities, so without this the only
+// way to look at slide 20 is to answer every item in front of it. Notes only
+// trusts a resume blob whose `total` matches the deck length.
+const SLIDE = Number(params.get('slide'));
+
 // The task list is whatever the unit declares, in gate order, so a unit that
 // drops a task or adds one needs no edit here.
 const casesFor = (unit) =>
@@ -66,9 +72,12 @@ function Harness() {
     const def = getTask(open);
     const resolved = resolveTask({ id: open });
     const pool = def.buildPool(unit, { track: TRACK, unitId: UNIT });
+    const saved = open === 'NOTES' && Number.isFinite(SLIDE) && SLIDE > 0
+      ? { slide: Math.min(SLIDE - 1, (unit.notes?.length || 1) - 1), total: unit.notes?.length || 0, checks: {} }
+      : SAVED;
     const ctx = {
       pool, unit, unitId: UNIT, track: TRACK,
-      scores: {}, savedData: SAVED, strikes: 0, maxXP: resolved.maxXP,
+      scores: {}, savedData: saved, strikes: 0, maxXP: resolved.maxXP,
       onComplete: (score, _b, log) => { console.log(`[harness] ${open} complete`, score, log); setOpen(null); },
       onProgress: (score, _b, log) => console.log(`[harness] ${open} progress`, score, log),
       onQuit: () => setOpen(null),

@@ -108,6 +108,14 @@ export const TRACK_LEVELS = {
       mapName: 'Three Crossings',
       blurb: 'The road crosses the line three times, and where it only touches, nothing gets through. Know your intercepts.',
     },
+    // Chapter 5 steps up to tier 3. The comb's evenly spaced teeth are the
+    // power ladder: every lane is the same step along, and every step
+    // multiplies what is coming by the base.
+    AM_5A: {
+      mapId: 'COMB', themeId: 'ICE', tier: 3,
+      mapName: 'The Power Ladder',
+      blurb: 'Every rung is the same step up, and every step multiplies the wave. Count the rungs, not the enemies.',
+    },
   },
   // IGCSE Mathematics (Extended). One level per Wolsey Hall assignment. EM_06
   // opens at tier 1: the student has met the arcade on other tracks, and the

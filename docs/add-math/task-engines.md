@@ -13,6 +13,7 @@ and §5 says how to write ones the marking engine can actually mark.
 
 | Engine | Task id · dbKey | Screen | Derivation | Book use |
 |---|---|---|---|---|
+| Log Simplifier | `LOG_SIMPLIFY` · p38 | `src/tasks/LogSimplify.jsx` | `src/utils/logs.js` | evaluating logs and the laws of logarithms (5.1–5.3) |
 | Case Solver | `MOD_SOLVE` · p30 | `src/tasks/ModulusSolver.jsx` | `src/utils/modulus.js` | modulus equations and inequalities (4.1, 4.2) |
 | Sketch It | `CUBIC_SKETCH` · p31 | `src/tasks/CubicSketch.jsx` | `src/utils/cubic.js` | cubic sketching and its modulus (4.3) |
 | Graph It | `GRAPH` · p15 | `src/tasks/GraphPlot.jsx` | `src/utils/graphCurve.js` | modulus graphs, quadratics |
@@ -119,6 +120,55 @@ export const cubicSketch = {
   roots, and — the one that matters — that a printed `expanded` form really **is** the
   product of the factors, by compiling it and testing at five points. (A wrong
   factorisation looks fine in the data; this is how three of the AM_4B items were caught.)
+
+## 2a. Log Simplifier (`LOG_SIMPLIFY`)
+
+The production task for §5.1–5.3. A log is evaluated by asking the power question,
+and a sum of logs is simplified the way the book does it — numbers into logs, powers
+inside, combine, then **is it an exact number?** — on a ladder of named levels that
+only climbs. Beside the question, the **power ladder** draws the base's powers as
+equally spaced rungs (with half- or third-rungs when the base is a square or a cube),
+and once the student commits, a marker lands on a rung (an exact log) or between two
+(log₅ 72 ≈ 2.66).
+
+```js
+// src/data/ADD_MATH/<UNIT>/logSimplify.js
+export const logSimplify = {
+  title: 'Log Simplifier',
+  intro: 'Shown under the first question only.',
+  levels: { 1: 'What a log asks', 2: 'One law at a time' /* … */ },
+  items: [
+    { id: 'e_2_32', level: 1, kind: 'evaluate', base: 2, arg: 32 },            // log₂ 32
+    { id: 'e_3_ninth', level: 1, kind: 'evaluate', base: 3, arg: '1/9' },      // a negative power
+    { id: 'e_5_root', level: 1, kind: 'evaluate', base: 5, arg: { root: 2, of: 5 } }, // log₅ √5
+    { id: 'c_2_quot', level: 2, kind: 'combine', base: 2, terms: [[1, 40], [-1, 5]] }, // log₂ 40 − log₂ 5
+    { id: 'c_2_half', level: 4, kind: 'combine', base: 2, terms: [['1/2', 36], [-1, 3]] },
+    { id: 'n_3_two', level: 5, kind: 'combine', base: 3, number: 2, terms: [[1, 5]] }, // 2 + log₃ 5
+  ],
+};
+```
+
+- `base` is a whole number from 2 to 20; **base 10 prints as lg**, the book's notation.
+- `evaluate`: `arg` is an integer, `'p/q'`, or `{ root, of }`. Stages: *power question*
+  (pick $2^x = 32$ from four derived look-alikes: base and power swapped, base and number
+  swapped, number as the power) → *find the power*.
+- `combine`: `terms` is `[[coef, n], …]` for coef·log(n) — coef a non-zero integer or
+  `'p/q'`, n a positive integer or `'p/q'`; `number` is a whole number written first.
+  Stages are derived from the shape and skipped when there is nothing to do: *numbers to
+  logs* → *power law* (the minus sign stays outside) → *combine* (one typed number; a
+  fraction is fine, and an unreduced one is accepted and reduced) → *a number?* (yes / no,
+  one try) → *find the power*, only when it is one.
+- Everything is **exact**: a positive number is held as prime exponents with rational
+  powers, so "is log₈ ½ an exact number?" is decided without floating point (it is −⅓).
+- Wrong answers are diagnosed from the item: adding the numbers inside, multiplying by a
+  minus log, the coefficient multiplied instead of raised, only the root of a ⅔ power,
+  the base times the number, a reciprocal or sign-flipped power.
+- `npm run validate` (`checkLogItems`) refuses: an `evaluate` that is not exact, a power
+  law that leaves a root inside, an item with nothing to simplify, a denominator above 4
+  in the answer, anything too big to type or to draw, and **levels out of order**. Every
+  `level` needs a name in `levels`.
+
+Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
 
 ## 3. Graph It (`GRAPH`)
 

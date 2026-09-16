@@ -27,6 +27,7 @@ import { checkActivity } from '../src/utils/activity.js';
 import { checkRearrangeItems } from '../src/utils/formula.js';
 import { checkVennItems } from '../src/utils/sets.js';
 import { checkSurdItems, checkRationaliseItems } from '../src/utils/surds.js';
+import { checkLogItems } from '../src/utils/logs.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -706,6 +707,21 @@ for (const trackId of TRACK_IDS) {
       if (!unit[key].title) err(`${at} is missing a title`);
       if (!(unit[key].items || []).length) err(`${at} has no items`);
       for (const p of check(unit[key].items || [])) err(`${at} ${p}`);
+    }
+
+    // -- Log Simplifier (ADD_MATH): the base and the logs are authored; every
+    //    number-to-log, power, combined number and exponent is derived with
+    //    exact fractions by utils/logs.js. Checked: the item has something to
+    //    simplify, a power never leaves a root inside, an "evaluate" really is
+    //    an exact number, nothing is too big to type, and the levels only climb.
+    if (unit.logSimplify) {
+      const at = `${label}: logSimplify`;
+      if (!unit.logSimplify.title) err(`${at} is missing a title`);
+      if (!(unit.logSimplify.items || []).length) err(`${at} has no items`);
+      for (const it of unit.logSimplify.items || []) {
+        if (it.level !== undefined && !unit.logSimplify.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
+      }
+      for (const p of checkLogItems(unit.logSimplify.items || [])) err(`${at} ${p}`);
     }
 
     // -- diagram references resolve

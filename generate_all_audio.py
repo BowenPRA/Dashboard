@@ -70,8 +70,11 @@ def speechify(text):
     t = text.replace('\\\\', '\\')
     # A line break is written in the JS source as the two characters \n. Guard
     # the replacement: unguarded, it also eats LaTeX commands that begin with n
-    # — `\notin` narrated as ". otin" and `\neq` as ". eq".
-    t = re.sub(r'\\n(?![a-zA-Z])', '. ', t)
+    # — `\notin` narrated as ". otin" and `\neq` as ". eq". The guard names those
+    # commands exactly: a bare "no letter may follow" guard left `\nThe` for the
+    # catch-all strip below, which silently deleted the first word of every
+    # paragraph that followed a line break ("The unknown is…" read "unknown is…").
+    t = re.sub(r'\\n(?!(?:eq|e|otin|ot|abla|u|ewline)(?![a-zA-Z]))', '. ', t)
     t = t.replace('\n', '. ')
     # Expand the maths that actually appears in the decks.
     t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
@@ -92,6 +95,17 @@ def speechify(text):
     t = t.replace('\\deg', ' the degree of ')
     t = t.replace('\\max', ' the larger of ')
     t = re.sub(r'\\sqrt\s*\{([^{}]*)\}', r' the square root of \1 ', t)
+    # Logarithms (ADD_MATH AM_5A). `\log_{2} 8` must be read "log base 2 of 8":
+    # left alone, the subscript rule below makes it "sub 2 8" and the catch-all
+    # deletes the word log entirely. lg is base 10 and is read "log"; ln is the
+    # natural log. Handled before the power rule, so `a^{\log_a x}` reads "a to
+    # the power log base a of x".
+    t = re.sub(r'\\log\s*_\s*\{([^{}]*)\}', r' log base \1 of ', t)
+    t = re.sub(r'\\log\s*_\s*(\w)', r' log base \1 of ', t)
+    t = re.sub(r'\\log(?![a-zA-Z])', ' log ', t)
+    t = re.sub(r'\\lg(?![a-zA-Z])', ' log ', t)
+    t = re.sub(r'\\ln(?![a-zA-Z])', ' natural log of ', t)
+    t = t.replace('\\approx', ' is approximately ').replace('≈', ' is approximately ')
     # Set notation (EXT_MATH). These appear both as LaTeX commands and as bare
     # Unicode in titles and note panels, and an unexpanded symbol is read as
     # NOTHING at all — "A ∪ B" would narrate as "A B". `\notin` must be handled
@@ -136,6 +150,11 @@ def speechify(text):
     t = re.sub(r'[{}$]', '', t)
     # Markdown: bold/italic markers and the ">" copy-down bumper.
     t = re.sub(r'\*+', '', t)
+    # A < or > BETWEEN two pieces of maths is a comparison, not a bumper: read
+    # it. Left to the bumper strip below, "x > 0" narrated as "x 0". A bumper
+    # follows a full stop or starts the text, so it never matches here.
+    t = re.sub(r'(?<=[\w)])\s*>\s*(?=[-\w(])', ' is greater than ', t)
+    t = re.sub(r'(?<=[\w)])\s*<\s*(?=[-\w(])', ' is less than ', t)
     t = re.sub(r'(?m)^\s*>\s*', '', t).replace('>', '')
     # Tidy: collapse whitespace and runs of periods.
     t = re.sub(r'\s+', ' ', t)

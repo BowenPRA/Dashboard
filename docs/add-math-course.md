@@ -32,12 +32,14 @@ Plus the general standards: [lesson-standard.md](lesson-standard.md),
 | Unit id | `AM_<chapter><letter>` — `AM_4B` is chapter 4, second unit. |
 | Folder | `src/data/ADD_MATH/<UNIT>/` and `public/audio/ADD_MATH/<UNIT>/` — the two names must match the unit id exactly. |
 | Visibility | `ADD_MATH` is **not** in the `GED` group. The student's `app_metadata.enrolled_tracks` must include `"ADD_MATH"` (teacher admin), or they must be on the preview/QA account. |
-| Harness | `preview-addmath.html?unit=<UNIT>` mounts every task without auth; `?done=id1,id2` resumes a task part-way; the DIAGRAMS case lays every SVG on one page. |
+| Harness | `preview-addmath.html?unit=<UNIT>` mounts every task without auth; `?done=id1,id2` resumes a task part-way; `?slide=N` opens NOTES at a slide (checks gate Continue); the DIAGRAMS case lays every SVG on one page. |
 
 **A unit is a chapter section or two, not a whole chapter.** `AM_4A` is §4.1–4.2
 because equations and inequalities are one argument; `AM_4B` is §4.3 alone because
 sketching is its own skill and its own exercise; §4.4 (cubic inequalities, read off those
-sketches) is `AM_4C`.
+sketches) is `AM_4C`. Chapter 5 is three units: `AM_5A` logarithms and their laws
+(§5.1–5.3), `AM_5B` exponential equations, e and ln, growth and decay (§5.5, 5.7, 5.8),
+`AM_5C` log equations, change of base and the graphs (§5.4, 5.6, 5.9, 5.10).
 
 ---
 
@@ -71,7 +73,7 @@ a worked solution the book does not print.
 | Phase | Gate | Tasks | XP |
 |---|---|---|---|
 | `concept` — **Gate 0: Learn** | 0 | `NOTES` 10 · `WORD_REC` 10 | 20 |
-| `practice` — **Gate 1: Apply** | 15 | the topic's production task (`CUBIC_SKETCH` 35, or `MOD_SOLVE` 25 + `GRAPH` 20) · `WORKBOOK` 20–30 · `WORKBOOK_B` if there is a second exercise | 65–90 |
+| `practice` — **Gate 1: Apply** | 15 | the topic's production task (`CUBIC_SKETCH` 35, `LOG_SIMPLIFY` 35, or `MOD_SOLVE` 25 + `GRAPH` 20) · `WORKBOOK` 20–30 · `WORKBOOK_B` if there is a second exercise | 65–90 |
 | `mastery` — **Gate 2: Quiz & Arcade** | 60 | `ASSESSMENT` 20 · `GAMES` 0 | 20 |
 
 `AM_4B` totals 105 against a 100 XP unit; `AM_4A` totals 130 because it carries two
