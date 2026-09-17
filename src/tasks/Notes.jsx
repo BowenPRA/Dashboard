@@ -143,7 +143,8 @@ const restoreFrom = (saved, slides) => {
 
 // Activities that read fine in a column beside the slide. A number line needs
 // the full width to be tappable, so it keeps the footer under the slide.
-const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn']);
+const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula']);
 
 export default function Notes({ slides, onComplete, onProgress, onQuit, savedData, bilingual = true }) {
   // Resume where the student left off. Students routinely close a deck part

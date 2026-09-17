@@ -48,22 +48,29 @@ status* section so it can be closed deliberately.
 - [y7-math-course.md](y7-math-course.md) — **start here.** The course spine: how a
   Cambridge section maps to an app unit, the 10-unit course map, one-time setup
   (`Y7_MATH` track, `WORKBOOK` component, lesson warm-up), and the per-section
-  build loop. Units 1.1–2.2 are built; the self-study format is
+  build loop. Units 1.1–2.5 are built; the self-study format is
   [y7-math/ADAPTATION-PLAN.md](y7-math/ADAPTATION-PLAN.md), with a one-page plan
   per unit under `y7-math/plans/`.
+- [y7-math/algebra-engines.md](y7-math/algebra-engines.md) — **the 2.3–2.5 build.** The
+  unit shape from 2.3 on, the Collect It / Expand It / Undo It / Pyramids schemas, the
+  `terms` · `algebra` · `grid` · `flow` deck activities, and what "interactive" means for
+  a Y7 deck (16–20 scored items, every vote a `predict`, every whiteboard slide typed).
 
 ### Year 7 Cambridge Science (new)
 
 - [y7-science-course.md](y7-science-course.md) — **start here** for the `Y7_SCI` track:
   the unit shape (an interactive deck, vocab, a mixed-type Practice workbook, Label It,
   cloze reading, reasoning questions, label-and-explain diagrams, the generative Lab
-  Bench, quiz, arcade), the per-file recipe, and the course map (1.1–2.2 built).
+  Bench, quiz, arcade), the per-file recipe, and the course map (1.1–2.2 and 2.5–2.7 built; 2.3 skipped for now).
 - [y7-science/ENGAGEMENT-PLAN.md](y7-science/ENGAGEMENT-PLAN.md) — **why the science
   units look the way they do.** The six principles (the starter is an interaction, never
   an instruction; touch the science; never the same twice…), the schemas for slide
   activities (`sort` · `order` · `estimate` · `hotspot` · `predict`), Label It and Lab
   Bench, the per-unit brief, and the definition of done. Per-unit plans live in
   `y7-science/plans/`.
+- [y7-science/particle-engines.md](y7-science/particle-engines.md) — **the 2.5–2.7
+  build.** Element Hunt and Particle Lab (generative), the `periodic` · `particles` ·
+  `formula` deck activities, and the unit shape from 2.5 on.
 - [math-lessons.md](math-lessons.md) — the projected TV lesson (`notes.js`): the
   title/warm-up/concept/summary shape, slide schema, discussion & activities,
   concision rules, bilingual, and the small `Notes.jsx` additions needed.

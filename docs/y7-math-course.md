@@ -91,6 +91,14 @@ From the workbook contents. Build in book order; each row is one unit folder.
 | 9 | **Sequences & functions** | 9.1 `U09_1` Generating sequences 1 · 9.2 `U09_2` Generating sequences 2 · 9.3 `U09_3` Using the nth term · 9.4 `U09_4` Representing simple functions |
 | 10 | **Percentages** | 10.1 `U10_1` Fractions, decimals & percentages · 10.2 `U10_2` Percentages large & small |
 
+**Progress (2026-09-17):** 2.3 Collecting like terms, 2.4 Expanding brackets and 2.5
+Constructing and solving equations are built to
+[y7-math/algebra-engines.md](y7-math/algebra-engines.md): each has its own derive-everything
+engine (Collect It, Expand It, Undo It), the generative Algebra Pyramids, and a deck of
+16–20 scored items built on the new `terms` / `algebra` / `grid` / `flow` activities.
+Book Problems (`WORKBOOK_B`) is retired from these units — the engine rehearses the
+exercise's shapes.
+
 **Progress (2026-09-10):** Unit 1 (1.1–1.6) and 2.1–2.2 are built in the self-study
 format of [y7-math/ADAPTATION-PLAN.md](y7-math/ADAPTATION-PLAN.md), each with a
 one-page plan under `y7-math/plans/`. The algebra units (2.1 onward) replace the

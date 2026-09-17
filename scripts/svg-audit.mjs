@@ -7,7 +7,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const SRC = 'C:/Users/bowen/Dashboard/src/data';
+// Relative to where it runs, so a worktree audits its own diagrams.
+const SRC = path.resolve('src/data');
 const ONLY = process.argv[2];
 const PAD = 6; // px of breathing room required inside a rect
 

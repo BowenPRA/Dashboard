@@ -7,6 +7,9 @@ import { rootsOf as curveRoots, levelOf, vertexOf, CURVE_KINDS } from './graphCu
 import { parseInequality, normalize } from './interval.js';
 import { checkCubicItems } from './cubic.js';
 import { parseSet, lettersOf, regionsOf, regionKeys } from './sets.js';
+import { collectModel, expandModel, equationModel, diagnoseSimplify, diagnoseExpand } from './algebra.js';
+import { querySymbols } from './elements.js';
+import { SUBSTANCES, classifyBox, countsOf } from './particles.js';
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -14,7 +17,20 @@ import { parseSet, lettersOf, regionsOf, regionKeys } from './sets.js';
 // pieces to fold. Schemas in docs/add-math/notes-and-activities.md.
 // `venn` (IGCSE Extended Mathematics) is set notation answered by SHADING the
 // regions of a Venn diagram. Schema in docs/ext-math/notes-and-widgets.md.
-export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn'];
+// The Year 7 types. Maths 2.3–2.5: `terms` (sort an expression's signed terms
+// into like-term baskets), `algebra` (type a simplified / expanded expression
+// or a solution, marked by value AND form), `grid` (fill an expansion grid box
+// by box), `flow` (reverse an equation's flow chart). Science 2.5–2.7:
+// `periodic` (tap tiles on the first-20 table), `particles` (sort drawn boxes
+// of particles into element / compound / mixture), `formula` (count the atoms
+// in a formula, or write the formula of a drawn particle). Every answer is
+// derived by utils/algebra.js, utils/elements.js or utils/particles.js.
+// Schemas in docs/y7-math/algebra-engines.md and docs/y7-science/particle-engines.md.
+export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn',
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula'];
+
+export const PARTICLE_ASKS = ['kind', 'pure', 'magnet', 'find'];
+export const PARTICLE_FIND = ['element', 'compound', 'mixture', 'pure'];
 
 const bilingualName = (o, bilingual) => o && o.name && (!bilingual || o.nameVn);
 
@@ -151,6 +167,86 @@ export function checkActivity(a, { bilingual = true } = {}) {
       out.push(`venn expr: ${e.message}`);
     }
     if (a.counts) for (const k of regionKeys(sets.length)) if (!Number.isInteger(a.counts[k])) out.push(`venn counts["${k}"] must be a whole number`);
+  }
+
+  if (a.type === 'terms') {
+    try {
+      const m = collectModel(a.expr);
+      if (m.written.length < 3) out.push('terms needs at least 3 terms to sort');
+      if (m.written.length > 8) out.push('terms has more than 8 terms');
+      if (m.baskets.length < 2) out.push('terms needs at least two kinds, or there is nothing to sort');
+    } catch (e) { out.push(`terms expr: ${e.message}`); }
+  }
+
+  if (a.type === 'algebra') {
+    if (!['simplify', 'expand', 'solve'].includes(a.mode)) out.push('algebra mode must be simplify, expand or solve');
+    try {
+      if (a.mode === 'simplify') {
+        const m = collectModel(a.expr);
+        if (!diagnoseSimplify(a.expr, m.answerText.replace(/−/g, '-')).ok) out.push('algebra: does not accept its own answer');
+      }
+      if (a.mode === 'expand') {
+        const m = expandModel(a.expr);
+        if (!diagnoseExpand(a.expr, m.answerText.replace(/−/g, '-')).ok) out.push('algebra: does not accept its own answer');
+      }
+      if (a.mode === 'solve') {
+        const m = equationModel({ eq: a.eq });
+        if (!m.integerSteps) out.push('algebra solve: undoing it passes through a fraction');
+      }
+    } catch (e) { out.push(`algebra ${a.mode === 'solve' ? 'eq' : 'expr'}: ${e.message}`); }
+  }
+
+  if (a.type === 'grid') {
+    try {
+      const m = expandModel(a.expr);
+      if (m.pieces.length !== 1) out.push('grid expr must be ONE bracket, like 5(a + 3)');
+      else if (m.brackets[0].inner.length > 3) out.push('grid bracket has more than three terms');
+    } catch (e) { out.push(`grid expr: ${e.message}`); }
+  }
+
+  if (a.type === 'flow') {
+    try {
+      const m = equationModel({ eq: a.eq });
+      if (m.ops.length > 3) out.push('flow has more than three operations');
+      if (!m.integerSteps) out.push('flow: undoing it passes through a fraction');
+    } catch (e) { out.push(`flow eq: ${e.message}`); }
+  }
+
+  if (a.type === 'periodic') {
+    if (!a.query || typeof a.query !== 'object') out.push('periodic needs a query, like { sym: "Mg" } or { group: 2 }');
+    else if (!querySymbols(a.query).length) out.push(`periodic query ${JSON.stringify(a.query)} picks out no element`);
+  }
+
+  if (a.type === 'particles') {
+    const boxes = a.boxes || [];
+    const ask = a.ask || 'kind';
+    if (!PARTICLE_ASKS.includes(ask)) out.push(`particles ask "${ask}" — ${PARTICLE_ASKS.join('/')}`);
+    if (!boxes.length || boxes.length > 4) out.push('particles needs 1–4 boxes');
+    for (const [i, b] of boxes.entries()) {
+      if (!Array.isArray(b) || b.length < 2 || b.length > 10) out.push(`particles box ${i + 1} needs 2–10 particles`);
+      else if (!b.every((f) => SUBSTANCES[f]?.atoms)) out.push(`particles box ${i + 1}: every particle must be a drawable substance (${b.filter((f) => !SUBSTANCES[f]?.atoms).join(', ')})`);
+    }
+    if (ask === 'find') {
+      if (!PARTICLE_FIND.includes(a.find)) out.push(`particles find "${a.find}" — ${PARTICLE_FIND.join('/')}`);
+      else if (boxes.length < 2) out.push('particles find needs at least two boxes to choose from');
+      else if (!out.length) {
+        const hits = boxes.filter((b) => { const v = classifyBox(b); return a.find === 'pure' ? v.pure : v.kind === a.find; });
+        if (!hits.length) out.push(`particles find "${a.find}": no box is one`);
+      }
+    }
+    if (ask === 'kind' && a.choices) for (const c of a.choices) if (!['element', 'compound', 'mixture'].includes(c)) out.push(`particles choice "${c}"`);
+    if (ask === 'kind' && a.choices && !out.length) {
+      for (const b of boxes) if (!a.choices.includes(classifyBox(b).kind)) out.push(`particles: a box is a ${classifyBox(b).kind}, which is not one of the choices`);
+    }
+  }
+
+  if (a.type === 'formula') {
+    const ask = a.ask || 'count';
+    if (!['count', 'write'].includes(ask)) out.push('formula ask must be count or write');
+    try {
+      countsOf(a.formula);
+      if (ask === 'write' && !SUBSTANCES[a.formula]?.atoms) out.push(`formula write: ${a.formula} has no drawing in utils/particles.js`);
+    } catch (e) { out.push(`formula: ${e.message}`); }
   }
   return out;
 }

@@ -14,6 +14,9 @@ import CubicFigure from '../math/CubicFigure.jsx';
 import VennFigure from '../math/VennFigure.jsx';
 import { regionsOf as vennRegionsOf, sameRegions } from '../../utils/sets';
 import { SafeInlineMath } from './SafeMath.jsx';
+import {
+  TermsActivity, AlgebraActivity, GridActivity, FlowActivity, PeriodicActivity, ParticlesActivity, FormulaActivity,
+} from './Y7Activities.jsx';
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -684,6 +687,14 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'numberline': body = <NumberLineActivity {...common} />; break;
     case 'reflect': body = <ReflectActivity {...common} />; break;
     case 'venn': body = <VennActivity {...common} />; break;
+    // Year 7 maths and science (Y7Activities.jsx)
+    case 'terms': body = <TermsActivity {...common} />; break;
+    case 'algebra': body = <AlgebraActivity {...common} />; break;
+    case 'grid': body = <GridActivity {...common} />; break;
+    case 'flow': body = <FlowActivity {...common} />; break;
+    case 'periodic': body = <PeriodicActivity {...common} />; break;
+    case 'particles': body = <ParticlesActivity {...common} />; break;
+    case 'formula': body = <FormulaActivity {...common} />; break;
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }
   return (

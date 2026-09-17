@@ -233,6 +233,22 @@ export const TRACK_LEVELS = {
       mapName: 'The Sand Maze',
       blurb: 'A winding maze in the dunes, and it is crawling.',
     },
+    U02_3: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 3, waveMod: 'SIEGE',
+      mapName: 'The Sorting Yard',
+      blurb: 'Every kind in its own basket. Armored heavies grind down the night channels.',
+    },
+    U02_4: {
+      mapId: 'COMB', themeId: 'ICE', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Grid Works',
+      blurb: 'One box, one multiplication — and wave after wave that never slows down.',
+    },
+    U02_5: {
+      mapId: 'GAUNTLET', themeId: 'DESERT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Long Way Back',
+      blurb: 'Undo every step, last one first. Queens and broods, the whole way down.',
+      bannedTowers: ['NITRO'],
+    },
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.
@@ -266,6 +282,24 @@ export const TRACK_LEVELS = {
       mapId: 'GAUNTLET', themeId: 'ICE', tier: 5, waveMod: 'BOSS',
       mapName: 'The Boiling Point',
       blurb: 'The final march through the cold. Queens and broods, the whole way down.',
+      bannedTowers: ['NITRO'],
+    },
+    // 2.5–2.7 (atoms, compounds, mixtures) climb again from the middle of the
+    // ladder rather than staying pinned at the top.
+    U02_5: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 3, waveMod: 'SIEGE',
+      mapName: 'The Periodic Grid',
+      blurb: 'Rows and columns in the dark. Armored heavies grind down the channels.',
+    },
+    U02_6: {
+      mapId: 'COMB', themeId: 'STANDARD', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Bonding Works',
+      blurb: 'Atoms joined tight — and wave after wave that never slows down.',
+    },
+    U02_7: {
+      mapId: 'GAUNTLET', themeId: 'DESERT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Sulfur Crater',
+      blurb: 'Iron and sulfur, stirred then heated. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
     },
   },

@@ -134,7 +134,16 @@ cell). Every explanation says why each distractor is wrong.
 | 1.4 Cells, tissues and organs | `U01_4` | built | `U01_4` |
 | 2.1 Solids, liquids and gases | `U02_1` | built | `U02_1a`, `U02_1b` |
 | 2.2 Changes of state | `U02_2` | built | `U02_2a`, `U02_2b`, `U02_model_states` (as the StateModel widget) |
-| 2.3 → | `U02_3` … | next, once taught | — |
+| 2.3 Explaining changes of state | `U02_3` | skipped for now (Bowen, 2026-09-17) | `U02_3` |
+| 2.5 Atoms, elements and the Periodic Table | `U02_5` | built — Element Hunt | `U02_5` |
+| 2.6 Compounds and formulae | `U02_6` | built — Particle Lab | `U02_6` |
+| 2.7 Compounds and mixtures | `U02_7` | built — Particle Lab (mixtures) | `U02_7` |
+| 2.8 → | `U02_8` … | next, once taught | — |
+
+From 2.5 the units follow [y7-science/particle-engines.md](y7-science/particle-engines.md):
+a denser deck (15–18 scored items, with the new `periodic` / `particles` / `formula`
+activities), and a generative task in place of Diagrams — Element Hunt (a tappable
+first-20 Periodic Table) or Particle Lab (count, write, build and sort particles).
 
 Not adapted, by design: `U00_1` (Day One), `U00_2` (the accuracy lab),
 `U00_3` (the planters) — they only exist with a room.

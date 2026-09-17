@@ -28,6 +28,10 @@ import { checkRearrangeItems } from '../src/utils/formula.js';
 import { checkVennItems } from '../src/utils/sets.js';
 import { checkSurdItems, checkRationaliseItems } from '../src/utils/surds.js';
 import { checkLogItems } from '../src/utils/logs.js';
+import { checkCollectItems, checkExpandItems, checkFlowItems } from '../src/utils/algebra.js';
+import { checkPyramidConfig } from '../src/utils/pyramid.js';
+import { checkHuntConfig } from '../src/utils/elementHunt.js';
+import { checkLabConfig } from '../src/utils/particles.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -120,6 +124,23 @@ for (const trackId of TRACK_IDS) {
     // -- Label It diagrams and the Lab Bench config (pure checkers in src/utils)
     if (unit.labelIt !== undefined) for (const p of checkLabelIt(unit.labelIt)) err(`${label}: labelIt ${p}`);
     if (unit.labBench !== undefined) for (const p of checkLabBench(unit.labBench)) err(`${label}: ${p}`);
+
+    // -- Year 7 algebra and particle engines (docs/y7-math/algebra-engines.md,
+    //    docs/y7-science/particle-engines.md). The item is the question; the
+    //    checkers derive every answer, prove the engine accepts it, and — for
+    //    the generative tasks — draw dozens of rounds per mode.
+    for (const [key, check] of [['collectTerms', checkCollectItems], ['expandGrid', checkExpandItems], ['flowSolve', checkFlowItems]]) {
+      if (unit[key] === undefined) continue;
+      const at = `${label}: ${key}`;
+      if (!unit[key].title || (bilingual && !unit[key].titleVn)) err(`${at} needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(unit[key].items || []).length) err(`${at} has no items`);
+      for (const p of check(unit[key].items || [], { levels: unit[key].levels, bilingual })) err(`${at} ${p}`);
+    }
+    for (const [key, check] of [['pyramids', checkPyramidConfig], ['elementHunt', checkHuntConfig], ['particleLab', checkLabConfig]]) {
+      if (unit[key] === undefined) continue;
+      if (bilingual && !unit[key].titleVn) err(`${label}: ${key} needs titleVn`);
+      for (const p of check(unit[key])) err(`${label}: ${p}`);
+    }
 
     // -- phases and XP
     const resolved = resolveUnitTasks(unit, 0);

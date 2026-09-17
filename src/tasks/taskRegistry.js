@@ -3,7 +3,8 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler, Tag, Beaker, Split, Spline, Variable, Blend, SquareRadical, Superscript
+  Ruler, Tag, Beaker, Split, Spline, Variable, Blend, SquareRadical, Superscript,
+  ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -747,6 +748,126 @@ export const TASKS = [
     hasContent: (u) => !!u.logSimplify?.items?.length,
     buildPool: (u) => u.logSimplify,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  // ── Year 7 algebra (2.3–2.5) and particles (Science 2.5–2.7) ──────────────
+  // p33 and p34 are held by the GED English Find & Fix / Order It tasks, which
+  // were in progress when these landed; p39 is the first key after LOG_SIMPLIFY.
+  // Every engine below is derive-don't-store: the item is the question, and
+  // utils/algebra.js, utils/pyramid.js, utils/elements.js and
+  // utils/particles.js work out every mark. Schemas in
+  // docs/y7-math/algebra-engines.md and docs/y7-science/particle-engines.md.
+  {
+    id: 'COLLECT_TERMS',
+    nativeMax: 10,
+    dbKey: 'p39',
+    // "Find, move, collect." The terms of an expression, each carrying the sign
+    // in front of it, are sorted into one basket per KIND (x, y, ab = ba, x², the
+    // numbers); each basket is totalled; the answer is written in simplest form.
+    // The two slips 2.3 is built around — the invisible 1 and the sign left
+    // behind — are named when they happen. Levels only climb.
+    label: 'Collect It',
+    icon: ShoppingBasket,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./CollectTerms.jsx')),
+    hasContent: (u) => !!u.collectTerms?.items?.length,
+    buildPool: (u) => u.collectTerms,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'EXPAND_GRID',
+    nativeMax: 10,
+    dbKey: 'p40',
+    // "One box, one multiplication." A bracket is expanded in the book's grid —
+    // the outside term down the side, each inside term (with its sign) across the
+    // top — box by box, then written out, then collected when there is more than
+    // one bracket. Work-backwards items blank a number and ask for it.
+    label: 'Expand It',
+    icon: Grid2x2,
+    color: { bg: 'bg-[#ea580c]', border: 'border-[#c2410c]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ExpandGrid.jsx')),
+    hasContent: (u) => !!u.expandGrid?.items?.length,
+    buildPool: (u) => u.expandGrid,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'FLOW_SOLVE',
+    nativeMax: 10,
+    dbKey: 'p41',
+    // "Build the flow chart, reverse it, check it." An equation (or an "I think
+    // of a number" story) becomes the chain of operations done to the letter;
+    // the student reverses it with inverse operations — last step first — and
+    // puts the answer back in to check. Stories first ask which equation fits.
+    label: 'Undo It',
+    icon: Undo2,
+    color: { bg: 'bg-[#0d9488]', border: 'border-[#0f766e]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./FlowSolve.jsx')),
+    hasContent: (u) => !!u.flowSolve?.items?.length,
+    buildPool: (u) => u.flowSolve,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'ALG_PYRAMID',
+    nativeMax: 10,
+    dbKey: 'p42',
+    // Algebra Pyramids, generated fresh every attempt: build up (add and
+    // collect), work down (subtract), expand brackets on the bottom row, or
+    // solve for the letter when the top is a number. The unit declares only
+    // its modes and round count (utils/pyramid.js).
+    label: 'Pyramids',
+    icon: Pyramid,
+    color: { bg: 'bg-[#ca8a04]', border: 'border-[#a16207]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./AlgebraPyramids.jsx')),
+    hasContent: (u) => !!(u.pyramids && Array.isArray(u.pyramids.modes) && u.pyramids.modes.length),
+    buildPool: (u) => u.pyramids || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'ELEMENT_HUNT',
+    nativeMax: 10,
+    dbKey: 'p43',
+    // The book's first-20 Periodic Table, tappable, with rounds drawn fresh each
+    // attempt: find an element by name, type its symbol (capitals marked — Co is
+    // cobalt, CO is two elements), name a symbol, tap a period or a group, pick
+    // out the metals, and say which atoms are heavier (utils/elementHunt.js).
+    label: 'Element Hunt',
+    icon: Atom,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./ElementHunt.jsx')),
+    hasContent: (u) => !!(u.elementHunt && Array.isArray(u.elementHunt.modes) && u.elementHunt.modes.length),
+    buildPool: (u) => u.elementHunt || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'PARTICLE_LAB',
+    nativeMax: 10,
+    dbKey: 'p44',
+    // Particles drawn fresh each round: count the atoms in a formula, write the
+    // formula of a drawn particle, build a particle from its formula, say which
+    // elements a name contains, and sort boxes of particles into element,
+    // compound and mixture — pure or not, and whether a magnet would pull the
+    // iron out (utils/particles.js).
+    label: 'Particle Lab',
+    icon: FlaskRound,
+    color: { bg: 'bg-[#16a34a]', border: 'border-[#15803d]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./ParticleLab.jsx')),
+    hasContent: (u) => !!(u.particleLab && Array.isArray(u.particleLab.modes) && u.particleLab.modes.length),
+    buildPool: (u) => u.particleLab || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
 ];
 
