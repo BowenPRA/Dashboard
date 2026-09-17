@@ -4,6 +4,7 @@ import Home from './views/Home';
 import YearDashboard from './views/YearDashboard';
 import Today from './views/Today';
 import Arcade from './views/Arcade';
+import Writing from './views/Writing';
 
 // NEW IMPORTS
 import TeacherRoute from './components/TeacherRoute';
@@ -23,6 +24,9 @@ export default function App() {
 
         {/* 2b. The day's assignment — two units, derived from studyPlanConfig.js */}
         <Route path="/today" element={<Today />} />
+
+        {/* 2c. Every GED essay the student has written, read back — utils/essayArchive.js */}
+        <Route path="/writing" element={<Writing />} />
 
         {/* 3. The Curricular Tracks — generated from TRACK_REGISTRY, so adding a
             track there is all that is needed for it to route. The Arcade is a

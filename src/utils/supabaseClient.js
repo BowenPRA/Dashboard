@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
 import { recordAttempt, mergeVocab, VOCAB_KEY, WALLET_KEY, ARCADE_KEY, isArcadeKey } from './progressSchema';
+import { ESSAYS_KEY, upsertEssay } from './essayArchive';
 import { ARCADE_TRACK_ID } from '../components/trackRegistry';
 
 // The single Supabase client for the whole app. Having a second createClient in
@@ -183,6 +184,13 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
 
       if (meta.vocab?.length) {
         newProgress[track][VOCAB_KEY] = mergeVocab(newProgress[track][VOCAB_KEY], meta.vocab);
+      }
+
+      // A graded essay is kept whole — text, score, the examiner's report, the
+      // errors — in the track's archive, upserted by id so the revision that
+      // follows updates the same entry. See utils/essayArchive.js.
+      if (meta.essay?.id) {
+        newProgress[track][ESSAYS_KEY] = upsertEssay(newProgress[track][ESSAYS_KEY], meta.essay);
       }
 
       // Fire and forget so the UI doesn't wait on the round-trip.

@@ -31,9 +31,12 @@ export const ENGLISH_1C_DATA = {
       id: "practice",
       title: "Drill",
       threshold: 15,
+      // PROOFREAD (p33) added to Drill: the unit over-provisions to 110 XP (the
+      // unit still caps at 100), giving the student slack; thresholds unchanged.
       tasks: [
         { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 },
+        { id: "PROOFREAD", dbKey: "p33", maxXP: 10 }
       ]
     },
     {
@@ -225,47 +228,249 @@ export const ENGLISH_1C_DATA = {
       modelAnswer: "That sentence sits at the very bottom of the ladder, as the weakest kind of evidence. It offers only a feeling — 'everybody knows' — with no number, study or checkable fact behind it, so a careful reader cannot verify it at all."
     }
   ],
-  essay: {
-    // The Lesson-9 capstone essay: a full GED Extended Response. Two opposing,
-    // contemporary sources with checkable evidence on each side; 60 minutes as an
-    // ESL accommodation (the real test is 45). The student argues which side is
-    // BETTER SUPPORTED, not which they personally prefer.
-    minutesAllowed: 60,
-    sources: [
-      {
-        title: "Make the Buses Free",
-        text:
-          "A city should let everyone ride the public bus for free. When the city of Elmwood removed bus fares for one year, ridership rose by thirty percent, and the roads carried noticeably fewer cars at rush hour. Collecting fares is not cheap either: ticket machines, cards and inspectors all cost money to run, so a large part of every fare is eaten up by the cost of collecting it. Free buses also help the people who need transport most — those who cannot afford a car can still reach work, clinics and shops without counting coins at the door.",
-      },
-      {
-        title: "Keep a Small Fare",
-        text:
-          "Free buses sound generous, but someone still has to pay for them. A bus system needs drivers, fuel and repairs, and fares cover a real share of that bill. When the town of Marsden made its buses free, the extra riders crowded the buses so badly that the town had to buy new vehicles it had not budgeted for, and the service grew less reliable. A small, low fare keeps a steady income for maintenance and asks riders to share the cost of a service they use, rather than passing the whole bill to taxpayers who may never board a bus.",
-      },
-    ],
-    task:
-      "Both writers argue about whether a city's public buses should be free. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
-    guidelines: [
-      "State clearly which position is better supported.",
-      "Use specific evidence from BOTH sources.",
-      "Judge how strong each side's evidence is — do not just repeat it.",
-      "Write in paragraphs, with a short conclusion.",
-    ],
-    suggestedWords: [
-      ["Evidence", "proof", "prove"],
-      ["Claim", "argues", "position"],
-      ["Cost", "fund", "pay"],
-    ],
-    scienceMaxMarks: 4,
-    markScheme: [
-      "States clearly which position is better supported, rather than only which the writer personally prefers.",
-      "Refers to specific evidence from Source 1 (for example the 30% rise in ridership in Elmwood or the cost of collecting fares).",
-      "Refers to specific evidence from Source 2 (for example the overcrowding and unbudgeted new vehicles in Marsden).",
-      "Evaluates the quality of the evidence rather than simply restating it, for example weighing the two measured results against each other.",
-    ],
-    modelAnswer:
-      "Both sources support their claims with a measured example, so this is a close case, but Source 2 is slightly better supported because its evidence points to a cost the other side never answers. Source 1 argues that buses should be free and gives a real result: after Elmwood dropped its fares, ridership rose by thirty percent and fewer cars used the roads at rush hour. It also makes the fair point that collecting fares is itself expensive. However, Source 1 never says how the free service was paid for. Source 2 answers exactly that gap. It agrees a bus system is worth having but shows, with the example of Marsden, that free buses drew so many riders that the town had to buy vehicles it had not budgeted for, and the service became less reliable. That is a concrete, measured harm, not just a worry. Because Source 2 both provides its own evidence and exposes the missing cost in Source 1's argument, its position is the better supported of the two.",
-  },
+  // Find & Fix: short informational texts on this unit's topic (claims and
+  // evidence) carrying mixed errors — agreement, tense, plural, article, comma
+  // splice, confusables. Everything NOT listed is correct English.
+  proofread: [
+    {
+      id: "pf1",
+      title: "Editorial: Show Us the Numbers",
+      titleVn: "Xã luận: Hãy cho chúng tôi thấy con số",
+      passage: "The council claims that the new bus lane have cut journey times, but it has not published a single figure. A claim without evidence are only an opinion. Last spring the council promised that every driver would saved ten minutes a day; drivers who use the road every morning say they see no difference. If the lane works, the figures will show it, and the council should release it. Until than, residents are right to stay unconvinced.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "have cut",
+          right: "has cut",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The new bus lane\" is one thing, so the present perfect uses \"has cut\".",
+          expVn: "\"The new bus lane\" là một thứ, nên thì hiện tại hoàn thành dùng \"has cut\"."
+        },
+        {
+          id: "e2",
+          wrong: "evidence are",
+          right: "evidence is",
+          accept: [],
+          kind: "Interrupting phrase",
+          expEn: "The subject is \"claim\" (one), not \"evidence\". Cross out \"without evidence\" and the verb is \"is\".",
+          expVn: "Chủ ngữ là \"claim\" (một), không phải \"evidence\". Gạch bỏ \"without evidence\" và động từ là \"is\"."
+        },
+        {
+          id: "e3",
+          wrong: "would saved",
+          right: "would save",
+          accept: [],
+          kind: "Verb form",
+          expEn: "After \"would\", the verb stays in its base form: \"would save\".",
+          expVn: "Sau \"would\", động từ giữ nguyên dạng gốc: \"would save\"."
+        },
+        {
+          id: "e4",
+          wrong: "release it",
+          right: "release them",
+          accept: [],
+          kind: "Pronoun agreement",
+          expEn: "The council should release \"the figures\" (plural), so the pronoun is \"them\".",
+          expVn: "Hội đồng nên công bố \"the figures\" (số nhiều), nên đại từ là \"them\"."
+        },
+        {
+          id: "e5",
+          wrong: "Until than",
+          right: "Until then",
+          accept: [],
+          kind: "Confusable words",
+          expEn: "\"Than\" compares two things. \"Then\" means \"that time\", which is the meaning here.",
+          expVn: "\"Than\" dùng để so sánh hai thứ. \"Then\" nghĩa là \"lúc đó\", đúng với nghĩa ở đây."
+        }
+      ]
+    },
+    {
+      id: "pf2",
+      title: "Notice: Have Your Say on the Skate Park",
+      titleVn: "Thông báo: Góp ý về công viên trượt ván",
+      passage: "The town council is asking residents for there views on a proposed skate park behind the leisure centre. Supporters says it will give young people a safe place to meet. Opponents worry about noise, they also point to a similar park in Weston that was closed after two years. Both sides have been asked to send evidence, not just opinions, before 30 April. A open meeting will be held on 6 May, and the council will publish every submission it receive.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "there views",
+          right: "their views",
+          accept: [],
+          kind: "Confusable words",
+          expEn: "The views belong to the residents, so the possessive \"their\" is needed. \"There\" points to a place.",
+          expVn: "Các ý kiến thuộc về cư dân, nên cần sở hữu \"their\". \"There\" chỉ một nơi chốn."
+        },
+        {
+          id: "e2",
+          wrong: "says",
+          right: "say",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Supporters\" is plural, so the verb has no -s: \"say\".",
+          expVn: "\"Supporters\" là số nhiều, nên động từ không có -s: \"say\"."
+        },
+        {
+          id: "e3",
+          wrong: "noise, they also point",
+          right: "noise; they also point",
+          accept: ["noise. They also point", "noise, and they also point", "noise — they also point"],
+          kind: "Comma splice",
+          expEn: "Two complete sentences cannot be joined by a comma alone. Use a semicolon, a full stop, or add \"and\".",
+          expVn: "Hai câu hoàn chỉnh không thể nối chỉ bằng dấu phẩy. Dùng dấu chấm phẩy, dấu chấm, hoặc thêm \"and\"."
+        },
+        {
+          id: "e4",
+          wrong: "A open",
+          right: "An open",
+          accept: [],
+          kind: "Article",
+          expEn: "\"Open\" begins with a vowel sound, so the article is \"an\".",
+          expVn: "\"Open\" bắt đầu bằng âm nguyên âm, nên mạo từ là \"an\"."
+        },
+        {
+          id: "e5",
+          wrong: "receive",
+          right: "receives",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "The subject is \"it\" (the council), so the present-tense verb takes an -s: \"receives\".",
+          expVn: "Chủ ngữ là \"it\" (hội đồng), nên động từ thì hiện tại mang -s: \"receives\"."
+        }
+      ]
+    },
+    {
+      id: "pf3",
+      title: "From a Report on Homework and Test Scores",
+      titleVn: "Trích từ một báo cáo về bài tập về nhà và điểm thi",
+      passage: "A study of 1,200 students at six school compared the amount of homework set with test results at the end of the year. Students who done between one and two hours a night scored highest. Those who did more than three hours scored no better, and many reported feeling tired in class. The researchers warns that the study does not prove that homework cause higher scores, because the students with the most homework also had the most experienced teachers. Even so, the results is strong enough to question the belief that more homework is always better.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "six school",
+          right: "six schools",
+          accept: [],
+          kind: "Plural noun",
+          expEn: "A number above one needs a plural noun: \"six schools\".",
+          expVn: "Một con số lớn hơn một cần danh từ số nhiều: \"six schools\"."
+        },
+        {
+          id: "e2",
+          wrong: "done",
+          right: "did",
+          accept: [],
+          kind: "Verb form",
+          expEn: "\"Done\" needs a helping verb (\"had done\"). On its own, the past tense is \"did\".",
+          expVn: "\"Done\" cần một trợ động từ (\"had done\"). Đứng một mình, thì quá khứ là \"did\"."
+        },
+        {
+          id: "e3",
+          wrong: "warns",
+          right: "warn",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The researchers\" is plural, so the verb has no -s: \"warn\".",
+          expVn: "\"The researchers\" là số nhiều, nên động từ không có -s: \"warn\"."
+        },
+        {
+          id: "e4",
+          wrong: "homework cause",
+          right: "homework causes",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Homework\" is an uncountable, singular noun, so the verb takes an -s: \"causes\".",
+          expVn: "\"Homework\" là danh từ không đếm được, số ít, nên động từ mang -s: \"causes\"."
+        },
+        {
+          id: "e5",
+          wrong: "results is",
+          right: "results are",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The results\" is plural, so the verb is \"are\".",
+          expVn: "\"The results\" là số nhiều, nên động từ là \"are\"."
+        }
+      ]
+    }
+  ],
+  // The essay is a BANK: the student picks one prompt each sitting. er1 keeps
+  // the original 60-minute ESL accommodation; er2 runs at the real test's 45.
+  essay: [
+    {
+      id: "er1",
+      title: "Free buses",
+      titleVn: "Xe buýt miễn phí",
+      // The Lesson-9 capstone essay: a full GED Extended Response. Two opposing,
+      // contemporary sources with checkable evidence on each side; 60 minutes as an
+      // ESL accommodation (the real test is 45). The student argues which side is
+      // BETTER SUPPORTED, not which they personally prefer.
+      minutesAllowed: 60,
+      sources: [
+        {
+          title: "Make the Buses Free",
+          text:
+            "A city should let everyone ride the public bus for free. When the city of Elmwood removed bus fares for one year, ridership rose by thirty percent, and the roads carried noticeably fewer cars at rush hour. Collecting fares is not cheap either: ticket machines, cards and inspectors all cost money to run, so a large part of every fare is eaten up by the cost of collecting it. Free buses also help the people who need transport most — those who cannot afford a car can still reach work, clinics and shops without counting coins at the door.",
+        },
+        {
+          title: "Keep a Small Fare",
+          text:
+            "Free buses sound generous, but someone still has to pay for them. A bus system needs drivers, fuel and repairs, and fares cover a real share of that bill. When the town of Marsden made its buses free, the extra riders crowded the buses so badly that the town had to buy new vehicles it had not budgeted for, and the service grew less reliable. A small, low fare keeps a steady income for maintenance and asks riders to share the cost of a service they use, rather than passing the whole bill to taxpayers who may never board a bus.",
+        },
+      ],
+      task:
+        "Both writers argue about whether a city's public buses should be free. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
+      guidelines: [
+        "State clearly which position is better supported.",
+        "Use specific evidence from BOTH sources.",
+        "Judge how strong each side's evidence is — do not just repeat it.",
+        "Write in paragraphs, with a short conclusion.",
+      ],
+      suggestedWords: [
+        ["Evidence", "proof", "prove"],
+        ["Claim", "argues", "position"],
+        ["Cost", "fund", "pay"],
+      ],
+      scienceMaxMarks: 4,
+      markScheme: [
+        "States clearly which position is better supported, rather than only which the writer personally prefers.",
+        "Refers to specific evidence from Source 1 (for example the 30% rise in ridership in Elmwood or the cost of collecting fares).",
+        "Refers to specific evidence from Source 2 (for example the overcrowding and unbudgeted new vehicles in Marsden).",
+        "Evaluates the quality of the evidence rather than simply restating it, for example weighing the two measured results against each other.",
+      ],
+      modelAnswer:
+        "Both sources support their claims with a measured example, so this is a close case, but Source 2 is slightly better supported because its evidence points to a cost the other side never answers. Source 1 argues that buses should be free and gives a real result: after Elmwood dropped its fares, ridership rose by thirty percent and fewer cars used the roads at rush hour. It also makes the fair point that collecting fares is itself expensive. However, Source 1 never says how the free service was paid for. Source 2 answers exactly that gap. It agrees a bus system is worth having but shows, with the example of Marsden, that free buses drew so many riders that the town had to buy vehicles it had not budgeted for, and the service became less reliable. That is a concrete, measured harm, not just a worry. Because Source 2 both provides its own evidence and exposes the missing cost in Source 1's argument, its position is the better supported of the two.",
+    },
+    {
+      id: "er2",
+      title: "Phones in cars",
+      titleVn: "Điện thoại trong xe hơi",
+      minutesAllowed: 45,
+      sources: [
+        {
+          title: "Ban Every Phone Call at the Wheel",
+          text:
+            "Drivers should be banned from using a phone at all while driving, including hands-free calls. Most people believe that a hands-free call is safe because both hands stay on the wheel, but the danger is in the mind, not the hands. In a driving-simulator study at a state university, drivers holding a hands-free conversation missed twice as many red lights as drivers who were not on a call, and their reaction times were as slow as those of drivers just over the legal alcohol limit. The problem is attention: a driver picturing the person on the other end of the line is not fully watching the road. Talking to a passenger is different, because a passenger can see the traffic and stops talking when the road gets busy. A law that bans only hand-held phones tells drivers that hands-free is safe, when the evidence says it is not.",
+        },
+        {
+          title: "Hands-Free Should Stay Legal",
+          text:
+            "Banning hands-free calls goes too far. The real danger on the road is a driver looking down at a screen to read a message, not a driver talking with both eyes on the traffic. Hands-free systems were built exactly so that drivers could keep their hands and eyes where they belong, and many modern cars come with them fitted as standard. A total ban would also be almost impossible to enforce, because a police officer cannot see whether a driver is talking to a passenger or to a phone. Delivery drivers, taxi drivers and parents who need to be reachable would be hit hardest, and many would simply ignore the law. It is more sensible to punish the clear danger — holding a phone — with heavy fines, and to trust adults to judge when a short call is safe. Most drivers already make that judgement sensibly every day.",
+        },
+      ],
+      task:
+        "Both writers argue about whether drivers should be banned from all phone use, including hands-free calls. In your response, analyze both positions to decide which one is better supported. Use specific evidence from the sources.",
+      guidelines: [
+        "State clearly which position is better supported.",
+        "Use specific evidence from BOTH sources.",
+        "Judge how strong each side's evidence is — a measured result beats a prediction.",
+        "Write in paragraphs, with a short conclusion.",
+      ],
+      suggestedWords: [
+        ["Evidence", "proof", "prove"],
+        ["Claim", "argues", "position"],
+        ["Driver", "attention", "hands-free"],
+      ],
+    },
+  ],
   assessment,
   games,
   notes

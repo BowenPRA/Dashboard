@@ -1,13 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Bot, CheckCircle2, XCircle, Award, Type, FlaskConical, FileEdit, ArrowRight,
-  Clock, Lightbulb, Undo2, Redo2, Lock, ScrollText, Quote, AlertTriangle, Scale
+  Clock, Lightbulb, Undo2, Redo2, Lock, ScrollText, ClipboardList, Sparkles,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import RevisionWorkshop from './essay/RevisionWorkshop';
+import EssayStart from './essay/EssayStart';
+import EssayPlanner from './essay/EssayPlanner';
+import FramesPane from './essay/FramesPane';
+import EssayReport from '../components/essay/EssayReport';
 
 import { gradeEssay } from '../utils/aiGrader';
 import { EmptyState } from '../components/ui';
+import { essayPrompts } from '../utils/essayPrompts';
+import { buildEssayEntry, newEssayId } from '../utils/essayArchive';
 
 const calculateSimilarity = (str1, str2) => {
   const clean = (s) => s.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
@@ -66,6 +72,11 @@ const GED_MIN_WORDS = 150;
 const GED_TIME_UP_MIN_WORDS = 40;
 const GED_TARGET_WORDS = [300, 500];
 
+// A draft worth keeping when the student leaves mid-essay.
+const DRAFT_MIN_WORDS = 20;
+
+const EMPTY_PLAN = { position: '', strong: '', weak: '', concede: '', conclusion: '' };
+
 /* -------------------------------------------------------------------------- *
  * How the task's 10 points are split
  *
@@ -90,8 +101,21 @@ const revisionXPOf = (revision) => {
   return 0;
 };
 
-export default function Essay({ pool, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
-  const currentQ = pool?.essay || pool;
+/**
+ * The GED Extended Response task.
+ *
+ * GED tracks get the full flow: pick a prompt from the unit's bank, choose
+ * practice or exam conditions, plan for five minutes with sentence frames, write
+ * against the clock, get the three-trait report, fix every error yourself, and
+ * have the whole thing — text, score, report, errors — kept in the essay
+ * archive so the student and the teacher can read it back and watch the trend.
+ * Every other track keeps the mark-scheme essay it always had.
+ */
+export default function Essay({
+  pool, onComplete, onProgress, onQuit, savedData = {}, strikes = 0, onAddStrike,
+  track, unitTitle, unitId, essayArchive = [],
+}) {
+  const prompts = useMemo(() => essayPrompts(pool?.essay || pool), [pool]);
 
   // GED essays are graded like the real Extended Response: three traits (0-2
   // each) with no mark scheme, model answer, or corrected rewrite. Every other
@@ -99,16 +123,31 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
   // grading handlers can branch on it.
   const isGedTrack = (track || '').startsWith('GED');
 
+  // Open on the prompt the student has written least, so a unit that comes
+  // round again on the study plan offers a fresh essay rather than a retype.
+  const [promptIndex, setPromptIndex] = useState(() => {
+    if (prompts.length < 2) return 0;
+    const counts = prompts.map((p) => essayArchive.filter((e) => e.promptKey === p.key && e.task === p.task).length);
+    return counts.indexOf(Math.min(...counts));
+  });
+  const currentQ = prompts[promptIndex];
+  const promptKey = currentQ?.key ?? '0';
+
   // The GED Extended Response is a timed, unaided piece of writing. Units may
   // override the limit; 45 minutes matches the real test.
   const minutesAllowed = currentQ?.minutesAllowed ?? 45;
 
   const [localAnswers, setLocalAnswers] = useState(savedData);
-  const [gameState, setGameState] = useState('Q');
+  const [gameState, setGameState] = useState(isGedTrack ? 'START' : 'Q');
+  const [mode, setMode] = useState('practice');
+  const [plan, setPlan] = useState(EMPTY_PLAN);
+  const [pane, setPane] = useState('sources');
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
+  const [entry, setEntry] = useState(null);
   const [secondsLeft, setSecondsLeft] = useState(minutesAllowed * 60);
   const [timeUp, setTimeUp] = useState(false);
+  const boxRef = useRef(null);
 
   /* ---------------------------------------------------------------------- *
    * Undo / redo
@@ -172,47 +211,77 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
   const canUndo = editHistory.i > 0 || (editHistory.stack[editHistory.i] !== userAnswer && userAnswer !== '');
   const canRedo = editHistory.i < editHistory.stack.length - 1;
 
+  /** Drops a sentence frame at the cursor of the response box. */
+  const insertFrame = (text) => {
+    const box = boxRef.current;
+    const cur = userAnswer || '';
+    const start = box ? box.selectionStart ?? cur.length : cur.length;
+    const end = box ? box.selectionEnd ?? start : start;
+    const before = cur.slice(0, start);
+    const after = cur.slice(end);
+    const lead = before && !/\s$/.test(before) ? ' ' : '';
+    const next = `${before}${lead}${text}${after}`;
+    setUserAnswer(next);
+    pushHistory(next);
+    const caret = before.length + lead.length + text.length;
+    setTimeout(() => {
+      if (!boxRef.current) return;
+      boxRef.current.focus();
+      boxRef.current.setSelectionRange(caret, caret);
+    }, 0);
+  };
+
   useEffect(() => () => { if (commitTimer.current) clearTimeout(commitTimer.current); }, []);
 
+  // Restore whatever was saved for the chosen prompt. GED prompts start at the
+  // start screen either way (a draft is offered there); legacy essays restore
+  // straight into the response box as they always did.
   useEffect(() => {
     window.scrollTo(0, 0);
-    const saved = localAnswers[0] || savedData[0] || savedData;
+    const saved = localAnswers[promptKey] || (promptKey === '0' ? (localAnswers[0] || savedData[0] || savedData) : null);
+
+    // Restores the persisted attempt when the item changes, and (per task) also
+    // scrolls, focuses, or advances the running score — side effects that have to
+    // stay in an effect. Queued for the render-phase-adjustment rewrite; not worth
+    // re-testing scoring mid study-block. See docs/daily-plan.md.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFeedback(null);
+    setEntry(null);
+    setTimeUp(false);
+    setSecondsLeft(minutesAllowed * 60);
+    setPlan(EMPTY_PLAN);
+    setPane('sources');
+
+    if (isGedTrack) {
+      setUserAnswer('');
+      resetHistory('');
+      setGameState('START');
+      return;
+    }
 
     if (saved && saved.text) {
       const text = saved.text;
-      const status = saved.status;
-
-      // Restores the persisted attempt when the item changes, and (per task) also
-      // scrolls, focuses, or advances the running score — side effects that have to
-      // stay in an effect. Queued for the render-phase-adjustment rewrite; not worth
-      // re-testing scoring mid study-block. See docs/daily-plan.md.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUserAnswer(text || '');
-      setFeedback(null);
       resetHistory(text || '');
-
-      if (status === 'perfect') {
-        setGameState('SAVED_PERFECT');
-      } else if (status === 'api_error') {
-        setGameState('SAVED_API_ERROR');
-      } else if (status === 'strike_fallback') {
-        setGameState('Q');
-      } else {
-        setGameState('Q');
-      }
+      if (saved.status === 'perfect') setGameState('SAVED_PERFECT');
+      else if (saved.status === 'api_error') setGameState('SAVED_API_ERROR');
+      else setGameState('Q');
     } else {
       setUserAnswer('');
-      setFeedback(null);
       resetHistory('');
       setGameState('Q');
     }
+    // Keyed on the prompt itself, not the `pool` object: a parent that rebuilds
+    // an identical pool on re-render (a save does that) must not throw the
+    // student off the score screen back to the start.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool]);
+  }, [currentQ?.task, promptKey]);
 
-  // Counts down only while the student is actually writing. Declared before the
-  // early return below so hook order stays identical on every render.
+  // Counts down only while the student is planning or writing. Declared before
+  // the early return below so hook order stays identical on every render.
+  const clockRunning = (gameState === 'Q' || gameState === 'PLAN') && !timeUp;
   useEffect(() => {
-    if (gameState !== 'Q' || timeUp) return undefined;
+    if (!clockRunning) return undefined;
     const id = setInterval(() => {
       setSecondsLeft((s) => {
         if (s <= 1) { clearInterval(id); setTimeUp(true); return 0; }
@@ -220,7 +289,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [gameState, timeUp]);
+  }, [clockRunning]);
 
   const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`;
 
@@ -237,6 +306,45 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     );
   }
 
+  const savedForPrompt = localAnswers[promptKey] || (promptKey === '0' ? localAnswers[0] : null);
+  const draft = savedForPrompt?.status === 'draft' ? savedForPrompt : null;
+  const secondsUsed = minutesAllowed * 60 - secondsLeft;
+
+  /* ---- starting ---------------------------------------------------------- */
+
+  const beginEssay = ({ resumeDraft = false } = {}) => {
+    setTimeUp(false);
+    if (resumeDraft && draft) {
+      setUserAnswer(draft.text || '');
+      resetHistory(draft.text || '');
+      setPlan({ ...EMPTY_PLAN, ...(draft.plan || {}) });
+      setMode(draft.mode || mode);
+      setSecondsLeft(Number.isFinite(draft.secondsLeft) ? draft.secondsLeft : minutesAllowed * 60);
+      setGameState('Q');
+      return;
+    }
+    setUserAnswer('');
+    resetHistory('');
+    setPlan(EMPTY_PLAN);
+    setSecondsLeft(minutesAllowed * 60);
+    setGameState(mode === 'exam' ? 'Q' : 'PLAN');
+  };
+
+  /** Leaving mid-essay keeps the draft, and nothing else changes. */
+  const saveDraftAndQuit = () => {
+    if (isGedTrack && gameState === 'Q' && countWords(userAnswer) >= DRAFT_MIN_WORDS) {
+      const answers = {
+        ...localAnswers,
+        [promptKey]: { text: userAnswer, status: 'draft', plan, mode, secondsLeft },
+      };
+      setLocalAnswers(answers);
+      onProgress?.(0, answers);
+    }
+    onQuit?.();
+  };
+
+  /* ---- grading ----------------------------------------------------------- */
+
   const handleLocalFallbackGrade = () => {
     // Bulletproofed mapping
     // Suggested words are highlighted as hints, never scored.
@@ -248,7 +356,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     // way; the AI grader is off, so no traits can be awarded.
     if (isGedTrack) {
       const disabled = "The AI examiner is disabled for this unit after 3 strikes, so no marks can be awarded.";
-      setFeedback({
+      const fb = {
         mode: 'ged',
         originalAnswer: trimmed,
         usedWordGroups,
@@ -261,11 +369,16 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
         conventionIssues: [],
         revisions: [],
         scoreNotes: [],
-        nonScorableReason: '',
+        nonScorableReason: disabled,
         isPerfect: false,
         isStrikeFallback: true
-      });
-      setLocalAnswers({ 0: { text: trimmed, status: 'strike_fallback' } });
+      };
+      setFeedback(fb);
+      setEntry(buildEssayEntry({
+        id: newEssayId(unitId || 'unit', promptKey), track, unitId, unitTitle, prompt: currentQ,
+        mode, minutesAllowed, secondsUsed, text: trimmed, plan, feedback: fb,
+      }));
+      setLocalAnswers({ ...localAnswers, [promptKey]: { text: trimmed, status: 'strike_fallback' } });
       setGameState('A');
       return;
     }
@@ -293,7 +406,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       isStrikeFallback: true
     });
 
-    setLocalAnswers({ 0: { text: trimmed, status: 'strike_fallback' } });
+    setLocalAnswers({ ...localAnswers, [promptKey]: { text: trimmed, status: 'strike_fallback' } });
     setGameState('A');
   };
 
@@ -336,7 +449,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       } catch (e2) {
         console.error("AI Grade Failed twice. Entering Error State.");
         setGameState('SAVED_API_ERROR');
-        setLocalAnswers({ 0: { text: trimmedAnswer, status: 'api_error' } });
+        setLocalAnswers({ ...localAnswers, [promptKey]: { text: trimmedAnswer, status: 'api_error', plan, mode } });
         return;
       }
     }
@@ -366,7 +479,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
         : (traits.arguments || 0) + (traits.development || 0) + (traits.conventions || 0);
       const isPerfect = gedTotal >= 6;
 
-      setFeedback({
+      const fb = {
         mode: 'ged',
         originalAnswer: trimmedAnswer,
         usedWordGroups,
@@ -388,11 +501,23 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
         nonScorableReason: aiData.nonScorableReason || '',
         isPerfect,
         isStrikeFallback: false
-      });
+      };
+      setFeedback(fb);
 
-      if (isPerfect) {
-        setLocalAnswers({ 0: { text: trimmedAnswer, status: 'perfect' } });
-      }
+      // Kept whole, the moment the score arrives: even a student who closes the
+      // tab during Part 2 keeps the essay and the report.
+      const archived = buildEssayEntry({
+        id: newEssayId(unitId || 'unit', promptKey), track, unitId, unitTitle, prompt: currentQ,
+        mode, minutesAllowed, secondsUsed, text: trimmedAnswer, plan, feedback: fb,
+      });
+      setEntry(archived);
+
+      const answers = {
+        ...localAnswers,
+        [promptKey]: { text: trimmedAnswer, status: isPerfect ? 'perfect' : 'graded', plan, mode, score: gedTotal },
+      };
+      setLocalAnswers(answers);
+      onProgress?.(Math.round((gedTotal / 6) * SCORE_XP), answers, { essay: archived });
       setGameState('A');
       return;
     }
@@ -423,7 +548,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     });
 
     if (isPerfect) {
-      setLocalAnswers({ 0: { text: trimmedAnswer, status: 'perfect' } });
+      setLocalAnswers({ ...localAnswers, [promptKey]: { text: trimmedAnswer, status: 'perfect' } });
     }
 
     setGameState('A');
@@ -436,6 +561,7 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
   const handleNext = (revision = null) => {
     let finalXP = 0;
     let answers = localAnswers;
+    let archived = entry;
 
     if (gameState === 'SAVED_PERFECT') {
       finalXP = 10;
@@ -445,16 +571,21 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       finalXP = Math.round((feedback.gedTotal / 6) * SCORE_XP) + revisionXPOf(revision);
       if (revision) {
         answers = {
-          0: {
-            ...(localAnswers[0] || {}),
+          ...localAnswers,
+          [promptKey]: {
+            ...(localAnswers[promptKey] || {}),
             text: feedback.originalAnswer,
-            status: feedback.isPerfect ? 'perfect' : (localAnswers[0]?.status || 'graded'),
+            status: feedback.isPerfect ? 'perfect' : (localAnswers[promptKey]?.status || 'graded'),
             revised: revision.revisedText,
             revisionFixed: revision.fixed,
             revisionTotal: revision.total,
           },
         };
         setLocalAnswers(answers);
+        if (archived) {
+          archived = { ...archived, revision: { fixed: revision.fixed, total: revision.total, revisedText: revision.revisedText } };
+          setEntry(archived);
+        }
       }
     } else if (feedback) {
       finalXP = Math.ceil((feedback.pointsEarned / feedback.maxPoints) * 10);
@@ -462,7 +593,8 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
       finalXP = 0;
     }
 
-    onComplete(finalXP, answers);
+    const meta = archived && feedback?.mode === 'ged' && !feedback.isStrikeFallback ? { essay: archived } : {};
+    onComplete(finalXP, answers, meta);
   };
 
   // Part 2 runs whenever there is a real score to learn from. A disabled grader
@@ -567,79 +699,193 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
     </button>
   );
 
+  const practiceAids = isGedTrack && mode === 'practice';
+  const panes = practiceAids ? ['sources', 'frames', 'plan'] : ['sources'];
+
+  // What the X does depends on where the student is: nothing written yet is
+  // just leaving; mid-essay keeps a draft; after a score it completes the task.
+  const handleTopBarQuit = () => {
+    if (!isGedTrack) { handleNext(); return; }
+    if (gameState === 'START' || gameState === 'PLAN' || gameState === 'LOADING') { onQuit?.(); return; }
+    if (gameState === 'Q') { saveDraftAndQuit(); return; }
+    handleNext();
+  };
+
+  /* ---- render ------------------------------------------------------------ */
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans pb-32">
       <TopBar
         current={0}
         total={1}
-        onQuit={() => handleNext()}
+        onQuit={handleTopBarQuit}
         modeTitle={isGedTrack ? "Extended Response" : "Essay Writing"}
+        quitLabel={isGedTrack && gameState === 'Q' ? 'Save draft & quit' : gameState === 'START' ? 'Back' : 'Save & Quit'}
       />
+
+      {gameState === 'START' && (
+        <>
+          <EssayStart
+            prompts={prompts}
+            index={promptIndex}
+            onPick={setPromptIndex}
+            mode={mode}
+            onMode={setMode}
+            archive={essayArchive}
+            onStart={() => beginEssay()}
+            onQuit={onQuit}
+          />
+          {draft && (
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 -mt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 rounded-2xl px-5 py-4">
+                <span className="text-sm font-bold text-amber-800 dark:text-amber-300">
+                  You have an unfinished draft on this prompt ({countWords(draft.text)} words, {Math.floor((draft.secondsLeft ?? 0) / 60)} min left on the clock).
+                </span>
+                <button
+                  onClick={() => beginEssay({ resumeDraft: true })}
+                  className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-black text-xs uppercase tracking-widest border-b-[3px] border-amber-700 active:border-b-0 active:translate-y-[3px] transition-all"
+                >
+                  Continue the draft
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {gameState === 'PLAN' && (
+        <div className="max-w-[92rem] mx-auto p-4 sm:p-6 mt-2 sm:mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-bold text-slate-400">Read both sources first — they are one click away in the writing screen too.</span>
+            {timerPill}
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-6">
+            <div className="bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm xl:sticky xl:top-24 xl:max-h-[calc(100vh-8rem)] flex flex-col overflow-hidden">
+              <div className="flex items-center px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex-shrink-0">
+                <ScrollText className="w-4 h-4 mr-2 text-slate-500" strokeWidth={2.5} />
+                <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Source Texts</span>
+              </div>
+              <div className="overflow-y-auto px-6 py-5">
+                <p className="text-[15px] font-bold text-slate-800 dark:text-white leading-relaxed mb-5">{currentQ.task}</p>
+                {numberedSources.map((s, i) => (
+                  <div key={i} className={i > 0 ? 'mt-6 pt-6 border-t-2 border-dashed border-slate-200 dark:border-slate-800' : ''}>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1">Source {i + 1}</h4>
+                    {s.title && <h3 className="text-lg font-black text-slate-800 dark:text-white mb-3">{s.title}</h3>}
+                    {s.paragraphs.map((p) => (
+                      <p key={p.n} className="text-[14px] text-slate-700 dark:text-slate-300 font-medium leading-[1.8] mb-3">{p.text}</p>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <EssayPlanner
+                plan={plan}
+                onChange={setPlan}
+                onStart={() => setGameState('Q')}
+                onSkip={() => setGameState('Q')}
+                extraFrames={currentQ.frames || []}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Part 2 drops the two-pane exam layout: the sources have done their job,
           and a sentence being rewritten deserves the whole screen. */}
-      {gameState === 'REVISE' ? (
+      {gameState === 'REVISE' && (
         <RevisionWorkshop
           originalText={feedback?.originalAnswer || ''}
           revisions={feedback?.revisions || []}
           onBackToScore={() => setGameState('A')}
           onFinish={(revision) => handleNext(revision)}
         />
-      ) : (
+      )}
+
+      {gameState !== 'START' && gameState !== 'PLAN' && gameState !== 'REVISE' && (
 
       <div className={`${isGedTrack ? 'max-w-[92rem]' : 'max-w-7xl'} mx-auto p-4 sm:p-6 mt-2 sm:mt-6`}>
 
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* LEFT: the stimulus pane. On GED this is a 50/50 split holding only the
-              source passages, mirroring the real test's two-pane screen; the prompt
-              lives with the response box on the right, where the test puts it. */}
+          {/* LEFT: the stimulus pane. On GED this is a 50/50 split holding the
+              source passages (and, in practice mode, the frames and the plan),
+              mirroring the real test's two-pane screen; the prompt lives with the
+              response box on the right, where the test puts it. */}
           <div className={`w-full ${isGedTrack ? 'lg:w-1/2' : 'lg:w-1/3'} flex flex-col`}>
             {isGedTrack ? (
               <div className="bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm sticky top-24 max-h-[calc(100vh-8rem)] flex flex-col overflow-hidden">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex-shrink-0">
-                  <div className="flex items-center text-slate-500 dark:text-slate-400">
-                    <ScrollText className="w-4 h-4 mr-2" strokeWidth={2.5} />
-                    <span className="text-[11px] font-black uppercase tracking-widest">Source Texts</span>
+                <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex-shrink-0">
+                  <div className="flex items-center gap-1">
+                    {panes.map((p) => {
+                      const Icon = p === 'sources' ? ScrollText : p === 'frames' ? Sparkles : ClipboardList;
+                      const label = p === 'sources' ? 'Source Texts' : p === 'frames' ? 'Frames' : 'My plan';
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => setPane(p)}
+                          className={`flex items-center px-3 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest transition-colors ${
+                            pane === p ? 'bg-indigo-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800'
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5 mr-1.5" strokeWidth={2.5} /> {label}
+                        </button>
+                      );
+                    })}
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                    Scroll to read all
-                  </span>
+                  {pane === 'sources' && (
+                    <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                      Scroll to read all
+                    </span>
+                  )}
                 </div>
 
-                <div className="overflow-y-auto px-6 sm:px-8 py-6">
-                  {numberedSources.map((s, i) => (
-                    <div key={i} className={i > 0 ? 'mt-8 pt-8 border-t-2 border-dashed border-slate-200 dark:border-slate-800' : ''}>
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mb-1">
-                        Source {i + 1}
-                      </h4>
-                      {s.title && (
-                        <h3 className="text-xl font-black text-slate-800 dark:text-white mb-4 leading-snug">{s.title}</h3>
-                      )}
-                      <div className="space-y-4">
-                        {s.paragraphs.map((p) => (
-                          <div key={p.n} className="flex">
-                            <span className="w-7 flex-shrink-0 text-xs font-black tabular-nums text-slate-300 dark:text-slate-600 pt-1 select-none">
-                              {p.n}
-                            </span>
-                            <p className="flex-1 text-[15px] text-slate-700 dark:text-slate-300 font-medium leading-[1.8]">
-                              {p.text}
-                            </p>
+                <div className="overflow-y-auto">
+                  {pane === 'sources' && (
+                    <div className="px-6 sm:px-8 py-6">
+                      {numberedSources.map((s, i) => (
+                        <div key={i} className={i > 0 ? 'mt-8 pt-8 border-t-2 border-dashed border-slate-200 dark:border-slate-800' : ''}>
+                          <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mb-1">
+                            Source {i + 1}
+                          </h4>
+                          {s.title && (
+                            <h3 className="text-xl font-black text-slate-800 dark:text-white mb-4 leading-snug">{s.title}</h3>
+                          )}
+                          <div className="space-y-4">
+                            {s.paragraphs.map((p) => (
+                              <div key={p.n} className="flex">
+                                <span className="w-7 flex-shrink-0 text-xs font-black tabular-nums text-slate-300 dark:text-slate-600 pt-1 select-none">
+                                  {p.n}
+                                </span>
+                                <p className="flex-1 text-[15px] text-slate-700 dark:text-slate-300 font-medium leading-[1.8]">
+                                  {p.text}
+                                </p>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                        </div>
+                      ))}
 
-                  {/* Not part of the real test, so it sits with the passages rather
-                      than beside the response box, and says so plainly. */}
-                  {(currentQ.suggestedWords || []).length > 0 && gameState !== 'LOADING' && (
-                    <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-3">
-                        Word Bank
-                        <span className="normal-case tracking-normal text-slate-300 dark:text-slate-600"> · a practice aid, not on the real test</span>
-                      </span>
-                      {suggestedWordChips}
+                      {/* Not part of the real test, so it sits with the passages rather
+                          than beside the response box, and says so plainly. */}
+                      {practiceAids && (currentQ.suggestedWords || []).length > 0 && gameState !== 'LOADING' && (
+                        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-3">
+                            Word Bank
+                            <span className="normal-case tracking-normal text-slate-300 dark:text-slate-600"> · a practice aid, not on the real test</span>
+                          </span>
+                          {suggestedWordChips}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {pane === 'frames' && (
+                    <FramesPane extra={currentQ.frames || []} onInsert={gameState === 'Q' && !timeUp ? insertFrame : undefined} />
+                  )}
+                  {pane === 'plan' && (
+                    <div className="px-6 sm:px-8 py-6">
+                      <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 mb-4">Your plan. Each line is one paragraph of the response.</p>
+                      <EssayPlanner plan={plan} onChange={setPlan} compact />
                     </div>
                   )}
                 </div>
@@ -675,9 +921,14 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
             {/* GED: the prompt box sits above the response area, as on the test. */}
             {isGedTrack && (
               <div className="bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm mb-6 overflow-hidden">
-                <div className="flex items-center px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
-                  <FileEdit className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" strokeWidth={2.5} />
-                  <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Prompt</span>
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                  <div className="flex items-center">
+                    <FileEdit className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" strokeWidth={2.5} />
+                    <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Prompt</span>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    {mode === 'exam' ? 'Exam conditions' : 'Practice'} · {currentQ.title}
+                  </span>
                 </div>
                 <div className="px-6 sm:px-8 py-6">
                   <p className="text-lg font-bold text-slate-800 dark:text-white leading-relaxed">
@@ -767,30 +1018,36 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                 </div>
               )}
 
-              <textarea
-                value={userAnswer}
-                onChange={(e) => handleAnswerChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onPaste={(e) => e.preventDefault()}
-                onCopy={(e) => e.preventDefault()}
-                onCut={(e) => e.preventDefault()}
-                disabled={gameState !== 'Q' || timeUp}
-                spellCheck={false}
-                autoCorrect="off"
-                autoCapitalize="off"
-                autoComplete="off"
-                data-gramm="false"
-                data-gramm_editor="false"
-                data-enable-grammarly="false"
-                placeholder={
-                  strikes >= 3
-                    ? "AI Grader disabled. Local fallback grading only."
-                    : isGedTrack
-                      ? "Type your response here. Start by stating which position is better supported…"
-                      : "Start writing your essay here..."
-                }
-                className={textAreaClass}
-              />
+              {/* After a GED score the report shows the text itself; the box would
+                  only repeat it, so it is hidden there. */}
+              {!(isGedTrack && gameState === 'A') && (
+                <textarea
+                  ref={boxRef}
+                  data-role="response"
+                  value={userAnswer}
+                  onChange={(e) => handleAnswerChange(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onPaste={(e) => e.preventDefault()}
+                  onCopy={(e) => e.preventDefault()}
+                  onCut={(e) => e.preventDefault()}
+                  disabled={gameState !== 'Q' || timeUp}
+                  spellCheck={false}
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  data-gramm="false"
+                  data-gramm_editor="false"
+                  data-enable-grammarly="false"
+                  placeholder={
+                    strikes >= 3
+                      ? "AI Grader disabled. Local fallback grading only."
+                      : isGedTrack
+                        ? "Type your response here. Start by stating which position is better supported…"
+                        : "Start writing your essay here..."
+                  }
+                  className={textAreaClass}
+                />
+              )}
             </div>
 
             {/* Legacy keeps the word chips below the answer box. */}
@@ -866,178 +1123,17 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
 
             {/* GED tracks: the real Extended Response report — three traits scored
                 0-2, the evidence the examiner actually found, /6 total, and one
-                next step. No mark scheme, content/English split, model answer or
-                rewrite; the test gives none of those. */}
-            {gameState === 'A' && feedback?.mode === 'ged' && (
+                next step. Rendered from the archive entry, so what the student
+                sees now is exactly what they (and the teacher) read back later. */}
+            {gameState === 'A' && feedback?.mode === 'ged' && entry && (
               <div className="w-full animate-in slide-in-from-bottom-8 duration-500">
-
-                <div className="flex items-center mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
-                  <div className="p-3 rounded-full mr-4 flex-shrink-0 bg-indigo-600">
-                    <Award className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white">
-                      {feedback.isStrikeFallback ? "Grader Disabled" : "Extended Response Score"}
-                    </h3>
-                    <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-1">
-                      Raw score
-                      <span className={`ml-2 text-base ${feedback.isPerfect ? 'text-emerald-600 dark:text-emerald-400' : 'text-indigo-600 dark:text-indigo-400'}`}>
-                        {feedback.gedTotal} / 6
-                      </span>
-                      {Number.isFinite(feedback.wordCount) && (
-                        <span className="ml-3 normal-case tracking-normal text-slate-400 dark:text-slate-500">
-                          · {feedback.wordCount} words
-                          {Number.isFinite(feedback.paragraphs) ? ` · ${feedback.paragraphs} paragraph${feedback.paragraphs === 1 ? '' : 's'}` : ''}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                {feedback.nonScorableReason && (
-                  <div className="bg-rose-50 dark:bg-rose-900/20 border-2 border-rose-200 dark:border-rose-800 p-6 rounded-[1.5rem] mb-6">
-                    <div className="flex items-center text-rose-600 dark:text-rose-400 mb-2">
-                      <AlertTriangle className="w-5 h-5 mr-2" />
-                      <h4 className="font-black text-sm uppercase tracking-widest">Not Scorable</h4>
-                    </div>
-                    <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{feedback.nonScorableReason}</p>
-                  </div>
-                )}
-
-                {/* What the examiner found before it scored anything. This is the
-                    part a student can act on — a trait number alone tells them
-                    nothing about which sentence lost the mark. */}
-                {!feedback.isStrikeFallback && !feedback.nonScorableReason && (
-                  <div className="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm mb-6">
-                    <div className="flex items-center text-slate-500 dark:text-slate-400 mb-4">
-                      <Quote className="w-4 h-4 mr-2" strokeWidth={2.5} />
-                      <h4 className="font-black text-[11px] uppercase tracking-widest">What the examiner found</h4>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Your position</span>
-                        <p className="text-[15px] font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
-                          {feedback.positionStated || <span className="text-rose-500 dark:text-rose-400">You never stated clearly which side was better supported.</span>}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
-                          Evidence you used from the sources
-                        </span>
-                        {(feedback.evidenceCited || []).length > 0 ? (
-                          <ul className="space-y-1.5">
-                            {feedback.evidenceCited.map((e, i) => (
-                              <li key={i} className="flex items-start">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 mr-2 mt-0.5 flex-shrink-0" />
-                                <span className="text-[15px] font-medium text-slate-700 dark:text-slate-300">{e}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-[15px] font-medium text-rose-500 dark:text-rose-400">
-                            None. Only evidence taken from the source texts earns marks.
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
-                          How you judged the argumentation
-                        </span>
-                        <p className="text-[15px] font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
-                          {feedback.analysisOfArgumentation || (
-                            <span className="text-rose-500 dark:text-rose-400">
-                              You summarised both sides and chose one, but never judged how good their evidence was. This is what keeps a response at 1 instead of 2.
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-4 mb-6">
-                  {[
-                    { key: 'arguments', label: 'Creation of Arguments & Use of Evidence', hint: 'A clear position, specific evidence from the sources, and a judgement on how strong that evidence is.' },
-                    { key: 'development', label: 'Development of Ideas & Structure', hint: 'Ideas elaborated, not just listed, in a clear introduction, body and conclusion.' },
-                    { key: 'conventions', label: 'Clarity & Command of English Conventions', hint: 'Varied sentences, with grammar, spelling and punctuation under control.' },
-                  ].map((t) => {
-                    const score = feedback.gedTraits?.[t.key] ?? 0;
-                    const fb = feedback.traitFeedback?.[t.key] || 'No feedback provided.';
-                    const pill = score === 2
-                      ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
-                      : score === 1
-                        ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
-                        : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300';
-                    const accent = score === 2 ? 'border-l-emerald-400' : score === 1 ? 'border-l-amber-400' : 'border-l-rose-400';
-                    const band = score === 2 ? 'Top band' : score === 1 ? 'Partial credit' : 'No credit';
-                    return (
-                      <div key={t.key} className={`bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 border-l-4 ${accent} shadow-sm`}>
-                        <div className="flex items-start justify-between gap-4 mb-1">
-                          <h4 className="text-lg font-black text-slate-800 dark:text-white leading-snug">{t.label}</h4>
-                          <span className={`flex-shrink-0 font-bold px-3 py-1 rounded-lg text-sm tabular-nums ${pill}`}>{score} / 2</span>
-                        </div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">{band}</p>
-                        <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-3">{t.hint}</p>
-                        <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{fb}</p>
-
-                        {t.key === 'conventions' && (feedback.conventionIssues || []).length > 0 && (
-                          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                            <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
-                              Errors the examiner marked
-                            </span>
-                            <ul className="space-y-1">
-                              {feedback.conventionIssues.map((e, i) => (
-                                <li key={i} className="flex items-start">
-                                  <XCircle className="w-4 h-4 text-rose-400 mr-2 mt-0.5 flex-shrink-0" />
-                                  <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{e}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Where a rubric gate, rather than the examiner's judgement, held
-                    a trait down. Saying so out loud is the difference between a
-                    score that feels arbitrary and one the student can chase. */}
-                {(feedback.scoreNotes || []).length > 0 && (
-                  <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-6 rounded-[1.5rem] mb-6">
-                    <div className="flex items-center text-amber-700 dark:text-amber-400 mb-3">
-                      <Scale className="w-5 h-5 mr-2" />
-                      <h4 className="font-black text-sm uppercase tracking-widest">Why marks were capped</h4>
-                    </div>
-                    <ul className="space-y-2">
-                      {feedback.scoreNotes.map((n, i) => (
-                        <li key={i} className="flex items-start">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 mr-3 flex-shrink-0" />
-                          <span className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{n}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {feedback.nextStep && (
-                  <div className="bg-[#eff6ff] dark:bg-blue-900/20 border border-[#bfdbfe] dark:border-blue-800 p-6 rounded-[1.5rem] mb-8">
-                    <div className="flex items-center text-[#2563eb] dark:text-blue-400 mb-2">
-                      <Lightbulb className="w-5 h-5 mr-2" />
-                      <h4 className="font-black text-sm uppercase tracking-widest">Your Next Step</h4>
-                    </div>
-                    <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{feedback.nextStep}</p>
-                  </div>
-                )}
+                <EssayReport entry={entry} showText />
 
                 {/* The report is only half the task. Reading "watch your verb
                     endings" changes nothing; Part 2 is where the student
                     actually rewrites the sentences that lost the marks. */}
                 {hasRevisionStep ? (
-                  <div className="bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-indigo-900 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
+                  <div className="mt-8 bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-indigo-900 p-6 sm:p-8 rounded-[1.5rem] shadow-sm mb-8">
                     <span className="block text-[11px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">
                       Part 2 of 2 · Revision
                     </span>
@@ -1061,11 +1157,10 @@ export default function Essay({ pool, onComplete, onQuit, savedData = {}, strike
                     </div>
                   </div>
                 ) : (
-                  <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800 mb-8">
+                  <div className="flex justify-end pt-4 mt-8 border-t border-slate-200 dark:border-slate-800 mb-8">
                     {completeButton}
                   </div>
                 )}
-
               </div>
             )}
 

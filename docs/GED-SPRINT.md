@@ -127,9 +127,11 @@ Thresholds sit below each phase's own total so a half-finished phase never locks
 
 | Track / unit type | Learn | Drill | Prove |
 |---|---|---|---|
-| **ENG — reading** (`1A/1B/1C`) | NOTES 10 · WORD_REC 10 | READ_COMP 20 · GRAMMAR_EDIT 20 | SHORT_ANSWERS 20 · ASSESSMENT 20 |
-| **ENG — editing** (`0A/0B/3/4/5`) | NOTES 10 · WORD_REC 10 | GRAMMAR_EDIT 30 · WORKBOOK 10 | SHORT_ANSWERS 10 · ASSESSMENT 30 |
-| **ENG — essay capstone** (`10`) | NOTES 10 · WORD_REC 10 | READ_COMP 20 (the two sources) · SHORT_ANSWERS 20 (frame drill) | ESSAY 40 |
+| **ENG — reading** (`1A/1B/1C`) | NOTES 10 · WORD_REC 10 | READ_COMP 15 · SHORT_ANSWERS 20 · PROOFREAD 10 | DIAGRAMS 15 · ESSAY 15 · ASSESSMENT 15 |
+| **ENG — grammar** (`0A/0B`) | NOTES 10 · WORD_REC 15 | READ_COMP 15 · GRAMMAR_EDIT 30 | PROOFREAD 15 · ASSESSMENT 15 |
+| **ENG — editing** (`3/4/5`) | NOTES 10 · WORD_REC 10 | GRAMMAR_EDIT 25 · PROOFREAD 15 | SHORT_ANSWERS 10 · ASSESSMENT 30 |
+| **ENG — organisation** (`6`) | NOTES 10 · WORD_REC 10 | GRAMMAR_EDIT 20 · SEQUENCE 20 | SHORT_ANSWERS 20 · ASSESSMENT 20 |
+| **ENG — essay capstone** (`10`) | NOTES 10 · WORD_REC 10 | READ_COMP 15 (the two sources) · SEQUENCE 15 · SHORT_ANSWERS 20 (frame drill) | ESSAY 30 · PROOFREAD 10 |
 | **HISTORY** and **SCIENCE** | NOTES 10 · WORD_REC 10 | READ_COMP 20 · DIAGRAMS 20 | SHORT_ANSWERS 20 · ASSESSMENT 20 |
 | **MATH** | NOTES 10 · WORD_REC 10 | WORKBOOK 25 · BALANCE 15 | DIAGRAMS 20 · ASSESSMENT 20 |
 
@@ -199,15 +201,15 @@ charts, or any rewrite of a built unit that a diagnostic hasn't flagged.
 | | Mon | Tue | Wed | Thu | Fri |
 |---|---|---|---|---|---|
 | **W1** | `ENG_0A` Pronouns ✅ | `ENG_0B` Subject–Verb ✅ | `MATH_1A` Expressions & Equations ✅ | `ENG_1A` Main Idea & Detail ✅ | `HIST_1A` Colonial America ✅ |
-| **W2** | `ENG_1B` Purpose & Tone ✅ | `MATH_1B` Linear Equations ✅ | `ENG_1C` Claims & Evidence ✅ | `HIST_1B` Constitution ✅ | `MATH_0D` **Data & Statistics** ♻ |
-| **W3** | `ENG_4` **Sentence Boundaries** | `HIST_2A` **Civics 1** | `MATH_0E` **Geometric Measurement** ♻ | `ENG_5` **Punctuation & Confusables** | `HIST_0A` **Reading SS Sources** |
-| **W4** | `ENG_10` **Extended Response** | `SCI_0A` **Reading Science** | `HIST_2B` **Civics 2** | `MATH_0C` **Ratios & Proportions** | `SCI_1A` **Life Science** |
-| **W5** | `ENG_3` **Verb Tense** | `HIST_3A` **Economics** | `SCI_3A` **Earth & Space** ♻ | `MATH_0B` **Fractions, Decimals, Percents** | `ENG_6` **Transitions & Organization** |
+| **W2** | `ENG_1B` Purpose & Tone ✅ | `MATH_1B` Linear Equations ✅ | `ENG_1C` Claims & Evidence ✅ | `HIST_1B` Constitution ✅ | `MATH_0D` Data & Statistics ✅ |
+| **W3** | `ENG_4` Sentence Boundaries ✅ | `HIST_2A` Civics 1 ✅ | `MATH_0E` Geometric Measurement ✅ | `ENG_5` Punctuation & Confusables ✅ | `HIST_0A` Reading SS Sources ✅ |
+| **W4** | `ENG_10` Extended Response ✅ | `SCI_0A` Reading Science ✅ | `HIST_2B` Civics 2 ✅ | `MATH_0C` Ratios & Proportions ✅ | `SCI_1A` Life Science ✅ |
+| **W5** | `ENG_3` Verb Tense ✅ | `HIST_3A` Economics ✅ | `SCI_3A` Earth & Space ✅ | `MATH_0B` Fractions, Decimals, Percents ✅ | `ENG_6` Transitions & Organization ✅ |
 | **W6** | *no new modules — timed rehearsal, error review, the last two sittings* | | | | |
 
 The week grid above is the **shipping schedule**; the subject module maps below are the
 **coverage target** (the six most-tested topics per subject). Science was widened from 3 to 6
-after a topic review, so the maps now hold **29 modules — 12 built, 17 to author** (English 10 ·
+after a topic review, so the maps now hold **29 modules — all 29 built as of 2026-09-17** (English 10 ·
 Social Studies 7 · Math 6 · Science 6). The three reading/number-sense spines `HIST_0A`,
 `SCI_0A` and `MATH_0B` are now built on the flexible layout Notes. That is more than six weeks can author, which is the
 point of the drop-order: build down the maps in risk order and let the tail fall.
@@ -227,11 +229,11 @@ three maps replace the old Math/Science/Social-Studies spec bullets.
 | ID | Module | Strand | Status |
 |---|---|---|---|
 | `MATH_0B` | Fractions, Decimals & Percents | Quantitative | ✅ built (authored SVG source analysis) |
-| `MATH_0C` | Ratios, Proportions & Rates | Quantitative | **new** — highest-frequency word-problem type |
+| `MATH_0C` | Ratios, Proportions & Rates | Quantitative | ✅ built (WORKBOOK 25 + BALANCE 15) |
 | `MATH_1A` | Expressions & Equations | Algebraic | ✅ |
 | `MATH_1B` | Linear Equations, Inequalities & Graphing | Algebraic | ✅ (extend: slope, `y=mx+b`) |
-| `MATH_0D` | Data, Statistics & Probability | Quantitative | ♻ `Y9/MATH_1A` |
-| `MATH_0E` | Geometry & Measurement (area, volume, surface area, Pythagoras) | Quantitative | ♻ `Y9/MATH_2A` + `Y8/MATH_1A` |
+| `MATH_0D` | Data, Statistics & Probability | Quantitative | ✅ built |
+| `MATH_0E` | Geometry & Measurement (area, volume, surface area, Pythagoras) | Quantitative | ✅ built |
 
 Word problems → equations is woven through `MATH_0C` and `MATH_1A/1B`, not a separate module.
 Percents and proportions carry more marks than quadratics, so fluency there is prioritised.
@@ -241,11 +243,11 @@ Percents and proportions carry more marks than quadratics, so fluency there is p
 | ID | Module | Strand | Status |
 |---|---|---|---|
 | `SCI_0A` | Reading Science: Data, Graphs & the Scientific Method | Practices (the spine) | ✅ built (first `GED_SCIENCE` unit) |
-| `SCI_1A` | Cells & Human Body Systems (+ health, nutrition) | Life | **new** |
-| `SCI_1B` | Ecosystems, Energy Flow & Heredity (food webs, cycles, natural selection, Punnett) | Life | ♻ `Y9` ecology |
-| `SCI_2A` | Matter, Atoms & Chemical Reactions (states, physical vs chemical change, conservation of mass) | Physical | **new** |
-| `SCI_2B` | Force, Motion & Energy (Newton's laws, speed/accel, work, energy, waves) | Physical | ♻ `Y8/SCIENCE_1A` |
-| `SCI_3A` | Earth & Space Science (tectonics, weather/climate, water cycle, solar system) | Earth & Space | ♻ `Y9/SCIENCE_2A` |
+| `SCI_1A` | Cells & Human Body Systems (+ health, nutrition) | Life | ✅ built |
+| `SCI_1B` | Ecosystems, Energy Flow & Heredity (food webs, cycles, natural selection, Punnett) | Life | ✅ built |
+| `SCI_2A` | Matter, Atoms & Chemical Reactions (states, physical vs chemical change, conservation of mass) | Physical | ✅ built |
+| `SCI_2B` | Force, Motion & Energy (Newton's laws, speed/accel, work, energy, waves) | Physical | ✅ built |
+| `SCI_3A` | Earth & Space Science (tectonics, weather/climate, water cycle, solar system) | Earth & Space | ✅ built |
 
 `SCI_0A` is content-light but highest-leverage: Science is a reading-and-data test with content
 bolted on, so its data/method skills transfer to every other Science module — and to Social
@@ -258,10 +260,10 @@ Studies. All diagrams are real charts/micrographs (NASA/NOAA/USGS/NIH), never SV
 |---|---|---|---|
 | `HIST_0A` | Reading SS Sources (documents, political cartoons, maps, charts; fact vs opinion, bias) | Cross-cutting spine | ✅ built (real-source cartoon/map/photo) |
 | `HIST_1A` + `HIST_1B` | US History: Colonial → Revolution → Independence & Constitution | US History | ✅ ✅ |
-| `HIST_2A` | Foundations of Government (three branches, checks & balances, federalism) | Civics | **new** — extends `HIST_1B` |
-| `HIST_2B` | Rights, Citizenship & Elections (Bill of Rights, key amendments, voting) | Civics | **new** |
-| `HIST_3A` | Economics (supply & demand, markets, money, incentives, credit/interest) | Economics | **new** |
-| `HIST_4A` | Geography & Human-Environment (map reading, migration, resources) | Geography | **new** |
+| `HIST_2A` | Foundations of Government (three branches, checks & balances, federalism) | Civics | ✅ built |
+| `HIST_2B` | Rights, Citizenship & Elections (Bill of Rights, key amendments, voting) | Civics | ✅ built |
+| `HIST_3A` | Economics (supply & demand, markets, money, incentives, credit/interest) | Economics | ✅ built |
+| `HIST_4A` | Geography & Human-Environment (map reading, migration, resources) | Geography | ✅ built |
 
 Civics is **50%** of the test, is finite and factual, and sits at near-zero coverage — the
 single cheapest large block of marks in the plan, so it takes 2.5 of the six modules. Map- and

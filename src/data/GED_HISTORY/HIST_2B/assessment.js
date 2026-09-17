@@ -1,0 +1,186 @@
+// src/data/GED_HISTORY/HIST_2B/assessment.js
+// Timed mixed check for Rights, Citizenship & Elections. Two GED-style sources
+// — a public-domain primary source (Susan B. Anthony's 1873 speech on her
+// arrest for voting) and a four-state model election table described in text —
+// plus stand-alone items on the Bill of Rights, Brown v. Board, a citizen's
+// duties and naturalization. Key: A3 B3 C2 D2 across the 10 MCQs.
+
+export const assessment = {
+  timeLimit: 1200, // 20 minutes
+  passages: [
+    {
+      id: "src_anthony_1873",
+      title: "\"We, the Whole People\"",
+      vnTitle: "\"Chúng ta, Toàn thể Nhân dân\"",
+      meta: "Susan B. Anthony, speech, 1873 (excerpt, adapted)",
+      text: "In November 1872, Susan B. Anthony voted in the presidential election in Rochester, New York. Two weeks later she was arrested for voting illegally, because only men could vote in New York. While she waited for her trial, she gave this speech in towns near Rochester.\n\"Friends and fellow citizens: I stand before you tonight under {indictment} for the alleged crime of having voted at the last presidential election, without having a lawful right to vote. It shall be my work this evening to prove to you that in thus voting, I not only committed no crime, but, instead, simply exercised my citizen's rights, guaranteed to me and all United States citizens by the National Constitution, beyond the power of any state to deny.\n\"The Preamble of the Constitution says: 'We, the people of the United States, in order to form a more perfect union … do ordain and establish this Constitution.' It was we, the people; not we, the white male citizens; nor yet we, the male citizens; but we, the whole people, who formed the Union. And we formed it … not to the half of ourselves and the half of our {posterity}, but to the whole people — women as well as men. And it is a downright {mockery} to talk to women of their enjoyment of the blessings of liberty while they are denied the use of the only means of securing them … the {ballot}.\"\nAt her federal trial in June 1873, the judge did not let the jury discuss the case. He ordered the jurors to find her guilty and fined her $100. She refused to pay.",
+      vnText: "Tháng Mười một năm 1872, Susan B. Anthony bỏ phiếu trong cuộc bầu cử tổng thống ở Rochester, New York. Hai tuần sau, bà bị bắt vì bỏ phiếu trái phép, bởi ở New York chỉ đàn ông mới được đi bầu. Trong khi chờ xét xử, bà đọc bài diễn văn này ở nhiều thị trấn quanh Rochester.\n\"Thưa các bạn và đồng bào: tối nay tôi đứng trước các bạn trong tư cách một người bị truy tố vì cái gọi là tội đã bỏ phiếu trong cuộc bầu cử tổng thống vừa qua mà không có quyền hợp pháp để bỏ phiếu. Việc của tôi tối nay là chứng minh cho các bạn thấy rằng khi bỏ phiếu như vậy, tôi không hề phạm tội, mà chỉ đơn giản thực hiện quyền công dân của mình — quyền được Hiến pháp Quốc gia bảo đảm cho tôi và mọi công dân Hoa Kỳ, và không một tiểu bang nào có quyền tước bỏ.\n\"Lời mở đầu của Hiến pháp viết: 'Chúng tôi, nhân dân Hoa Kỳ, nhằm xây dựng một liên bang hoàn hảo hơn … quyết định và thiết lập bản Hiến pháp này.' Chính là chúng ta, nhân dân; không phải chúng ta, những công dân nam da trắng; cũng không phải chúng ta, những công dân nam; mà là chúng ta, toàn thể nhân dân, đã lập nên Liên bang. Và chúng ta lập nên nó … không phải cho một nửa chúng ta và một nửa con cháu chúng ta, mà cho toàn thể nhân dân — phụ nữ cũng như đàn ông. Và thật là một sự chế giễu trắng trợn khi nói với phụ nữ về việc được hưởng những phúc lợi của tự do trong khi họ bị từ chối phương tiện duy nhất để bảo đảm những phúc lợi đó … lá phiếu.\"\nTại phiên tòa liên bang tháng Sáu năm 1873, thẩm phán không cho bồi thẩm đoàn thảo luận vụ án. Ông ra lệnh cho các bồi thẩm viên tuyên bà có tội và phạt bà 100 đô la. Bà từ chối trả.",
+      glossary: {
+        "indictment": { vn: "Bản truy tố", def: "An official statement that a person is charged with a crime and must stand trial." },
+        "posterity": { vn: "Con cháu đời sau", def: "All the people who will live in the future; our children and their children." },
+        "mockery": { vn: "Sự chế giễu", def: "Something so unfair that it makes a joke of what it claims to be." },
+        "ballot": { vn: "Lá phiếu", def: "The vote; the paper or means by which a person votes." },
+      },
+    },
+    {
+      id: "src_model_election",
+      title: "Results of a Model Election",
+      vnTitle: "Kết quả một Cuộc Bầu cử Mô phỏng",
+      meta: "Data table — a four-state model using Electoral College rules",
+      text: "Imagine a small country that chooses its president with the same rules as the U.S. Electoral College. It has four states. Each state has {electors} equal to its 2 senators plus its House members. In every state, the candidate with the most votes wins ALL of that state's electors. There are 27 electors in total, so a candidate needs a {majority} — 14 — to become president.\n\nNorth (10 electors) — Adams 30,000 votes · Baker 70,000 votes\nEast (7 electors) — Adams 26,000 votes · Baker 24,000 votes\nSouth (6 electors) — Adams 21,000 votes · Baker 19,000 votes\nWest (4 electors) — Adams 11,000 votes · Baker 9,000 votes\n\nTotal popular vote — Adams 88,000 · Baker 122,000",
+      vnText: "Hãy tưởng tượng một quốc gia nhỏ chọn tổng thống theo đúng quy tắc của Cử tri đoàn Hoa Kỳ. Quốc gia này có bốn bang. Mỗi bang có số đại cử tri bằng 2 thượng nghị sĩ cộng số hạ nghị sĩ của bang. Ở mọi bang, ứng viên nhận nhiều phiếu nhất giành TOÀN BỘ đại cử tri của bang đó. Tổng cộng có 27 đại cử tri, nên một ứng viên cần đa số — 14 — để trở thành tổng thống.\n\nBắc (10 đại cử tri) — Adams 30.000 phiếu · Baker 70.000 phiếu\nĐông (7 đại cử tri) — Adams 26.000 phiếu · Baker 24.000 phiếu\nNam (6 đại cử tri) — Adams 21.000 phiếu · Baker 19.000 phiếu\nTây (4 đại cử tri) — Adams 11.000 phiếu · Baker 9.000 phiếu\n\nTổng phiếu phổ thông — Adams 88.000 · Baker 122.000",
+      glossary: {
+        "electors": { vn: "Đại cử tri", def: "People chosen by a state to cast its official votes for president." },
+        "majority": { vn: "Đa số", def: "More than half." },
+      },
+    },
+  ],
+  questions: [
+    {
+      id: "q1_mcq_anthony_argument",
+      passageId: "src_anthony_1873",
+      type: "mcq",
+      title: "1. In her 1873 speech, Susan B. Anthony, who was arrested for voting in the 1872 election, says she \"committed no crime\" and that the Constitution was formed by \"we, the whole people\". What is her main argument?",
+      options: [
+        { val: "A", text: "A. She broke the law on purpose, because an unfair law deserves to be broken." },
+        { val: "B", text: "B. Women are already citizens, so the Constitution already protects their right to vote." },
+        { val: "C", text: "C. Each state should be free to decide for itself whether women may vote." },
+        { val: "D", text: "D. Women should not vote until a new amendment is added to the Constitution." },
+      ],
+      correct: "B",
+      expEn: "Anthony says she \"committed no crime\" and \"simply exercised my citizen's rights\", so she is not admitting she broke a law (A). She calls the right \"beyond the power of any state to deny\", the opposite of C. And she argues the Constitution ALREADY includes women — \"we, the whole people\" — so she is not asking women to wait for a new amendment (D).",
+      expVn: "Anthony nói bà \"không hề phạm tội\" và \"chỉ đơn giản thực hiện quyền công dân của mình\", nên bà không thừa nhận đã phạm luật (A). Bà nói quyền này \"không một tiểu bang nào có quyền tước bỏ\", ngược với C. Và bà lập luận rằng Hiến pháp ĐÃ bao gồm phụ nữ — \"chúng ta, toàn thể nhân dân\" — nên bà không đòi phụ nữ chờ một tu chính án mới (D).",
+    },
+    {
+      id: "q2_mcq_nineteenth_amendment",
+      passageId: "src_anthony_1873",
+      type: "mcq",
+      title: "2. Anthony argued in 1873 that women already had the right to vote, but the courts disagreed. Women across the whole country finally won the vote through a constitutional amendment. Which amendment was it, and when was it added?",
+      options: [
+        { val: "A", text: "A. The 15th Amendment, in 1870" },
+        { val: "B", text: "B. The 24th Amendment, in 1964" },
+        { val: "C", text: "C. The 26th Amendment, in 1971" },
+        { val: "D", text: "D. The 19th Amendment, in 1920" },
+      ],
+      correct: "D",
+      expEn: "The 19th Amendment (1920) said the vote cannot be denied because of sex — almost 50 years after Anthony's arrest. The 15th (1870) protected the vote from denial because of race only, which is why it did not help Anthony. The 24th (1964) banned the poll tax, and the 26th (1971) lowered the voting age to 18.",
+      expVn: "Tu chính án 19 (1920) quy định quyền bầu cử không thể bị từ chối vì giới tính — gần 50 năm sau khi Anthony bị bắt. Tu chính án 15 (1870) chỉ bảo vệ quyền bầu cử khỏi bị từ chối vì chủng tộc, nên nó không giúp được Anthony. Tu chính án 24 (1964) cấm thuế bầu cử, và Tu chính án 26 (1971) hạ tuổi bầu cử xuống 18.",
+    },
+    {
+      id: "q3_mcq_jury_trial",
+      passageId: "src_anthony_1873",
+      type: "mcq",
+      title: "3. At Anthony's federal trial in 1873, the judge did not let the jury discuss the case. He ordered the jurors to find her guilty, then fined her $100. Her supporters said she had been denied a protection in the Bill of Rights. Which one?",
+      options: [
+        { val: "A", text: "A. The Fourth Amendment's protection from searches without a warrant" },
+        { val: "B", text: "B. The Eighth Amendment's ban on cruel and unusual punishment" },
+        { val: "C", text: "C. The Sixth Amendment's right to a trial by jury" },
+        { val: "D", text: "D. The First Amendment's right to petition the government" },
+      ],
+      correct: "C",
+      expEn: "The Sixth Amendment promises a trial by jury: ordinary citizens, not the judge, decide whether the accused is guilty. By ordering the verdict, the judge took that decision away from the jurors. A $100 fine is not a cruel or unusual punishment (8th), no one searched her home (4th), and no one stopped her from speaking out or petitioning (1st).",
+      expVn: "Tu chính án thứ sáu hứa một phiên tòa có bồi thẩm đoàn: những công dân bình thường, không phải thẩm phán, quyết định bị cáo có tội hay không. Khi ra lệnh cho bản án, thẩm phán đã tước quyết định đó khỏi tay các bồi thẩm viên. Khoản phạt 100 đô la không phải hình phạt tàn ác hay bất thường (TCA 8), không ai khám nhà bà (TCA 4), và không ai ngăn bà lên tiếng hay kiến nghị (TCA 1).",
+    },
+    {
+      id: "q4_mcq_model_winner",
+      passageId: "src_model_election",
+      type: "mcq",
+      title: "4. In the model election, Baker won 122,000 popular votes and Adams won 88,000. Baker won North (10 electors); Adams won East, South and West (7, 6 and 4 electors). A candidate needs 14 of the 27 electors. Who becomes president, and why?",
+      options: [
+        { val: "A", text: "A. Adams — he won 17 electors, more than the 14 needed." },
+        { val: "B", text: "B. Baker — he won 34,000 more votes from the people." },
+        { val: "C", text: "C. Baker — he won North, the state with the most electors." },
+        { val: "D", text: "D. No one yet — Baker won more votes but Adams won more states, so the House decides." },
+      ],
+      correct: "A",
+      expEn: "The rule is a majority of electors — 14 of 27 — not the most popular votes. Adams won East, South and West: 7 + 6 + 4 = 17 electors, which clears 14. Baker's 34,000-vote lead and his win in the biggest state give him only North's 10 electors. The House decides only when no candidate reaches a majority of electors.",
+      expVn: "Quy tắc là đa số đại cử tri — 14 trên 27 — chứ không phải nhiều phiếu phổ thông nhất. Adams thắng Đông, Nam và Tây: 7 + 6 + 4 = 17 đại cử tri, vượt mốc 14. Việc Baker hơn 34.000 phiếu và thắng bang lớn nhất chỉ mang lại cho ông 10 đại cử tri của bang Bắc. Hạ viện chỉ quyết định khi không ứng viên nào đạt đa số đại cử tri.",
+    },
+    {
+      id: "q5_mcq_winner_take_all",
+      passageId: "src_model_election",
+      type: "mcq",
+      title: "5. In the model election, Baker won North 70,000 votes to 30,000 and received all 10 of North's electors. Suppose Baker had won North 100,000 to 30,000 instead, with every other state unchanged. How many electors would Baker have in total?",
+      options: [
+        { val: "A", text: "A. 10" },
+        { val: "B", text: "B. 13" },
+        { val: "C", text: "C. 14" },
+        { val: "D", text: "D. 17" },
+      ],
+      correct: "A",
+      expEn: "Winner takes all: North gives all 10 of its electors to whoever wins it, whether by 40,000 votes or 70,000. Baker's extra 30,000 votes add nothing, so he still has 10 electors — well short of 14. More votes in a state you already won never earn extra electors; that is how a candidate can pile up popular votes and still lose.",
+      expVn: "Người thắng nhận tất cả: bang Bắc trao toàn bộ 10 đại cử tri cho người thắng bang, dù thắng hơn 40.000 hay 70.000 phiếu. 30.000 phiếu thêm của Baker không mang lại gì, nên ông vẫn có 10 đại cử tri — còn xa mốc 14. Thêm phiếu ở bang bạn đã thắng không bao giờ mang lại thêm đại cử tri; đó là cách một ứng viên dồn được rất nhiều phiếu phổ thông mà vẫn thua.",
+    },
+    {
+      id: "q6_mcq_model_conclusion",
+      passageId: "src_model_election",
+      type: "mcq",
+      title: "6. In the model election, Baker won 122,000 popular votes to Adams's 88,000, but Adams won 17 of the 27 electors and became president. Which conclusion does this data support?",
+      options: [
+        { val: "A", text: "A. The candidate who wins the largest state always wins the election." },
+        { val: "B", text: "B. Each state shares out its electors according to each candidate's share of the votes." },
+        { val: "C", text: "C. Adams won more than half of all the votes cast by the people." },
+        { val: "D", text: "D. A candidate can win the most popular votes and still lose the election." },
+      ],
+      correct: "D",
+      expEn: "Baker has more popular votes (122,000 to 88,000) yet loses on electors (10 to 17), so the data shows a popular-vote winner losing. A is wrong: Baker won North, the largest state, and still lost. B is wrong: each state's winner takes ALL its electors — Adams got none of North's 10. C is wrong: 88,000 is only about 42% of the 210,000 votes, less than half.",
+      expVn: "Baker có nhiều phiếu phổ thông hơn (122.000 so với 88.000) nhưng thua về đại cử tri (10 so với 17), nên dữ liệu cho thấy người thắng phiếu phổ thông vẫn có thể thua. A sai: Baker thắng bang Bắc, bang lớn nhất, mà vẫn thua. B sai: người thắng mỗi bang nhận TOÀN BỘ đại cử tri — Adams không nhận được ai trong 10 đại cử tri của bang Bắc. C sai: 88.000 chỉ khoảng 42% trong 210.000 phiếu, chưa tới một nửa.",
+    },
+    {
+      id: "q7_mcq_fifth_amendment",
+      type: "mcq",
+      title: "7. Marco is on trial for fraud. The prosecutor wants to call Marco to the witness stand and make him answer questions about the crime. Marco's lawyer says he does not have to testify, and the judge agrees. Which part of the Bill of Rights protects Marco?",
+      options: [
+        { val: "A", text: "A. The Fourth Amendment — no searches without a warrant" },
+        { val: "B", text: "B. The Fifth Amendment — no one can be forced to testify against themselves" },
+        { val: "C", text: "C. The Sixth Amendment — the right to a lawyer and a jury trial" },
+        { val: "D", text: "D. The Eighth Amendment — no cruel or unusual punishment" },
+      ],
+      correct: "B",
+      expEn: "The Fifth Amendment says no one can be forced to be a witness against himself, so Marco may stay silent at his own trial. Because this happens in a courtroom, the Sixth is tempting, but the Sixth covers the jury and the lawyer, not the right to refuse to testify. Nothing was searched (4th), and no punishment has been given yet (8th).",
+      expVn: "Tu chính án thứ năm nói không ai có thể bị ép làm chứng chống lại chính mình, nên Marco có thể im lặng tại phiên tòa xử chính anh. Vì việc này xảy ra trong phòng xử án nên dễ chọn Tu chính án thứ sáu, nhưng TCA 6 nói về bồi thẩm đoàn và luật sư, không phải quyền từ chối làm chứng. Không có gì bị khám xét (TCA 4), và chưa có hình phạt nào được đưa ra (TCA 8).",
+    },
+    {
+      id: "q8_mcq_brown_equal_protection",
+      type: "mcq",
+      title: "8. In 1896, Plessy v. Ferguson allowed states to keep Black and white citizens apart if the facilities were \"separate but equal\". In 1954, Brown v. Board of Education ruled that separate public schools are never equal and must end. Which part of the Constitution did the Court rely on in Brown?",
+      options: [
+        { val: "A", text: "A. The 13th Amendment, which ended slavery" },
+        { val: "B", text: "B. The 15th Amendment, which bans denying the vote because of race" },
+        { val: "C", text: "C. The 14th Amendment, which promises equal protection of the laws" },
+        { val: "D", text: "D. The 24th Amendment, which banned the poll tax" },
+      ],
+      correct: "C",
+      expEn: "The 14th Amendment (1868) promises every person \"equal protection of the laws\". In Brown, the Court ruled that separate schools for Black children were unequal, so they broke that promise — reversing Plessy. The 13th ended slavery, and the 15th and 24th are about voting; none of them deals with how the law treats people in public schools.",
+      expVn: "Tu chính án 14 (1868) hứa mọi người được \"bảo vệ bình đẳng trước pháp luật\". Trong vụ Brown, Tòa phán quyết rằng trường học tách biệt dành cho trẻ em da đen là không bình đẳng, nên đã vi phạm lời hứa đó — đảo ngược vụ Plessy. Tu chính án 13 chấm dứt nô lệ, còn 15 và 24 nói về bầu cử; không điều nào nói về cách luật pháp đối xử với mọi người trong trường công.",
+    },
+    {
+      id: "q9_mcq_required_duty",
+      type: "mcq",
+      title: "9. Mai is a 30-year-old U.S. citizen. Which of these is she REQUIRED by law to do?",
+      options: [
+        { val: "A", text: "A. Serve on a jury when a court calls her" },
+        { val: "B", text: "B. Vote in every national election" },
+        { val: "C", text: "C. Join a political party" },
+        { val: "D", text: "D. Read the news to stay informed about the government" },
+      ],
+      correct: "A",
+      expEn: "Jury duty is required: when a court calls you, you must serve. Voting and staying informed are responsibilities a good citizen SHOULD carry out, but no U.S. law forces anyone to vote or to read the news. Joining a political party is a free choice, not a duty.",
+      expVn: "Nghĩa vụ bồi thẩm đoàn là bắt buộc: khi tòa án gọi, bạn phải tham gia. Đi bầu và cập nhật thông tin là trách nhiệm một công dân tốt NÊN làm, nhưng không có luật nào của Hoa Kỳ ép ai phải đi bầu hay đọc tin tức. Gia nhập một đảng chính trị là lựa chọn tự do, không phải nghĩa vụ.",
+    },
+    {
+      id: "q10_mcq_naturalization",
+      type: "mcq",
+      title: "10. Tomas moved to the United States two years ago with a green card (permanent residence). He is 25, unmarried, speaks English well and has never broken the law. What must happen before he can become a citizen through naturalization?",
+      options: [
+        { val: "A", text: "A. Nothing — his green card already makes him a citizen who can vote." },
+        { val: "B", text: "B. He must hold his green card for three more years, then pass the tests and take the oath." },
+        { val: "C", text: "C. He must wait until he turns 35, the age the Constitution sets for citizenship." },
+        { val: "D", text: "D. He cannot — only people born in the United States can ever be citizens." },
+      ],
+      correct: "B",
+      expEn: "Naturalization needs 5 years with a green card (3 if married to a citizen), age 18 or older, the English and civics tests, and the Oath of Allegiance. Tomas has 2 years, so he needs 3 more. A green card alone does not make him a citizen or let him vote; 35 is the minimum age to be President, not to be a citizen; and immigrants become citizens through naturalization every year.",
+      expVn: "Nhập tịch cần 5 năm có thẻ xanh (3 năm nếu kết hôn với công dân), từ 18 tuổi trở lên, đậu bài thi tiếng Anh và công dân, và Tuyên thệ Trung thành. Tomas mới có 2 năm, nên cần thêm 3 năm. Chỉ có thẻ xanh không khiến anh thành công dân hay được đi bầu; 35 tuổi là tuổi tối thiểu để làm Tổng thống, không phải để làm công dân; và mỗi năm đều có người nhập cư trở thành công dân qua nhập tịch.",
+    },
+  ],
+};

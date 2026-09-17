@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee } from 'lucide-react';
+import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine } from 'lucide-react';
 import { TRACK_REGISTRY, getTrackConfig, ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
@@ -57,6 +57,8 @@ export default function Home() {
 
     fetchUserAndTracks();
   }, []);
+
+  const hasWriting = visibleTracks.some(t => t.id === 'GED_ENG');
 
   if (loading) {
     return (
@@ -140,6 +142,30 @@ export default function Home() {
 
             <div className="hidden sm:flex w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 border-b-[4px] shadow-sm group-hover:bg-[#ff9600] group-hover:border-[#cc7800] group-hover:text-white transition-all flex-shrink-0">
               <ChevronRight className="w-7 h-7" strokeWidth={3} />
+            </div>
+          </div>
+        </button>
+        )}
+
+        {/* My Writing — the student's saved essays. Only for students who can
+            reach GED Language Arts, since that is where essays are written. */}
+        {hasWriting && (
+        <button
+          onClick={() => navigate('/writing')}
+          className="group relative w-full text-left mb-8 p-6 sm:p-7 rounded-[2.5rem] border-2 border-slate-200 dark:border-slate-800 border-b-[8px] bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 active:translate-y-[8px] active:border-b-2 animate-in fade-in slide-in-from-bottom-4 duration-500"
+        >
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] border-indigo-700 flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+              <PenLine className="w-7 h-7 text-white drop-shadow-sm" strokeWidth={2.5} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">My Writing</h2>
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-wide">
+                Your essays, their scores, and the errors to watch for
+              </p>
+            </div>
+            <div className="hidden sm:flex w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 border-b-[4px] shadow-sm group-hover:bg-indigo-500 group-hover:border-indigo-700 group-hover:text-white transition-all flex-shrink-0">
+              <ChevronRight className="w-6 h-6" strokeWidth={3} />
             </div>
           </div>
         </button>

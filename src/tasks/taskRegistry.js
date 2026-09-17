@@ -3,7 +3,7 @@ import {
   Languages, Keyboard, BookOpen, Headphones, FileText,
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
-  Ruler, Tag, Beaker, Split, Spline, Variable, Blend, SquareRadical, Superscript,
+  Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
@@ -211,9 +211,61 @@ export const TASKS = [
     hasContent: (u) => !!u.essay,
     buildPool: (u) => ({ essay: u.essay || null }),
     // track/unitTitle let the grader pick the right examiner and rubric instead
-    // of assuming Cambridge Year 8 Science for every subject.
-    props: ({ pool, unit, unitId, track, savedData, strikes, onAddStrike, onComplete, onQuit }) =>
-      ({ pool, unitId, track, unitTitle: unit?.meta?.title, savedData, strikes, onAddStrike, onComplete, onQuit }),
+    // of assuming Cambridge Year 8 Science for every subject. `essayArchive` is
+    // the student's saved essays for this track (see utils/essayArchive.js) —
+    // the task reads it for the "watch for these" list and the prompt picker,
+    // and writes back through `meta.essay` on onProgress/onComplete.
+    props: ({ pool, unit, unitId, track, savedData, strikes, essayArchive, onAddStrike, onComplete, onProgress, onQuit }) =>
+      ({ pool, unitId, track, unitTitle: unit?.meta?.title, savedData, strikes, essayArchive, onAddStrike, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'PROOFREAD',
+    nativeMax: 10,
+    // p1–p32 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
+    // p33 is next.
+    dbKey: 'p33',
+    // "Find the mistakes, then fix them." A passage with a handful of errors
+    // hidden in otherwise correct prose; the student clicks the words that are
+    // wrong and TYPES the correction. Built for the GED English track, where
+    // the essay's conventions trait is lost to exactly the slips this drills —
+    // and where the revision workshop assumes a student can find a slip in
+    // his own paragraph. Every offset and every mark is DERIVED from the
+    // authored passage by utils/proofread.js, and `checkProofreadItems` refuses
+    // an error the screen could not locate. Item shape in the same file and in
+    // docs/ged-english-lessons.md.
+    label: 'Find & Fix',
+    icon: SearchCheck,
+    color: { bg: 'bg-[#f59e0b]', border: 'border-[#b45309]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./Proofread.jsx')),
+    hasContent: (u) => notEmpty(u.proofread),
+    buildPool: (u) => u.proofread || [],
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'SEQUENCE',
+    nativeMax: 10,
+    // p1–p33 are taken; p34 is next.
+    dbKey: 'p34',
+    // "Put it in order." The sentences of a paragraph or the paragraphs of an
+    // essay, scrambled; the student moves them back. Trait 2 of the essay
+    // rubric is scored on the order ideas arrive in and the transitions that
+    // carry the reader between them, and this is the cheapest way to make that
+    // visible before the student has to do it under a clock. The scramble is a
+    // seeded derangement (no free marks, same puzzle every time) and the
+    // marking is derived by utils/sequence.js.
+    label: 'Order It',
+    icon: ListOrdered,
+    color: { bg: 'bg-[#8b5cf6]', border: 'border-[#6d28d9]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./Sequence.jsx')),
+    hasContent: (u) => notEmpty(u.sequence),
+    buildPool: (u) => u.sequence || [],
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
   {
     id: 'ASSESSMENT',
@@ -659,13 +711,12 @@ export const TASKS = [
   {
     id: 'VENN',
     nativeMax: 10,
-    // p1-p32 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
-    // p33-p34 are held for the GED English Find & Fix and Order It tasks, so
+    // p1–p34 are taken (p5 is a workbook question id, p26 is held for TYPE_GYM);
     // p35 is next.
     dbKey: 'p35',
-    // "Words -> notation -> picture -> number." A Venn diagram from an IGCSE
-    // question - printed with counts, given as facts to fill in, or built from
-    // rules like "multiples of 3" by placing every element - and the questions
+    // "Words → notation → picture → number." A Venn diagram from an IGCSE
+    // question — printed with counts, given as facts to fill in, or built from
+    // rules like "multiples of 3" by placing every element — and the questions
     // asked about it. Each question is turned into notation (picked), the
     // notation into a picture (the student SHADES the regions), and only then
     // the picture into a count, a probability or a list. utils/sets.js derives
@@ -687,12 +738,12 @@ export const TASKS = [
     nativeMax: 10,
     dbKey: 'p36',
     // "Find a square, take its root out, ask if you are finished." Simplifying
-    // k*sqrt(n), collecting like surds, and multiplying surds, one move at a
-    // time, with the student's own splits drawn as a root tree. Any square
-    // factor is accepted - the tree simply grows another branch - and the "is
-    // it fully simplified?" decision is its own stage, because that is the mark
-    // the paper takes. Derived by utils/surds.js; `checkSurdItems` refuses an
-    // item with nothing to simplify. Item shape in src/tasks/SurdSimplify.jsx.
+    // k√n, collecting like surds, and multiplying surds, one move at a time,
+    // with the student's own splits drawn as a root tree. Any square factor is
+    // accepted — the tree simply grows another branch — and the "is it fully
+    // simplified?" decision is its own stage, because that is the mark the
+    // paper takes. Derived by utils/surds.js; `checkSurdItems` refuses an item
+    // with nothing to simplify. Item shape in src/tasks/SurdSimplify.jsx.
     label: 'Surd Breaker',
     icon: SquareRadical,
     color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
@@ -708,11 +759,11 @@ export const TASKS = [
     nativeMax: 10,
     dbKey: 'p37',
     // "Choose the multiplier, clear the bottom, multiply the top, simplify
-    // fully." Brackets with surds expanded in a 2 x 2 grid (a conjugate pair's
-    // surd cells visibly cancel), then fractions with a single surd or a
-    // two-term bracket on the bottom, rationalised in the moves the mark scheme
-    // pays for. Every cell, conjugate, bottom and simplified answer is derived
-    // by utils/surds.js; `checkRationaliseItems` refuses an item whose answer
+    // fully." Brackets with surds expanded in a 2 × 2 grid (a conjugate pair's
+    // surd cells visibly cancel), then fractions with k√m or a two-term bracket
+    // on the bottom, rationalised in the moves the mark scheme pays for. Every
+    // cell, conjugate, bottom and simplified answer is derived by
+    // utils/surds.js; `checkRationaliseItems` refuses an item whose answer
     // would not fit the boxes. Item shape in src/tasks/Rationalise.jsx.
     label: 'Rationalise It',
     icon: Divide,
@@ -870,7 +921,6 @@ export const TASKS = [
     props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
 ];
-
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));
 

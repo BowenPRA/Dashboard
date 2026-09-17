@@ -33,6 +33,12 @@ export const createStudent = (student) => post('createStudent', student);
 export const updateStudent = (patch) => post('updateStudent', patch);
 export const setProgress = (studentId, ops) => post('setProgress', { studentId, ops });
 
+// A teacher's comment on one saved essay (see utils/essayArchive.js). The note
+// lands on the archive entry itself, so the student sees it on their Writing
+// page next to the examiner's report.
+export const annotateEssay = (studentId, track, essayId, note) =>
+  post('annotateEssay', { studentId, track, essayId, note });
+
 // Classes: teacher-managed groups of students. A class carries the courses
 // (enrolled tracks) and study-plan flag a teacher wants applied to everyone in
 // it; `bulkEnroll` is the deliberate step that pushes those onto each member.

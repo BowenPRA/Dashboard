@@ -80,8 +80,16 @@ export const ARCADE_KEYS = ARCADE_BOARDS.map(b => b.key);
  */
 export const isArcadeKey = (key) => ARCADE_KEYS.includes(key);
 
+/**
+ * The essay archive — every GED essay the student has written, with its score,
+ * the examiner's report and the errors marked. Kept beside the units like the
+ * vocabulary bank, because an essay belongs to the student's writing history
+ * rather than to one unit's score. Shape and helpers: utils/essayArchive.js.
+ */
+export const ESSAYS_KEY = '__essays';
+
 /** Keys inside a track's progress that are not units. */
-const RESERVED_TRACK_KEYS = [VOCAB_KEY, WALLET_KEY];
+const RESERVED_TRACK_KEYS = [VOCAB_KEY, WALLET_KEY, ESSAYS_KEY];
 
 /** Keys inside a unit's progress that are not task dbKeys. */
 const RESERVED_UNIT_KEYS = ['strikes', ...ARCADE_KEYS];

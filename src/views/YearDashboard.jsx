@@ -8,6 +8,7 @@ import { getTrackConfig, unitGateOf } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
 import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
 import { isPreviewAccount } from '../utils/previewAccount';
+import { essaysOf } from '../utils/essayArchive';
 import useDarkMode from '../hooks/useDarkMode';
 
 function PlaceholderView({ title, onQuit }) {
@@ -165,6 +166,8 @@ export default function YearDashboard({ track }) {
         scores: activeScores,
         savedData: activeScores[activeTask.dbKey]?.answers || {},
         strikes: activeScores.strikes || 0,
+        // The track's saved essays, for the Essay task's watch-list and picker.
+        essayArchive: essaysOf(unitScores),
         onAddStrike: (n) => addStrike(activeUnit, n),
         onComplete: (score, answers, meta) => handleTaskComplete(activeTask.id, score, answers, meta),
         onProgress: (score, answers, meta) => handleTaskProgress(activeTask.id, score, answers, meta),

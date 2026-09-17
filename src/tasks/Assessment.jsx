@@ -384,6 +384,19 @@ const HotSpotQuestion = () => {
   );
 };
 
+// A question's passageId may name one of the assessment's own passages or one
+// of the unit's reading passages, so both lists are searched. The assessment's
+// win on a shared id. (It used to take the unit's list OR the assessment's, so a
+// unit with reading passages silently hid every passage its quiz authored.)
+const mergePassages = (...lists) => {
+  const seen = new Set();
+  return lists.flatMap((l) => (Array.isArray(l) ? l : [])).filter((p) => {
+    if (!p?.id || seen.has(p.id)) return false;
+    seen.add(p.id);
+    return true;
+  });
+};
+
 // --- MAIN ASSESSMENT COMPONENT ---
 
 export default function Assessment(props) {
@@ -396,7 +409,7 @@ export default function Assessment(props) {
   if (props.unit?.assessment?.questions && Array.isArray(props.unit.assessment.questions)) {
     extractedQuestions = props.unit.assessment.questions;
     extractedTimeLimit = props.unit.assessment.timeLimit || 0;
-    extractedPassages = props.unit.passages || props.unit.assessment.passages || [];
+    extractedPassages = mergePassages(props.unit.assessment.passages, props.unit.passages);
   } else if (Array.isArray(props.questions)) {
     extractedQuestions = props.questions;
     extractedTimeLimit = props.timeLimit || 0;
@@ -404,7 +417,7 @@ export default function Assessment(props) {
   } else if (props.assessment?.questions && Array.isArray(props.assessment.questions)) {
     extractedQuestions = props.assessment.questions;
     extractedTimeLimit = props.assessment.timeLimit || 0;
-    extractedPassages = props.assessment.passages || props.passages || [];
+    extractedPassages = mergePassages(props.assessment.passages, props.passages);
   } else {
     for (const key in props) {
       if (props[key] && typeof props[key] === 'object') {
@@ -416,7 +429,7 @@ export default function Assessment(props) {
         } else if (props[key].assessment && Array.isArray(props[key].assessment.questions)) {
           extractedQuestions = props[key].assessment.questions;
           extractedTimeLimit = props[key].assessment.timeLimit || 0;
-          extractedPassages = props[key].assessment.passages || props[key].passages || [];
+          extractedPassages = mergePassages(props[key].assessment.passages, props[key].passages);
           break;
         }
       }

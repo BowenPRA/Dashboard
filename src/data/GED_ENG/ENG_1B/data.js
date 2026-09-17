@@ -32,9 +32,12 @@ export const ENGLISH_1B_DATA = {
       id: "practice",
       title: "Drill",
       threshold: 15,
+      // PROOFREAD (p33) added to Drill: the unit over-provisions to 110 XP (the
+      // unit still caps at 100), giving the student slack; thresholds unchanged.
       tasks: [
         { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 },
+        { id: "PROOFREAD", dbKey: "p33", maxXP: 10 }
       ]
     },
     {
@@ -226,46 +229,248 @@ export const ENGLISH_1B_DATA = {
       modelAnswer: "It is written in the first person, because the writer uses 'we'. The stance is not neutral: by saying 'we must act now,' the writer clearly takes a side and is for taking action to save the river."
     }
   ],
-  essay: {
-    // A full GED Extended Response for practice: two opposing contemporary sources
-    // with checkable evidence on each side; 60 minutes (ESL accommodation vs. the
-    // real 45). The student argues which side is BETTER SUPPORTED.
-    minutesAllowed: 60,
-    sources: [
-      {
-        title: "Make Service a Graduation Requirement",
-        text:
-          "High schools should require students to complete a set number of community-service hours before they graduate. When Oak Ridge High added a forty-hour requirement, the share of seniors who volunteered rose sharply, and a follow-up survey found that many of them kept volunteering a year after leaving school. Service also teaches lessons a classroom cannot: students learn to show up on time, work beside strangers, and see how their town actually runs.",
-      },
-      {
-        title: "Service Should Be a Choice",
-        text:
-          "Requiring service turns a good deed into a chore. A student who volunteers only to tick a box learns little about kindness, and the rule falls hardest on teenagers who already work paid jobs to help their families. One district that tracked its graduates found no lasting difference in volunteering between students who had been required to serve and those who had not. Real generosity cannot be forced onto a form.",
-      },
-    ],
-    task:
-      "Both writers argue about whether high schools should require community service to graduate. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
-    guidelines: [
-      "State clearly which position is better supported.",
-      "Use specific evidence from BOTH sources.",
-      "Weigh how strong each side's evidence is — do not just repeat it.",
-      "Write in paragraphs, with a short conclusion.",
-    ],
-    suggestedWords: [
-      ["Evidence", "proof", "prove"],
-      ["Claim", "argues", "position"],
-      ["Service", "volunteer"],
-    ],
-    scienceMaxMarks: 4,
-    markScheme: [
-      "States clearly which position is better supported, rather than only which the writer personally prefers.",
-      "Refers to specific evidence from Source 1 (for example the rise in volunteering at Oak Ridge or the follow-up survey).",
-      "Refers to specific evidence from Source 2 (for example the district that found no lasting difference, or the burden on working students).",
-      "Evaluates the quality of the evidence rather than simply restating it, for example noting that comparing two groups is stronger than surveying only one.",
-    ],
-    modelAnswer:
-      "Both sources use real evidence, but Source 2 is slightly better supported because its evidence compares two groups, while Source 1's looks at only one. Source 1 argues for a requirement and reports that after Oak Ridge High added forty hours, more seniors volunteered and a survey found many kept volunteering later. That sounds convincing, yet the survey follows only the students who were required to serve, so it cannot show whether the rule itself made the difference. Source 2 answers exactly that weakness: it points to a district that tracked its graduates and found no lasting difference in volunteering between students who had been required to serve and those who had not. Comparing the two groups is a stronger test than following one, because it rules out the chance that those students would have volunteered anyway. Source 2 also raises a fair point about the burden on teenagers who already work. Because its evidence is a fairer comparison and answers Source 1's main claim, Source 2's position is the better supported.",
-  },
+  // Find & Fix: short informational texts on this unit's topic (purpose, tone,
+  // bias) carrying mixed errors — agreement, tense, plural, article, comma
+  // splice, confusables. Everything NOT listed is correct English.
+  proofread: [
+    {
+      id: "pf1",
+      title: "Editorial: Say Which Side You Are On",
+      titleVn: "Xã luận: Hãy nói rõ bạn đứng về phía nào",
+      passage: "Every newspaper have a point of view, even the ones that claims to be neutral. When our local paper describe the new car park as 'a bold step forward', it is not informing us, it is persuading us. Readers deserve to know when they are reading a opinion. Other papers now label every editorial clearly, and their readers say they trust the news pages more as a result. We should do the same.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "have",
+          right: "has",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Every newspaper\" is singular, so the verb is \"has\".",
+          expVn: "\"Every newspaper\" là số ít, nên động từ là \"has\"."
+        },
+        {
+          id: "e2",
+          wrong: "claims",
+          right: "claim",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"That\" stands for \"the ones\" (plural newspapers), so the verb has no -s: \"claim\".",
+          expVn: "\"That\" thay cho \"the ones\" (các tờ báo, số nhiều), nên động từ không có -s: \"claim\"."
+        },
+        {
+          id: "e3",
+          wrong: "describe",
+          right: "describes",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Our local paper\" is one newspaper, so the present-tense verb takes an -s: \"describes\".",
+          expVn: "\"Our local paper\" là một tờ báo, nên động từ thì hiện tại mang -s: \"describes\"."
+        },
+        {
+          id: "e4",
+          wrong: "informing us, it is persuading",
+          right: "informing us; it is persuading",
+          accept: ["informing us. It is persuading", "informing us, but it is persuading", "informing us — it is persuading"],
+          kind: "Comma splice",
+          expEn: "Two complete sentences cannot be joined by a comma alone. Use a semicolon, a full stop, or a joining word such as \"but\".",
+          expVn: "Hai câu hoàn chỉnh không thể nối chỉ bằng dấu phẩy. Dùng dấu chấm phẩy, dấu chấm, hoặc một từ nối như \"but\"."
+        },
+        {
+          id: "e5",
+          wrong: "a opinion",
+          right: "an opinion",
+          accept: [],
+          kind: "Article",
+          expEn: "\"Opinion\" begins with a vowel sound, so the article is \"an\".",
+          expVn: "\"Opinion\" bắt đầu bằng âm nguyên âm, nên mạo từ là \"an\"."
+        }
+      ]
+    },
+    {
+      id: "pf2",
+      title: "Notice: Spot the Bias",
+      titleVn: "Thông báo: Nhận ra thiên kiến",
+      passage: "The community centre is offering a free class on reading the news with care. Over four Tuesday evenings, students will learn to hear a writer's tone, to separate fact from opinion, and to notice when a report only show one side. The class are open to anyone over sixteen. Last term thirty people attended, and most of them says they now read the newspaper differently. Their is no need to book. Just come to Room 4 at seven o'clock, the door will be open.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "show",
+          right: "shows",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "The subject is \"a report\" (one), so the verb takes an -s: \"shows\".",
+          expVn: "Chủ ngữ là \"a report\" (một), nên động từ mang -s: \"shows\"."
+        },
+        {
+          id: "e2",
+          wrong: "class are",
+          right: "class is",
+          accept: [],
+          kind: "Collective noun",
+          expEn: "\"The class\" is a collective noun — one group — so it takes the singular verb \"is\".",
+          expVn: "\"The class\" là danh từ tập hợp — một nhóm — nên dùng động từ số ít \"is\"."
+        },
+        {
+          id: "e3",
+          wrong: "says",
+          right: "say",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "The subject is \"most\" of the people (plural), so the verb has no -s: \"say\".",
+          expVn: "Chủ ngữ là \"most\" trong số những người đó (số nhiều), nên động từ không có -s: \"say\"."
+        },
+        {
+          id: "e4",
+          wrong: "Their is",
+          right: "There is",
+          accept: [],
+          kind: "Confusable words",
+          expEn: "\"Their\" shows ownership. \"There is\" introduces something that exists, which is the meaning here.",
+          expVn: "\"Their\" chỉ sự sở hữu. \"There is\" giới thiệu một điều tồn tại, đúng với nghĩa ở đây."
+        },
+        {
+          id: "e5",
+          wrong: "o'clock, the door",
+          right: "o'clock; the door",
+          accept: ["o'clock. The door", "o'clock, and the door", "o'clock — the door"],
+          kind: "Comma splice",
+          expEn: "Two complete sentences cannot be joined by a comma alone. Use a semicolon, a full stop, or add \"and\".",
+          expVn: "Hai câu hoàn chỉnh không thể nối chỉ bằng dấu phẩy. Dùng dấu chấm phẩy, dấu chấm, hoặc thêm \"and\"."
+        }
+      ]
+    },
+    {
+      id: "pf3",
+      title: "From a Report on How Readers Judge Tone",
+      titleVn: "Trích từ một báo cáo về cách người đọc đánh giá giọng điệu",
+      passage: "Researchers at a city college asked 200 readers to rate the same news story written in two ways. One version used neutral words such as 'change' and 'plan'; the other used loaded words such as 'reckless' and 'scheme'. Although the facts in both versions was identical, readers rated the second story as far less fair. The effect were strongest among readers who read quickly. The researchers concluded that word choice shape a reader's judgement more then the facts do, and they recommend that news writers check every adjectives before publishing.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "was identical",
+          right: "were identical",
+          accept: [],
+          kind: "Interrupting phrase",
+          expEn: "The subject is \"facts\" (plural), not \"versions\". Cross out \"in both versions\" and the verb is \"were\".",
+          expVn: "Chủ ngữ là \"facts\" (số nhiều), không phải \"versions\". Gạch bỏ \"in both versions\" và động từ là \"were\"."
+        },
+        {
+          id: "e2",
+          wrong: "were strongest",
+          right: "was strongest",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The effect\" is one thing, so the past-tense verb is \"was\".",
+          expVn: "\"The effect\" là một thứ, nên động từ quá khứ là \"was\"."
+        },
+        {
+          id: "e3",
+          wrong: "shape",
+          right: "shapes",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Word choice\" is singular, so the present-tense verb takes an -s: \"shapes\".",
+          expVn: "\"Word choice\" là số ít, nên động từ thì hiện tại mang -s: \"shapes\"."
+        },
+        {
+          id: "e4",
+          wrong: "then",
+          right: "than",
+          accept: [],
+          kind: "Confusable words",
+          expEn: "\"More … than\" is a comparison, so the word is \"than\". \"Then\" means \"after that\".",
+          expVn: "\"More … than\" là một phép so sánh, nên từ đúng là \"than\". \"Then\" nghĩa là \"sau đó\"."
+        },
+        {
+          id: "e5",
+          wrong: "every adjectives",
+          right: "every adjective",
+          accept: [],
+          kind: "Singular after every",
+          expEn: "\"Every\" is followed by a singular noun: \"every adjective\".",
+          expVn: "Sau \"every\" là danh từ số ít: \"every adjective\"."
+        }
+      ]
+    }
+  ],
+  // The essay is a BANK: the student picks one prompt each sitting. er1 keeps
+  // the original 60-minute ESL accommodation; er2 runs at the real test's 45.
+  essay: [
+    {
+      id: "er1",
+      title: "Community service requirement",
+      titleVn: "Yêu cầu phục vụ cộng đồng",
+      // A full GED Extended Response for practice: two opposing contemporary sources
+      // with checkable evidence on each side; 60 minutes (ESL accommodation vs. the
+      // real 45). The student argues which side is BETTER SUPPORTED.
+      minutesAllowed: 60,
+      sources: [
+        {
+          title: "Make Service a Graduation Requirement",
+          text:
+            "High schools should require students to complete a set number of community-service hours before they graduate. When Oak Ridge High added a forty-hour requirement, the share of seniors who volunteered rose sharply, and a follow-up survey found that many of them kept volunteering a year after leaving school. Service also teaches lessons a classroom cannot: students learn to show up on time, work beside strangers, and see how their town actually runs.",
+        },
+        {
+          title: "Service Should Be a Choice",
+          text:
+            "Requiring service turns a good deed into a chore. A student who volunteers only to tick a box learns little about kindness, and the rule falls hardest on teenagers who already work paid jobs to help their families. One district that tracked its graduates found no lasting difference in volunteering between students who had been required to serve and those who had not. Real generosity cannot be forced onto a form.",
+        },
+      ],
+      task:
+        "Both writers argue about whether high schools should require community service to graduate. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
+      guidelines: [
+        "State clearly which position is better supported.",
+        "Use specific evidence from BOTH sources.",
+        "Weigh how strong each side's evidence is — do not just repeat it.",
+        "Write in paragraphs, with a short conclusion.",
+      ],
+      suggestedWords: [
+        ["Evidence", "proof", "prove"],
+        ["Claim", "argues", "position"],
+        ["Service", "volunteer"],
+      ],
+      scienceMaxMarks: 4,
+      markScheme: [
+        "States clearly which position is better supported, rather than only which the writer personally prefers.",
+        "Refers to specific evidence from Source 1 (for example the rise in volunteering at Oak Ridge or the follow-up survey).",
+        "Refers to specific evidence from Source 2 (for example the district that found no lasting difference, or the burden on working students).",
+        "Evaluates the quality of the evidence rather than simply restating it, for example noting that comparing two groups is stronger than surveying only one.",
+      ],
+      modelAnswer:
+        "Both sources use real evidence, but Source 2 is slightly better supported because its evidence compares two groups, while Source 1's looks at only one. Source 1 argues for a requirement and reports that after Oak Ridge High added forty hours, more seniors volunteered and a survey found many kept volunteering later. That sounds convincing, yet the survey follows only the students who were required to serve, so it cannot show whether the rule itself made the difference. Source 2 answers exactly that weakness: it points to a district that tracked its graduates and found no lasting difference in volunteering between students who had been required to serve and those who had not. Comparing the two groups is a stronger test than following one, because it rules out the chance that those students would have volunteered anyway. Source 2 also raises a fair point about the burden on teenagers who already work. Because its evidence is a fairer comparison and answers Source 1's main claim, Source 2's position is the better supported.",
+    },
+    {
+      id: "er2",
+      title: "Year-round school",
+      titleVn: "Trường học quanh năm",
+      minutesAllowed: 45,
+      sources: [
+        {
+          title: "Switch to a Year-Round Calendar",
+          text:
+            "Schools should spread the school year across all twelve months, with several short breaks instead of one long summer holiday. The long summer is when learning leaks away: teachers spend the first weeks of every autumn re-teaching what students knew in June. When the Brookfield district moved to a year-round calendar, it kept the same 180 school days but split the holidays into four breaks of three weeks. After two years, the district's own tests showed that the reading scores of its youngest students were eight percent higher than those of children in the neighbouring district, which had kept the traditional calendar, and absences in the first month of each term fell by a quarter. Short breaks also help working parents, who struggle to find ten weeks of childcare every summer. The same number of days, spread more evenly, simply teaches more.",
+        },
+        {
+          title: "Keep the Summer",
+          text:
+            "A long summer break is not wasted time. It is when children work summer jobs, visit family who live far away, attend camps and learn things a classroom cannot teach. A year-round calendar would take much of that away, and it is likely to cost more: schools would need air conditioning in the hottest months and would have to pay for cleaning and staff across the whole year. Families with children at different schools could find that their breaks no longer match, which would make a family holiday almost impossible. Many teachers also use the summer to take courses and to rest, and a tired teacher in July is not a better teacher. Some year-round districts report that parents were unhappy enough to move their children to other schools. The traditional calendar has worked for generations, and there is no strong reason to change it.",
+        },
+      ],
+      task:
+        "Both writers argue about whether schools should switch to a year-round calendar. In your response, analyze both positions to decide which one is better supported. Use specific evidence from the sources.",
+      guidelines: [
+        "State clearly which position is better supported.",
+        "Use specific evidence from BOTH sources.",
+        "Weigh how strong each side's evidence is — a measured result beats a prediction.",
+        "Write in paragraphs, with a short conclusion.",
+      ],
+      suggestedWords: [
+        ["Evidence", "proof", "prove"],
+        ["Claim", "argues", "position"],
+        ["Calendar", "summer", "break"],
+      ],
+    },
+  ],
   assessment,
   games,
   notes

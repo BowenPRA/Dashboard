@@ -11,6 +11,9 @@ export const ENGLISH_0A_DATA = {
     track: "GED_ENG",
     icon: "GraduationCap"
   },
+  // Prove swaps ESSAY (p8) for PROOFREAD (p33): a grammar unit proves itself by
+  // finding and fixing pronoun errors, not by writing an essay (the reading units
+  // and the capstone carry the Extended Response). XP total and gates unchanged.
   phases: [
     {
       id: "concept",
@@ -37,7 +40,7 @@ export const ENGLISH_0A_DATA = {
       title: "Prove",
       threshold: 45,
       tasks: [
-        { id: "ESSAY", dbKey: "p8", maxXP: 15 },
+        { id: "PROOFREAD", dbKey: "p33", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
       ]
     },
@@ -303,48 +306,170 @@ export const ENGLISH_0A_DATA = {
       ]
     }
   ],
-  essay: {
-    // The GED Extended Response is officially 45 minutes; we give 60 as an ESL
-    // accommodation, matching every essay in the track. The mark scheme keeps a
-    // pronoun-reference line so the writing task still reinforces this unit's focus
-    // alongside the usual claim-and-evidence marks.
-    minutesAllowed: 60,
-    sources: [
-      {
-        title: "Keep Phones Out of the Classroom",
-        text:
-          "A school should collect every phone at the door. Teachers at Riverton High tried this for one term and reported that classroom interruptions fell by roughly half. A student who keeps a phone in a pocket checks it without meaning to, and each check costs several minutes of attention. Locking the phones away for six hours removes the temptation entirely and treats every student the same way, so nobody feels singled out.",
-      },
-      {
-        title: "Teach Students to Manage Them",
-        text:
-          "Confiscating phones teaches nothing. A student who never practises putting a phone away will not suddenly learn self-control after leaving school. Phones are also useful in lessons: a class can look up a source, photograph the board, or translate a difficult word instantly. Schools that ran short lessons on managing distraction found that students later reported checking their phones less often, and those habits carry into adult life in a way a locked box never will.",
-      },
-    ],
-    task:
-      "Both writers argue about whether schools should collect students' phones. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
-    guidelines: [
-      "State clearly which position is better supported.",
-      "Use evidence from BOTH sources.",
-      "Judge how strong each side's evidence is — do not just repeat it.",
-      "Make every pronoun point clearly at one noun — name the person if there is any doubt.",
-      "Write in paragraphs, with a short conclusion.",
-    ],
-    suggestedWords: [
-      ["Evidence", "prove", "proof"],
-      ["Claim", "argues", "argument", "position"],
-      ["Student", "students"],
-    ],
-    scienceMaxMarks: 4,
-    markScheme: [
-      "States clearly which position is better supported, rather than only which the writer personally prefers.",
-      "Refers to specific evidence from Source 1 (for example the halved interruptions at Riverton High).",
-      "Refers to specific evidence from Source 2 (for example the classroom uses of phones or the reported drop in checking).",
-      "Uses pronouns clearly, with no pronoun that could refer to two different nouns.",
-    ],
-    modelAnswer:
-      "Source 1 is better supported because it gives a measured result while Source 2 mostly describes what might happen. Source 1 reports that classroom interruptions at Riverton High fell by about half over one term, which is a figure a reader can check. It also explains the mechanism: a student who carries a phone checks it without meaning to, and each check costs attention. Source 2 makes a fair point that phones can be useful in a lesson, since a class can look up a source or translate a word, and it claims that students who were taught to manage distraction later checked their phones less often. However, Source 2 never says how many students were studied or how much less often they checked, so its evidence is much weaker than the figure in Source 1. Source 2 also relies on a prediction about adult life, which cannot be proven now. Both writers want students to concentrate, but only Source 1 supports its claim with a measured result, so its position is the better supported.",
-  },
+  // Find & Fix: every listed error is a pronoun slip from this unit (case,
+  // agreement, who/whom, unclear reference) plus one general slip per passage.
+  // Everything NOT listed is correct English — a click on it costs the student.
+  proofread: [
+    {
+      id: "pf1",
+      title: "A Note to the New Volunteers",
+      titleVn: "Ghi chú gửi các tình nguyện viên mới",
+      passage: "Welcome to the food bank. My colleague and me will show you around this morning. Each volunteer must sign their name at the desk before starting. If a visitor has a question, please answer him or her politely or call a supervisor. The manager thanked Mr. Lee and I for the extra hours we gave last month. When the drivers spoke to the packers, they said the boxes were too heavy. i hope you enjoy your first shift with us.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "My colleague and me",
+          right: "My colleague and I",
+          accept: [],
+          kind: "Pronoun case",
+          expEn: "Both people do the action \"will show\", so use the subject form. Remove the other person to check: \"I will show you around\".",
+          expVn: "Cả hai người đều thực hiện hành động \"will show\", nên dùng dạng chủ ngữ. Bỏ người kia để kiểm tra: \"I will show you around\"."
+        },
+        {
+          id: "e2",
+          wrong: "sign their name",
+          right: "sign his or her name",
+          accept: [],
+          kind: "Pronoun agreement",
+          expEn: "\"Each volunteer\" is singular, so the possessive must be singular too: \"his or her\", not the plural \"their\".",
+          expVn: "\"Each volunteer\" là số ít, nên sở hữu cũng phải là số ít: \"his or her\", không phải \"their\" số nhiều."
+        },
+        {
+          id: "e3",
+          wrong: "Mr. Lee and I",
+          right: "Mr. Lee and me",
+          accept: [],
+          kind: "Pronoun case",
+          expEn: "The manager thanked us, so we receive the action and need the object form: \"thanked Mr. Lee and me\".",
+          expVn: "Người quản lý cảm ơn chúng tôi, nên chúng tôi nhận hành động và cần dạng tân ngữ: \"thanked Mr. Lee and me\"."
+        },
+        {
+          id: "e4",
+          wrong: "they said the boxes",
+          right: "the packers said the boxes",
+          accept: ["the drivers said the boxes"],
+          kind: "Unclear pronoun",
+          expEn: "Two groups appear in the sentence, so \"they\" could mean the drivers or the packers. Name the group that spoke.",
+          expVn: "Hai nhóm xuất hiện trong câu, nên \"they\" có thể là tài xế hoặc người đóng gói. Hãy gọi tên nhóm đã nói."
+        },
+        {
+          id: "e5",
+          wrong: "i hope",
+          right: "I hope",
+          accept: [],
+          kind: "Capital I",
+          expEn: "The pronoun \"I\" is always a capital letter, even in the middle of a sentence.",
+          expVn: "Đại từ \"I\" luôn viết hoa, ngay cả ở giữa câu."
+        }
+      ]
+    },
+    {
+      id: "pf2",
+      title: "A Complaint About the Lift",
+      titleVn: "Thư khiếu nại về thang máy",
+      passage: "I am writing about the lift in our building. It's doors have stuck three times this week, and nobody knows who to call. Everyone on the top floor has had to carry their shopping up six flights of stairs My neighbour and I spoke to the caretaker, but him and the manager could not agree on a repair date. The residents have been patient, and we would like an answer by Friday.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "It's doors",
+          right: "Its doors",
+          accept: [],
+          kind: "Possessive its",
+          expEn: "The doors belong to the lift, so use the possessive \"its\" with no apostrophe. \"It's\" means \"it is\".",
+          expVn: "Các cánh cửa thuộc về thang máy, nên dùng sở hữu \"its\" không có dấu nháy. \"It's\" nghĩa là \"it is\"."
+        },
+        {
+          id: "e2",
+          wrong: "who to call",
+          right: "whom to call",
+          accept: [],
+          kind: "Who vs whom",
+          expEn: "The person is the object of \"call\" (you call him or her), so the object form \"whom\" is correct.",
+          expVn: "Người đó là tân ngữ của \"call\" (bạn gọi cho anh ấy hoặc cô ấy), nên dạng tân ngữ \"whom\" là đúng."
+        },
+        {
+          id: "e3",
+          wrong: "carry their shopping",
+          right: "carry his or her shopping",
+          accept: [],
+          kind: "Pronoun agreement",
+          expEn: "\"Everyone\" ends in -one and is singular, so it takes \"his or her\", not \"their\".",
+          expVn: "\"Everyone\" kết thúc bằng -one và là số ít, nên dùng \"his or her\", không phải \"their\"."
+        },
+        {
+          id: "e4",
+          wrong: "stairs My",
+          right: "stairs. My",
+          accept: [],
+          kind: "Missing full stop",
+          expEn: "A new sentence starts at \"My neighbour\", so the sentence before it needs a full stop.",
+          expVn: "Một câu mới bắt đầu ở \"My neighbour\", nên câu trước đó cần dấu chấm."
+        },
+        {
+          id: "e5",
+          wrong: "him and the manager",
+          right: "he and the manager",
+          accept: [],
+          kind: "Pronoun case",
+          expEn: "Both people do the action \"could not agree\", so use the subject form. Remove the other person to check: \"he could not agree\".",
+          expVn: "Cả hai người đều thực hiện hành động \"could not agree\", nên dùng dạng chủ ngữ. Bỏ người kia để kiểm tra: \"he could not agree\"."
+        }
+      ]
+    },
+    {
+      id: "pf3",
+      title: "A Report from the Sports Club",
+      titleVn: "Báo cáo từ câu lạc bộ thể thao",
+      passage: "The club held its annual meeting on Tuesday. Each of the players received their new kit before the talks began. The treasurer explained the accounts to the parents and I, and then the committee voted to move training to Thursday and to raise the fees. It upset several members. Mr. Danh, whom has led the club for ten years, promised that the committee would listen. Anyone who wants to complain should write to the secretary, and she will reply within a week. i have attached the new timetable.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "received their new kit",
+          right: "received his or her new kit",
+          accept: [],
+          kind: "Pronoun agreement",
+          expEn: "The subject is \"Each\", which is singular. Ignore \"of the players\" and use \"his or her\".",
+          expVn: "Chủ ngữ là \"Each\", là số ít. Bỏ qua \"of the players\" và dùng \"his or her\"."
+        },
+        {
+          id: "e2",
+          wrong: "the parents and I",
+          right: "the parents and me",
+          accept: [],
+          kind: "Pronoun case",
+          expEn: "The accounts were explained TO these people, so they receive the action and need the object form \"me\".",
+          expVn: "Các khoản thu chi được giải thích CHO những người này, nên họ nhận hành động và cần dạng tân ngữ \"me\"."
+        },
+        {
+          id: "e3",
+          wrong: "It upset several members",
+          right: "The decision upset several members",
+          accept: ["The vote upset several members", "This decision upset several members", "The change upset several members", "The changes upset several members"],
+          kind: "Unclear pronoun",
+          expEn: "\"It\" has no clear noun to point back to — the training day, the fees, or the whole vote? Name the thing that upset people.",
+          expVn: "\"It\" không có danh từ rõ ràng để chỉ về — ngày tập, lệ phí, hay cả cuộc bỏ phiếu? Hãy gọi tên điều đã làm mọi người khó chịu."
+        },
+        {
+          id: "e4",
+          wrong: "whom has led",
+          right: "who has led",
+          accept: [],
+          kind: "Who vs whom",
+          expEn: "This word is the subject of \"has led\" (he has led the club), so the subject form \"who\" is correct.",
+          expVn: "Từ này là chủ ngữ của \"has led\" (ông ấy đã dẫn dắt câu lạc bộ), nên dạng chủ ngữ \"who\" là đúng."
+        },
+        {
+          id: "e5",
+          wrong: "i have attached",
+          right: "I have attached",
+          accept: [],
+          kind: "Capital I",
+          expEn: "The pronoun \"I\" is always written as a capital letter.",
+          expVn: "Đại từ \"I\" luôn được viết hoa."
+        }
+      ]
+    }
+  ],
   assessment,
   games,
   notes

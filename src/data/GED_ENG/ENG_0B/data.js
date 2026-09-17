@@ -11,6 +11,9 @@ export const ENGLISH_0B_DATA = {
     track: "GED_ENG",
     icon: "GraduationCap"
   },
+  // Prove swaps ESSAY (p8) for PROOFREAD (p33): a grammar unit proves itself by
+  // finding and fixing agreement errors, not by writing an essay (the reading
+  // units and the capstone carry the Extended Response). XP total and gates unchanged.
   phases: [
     {
       id: "concept",
@@ -37,7 +40,7 @@ export const ENGLISH_0B_DATA = {
       title: "Prove",
       threshold: 45,
       tasks: [
-        { id: "ESSAY", dbKey: "p8", maxXP: 15 },
+        { id: "PROOFREAD", dbKey: "p33", maxXP: 15 },
         { id: "ASSESSMENT", dbKey: "p9", maxXP: 15 }
       ]
     },
@@ -303,46 +306,170 @@ export const ENGLISH_0B_DATA = {
       ]
     }
   ],
-  essay: {
-    // 60 minutes: the real GED Extended Response is 45; the extra time is an ESL
-    // accommodation applied across the track.
-    minutesAllowed: 60,
-    sources: [
-      {
-        title: "Four-Day School Week",
-        text:
-          "Schools should move to a four-day week. A trial district in the state reported that attendance rose after the change, because families could book appointments on the free day instead of during lessons. Teachers also gained a full day to prepare, and the district said that fewer of them left their jobs that year. A shorter week does not mean less learning; each of the four days is simply a little longer.",
-      },
-      {
-        title: "Keep the Fifth Day",
-        text:
-          "A five-day week protects the students who need school most. For a child whose home is difficult, the fifth day is a safe place with a warm meal and an adult who listens. The trial district measured attendance but never measured what those children did on the free day. A committee of parents in another town found that childcare costs rose sharply when the school week was cut, and the burden fell hardest on families who could least afford it.",
-      },
-    ],
-    task:
-      "Both writers argue about whether schools should switch to a four-day week. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
-    guidelines: [
-      "State clearly which position is better supported.",
-      "Use evidence from BOTH sources.",
-      "Judge how strong each side's evidence is — do not just repeat it.",
-      "Check that every verb agrees with its true subject.",
-      "Write in paragraphs, with a short conclusion.",
-    ],
-    suggestedWords: [
-      ["Evidence", "prove", "proof"],
-      ["Claim", "argues", "argument", "position"],
-      ["School", "schools", "students"],
-    ],
-    scienceMaxMarks: 4,
-    markScheme: [
-      "States clearly which position is better supported, rather than only which the writer personally prefers.",
-      "Refers to specific evidence from Source 1 (for example the rise in attendance or fewer teachers leaving).",
-      "Refers to specific evidence from Source 2 (for example the rise in childcare costs or the unmeasured free day).",
-      "Evaluates the quality of the evidence rather than simply restating it, for example noting an unmeasured claim.",
-    ],
-    modelAnswer:
-      "Source 2 is better supported because it questions the very evidence Source 1 relies on. Source 1 claims that attendance rose and that fewer teachers left after a district switched to a four-day week, which sounds convincing. However, Source 2 points out that the same district measured attendance but never checked what vulnerable children did on the missing day, so an important effect was never proven. Source 2 also gives its own evidence: a parents' committee in another town found that childcare costs rose sharply, and that the heaviest burden fell on families who could least afford it. That is a concrete, measured harm. Source 1's strongest point, the gain for teachers, is real but does not answer the question of who is hurt. Because Source 2 both weakens Source 1's evidence and adds a measured cost of its own, its position is the better supported of the two.",
-  },
+  // Find & Fix: every listed error is an agreement slip from this unit
+  // (interrupting phrases, collective nouns, everybody/each, neither…nor) plus
+  // one general slip per passage. Everything NOT listed is correct English.
+  proofread: [
+    {
+      id: "pf1",
+      title: "The Library Newsletter",
+      titleVn: "Bản tin thư viện",
+      passage: "The library on Mill Street have a new timetable this month. The list of opening hours are printed on the back page. Each of our study rooms now takes bookings online, and everybody who uses them need to bring a library card. The librarians are happy to help anyone who finds the new system confusing Our reading group meet on Wednesday evenings, and new members are always welcome.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "have",
+          right: "has",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "The subject is \"library\" (one), not \"Mill Street\". Cross out \"on Mill Street\" and the verb must be \"has\".",
+          expVn: "Chủ ngữ là \"library\" (một), không phải \"Mill Street\". Gạch bỏ \"on Mill Street\" và động từ phải là \"has\"."
+        },
+        {
+          id: "e2",
+          wrong: "hours are printed",
+          right: "hours is printed",
+          accept: [],
+          kind: "Interrupting phrase",
+          expEn: "The subject is \"list\" (one), not \"hours\". The words after \"of\" are never the subject, so the verb is \"is\".",
+          expVn: "Chủ ngữ là \"list\" (một), không phải \"hours\". Các từ sau \"of\" không bao giờ là chủ ngữ, nên động từ là \"is\"."
+        },
+        {
+          id: "e3",
+          wrong: "need",
+          right: "needs",
+          accept: [],
+          kind: "Indefinite pronoun",
+          expEn: "\"Everybody\" is singular, so the verb takes an -s: \"needs\". The phrase \"who uses them\" in between does not change that.",
+          expVn: "\"Everybody\" là số ít, nên động từ mang -s: \"needs\". Cụm \"who uses them\" ở giữa không thay đổi điều đó."
+        },
+        {
+          id: "e4",
+          wrong: "confusing Our",
+          right: "confusing. Our",
+          accept: [],
+          kind: "Missing full stop",
+          expEn: "A new sentence starts at \"Our reading group\", so the sentence before it needs a full stop.",
+          expVn: "Một câu mới bắt đầu ở \"Our reading group\", nên câu trước đó cần dấu chấm."
+        },
+        {
+          id: "e5",
+          wrong: "meet",
+          right: "meets",
+          accept: [],
+          kind: "Collective noun",
+          expEn: "\"Our reading group\" is a collective noun — one group — so it takes the singular verb \"meets\".",
+          expVn: "\"Our reading group\" là danh từ tập hợp — một nhóm — nên dùng động từ số ít \"meets\"."
+        }
+      ]
+    },
+    {
+      id: "pf2",
+      title: "Minutes of the Residents' Meeting",
+      titleVn: "Biên bản cuộc họp cư dân",
+      passage: "The residents' committee meets on the first Monday of every month. Neither the chairman nor the two secretaries was present last week, so the meeting were short. The bags of rubbish beside the back gate remains a problem, and the caretaker have asked everyone to use the bins. Each family on the ground floor receives a key to the garden. The committee is grateful for the new benches, and i thank the volunteers who painted them.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "was present",
+          right: "were present",
+          accept: [],
+          kind: "Neither…nor",
+          expEn: "With \"neither…nor\", the verb matches the nearest noun. \"Secretaries\" is plural, so use \"were\".",
+          expVn: "Với \"neither…nor\", động từ hòa hợp với danh từ gần nhất. \"Secretaries\" là số nhiều, nên dùng \"were\"."
+        },
+        {
+          id: "e2",
+          wrong: "were short",
+          right: "was short",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The meeting\" is one thing, so the past-tense verb is \"was\", not \"were\".",
+          expVn: "\"The meeting\" là một thứ, nên động từ quá khứ là \"was\", không phải \"were\"."
+        },
+        {
+          id: "e3",
+          wrong: "remains",
+          right: "remain",
+          accept: [],
+          kind: "Interrupting phrase",
+          expEn: "The subject is \"bags\" (plural), not \"rubbish\" or \"gate\". Cross out \"of rubbish beside the back gate\" and the verb is \"remain\".",
+          expVn: "Chủ ngữ là \"bags\" (số nhiều), không phải \"rubbish\" hay \"gate\". Gạch bỏ \"of rubbish beside the back gate\" và động từ là \"remain\"."
+        },
+        {
+          id: "e4",
+          wrong: "have asked",
+          right: "has asked",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The caretaker\" is one person, so the present perfect uses \"has asked\".",
+          expVn: "\"The caretaker\" là một người, nên thì hiện tại hoàn thành dùng \"has asked\"."
+        },
+        {
+          id: "e5",
+          wrong: "i thank",
+          right: "I thank",
+          accept: [],
+          kind: "Capital I",
+          expEn: "The pronoun \"I\" is always a capital letter, even in the middle of a sentence.",
+          expVn: "Đại từ \"I\" luôn viết hoa, ngay cả ở giữa câu."
+        }
+      ]
+    },
+    {
+      id: "pf3",
+      title: "A Notice from the Gym",
+      titleVn: "Thông báo từ phòng tập",
+      passage: "Our gym opens at six every morning, and the changing rooms close at ten. The price of the family passes go up on the first of March. Everybody who joins before that date keep the old price for a full year. The set of new weights arrive next week, and the team of trainers is planning a free class to show members how to use them. Neither the pool nor the sauna are open on Sunday afternoons Please ask at the desk if you have any questions.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "go up",
+          right: "goes up",
+          accept: [],
+          kind: "Interrupting phrase",
+          expEn: "The subject is \"price\" (one), not \"passes\". Ignore \"of the family passes\" and the verb is \"goes\".",
+          expVn: "Chủ ngữ là \"price\" (một), không phải \"passes\". Bỏ qua \"of the family passes\" và động từ là \"goes\"."
+        },
+        {
+          id: "e2",
+          wrong: "keep",
+          right: "keeps",
+          accept: [],
+          kind: "Indefinite pronoun",
+          expEn: "\"Everybody\" is singular, so the verb takes an -s: \"keeps\". The phrase \"who joins before that date\" is only an interruption.",
+          expVn: "\"Everybody\" là số ít, nên động từ mang -s: \"keeps\". Cụm \"who joins before that date\" chỉ là phần xen vào."
+        },
+        {
+          id: "e3",
+          wrong: "arrive",
+          right: "arrives",
+          accept: [],
+          kind: "Interrupting phrase",
+          expEn: "The subject is \"set\" (one), not \"weights\". Cross out \"of new weights\" and the verb is \"arrives\".",
+          expVn: "Chủ ngữ là \"set\" (một), không phải \"weights\". Gạch bỏ \"of new weights\" và động từ là \"arrives\"."
+        },
+        {
+          id: "e4",
+          wrong: "sauna are",
+          right: "sauna is",
+          accept: [],
+          kind: "Neither…nor",
+          expEn: "With \"neither…nor\", the verb matches the nearest noun. \"Sauna\" is singular, so use \"is\".",
+          expVn: "Với \"neither…nor\", động từ hòa hợp với danh từ gần nhất. \"Sauna\" là số ít, nên dùng \"is\"."
+        },
+        {
+          id: "e5",
+          wrong: "afternoons Please",
+          right: "afternoons. Please",
+          accept: [],
+          kind: "Missing full stop",
+          expEn: "A new sentence starts at \"Please ask\", so the sentence before it needs a full stop.",
+          expVn: "Một câu mới bắt đầu ở \"Please ask\", nên câu trước đó cần dấu chấm."
+        }
+      ]
+    }
+  ],
   assessment,
   games,
   notes

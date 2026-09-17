@@ -4,6 +4,8 @@ import { getTrack } from '../data/index';
 import { TRACK_IDS, TRACK_REGISTRY } from './trackRegistry';
 import { TASKS, resolveUnitTasks } from '../tasks/taskRegistry';
 import { isUnitKey } from '../utils/progressSchema';
+import { essaysOf, ESSAYS_KEY } from '../utils/essayArchive';
+import EssayReviewPanel from './essay/EssayReviewPanel';
 import {
   X, Loader2, Edit2, Check, XCircle, Gamepad2, BookOpen, Settings2, UserCog,
   Eraser, Rocket, Save
@@ -96,6 +98,17 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
     } finally {
       setBusyUnit(null);
     }
+  };
+
+  // annotateEssay returns the updated archive entry; swap it in place rather
+  // than refetching the whole record.
+  const handleEssayUpdated = (trackId, essay) => {
+    setDetail((prev) => {
+      const trackData = prev?.progress?.[trackId];
+      if (!trackData) return prev;
+      const list = essaysOf(trackData).map((e) => (e.id === essay.id ? { ...e, ...essay } : e));
+      return { ...prev, progress: { ...prev.progress, [trackId]: { ...trackData, [ESSAYS_KEY]: list } } };
+    });
   };
 
   const toggleTrack = (id) =>
@@ -218,6 +231,10 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                     Save Changes
                   </button>
                 </div>
+              )}
+
+              {progressData && (
+                <EssayReviewPanel studentId={studentId} progress={progressData} onEssayUpdated={handleEssayUpdated} />
               )}
 
               {progressData && [

@@ -30,9 +30,12 @@ export const ENGLISH_1A_DATA = {
       id: "practice",
       title: "Drill",
       threshold: 15,
+      // PROOFREAD (p33) added to Drill: the unit over-provisions to 110 XP (the
+      // unit still caps at 100), giving the student slack; thresholds unchanged.
       tasks: [
         { id: "READ_COMP", dbKey: "p4", maxXP: 15 },
-        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 }
+        { id: "SHORT_ANSWERS", dbKey: "p6", maxXP: 20 },
+        { id: "PROOFREAD", dbKey: "p33", maxXP: 10 }
       ]
     },
     {
@@ -212,46 +215,248 @@ export const ENGLISH_1A_DATA = {
       modelAnswer: "The picture shows that the supporting details sit underneath the main idea and hold it up, like legs under a table. The main idea is the one point that all the details support; the details give facts, examples and reasons, but they do not replace the main idea itself."
     }
   ],
-  essay: {
-    // Every reading unit carries a full GED Extended Response for practice: two
-    // opposing contemporary sources, 60 minutes (ESL accommodation vs. the real
-    // 45), argue which side is BETTER SUPPORTED.
-    minutesAllowed: 60,
-    sources: [
-      {
-        title: "The Case for School Uniforms",
-        text:
-          "Schools should require students to wear a simple uniform. When Lincoln Middle School introduced uniforms, staff recorded far fewer arguments over clothing and brand-name pressure, and teachers said the mornings ran more calmly. Uniforms can also save families money: instead of buying new outfits to keep up with fashion, parents buy two or three sets that last the whole year. A shared uniform quietly reminds every student that they belong to the same school.",
-      },
-      {
-        title: "Uniforms Miss the Point",
-        text:
-          "A uniform is an easy answer to a hard question. Requiring one does nothing about the real causes of trouble at school, such as bullying or boredom in class. Uniforms also cost money that some families do not have, because a required set must be bought whether or not last year's clothes still fit. One district that switched to uniforms found no measurable change in student behaviour after two years. Students learn respect from how they are treated, not from matching shirts.",
-      },
-    ],
-    task:
-      "Both writers argue about whether schools should require students to wear a uniform. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
-    guidelines: [
-      "State clearly which position is better supported.",
-      "Use specific evidence from BOTH sources.",
-      "Weigh how strong each side's evidence is — do not just repeat it.",
-      "Write in paragraphs, with a short conclusion.",
-    ],
-    suggestedWords: [
-      ["Evidence", "proof", "prove"],
-      ["Claim", "argues", "position"],
-      ["School", "students"],
-    ],
-    scienceMaxMarks: 4,
-    markScheme: [
-      "States clearly which position is better supported, rather than only which the writer personally prefers.",
-      "Refers to specific evidence from Source 1 (for example the calmer mornings at Lincoln or the saving for families).",
-      "Refers to specific evidence from Source 2 (for example the district that found no measurable change, or the cost of a required set).",
-      "Evaluates the quality of the evidence rather than simply restating it, for example noting that a measured result is stronger than a staff impression.",
-    ],
-    modelAnswer:
-      "This is a close case, but Source 2 is slightly better supported because it relies on a measured result while Source 1 relies mostly on impressions. Source 1 argues for uniforms and offers real reasons: staff at Lincoln Middle School recorded fewer arguments over clothing, and families can save money by buying a few sets that last the year. However, the calmer mornings come from what teachers 'said,' which is an impression rather than a measured figure. Source 2 answers with a stronger kind of evidence: it points to a district that switched to uniforms and found no measurable change in behaviour after two years. That is a checkable result, and it directly weakens Source 1's main promise. Source 2 also raises a fair cost problem for families who must buy a required set. Because Source 2 supports its position with a measured outcome and answers Source 1's strongest claim, its argument is the better supported of the two.",
-  },
+  // Find & Fix: short informational texts on this unit's topic (finding the
+  // main idea) carrying mixed errors — agreement, tense, plural, article, comma
+  // splice, confusables. Everything NOT listed is correct English.
+  proofread: [
+    {
+      id: "pf1",
+      title: "Editorial: Teach the Main Idea First",
+      titleVn: "Xã luận: Dạy ý chính trước",
+      passage: "Every week our teachers hands students a page of text and tell them to find the main idea. Many student underline every sentence, because they has never been shown the difference between a topic and a point. A topic is a short phrase, a main idea is a full sentence about that phrase. Last year the reading scores at Hill Road School rise after teachers spent one lesson a week on this single skill. The lesson is clear: teach the main idea first, and the details will follow.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "hands",
+          right: "hand",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Our teachers\" is plural, so the verb has no -s: \"hand\". The second verb, \"tell\", already agrees.",
+          expVn: "\"Our teachers\" là số nhiều, nên động từ không có -s: \"hand\". Động từ thứ hai, \"tell\", đã hòa hợp rồi."
+        },
+        {
+          id: "e2",
+          wrong: "Many student",
+          right: "Many students",
+          accept: [],
+          kind: "Plural noun",
+          expEn: "\"Many\" always counts more than one, so the noun must be plural: \"students\".",
+          expVn: "\"Many\" luôn đếm nhiều hơn một, nên danh từ phải ở số nhiều: \"students\"."
+        },
+        {
+          id: "e3",
+          wrong: "has",
+          right: "have",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"They\" is plural, so the helping verb is \"have\": \"they have never been shown\".",
+          expVn: "\"They\" là số nhiều, nên trợ động từ là \"have\": \"they have never been shown\"."
+        },
+        {
+          id: "e4",
+          wrong: "phrase, a main idea",
+          right: "phrase; a main idea",
+          accept: ["phrase. A main idea", "phrase, but a main idea", "phrase, while a main idea", "phrase, and a main idea"],
+          kind: "Comma splice",
+          expEn: "Two complete sentences cannot be joined by a comma alone. Use a semicolon, a full stop, or a joining word such as \"but\".",
+          expVn: "Hai câu hoàn chỉnh không thể nối chỉ bằng dấu phẩy. Dùng dấu chấm phẩy, dấu chấm, hoặc một từ nối như \"but\"."
+        },
+        {
+          id: "e5",
+          wrong: "rise",
+          right: "rose",
+          accept: [],
+          kind: "Verb tense",
+          expEn: "\"Last year\" puts the sentence in the past, and the other verb is \"spent\", so use the past form \"rose\".",
+          expVn: "\"Last year\" đặt câu vào quá khứ, và động từ kia là \"spent\", nên dùng dạng quá khứ \"rose\"."
+        }
+      ]
+    },
+    {
+      id: "pf2",
+      title: "Notice: Summary Writing Workshop",
+      titleVn: "Thông báo: Buổi tập huấn viết tóm tắt",
+      passage: "The library will hold a free workshop on writing summaries on Saturday 14 March. The session is aimed at adult learners whom are preparing for a reading test. Participants will practise picking out the main idea of an short passage and dropping the details that do not matter. Places are limited to twenty, so please book early to be sure of you're place. Last month's workshop was full within three days, and the feedback were very positive. Bring a pen, a notebook and a article you have read recently.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "whom are preparing",
+          right: "who are preparing",
+          accept: [],
+          kind: "Who vs whom",
+          expEn: "This word is the subject of \"are preparing\" (they are preparing), so the subject form \"who\" is correct.",
+          expVn: "Từ này là chủ ngữ của \"are preparing\" (họ đang chuẩn bị), nên dạng chủ ngữ \"who\" là đúng."
+        },
+        {
+          id: "e2",
+          wrong: "an short",
+          right: "a short",
+          accept: [],
+          kind: "Article",
+          expEn: "\"Short\" begins with a consonant sound, so the article is \"a\", not \"an\".",
+          expVn: "\"Short\" bắt đầu bằng âm phụ âm, nên mạo từ là \"a\", không phải \"an\"."
+        },
+        {
+          id: "e3",
+          wrong: "you're place",
+          right: "your place",
+          accept: [],
+          kind: "Confusable words",
+          expEn: "\"You're\" means \"you are\". The place belongs to you, so the possessive \"your\" is needed.",
+          expVn: "\"You're\" nghĩa là \"you are\". Chỗ đó thuộc về bạn, nên cần sở hữu \"your\"."
+        },
+        {
+          id: "e4",
+          wrong: "feedback were",
+          right: "feedback was",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"Feedback\" is an uncountable noun and takes a singular verb: \"the feedback was very positive\".",
+          expVn: "\"Feedback\" là danh từ không đếm được và dùng động từ số ít: \"the feedback was very positive\"."
+        },
+        {
+          id: "e5",
+          wrong: "a article",
+          right: "an article",
+          accept: [],
+          kind: "Article",
+          expEn: "\"Article\" begins with a vowel sound, so the article is \"an\".",
+          expVn: "\"Article\" bắt đầu bằng âm nguyên âm, nên mạo từ là \"an\"."
+        }
+      ]
+    },
+    {
+      id: "pf3",
+      title: "From a Report on Reading Habits",
+      titleVn: "Trích từ một báo cáo về thói quen đọc",
+      passage: "In 2024 the city surveyed 600 adult about how they read the news. Over half said that they only read the headline and the first paragraph, than move on to the next story. Readers who slowed down and looked for the main idea remembered twice as many details a week later. The report also found that shorter articles was not always easier to summarise, because the writer's point were often hidden in the last line. The authors recommends that news sites put the main idea in the opening sentence.",
+      errors: [
+        {
+          id: "e1",
+          wrong: "600 adult",
+          right: "600 adults",
+          accept: [],
+          kind: "Plural noun",
+          expEn: "A number above one needs a plural noun: \"600 adults\".",
+          expVn: "Một con số lớn hơn một cần danh từ số nhiều: \"600 adults\"."
+        },
+        {
+          id: "e2",
+          wrong: "than",
+          right: "then",
+          accept: [],
+          kind: "Confusable words",
+          expEn: "\"Than\" compares two things. \"Then\" means \"after that\", which is the meaning here.",
+          expVn: "\"Than\" dùng để so sánh hai thứ. \"Then\" nghĩa là \"sau đó\", đúng với nghĩa ở đây."
+        },
+        {
+          id: "e3",
+          wrong: "was not always",
+          right: "were not always",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "The subject is \"articles\" (plural), so the past-tense verb is \"were\".",
+          expVn: "Chủ ngữ là \"articles\" (số nhiều), nên động từ quá khứ là \"were\"."
+        },
+        {
+          id: "e4",
+          wrong: "were often",
+          right: "was often",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "The subject is \"point\" (one), not \"writer's\". One point \"was\" hidden.",
+          expVn: "Chủ ngữ là \"point\" (một), không phải \"writer's\". Một điểm \"was\" bị ẩn."
+        },
+        {
+          id: "e5",
+          wrong: "recommends",
+          right: "recommend",
+          accept: [],
+          kind: "Subject-verb agreement",
+          expEn: "\"The authors\" is plural, so the verb has no -s: \"recommend\".",
+          expVn: "\"The authors\" là số nhiều, nên động từ không có -s: \"recommend\"."
+        }
+      ]
+    }
+  ],
+  // The essay is a BANK: the student picks one prompt each sitting. er1 keeps
+  // the original 60-minute ESL accommodation; er2 runs at the real test's 45.
+  essay: [
+    {
+      id: "er1",
+      title: "School uniforms",
+      titleVn: "Đồng phục học sinh",
+      // Every reading unit carries a full GED Extended Response for practice: two
+      // opposing contemporary sources, 60 minutes (ESL accommodation vs. the real
+      // 45), argue which side is BETTER SUPPORTED.
+      minutesAllowed: 60,
+      sources: [
+        {
+          title: "The Case for School Uniforms",
+          text:
+            "Schools should require students to wear a simple uniform. When Lincoln Middle School introduced uniforms, staff recorded far fewer arguments over clothing and brand-name pressure, and teachers said the mornings ran more calmly. Uniforms can also save families money: instead of buying new outfits to keep up with fashion, parents buy two or three sets that last the whole year. A shared uniform quietly reminds every student that they belong to the same school.",
+        },
+        {
+          title: "Uniforms Miss the Point",
+          text:
+            "A uniform is an easy answer to a hard question. Requiring one does nothing about the real causes of trouble at school, such as bullying or boredom in class. Uniforms also cost money that some families do not have, because a required set must be bought whether or not last year's clothes still fit. One district that switched to uniforms found no measurable change in student behaviour after two years. Students learn respect from how they are treated, not from matching shirts.",
+        },
+      ],
+      task:
+        "Both writers argue about whether schools should require students to wear a uniform. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
+      guidelines: [
+        "State clearly which position is better supported.",
+        "Use specific evidence from BOTH sources.",
+        "Weigh how strong each side's evidence is — do not just repeat it.",
+        "Write in paragraphs, with a short conclusion.",
+      ],
+      suggestedWords: [
+        ["Evidence", "proof", "prove"],
+        ["Claim", "argues", "position"],
+        ["School", "students"],
+      ],
+      scienceMaxMarks: 4,
+      markScheme: [
+        "States clearly which position is better supported, rather than only which the writer personally prefers.",
+        "Refers to specific evidence from Source 1 (for example the calmer mornings at Lincoln or the saving for families).",
+        "Refers to specific evidence from Source 2 (for example the district that found no measurable change, or the cost of a required set).",
+        "Evaluates the quality of the evidence rather than simply restating it, for example noting that a measured result is stronger than a staff impression.",
+      ],
+      modelAnswer:
+        "This is a close case, but Source 2 is slightly better supported because it relies on a measured result while Source 1 relies mostly on impressions. Source 1 argues for uniforms and offers real reasons: staff at Lincoln Middle School recorded fewer arguments over clothing, and families can save money by buying a few sets that last the year. However, the calmer mornings come from what teachers 'said,' which is an impression rather than a measured figure. Source 2 answers with a stronger kind of evidence: it points to a district that switched to uniforms and found no measurable change in behaviour after two years. That is a checkable result, and it directly weakens Source 1's main promise. Source 2 also raises a fair cost problem for families who must buy a required set. Because Source 2 supports its position with a measured outcome and answers Source 1's strongest claim, its argument is the better supported of the two.",
+    },
+    {
+      id: "er2",
+      title: "Tipping or service charge",
+      titleVn: "Tiền boa hay phí dịch vụ",
+      minutesAllowed: 45,
+      sources: [
+        {
+          title: "Replace Tips with a Service Charge",
+          text:
+            "Restaurants should stop relying on tips and add a fixed service charge to every bill instead. Tipping leaves a server's pay to the mood of each customer, so two people doing the same work on the same night can go home with very different wages. When the Harbour Grill in Portside replaced tips with a twelve percent service charge, the owner reported that the kitchen staff, who had never received tips, saw their pay rise by about fifteen percent, and staff turnover fell by a third over the following year. Customers also knew the full price before they ordered, so there were fewer arguments at the till. A service charge is honest: it puts the real cost of the meal on the menu, and it shares the money fairly among everyone who made the meal happen, not only the person who carried it to the table.",
+        },
+        {
+          title: "Keep Tipping",
+          text:
+            "A service charge takes away the one tool a customer has to reward good service. When a tip is optional, a server has a reason to be attentive, and most diners are happy to pay more for a meal that went well. A fixed charge removes that link, and it is easy to predict what follows: service will become slower and less friendly, because the money arrives whether the server tries or not. Many experienced servers also say they would earn less under a service charge, since a generous table can tip twenty percent or more. Diners dislike being told what to pay, too; a survey by a restaurant magazine found that most of its readers preferred to decide the amount themselves. Tipping is not perfect, but it rewards effort directly, and a restaurant that treats its staff well will find that customers notice and pay accordingly.",
+        },
+      ],
+      task:
+        "Both writers argue about whether restaurants should replace tipping with a fixed service charge. In your response, analyze both positions to decide which one is better supported. Use specific evidence from the sources.",
+      guidelines: [
+        "State clearly which position is better supported.",
+        "Use specific evidence from BOTH sources.",
+        "Weigh how strong each side's evidence is — a measured result beats a prediction.",
+        "Write in paragraphs, with a short conclusion.",
+      ],
+      suggestedWords: [
+        ["Evidence", "proof", "prove"],
+        ["Claim", "argues", "position"],
+        ["Tip", "service charge", "pay"],
+      ],
+    },
+  ],
   assessment,
   games,
   notes

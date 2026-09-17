@@ -11,6 +11,10 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import Essay from './tasks/Essay';
 import { ENGLISH_1C_DATA } from './data/GED_ENG/ENG_1C/data';
+import { upsertEssay } from './utils/essayArchive';
+
+// One pool object for the life of the page, as YearDashboard keeps it in state.
+const POOL = { essay: ENGLISH_1C_DATA.essay };
 
 /** Canned grader replies, one per branch of the report worth eyeballing. */
 const REPLIES = {
@@ -145,7 +149,7 @@ In conclusion i think Source 2 is better supported, because it answers the quest
 
 /** Writes into a controlled React textarea the way a keyboard would. */
 const fillResponse = () => {
-  const box = document.querySelector('textarea');
+  const box = document.querySelector('textarea[data-role="response"]');
   if (!box) return;
   const setValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
   setValue.call(box, SAMPLE);
@@ -166,6 +170,14 @@ window.fetch = async (url) => {
 function Harness() {
   const [reply, setReply] = useState(activeReply);
   const [nonce, setNonce] = useState(0);
+  // The track's essay archive, kept the way saveScore keeps it: every graded
+  // save carries `meta.essay`, upserted by id. It feeds the start screen's
+  // watch-list and prompt picker on the next Reset.
+  const [archive, setArchive] = useState([]);
+  const keep = (label) => (xp, _answers, meta) => {
+    console.log(`${label}, xp =`, xp, meta?.essay ? `(essay ${meta.essay.id})` : '');
+    if (meta?.essay?.id) setArchive((list) => upsertEssay(list, meta.essay));
+  };
 
   return (
     <div>
@@ -187,6 +199,9 @@ function Harness() {
         >
           Fill sample
         </button>
+        <span className="self-center px-2 text-xs font-black uppercase tracking-wider text-slate-400" data-role="archive-count">
+          {archive.length} archived
+        </span>
         <button
           onClick={() => setNonce((n) => n + 1)}
           className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider bg-slate-800 text-white"
@@ -197,13 +212,16 @@ function Harness() {
 
       <Essay
         key={nonce}
-        pool={{ essay: ENGLISH_1C_DATA.essay }}
+        pool={POOL}
         track="GED_ENG"
+        unitId="ENG_1C"
         unitTitle="Evaluating Arguments"
         savedData={{}}
         strikes={0}
+        essayArchive={archive}
         onAddStrike={() => {}}
-        onComplete={(xp) => console.log('complete, xp =', xp)}
+        onProgress={keep('progress')}
+        onComplete={keep('complete')}
         onQuit={() => console.log('quit')}
       />
     </div>

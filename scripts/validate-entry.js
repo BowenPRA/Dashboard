@@ -32,6 +32,9 @@ import { checkCollectItems, checkExpandItems, checkFlowItems } from '../src/util
 import { checkPyramidConfig } from '../src/utils/pyramid.js';
 import { checkHuntConfig } from '../src/utils/elementHunt.js';
 import { checkLabConfig } from '../src/utils/particles.js';
+import { checkProofreadItems } from '../src/utils/proofread.js';
+import { checkSequenceItems } from '../src/utils/sequence.js';
+import { checkEssayPrompts } from '../src/utils/essayPrompts.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -141,6 +144,17 @@ for (const trackId of TRACK_IDS) {
       if (bilingual && !unit[key].titleVn) err(`${label}: ${key} needs titleVn`);
       for (const p of check(unit[key])) err(`${label}: ${p}`);
     }
+
+    // -- Find & Fix and Order It: every error must be locatable exactly once in
+    //    its passage, every list orderable. An error the screen cannot find is
+    //    a mark the student cannot earn, and nothing on screen would say so.
+    for (const p of checkProofreadItems(unit.proofread)) err(`${label}: ${p}`);
+    for (const p of checkSequenceItems(unit.sequence, { bilingual })) err(`${label}: ${p}`);
+
+    // -- Essay prompts: one object or a bank of them. Each needs a task and,
+    //    for the GED tracks, two source passages — a prompt with one source
+    //    cannot be argued from both sides, which is the whole Extended Response.
+    for (const p of checkEssayPrompts(unit.essay, { ged: /^GED_/.test(trackId) })) err(`${label}: ${p}`);
 
     // -- phases and XP
     const resolved = resolveUnitTasks(unit, 0);
@@ -263,6 +277,11 @@ for (const trackId of TRACK_IDS) {
         const hasBody = slide.content || slide.widget || slide.inlineSvg || slide.image;
         if (!hasLayout && slide.type === 'concept' && !hasBody) {
           err(`${label}: notes slide ${i + 1} ("${slide.title || '?'}") is a concept slide with no content, widget, diagram or image`);
+        }
+        // A stack slide renders `items` only as a checklist; otherwise it renders
+        // `notes`. Cards authored as `items` on a plain stack show nothing at all.
+        if (slide.layout === 'stack' && (slide.items || []).length && slide.variant !== 'checklist') {
+          err(`${label}: notes slide ${i + 1} ("${slide.title || '?'}") is a stack with \`items\` but no variant: "checklist" — they will not render; use \`notes\` cards or add the variant`);
         }
 
         // -- check questions: what the NOTES task is now scored on. A malformed

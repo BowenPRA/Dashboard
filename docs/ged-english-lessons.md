@@ -56,9 +56,31 @@ Tasks come from `src/tasks/taskRegistry.js`. Choose by the skill the lesson targ
 | **Reading** | reading comprehension | reading-strand lessons |
 | **Short Answers** | analysis in writing | reading lessons; follows [question-quality.md](question-quality.md) |
 | **GrammarEdit** | the Language/editing strand | grammar lessons — the highest-value GED task |
+| **Find & Fix** (`PROOFREAD`, p33) | finding a slip in running prose, then fixing it | every editing lesson, and after the essay — it is the conventions trait's actual skill |
+| **Order It** (`SEQUENCE`, p34) | organisation and transitions | organisation lessons and the essay capstone — Trait 2 made visible |
 | **Essay** | Extended Response | see §4 |
 | **Assessment** | mixed GED-style check | end of a lesson; keep it short, mirror real item types |
 | **Games** | motivation | optional; never the point of a lesson |
+
+**Find & Fix item** (`unit.proofread`, engine `src/utils/proofread.js`): a passage of
+30+ words with 2+ errors. Each error quotes the wrong phrase *exactly* (≤ 6 words, once
+in the passage, on word boundaries) and gives `right`, optional `accept` alternatives,
+a `kind` (the name the essay report uses: *Comma splice*, *Subject-verb agreement*…) and
+a bilingual explanation. The student clicks the words, types the fix; offsets, marking
+and the "almost — check your capitals / punctuation" hints are derived. The validator
+refuses an error the screen could not find.
+
+```js
+proofread: [{ id: "pf1", title: "The Late Delivery", titleVn: "…",
+  passage: "Our shop ordered fifty boxes of paper last Monday, the delivery was …",
+  errors: [{ id: "e1", wrong: "Monday, the delivery", right: "Monday, but the delivery",
+    accept: ["Monday. The delivery"], kind: "Comma splice", expEn: "…", expVn: "…" }] }]
+```
+
+**Order It item** (`unit.sequence`, engine `src/utils/sequence.js`): 3–8 `items` authored
+in the correct order, each `{ text, textVn }`, plus bilingual `title`, `prompt` and
+explanation. The scramble is a seeded derangement (nothing starts in place; the same
+puzzle every time), and marking is slot by slot.
 
 Rules of thumb:
 - **Grammar lesson** → Notes + GrammarEdit + a short Assessment; light vocab.
@@ -79,6 +101,23 @@ Rules of thumb:
   argument — GED extended-response phrasing.
 - Grades on the two-part model (Content mark scheme + English) per
   [question-quality.md](question-quality.md); the essay grader stays GED-calibrated.
+- **A GED unit's `essay` is a bank** — an array of prompts, each with an `id` (it keys
+  the student's saved work) and a short `title` for the picker. `src/utils/essayPrompts.js`
+  normalises a single object and a bank to the same shape, and the validator requires
+  two sources of 60+ words per GED prompt. Two prompts per unit is the norm, so a unit
+  revisited on the study plan is a fresh essay.
+- **The task flow** (`src/tasks/Essay.jsx`, GED path): a start screen (pick a prompt,
+  *practice* or *exam conditions*, and a "watch for these" list built from the errors in
+  the student's last three essays) → a planner (position, strongest evidence, weakest
+  evidence, concession, conclusion) → writing, with a sentence-frames pane
+  (`src/utils/essayFrames.js`; a prompt may append its own with `frames`) → the score →
+  the revision workshop.
+- **Every graded essay is kept** in `progress[track].__essays` (`src/utils/essayArchive.js`):
+  the text, plan, score, the examiner's whole report and the errors marked, upserted by
+  id when the revision finishes. The student reads them back on **My Writing** (`/writing`,
+  `src/views/Writing.jsx`): trend, trait averages, the errors that keep coming back, and
+  each essay's report. The teacher sees the same report in the student drawer and can
+  leave a note (`annotateEssay` admin endpoint), which the student sees above the report.
 
 ## 5. The 10-lesson blueprint
 
@@ -90,14 +129,14 @@ Add lessons later if a topic needs its own; for now, ten.
 |---|---|---|---|
 | 1 | Pronouns | Language | **ENG_0A — built, polished** |
 | 2 | Subject–Verb Agreement | Language | **ENG_0B — built, polished** |
-| 3 | Verb Tense & Consistency | Language | new |
-| 4 | Sentence Boundaries (fragments, run-ons, comma splices) | Language | new |
-| 5 | Punctuation & Confusable Words (commas, apostrophes, their/there/they're) | Language | new |
-| 6 | Transitions & Organization | Language / Writing | new |
+| 3 | Verb Tense & Consistency | Language | **ENG_3 — built** |
+| 4 | Sentence Boundaries (fragments, run-ons, comma splices) | Language | **ENG_4 — built** |
+| 5 | Punctuation & Confusable Words (commas, apostrophes, their/there/they're) | Language | **ENG_5 — built** |
+| 6 | Transitions & Organization | Language / Writing | **ENG_6 — built** (Order It) |
 | 7 | Reading for Main Idea & Detail | Reading | **ENG_1A — built** |
 | 8 | Author's Purpose, Tone & Point of View | Reading | **ENG_1B — built** |
 | 9 | Claims, Evidence & Evaluating Arguments | Reading | **ENG_1C — built** |
-| 10 | The Extended Response Essay | Writing | capstone |
+| 10 | The Extended Response Essay | Writing | **ENG_10 — built** (capstone, no assessment) |
 
 **Current inventory:**
 - **ENG_0A (Pronouns), ENG_0B (Subject–Verb Agreement)** → lessons 1–2. Built and polished.
@@ -111,8 +150,14 @@ Add lessons later if a topic needs its own; for now, ten.
 - **ENG_2A (Speeches)** → **removed.** Public-speaking analysis isn't on the RLA.
 
 Each reading unit (7–9) is contained to one focus and uses the shape Notes + Vocab +
-Reading + Short Answers + Diagrams + Essay + Assessment, with `games`/`workbook`
-dropped as off-focus. Lessons 3–6 (Language) remain to be built.
+Reading + Short Answers + Find & Fix + Diagrams + Essay + Assessment, with
+`games`/`workbook` dropped as off-focus.
+- **ENG_3, ENG_4, ENG_5** → lessons 3–5, the editing shape: Notes + Vocab | GrammarEdit 25 ·
+  Find & Fix 15 | Short Answers 10 · Assessment 30. **ENG_6** swaps Find & Fix for Order It.
+- **ENG_10** → lesson 10, the capstone: Reading (the sources) · Order It · Short Answers
+  (frame drill) | Essay 30 · Find & Fix 10. No assessment — the essay is the test.
+- ENG_0A/0B gained Find & Fix in the Prove phase; ENG_1A/1B/1C gained it in Drill and
+  a two-prompt essay bank.
 
 ## 6. Authoring checklist (per lesson)
 
@@ -123,7 +168,10 @@ dropped as off-focus. Lessons 3–6 (Language) remain to be built.
 - [ ] GrammarEdit / Reading / Short Answer items follow [question-quality.md](question-quality.md).
 - [ ] MCQ distractors are clean and parallel — each isolates the one thing being
       tested, with no smuggled extra words (e.g. verb-form options differ only in the verb).
-- [ ] Essay: 60 minutes, two GED-style opposing sources.
+- [ ] Essay: 60 minutes, two GED-style opposing sources; in a bank, every prompt has an
+      `id` and a `title`.
+- [ ] Find & Fix errors quote the passage exactly, once each; `kind` uses the essay
+      report's names so the Writing page totals them together.
 - [ ] Bilingual `vn` fields present.
 - [ ] Assessment mirrors GED item types, stays short, and has a **balanced A–D
       answer key** — the validator warns on a lopsided key (>50% one letter) or an
