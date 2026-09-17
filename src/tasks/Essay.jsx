@@ -307,7 +307,10 @@ export default function Essay({
   }
 
   const savedForPrompt = localAnswers[promptKey] || (promptKey === '0' ? localAnswers[0] : null);
-  const draft = savedForPrompt?.status === 'draft' ? savedForPrompt : null;
+  // An essay the examiner could not be reached for counts as a draft too. It is
+  // saved with the promise that it can be resubmitted, and this is the only door
+  // back to it — without it, 45 minutes of writing was kept but unreachable.
+  const draft = ['draft', 'api_error'].includes(savedForPrompt?.status) ? savedForPrompt : null;
   const secondsUsed = minutesAllowed * 60 - secondsLeft;
 
   /* ---- starting ---------------------------------------------------------- */
@@ -705,7 +708,20 @@ export default function Essay({
   // What the X does depends on where the student is: nothing written yet is
   // just leaving; mid-essay keeps a draft; after a score it completes the task.
   const handleTopBarQuit = () => {
-    if (!isGedTrack) { handleNext(); return; }
+    if (!isGedTrack) {
+      // Mid-essay, "Save & Quit" has to save: keep the text as a draft (the
+      // restore effect reopens any saved text in the editor) instead of
+      // completing the task at zero and discarding what was typed.
+      if (gameState === 'Q' && userAnswer.trim()) {
+        const answers = { ...localAnswers, [promptKey]: { text: userAnswer, status: 'draft' } };
+        setLocalAnswers(answers);
+        onProgress?.(0, answers);
+        onQuit?.();
+        return;
+      }
+      handleNext();
+      return;
+    }
     if (gameState === 'START' || gameState === 'PLAN' || gameState === 'LOADING') { onQuit?.(); return; }
     if (gameState === 'Q') { saveDraftAndQuit(); return; }
     handleNext();

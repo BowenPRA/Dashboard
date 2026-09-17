@@ -226,7 +226,12 @@ export function makeSession(config, seed) {
 
 /** Whether a typed answer matches the round (within its tolerance). */
 export function markAnswer(round, input) {
-  const v = Number(String(input ?? '').replace(/[^0-9.-]/g, ''));
+  // Read the FIRST number, not every digit on the line: stripping non-digits
+  // turned "24cm3" into 243, and a typeset minus (−5, what a phone keyboard
+  // offers) into +5. A decimal comma is accepted as a point.
+  const m = String(input ?? '').replace(/[−–]/g, '-').replace(',', '.').match(/-?\d*\.?\d+/);
+  if (!m) return false;
+  const v = Number(m[0]);
   if (!Number.isFinite(v)) return false;
   return Math.abs(v - round.answer) <= (round.tolerance || 0);
 }

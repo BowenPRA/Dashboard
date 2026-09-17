@@ -160,6 +160,9 @@ export function essayStats(entries = []) {
   const sorted = [...entries].sort((a, b) => String(a.at).localeCompare(String(b.at)));
   const first = sorted[0] || null;
   const latest = sorted[sorted.length - 1] || null;
+  const sortedScored = sorted.filter((e) => !e.nonScorable);
+  const firstScored = sortedScored[0] || null;
+  const latestScored = sortedScored[sortedScored.length - 1] || null;
   return {
     count: entries.length,
     scoredCount: n,
@@ -176,8 +179,10 @@ export function essayStats(entries = []) {
     first,
     latest,
     // The delta the student can feel: first scored essay vs the latest one.
-    change: first && latest && first !== latest && !first.nonScorable && !latest.nonScorable
-      ? (latest.score?.total || 0) - (first.score?.total || 0)
+    // Taken from the scored essays only — a non-scorable first attempt must not
+    // blank the trend for a student who has since written several scored ones.
+    change: firstScored && latestScored && firstScored !== latestScored
+      ? (latestScored.score?.total || 0) - (firstScored.score?.total || 0)
       : null,
   };
 }

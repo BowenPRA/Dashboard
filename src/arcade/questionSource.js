@@ -19,7 +19,7 @@
 
 import { audioUrl } from '../utils/assetPaths';
 import { unitXPOf } from '../tasks/taskRegistry';
-import { mathChallengeFor } from '../components/towerdefense/mathChallenges';
+import { hasMathChallenge } from '../components/towerdefense/mathChallenges';
 import { planForDate, todayISO } from '../utils/studyPlan';
 
 /** realWords decorated with the audio URLs the vocab tasks (and games) expect. */
@@ -83,7 +83,7 @@ export function arcadeQuestionSource(allProgress = {}, available = []) {
   }
 
   // One arithmetic generator per run, taken from a source unit that has one.
-  const mathUnitId = units.map((u) => u.unitId).find((id) => mathChallengeFor(id)) || null;
+  const mathUnitId = units.find((u) => hasMathChallenge(u.track, u.unitId))?.unitId || null;
 
   return { pool, mathUnitId };
 }

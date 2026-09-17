@@ -173,6 +173,14 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
         
         <div
           onClick={unitLock ? undefined : onToggle}
+          role="button"
+          tabIndex={unitLock ? -1 : 0}
+          aria-expanded={isExpanded && !unitLock}
+          aria-disabled={unitLock ? true : undefined}
+          onKeyDown={(e) => {
+            if (unitLock || e.target !== e.currentTarget) return;
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); }
+          }}
           className={`p-6 sm:p-8 relative group flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${unitLock ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
           
           <div className={`relative z-10 flex items-center w-full md:w-auto ${unitLock ? 'opacity-60' : ''}`}>
@@ -301,6 +309,10 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                 // XP threshold and an optional `requires` attempt-gate (§6.4).
                 const phaseTasks = allTasks.filter(t => t.phaseId === phase.id);
                 const isPhaseLocked = !previewAll && phaseTasks.some(t => t.locked);
+
+                // A phase whose only task was filtered out (the games moved to the
+                // Arcade track) would otherwise render a heading over nothing.
+                if (phaseTasks.length === 0) return null;
 
                 return (
                   <div key={phase.id} className="relative group">

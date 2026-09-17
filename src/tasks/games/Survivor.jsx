@@ -51,6 +51,12 @@ export default function Survivor({
   mathUnitId = unitId,
   onQuit = () => {},
   onComplete = () => {},
+  // Fired once, when the loadout deploys — the Arcade charges its gold here, so
+  // backing out of the loadout screen costs nothing.
+  onStart,
+  // Overrides the loadout's line about where the purse came from (the Arcade
+  // hands out a flat budget, not banked unit XP).
+  purseNote,
 }) {
   const themeId = gameConfig.themeId || 'STANDARD';
   const tribeId = THEME_TRIBE[themeId] || 'INSECT';
@@ -66,12 +72,17 @@ export default function Survivor({
   });
   const bestRef = useRef(bestScore);
   useEffect(() => { bestRef.current = bestScore; }, [bestScore]);
+  // The best run of THIS sitting. The localStorage best belongs to the device,
+  // not the student — on a shared classroom tablet it may be someone else's, so
+  // it is shown as the score to beat but never submitted to the leaderboard.
+  const sessionBestRef = useRef(0);
 
   // Forging starts the moment the student walks in, so by the time they have
   // chosen a hero and spent their gold the atlas is already warm.
   const handleSprites = useCallback((atlas) => setSprites(atlas), []);
 
   const bankBest = useCallback((score) => {
+    sessionBestRef.current = Math.max(sessionBestRef.current, score);
     if (score > bestRef.current) {
       bestRef.current = score;
       try { localStorage.setItem(`surv_best_${unitId}`, String(score)); } catch { /* private mode */ }
@@ -84,7 +95,7 @@ export default function Survivor({
     // Submit the best run of the session, not whatever was on screen at exit —
     // the same rule Tower Defense follows, so "Play Again" can never cost a
     // student their high score.
-    onComplete(Math.max(score, bestRef.current));
+    onComplete(Math.max(score, sessionBestRef.current));
     onQuit();
   }, [bankBest, onComplete, onQuit]);
 
@@ -97,7 +108,8 @@ export default function Survivor({
           tierLabel={gameConfig.tierLabel || 'Recruit'}
           mapName={gameConfig.mapName || 'The Open Field'}
           briefing={gameConfig.briefing}
-          onDeploy={setDeployed}
+          purseNote={purseNote}
+          onDeploy={(d) => { onStart?.(); setDeployed(d); }}
           onBack={onQuit}
         />
       </>
@@ -178,8 +190,11 @@ function SurvivorRun({
   const openDraft = useCallback(() => {
     const cards = rollUpgrades(gRef.current);
     if (cards.length === 0) {
-      // Nothing left to offer (everything maxed) — take the level silently.
-      resumeAfterLevel(gRef.current);
+      // Nothing left to offer (everything maxed) — take every pending level
+      // silently. Resuming just one would leave the state at LEVELUP with no
+      // modal open, and the engine only opens a draft from PLAYING: a frozen run.
+      gRef.current.pendingLevels = 0;
+      gRef.current.state = 'PLAYING';
       return;
     }
     setDraft({
@@ -315,7 +330,7 @@ function SurvivorRun({
         open={showExit}
         message="Your squad and your level-ups will be lost. Your best score is still kept."
         onCancel={() => setShowExit(false)}
-        onConfirm={() => onFinish(Math.max(gRef.current.score, bestScore))}
+        onConfirm={() => onFinish(gRef.current.score)}
       />
 
       {ended && (
@@ -327,7 +342,7 @@ function SurvivorRun({
           level={ended.level}
           bosses={ended.bosses}
           onRetry={onRetry}
-          onExit={() => onFinish(Math.max(ended.score, bestScore))}
+          onExit={() => onFinish(ended.score)}
         />
       )}
     </div>

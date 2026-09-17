@@ -264,7 +264,7 @@ export default function PointIt({ pool, onComplete, onQuit }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
-        onQuit={onQuit}
+        onQuit={() => (Object.keys(results).length ? finish() : onQuit?.())}
         modeTitle={t.title}
         current={idx + 1}
         total={steps.length}

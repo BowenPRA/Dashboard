@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   X, Shield, Skull, Trophy, Lock, Loader2, Users, Award, ChevronLeft, ChevronRight,
@@ -16,6 +16,7 @@ import {
   PLAY_COST, GOLD_PER_XP, FREE_PLAY_MIN_XP,
 } from '../arcade/economy';
 import { arcadeQuestionSource } from '../arcade/questionSource';
+import ProgressLoadError from '../components/ProgressLoadError';
 import TowerDefense from '../tasks/games/TowerDefense';
 import Survivor from '../tasks/games/Survivor';
 
@@ -32,7 +33,7 @@ function visibleTrackIdsFor(user) {
 
 export default function Arcade() {
   const navigate = useNavigate();
-  const { user, allProgress, isLoadingDB, saveScore, spendGold, handleLogout } =
+  const { user, allProgress, isLoadingDB, loadError, saveScore, spendGold, handleLogout } =
     useStudentProgress(navigate, ARCADE_TRACK_ID);
 
   const [selectedId, setSelectedId] = useState(ARCADE_LEVELS[0].id);
@@ -66,18 +67,25 @@ export default function Arcade() {
   // from gold, which only decides whether the run is paid for at all.
   const startingCredits = Math.max(100, Math.round(150 * (level.creditMultiplier || 1)));
 
+  // One timer at a time: an earlier toast's timeout must not clear a later toast.
+  const toastTimer = useRef(null);
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
   const flash = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3200);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3200);
   };
 
+  // Survivor opens on a loadout screen with a Back button, so it is charged when
+  // the run deploys (onStart), not here — backing out must not cost 10 gold.
+  // Tower Defense starts straight away, so it is charged on the way in.
   const play = (game) => {
     if (!free.unlocked) {
       if (balance < PLAY_COST) {
         flash(`Not enough gold — you need ${PLAY_COST}. Earn gold by finishing tasks!`);
         return;
       }
-      spendGold(PLAY_COST);
+      if (game !== 'SURVIVOR') spendGold(PLAY_COST);
     }
     setActiveGame(game);
   };
@@ -87,11 +95,16 @@ export default function Arcade() {
   // leaderboard record atomically. The p12 XP is clamped to nothing (it is a
   // reward, not graded work) — the prize is the board.
   const finishGame = (score, arcadeKey) => {
-    saveScore(selectedId, 'p12', 0, null, { arcadeScore: score, arcadeKey });
+    // Backing straight out scores nothing — don't put a 0 on the board for it.
+    if (score > 0) saveScore(selectedId, 'p12', 0, null, { arcadeScore: score, arcadeKey });
     setActiveGame(null);
   };
 
+  // Tabs can be clicked faster than the network answers; only the latest
+  // request may fill the board, or one game's rows land under the other's tab.
+  const boardRequest = useRef(0);
   const fetchScores = async (id = boardId) => {
+    const request = ++boardRequest.current;
     const board = ARCADE_BOARDS.find((b) => b.id === id) || ARCADE_BOARDS[0];
     setBoardId(id);
     setLoadingLeaderboard(true);
@@ -99,6 +112,7 @@ export default function Arcade() {
     setBoardPending(false);
 
     const { data, error, pending } = await getGlobalGameLeaderboard(selectedId, 5, board.key);
+    if (request !== boardRequest.current) return;
     if (error) {
       setLeaderboardError('Failed to synchronize with network.');
       setLeaderboard([]);
@@ -146,11 +160,15 @@ export default function Arcade() {
         unitId={selectedId}
         mathUnitId={questions.mathUnitId}
         startingCredits={startingCredits}
+        onStart={() => { if (!free.unlocked) spendGold(PLAY_COST); }}
+        purseNote="Your kit budget for this run — none of it carries over."
         onComplete={(score) => finishGame(score, SURVIVOR_KEY)}
         onQuit={() => setActiveGame(null)}
       />
     );
   }
+
+  if (loadError) return <ProgressLoadError />;
 
   if (isLoadingDB) {
     return (
@@ -197,6 +215,7 @@ export default function Arcade() {
                 <div className="flex items-center gap-4 min-w-0">
                   <button
                     onClick={() => navigate('/home')}
+                    aria-label="Back to all tracks"
                     className="p-3 sm:p-4 bg-slate-800 hover:bg-slate-700 rounded-2xl transition-all border-b-[6px] border-slate-950 active:border-b-0 active:translate-y-[6px] shrink-0"
                   >
                     <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -381,7 +400,7 @@ export default function Arcade() {
           {view === 'LEADERBOARD' && (
             <div className="animate-in zoom-in-95 duration-300 flex flex-col h-full py-2">
               <div className="flex items-center justify-between mb-8">
-                <button onClick={() => setView('HUB')} className="bg-slate-800 p-4 rounded-2xl hover:bg-slate-700 transition-all text-white border-b-4 border-slate-950 active:border-b-0 active:translate-y-1">
+                <button onClick={() => setView('HUB')} aria-label="Back to the arcade" className="bg-slate-800 p-4 rounded-2xl hover:bg-slate-700 transition-all text-white border-b-4 border-slate-950 active:border-b-0 active:translate-y-1">
                   <ChevronLeft className="w-8 h-8" />
                 </button>
                 <div className="text-center">

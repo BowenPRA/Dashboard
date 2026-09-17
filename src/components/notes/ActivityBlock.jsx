@@ -140,7 +140,7 @@ function SortActivity({ activity, lang, result, onResult, parseText }) {
       <button
         key={c.id}
         draggable={!checked}
-        onDragStart={(e) => { setDragged(c.id); e.dataTransfer.effectAllowed = 'move'; }}
+        onDragStart={(e) => { setDragged(c.id); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(c.id)); }}
         onClick={(e) => { e.stopPropagation(); if (checked) return; if (inBin) unput(c.id); else setPicked(picked === c.id ? null : c.id); }}
         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 border-b-[4px] font-bold text-sm transition-all cursor-pointer ${style}`}
       >
@@ -237,7 +237,7 @@ function OrderActivity({ activity, lang, result, onResult, parseText }) {
             <li
               key={id}
               draggable={!checked}
-              onDragStart={() => setDragged(i)}
+              onDragStart={(e) => { setDragged(i); e.dataTransfer.setData('text/plain', String(i)); }}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); if (dragged != null) move(dragged, i); setDragged(null); }}
               className={`flex items-center gap-3 rounded-xl border-2 border-b-[4px] px-3 py-2 font-bold text-sm transition-all ${style}`}
@@ -311,7 +311,7 @@ function EstimateActivity({ activity, lang, result, onResult, parseText }) {
       </div>
       {checked && (
         <Verdict ok={result.correct} lang={lang}>
-          <span className="mr-2 px-2 py-0.5 rounded-lg bg-white/60 dark:bg-slate-900/40 text-[10px] uppercase tracking-widest">{closeness()}</span>
+          <span className="mr-2 px-2 py-0.5 rounded-lg bg-white/60 text-[10px] uppercase tracking-widest">{closeness()}</span>
           {parseText(pickL(lang, activity.explain, activity.explainVn))}
         </Verdict>
       )}

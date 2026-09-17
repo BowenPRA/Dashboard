@@ -292,9 +292,10 @@ export default function GraphPlot({ pool = [], onComplete, onQuit }) {
     if (placed.some((p) => same(p, [gx, gy]))) return;   // already-found point
     setMisses((m) => [...m, [gx, gy]]);
     setDirty(true);
-    say('bad', targets.length === 0
-      ? t.noZerosWrong
-      : `${t.clickedWrong} (${t.youPlaced} ${pair(gx, gy)})`);
+    // Always "that point is wrong". With no targets at all, the old message here
+    // was the one meant for a wrong press of the "no zeros" BUTTON — it told the
+    // student the graph does cross the axis, exactly when it does not.
+    say('bad', `${t.clickedWrong} (${t.youPlaced} ${pair(gx, gy)})`);
   };
 
   const onPointerMove = (e) => {

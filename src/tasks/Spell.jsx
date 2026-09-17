@@ -33,7 +33,10 @@ export default function Spell({ pool, track, unitId, savedData = {}, onComplete 
     if (!currentWord) return;
     
     // Check historical data for a perfect score
-    const saved = localAnswers[wordIndex];
+    // Keyed by WORD: the pool is reshuffled every launch, so a positional key
+    // credited whichever word landed in a mastered slot. (Old numeric keys are
+    // simply ignored.)
+    const saved = localAnswers[currentWord.word];
     if (saved && saved.status === 'perfect') {
       const targetLetters = currentWord.word.replace(/[^a-zA-Z]/g, '');
       // Restores the persisted attempt when the item changes, and (per task) also
@@ -59,7 +62,7 @@ export default function Spell({ pool, track, unitId, savedData = {}, onComplete 
     
     if (isCorrect) {
       setScore(s => s + 1);
-      setLocalAnswers(prev => ({ ...prev, [wordIndex]: { status: 'perfect' } }));
+      setLocalAnswers(prev => ({ ...prev, [currentWord.word]: { status: 'perfect' } }));
     }
     
     setUserAnswer({ isCorrect });

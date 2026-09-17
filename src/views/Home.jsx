@@ -33,7 +33,18 @@ export default function Home() {
     };
 
     const fetchUserAndTracks = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      // A failed session read is treated as signed out — the login screen is a
+      // better place to land than a spinner that never ends.
+      const { data: { session } } = await supabase.auth.getSession()
+        .catch(() => ({ data: { session: null } }));
+
+      // Signed out (or the token expired): without this the page fell through to
+      // the default GED menu, whoever the student was.
+      if (!session) {
+        navigate('/login', { replace: true });
+        return;
+      }
+
       // Prefer app_metadata (where teachers now set it); fall back to any legacy
       // user_metadata value so no existing student loses their enrolment.
       const enrolled = session?.user?.app_metadata?.enrolled_tracks
@@ -56,7 +67,11 @@ export default function Home() {
     };
 
     fetchUserAndTracks();
-  }, []);
+  }, [navigate]);
+
+  // Past the end of the block planForDate still names units, but /today reports
+  // the block as finished — so the card must not advertise a plan then.
+  const hasPlan = plan.inProgram && plan.assignments.length > 0;
 
   const hasWriting = visibleTracks.some(t => t.id === 'GED_ENG');
 
@@ -75,6 +90,7 @@ export default function Home() {
         onClick={toggleDarkMode}
         className="absolute top-6 right-6 p-3 rounded-2xl text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 shadow-sm z-50"
         title="Toggle Dark Mode"
+        aria-label="Toggle dark mode"
       >
         {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
       </button>
@@ -103,7 +119,7 @@ export default function Home() {
         >
           <div className="flex items-center gap-5">
             <div className="w-16 h-16 bg-[#ff9600] rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] border-[#cc7800] flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
-              {plan.assignments.length > 0
+              {hasPlan
                 ? <CalendarCheck className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />
                 : <Coffee className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />}
             </div>
@@ -113,10 +129,10 @@ export default function Home() {
                 {plan.dayName}
               </p>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-2">
-                {plan.assignments.length > 0 ? "Today's Plan" : 'Rest day'}
+                {hasPlan ? "Today's Plan" : 'Rest day'}
               </h2>
 
-              {plan.assignments.length > 0 ? (
+              {hasPlan ? (
                 <div className="flex flex-wrap gap-2">
                   {plan.assignments.map((a, i) => {
                     const theme = getTrackConfig(a.track)?.theme || {};
@@ -130,7 +146,7 @@ export default function Home() {
                     );
                   })}
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                    2 units
+                    {plan.assignments.length} {plan.assignments.length === 1 ? 'unit' : 'units'}
                   </span>
                 </div>
               ) : (
@@ -184,7 +200,7 @@ export default function Home() {
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex flex-col">
                     <div className={`w-16 h-16 ${t.theme.bg} rounded-2xl flex items-center justify-center mb-6 shadow-sm border-b-[4px] ${t.theme.border} group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300`}>
-                      <Icon className={`w-8 h-8 text-white ${t.id === 'ESL' ? 'text-amber-950' : ''} drop-shadow-sm`} strokeWidth={2.5} />
+                      <Icon className={`w-8 h-8 ${t.id === 'ESL' ? 'text-amber-950' : 'text-white'} drop-shadow-sm`} strokeWidth={2.5} />
                     </div>
                     
                     <h2 className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-white mb-2 tracking-tight group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">

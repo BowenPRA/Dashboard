@@ -147,8 +147,9 @@ export function inequalityText(set, v = 'x') {
 
 const cleanNumber = (raw) => {
   const t = String(raw).trim().replace(/[−–—]/g, '-').replace(/\s+/g, '');
-  if (/^-?(inf|infinity|∞)$/i.test(t)) return t.startsWith('-') ? NEG_INF : POS_INF;
-  if (!/^-?\d+(\.\d+)?$/.test(t)) return null;
+  // An explicit plus is fine: "(3, +∞)" is how many textbooks write it.
+  if (/^[+-]?(inf|infinity|∞)$/i.test(t)) return t.startsWith('-') ? NEG_INF : POS_INF;
+  if (!/^[+-]?\d+(\.\d+)?$/.test(t)) return null;
   return Number(t);
 };
 

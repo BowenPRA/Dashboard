@@ -99,7 +99,9 @@ const T = {
 
 /** Parse a typed coefficient: an optional minus and digits. */
 function parseCoef(text) {
-  const t = String(text ?? '').replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '');
+  // A typeset minus (−, what a phone keyboard offers) is a minus — not a
+  // character to strip, which silently turned −3 into 3.
+  const t = String(text ?? '').replace(/[−–]/g, '-').replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '');
   if (t === '' || t === '-') return NaN;
   return Number(t);
 }
@@ -653,7 +655,7 @@ export default function PolyDivision({ pool, onComplete, onQuit, savedData = {},
               </span>
               <span className="ml-auto font-black text-xs sm:text-sm text-slate-600 dark:text-slate-300 text-right leading-relaxed">
                 {T.quotient} <PolyText coeffs={model.quotient} />
-                {!isZero(model.remainder) && <>· {T.remainder} <PolyText coeffs={model.remainder} /></>}
+                {!isZero(model.remainder) && <> · {T.remainder}<PolyText coeffs={model.remainder} /></>}
               </span>
             </div>
 

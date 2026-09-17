@@ -6,6 +6,7 @@
 // (fast-refresh / eslint clean).
 import { Pencil } from 'lucide-react';
 import { SafeInlineMath, SafeBlockMath } from '../SafeMath.jsx';
+import { splitInlineMath } from '../splitInlineMath.js';
 
 // ── Cambridge Learner's Book palette ────────────────────────────────────────
 // Sampled from the printed Lower Secondary books: teal section rules, purple
@@ -32,23 +33,20 @@ export function parseInlineText(text, { strongClass = STRONG_DEFAULT } = {}) {
   const parts = String(text).split(/(\*\*.*?\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      const inner = part.slice(2, -2);
-      const mathParts = inner.split(/(\$[\s\S]+?\$)/g);
       return (
         <strong key={`b-${i}`} className={strongClass}>
-          {mathParts.map((m, j) =>
-            m.startsWith('$') && m.endsWith('$')
-              ? <SafeInlineMath key={`m-${j}`} math={m.slice(1, -1).trim()} />
-              : <span key={`t-${j}`}>{m}</span>,
+          {splitInlineMath(part.slice(2, -2)).map((m, j) =>
+            m.math !== undefined
+              ? <SafeInlineMath key={`m-${j}`} math={m.math} />
+              : <span key={`t-${j}`}>{m.text}</span>,
           )}
         </strong>
       );
     }
-    const mathParts = part.split(/(\$[\s\S]+?\$)/g);
-    return mathParts.map((m, j) =>
-      m.startsWith('$') && m.endsWith('$')
-        ? <SafeInlineMath key={`m-${i}-${j}`} math={m.slice(1, -1).trim()} />
-        : <span key={`t-${i}-${j}`}>{italicise(m, `${i}-${j}`)}</span>,
+    return splitInlineMath(part).map((m, j) =>
+      m.math !== undefined
+        ? <SafeInlineMath key={`m-${i}-${j}`} math={m.math} />
+        : <span key={`t-${i}-${j}`}>{italicise(m.text, `${i}-${j}`)}</span>,
     );
   });
 }

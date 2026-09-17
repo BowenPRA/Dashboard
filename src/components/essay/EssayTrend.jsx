@@ -54,7 +54,7 @@ export default function EssayTrend({ entries = [], onPick, selectedId = null }) 
                 return h > 0 ? <rect key={k} x={x} y={y} width={barW} height={h} fill={COLORS[k]} rx="2" /> : null;
               })}
               {e.mode === 'exam' && (
-                <rect x={x - 2} y={padT + chartH - (e.score?.total || 0) * unit - 2} width={barW + 4} height={(e.score?.total || 0) * unit + 4} rx="4" fill="none" stroke="#0f172a" strokeOpacity="0.6" strokeWidth="1.5" strokeDasharray="3 2" />
+                <rect x={x - 2} y={padT + chartH - (e.score?.total || 0) * unit - 2} width={barW + 4} height={(e.score?.total || 0) * unit + 4} rx="4" fill="none" className="stroke-slate-900 dark:stroke-slate-100" strokeOpacity="0.6" strokeWidth="1.5" strokeDasharray="3 2" />
               )}
               {selected && (
                 <rect x={x - 4} y={padT - 4} width={barW + 8} height={chartH + 8} rx="6" fill="none" stroke="#6366f1" strokeWidth="2" />

@@ -1,20 +1,33 @@
+import { lazy, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import Login from './pages/Login';
-import Home from './views/Home';
-import YearDashboard from './views/YearDashboard';
-import Today from './views/Today';
-import Arcade from './views/Arcade';
-import Writing from './views/Writing';
-
-// NEW IMPORTS
 import TeacherRoute from './components/TeacherRoute';
-import TeacherDashboard from './views/TeacherDashboard';
-import StudyPlan from './views/StudyPlan';
 import { TRACK_IDS, ARCADE_TRACK_ID } from './components/trackRegistry';
+
+// Every view behind the login pulls in the whole content library (src/data is one
+// eager glob). Loading them lazily keeps that out of the entry chunk, so the login
+// screen paints without waiting on several megabytes of lessons.
+const Home = lazy(() => import('./views/Home'));
+const YearDashboard = lazy(() => import('./views/YearDashboard'));
+const Today = lazy(() => import('./views/Today'));
+const Arcade = lazy(() => import('./views/Arcade'));
+const Writing = lazy(() => import('./views/Writing'));
+const TeacherDashboard = lazy(() => import('./views/TeacherDashboard'));
+const StudyPlan = lazy(() => import('./views/StudyPlan'));
+
+function RouteFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950" role="status" aria-label="Loading">
+      <Loader2 className="w-10 h-10 animate-spin text-[#1cb0f6]" />
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <Router>
+      <Suspense fallback={<RouteFallback />}>
       <Routes>
         {/* 1. The Gatekeeper */}
         <Route path="/login" element={<Login />} />
@@ -63,6 +76,7 @@ export default function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+      </Suspense>
     </Router>
   );
 }

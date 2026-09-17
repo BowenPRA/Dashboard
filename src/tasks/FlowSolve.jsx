@@ -317,6 +317,7 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
     return init;
   });
+  const [openedWith] = useState(results);
   const [pos, setPos] = useState(() => {
     const i = items.findIndex((it) => savedData?.[it.id] == null);
     return i === -1 ? 0 : i;
@@ -417,7 +418,10 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
     const { raw, blob, log } = summary(results);
     onComplete?.(raw, blob, { items: log });
   };
-  const quit = () => (Object.keys(results).length ? finish() : onQuit?.());
+  // What the task opened with. X only logs an attempt when something was answered
+  // THIS sitting — otherwise opening a finished task and closing it stamped a
+  // full-score attempt on today, and the daily goal went green with no work done.
+  const quit = () => (results !== openedWith && Object.keys(results).length ? finish() : onQuit?.());
 
   /* ---------------------------------------------------------- chips on arrows */
   const tray = st === 'reverse' ? derived.rev : derived.fwd;

@@ -345,7 +345,11 @@ export function suggestMove(eq) {
   // 1. x on both sides -> remove the smaller coefficient
   if (!isZero(left.x) && !isZero(right.x)) {
     const smaller = toNumber(left.x) <= toNumber(right.x) ? left.x : right.x;
-    return { kind: 'sub', amount: smaller, onX: true };
+    // Removing a negative x-term is ADDING its opposite: the hint for
+    // 5x <= -3x + 8 should read "+ 3x", not "− -3x".
+    return isNeg(smaller)
+      ? { kind: 'add', amount: neg(smaller), onX: true }
+      : { kind: 'sub', amount: smaller, onX: true };
   }
   // 2. constant sitting beside the x -> clear it
   const varSide = isZero(left.x) ? right : left;

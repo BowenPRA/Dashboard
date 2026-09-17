@@ -420,6 +420,8 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       let best = null;
       let bestD = range * range;
       for (const e of g.enemies) {
+        // Corpses stay in the list until the end of the step; don't waste a shot.
+        if (e.hp <= 0) continue;
         const dx = e.x - x, dy = e.y - y;
         const d = dx * dx + dy * dy;
         if (d < bestD) { bestD = d; best = e; }
@@ -432,6 +434,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       let bestHp = -1;
       const r2 = range * range;
       for (const e of g.enemies) {
+        if (e.hp <= 0) continue;
         const dx = e.x - x, dy = e.y - y;
         if (dx * dx + dy * dy > r2) continue;
         if (e.hp > bestHp) { bestHp = e.hp; best = e; }
@@ -450,6 +453,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       const r2 = range * range;
       const cands = [];
       for (const e of g.enemies) {
+        if (e.hp <= 0) continue;
         const dx = e.x - x, dy = e.y - y;
         if (dx * dx + dy * dy <= r2) cands.push(e);
         if (cands.length >= 40) break;

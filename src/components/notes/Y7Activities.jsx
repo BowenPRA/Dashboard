@@ -101,7 +101,7 @@ function MathInput({ value, onChange, onEnter, disabled, state, placeholder, wid
       autoCapitalize="off"
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={(e) => { if (e.key === 'Enter') onEnter?.(); }}
-      className={`${width} px-3 py-2 rounded-xl border-2 border-b-[4px] font-mono font-black text-lg text-center focus:outline-none focus:border-sky-500 disabled:opacity-90 ${ring}`}
+      className={`${width} px-3 py-2 rounded-xl border-2 border-b-[4px] font-mono font-black text-lg text-center focus:outline-none focus:border-sky-500 dark:focus:border-sky-400 disabled:opacity-90 ${ring}`}
     />
   );
 }
@@ -130,7 +130,7 @@ export function TermsActivity({ activity, lang, result, onResult, parseText }) {
     const style = checked ? (ok ? GOOD : BAD) : picked === c.index ? 'bg-[#1cb0f6] border-[#1899d6] text-white scale-105' : `${IDLE} hover:-translate-y-0.5`;
     return (
       <button key={c.index} draggable={!checked}
-        onDragStart={(e) => { setDragged(c.index); e.dataTransfer.effectAllowed = 'move'; }}
+        onDragStart={(e) => { setDragged(c.index); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(c.index)); }}
         onClick={(e) => { e.stopPropagation(); if (checked) return; if (inBasket) unput(c.index); else setPicked(picked === c.index ? null : c.index); }}
         className={`flex items-center gap-1 px-3 py-1.5 rounded-xl border-2 border-b-[4px] font-bold text-lg transition-all ${style}`}>
         {!checked && !inBasket && <GripVertical className="w-3.5 h-3.5 opacity-40" strokeWidth={3} />}

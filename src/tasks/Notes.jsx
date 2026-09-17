@@ -12,6 +12,7 @@ import { SlideLayout } from '../components/notes/layouts';
 import ActivityBlock from '../components/notes/ActivityBlock';
 import { isLayout } from '../components/notes/layouts/helpers.jsx';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
+import { splitInlineMath } from '../components/notes/splitInlineMath.js';
 
 const IconMap = {
   BookOpen, Scale, Target, MessageSquare, ShieldCheck,
@@ -367,6 +368,11 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
       const activeTag = document.activeElement?.tagName;
       if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') return;
 
+      // Enter on a focused button belongs to that button (a check option, "Start
+      // over", Prev) — not to "next slide".
+      const focused = document.activeElement;
+      if (e.key === 'Enter' && focused?.tagName === 'BUTTON' && !focused.disabled) return;
+
       if (e.key === 'ArrowRight' || e.key === 'Enter') {
         e.preventDefault();
         handleNext();
@@ -375,7 +381,8 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
         handlePrev();
       } else if (e.key === 'Escape' && zoomedImage) {
         setZoomedImage(null);
-      } else if (e.key.toLowerCase() === 'f') {
+      } else if (e.key.toLowerCase() === 'f' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        // (Bare F only — Ctrl/Cmd+F is the browser's find.)
         e.preventDefault();
         toggleDisplayMode();
       }
@@ -499,28 +506,23 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     
     return parts.map((part, i) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        const innerText = part.slice(2, -2);
-        const mathParts = innerText.split(/(\$[\s\S]+?\$)/g);
-        
         return (
           <strong key={`bold-${i}`} className="font-black text-slate-900 dark:text-slate-100">
-            {mathParts.map((m, j) => {
-              if (m.startsWith('$') && m.endsWith('$')) {
-                return <SafeInlineMath key={`m-${j}`} math={m.slice(1, -1).trim()} />;
-              }
-              return <span key={`t-${j}`}>{m}</span>;
-            })}
+            {splitInlineMath(part.slice(2, -2)).map((m, j) => (
+              m.math !== undefined
+                ? <SafeInlineMath key={`m-${j}`} math={m.math} />
+                : <span key={`t-${j}`}>{m.text}</span>
+            ))}
           </strong>
         );
       }
-      
-      const mathParts = part.split(/(\$[\s\S]+?\$)/g);
-      return mathParts.map((m, j) => {
-        if (m.startsWith('$') && m.endsWith('$')) {
-          return <SafeInlineMath key={`m-${i}-${j}`} math={m.slice(1, -1).trim()} />;
-        }
-        return <span key={`t-${i}-${j}`}>{m}</span>;
-      });
+
+      // Shared scanner, so an escaped `\$` (currency) is never read as a delimiter.
+      return splitInlineMath(part).map((m, j) => (
+        m.math !== undefined
+          ? <SafeInlineMath key={`m-${i}-${j}`} math={m.math} />
+          : <span key={`t-${i}-${j}`}>{m.text}</span>
+      ));
     });
   };
 

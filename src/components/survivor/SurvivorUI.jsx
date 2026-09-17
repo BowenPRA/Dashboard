@@ -23,7 +23,7 @@ import { fmtTime, fmtScore } from './format';
 // LOADOUT — where the unit's XP gold is spent
 // =====================================================================
 
-export function LoadoutScreen({ gold, tierLabel, mapName, briefing, onDeploy, onBack }) {
+export function LoadoutScreen({ gold, tierLabel, mapName, briefing, onDeploy, onBack, purseNote }) {
   const [heroId, setHeroId] = useState(HEROES[0].typeId);
   const [counts, setCounts] = useState({});
 
@@ -88,7 +88,7 @@ export function LoadoutScreen({ gold, tierLabel, mapName, briefing, onDeploy, on
             <span className="uppercase tracking-widest text-[10px] pt-1">gold left</span>
           </div>
           <p className="text-slate-400 font-bold text-sm">
-            Earned from the XP you banked in this unit. Spend it — none of it carries over.
+            {purseNote || 'Earned from the XP you banked in this unit. Spend it — none of it carries over.'}
           </p>
         </div>
 
@@ -248,7 +248,7 @@ export function SurvivorHUD({ hud, onQuit }) {
             </div>
             <div className="text-white font-black text-lg leading-tight tabular-nums">{fmtTime(hud.t)}</div>
           </div>
-          <div className="hidden xs:flex flex-col items-center px-2">
+          <div className="hidden sm:flex flex-col items-center px-2">
             <div className="text-[9px] font-black uppercase tracking-widest text-slate-500 leading-none">Score</div>
             <div className="text-white font-black text-lg leading-tight tabular-nums">{fmtScore(hud.score)}</div>
           </div>

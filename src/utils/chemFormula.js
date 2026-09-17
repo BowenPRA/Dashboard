@@ -81,7 +81,8 @@ export function formulaValid(formula) {
 export function sideCounts(species) {
   const total = {};
   for (const { formula, coeff } of species || []) {
-    addInto(total, parseFormula(formula), Number(coeff) || 0);
+    // No coefficient written means one of it (as the doc above says) — not none.
+    addInto(total, parseFormula(formula), coeff === undefined || coeff === null ? 1 : Number(coeff) || 0);
   }
   return total;
 }

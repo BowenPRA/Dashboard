@@ -39,6 +39,15 @@ const SafeMath = ({ math, block = false, className = "" }) => {
   );
 };
 
+// A typed blank is matched forgivingly on form, never on content: case, stray
+// spaces, and the typeset minus a phone keyboard offers ("−3", "- 3" = "-3").
+// The authored `accept` list of alternative answers is honoured too — it was
+// being written in the data and never read.
+const normBlank = (s) => String(s ?? '')
+  .replace(/[−–]/g, '-').trim().toLowerCase().replace(/\s+/g, ' ').replace(/^-\s+/, '-');
+const blankMatches = (typed, def) =>
+  [def?.correct, ...(def?.accept || [])].some((a) => a != null && normBlank(a) === normBlank(typed));
+
 const parseText = (text) => {
   if (!text || typeof text !== 'string') return null;
   // strictly match ONLY block-style delimiters ($$) to prevent syntax bleeding 
@@ -338,7 +347,7 @@ const FillBlankQuestion = ({ question, value, onChange, isReviewing }) => {
           let showCorrection = false;
 
           if (isReviewing && blankDef) {
-            const isCorrect = selectedVal.trim().toLowerCase() === blankDef.correct.trim().toLowerCase();
+            const isCorrect = blankMatches(selectedVal, blankDef);
             if (isCorrect) {
               inputStyle = "border-[#58A700] bg-[#D7FFD7] text-[#3E7500] dark:bg-[#D7FFD7]/20 dark:text-[#a3e635]";
             } else {
@@ -535,7 +544,7 @@ export default function Assessment(props) {
         const blankKeys = Object.keys(q.blanks || {});
         isCorrect = blankKeys.length > 0 && blankKeys.every(k => {
             if (q.type === 'fill_blank') {
-                return userAns[k]?.trim().toLowerCase() === q.blanks[k].correct.trim().toLowerCase();
+                return blankMatches(userAns[k], q.blanks[k]);
             }
             return userAns[k] === q.blanks[k].correct;
         });

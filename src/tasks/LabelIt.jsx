@@ -36,6 +36,7 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
   const [lang, setLang] = useState('en');
   // finished diagrams: { [itemId]: { placements, correct, total } }
   const [done, setDone] = useState(() => (savedData && typeof savedData.done === 'object' ? savedData.done : {}));
+  const [openedWith] = useState(done);
   const firstOpen = Math.max(0, items.findIndex((it) => !done[it.id]));
   const [idx, setIdx] = useState(firstOpen === -1 ? 0 : firstOpen);
   const [placements, setPlacements] = useState({});   // pinId -> val
@@ -57,7 +58,10 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
     })));
     onComplete?.(scoreFrom(d, items), { done: d }, { items: items_ });
   };
-  const quit = () => (Object.keys(done).length ? finish() : onQuit?.());
+  // What the task opened with. X only logs an attempt when something was answered
+  // THIS sitting — otherwise opening a finished task and closing it stamped a
+  // full-score attempt on today, and the daily goal went green with no work done.
+  const quit = () => (done !== openedWith && Object.keys(done).length ? finish() : onQuit?.());
 
   if (!items.length) {
     return (
@@ -146,7 +150,7 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
             ? <span className="text-slate-400 font-black uppercase tracking-widest text-xs flex items-center gap-2"><CheckCircle2 className="w-4 h-4" />{t.placed}</span>
             : bank.map((b) => (
               <button key={b.val} draggable={!checked}
-                onDragStart={(e) => { setDragged(b.val); e.dataTransfer.effectAllowed = 'move'; }}
+                onDragStart={(e) => { setDragged(b.val); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(b.val)); }}
                 onClick={() => setPicked(picked === b.val ? null : b.val)}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border-2 border-b-[4px] font-bold text-sm transition-all cursor-grab active:cursor-grabbing
                   ${picked === b.val ? 'bg-[#1cb0f6] border-[#1899d6] text-white scale-105' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:-translate-y-0.5'}`}>

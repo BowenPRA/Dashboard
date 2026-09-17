@@ -19,7 +19,9 @@ export default function Login() {
     setIsLoading(true);
     setErrorMsg('');
 
-    const formattedEmail = `${name.toLowerCase().trim()}@science.local`;
+    // Accounts are created with ALL whitespace removed (see AddStudentModal), so
+    // "Vi Khoi" is vikhoi@science.local — match that, not just a trim.
+    const formattedEmail = `${name.toLowerCase().replace(/\s/g, '')}@science.local`;
     const formattedPassword = `${pin.trim()}-y8s`;
 
     try {
@@ -28,7 +30,14 @@ export default function Login() {
         password: formattedPassword,
       });
 
-      if (error) throw new Error("Incorrect Name or Secret Code. Please try again.");
+      if (error) {
+        // Only a rejected sign-in (HTTP 400) means the details are wrong. A dropped
+        // connection or a server fault is not the student's typo, so say so.
+        const rejected = error.status === 400;
+        throw new Error(rejected
+          ? "Incorrect Name or Secret Code. Please try again."
+          : "Can't reach the server. Check your internet connection and try again.");
+      }
       
       if (data.user) {
         // Fork on app_metadata (server-set) — see TeacherRoute for why.
@@ -57,6 +66,8 @@ export default function Login() {
         onClick={toggleDarkMode}
         className="absolute top-6 right-6 p-3 rounded-2xl text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 shadow-sm z-50"
         title="Toggle Dark Mode"
+        aria-label="Toggle dark mode"
+        type="button"
       >
         {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
       </button>
@@ -88,7 +99,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-6">
             
             <div className="space-y-2">
-              <label className="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-2">
+              <label htmlFor="login-name" className="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-2">
                 First Name
               </label>
               <div className="relative group">
@@ -96,7 +107,11 @@ export default function Login() {
                   <User className="h-6 w-6 text-slate-400 group-focus-within:text-[#1cb0f6] transition-colors" strokeWidth={2.5} />
                 </div>
                 <input
+                  id="login-name"
                   type="text"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  autoFocus
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Bowen"
@@ -107,7 +122,7 @@ export default function Login() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-2">
+              <label htmlFor="login-pin" className="block text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-2">
                 Secret Code
               </label>
               <div className="relative group">
@@ -115,13 +130,15 @@ export default function Login() {
                   <KeyRound className="h-6 w-6 text-slate-400 group-focus-within:text-[#1cb0f6] transition-colors" strokeWidth={2.5} />
                 </div>
                 <input
+                  id="login-pin"
                   type="password"
+                  autoComplete="current-password"
                   pattern="[0-9]*"
                   inputMode="numeric"
                   value={pin}
-                  onChange={(e) => setPin(e.target.value)}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
                   placeholder="000"
-                  maxLength={3}
+                  maxLength={6}
                   disabled={isLoading}
                   className="w-full pl-14 pr-5 py-4 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl text-xl font-black text-slate-800 dark:text-white focus:outline-none focus:border-[#1cb0f6] focus:bg-white dark:focus:bg-slate-900 transition-all placeholder:text-slate-400 tracking-[0.4em] shadow-inner"
                 />

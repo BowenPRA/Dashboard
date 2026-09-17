@@ -40,7 +40,10 @@ export default function Dictation({ pool, track, unitId, savedData = {}, onCompl
   const [wordIndex, setWordIndex] = useState(0);
   
   const [localAnswers, setLocalAnswers] = useState(savedData);
-  const initialSaved = savedData[0];
+  // Keyed by WORD, not by position: the pool is reshuffled on every launch, so a
+  // positional key handed yesterday's perfect sentence to whichever word landed
+  // in that slot today. Old numeric keys simply never match and are ignored.
+  const initialSaved = savedData[realWords[0]?.word];
   
   const [gameState, setGameState] = useState(initialSaved?.status === 'perfect' ? 'SAVED_PERFECT' : 'Q'); 
   const [userInput, setUserInput] = useState(initialSaved?.status === 'perfect' ? initialSaved.text : '');
@@ -54,6 +57,15 @@ export default function Dictation({ pool, track, unitId, savedData = {}, onCompl
   const [canAdvance, setCanAdvance] = useState(false);
 
   const currentWordObj = realWords[wordIndex];
+
+  // Leaving the task must silence it — the sentence otherwise plays on over
+  // the unit dashboard.
+  useEffect(() => () => {
+    if (audioState.current) {
+      audioState.current.isCancelled = true;
+      audioState.current.currentAudio?.pause();
+    }
+  }, []);
 
   const calculateXP = (currentScore) => {
     if (!realWords || realWords.length === 0) return 0;
@@ -112,7 +124,7 @@ export default function Dictation({ pool, track, unitId, savedData = {}, onCompl
   useEffect(() => {
     if (wordIndex === 0) return; 
 
-    const saved = localAnswers[wordIndex];
+    const saved = localAnswers[realWords[wordIndex]?.word];
     if (saved && saved.status === 'perfect') {
       // Restores the persisted attempt when the item changes, and (per task) also
       // scrolls, focuses, or advances the running score — side effects that have to
@@ -165,7 +177,7 @@ export default function Dictation({ pool, track, unitId, savedData = {}, onCompl
     if (isPass) {
       setScore(s => s + 1);
       if (percentage === 100 && !formattingPenalty) {
-        setLocalAnswers(prev => ({ ...prev, [wordIndex]: { text: userInput.trim(), status: 'perfect' } }));
+        setLocalAnswers(prev => ({ ...prev, [currentWordObj.word]: { text: userInput.trim(), status: 'perfect' } }));
       }
     }
     playChime(isPass ? 'correct' : 'incorrect');

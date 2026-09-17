@@ -335,7 +335,7 @@ export function missedThisWeek(allProgress, iso = todayISO()) {
   return weekOf(iso)
     .filter((d) => d < iso && d >= PROGRAM.startISO)
     .map((d) => evaluateDay(d, allProgress))
-    .filter((day) => day.total > 0 && !day.complete);
+    .filter((day) => day.inProgram && day.total > 0 && !day.complete);
 }
 
 // --- the teacher's view: what is left, and what is missing ------------------

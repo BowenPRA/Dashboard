@@ -74,7 +74,7 @@ export default function HUD({
       {/* CENTER: Wave Controls (Stacks underneath main header on mobile) */}
       <div className="flex items-center justify-center w-full md:w-auto md:absolute md:left-1/2 md:-translate-x-1/2 gap-2 bg-slate-900 p-1.5 rounded-[1.25rem] border-b-4 border-slate-950 shadow-inner">
         <div className="px-3 text-xs font-black text-slate-400 uppercase tracking-widest tabular-nums border-r-2 border-slate-700">
-          Wave {wave}/{totalWaves}
+          Wave {wave}{wave <= totalWaves ? `/${totalWaves}` : ''}
         </div>
         
         {!waveInProgress && gameState === 'PLAYING' ? (

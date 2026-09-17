@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
   X, Shield, Trophy, Lock, Loader2, Users, Award, ChevronLeft,
   Crown, Medal, Map as MapIcon, Heart, Ban, Coins, Swords, Skull, Timer, Sparkles
@@ -46,7 +46,10 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
     Math.round(unitXP * 2 * (gameConfig.creditMultiplier || 1))
   );
 
+  // Only the latest request may fill the board (see views/Arcade.jsx).
+  const boardRequest = useRef(0);
   const fetchScores = async (id = boardId) => {
+    const request = ++boardRequest.current;
     const board = ARCADE_BOARDS.find(b => b.id === id) || ARCADE_BOARDS[0];
     setBoardId(id);
     setLoadingLeaderboard(true);
@@ -54,6 +57,7 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
     setBoardPending(false);
 
     const { data, error, pending } = await getGlobalGameLeaderboard(unitId, 5, board.key);
+    if (request !== boardRequest.current) return;
 
     if (error) {
       setLeaderboardError('Failed to synchronize with network.');

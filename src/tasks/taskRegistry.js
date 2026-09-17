@@ -94,7 +94,7 @@ export const TASKS = [
     component: lazy(() => import('./Recognition.jsx')),
     hasContent: (u) => notEmpty(u.realWords),
     buildPool: vocabPool,
-    props: ({ pool, track, unitId, onComplete }) => ({ pool, track, unitId, onComplete }),
+    props: ({ pool, track, unitId, onComplete, onQuit }) => ({ pool, track, unitId, onComplete, onQuit }),
   },
   {
     id: 'SPELLING',

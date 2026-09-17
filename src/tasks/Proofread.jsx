@@ -28,7 +28,13 @@ const STATUS = { TODO: 'todo', FIXED: 'fixed', REVEALED: 'revealed' };
 
 export default function Proofread({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
   const items = useMemo(() => (Array.isArray(pool) ? pool : []), [pool]);
-  const [saved, setSaved] = useState(savedData || {});
+  // Every item already done means this is a RETRY: start clean. Restoring the
+  // finished state left Finish as the only button, which re-submitted the old
+  // result — so a student who scored 4/10 could never do better.
+  const [saved, setSaved] = useState(() => {
+    const s = savedData || {};
+    return items.length && items.every((it) => s[it.id]?.status === 'done') ? {} : s;
+  });
   const firstOpen = useMemo(() => {
     const i = items.findIndex((it) => saved[it.id]?.status !== 'done');
     return i === -1 ? Math.max(0, items.length - 1) : i;
@@ -87,7 +93,7 @@ export default function Proofread({ pool, savedData = {}, onComplete, onProgress
   }
 
   const allowance = missAllowance(placed.length);
-  const resolved = placed.filter((e) => status[e.id] !== STATUS.TODO).length;
+  const resolved = placed.filter((e) => status[e.id] && status[e.id] !== STATUS.TODO).length;
   const fixedHere = placed.filter((e) => status[e.id] === STATUS.FIXED).length;
   const selectedError = selected ? placed.find((e) => e.id === selected) : null;
 
@@ -164,7 +170,8 @@ export default function Proofread({ pool, savedData = {}, onComplete, onProgress
     onComplete(scoreOf(fixedSoFar()), saved);
   };
 
-  const handleQuit = () => onComplete(scoreOf(fixedSoFar()), saved);
+  // Nothing answered this sitting is just leaving — not a 0-score attempt.
+  const handleQuit = () => (Object.keys(saved).length ? onComplete(scoreOf(fixedSoFar()), saved) : onQuit?.());
 
   /* ---- render ----------------------------------------------------------- */
 
@@ -183,7 +190,7 @@ export default function Proofread({ pool, savedData = {}, onComplete, onProgress
     return (
       <React.Fragment key={i}>
         <span onClick={() => handleTokenClick(tok)} className={cls}>{tok.text}</span>
-        {err && s !== STATUS.TODO && tok.end === err.end && (
+        {err && s && s !== STATUS.TODO && tok.end === err.end && (
           <span className={`ml-1 rounded px-1 font-black ${s === STATUS.FIXED ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300'}`}>
             {err.right}
           </span>

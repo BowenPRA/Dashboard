@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef, Component } from 'react';
 import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, ChevronDown, Lightbulb, GripVertical, CornerDownRight, Check, RotateCcw, HelpCircle, MonitorPlay, Minimize2 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { renderMath } from '../components/notes/renderMath';
+import { splitInlineMath } from '../components/notes/splitInlineMath';
 import { answersEquivalent } from '../utils/mathEquivalence';
 
 /* ------------------------------------------------------------------ *
@@ -40,8 +41,8 @@ const RichText = ({ text }) => {
             {block.split(/(\*\*.*?\*\*)/g).map((part, pi) => {
               const inner = part.startsWith('**') && part.endsWith('**') ? part.slice(2, -2) : null;
               const src = inner ?? part;
-              const rendered = src.split(/(\$[^$]+?\$)/g).map((m, mi) =>
-                m.startsWith('$') && m.endsWith('$') ? <SafeInlineMath key={mi} math={m.slice(1, -1).trim()} /> : <span key={mi}>{m}</span>);
+              const rendered = splitInlineMath(src).map((m, mi) =>
+                m.math !== undefined ? <SafeInlineMath key={mi} math={m.math} /> : <span key={mi}>{m.text}</span>);
               return inner !== null
                 ? <strong key={pi} className="font-black text-slate-900 dark:text-slate-100">{rendered}</strong>
                 : <span key={pi}>{rendered}</span>;
@@ -542,7 +543,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
           {/* Answer widget — where the student works */}
           {answerable && (
             <div className="pt-1">
-              <AnswerWidget q={q} value={draft} onChange={setDraft} onEnter={check} checked={checked} lang={lang} result={result} big={isDisplayMode} />
+              <AnswerWidget q={q} value={result ? result.value : draft} onChange={setDraft} onEnter={check} checked={checked} lang={lang} result={result} big={isDisplayMode} />
             </div>
           )}
 

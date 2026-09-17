@@ -109,7 +109,8 @@ export default function FactorBlitz({ pool, onComplete, onQuit }) {
 
   const scoreRound = (sel) => {
     const factors = factorsOf(target);
-    if (!factors.length) return 1; // a prime target (no factor under 13) — an empty grid is correct
+    // A prime target (no factor under 13): an empty grid is correct, a tapped one is not.
+    if (!factors.length) return sel.size ? 0 : 1;
     let caught = 0, wrong = 0;
     sel.forEach((n) => (target % n === 0 ? (caught += 1) : (wrong += 1)));
     return Math.max(0, (caught - wrong) / factors.length);

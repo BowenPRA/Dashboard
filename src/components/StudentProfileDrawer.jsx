@@ -47,6 +47,8 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
     let alive = true;
     (async () => {
       setIsLoading(true);
+      // Clear the last student, or their name heads the drawer while this one loads.
+      setDetail(null);
       setError('');
       setShowEdit(false);
       setEditingTask(null);
@@ -160,7 +162,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
             >
               <UserCog className="w-4 h-4" strokeWidth={2.5} /> Edit
             </button>
-            <button onClick={onClose} className="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors border-2 border-slate-200 dark:border-slate-700 active:scale-95">
+            <button onClick={onClose} aria-label="Close" className="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors border-2 border-slate-200 dark:border-slate-700 active:scale-95">
               <X className="w-6 h-6" strokeWidth={2.5} />
             </button>
           </div>

@@ -24,7 +24,13 @@ const ATTEMPTS = 2;
 
 export default function Sequence({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
   const items = useMemo(() => (Array.isArray(pool) ? pool : []), [pool]);
-  const [saved, setSaved] = useState(savedData || {});
+  // Every item already done means this is a RETRY: start clean. Restoring the
+  // finished state left Finish as the only button, which re-submitted the old
+  // result — so a student who scored 4/10 could never do better.
+  const [saved, setSaved] = useState(() => {
+    const s = savedData || {};
+    return items.length && items.every((it) => s[it.id]?.status === 'done') ? {} : s;
+  });
   const firstOpen = useMemo(() => {
     const i = items.findIndex((it) => saved[it.id]?.status !== 'done');
     return i === -1 ? Math.max(0, items.length - 1) : i;
@@ -117,7 +123,8 @@ export default function Sequence({ pool, savedData = {}, onComplete, onProgress,
     if (index + 1 < items.length) { setIndex(index + 1); return; }
     onComplete(scoreOf(correctSoFar()), saved);
   };
-  const handleQuit = () => onComplete(scoreOf(correctSoFar()), saved);
+  // Nothing answered this sitting is just leaving — not a 0-score attempt.
+  const handleQuit = () => (Object.keys(saved).length ? onComplete(scoreOf(correctSoFar()), saved) : onQuit?.());
 
   const slotTone = (slot) => {
     if (done && !revealed) return 'border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30';
@@ -157,6 +164,10 @@ export default function Sequence({ pool, savedData = {}, onComplete, onProgress,
         <ol className="space-y-3">
           {order.map((orig, slot) => {
             const it = item.items[orig];
+            // `order` is reset in an effect, so for one render after "Next" it still
+            // holds the PREVIOUS exercise's slots. A shorter exercise would read past
+            // its own pieces here and crash the whole app.
+            if (!it) return null;
             return (
               <li key={orig} className={`flex items-stretch gap-3 rounded-2xl border-2 p-3 sm:p-4 transition-colors ${slotTone(slot)}`}>
                 <span className="flex-shrink-0 w-8 h-8 rounded-full grid place-items-center text-sm font-black bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900">

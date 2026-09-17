@@ -614,7 +614,8 @@ export default function EquationBalance({ pool = [], onComplete, onQuit }) {
   };
 
   // The X saves whatever has been solved so far; with nothing solved it just closes.
-  const quit = () => (Object.keys(results).length ? finish() : onQuit?.());
+  // (A "Show me" with nothing solved is not work done — it must not log a 0.)
+  const quit = () => (Object.values(results).some((r) => r.steps != null) ? finish() : onQuit?.());
 
   const next = () => {
     if (idx < problems.length - 1) setIdx((i) => i + 1);

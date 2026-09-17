@@ -199,23 +199,30 @@ export default function AppSim({ pool, onComplete, onQuit }) {
     const total = items.length;
     const raw = total ? Math.round(items.reduce((s, it) => s + (all[it.id] || 0), 0) / total) : 0;
     onComplete?.(raw, null, {
-      items: items.map((it) => ({ itemId: it.id, score: all[it.id] || 0 })),
+      // `correct` is what recordAttempt reads; without it every job logged as wrong.
+      items: items.map((it) => ({ itemId: it.id, correct: (all[it.id] || 0) >= 8, score: all[it.id] || 0 })),
     });
   };
+
+  // The X is labelled Save & Quit, so it saves the jobs already cleared; with
+  // nothing cleared it just closes.
+  const quit = () => (Object.keys(results).length ? finish() : onQuit?.());
 
   const isLast = idx >= items.length - 1;
   const clearedCount = Object.values(results).filter((s) => s > 0).length + (solved || watched ? 1 : 0);
 
   let tone = SKY;
   let message = t.working;
-  if (solved) { tone = GREEN; message = inPar && !nudged && !watched ? t.solvedPar : t.solved; }
-  else if (watched) { tone = AMBER; message = t.watched; }
+  // `watched` first: the walkthrough leaves the job solved, so testing `solved`
+  // first meant this line could never show.
+  if (watched) { tone = AMBER; message = t.watched; }
+  else if (solved) { tone = GREEN; message = inPar && !nudged ? t.solvedPar : t.solved; }
   else if (hint) { tone = AMBER; message = lang === 'vn' ? (hint.sayVn || VN.nudge) : (hint.say || EN.nudge); }
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
-        onQuit={onQuit}
+        onQuit={quit}
         modeTitle={t.title}
         current={idx + 1}
         total={items.length}

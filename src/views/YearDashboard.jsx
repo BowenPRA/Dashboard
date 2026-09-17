@@ -4,6 +4,7 @@ import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Constructio
 
 import { useStudentProgress } from '../utils/supabaseClient';
 import UnitCard from '../components/UnitCard';
+import ProgressLoadError from '../components/ProgressLoadError';
 import { getTrackConfig, unitGateOf } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
 import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
@@ -47,7 +48,7 @@ function EmptyTrack({ title, theme }) {
 
 export default function YearDashboard({ track }) {
   const navigate = useNavigate();
-  const { user, unitScores = {}, isLoadingDB, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
+  const { user, unitScores = {}, isLoadingDB, loadError, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
 
   // `?unit=<id>` — how Today's Plan hands a student straight to the unit it
   // assigned, instead of dropping them at the top of the track to hunt for it.
@@ -69,6 +70,14 @@ export default function YearDashboard({ track }) {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [requestedUnit, isLoadingDB]);
 
+  // Escape closes the How It Works modal, like every other modal in the app.
+  useEffect(() => {
+    if (!showHowItWorks) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setShowHowItWorks(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showHowItWorks]);
+
   const trackConfig = getTrackConfig(track);
   const currentTheme = trackConfig?.theme || {};
   const trackTitle = trackConfig?.title || 'Unknown Track';
@@ -78,6 +87,8 @@ export default function YearDashboard({ track }) {
 
   const { meta: META_DATA, data: UNIT_DATA } = getTrack(track);
   const activeExpandedUnit = expandedUnit !== null ? expandedUnit : 'NONE';
+
+  if (loadError) return <ProgressLoadError />;
 
   if (isLoadingDB) {
     return (
@@ -194,6 +205,7 @@ export default function YearDashboard({ track }) {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => navigate('/home')}
+                  aria-label="Back to all tracks"
                   className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-2 active:translate-y-[2px] text-slate-500 dark:text-slate-400"
                 >
                   <ChevronLeft className="w-7 h-7" strokeWidth={3} />
@@ -218,12 +230,15 @@ export default function YearDashboard({ track }) {
                   onClick={toggleDarkMode}
                   className="w-12 h-12 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-200 dark:hover:border-slate-700 bg-white/50 dark:bg-slate-900/50"
                   title="Toggle Dark Mode"
+                  aria-label="Toggle dark mode"
                 >
                   {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
                 </button>
 
                 <button
                   onClick={() => setShowHowItWorks(true)}
+                  aria-label="How it works"
+                  title="How it works"
                   className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-2 active:translate-y-[2px] text-slate-500 dark:text-slate-400"
                 >
                   <Info className="w-6 h-6" strokeWidth={2.5} />
@@ -235,6 +250,7 @@ export default function YearDashboard({ track }) {
                     onClick={handleLogout}
                     className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-xl hover:text-rose-500 transition-colors shadow-sm border-2 border-slate-200 dark:border-slate-700 active:scale-95"
                     title="Logout"
+                    aria-label="Log out"
                   >
                     <LogOut className="w-4 h-4" strokeWidth={3} />
                   </button>
@@ -314,8 +330,11 @@ export default function YearDashboard({ track }) {
       )}
 
       {showHowItWorks && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl max-w-xl w-full p-8 relative max-h-[90vh] overflow-y-auto border-4 border-slate-200 dark:border-slate-800 animate-in zoom-in-95">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowHowItWorks(false); }}
+        >
+          <div role="dialog" aria-modal="true" aria-label="How it works" className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl max-w-xl w-full p-8 relative max-h-[90vh] overflow-y-auto border-4 border-slate-200 dark:border-slate-800 animate-in zoom-in-95">
              <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
                   <Sparkles className="w-8 h-8 text-[#ffc800] mr-3 drop-shadow-sm" strokeWidth={2.5} />
@@ -323,6 +342,7 @@ export default function YearDashboard({ track }) {
                 </div>
                 <button
                   onClick={() => setShowHowItWorks(false)}
+                  aria-label="Close"
                   className="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors border-2 border-slate-200 dark:border-slate-700 active:scale-95 border-b-[4px] active:border-b-[2px] active:translate-y-[2px]"
                 >
                   <XCircle className="w-6 h-6" strokeWidth={2.5}/>
@@ -330,7 +350,7 @@ export default function YearDashboard({ track }) {
              </div>
 
              <p className="text-base text-slate-500 dark:text-slate-400 font-bold mb-8 leading-relaxed">
-               Welcome! 🚀 We're so excited to help you learn Science and English at the same time. This is called <strong className="text-slate-800 dark:text-white font-black">CLIL</strong>, and it's a super fun way to build your vocabulary while exploring the world around you!
+               Welcome to <strong className="text-slate-800 dark:text-white font-black">{trackTitle}</strong>! 🚀 Open a unit, start with the lesson, then work through the tasks. Every task earns XP, and XP unlocks the next set of tasks — and the next unit.
              </p>
 
              <div className="space-y-4 mb-8">

@@ -80,7 +80,7 @@ export default function LabBench({ pool, onComplete, onQuit }) {
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.placeholder}</label>
             <div className="flex items-stretch gap-2">
               <input
-                type="text" inputMode="decimal" value={typed} disabled={checked} autoFocus
+                type="text" inputMode="text" value={typed} disabled={checked} autoFocus
                 onChange={(e) => setTyped(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') (checked ? next() : check()); }}
                 className={`flex-1 min-w-0 text-2xl font-black text-center px-3 py-3 rounded-xl border-2 border-b-[4px] outline-none

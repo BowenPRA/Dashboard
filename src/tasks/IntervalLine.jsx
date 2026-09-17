@@ -303,7 +303,7 @@ function EndField({ value, onChange, infinity, disabled }) {
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         readOnly={isInf}
-        inputMode="numeric"
+        inputMode="text"
         placeholder="?"
         className={`w-16 h-12 rounded-xl border-2 border-b-[4px] bg-white dark:bg-slate-900 font-black text-lg text-center focus:outline-none focus:border-[#7c3aed] disabled:opacity-50
           ${isInf ? 'border-[#7c3aed] text-[#7c3aed] dark:text-violet-400' : 'border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100'}`}
@@ -422,6 +422,12 @@ function Item({ item, t, target, onScore, footer }) {
 
   const checkWrite = () => {
     if (writeLocked) return;
+    // An empty box is a slip, not an answer: nudge, as the graph stage does,
+    // rather than spending the one marked attempt on it.
+    if (pieces.some((p) => !String(p.lo ?? '').trim() || !String(p.hi ?? '').trim())) {
+      setWriteMsg({ ok: false, text: t.errShape });
+      return;
+    }
     const typed = pieces.map(pieceText).join(' U ');
     const read = parseNotation(typed);
     if (read.error) {

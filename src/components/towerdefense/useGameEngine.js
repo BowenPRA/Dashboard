@@ -450,7 +450,7 @@ export function useGameEngine({
 
       last = now - (elapsed % fpsInterval);
 
-      if (g.gameState !== 'PLAYING') { render(); return; }
+      if (g.gameState !== 'PLAYING' || g.paused) { render(); return; }
       const dt = FIXED_DT * g.speed;
       frameNo++;
 

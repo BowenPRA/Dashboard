@@ -189,7 +189,7 @@ export default function Feedback({
                 <div className={`pt-4 border-t ${accentBorder}`}>
                   <span className={`font-black text-xs uppercase tracking-widest block mb-2 ${textClass}`}>Sample Sentence</span>
                   <p className="text-xl font-medium italic leading-relaxed text-slate-800">
-                    {currentWord.sent.split(new RegExp(`(${currentWord.word})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${accentHighlight}`}>{part}</strong> : part)}
+                    {(currentWord.sent || '').split(new RegExp(`(${currentWord.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${accentHighlight}`}>{part}</strong> : part)}
                   </p>
                   <p className={`text-lg font-medium italic mt-1 ${accentText}`}>"{currentWord.vnSent}"</p>
                 </div>

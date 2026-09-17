@@ -219,7 +219,7 @@ export function Media({ slide, source, ctx, drawThis = (source || slide).drawThi
       )}
       <button
         onClick={onExpand}
-        className="absolute top-2 lg:top-4 right-2 lg:right-4 p-2.5 lg:p-3 bg-white/90 backdrop-blur hover:bg-slate-100 text-slate-600 hover:text-[#1cb0f6] rounded-xl shadow-sm border-2 border-slate-200 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all z-30 active:scale-95 border-b-4 active:border-b-2 active:translate-y-0.5"
+        className="absolute top-2 lg:top-4 right-2 lg:right-4 p-2.5 lg:p-3 bg-white/90 backdrop-blur hover:bg-slate-100 text-slate-600 hover:text-[#1cb0f6] rounded-xl shadow-sm border-2 border-slate-200 opacity-80 [@media(hover:hover)]:sm:opacity-0 [@media(hover:hover)]:sm:group-hover:opacity-100 focus-visible:opacity-100 transition-all z-30 active:scale-95 border-b-4 active:border-b-2 active:translate-y-0.5"
         title="Expand">
         <Maximize2 className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2.5} />
       </button>

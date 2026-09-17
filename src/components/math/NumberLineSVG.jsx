@@ -43,6 +43,9 @@ export default function NumberLineSVG({
 
   return (
     <svg viewBox={`0 0 ${W} 140`} className="w-full h-auto select-none" style={{ touchAction: 'manipulation' }}>
+      {/* A white plate, like the other figures: the axis ink is slate-800, which
+          vanishes against the dark-mode card this is drawn on. */}
+      <rect x="0" y="0" width={W} height="140" rx="12" fill="#ffffff" />
       {/* the band above the line: tap to shade a region */}
       {!readOnly && onRegion && regions.map((r) => (
         <rect key={`hit-${r.i}`} x={px(r.loDraw)} y={BAND_TOP} width={Math.max(2, px(r.hiDraw) - px(r.loDraw))} height={BAND_H}

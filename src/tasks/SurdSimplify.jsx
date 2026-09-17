@@ -643,7 +643,7 @@ export default function SurdSimplify({ pool, onComplete, onQuit, savedData = {},
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Answer</div>
                   <div className="text-xl text-slate-900 dark:text-slate-100"><SafeInlineMath math={answerLatex} /></div>
                 </div>
-                {model.kind !== 'collect' && splits.length > 1 && largest !== undefined && (
+                {model.kind !== 'collect' && splits.length > 1 && (
                   <p className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
                     You took {splits.length} rounds. The largest square factor of {model.kind === 'simplify' ? item.n : model.raw[1]} is {squareFactors(model.kind === 'simplify' ? item.n : model.raw[1]).slice(-1)[0]} — spotting it first does it in one.
                   </p>

@@ -17,11 +17,16 @@ const INACTIVE_DAYS = 7;
 const dayMs = 86400000;
 const daysSince = (iso) => (iso ? (Date.now() - new Date(iso).getTime()) / dayMs : Infinity);
 
+// Calendar days, not elapsed hours: 9pm last night is "Yesterday" at 8am, even
+// though fewer than 24 hours have passed.
+const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+
 function relTime(iso) {
   if (!iso) return 'Never';
+  const calendarDays = Math.round((startOfDay(new Date()) - startOfDay(new Date(iso))) / dayMs);
+  if (calendarDays <= 0) return 'Today';
+  if (calendarDays === 1) return 'Yesterday';
   const d = daysSince(iso);
-  if (d < 1) return 'Today';
-  if (d < 2) return 'Yesterday';
   if (d < 7) return `${Math.floor(d)}d ago`;
   if (d < 30) return `${Math.floor(d / 7)}w ago`;
   return `${Math.floor(d / 30)}mo ago`;
@@ -147,7 +152,13 @@ export default function TeacherDashboard() {
     classes.forEach((c) => {
       if (byClass.has(c.id)) out.push({ key: c.id, label: c.name, students: byClass.get(c.id) });
     });
-    if (byClass.has('__none__')) out.push({ key: '__none__', label: 'Unassigned', students: byClass.get('__none__') });
+    // Students whose class is not in the list — the classes endpoint is fetched
+    // best-effort, so it can be empty while class_ids are not — must still show.
+    const known = new Set(classes.map((c) => c.id));
+    const unassigned = [...byClass.entries()]
+      .filter(([key]) => key === '__none__' || !known.has(key))
+      .flatMap(([, students]) => students);
+    if (unassigned.length) out.push({ key: '__none__', label: 'Unassigned', students: unassigned });
     return out;
   }, [filtered, classes, classFilter]);
 

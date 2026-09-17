@@ -79,6 +79,7 @@ export default function StudyPlan() {
     let alive = true;
     (async () => {
       setIsLoadingStudent(true);
+      setError('');
       try {
         const d = await getStudentDetail(studentId);
         if (alive) setDetail(d);

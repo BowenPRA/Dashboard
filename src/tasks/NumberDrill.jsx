@@ -566,8 +566,11 @@ function TimesSprint({ pool, onComplete, onQuit }) {
     );
   }
 
-  const start = () => { setEntries({}); setTimeLeft(secondsFor(facts.length)); setPhase('running'); };
-  const nextRung = () => { setRungIdx((r) => r + 1); setPhase('ready'); setEntries({}); };
+  // Entries are NOT cleared between rungs: their ids are namespaced by rung
+  // (factId), and finish() reads every rung's entries back to build the item log.
+  // Clearing them logged every rung but the last as wrong.
+  const start = () => { setTimeLeft(secondsFor(facts.length)); setPhase('running'); };
+  const nextRung = () => { setRungIdx((r) => r + 1); setPhase('ready'); };
   const finish = () => {
     if (ended) return;
     setEnded(true);

@@ -18,7 +18,8 @@ const RING = {
 const IDLE = 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900';
 
 const clean = (v, allowMinus) => {
-  const s = String(v ?? '').replace(allowMinus ? /[^\d-]/g : /[^\d]/g, '');
+  // A typeset minus (−) is a minus; stripping it turned −3 into 3.
+  const s = String(v ?? '').replace(/[−–]/g, '-').replace(allowMinus ? /[^\d-]/g : /[^\d]/g, '');
   return allowMinus ? s.replace(/(?!^)-/g, '') : s;
 };
 
@@ -27,7 +28,9 @@ export function NumberBox({ value, onChange, onEnter, state, disabled, label, wi
     <input
       value={value ?? ''}
       disabled={disabled}
-      inputMode="numeric"
+      // The iPhone numeric keypad has no minus key, so a box that takes negatives
+      // needs the full keyboard.
+      inputMode={allowMinus ? 'text' : 'numeric'}
       aria-label={label}
       autoFocus={autoFocus}
       onChange={(e) => onChange(clean(e.target.value, allowMinus))}
@@ -35,7 +38,7 @@ export function NumberBox({ value, onChange, onEnter, state, disabled, label, wi
       placeholder="?"
       spellCheck={false}
       autoComplete="off"
-      className={`${width} px-1.5 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-lg text-center text-slate-800 dark:text-slate-100 focus:outline-none focus:border-violet-500 disabled:opacity-80 ${RING[state] || IDLE}`}
+      className={`${width} px-1.5 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-lg text-center text-slate-800 dark:text-slate-100 focus:outline-none focus:border-violet-500 dark:focus:border-violet-400 disabled:opacity-80 ${RING[state] || IDLE}`}
     />
   );
 }

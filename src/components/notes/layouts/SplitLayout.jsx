@@ -28,7 +28,7 @@ export default function SplitLayout({ slide: s, ctx }) {
   const twoPane = hasMedia || hasExample;
 
   const TextCol = (
-    <div className={`flex-none h-[45%] lg:h-auto flex flex-col overflow-y-auto custom-scrollbar border-b-2 lg:border-b-0 border-slate-100 dark:border-slate-800 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-5 lg:p-6'} ${twoPane ? `${textW} ${mediaLeft ? 'lg:border-l-2' : 'lg:border-r-2'}` : 'w-full max-w-4xl mx-auto'}`}>
+    <div className={`${twoPane ? 'flex-none h-[45%] lg:h-auto border-b-2 lg:border-b-0' : 'flex-1 min-h-0'} flex flex-col overflow-y-auto custom-scrollbar border-slate-100 dark:border-slate-800 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-5 lg:p-6'} ${twoPane ? `${textW} ${mediaLeft ? 'lg:border-l-2' : 'lg:border-r-2'}` : 'w-full max-w-4xl mx-auto'}`}>
       {content && <div className={hasExample && hasMedia ? 'pb-4 lg:pb-6' : ''}>{renderContent(content, { isDisplayMode })}</div>}
       {s.notes?.length > 0 && (
         <div className="space-y-3 mt-2">

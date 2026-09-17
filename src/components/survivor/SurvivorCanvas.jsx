@@ -77,6 +77,8 @@ export default function SurvivorCanvas({ gRef, sprites, themeId = 'STANDARD', on
   // Lets the resize handler repaint without depending on a React commit — see
   // the note in `apply` below.
   const drawRef = useRef(null);
+  const heldRef = useRef(null);       // the held pointer's SCREEN position
+  const reprojectRef = useRef(null);  // re-projects it into the world each frame
 
   const theme = MAP_THEMES[themeId] || MAP_THEMES.STANDARD;
   const decor = useMemo(() => makeDecor(190, 0x5eed + themeId.length * 977), [themeId]);
@@ -133,13 +135,31 @@ export default function SurvivorCanvas({ gRef, sprites, themeId = 'STANDARD', on
       };
     };
 
+    // A finger held perfectly still sends no events, but the camera keeps
+    // scrolling under it — so the world point it means keeps changing. The
+    // screen point is remembered and re-projected every frame (see below);
+    // otherwise the hero walks to where the finger USED to point and stops, and
+    // a tablet player has to wiggle their thumb to keep moving.
+    heldRef.current = null;
+    reprojectRef.current = () => {
+      const held = heldRef.current;
+      if (held) onPointer(toWorld(held.x, held.y));
+    };
+
     const down = (e) => {
       e.preventDefault();
       canvas.setPointerCapture?.(e.pointerId);
+      heldRef.current = { x: e.clientX, y: e.clientY };
       onPointer({ pointerDown: true, ...toWorld(e.clientX, e.clientY) });
     };
-    const move = (e) => onPointer({ ...toWorld(e.clientX, e.clientY) });
-    const up = () => onPointer({ pointerDown: false });
+    const move = (e) => {
+      if (heldRef.current) heldRef.current = { x: e.clientX, y: e.clientY };
+      onPointer({ ...toWorld(e.clientX, e.clientY) });
+    };
+    const up = () => {
+      heldRef.current = null;
+      onPointer({ pointerDown: false });
+    };
 
     canvas.addEventListener('pointerdown', down);
     canvas.addEventListener('pointermove', move);
@@ -150,6 +170,7 @@ export default function SurvivorCanvas({ gRef, sprites, themeId = 'STANDARD', on
       canvas.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
+      reprojectRef.current = null;
     };
   }, [gRef, onPointer]);
 
@@ -494,7 +515,7 @@ export default function SurvivorCanvas({ gRef, sprites, themeId = 'STANDARD', on
   useEffect(() => { drawRef.current = draw; }, [draw]);
 
   // Repaint on every commit; the engine commits once per animation frame.
-  useLayoutEffect(() => { draw(); });
+  useLayoutEffect(() => { reprojectRef.current?.(); draw(); });
 
   return (
     <div ref={wrapRef} className="relative flex-1 min-h-0 w-full overflow-hidden">

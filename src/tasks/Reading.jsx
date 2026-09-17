@@ -58,6 +58,7 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
 
   // State setup and Smart Reattempts Check
   useEffect(() => {
+    let audioTimer;
     if (gameState === 'Q') {
       const initialInputs = {};
       const savedPassage = localAnswers[passageIndex];
@@ -96,10 +97,13 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
       }
 
       playChime(isPerfect ? 'correct' : 'incorrect');
-      setTimeout(() => playPassageAudio(), 600);
+      // Cleared on cleanup: left alone, leaving within 600ms let the timer start
+      // the passage audio AFTER stopAudio had run — playing over the dashboard
+      // with nothing on screen to stop it.
+      audioTimer = setTimeout(() => playPassageAudio(), 600);
     }
 
-    return stopAudio;
+    return () => { clearTimeout(audioTimer); stopAudio(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState, passageIndex]);
 
@@ -157,7 +161,9 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
     };
     window.addEventListener('keydown', handleGlobalNav);
     return () => window.removeEventListener('keydown', handleGlobalNav);
-  }, [gameState, inputs]); // eslint-disable-line react-hooks/exhaustive-deps -- deliberately keyed to the answer state, not to the handlers it calls
+  // btnCooldown is a dep so the listener is rebound when the cooldown lifts; bound
+  // only while it was true, handleNext always bailed and Enter never advanced.
+  }, [gameState, inputs, btnCooldown]); // eslint-disable-line react-hooks/exhaustive-deps -- deliberately keyed to the answer state, not to the handlers it calls
 
   const renderPassage = () => {
     if (!currentPassage) return null;

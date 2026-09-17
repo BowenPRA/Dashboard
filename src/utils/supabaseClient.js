@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
 import { recordAttempt, mergeVocab, VOCAB_KEY, WALLET_KEY, ARCADE_KEY, isArcadeKey } from './progressSchema';
@@ -63,10 +63,16 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
   TRACK_REGISTRY.forEach(t => { initialProgress[t.id] = {}; });
   const [allProgress, setAllProgress] = useState(initialProgress);
   const [isLoadingDB, setIsLoadingDB] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  // True only once the student's real progress is in state — the gate every
+  // write checks, so nothing derived from the empty initial state is ever saved.
+  const loadedRef = useRef(false);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchProgress = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
 
       if (!session) {
         navigate('/');
@@ -75,11 +81,30 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
 
       setUser(session.user);
 
-      const { data } = await supabase
-        .from('students')
-        .select('progress')
-        .eq('id', session.user.id)
-        .single();
+      // Every save writes the WHOLE progress blob back. So a fetch that failed
+      // must never be mistaken for "this student has no progress": the migration
+      // below, or the student's next save, would overwrite everything they have
+      // earned with an empty record. Retry a flaky connection a few times, and if
+      // it still fails, stop and let the view offer a retry — writing nothing.
+      // PGRST116 is `.single()` finding no row, which genuinely is empty progress.
+      let data = null;
+      let error = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        ({ data, error } = await supabase
+          .from('students')
+          .select('progress')
+          .eq('id', session.user.id)
+          .single());
+        if (!error || error.code === 'PGRST116') { error = null; break; }
+        await new Promise(resolve => setTimeout(resolve, 600 * (attempt + 1)));
+      }
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load progress:', error);
+        setLoadError(true);
+        setIsLoadingDB(false);
+        return;
+      }
 
       const validTracks = TRACK_REGISTRY.map(t => t.id);
       const isTrackKey = (key) => validTracks.includes(key);
@@ -132,16 +157,32 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       }
 
       setAllProgress(newFormat);
+      loadedRef.current = true;
 
       if (needsUpdate) {
         await supabase.from('students').update({ progress: newFormat }).eq('id', session.user.id);
       }
 
-      setIsLoadingDB(false);
+      if (!cancelled) setIsLoadingDB(false);
     };
 
-    fetchProgress();
+    // Anything thrown (rather than returned as `error`) lands on the same retry
+    // screen instead of an endless spinner.
+    fetchProgress().catch((err) => {
+      console.error('Failed to load progress:', err);
+      if (cancelled) return;
+      setLoadError(true);
+      setIsLoadingDB(false);
+    });
+    return () => { cancelled = true; };
   }, [navigate]);
+
+  /** Write the whole blob back. Refuses until the real progress has been loaded. */
+  const persist = (progress) => {
+    if (!loadedRef.current || !user) return;
+    supabase.from('students').update({ progress }).eq('id', user.id)
+      .then(({ error }) => { if (error) console.error("Supabase Save Error:", error); });
+  };
 
   /**
    * Save one completed attempt.
@@ -194,8 +235,7 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       }
 
       // Fire and forget so the UI doesn't wait on the round-trip.
-      supabase.from('students').update({ progress: newProgress }).eq('id', user.id)
-        .then(({ error }) => { if (error) console.error("Supabase Save Error:", error); });
+      persist(newProgress);
 
       return newProgress;
     });
@@ -217,8 +257,7 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       nextSpent = (Number(wallet.spent) || 0) + (Number(cost) || 0);
       newProgress[ARCADE_TRACK_ID][WALLET_KEY] = { ...wallet, spent: nextSpent };
 
-      supabase.from('students').update({ progress: newProgress }).eq('id', user.id)
-        .then(({ error }) => { if (error) console.error("Supabase Save Error:", error); });
+      persist(newProgress);
 
       return newProgress;
     });
@@ -234,7 +273,10 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
 
       newProgress[track][unitId].strikes = newStrikes;
 
-      supabase.from('students').update({ progress: newProgress }).eq('id', user.id);
+      // A Supabase query is lazy — it only runs once it is awaited or `.then`ed.
+      // The bare call that used to sit here never sent anything, so strikes
+      // silently reset on every reload.
+      persist(newProgress);
       return newProgress;
     });
   };
@@ -249,6 +291,7 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
     allProgress,
     unitScores: allProgress[track] || {},
     isLoadingDB,
+    loadError,
     saveScore,
     spendGold,
     addStrike,

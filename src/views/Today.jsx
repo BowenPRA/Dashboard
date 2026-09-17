@@ -8,6 +8,7 @@ import {
 import { useStudentProgress } from '../utils/supabaseClient';
 import { getTrackConfig } from '../components/trackRegistry';
 import { Card, Badge, Button } from '../components/ui';
+import ProgressLoadError from '../components/ProgressLoadError';
 import useDarkMode from '../hooks/useDarkMode';
 import { PROGRAM, BENCHMARK } from '../utils/studyPlanConfig';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
@@ -343,7 +344,7 @@ export default function Today() {
   // The plan spans every GED track, so it reads `allProgress` rather than one
   // track's slice. The `track` argument only decides which slice `saveScore`
   // would write to, and this screen never saves.
-  const { user, allProgress, isLoadingDB } = useStudentProgress(navigate, 'GED_ENG');
+  const { user, allProgress, isLoadingDB, loadError } = useStudentProgress(navigate, 'GED_ENG');
 
   const [isDark, toggleDarkMode] = useDarkMode();
   const [iso] = useState(todayISO);
@@ -355,6 +356,8 @@ export default function Today() {
     () => weekOf(iso).map((d) => ({ iso: d, ...evaluateDay(d, allProgress) })),
     [iso, allProgress]
   );
+
+  if (loadError) return <ProgressLoadError />;
 
   if (isLoadingDB) {
     return (

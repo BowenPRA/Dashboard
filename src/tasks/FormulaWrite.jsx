@@ -76,7 +76,8 @@ function CountStepper({ symbol, count, graded, correct, onBump }) {
     <div className={`inline-flex items-center rounded-2xl border-2 overflow-hidden bg-white dark:bg-slate-900
       ${graded ? (correct ? 'border-[#58a700]' : 'border-[#ff4b4b]') : 'border-slate-200 dark:border-slate-700'}`}>
       <span className="px-3 text-2xl min-w-[3.2rem] text-center text-slate-800 dark:text-slate-100">
-        <Formula text={count > 1 ? `${symbol}${count}` : symbol} />
+        {/* unit() brackets a polyatomic ion: (SO4)3, not SO43. */}
+        <Formula text={unit(symbol, count)} />
       </span>
       <span className="flex flex-col border-l-2 border-slate-200 dark:border-slate-700">
         <button disabled={graded} onClick={() => onBump(+1)}

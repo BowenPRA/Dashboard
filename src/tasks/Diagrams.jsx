@@ -89,8 +89,10 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       setFeedback(null);
       setPicked(null);
 
-      if (status === 'mcq') {
-        // Replay the graded choice rather than re-asking it.
+      if (status === 'mcq' && saved.correct) {
+        // Replay a CORRECT choice rather than re-asking it. A wrong one falls
+        // through and is asked again — replaying it locked the item at zero on
+        // every later attempt, so one bad first click capped the task for good.
         setPicked(saved.val);
         setFeedback({ index: currentIndex, isMcq: true, correct: saved.correct, pointsEarned: saved.correct ? (questions[currentIndex].marks || 1) : 0, maxPoints: questions[currentIndex].marks || 1 });
         setGameState('A');
@@ -371,7 +373,12 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
       <TopBar
         current={currentIndex}
         total={questions.length}
-        onQuit={() => onComplete(0, localAnswers)}
+        onQuit={() => {
+          // Save & Quit banks what has been earned so far, measured against the
+          // whole task — not a flat zero that throws the graded answers away.
+          const totalMax = questions.reduce((sum, q) => sum + maxPointsOf(q), 0);
+          onComplete(totalMax ? Math.floor((cumulativePoints / totalMax) * 20) : 0, localAnswers);
+        }}
         modeTitle="Diagram Analysis"
       />
 

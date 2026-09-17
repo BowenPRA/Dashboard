@@ -699,19 +699,33 @@ const SUPERS = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵':
  */
 export function parseNumber(raw) {
   if (raw === null || raw === undefined) return null;
-  let s = String(raw).trim().replace(/[−–]/g, '-').replace(/,/g, '');
+  let s = String(raw).trim().replace(/[−–]/g, '-');
+  // A comma is a thousands separator only in the 1,234,567 shape. Anywhere else
+  // between digits it is a DECIMAL comma — the decimal key on a Vietnamese
+  // keypad — so "29,7" is 29.7. Deleting every comma read it as 297.
+  s = /^[+-]?\d{1,3}(,\d{3})+(\.\d+)?(?!\d)/.test(s) ? s.replace(/,/g, '') : s.replace(/(\d),(\d)/, '$1.$2');
   // Superscript digits are tagged with a private-use marker, so that a run of
   // them straight after "10" reads as an exponent: "10¹⁸" → "10^18".
   const MARK = '';
   s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g, (ch) => `${MARK}${SUPERS[ch]}`);
   s = s.replace(/10((?:[-0-9])+)/g, (m, digits) => `10^${digits.replace(//g, '')}`);
   s = s.replace(//g, '');
-  const sci = s.match(/^([+-]?\d*\.?\d+)\s*(?:[eE]|[x×*]\s*10\s*\^?)\s*\(?\s*([+-]?\d+)\s*\)?\s*[a-zA-Z/²^0-9 ]*$/);
+  // A bare power of ten, "10^5", is 1×10^5.
+  s = s.replace(/^([+-]?)10\s*\^/, (m, sign) => `${sign}1*10^`);
+
+  // A trailing unit must START with a letter. The old tail allowed digits, "/"
+  // and "^" anywhere, so it swallowed maths: "10^5" read as 10, "2/3" as 2.
+  const UNIT = '(?:\\s*[a-zA-Zµ°Ω][a-zA-Z/²³^0-9 .·-]*)?';
+
+  const sci = s.match(new RegExp(`^([+-]?\\d*\\.?\\d+)\\s*(?:[eE]|[x×*]\\s*10\\s*\\^?)\\s*\\(?\\s*([+-]?\\d+)\\s*\\)?${UNIT}$`));
   if (sci) {
     const v = Number(sci[1]) * 10 ** Number(sci[2]);
     return Number.isFinite(v) ? v : null;
   }
-  const plain = s.match(/^([+-]?\d*\.?\d+)\s*[a-zA-Z/²^0-9 ]*$/);
+  const frac = s.match(new RegExp(`^([+-]?\\d+)\\s*/\\s*(\\d+)${UNIT}$`));
+  if (frac && Number(frac[2]) !== 0) return Number(frac[1]) / Number(frac[2]);
+
+  const plain = s.match(new RegExp(`^([+-]?\\d*\\.?\\d+)${UNIT}$`));
   if (plain) {
     const v = Number(plain[1]);
     return Number.isFinite(v) ? v : null;

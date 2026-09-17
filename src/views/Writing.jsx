@@ -13,6 +13,7 @@ import { TRAITS } from '../components/essay/traits';
 import EssayTrend from '../components/essay/EssayTrend';
 import EssayRow from '../components/essay/EssayRow';
 import { allEssays, essayStats, kindTotals, errorDensity } from '../utils/essayArchive';
+import ProgressLoadError from '../components/ProgressLoadError';
 import useDarkMode from '../hooks/useDarkMode';
 
 /**
@@ -226,7 +227,7 @@ export function WritingScreen({ essays = [], onBack, onWrite, isDark, onToggleDa
                     )}
                     {!selected.nonScorable && selected.wordCount > 0 && (
                       <p className="text-xs font-bold text-slate-400 mt-3">
-                        {(selected.revisions || []).length} errors marked · {errorDensity(selected)} per 100 words
+                        {(selected.revisions || []).length} {(selected.revisions || []).length === 1 ? 'error' : 'errors'} marked · {errorDensity(selected)} per 100 words
                         {selected.secondsUsed ? ` · ${Math.round(selected.secondsUsed / 60)} min` : ''}
                         {selected.minutesAllowed ? ` of ${selected.minutesAllowed}` : ''}
                       </p>
@@ -247,9 +248,11 @@ export default function Writing() {
   const navigate = useNavigate();
   // Reads every GED track's archive; the `track` argument only decides where
   // saveScore would write, and this page never saves.
-  const { allProgress, isLoadingDB } = useStudentProgress(navigate, 'GED_ENG');
+  const { allProgress, isLoadingDB, loadError } = useStudentProgress(navigate, 'GED_ENG');
   const [isDark, toggleDarkMode] = useDarkMode();
   const essays = useMemo(() => allEssays(allProgress, GED_TRACKS), [allProgress]);
+
+  if (loadError) return <ProgressLoadError />;
 
   if (isLoadingDB) {
     return (

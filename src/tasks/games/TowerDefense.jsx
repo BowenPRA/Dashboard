@@ -365,7 +365,7 @@ export default function TowerDefense({
   // rather than in the effect body, so running out of time is handled as the
   // event it is instead of a state change made during render commit.
   useEffect(() => {
-    if (!challenge || challenge.result || challengeTimeLeft <= 0) return;
+    if (!challenge || challenge.result || challengeTimeLeft <= 0 || showExitConfirm) return;
     const t = setTimeout(() => {
       if (challengeTimeLeft <= 1) {
         // Running out reveals the word too; only CHOICE carries the spawn penalty
@@ -377,7 +377,7 @@ export default function TowerDefense({
     }, 1000);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [challenge, challengeTimeLeft]);
+  }, [challenge, challengeTimeLeft, showExitConfirm]);
 
   // Hold the reveal for a beat, then close. Keyed on the result so it arms once.
   useEffect(() => {
@@ -396,6 +396,8 @@ export default function TowerDefense({
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (challengeActiveRef.current) return;
       if (g.gameState !== 'PLAYING') return;
+      // The exit dialog is up: Space/Enter belong to its buttons, not to the wave.
+      if (g.paused) return;
 
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
@@ -435,7 +437,9 @@ export default function TowerDefense({
       data = engineConfig.generateInfiniteWave(g.wave);
     } else return; 
 
-    g.spawnQueue = data.map(w => ({ ...w }));
+    // Appended, not assigned: a challenge penalty that landed between waves is
+    // already queued, and overwriting it would show the "+N" and then drop it.
+    g.spawnQueue = [...g.spawnQueue, ...data.map(w => ({ ...w }))];
     g.spawnTimer = 9999;
     g.wave += 1;
     g.waveInProgress = true;
@@ -555,9 +559,17 @@ export default function TowerDefense({
   function handleUseBolt() {
     if (g.bolts <= 0) return;
     g.bolts -= 1;
+    // Same payout rules as a tower kill (see useGameEngine): the tier's reward
+    // multiplier, and the quartering from wave 51 on.
+    const rewardMul = Number(gameConfig.difficulty?.rewardMul) > 0 ? Number(gameConfig.difficulty.rewardMul) : 1;
     g.creeps.forEach(c => {
+      if (c.hp <= 0) return;
       c.hp -= 500;
-      if (c.hp <= 0) g.credits += ENEMIES[c.typeKey].reward;
+      if (c.hp <= 0) {
+        let reward = Math.round(ENEMIES[c.typeKey].reward * rewardMul);
+        if (g.wave >= 51) reward = Math.floor(reward / 4);
+        g.credits += reward;
+      }
     });
     g.particles.push({ id: g.nextId++, row: layout.rows / 2, col: layout.cols / 2, radius: Math.max(layout.rows, layout.cols), color: 'rgba(99,102,241,0.6)', life: 450, maxLife: 450 });
     render();
@@ -609,6 +621,7 @@ export default function TowerDefense({
   }
 
   function persistBest() {
+    sessionBestRef.current = Math.max(sessionBestRef.current, g.score);
     if (g.score > bestRef.current) {
       bestRef.current = g.score;
       try { localStorage.setItem(`td_best_${unitId}`, String(g.score)); } catch { /* private mode */ }
@@ -624,7 +637,7 @@ export default function TowerDefense({
     // score to the leaderboard — persistBest has already folded the best into
     // bestRef, and recordAttempt keeps the server-side max, so this is the honest
     // high score for the unit.
-    onComplete(Math.max(g.score, bestRef.current));
+    onComplete(Math.max(g.score, sessionBestRef.current));
     onQuit();
   }
 
@@ -633,6 +646,13 @@ export default function TowerDefense({
   // disk write several times a second for the whole of a wave.
   const bestRef = useRef(bestScore);
   useEffect(() => { bestRef.current = bestScore; }, [bestScore]);
+  // The best run of THIS sitting. `td_best_` in localStorage belongs to the
+  // device, not the student — on a shared classroom tablet it may be someone
+  // else's — so it is the score to beat on the HUD but is never submitted.
+  const sessionBestRef = useRef(0);
+
+  // The exit dialog pauses the battle; the engine loop checks `g.paused`.
+  useEffect(() => { g.paused = showExitConfirm; }, [g, showExitConfirm]);
   const liveBest = Math.max(bestScore, g.score);
 
   const selectedTower = g.towers.find(t => t.id === selectedTowerId) || null;

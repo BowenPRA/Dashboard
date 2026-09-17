@@ -330,6 +330,24 @@ export const MATH_CHALLENGE_GENERATORS = {
   U01_6: roots,
 };
 
+/**
+ * Unit ids are only unique WITHIN a track — Year 7 Science also has U01_1 to
+ * U01_4 — so a caller that knows the track should say so, or a student studying
+ * cells gets integer arithmetic. Generators not listed here have ids no other
+ * track uses.
+ */
+const GENERATOR_TRACK = {
+  U01_1: 'Y7_MATH', U01_2: 'Y7_MATH', U01_3: 'Y7_MATH',
+  U01_4: 'Y7_MATH', U01_5: 'Y7_MATH', U01_6: 'Y7_MATH',
+};
+
+/** True when `unitId` in `track` is the unit a generator was written for. */
+export function hasMathChallenge(track, unitId) {
+  if (!MATH_CHALLENGE_GENERATORS[unitId]) return false;
+  const owner = GENERATOR_TRACK[unitId];
+  return !owner || owner === track;
+}
+
 /** The generator for a unit, or null if it has none. */
 export function mathChallengeFor(unitId) {
   return MATH_CHALLENGE_GENERATORS[unitId] || null;

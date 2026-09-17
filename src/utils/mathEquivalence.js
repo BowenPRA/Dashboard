@@ -40,12 +40,12 @@ function clean(raw) {
     .replace(/\^\{([^{}]*)\}/g, '^($1)')
     .replace(/(\d)\s*[xX×]\s*10\s*\^/g, '$1*10^')
     .replace(/[−–—]/g, '-')     // unicode minus / dashes → hyphen
-    .replace(/[·×]/g, '*')
+    .replace(/[·×]/g, '*').replace(/÷/g, '/').replace(/²/g, '^2').replace(/³/g, '^3')
     .replace(/[≥]/g, '>=').replace(/[≤]/g, '<=')
     .trim();
 }
 
-const isWordy = (s) => /[a-zA-Z]{2,}/.test(s); // a real word, not single-letter vars
+const isWordy = (s) => /[a-zA-Z]{4,}/.test(s) || /\b(and|or|to|of|is|no|yes|r|rem)\b/i.test(s) || /^\s*[a-zA-Z]{2,3}\s*$/.test(s); // a real word, not single-letter vars
 const normWord = (s) => s.replace(/\s+/g, '').replace(/\.$/, '').toLowerCase();
 
 // ------------------------------------------------------------------ parser
@@ -109,14 +109,14 @@ function tokenize(src) {
     const prev = out[out.length - 1];
     const ends = prev && (prev.t === 'num' || prev.t === 'var' || prev.t === ')');
     const starts = tok.t === 'num' || tok.t === 'var' || tok.t === '(';
-    if (ends && starts) out.push({ t: '*' });
+    if (ends && starts && !(tok.t === 'num' && prev.t !== ')')) out.push({ t: '*' });
     out.push(tok);
   };
   let i = 0;
   while (i < src.length) {
     const c = src[i];
     if (c === ' ') { i++; continue; }
-    if (/[0-9.]/.test(c)) { let j = i + 1; while (j < src.length && /[0-9.]/.test(src[j])) j++; push({ t: 'num', v: parseFloat(src.slice(i, j)) }); i = j; continue; }
+    if (/[0-9.]/.test(c)) { let j = i + 1; while (j < src.length && /[0-9.]/.test(src[j])) j++; const lit = src.slice(i, j); if (!/^(\d+\.?\d*|\.\d+)$/.test(lit)) throw new Error(`bad number ${lit}`); push({ t: 'num', v: parseFloat(lit) }); i = j; continue; }
     if (/[a-zA-Z]/.test(c)) { push({ t: 'var', v: c }); i++; continue; }
     if (c === '(') { push({ t: '(' }); i++; continue; }
     if (')+-*/^'.includes(c)) { out.push({ t: c }); i++; continue; } // no implicit * before these
@@ -230,7 +230,10 @@ export function compileExpr(src) {
 
 /** Whether `input` equals `answer` (or any `accept` alternate) as maths. */
 export function answersEquivalent(input, answer, accept = []) {
-  return [answer, ...(accept || [])].some((cand) => equalOne(input, cand));
+  const cands = [answer, ...(accept || [])];
+  if (cands.some((cand) => equalOne(input, cand))) return true;
+  const raw = String(input ?? ''); const lower = raw.toLowerCase();
+  return lower !== raw && cands.some((cand) => !/[A-Z]/.test(clean(cand).replace(/\\[a-zA-Z]+/g, '')) && equalOne(lower, cand));
 }
 
 function equalOne(input, answer) {

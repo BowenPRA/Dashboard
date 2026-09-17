@@ -128,7 +128,10 @@ export default function VectorLab({
 
   const ca = componentsOf(a);
   const cb = componentsOf(b);
-  const r = resultantOf([a, b]);
+  // Forces that cancel leave floating-point dust (1e-15), and atan2 of dust is
+  // an arbitrary angle — "0 N at 270°". Nothing is nothing, pointing nowhere.
+  const rRaw = resultantOf([a, b]);
+  const r = rRaw.mag < 1e-9 ? { ...rRaw, x: 0, y: 0, mag: 0, angle: 0 } : rRaw;
   const step = span <= 6 ? 1 : span <= 15 ? 2 : 5;
 
   // Multiples of the step, not offsets from -span: a span of 16 with a step of
@@ -198,6 +201,7 @@ export default function VectorLab({
         <svg ref={svgRef} viewBox={`0 0 ${W} ${W}`} className="w-full h-full"
           onPointerMove={onMove}
           onPointerUp={() => setDrag(null)}
+          onPointerCancel={() => setDrag(null)}
           onPointerLeave={() => setDrag(null)}>
           <rect x="0" y="0" width={W} height={W} rx="14" className="fill-white dark:fill-slate-900" />
           <rect x="0.75" y="0.75" width={W - 1.5} height={W - 1.5} rx="13" fill="none" strokeWidth="1.5"
@@ -229,9 +233,11 @@ export default function VectorLab({
               <line x1={X(r.x)} y1={Y(0)} x2={X(r.x)} y2={Y(r.y)} stroke={PINK} strokeWidth="4" strokeDasharray="9 6" strokeLinecap="round" />
               <Tag x={X(r.x / 2)} y={Y(0) + (r.y >= 0 ? 32 : -18)} color={AMBER} size={15}>{signed(round1(r.x))}</Tag>
               <Tag x={X(r.x) + (r.x >= 0 ? 34 : -34)} y={Y(r.y / 2)} color={PINK} size={15}>{signed(round1(r.y))}</Tag>
-              <path d={arcPath(48, r.angle)} fill="none" stroke={GREEN} strokeWidth="2.5" />
-              <Tag x={X(0) + 76 * Math.cos(toRad(r.angle / 2))} y={Y(0) - 76 * Math.sin(toRad(r.angle / 2)) + 5}
-                color={GREEN} size={14}>{round1(r.angle)}°</Tag>
+              {r.mag > 0 && <path d={arcPath(48, r.angle)} fill="none" stroke={GREEN} strokeWidth="2.5" />}
+              {r.mag > 0 && (
+                <Tag x={X(0) + 76 * Math.cos(toRad(r.angle / 2))} y={Y(0) - 76 * Math.sin(toRad(r.angle / 2)) + 5}
+                  color={GREEN} size={14}>{round1(r.angle)}°</Tag>
+              )}
             </g>
           )}
 

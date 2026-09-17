@@ -880,7 +880,7 @@ function Box({ field, ctx }) {
       onKeyDown={(e) => { if (e.key === 'Enter') check(); }}
       readOnly={!live || isLocked}
       disabled={!live && !isLocked}
-      inputMode="decimal"
+      inputMode="text"
       aria-label={field}
       placeholder={live ? '?' : ''}
       className={`w-full h-10 rounded-xl border-2 text-center font-mono font-black text-base tabular-nums outline-none transition-colors

@@ -41,7 +41,7 @@ const buildQuiz = (pool = []) => {
   }));
 };
 
-export default function Recognition({ pool = [], track, unitId, onComplete }) {
+export default function Recognition({ pool = [], track, unitId, onComplete, onQuit }) {
   const quiz = useMemo(() => buildQuiz(pool), [pool]);
 
   const [phase, setPhase] = useState('study'); // study -> bridge -> check
@@ -111,7 +111,9 @@ export default function Recognition({ pool = [], track, unitId, onComplete }) {
 
   // Quitting banks whatever the check has proved so far — unanswered words
   // count as unknown, because they are.
-  const quitNow = () => finish(results);
+  // With a check to sit and nothing answered yet, X is just leaving: it must not
+  // log a 0-score attempt for a student who only opened the task.
+  const quitNow = () => (quiz.length && results.length === 0 && onQuit ? onQuit() : finish(results));
 
   // --- keyboard -------------------------------------------------------------
   useEffect(() => {
