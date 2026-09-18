@@ -243,8 +243,10 @@ export const U01_1_DATA = {
   ],
 
   // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
-  // at runtime, a pin where each label's leader line ended. Coordinates from
-  // `node scripts/svg-coords.mjs Y7_SCI/U01_1 <KEY>`. Each bank carries one
+  // at runtime. Each pin is a blank box: (x, y) is where its leader line meets
+  // the box, `to` is the part the line points at. Part coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U01_1 <KEY>`; the validator fails a box
+  // that overlaps another or runs off the diagram. Each bank carries a
   // distractor.
   labelIt: [
     {
@@ -252,10 +254,10 @@ export const U01_1_DATA = {
       title: 'Label the animal cell', titleVn: 'Gắn nhãn tế bào động vật',
       inlineSvg: DIAGRAMS.ANIMAL_CELL, viewBox: '0 0 760 430',
       pins: [
-        { id: 'p1', x: 231, y: 132, answer: 'membrane' },
-        { id: 'p2', x: 455, y: 175, answer: 'nucleus' },
-        { id: 'p3', x: 256, y: 303, answer: 'mito' },
-        { id: 'p4', x: 478, y: 292, answer: 'cyto' },
+        { id: 'p1', x: 190, y: 104, to: [246, 118], answer: 'membrane' },
+        { id: 'p2', x: 190, y: 322, to: [268, 301], answer: 'mito' },
+        { id: 'p3', x: 590, y: 140, to: [440, 204], answer: 'nucleus' },
+        { id: 'p4', x: 590, y: 300, to: [505, 262], answer: 'cyto' },
       ],
       bank: [
         { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
@@ -270,13 +272,13 @@ export const U01_1_DATA = {
       title: 'Label the plant cell', titleVn: 'Gắn nhãn tế bào thực vật',
       inlineSvg: DIAGRAMS.PLANT_CELL, viewBox: '0 0 760 470',
       pins: [
-        { id: 'p1', x: 299, y: 72, answer: 'wall' },
-        { id: 'p2', x: 309, y: 158, answer: 'membrane' },
-        { id: 'p3', x: 330, y: 242, answer: 'cyto' },
-        { id: 'p4', x: 315, y: 318, answer: 'nucleus' },
-        { id: 'p5', x: 426, y: 130, answer: 'vacuole' },
-        { id: 'p6', x: 457, y: 202, answer: 'chloro' },
-        { id: 'p7', x: 458, y: 266, answer: 'mito' },
+        { id: 'p1', x: 250, y: 90, to: [300, 118], answer: 'wall' },
+        { id: 'p2', x: 250, y: 170, to: [311, 170], answer: 'membrane' },
+        { id: 'p3', x: 250, y: 245, to: [330, 245], answer: 'cyto' },
+        { id: 'p4', x: 250, y: 330, to: [332, 306], answer: 'nucleus' },
+        { id: 'p5', x: 520, y: 130, to: [398, 150], answer: 'vacuole' },
+        { id: 'p6', x: 520, y: 210, to: [446, 202], answer: 'chloro' },
+        { id: 'p7', x: 520, y: 290, to: [447, 264], answer: 'mito' },
       ],
       bank: [
         { val: 'wall', text: 'Cell wall', textVn: 'Thành tế bào' },
@@ -290,23 +292,26 @@ export const U01_1_DATA = {
       ],
     },
     {
+      // A real microscope, not the ray diagram: the exam asks for the parts.
       id: 'microscope',
       title: 'Label the light microscope', titleVn: 'Gắn nhãn kính hiển vi quang học',
-      inlineSvg: DIAGRAMS.MICROSCOPE_LIGHT, viewBox: '0 0 560 340',
+      inlineSvg: DIAGRAMS.MICROSCOPE, viewBox: '0 0 680 440',
       pins: [
-        { id: 'p1', x: 208, y: 50, answer: 'eye' },
-        { id: 'p2', x: 216, y: 114, answer: 'eyepiece' },
-        { id: 'p3', x: 224, y: 184, answer: 'objective' },
-        { id: 'p4', x: 230, y: 234, answer: 'specimen' },
-        { id: 'p5', x: 187, y: 294, answer: 'light' },
+        { id: 'p1', x: 205, y: 60, to: [359, 56], answer: 'eyepiece' },
+        { id: 'p2', x: 205, y: 236, to: [240, 236], answer: 'knob' },
+        { id: 'p3', x: 490, y: 228, to: [381, 240], answer: 'objective' },
+        { id: 'p4', x: 490, y: 280, to: [383, 295], answer: 'specimen' },
+        { id: 'p5', x: 490, y: 330, to: [455, 307], answer: 'stage' },
+        { id: 'p6', x: 490, y: 378, to: [382, 363], answer: 'light' },
       ],
       bank: [
-        { val: 'eye', text: 'Your eye', textVn: 'Mắt em' },
         { val: 'eyepiece', text: 'Eyepiece lens', textVn: 'Thị kính' },
         { val: 'objective', text: 'Objective lens', textVn: 'Vật kính' },
         { val: 'specimen', text: 'The specimen', textVn: 'Mẫu vật' },
+        { val: 'stage', text: 'Stage', textVn: 'Bàn kính' },
         { val: 'light', text: 'Light source', textVn: 'Nguồn sáng' },
         { val: 'knob', text: 'Focusing knob', textVn: 'Núm chỉnh tiêu cự' },
+        { val: 'mirror', text: 'Mirror', textVn: 'Gương' },
       ],
     },
   ],

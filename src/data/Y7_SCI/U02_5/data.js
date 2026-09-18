@@ -213,69 +213,74 @@ export const U02_5_DATA = {
   ],
 
   // Label It (ENGAGEMENT-PLAN §2.2): the unit's drawn diagrams, labels stripped
-  // at runtime. Coordinates from `node scripts/svg-coords.mjs Y7_SCI/U02_5 <KEY>`.
-  // JOINING and SIZE_LADDER have no leader lines, so their pins sit at each
-  // panel's label; PT_MAP's pins sit where each leader line ends. Every bank
-  // carries a distractor.
+  // at runtime. Each pin is a blank box: (x, y) is where its leader line meets
+  // the box and `to` is the part it names; JOINING and SIZE_LADDER have no
+  // leaders, so theirs are caption boxes under each panel. PT_MAP keeps its
+  // element symbols (class="keep") — they are the table, not labels. Part
+  // coordinates from `node scripts/svg-coords.mjs Y7_SCI/U02_5 <KEY>`. Every
+  // bank carries a distractor.
   labelIt: [
     {
       id: 'joining',
       title: 'Label how the atoms join', titleVn: 'Gắn nhãn cách các nguyên tử liên kết',
-      inlineSvg: DIAGRAMS.JOINING, viewBox: '0 0 1120 440',
+      inlineSvg: DIAGRAMS.JOINING, viewBox: '0 0 1120 440', slotW: 235,
       pins: [
-        { id: 'p1', x: 152, y: 372, answer: 'neon' },
-        { id: 'p2', x: 427, y: 372, answer: 'gold' },
-        { id: 'p3', x: 702, y: 372, answer: 'oxygen' },
-        { id: 'p4', x: 977, y: 372, answer: 'sulfur' },
+        { id: 'p1', x: 152, y: 374, answer: 'neon' },
+        { id: 'p2', x: 427, y: 374, answer: 'gold' },
+        { id: 'p3', x: 702, y: 374, answer: 'oxygen' },
+        { id: 'p4', x: 977, y: 374, answer: 'sulfur' },
       ],
       bank: [
         { val: 'neon', text: 'Neon: atoms move around alone', textVn: 'Neon: nguyên tử chuyển động riêng lẻ' },
         { val: 'gold', text: 'Gold: atoms packed closely', textVn: 'Vàng: nguyên tử xếp sát nhau' },
         { val: 'oxygen', text: 'Oxygen: particles of 2 atoms joined', textVn: 'Oxi: hạt gồm 2 nguyên tử liên kết' },
         { val: 'sulfur', text: 'Sulfur: particles of 8 atoms in a ring', textVn: 'Lưu huỳnh: hạt gồm 8 nguyên tử thành vòng' },
-        { val: 'mixed', text: 'Atoms of two different elements joined', textVn: 'Nguyên tử của hai nguyên tố khác nhau liên kết' },
+        { val: 'mixed', text: 'Two different elements joined', textVn: 'Hai nguyên tố khác nhau liên kết' },
       ],
     },
     {
       id: 'table',
       title: 'Label the Periodic Table', titleVn: 'Gắn nhãn Bảng tuần hoàn',
-      inlineSvg: DIAGRAMS.PT_MAP, viewBox: '0 0 900 400',
+      inlineSvg: DIAGRAMS.PT_MAP, viewBox: '0 0 1000 400', slotW: 220,
+      // Helium is a non-metal — the distractor checks the colour key.
       pins: [
-        { id: 'p1', x: 92, y: 126, answer: 'group' },
-        { id: 'p2', x: 741, y: 223, answer: 'period' },
-        { id: 'p3', x: 156, y: 298, answer: 'metals' },
-        { id: 'p4', x: 716, y: 160, answer: 'nonmetals' },
-        { id: 'p5', x: 298, y: 90, answer: 'hydrogen' },
+        { id: 'p1', x: 116, y: 118, to: [92, 129], side: 'above', answer: 'group' },
+        { id: 'p2', x: 320, y: 60, to: [298, 90], answer: 'hydrogen' },
+        { id: 'p3', x: 760, y: 150, to: [716, 160], answer: 'nonmetals' },
+        { id: 'p4', x: 760, y: 223, to: [741, 223], answer: 'period' },
+        { id: 'p5', x: 156, y: 334, to: [156, 300], side: 'below', answer: 'metals' },
       ],
       bank: [
         { val: 'group', text: 'A group (a column)', textVn: 'Một nhóm (một cột)' },
         { val: 'period', text: 'A period (a row)', textVn: 'Một chu kì (một hàng)' },
         { val: 'metals', text: 'Metals (yellow)', textVn: 'Kim loại (màu vàng)' },
         { val: 'nonmetals', text: 'Non-metals (blue)', textVn: 'Phi kim (màu xanh)' },
-        { val: 'hydrogen', text: 'Hydrogen: in no group', textVn: 'Hiđro: không thuộc nhóm nào' },
-        { val: 'lightest', text: 'Helium: the lightest atoms', textVn: 'Heli: nguyên tử nhẹ nhất' },
+        { val: 'hydrogen', text: 'Hydrogen: in no group', textVn: 'Hiđro: không có nhóm' },
+        { val: 'heliummetal', text: 'Helium: a metal', textVn: 'Heli: một kim loại' },
       ],
     },
     {
       id: 'ladder',
       title: 'Label the cuts, from a gold cube to one atom', titleVn: 'Gắn nhãn các lần cắt, từ khối vàng đến một nguyên tử',
-      inlineSvg: DIAGRAMS.SIZE_LADDER, viewBox: '0 0 1000 350',
+      inlineSvg: DIAGRAMS.SIZE_LADDER, viewBox: '0 0 1000 350', slotW: 146,
+      // The cut counts stay on the drawing (class="keep"): name each thing,
+      // smallest last. Rice would sit between the cube and the sand.
       pins: [
-        { id: 'p1', x: 95, y: 292, answer: 'cube' },
-        { id: 'p2', x: 257, y: 292, answer: 'sand' },
-        { id: 'p3', x: 419, y: 292, answer: 'hair' },
-        { id: 'p4', x: 581, y: 292, answer: 'cell' },
-        { id: 'p5', x: 743, y: 292, answer: 'virus' },
-        { id: 'p6', x: 905, y: 292, answer: 'atom' },
+        { id: 'p1', x: 95, y: 286, answer: 'cube' },
+        { id: 'p2', x: 257, y: 286, answer: 'sand' },
+        { id: 'p3', x: 419, y: 286, answer: 'hair' },
+        { id: 'p4', x: 581, y: 286, answer: 'cell' },
+        { id: 'p5', x: 743, y: 286, answer: 'virus' },
+        { id: 'p6', x: 905, y: 286, answer: 'atom' },
       ],
       bank: [
-        { val: 'cube', text: 'A 1 cm gold cube (0 cuts)', textVn: 'Khối vàng 1 cm (0 lần cắt)' },
-        { val: 'sand', text: 'A grain of sand (3 cuts)', textVn: 'Một hạt cát (3 lần cắt)' },
-        { val: 'hair', text: 'As thin as a hair (7 cuts)', textVn: 'Mỏng như sợi tóc (7 lần cắt)' },
-        { val: 'cell', text: 'One cell (9 cuts)', textVn: 'Một tế bào (9 lần cắt)' },
-        { val: 'virus', text: 'A virus (17 cuts)', textVn: 'Một vi-rút (17 lần cắt)' },
-        { val: 'atom', text: 'One gold atom (25 cuts)', textVn: 'Một nguyên tử vàng (25 lần cắt)' },
-        { val: 'rice', text: 'A grain of rice', textVn: 'Một hạt gạo' },
+        { val: 'cube', text: 'Gold cube', textVn: 'Khối vàng' },
+        { val: 'sand', text: 'Grain of sand', textVn: 'Hạt cát' },
+        { val: 'hair', text: 'A hair', textVn: 'Sợi tóc' },
+        { val: 'cell', text: 'One cell', textVn: 'Một tế bào' },
+        { val: 'virus', text: 'A virus', textVn: 'Một vi-rút' },
+        { val: 'atom', text: 'One gold atom', textVn: 'Nguyên tử' },
+        { val: 'rice', text: 'Grain of rice', textVn: 'Hạt gạo' },
       ],
     },
   ],

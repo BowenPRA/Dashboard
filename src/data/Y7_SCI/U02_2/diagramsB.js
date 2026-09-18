@@ -19,7 +19,6 @@ const TINT = '#f3f6f8'
 const GLASS_S = '#9aa8b4'
 const LIQ_F = '#bfe0f2', LIQ_S = '#2f7fb0'
 const MERCURY = '#c8102e' // the thermometer liquid
-const FLAME = '#e8721c'
 const METAL = '#8a949c'
 
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif"
@@ -27,8 +26,8 @@ const FONT = "Inter, 'Segoe UI', system-ui, sans-serif"
 const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fill="#ffffff"/>
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
 const rule = (x1, x2, y) => `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${RULE}" stroke-width="1.6"/>`
 const vrule = (x, y1, y2) => `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${RULE}" stroke-width="1.6"/>`
 
@@ -75,25 +74,27 @@ export const DIAGRAMS = {
 
     ${cyl(150, 80, 110, 250)}
     ${ticks(150, 322, 24.8, 10)}
-    ${water(150, 80, 110, 250, 216, 7)}
+    ${water(150, 80, 110, 250, 212, 22)}
 
-    <text x="120" y="227" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">40</text>
-    <text x="120" y="277" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">20</text>
-    <text x="120" y="178" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">60</text>
+    <text class="keep" x="140" y="227" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">40</text>
+    <text class="keep" x="140" y="277" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">20</text>
+    <text class="keep" x="140" y="178" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">60</text>
+    <text class="keep" x="140" y="128" font-family="${FONT}" font-size="15" fill="${INK}" text-anchor="end">80</text>
     <text x="240" y="72" font-family="${FONT}" font-size="14" fill="${INK}" text-anchor="middle">cm³</text>
 
-    ${lead(300, 132, 232, 214)}
-    <text x="308" y="128" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">the meniscus</text>
-    <text x="308" y="149" font-family="${FONT}" font-size="13" fill="${INK}">the curved surface</text>
+    ${lead(290, 130, 252, 213)}
+    <text x="300" y="126" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">the meniscus</text>
+    <text x="300" y="147" font-family="${FONT}" font-size="13" fill="${INK}">the curved surface</text>
 
     <line x1="205" y1="223" x2="560" y2="223" stroke="${INK}" stroke-width="1.6" stroke-dasharray="7 6"/>
-    <text x="308" y="246" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">read here — the bottom of the curve</text>
+    ${lead(290, 262, 207, 224)}
+    <text x="300" y="268" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">read here — the bottom of the curve</text>
 
     <ellipse cx="620" cy="223" rx="46" ry="26" fill="#ffffff" stroke="${INK}" stroke-width="2.4"/>
     <circle cx="606" cy="223" r="12" fill="#ffffff" stroke="${INK}" stroke-width="2.4"/>
     <circle cx="606" cy="223" r="5.5" fill="${INK}"/>
-    <text x="620" y="282" font-family="${FONT}" font-size="15" font-weight="bold" fill="${INK}" text-anchor="middle">your eye, level</text>
-    <text x="620" y="301" font-family="${FONT}" font-size="15" font-weight="bold" fill="${INK}" text-anchor="middle">with the surface</text>
+    <text x="630" y="292" font-family="${FONT}" font-size="15" font-weight="bold" fill="${INK}" text-anchor="middle">your eye, level</text>
+    <text x="630" y="311" font-family="${FONT}" font-size="15" font-weight="bold" fill="${INK}" text-anchor="middle">with the surface</text>
 
     <text x="205" y="404" font-family="${FONT}" font-size="17" font-weight="bold" fill="${LIQ_S}" text-anchor="middle">this reads 40 cm³</text>
   </svg>`,
@@ -221,50 +222,58 @@ export const DIAGRAMS = {
 
     <text x="410" y="42" font-family="${FONT}" font-size="20" font-weight="bold" fill="${INK}" text-anchor="middle">Heating water — set it up like this</text>
 
-    <!-- clamp stand -->
-    <rect x="150" y="470" width="150" height="16" rx="3" fill="${METAL}"/>
-    <rect x="205" y="120" width="12" height="352" fill="${METAL}"/>
-    <rect x="217" y="150" width="150" height="12" fill="${METAL}"/>
-    <rect x="360" y="140" width="18" height="34" rx="4" fill="none" stroke="${INK}" stroke-width="2.4"/>
+    <!-- heat-proof mat: everything stands on it -->
+    <rect x="130" y="486" width="400" height="14" rx="3" fill="#d8c7a8" stroke="${INK}" stroke-width="1.6"/>
 
-    <!-- thermometer, bulb in the water, not touching the bottom -->
-    ${thermo(430, 130, 360, 210)}
+    <!-- clamp stand: base, rod, arm, and a clamp that really holds the thermometer -->
+    <rect x="150" y="472" width="150" height="14" rx="3" fill="${METAL}" stroke="${INK}" stroke-width="1.4"/>
+    <rect x="205" y="120" width="12" height="352" fill="${METAL}" stroke="${INK}" stroke-width="1.4"/>
+    <rect x="199" y="148" width="24" height="20" rx="3" fill="#6b7780" stroke="${INK}" stroke-width="1.4"/>
+    <rect x="223" y="153" width="192" height="10" fill="${METAL}" stroke="${INK}" stroke-width="1.4"/>
 
-    <!-- beaker of water on the gauze -->
-    <path d="M 372 300 v 78 q 0 8 8 8 h 100 q 8 0 8 -8 v -78" fill="none" stroke="${GLASS_S}" stroke-width="3"/>
-    <path d="M 376 336 v 42 q 0 8 8 8 h 92 q 8 0 8 -8 v -42 Z" fill="${LIQ_F}" stroke="${LIQ_S}" stroke-width="2"/>
+    <!-- tripod: two front legs and one behind -->
+    <line x1="410" y1="400" x2="396" y2="484" stroke="#9aa3aa" stroke-width="3"/>
+    <line x1="370" y1="400" x2="352" y2="486" stroke="${INK}" stroke-width="3.2"/>
+    <line x1="490" y1="400" x2="508" y2="486" stroke="${INK}" stroke-width="3.2"/>
+
+    <!-- Bunsen burner with a blue roaring flame just under the gauze -->
+    <path d="M 430 404 C 446 424, 444 440, 438 446 L 422 446 C 416 440, 414 424, 430 404 Z" fill="#93c5fd" opacity="0.9"/>
+    <path d="M 430 420 C 437 430, 437 440, 434 446 L 426 446 C 423 440, 423 430, 430 420 Z" fill="#2563eb"/>
+    <rect x="422" y="444" width="16" height="34" fill="${METAL}" stroke="${INK}" stroke-width="1.6"/>
+    <rect x="418" y="462" width="24" height="8" rx="2" fill="#4b5563"/>
+    <rect x="404" y="476" width="52" height="10" rx="4" fill="#6b7780" stroke="${INK}" stroke-width="1.6"/>
 
     <!-- gauze on the tripod -->
-    <rect x="352" y="392" width="156" height="8" fill="${METAL}"/>
-    <!-- tripod legs -->
-    <line x1="372" y1="400" x2="352" y2="470" stroke="${INK}" stroke-width="3"/>
-    <line x1="488" y1="400" x2="508" y2="470" stroke="${INK}" stroke-width="3"/>
-    <line x1="430" y1="400" x2="430" y2="470" stroke="${INK}" stroke-width="3"/>
+    <rect x="352" y="392" width="156" height="8" fill="#cbd5e1" stroke="${INK}" stroke-width="1.6"/>
+    <path d="M 364 392 v 8 M 376 392 v 8 M 388 392 v 8 M 400 392 v 8 M 412 392 v 8 M 424 392 v 8 M 436 392 v 8 M 448 392 v 8 M 460 392 v 8 M 472 392 v 8 M 484 392 v 8 M 496 392 v 8" stroke="#8a949c" stroke-width="1.2"/>
 
-    <!-- Bunsen burner + flame -->
-    <path d="M 414 468 q 16 -34 16 -60" fill="none" stroke="${FLAME}" stroke-width="3"/>
-    <path d="M 446 468 q -16 -34 -16 -60" fill="none" stroke="${FLAME}" stroke-width="3"/>
-    <path d="M 430 470 q -14 -30 0 -64 q 14 34 0 64 Z" fill="${FLAME}" opacity="0.55"/>
-    <rect x="424" y="470" width="12" height="40" fill="${METAL}"/>
-    <ellipse cx="430" cy="512" rx="28" ry="7" fill="${METAL}"/>
+    <!-- beaker of water on the gauze -->
+    <path d="M 376 336 v 44 q 0 8 8 8 h 92 q 8 0 8 -8 v -44 Z" fill="${LIQ_F}"/>
+    <line x1="376" y1="336" x2="484" y2="336" stroke="${LIQ_S}" stroke-width="2"/>
+    <path d="M 366 296 q 6 0 6 6 v 78 q 0 10 10 10 h 96 q 10 0 10 -10 v -78 q 0 -6 6 -6" fill="none" stroke="${GLASS_S}" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="400" cy="370" r="3" fill="#ffffff" stroke="${LIQ_S}" stroke-width="1.2"/>
+    <circle cx="458" cy="364" r="2.6" fill="#ffffff" stroke="${LIQ_S}" stroke-width="1.2"/>
+    <circle cx="470" cy="376" r="3.4" fill="#ffffff" stroke="${LIQ_S}" stroke-width="1.2"/>
 
-    <!-- heat-proof mat -->
-    <rect x="150" y="486" width="360" height="14" rx="3" fill="#d8c7a8" stroke="${INK}" stroke-width="1.6"/>
+    <!-- thermometer, bulb in the water, not touching the bottom, held in the clamp -->
+    ${thermo(430, 130, 360, 210)}
+    <rect x="414" y="147" width="32" height="22" rx="5" fill="none" stroke="${INK}" stroke-width="2.6"/>
+    <circle cx="452" cy="158" r="5" fill="#6b7780" stroke="${INK}" stroke-width="1.4"/>
 
-    ${lead(560, 150, 442, 170)}
-    <text x="568" y="155" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">thermometer</text>
-    <text x="568" y="176" font-family="${FONT}" font-size="12" fill="${INK}">bulb in the water,</text>
-    <text x="568" y="192" font-family="${FONT}" font-size="12" fill="${INK}">not touching the bottom</text>
-    ${lead(560, 350, 486, 358)}
-    <text x="568" y="355" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">beaker of water</text>
-    ${lead(560, 396, 500, 396)}
-    <text x="568" y="401" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">gauze on a tripod</text>
-    ${lead(560, 470, 452, 452)}
-    <text x="568" y="475" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">Bunsen burner</text>
-    ${lead(250, 524, 300, 500)}
-    <text x="250" y="540" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">heat-proof mat</text>
-    ${lead(150, 156, 210, 200)}
-    <text x="142" y="150" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="end">clamp stand</text>
+    ${lead(540, 170, 438, 190)}
+    <text x="550" y="175" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">thermometer</text>
+    <text x="550" y="196" font-family="${FONT}" font-size="12" fill="${INK}">bulb in the water,</text>
+    <text x="550" y="212" font-family="${FONT}" font-size="12" fill="${INK}">not touching the bottom</text>
+    ${lead(540, 345, 488, 350)}
+    <text x="550" y="350" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">beaker of water</text>
+    ${lead(540, 400, 507, 396)}
+    <text x="550" y="405" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">gauze on a tripod</text>
+    ${lead(540, 458, 439, 458)}
+    <text x="550" y="463" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">Bunsen burner</text>
+    ${lead(250, 518, 250, 494)}
+    <text x="250" y="538" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">heat-proof mat</text>
+    ${lead(211, 96, 211, 128)}
+    <text x="211" y="86" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">clamp stand</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────

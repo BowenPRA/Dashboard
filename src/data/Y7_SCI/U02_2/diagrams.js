@@ -15,7 +15,6 @@
 // place; it is not decoration.
 
 const INK = '#2b2b2b'
-const KEY = '#c25e12' // the book's key-word orange
 const RULE = '#b6c1c9'
 const TINT = '#f3f6f8'
 const WARM = '#c8102e' // heating: melt / boil / evaporate
@@ -40,6 +39,23 @@ const arrowR = (x1, x2, y, c) => `<line x1="${x1}" y1="${y}" x2="${x2 - 11}" y2=
 const arrowL = (x1, x2, y, c) => `<line x1="${x1}" y1="${y}" x2="${x2 + 11}" y2="${y}" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
     <path d="M ${x2} ${y} l 13 -8 l 0 16 z" fill="${c}"/>`
 
+/** A small flame: the sign for heating. */
+const flame = (x, y) => `<path d="M ${x} ${y - 13} C ${x + 10} ${y - 3}, ${x + 10} ${y + 9}, ${x} ${y + 11} C ${x - 10} ${y + 9}, ${x - 10} ${y - 3}, ${x} ${y - 13} Z" fill="${WARM}"/>
+    <path d="M ${x} ${y - 2} C ${x + 5} ${y + 3}, ${x + 5} ${y + 8}, ${x} ${y + 9} C ${x - 5} ${y + 8}, ${x - 5} ${y + 3}, ${x} ${y - 2} Z" fill="#fbbf24"/>`
+
+/** A small snowflake: the sign for cooling. */
+const snowflake = (x, y) => `<path d="M ${x} ${y - 12} V ${y + 12} M ${x - 10.4} ${y - 6} L ${x + 10.4} ${y + 6} M ${x - 10.4} ${y + 6} L ${x + 10.4} ${y - 6} M ${x - 4} ${y - 10} L ${x} ${y - 6} L ${x + 4} ${y - 10} M ${x - 4} ${y + 10} L ${x} ${y + 6} L ${x + 4} ${y + 10}" fill="none" stroke="${COOL}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`
+
+/** Particles for the three state boxes: a lattice, a jumble at the bottom, a scatter. */
+const dots = (pts) => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="11.5" fill="#ffffff" stroke="#475569" stroke-width="2"/>`).join('')
+const SOLID_DOTS = [97, 121, 145, 169, 193].flatMap((x) => [154, 178, 202, 226].map((y) => [x, y]))
+const LIQUID_DOTS = [
+  [373, 247], [397, 249], [422, 246], [447, 249], [472, 247], [497, 249], [522, 246],
+  [386, 225], [410, 223], [434, 226], [459, 223], [484, 225], [509, 222], [532, 226],
+  [400, 201], [426, 203], [452, 200], [478, 203], [503, 200],
+]
+const GAS_DOTS = [[680, 140], [762, 132], [836, 152], [712, 196], [800, 206], [672, 246], [760, 250], [840, 240]]
+
 export const DIAGRAMS = {
   // ───────────────────────────────────────────────────────────────────────────
   // THE DRAW THIS. The p.36 "changing state" cycle, redrawn as three labelled
@@ -47,40 +63,43 @@ export const DIAGRAMS = {
   // heating to the right, cooling to the left. This is the reference diagram for
   // the whole section, so it is the one thing the class rules into the notebook.
   // ───────────────────────────────────────────────────────────────────────────
+  // Each box shows its particles, so a state can be named from the picture
+  // alone; the flame and the snowflake say which way is heating once the words
+  // are stripped off for Label It.
   STATE_CYCLE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" class="w-full h-full">
     ${plate(900, 470)}
 
-    <text x="450" y="46" font-family="${FONT}" font-size="21" font-weight="bold" fill="${INK}" text-anchor="middle">The three states, and the words for changing between them</text>
+    <text x="450" y="34" font-family="${FONT}" font-size="20" font-weight="bold" fill="${INK}" text-anchor="middle">The three states, and the words for changing between them</text>
 
-    <rect x="40" y="150" width="210" height="140" rx="12" fill="${SOLID_F}" stroke="${SOLID_S}" stroke-width="2.4"/>
-    <rect x="345" y="150" width="210" height="140" rx="12" fill="${LIQ_F}" stroke="${LIQ_S}" stroke-width="2.4"/>
-    <rect x="650" y="150" width="210" height="140" rx="12" fill="${GAS_F}" stroke="${GAS_S}" stroke-width="2.4"/>
+    <rect x="40" y="110" width="210" height="160" rx="12" fill="${SOLID_F}" stroke="${SOLID_S}" stroke-width="2.4"/>
+    <rect x="345" y="110" width="210" height="160" rx="12" fill="${LIQ_F}" stroke="${LIQ_S}" stroke-width="2.4"/>
+    <rect x="650" y="110" width="210" height="160" rx="12" fill="${GAS_F}" stroke="${GAS_S}" stroke-width="2.4"/>
+    ${dots(SOLID_DOTS)}${dots(LIQUID_DOTS)}${dots(GAS_DOTS)}
 
-    <text x="145" y="212" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">Solid</text>
-    <text x="450" y="212" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">Liquid</text>
-    <text x="755" y="212" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">Gas</text>
+    ${arrowR(258, 337, 150, WARM)}
+    ${arrowL(337, 258, 232, COOL)}
+    ${arrowR(563, 642, 150, WARM)}
+    ${arrowL(642, 563, 232, COOL)}
+    ${flame(297, 174)}${flame(602, 174)}
+    ${snowflake(297, 210)}${snowflake(602, 210)}
 
-    <text x="145" y="252" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">for example, ice</text>
-    <text x="450" y="252" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">for example, water</text>
-    <text x="755" y="252" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">for example, steam</text>
+    <text x="297" y="138" font-family="${FONT}" font-size="17" font-weight="bold" fill="${WARM}" text-anchor="middle">melting</text>
+    <text x="602" y="118" font-family="${FONT}" font-size="15" font-weight="bold" fill="${WARM}" text-anchor="middle">boiling or</text>
+    <text x="602" y="138" font-family="${FONT}" font-size="15" font-weight="bold" fill="${WARM}" text-anchor="middle">evaporating</text>
+    <text x="297" y="258" font-family="${FONT}" font-size="17" font-weight="bold" fill="${COOL}" text-anchor="middle">freezing</text>
+    <text x="602" y="258" font-family="${FONT}" font-size="15" font-weight="bold" fill="${COOL}" text-anchor="middle">condensing</text>
 
-    ${arrowR(258, 337, 178, WARM)}
-    ${arrowL(337, 258, 262, COOL)}
-    ${arrowR(563, 642, 178, WARM)}
-    ${arrowL(642, 563, 262, COOL)}
+    <text x="145" y="358" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Solid</text>
+    <text x="450" y="358" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Liquid</text>
+    <text x="755" y="358" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Gas</text>
+    <text x="145" y="384" font-family="${FONT}" font-size="16" fill="${INK}" text-anchor="middle">for example, ice</text>
+    <text x="450" y="384" font-family="${FONT}" font-size="16" fill="${INK}" text-anchor="middle">for example, water</text>
+    <text x="755" y="384" font-family="${FONT}" font-size="16" fill="${INK}" text-anchor="middle">for example, steam</text>
 
-    <text x="297" y="166" font-family="${FONT}" font-size="17" font-weight="bold" fill="${WARM}" text-anchor="middle">melting</text>
-    <text x="297" y="286" font-family="${FONT}" font-size="17" font-weight="bold" fill="${COOL}" text-anchor="middle">freezing</text>
-    <text x="602" y="158" font-family="${FONT}" font-size="17" font-weight="bold" fill="${WARM}" text-anchor="middle">boiling</text>
-    <text x="602" y="176" font-family="${FONT}" font-size="15" font-weight="bold" fill="${WARM}" text-anchor="middle">evaporating</text>
-    <text x="602" y="286" font-family="${FONT}" font-size="17" font-weight="bold" fill="${COOL}" text-anchor="middle">condensing</text>
-
-    <rect x="150" y="356" width="26" height="16" rx="3" fill="${WARM}"/>
-    <text x="186" y="369" font-family="${FONT}" font-size="17" font-weight="bold" fill="${INK}">heating — the changes to the right</text>
-    <rect x="150" y="392" width="26" height="16" rx="3" fill="${COOL}"/>
-    <text x="186" y="405" font-family="${FONT}" font-size="17" font-weight="bold" fill="${INK}">cooling — the changes back to the left</text>
-
-    <text x="450" y="446" font-family="${FONT}" font-size="16" fill="${KEY}" text-anchor="middle">Every one of these five words is a change of state.</text>
+    <g class="lbl">${flame(160, 424)}</g>
+    <text x="180" y="430" font-family="${FONT}" font-size="16" font-weight="bold" fill="${INK}">heating — the changes to the right</text>
+    <g class="lbl">${snowflake(500, 424)}</g>
+    <text x="520" y="430" font-family="${FONT}" font-size="16" font-weight="bold" fill="${INK}">cooling — the changes to the left</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────

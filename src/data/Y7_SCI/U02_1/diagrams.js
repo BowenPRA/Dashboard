@@ -27,6 +27,7 @@ const SOLID_F = '#ded7c6', SOLID_S = '#8a7f68'
 const LIQ_F = '#bfe0f2', LIQ_S = '#2f7fb0'
 const GAS_F = '#ece1f6', GAS_S = '#8b6bb1'
 const GLASS_S = '#9aa8b4'
+const SKIN_F = '#f6e3d5', SKIN_S = '#c99a7a' // the thumb over the syringe's nozzle
 const TINT = '#f3f6f8' // header strips inside a table
 
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif"
@@ -36,8 +37,8 @@ const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fi
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
 /** A leader line from a label to the thing, ending in a small dot. */
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
 
 /** A green tick, drawn as strokes so it never depends on a font. */
 const tick = (cx, cy, s = 1) =>
@@ -46,6 +47,28 @@ const tick = (cx, cy, s = 1) =>
 /** A red cross, drawn as strokes for the same reason. */
 const cross = (cx, cy, s = 1) =>
   `<path d="M ${cx - 10 * s} ${cy - 10 * s} l ${20 * s} ${20 * s} M ${cx + 10 * s} ${cy - 10 * s} l -${20 * s} ${20 * s}" fill="none" stroke="${NO}" stroke-width="${4.4 * s}" stroke-linecap="round"/>`
+
+/**
+ * A syringe standing nozzle-down, centred on `cx`, filled with `fill`, and a
+ * thumb pressed over the nozzle. Barrel y 100–300, plunger rest at y 60.
+ */
+const syringe = (cx, fill) => {
+  let marks = ''
+  for (let y = 130; y <= 290; y += 16) {
+    const long = (y - 130) % 32 === 0
+    marks += `<line x1="${cx + 40 - (long ? 12 : 7)}" y1="${y}" x2="${cx + 40}" y2="${y}" stroke="${GLASS_S}" stroke-width="1.6"/>`
+  }
+  return `<rect x="${cx - 40}" y="158" width="80" height="140" fill="${fill}"/>
+    <rect x="${cx - 40}" y="100" width="80" height="200" rx="6" fill="none" stroke="${GLASS_S}" stroke-width="3"/>
+    ${marks}
+    <rect x="${cx - 54}" y="96" width="108" height="8" rx="3" fill="#e2e8f0" stroke="${GLASS_S}" stroke-width="2"/>
+    <line x1="${cx}" y1="64" x2="${cx}" y2="148" stroke="#64748b" stroke-width="8"/>
+    <rect x="${cx - 28}" y="58" width="56" height="9" rx="4" fill="#64748b" stroke="${INK}" stroke-width="1.5"/>
+    <rect x="${cx - 38}" y="146" width="76" height="13" rx="3" fill="#334155"/>
+    <path d="M ${cx - 10} 300 L ${cx + 10} 300 L ${cx + 6} 322 L ${cx - 6} 322 Z" fill="#f8fbfd" stroke="${GLASS_S}" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M ${cx - 16} 336 Q ${cx - 16} 323 ${cx - 2} 323 L ${cx + 52} 323 Q ${cx + 66} 323 ${cx + 66} 337 Q ${cx + 66} 351 ${cx + 52} 351 L ${cx - 2} 351 Q ${cx - 16} 351 ${cx - 16} 338 Z" fill="${SKIN_F}" stroke="${SKIN_S}" stroke-width="2.4"/>
+    <path d="M ${cx - 12} 345 Q ${cx - 2} 350 ${cx + 12} 349 L ${cx + 12} 341 Q ${cx} 342 ${cx - 12} 339 Z" fill="#fbeee7" stroke="${SKIN_S}" stroke-width="1.6"/>`
+}
 
 /** One horizontal rule across a table. */
 const rule = (x1, x2, y) => `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${RULE}" stroke-width="1.6"/>`
@@ -132,34 +155,21 @@ export const DIAGRAMS = {
   SYRINGES: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" class="w-full h-full">
     ${plate(760, 440)}
 
-    <text x="200" y="52" font-family="${FONT}" font-size="20" font-weight="bold" fill="${LIQ_S}" text-anchor="middle">a syringe of water</text>
-    <text x="560" y="52" font-family="${FONT}" font-size="20" font-weight="bold" fill="${GAS_S}" text-anchor="middle">a syringe of air</text>
+    <text x="200" y="42" font-family="${FONT}" font-size="20" font-weight="bold" fill="${LIQ_S}" text-anchor="middle">a syringe of water</text>
+    <text x="560" y="42" font-family="${FONT}" font-size="20" font-weight="bold" fill="${GAS_S}" text-anchor="middle">a syringe of air</text>
 
-    <rect x="150" y="80" width="100" height="220" rx="8" fill="none" stroke="${GLASS_S}" stroke-width="3"/>
-    <rect x="153" y="140" width="94" height="157" fill="${LIQ_F}"/>
-    <rect x="153" y="130" width="94" height="16" rx="4" fill="${INK}" opacity="0.55"/>
-    <line x1="200" y1="80" x2="200" y2="132" stroke="${INK}" stroke-width="7" stroke-linecap="round"/>
-    <path d="M 176 74 h 48" stroke="${INK}" stroke-width="9" stroke-linecap="round"/>
-    <path d="M 184 300 h 32 v 22 h -32 Z" fill="none" stroke="${GLASS_S}" stroke-width="3"/>
-    <path d="M 182 330 q 18 -16 36 0 q 8 14 -6 20 h -24 q -14 -6 -6 -20 Z" fill="${SOLID_F}" stroke="${SOLID_S}" stroke-width="2.6"/>
+    ${syringe(200, LIQ_F)}
+    ${syringe(560, GAS_F)}
 
-    <rect x="510" y="80" width="100" height="220" rx="8" fill="none" stroke="${GLASS_S}" stroke-width="3"/>
-    <rect x="513" y="140" width="94" height="157" fill="${GAS_F}"/>
-    <rect x="513" y="130" width="94" height="16" rx="4" fill="${INK}" opacity="0.55"/>
-    <line x1="560" y1="80" x2="560" y2="132" stroke="${INK}" stroke-width="7" stroke-linecap="round"/>
-    <path d="M 536 74 h 48" stroke="${INK}" stroke-width="9" stroke-linecap="round"/>
-    <path d="M 544 300 h 32 v 22 h -32 Z" fill="none" stroke="${GLASS_S}" stroke-width="3"/>
-    <path d="M 542 330 q 18 -16 36 0 q 8 14 -6 20 h -24 q -14 -6 -6 -20 Z" fill="${SOLID_F}" stroke="${SOLID_S}" stroke-width="2.6"/>
+    ${lead(290, 100, 204, 100)}
+    ${lead(290, 337, 260, 337)}
+    <text x="300" y="106" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">plunger</text>
+    <text x="300" y="343" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">thumb over the hole</text>
 
-    ${lead(300, 100, 254, 128)}
-    ${lead(300, 344, 226, 340)}
-    <text x="310" y="106" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">plunger</text>
-    <text x="310" y="350" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}">thumb over the hole</text>
-
-    ${cross(200, 396, 1.05)}
-    ${tick(560, 396, 1.05)}
-    <text x="200" y="432" font-family="${FONT}" font-size="18" font-weight="bold" fill="${NO}" text-anchor="middle">will not move</text>
-    <text x="560" y="432" font-family="${FONT}" font-size="18" font-weight="bold" fill="${YES}" text-anchor="middle">slides in easily</text>
+    ${cross(200, 380, 1.05)}
+    ${tick(560, 380, 1.05)}
+    <text x="200" y="424" font-family="${FONT}" font-size="18" font-weight="bold" fill="${NO}" text-anchor="middle">will not move</text>
+    <text x="560" y="424" font-family="${FONT}" font-size="18" font-weight="bold" fill="${YES}" text-anchor="middle">slides in easily</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────

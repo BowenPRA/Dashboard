@@ -31,8 +31,8 @@ const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fi
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
 /** A leader line from the label to the thing, ending in a small dot. */
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
 
 /** A chloroplast: green oval with two darker grana bands. */
 const chloro = (x, y, vertical = true) => {
@@ -45,6 +45,32 @@ const chloro = (x, y, vertical = true) => {
 /** A mitochondrion: white oval with the folded inner membrane drawn in. */
 const mito = (x, y, rx = 14, ry = 9) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#ffffff" stroke="${INK}" stroke-width="2"/>
     <path d="M ${x - rx + 3} ${y} q ${(rx - 3) / 2} -${ry} ${rx - 3} 0 q ${(rx - 3) / 2} ${ry} ${rx - 3} 0" fill="none" stroke="${INK}" stroke-width="1.5"/>`
+
+/** A mitochondrion turned `deg` degrees, so a cell's few do not all lie flat. */
+const mitoR = (x, y, rx, ry, deg) => `<g transform="rotate(${deg} ${x} ${y})">${mito(x, y, rx, ry)}</g>`
+
+/**
+ * A soft, slightly irregular closed outline round (cx, cy) — a real cell is
+ * never a perfect ellipse. `wob` nudges the radius at evenly spaced angles; the
+ * points are joined with a closed Catmull-Rom curve.
+ */
+const blob = (cx, cy, rx, ry, wob) => {
+  const n = wob.length
+  const p = wob.map((w, i) => {
+    const a = (2 * Math.PI * i) / n
+    return [cx + rx * (1 + w) * Math.cos(a), cy + ry * (1 + w) * Math.sin(a)]
+  })
+  const r = (v) => Math.round(v * 10) / 10
+  let d = `M ${r(p[0][0])} ${r(p[0][1])}`
+  for (let i = 0; i < n; i++) {
+    const [p0, p1, p2, p3] = [p[(i - 1 + n) % n], p[i], p[(i + 1) % n], p[(i + 2) % n]]
+    d += ` C ${r(p1[0] + (p2[0] - p0[0]) / 6)} ${r(p1[1] + (p2[1] - p0[1]) / 6)}, ${r(p2[0] - (p3[0] - p1[0]) / 6)} ${r(p2[1] - (p3[1] - p1[1]) / 6)}, ${r(p2[0])} ${r(p2[1])}`
+  }
+  return `${d} Z`
+}
+
+/** Ribosome specks: tiny dots scattered through the cytoplasm. */
+const specks = (pts) => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#9fb0c6"/>`).join('')
 
 // ───────────────────────────────────────────────────────────────────────────
 // Small "where is it?" isolates for the organelle gallery cards. The whole
@@ -106,7 +132,7 @@ export const DIAGRAMS = {
     <rect x="0" y="0" width="760" height="470" rx="14" fill="#ffffff"/>
     <rect x="0.75" y="0.75" width="758.5" height="468.5" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
 
-    <rect x="300" y="40" width="170" height="390" rx="34" fill="${WALL_F}" stroke="${WALL_S}" stroke-width="5"/>
+    <rect x="293" y="33" width="184" height="404" rx="40" fill="${WALL_F}" stroke="${WALL_S}" stroke-width="5"/>
     <rect x="310" y="50" width="150" height="370" rx="26" fill="${CYTO_F}" stroke="${MEMB_S}" stroke-width="2.5"/>
     <rect x="346" y="86" width="78" height="286" rx="32" fill="${VAC_F}" stroke="${VAC_S}" stroke-width="2.5"/>
     ${chloro(327, 105)}${chloro(327, 390)}
@@ -140,13 +166,14 @@ export const DIAGRAMS = {
     <rect x="0" y="0" width="760" height="430" rx="14" fill="#ffffff"/>
     <rect x="0.75" y="0.75" width="758.5" height="428.5" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
 
-    <ellipse cx="380" cy="215" rx="185" ry="140" fill="${CYTO_F}" stroke="${AMEM_S}" stroke-width="4"/>
-    <ellipse cx="405" cy="188" rx="52" ry="46" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="2.5"/>
+    <path d="${blob(380, 215, 185, 140, [0.02, -0.02, 0.035, 0, -0.03, 0.025, 0.01, -0.025, 0.03, -0.01, 0.02, -0.03])}" fill="${CYTO_F}" stroke="${AMEM_S}" stroke-width="4"/>
+    ${specks([[250, 200], [232, 245], [330, 172], [352, 250], [318, 318], [365, 330], [420, 300], [455, 240], [540, 215], [522, 175], [455, 108], [360, 105], [262, 168], [280, 262], [505, 300], [400, 268]])}
+    <circle cx="340" cy="210" r="8" fill="#ffffff" stroke="${MEMB_S}" stroke-width="1.8"/>
+    <circle cx="540" cy="250" r="7" fill="#ffffff" stroke="${MEMB_S}" stroke-width="1.8"/>
+    <ellipse cx="405" cy="188" rx="52" ry="46" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="3"/>
     <circle cx="420" cy="174" r="15" fill="${NUC_S}"/>
-    ${mito(272, 300, 18, 11)}${mito(500, 130, 18, 11)}${mito(300, 130, 16, 10)}
-    <circle cx="360" cy="330" r="4" fill="#c8d3e0"/>
-    <circle cx="250" cy="205" r="4" fill="#c8d3e0"/>
-    <circle cx="430" cy="255" r="4" fill="#c8d3e0"/>
+    <circle cx="382" cy="200" r="3" fill="${NUC_S}"/><circle cx="398" cy="214" r="2.5" fill="${NUC_S}"/><circle cx="430" cy="206" r="2.5" fill="${NUC_S}"/>
+    ${mitoR(272, 300, 20, 12, -18)}${mitoR(500, 130, 19, 11, 14)}${mitoR(300, 130, 17, 10, -8)}${mitoR(455, 325, 18, 11, 22)}
 
     ${lead(152, 108, 231, 132)}
     ${lead(152, 320, 256, 303)}
@@ -266,6 +293,58 @@ export const DIAGRAMS = {
     <text x="544" y="236" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="end">the specimen</text>
     <text x="544" y="297" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="end">light source</text>
     <text x="16" y="332" font-family="${FONT}" font-size="15" font-weight="normal" fill="${INK}" text-anchor="start">Light travels up. Each lens bends it, so the image grows.</text>
+  </svg>`,
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // A real school light microscope, side on — the one a student labels in an
+  // exam. The ray diagram above explains HOW it magnifies; this one is WHAT
+  // it looks like. The arm is on the left, so every leader but two runs out
+  // to the right without crossing it.
+  // ─────────────────────────────────────────────────────────────────────────
+  MICROSCOPE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" class="w-full h-full">
+    <rect x="0" y="0" width="680" height="440" rx="14" fill="#ffffff"/>
+    <rect x="0.75" y="0.75" width="678.5" height="438.5" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+
+    <rect x="205" y="394" width="280" height="24" rx="12" fill="#cbd5e1" stroke="${INK}" stroke-width="2.5"/>
+    <path d="M 236 394 L 236 250 Q 236 150 300 124 L 356 114 L 356 158 L 306 166 Q 272 178 272 250 L 272 394 Z" fill="#dbe3ec" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+
+    <path d="M 361 352 L 357 314 L 383 314 L 379 352 Z" fill="#fef3c7"/>
+    <rect x="340" y="366" width="60" height="28" rx="6" fill="#e2e8f0" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="370" cy="362" r="12" fill="#fde68a" stroke="#d97706" stroke-width="2.5"/>
+    <path d="M 356 348 L 349 340 M 384 348 L 391 340 M 370 345 L 370 334" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+
+    <rect x="272" y="300" width="196" height="14" rx="3" fill="#94a3b8" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="322" y="292" width="100" height="8" rx="1.5" fill="#e0f2fe" stroke="#60a5fa" stroke-width="2"/>
+    <ellipse cx="370" cy="296" rx="13" ry="3" fill="#c084fc" stroke="#7e22ce" stroke-width="1.2"/>
+
+    <rect x="355" y="100" width="30" height="106" rx="3" fill="#eef2f7" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="360" y="56" width="20" height="46" rx="3" fill="#dbe3ec" stroke="${INK}" stroke-width="2.5"/>
+    <ellipse cx="370" cy="56" rx="11" ry="4" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2"/>
+
+    <g transform="rotate(26 342 222)"><rect x="334" y="222" width="16" height="30" rx="2" fill="#cbd5e1" stroke="${INK}" stroke-width="2"/></g>
+    <path d="M 340 206 L 400 206 L 408 222 L 332 222 Z" fill="#94a3b8" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="360" y="222" width="20" height="42" rx="2" fill="#cbd5e1" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="363" y="262" width="14" height="10" rx="2" fill="#64748b" stroke="${INK}" stroke-width="2"/>
+    <ellipse cx="370" cy="273" rx="6" ry="2.2" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5"/>
+
+    <circle cx="254" cy="236" r="24" fill="#64748b" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="254" cy="236" r="9" fill="#cbd5e1" stroke="${INK}" stroke-width="1.5"/>
+    <circle cx="254" cy="284" r="13" fill="#64748b" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="254" cy="284" r="5" fill="#cbd5e1" stroke="${INK}" stroke-width="1.2"/>
+
+    ${lead(205, 60, 359, 56)}
+    ${lead(205, 236, 240, 236)}
+    ${lead(490, 230, 381, 240)}
+    ${lead(490, 282, 383, 295)}
+    ${lead(490, 330, 455, 307)}
+    ${lead(490, 375, 382, 363)}
+
+    <text x="196" y="65" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="end">eyepiece lens</text>
+    <text x="196" y="241" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="end">focusing knob</text>
+    <text x="499" y="235" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">objective lens</text>
+    <text x="499" y="287" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">the specimen</text>
+    <text x="499" y="335" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">stage</text>
+    <text x="499" y="380" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">light source</text>
   </svg>`,
 
   // ─────────────────────────────────────────────────────────────────────────

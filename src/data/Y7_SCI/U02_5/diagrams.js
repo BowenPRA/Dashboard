@@ -279,43 +279,43 @@ export const DIAGRAMS = {
     <text x="256" y="512" font-family="${FONT}" font-size="22" fill="${MUTED}">its old Latin name: natrium</text>
   </svg>`,
 
-  PT_MAP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" class="w-full h-full">
-    ${plate(900, 400)}
+  PT_MAP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" class="w-full h-full">
+    ${plate(1000, 400)}
 
     ${ptBlanks()}
     ${TILES.map(([x, y, m]) => tile(x, y, m)).join('')}
 
-    <text x="268" y="116" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
-    <text x="700" y="116" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">He</text>
-    <text x="92" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Li</text>
-    <text x="156" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Be</text>
-    <text x="380" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">B</text>
-    <text x="444" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
-    <text x="508" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">N</text>
-    <text x="572" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
-    <text x="636" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">F</text>
-    <text x="700" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Ne</text>
-    <text x="92" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="156" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Mg</text>
-    <text x="380" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Al</text>
-    <text x="444" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Si</text>
-    <text x="508" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">P</text>
-    <text x="572" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">S</text>
-    <text x="636" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="700" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Ar</text>
-    <text x="92" y="290" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">K</text>
-    <text x="156" y="290" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Ca</text>
+    <text class="keep" x="268" y="116" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="700" y="116" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">He</text>
+    <text class="keep" x="92" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Li</text>
+    <text class="keep" x="156" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Be</text>
+    <text class="keep" x="380" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">B</text>
+    <text class="keep" x="444" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
+    <text class="keep" x="508" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">N</text>
+    <text class="keep" x="572" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="636" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">F</text>
+    <text class="keep" x="700" y="174" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Ne</text>
+    <text class="keep" x="92" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="156" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Mg</text>
+    <text class="keep" x="380" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Al</text>
+    <text class="keep" x="444" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Si</text>
+    <text class="keep" x="508" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">P</text>
+    <text class="keep" x="572" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">S</text>
+    <text class="keep" x="636" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="700" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Ar</text>
+    <text class="keep" x="92" y="290" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">K</text>
+    <text class="keep" x="156" y="290" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">Ca</text>
 
     <!-- group 1 (a column) and period 3 (a row), outlined -->
     <rect x="53" y="129" width="78" height="188" rx="10" fill="none" stroke="${KEY}" stroke-width="5"/>
     <rect x="53" y="187" width="686" height="72" rx="10" fill="none" stroke="${PURPLE}" stroke-width="5" stroke-dasharray="14 8"/>
 
     <!-- leader lines: each ends on the part it names -->
-    <line x1="92" y1="52" x2="92" y2="126" stroke="${KEY}" stroke-width="3"/>
-    <line x1="336" y1="44" x2="298" y2="90" stroke="${INK}" stroke-width="3"/>
-    <line x1="760" y1="116" x2="716" y2="160" stroke="${NON_S}" stroke-width="3"/>
-    <line x1="764" y1="223" x2="741" y2="223" stroke="${PURPLE}" stroke-width="3"/>
-    <line x1="156" y1="350" x2="156" y2="298" stroke="${METAL_S}" stroke-width="3"/>
+    <line class="lbl" x1="92" y1="52" x2="92" y2="126" stroke="${KEY}" stroke-width="3"/>
+    <line class="lbl" x1="336" y1="44" x2="298" y2="90" stroke="${INK}" stroke-width="3"/>
+    <line class="lbl" x1="760" y1="116" x2="716" y2="160" stroke="${NON_S}" stroke-width="3"/>
+    <line class="lbl" x1="764" y1="223" x2="741" y2="223" stroke="${PURPLE}" stroke-width="3"/>
+    <line class="lbl" x1="156" y1="350" x2="156" y2="298" stroke="${METAL_S}" stroke-width="3"/>
 
     <text x="92" y="44" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}" text-anchor="middle">A group</text>
     <text x="342" y="44" font-family="${FONT}" font-size="20" font-weight="bold" fill="${INK}">Hydrogen: in no group</text>
@@ -355,16 +355,16 @@ export const DIAGRAMS = {
     <circle cx="905" cy="142" r="5" fill="#f4cf45" stroke="#9a7400" stroke-width="2"/>
 
     <text x="95" y="296" font-family="${FONT}" font-size="22" font-weight="bold" fill="${INK}" text-anchor="middle">gold cube</text>
-    <text x="95" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">1 cm · 0 cuts</text>
+    <text class="keep" x="95" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">1 cm · 0 cuts</text>
     <text x="257" y="296" font-family="${FONT}" font-size="22" font-weight="bold" fill="${INK}" text-anchor="middle">sand grain</text>
-    <text x="257" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">3 cuts</text>
+    <text class="keep" x="257" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">3 cuts</text>
     <text x="419" y="296" font-family="${FONT}" font-size="22" font-weight="bold" fill="${INK}" text-anchor="middle">hair</text>
-    <text x="419" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">7 cuts</text>
+    <text class="keep" x="419" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">7 cuts</text>
     <text x="581" y="296" font-family="${FONT}" font-size="22" font-weight="bold" fill="${INK}" text-anchor="middle">cell</text>
-    <text x="581" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">9 cuts</text>
+    <text class="keep" x="581" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">9 cuts</text>
     <text x="743" y="296" font-family="${FONT}" font-size="22" font-weight="bold" fill="${INK}" text-anchor="middle">virus</text>
-    <text x="743" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">17 cuts</text>
+    <text class="keep" x="743" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">17 cuts</text>
     <text x="905" y="296" font-family="${FONT}" font-size="22" font-weight="bold" fill="${INK}" text-anchor="middle">one atom</text>
-    <text x="905" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">25 cuts</text>
+    <text class="keep" x="905" y="326" font-family="${FONT}" font-size="18" fill="${MUTED}" text-anchor="middle">25 cuts</text>
   </svg>`,
 };

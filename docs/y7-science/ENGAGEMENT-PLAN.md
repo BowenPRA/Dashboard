@@ -67,24 +67,45 @@ not read the cards aloud. It also stops at `activity:` as it stops at `check:`.
 
 ### 2.2 Label It (`LABEL_IT`, dbKey `p28`)
 
-The unit's own SVG diagram, with its printed labels stripped off at runtime and
-a numbered pin where each label's leader line ends. A bank of labels (with one or
-two distractors); tap a label, tap a pin (or drag). Check marks every pin, shows
-the right label on each wrong pin, and the next diagram loads. Scored per pin.
-Resumes (the blob keeps finished diagrams).
+The unit's own SVG diagram, drawn whole, with its printed labels stripped off
+at runtime — like an exam paper. Each part to name has a leader line running
+out to a blank box where its label sat; the part itself is never covered. A
+bank of labels (with one or two distractors); tap a label, tap a box (or drag).
+Check marks every box, writes the right label into each wrong one, and the next
+diagram loads. Scored per box. Resumes (the blob keeps finished diagrams).
 
 ```js
 labelIt: [
   { id: 'animal', title: 'Label the animal cell', titleVn: '…',
     inlineSvg: DIAGRAMS.ANIMAL_CELL, viewBox: '0 0 760 430',
-    pins: [{ id: 'p1', x: 231, y: 132, answer: 'membrane' }, …],   // leader-line ends
+    slotW: 200,   // optional box width; longer labels wrap (default: widest label)
+    font: 16,     // optional label size in viewBox units (default from the viewBox)
+    pins: [
+      { id: 'p1', x: 190, y: 104, to: [246, 118], answer: 'membrane' },  // leader to the part
+      { id: 'p2', x: 104, y: 222, answer: 'cheek' },                    // caption box, no leader
+      …],
     bank: [{ val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' }, …, one or two distractors] },
 ]
 ```
 
+- `(x, y)` is where the leader line meets the box; `to` is the point on the
+  part (or a list of points). `side` (`left|right|above|below|center`) says
+  which way the box grows from `(x, y)`; by default it grows away from the part,
+  and a pin with no `to` is a box centred on `(x, y)`.
+- Every box in a diagram is the same size — sized to the widest label in either
+  language — so a box never gives its answer away. The layout is computed by
+  `layout()` in `src/utils/labelIt.js` from a fixed character-width table, and
+  the validator fails a box that overlaps another or runs off the viewBox.
+- Stripping removes every `<text>` and anything tagged `class="lbl"` (leader
+  lines, their dots, legend swatches — tag them in the diagram, the `lead()`
+  helpers already do). Text that is part of the drawing — scale numbers, element
+  symbols, the letters on atoms — is tagged `class="keep"` and survives.
+- Distractors must be absent from the drawing, and ideally a misconception
+  ("Read from the top", "Particles get smaller") rather than a random word.
+
 `node scripts/svg-coords.mjs Y7_SCI/U01_1 ANIMAL_CELL` prints the viewBox and
-every text/line/circle position in a diagram; the pin goes where the label's
-leader line ends.
+every text/line/circle position in a diagram: a label's leader line ends on the
+part (that is `to`), and the label text marks where the box goes.
 
 ### 2.3 Lab Bench (`LAB_BENCH`, dbKey `p29`) — generative
 

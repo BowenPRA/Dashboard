@@ -55,7 +55,7 @@ const pair = (cx, cy, r, a, k1, k2 = k1) => {
 const co2 = (cx, cy, r) => atom(cx - 1.9 * r, cy, r, 'O', 2.5) + atom(cx + 1.9 * r, cy, r, 'O', 2.5) + atom(cx, cy, r, 'C', 2.5)
 const h2o = (cx, cy, r) => atom(cx - r * 1.15, cy + r * 0.95, r * 0.8, 'H', 2.5) + atom(cx + r * 1.15, cy + r * 0.95, r * 0.8, 'H', 2.5) + atom(cx, cy, r, 'O', 2.5)
 
-const dot = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${KEY}" stroke-width="2.5"/><circle cx="${x2}" cy="${y2}" r="5" fill="${KEY}"/>`
+const dot = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${KEY}" stroke-width="2.5"/><circle class="lbl" cx="${x2}" cy="${y2}" r="5" fill="${KEY}"/>`
 
 // ── Mixed, then bonded: 7 iron and 7 sulfur atoms, loose, then bonded in pairs ─
 const MIX_FE = [[80, 110], [250, 105], [400, 125], [150, 215], [330, 200], [90, 295], [270, 290]]
@@ -138,19 +138,19 @@ export const DIAGRAMS = {
     <path d="M290 280 L275.56 50.45 A230 230 0 0 1 290 50 Z" fill="#4a8b23"/>
     <circle cx="290" cy="280" r="230" fill="none" stroke="${INK}" stroke-width="3"/>
 
-    <rect x="580" y="92" width="36" height="36" rx="6" fill="#9ec1ea" stroke="${BLUE}" stroke-width="2.5"/>
-    <text x="634" y="128" font-family="${FONT}" font-size="48" font-weight="bold" fill="${INK}" text-anchor="start">78%</text>
-    <text x="634" y="168" font-family="${FONT}" font-size="30" fill="${INK}" text-anchor="start">nitrogen</text>
+    <rect x="548" y="92" width="36" height="36" rx="6" fill="#9ec1ea" stroke="${BLUE}" stroke-width="2.5"/>
+    <text x="600" y="128" font-family="${FONT}" font-size="48" font-weight="bold" fill="${INK}" text-anchor="start">78%</text>
+    <text x="600" y="168" font-family="${FONT}" font-size="30" fill="${INK}" text-anchor="start">nitrogen</text>
 
-    <rect x="580" y="232" width="36" height="36" rx="6" fill="#f08b82" stroke="#b3261e" stroke-width="2.5"/>
-    <text x="634" y="268" font-family="${FONT}" font-size="48" font-weight="bold" fill="${INK}" text-anchor="start">21%</text>
-    <text x="634" y="308" font-family="${FONT}" font-size="30" fill="${INK}" text-anchor="start">oxygen</text>
+    <rect x="548" y="232" width="36" height="36" rx="6" fill="#f08b82" stroke="#b3261e" stroke-width="2.5"/>
+    <text x="600" y="268" font-family="${FONT}" font-size="48" font-weight="bold" fill="${INK}" text-anchor="start">21%</text>
+    <text x="600" y="308" font-family="${FONT}" font-size="30" fill="${INK}" text-anchor="start">oxygen</text>
 
-    <rect x="580" y="372" width="36" height="36" rx="6" fill="#4a8b23" stroke="#2f5f14" stroke-width="2.5"/>
-    <text x="634" y="408" font-family="${FONT}" font-size="48" font-weight="bold" fill="${INK}" text-anchor="start">1%</text>
-    <text x="634" y="448" font-family="${FONT}" font-size="26" fill="${INK}" text-anchor="start">carbon dioxide,</text>
-    <text x="634" y="482" font-family="${FONT}" font-size="26" fill="${INK}" text-anchor="start">argon, water</text>
-    <text x="634" y="516" font-family="${FONT}" font-size="26" fill="${INK}" text-anchor="start">and other gases</text>
+    <rect x="548" y="372" width="36" height="36" rx="6" fill="#4a8b23" stroke="#2f5f14" stroke-width="2.5"/>
+    <text x="600" y="408" font-family="${FONT}" font-size="48" font-weight="bold" fill="${INK}" text-anchor="start">1%</text>
+    <text x="600" y="448" font-family="${FONT}" font-size="26" fill="${INK}" text-anchor="start">carbon dioxide,</text>
+    <text x="600" y="482" font-family="${FONT}" font-size="26" fill="${INK}" text-anchor="start">argon, water</text>
+    <text x="600" y="516" font-family="${FONT}" font-size="26" fill="${INK}" text-anchor="start">and other gases</text>
   </svg>`,
 
   MINERAL_LABEL: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">

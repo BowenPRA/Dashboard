@@ -35,8 +35,36 @@ const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fi
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
 /** A leader line from a label to the thing, ending in a small dot. */
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+
+const rd = (v) => Math.round(v * 10) / 10
+const at = (cx, cy, deg, r) => [cx + r * Math.cos((deg * Math.PI) / 180), cy + r * Math.sin((deg * Math.PI) / 180)]
+
+/** A dendrite: a strand heading `deg` from (x, y) that forks in two, `depth` times. */
+const dendrite = (x, y, deg, len, depth) => {
+  const [x2, y2] = at(x, y, deg, len)
+  let d = `M ${rd(x)} ${rd(y)} L ${rd(x2)} ${rd(y2)} `
+  if (depth > 0) d += dendrite(x2, y2, deg - 30, len * 0.66, depth - 1) + dendrite(x2, y2, deg + 26, len * 0.62, depth - 1)
+  return d
+}
+
+/** A tapering root where a dendrite leaves the cell body, as a closed path. */
+const taper = (cx, cy, deg, r0, r1, half) => {
+  const [bx, by] = at(cx, cy, deg, r0)
+  const [tx, ty] = at(cx, cy, deg, r1)
+  const [nx, ny] = at(0, 0, deg + 90, half)
+  return `M ${rd(bx + nx)} ${rd(by + ny)} L ${rd(tx)} ${rd(ty)} L ${rd(bx - nx)} ${rd(by - ny)} Z`
+}
+
+// The neurone's cell body sits at (260, 170); a dendrite leaves it at each angle.
+const NEURONE_ROOTS = [120, 165, 210, 250, 292]
+const neuroneTrees = () => NEURONE_ROOTS.map((d) => {
+  const [x, y] = at(260, 170, d, 84)
+  return dendrite(x, y, d, 30, 2)
+}).join('')
+const neuroneBody = () => NEURONE_ROOTS.map((d) => `<path d="${taper(260, 170, d, 36, 86, 12)}"/>`).join('') +
+  '<ellipse cx="260" cy="170" rx="52" ry="44"/>'
 
 /** A chloroplast: green oval with two darker grana bands. */
 const chloro = (x, y, vertical = true) => {
@@ -79,22 +107,32 @@ export const DIAGRAMS = {
   // ───────────────────────────────────────────────────────────────────────────
   RED_BLOOD_CELL: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" class="w-full h-full">
     ${plate(700, 320)}
+    <defs>
+      <radialGradient id="rbc-face" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="${RBC_PALE}"/><stop offset="0.42" stop-color="#f4c0bc"/>
+        <stop offset="0.78" stop-color="${RBC_F}"/><stop offset="1" stop-color="#df8580"/>
+      </radialGradient>
+      <linearGradient id="rbc-side" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4c0bc"/><stop offset="1" stop-color="#df8580"/>
+      </linearGradient>
+    </defs>
 
-    <circle cx="210" cy="160" r="104" fill="${RBC_F}" stroke="${RBC_S}" stroke-width="4"/>
-    <ellipse cx="210" cy="160" rx="50" ry="44" fill="${RBC_PALE}"/>
+    <circle cx="180" cy="140" r="100" fill="url(#rbc-face)" stroke="${RBC_S}" stroke-width="4"/>
 
-    <path d="M 96 268 q 44 26 88 0 q -18 22 -44 22 q -26 0 -44 -22 Z" fill="${RBC_F}" stroke="${RBC_S}" stroke-width="2.5"/>
-    <text x="140" y="308" font-family="${FONT}" font-size="13" font-weight="bold" fill="${INK}" text-anchor="middle">the same cell from the side</text>
+    <path d="M 310 262 C 310 236, 346 234, 366 246 C 374 251, 386 251, 394 246 C 414 234, 450 236, 450 262 C 450 288, 414 290, 394 278 C 386 273, 374 273, 366 278 C 346 290, 310 288, 310 262 Z" fill="url(#rbc-side)" stroke="${RBC_S}" stroke-width="3"/>
+    <text x="380" y="310" font-family="${FONT}" font-size="13" font-weight="bold" fill="${INK}" text-anchor="middle">the same cell, seen from the side</text>
 
-    ${lead(470, 74, 286, 96)}
-    ${lead(470, 158, 258, 158)}
-    ${lead(470, 246, 210, 160)}
+    ${lead(500, 60, 222, 50)}
+    ${lead(500, 130, 262, 130)}
+    ${lead(500, 196, 184, 142)}
+    ${lead(500, 262, 452, 262)}
 
-    <text x="486" y="72" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">cell membrane</text>
-    <text x="486" y="150" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">cytoplasm, full</text>
-    <text x="486" y="171" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">of haemoglobin</text>
-    <text x="486" y="238" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">no nucleus — more</text>
-    <text x="486" y="259" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">room inside</text>
+    <text x="512" y="66" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">cell membrane</text>
+    <text x="512" y="126" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">cytoplasm, full</text>
+    <text x="512" y="146" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">of haemoglobin</text>
+    <text x="512" y="202" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">no nucleus</text>
+    <text x="512" y="258" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">a disc, dented on</text>
+    <text x="512" y="278" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">both sides</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -102,28 +140,35 @@ export const DIAGRAMS = {
   // axon carries them far and fast. Drawn long on purpose — that length is the
   // whole adaptation.
   // ───────────────────────────────────────────────────────────────────────────
-  NEURONE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" class="w-full h-full">
-    ${plate(700, 300)}
+  // Drawn in two passes so the outline is one continuous membrane: every part
+  // first in the membrane colour and a little fat, then again in the cytoplasm
+  // colour — only the rim of the first pass shows.
+  NEURONE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" class="w-full h-full">
+    ${plate(760, 320)}
 
-    <path d="M 150 170 l -34 -34 M 128 150 l -44 -8 M 140 196 l -40 20 M 170 138 l -14 -40 M 176 150 l -30 -30" fill="none" stroke="${MEMB_S}" stroke-width="3" stroke-linecap="round"/>
-    <path d="M 116 136 l 2 -14 l 10 8 M 84 142 l 0 -13 l 12 6 M 100 216 l 12 6 l -11 8 M 156 98 l -3 -14 l 13 4 M 146 120 l -1 -14 l 13 5" fill="none" stroke="${MEMB_S}" stroke-width="3" stroke-linecap="round"/>
+    <path d="${neuroneTrees()}" fill="none" stroke="${MEMB_S}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="${MEMB_S}" stroke="${MEMB_S}" stroke-width="6" stroke-linejoin="round">${neuroneBody()}</g>
+    <path d="M 300 182 C 400 196, 520 200, 640 200" fill="none" stroke="${MEMB_S}" stroke-width="20" stroke-linecap="round"/>
+    <path d="M 640 200 L 688 178 M 640 200 L 694 206 M 640 200 L 678 236" fill="none" stroke="${MEMB_S}" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 300 182 C 400 196, 520 200, 640 200" fill="none" stroke="${CYTO_F}" stroke-width="14" stroke-linecap="round"/>
+    <path d="M 640 200 L 688 178 M 640 200 L 694 206 M 640 200 L 678 236" fill="none" stroke="${CYTO_F}" stroke-width="5" stroke-linecap="round"/>
+    <g fill="${CYTO_F}">${neuroneBody()}</g>
+    <g fill="${CYTO_F}" stroke="${MEMB_S}" stroke-width="3"><circle cx="690" cy="177" r="7"/><circle cx="697" cy="206" r="7"/><circle cx="680" cy="239" r="7"/></g>
 
-    <line x1="196" y1="176" x2="612" y2="196" stroke="${CYTO_F}" stroke-width="16"/>
-    <line x1="196" y1="176" x2="612" y2="196" stroke="${MEMB_S}" stroke-width="3"/>
-    <path d="M 612 196 l 22 -14 M 612 196 l 20 4 M 612 196 l 8 22" fill="none" stroke="${MEMB_S}" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="242" cy="168" r="20" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="2.5"/>
+    <circle cx="247" cy="162" r="6" fill="${NUC_S}"/>
 
-    <ellipse cx="165" cy="170" rx="52" ry="44" fill="${CYTO_F}" stroke="${MEMB_S}" stroke-width="3"/>
-    <circle cx="165" cy="170" r="20" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="2.5"/>
+    ${lead(380, 50, 318, 52)}
+    ${lead(380, 105, 257, 174)}
+    ${lead(380, 150, 292, 172)}
+    ${lead(310, 262, 286, 208)}
+    ${lead(520, 262, 520, 200)}
 
-    ${lead(150, 74, 128, 128)}
-    ${lead(316, 96, 210, 168)}
-    ${lead(300, 250, 175, 205)}
-    ${lead(470, 252, 430, 190)}
-
-    <text x="150" y="68" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">dendrites</text>
-    <text x="340" y="92" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">nucleus</text>
-    <text x="300" y="272" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">cell membrane</text>
-    <text x="470" y="274" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">axon — long and thin</text>
+    <text x="392" y="55" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">dendrites</text>
+    <text x="392" y="110" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">nucleus</text>
+    <text x="392" y="155" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">cytoplasm</text>
+    <text x="310" y="282" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">cell membrane</text>
+    <text x="520" y="282" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">axon — long and thin</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -153,24 +198,39 @@ export const DIAGRAMS = {
   // Root hair cell (Learner's Book p.20). The long, thin extension reaches out
   // between the soil grains and gives a huge surface for absorbing water.
   // ───────────────────────────────────────────────────────────────────────────
+  // Four layers, outside in: the orange wall, the thin membrane, a lining of
+  // cytoplasm (with the nucleus in it) and the big sap vacuole, which runs on
+  // down the hair. Soil grains sit round the hair it reaches between.
   ROOT_HAIR_CELL: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 300" class="w-full h-full">
     ${plate(660, 300)}
 
-    <path d="M 60 96 h 96 q 14 0 26 8 l 380 44 q 26 3 26 20 q 0 17 -26 20 l -380 44 q -12 8 -26 8 h -96 q -18 0 -18 -18 v -108 q 0 -18 18 -18 Z" fill="${WALL_F}" stroke="${WALL_S}" stroke-width="4"/>
-    <path d="M 74 110 h 82 q 12 0 22 7 l 372 43 q 18 2 18 16 q 0 14 -18 16 l -372 43 q -10 7 -22 7 h -82 q -12 0 -12 -12 v -108 q 0 -12 12 -12 Z" fill="${VAC_F}" stroke="${VAC_S}" stroke-width="2.5"/>
-    <circle cx="150" cy="164" r="20" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="2.5"/>
+    <g fill="${SOIL_F}" stroke="${SOIL_S}" stroke-width="2">
+      <ellipse cx="342" cy="118" rx="22" ry="14" transform="rotate(-10 342 118)"/>
+      <ellipse cx="420" cy="128" rx="17" ry="12" transform="rotate(15 420 128)"/>
+      <ellipse cx="500" cy="134" rx="16" ry="11" transform="rotate(-20 500 134)"/>
+      <ellipse cx="572" cy="138" rx="14" ry="10" transform="rotate(8 572 138)"/>
+      <ellipse cx="352" cy="236" rx="20" ry="13" transform="rotate(12 352 236)"/>
+      <ellipse cx="436" cy="234" rx="16" ry="11" transform="rotate(-15 436 234)"/>
+      <ellipse cx="540" cy="224" rx="15" ry="10" transform="rotate(10 540 224)"/>
+      <ellipse cx="624" cy="216" rx="12" ry="9"/>
+    </g>
 
-    ${lead(150, 250, 150, 186)}
-    ${lead(70, 250, 96, 214)}
-    ${lead(40, 70, 66, 100)}
-    ${lead(300, 66, 300, 150)}
-    ${lead(560, 250, 470, 192)}
+    <path d="M 58 118 H 212 Q 230 118 230 136 V 150 L 592 160 Q 612 161 612 177 Q 612 193 592 194 L 230 204 V 234 Q 230 252 212 252 H 58 Q 40 252 40 234 V 136 Q 40 118 58 118 Z" fill="${WALL_F}" stroke="${WALL_S}" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M 64 126 H 206 Q 222 126 222 142 V 158 L 590 168 Q 604 169 604 177 Q 604 185 590 186 L 222 196 V 228 Q 222 244 206 244 H 64 Q 48 244 48 228 V 142 Q 48 126 64 126 Z" fill="${CYTO_F}" stroke="${MEMB_S}" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M 74 138 H 172 Q 186 138 186 152 V 164 L 568 172 Q 578 172 578 177 Q 578 182 568 182 L 186 190 V 218 Q 186 232 172 232 H 74 Q 60 232 60 218 V 152 Q 60 138 74 138 Z" fill="${VAC_F}" stroke="${VAC_S}" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="205" cy="219" r="13" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="2.5"/>
 
-    <text x="150" y="270" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">nucleus</text>
-    <text x="60" y="270" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">cell membrane</text>
-    <text x="34" y="60" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">cell wall</text>
-    <text x="300" y="56" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">large vacuole (cell sap)</text>
-    <text x="500" y="270" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">the long root hair</text>
+    ${lead(130, 96, 140, 121)}
+    ${lead(300, 96, 300, 177)}
+    ${lead(90, 276, 90, 245)}
+    ${lead(250, 276, 207, 228)}
+    ${lead(470, 276, 470, 194)}
+
+    <text x="130" y="88" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">cell wall</text>
+    <text x="300" y="88" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">vacuole (cell sap)</text>
+    <text x="90" y="292" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">cell membrane</text>
+    <text x="250" y="292" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">nucleus</text>
+    <text x="470" y="292" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="middle">the long root hair</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────

@@ -41,8 +41,8 @@ const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fi
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
 /** A leader line from a label to the thing, ending in a small dot. */
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
 
 /** One ciliated cell: a tall box, a purple nucleus, a fringe of cilia on top. */
 const ciliatedCell = (x, y, w, h, fill = CYTO_F, stroke = MEMB_S) => {
@@ -235,18 +235,23 @@ export const DIAGRAMS = {
     <ellipse cx="348" cy="292" rx="26" ry="18" fill="${SPONGE_F}" stroke="${SPONGE_S}" stroke-width="2.2"/>
     <ellipse cx="424" cy="282" rx="27" ry="19" fill="${SPONGE_F}" stroke="${SPONGE_S}" stroke-width="2.2"/>
 
+    ${chloro(68, 232, 5)}${chloro(156, 224, 5)}${chloro(234, 240, 5)}${chloro(300, 228, 5)}${chloro(392, 236, 5)}
+    ${chloro(104, 288, 5)}${chloro(196, 290, 5)}${chloro(262, 286, 5)}${chloro(354, 290, 5)}${chloro(418, 280, 5)}
+
     <path d="M 40 310 h 420 v 42 h -420 Z" fill="${CYTO_F}" stroke="${MEMB_S}" stroke-width="2.6"/>
     <path d="M 100 310 v 42 M 160 310 v 42 M 220 310 v 42 M 280 310 v 42 M 340 310 v 42 M 400 310 v 42" fill="none" stroke="${MEMB_S}" stroke-width="2"/>
 
-    ${lead(500, 60, 462, 66)}
-    ${lead(500, 140, 462, 146)}
-    ${lead(500, 250, 462, 256)}
-    ${lead(500, 330, 462, 332)}
+    ${lead(500, 67, 440, 67)}
+    ${lead(500, 146, 440, 146)}
+    ${lead(500, 222, 400, 236)}
+    ${lead(500, 278, 440, 256)}
+    ${lead(500, 334, 440, 331)}
 
-    <text x="514" y="66" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">upper epidermis</text>
-    <text x="514" y="146" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">palisade layer</text>
-    <text x="514" y="256" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">spongy layer</text>
-    <text x="514" y="336" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">lower epidermis</text>
+    <text x="514" y="73" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">upper epidermis</text>
+    <text x="514" y="152" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">palisade layer</text>
+    <text x="514" y="228" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">spongy layer</text>
+    <text x="514" y="284" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">air space</text>
+    <text x="514" y="340" font-family="${FONT}" font-size="17" font-weight="bold" fill="${KEY}" text-anchor="start">lower epidermis</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -277,22 +282,29 @@ export const DIAGRAMS = {
     <path d="M 650 146 h 16" fill="none" stroke="${INK}" stroke-width="3"/>
     <path d="M 666 146 l -7 -5 M 666 146 l -7 5" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
 
-    ${ciliatedCell(66, 92, 36, 76)}
+    ${ciliatedCell(62, 100, 44, 84)}
 
     ${ciliatedCell(196, 108, 26, 58)}
     ${ciliatedCell(222, 108, 26, 58)}
     ${ciliatedCell(248, 108, 26, 58)}
     ${ciliatedCell(274, 108, 26, 58)}
 
-    <path d="M 400 92 q -32 4 -36 44 q -4 38 18 44 q 20 4 22 -22 Z" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="2.6"/>
+    <path d="M 418 88 Q 380 92 374 138 Q 368 184 394 192 Q 420 198 428 176 L 430 104 Q 430 88 418 88 Z" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M 440 66 L 440 90 Q 440 100 430 106" fill="none" stroke="${AIR}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 430 106 L 412 126 L 398 144 M 412 126 L 410 154 M 430 106 L 420 150 L 406 172 M 420 150 L 424 174 M 412 126 L 392 128" fill="none" stroke="${AIR}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
 
     <path d="M 576 82 v 26" fill="none" stroke="${AIR}" stroke-width="5" stroke-linecap="round"/>
     <path d="M 576 108 l -22 16 M 576 108 l 22 16" fill="none" stroke="${AIR}" stroke-width="5" stroke-linecap="round"/>
     <path d="M 556 120 q -22 6 -24 36 q -2 28 14 32 q 14 2 16 -18 Z" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="2.4"/>
     <path d="M 596 120 q 22 6 24 36 q 2 28 -14 32 q -14 2 -16 -18 Z" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="2.4"/>
+    <path d="M 554 124 L 546 146 L 540 164 M 546 146 L 550 168 M 598 124 L 606 146 L 612 164 M 606 146 L 602 168" fill="none" stroke="${AIR}" stroke-width="2.2" stroke-linecap="round"/>
 
-    <ellipse cx="740" cy="96" rx="17" ry="19" fill="${SKIN_F}" stroke="${SKIN_S}" stroke-width="2.4"/>
-    <path d="M 722 126 q 18 -8 36 0 l 8 14 l -6 46 h -40 l -6 -46 Z" fill="${SKIN_F}" stroke="${SKIN_S}" stroke-width="2.4"/>
+    <path d="M 724 110 L 710 148 M 756 110 L 770 148 M 732 154 L 730 188 M 748 154 L 750 188" fill="none" stroke="${SKIN_S}" stroke-width="11" stroke-linecap="round"/>
+    <path d="M 724 110 L 710 148 M 756 110 L 770 148 M 732 154 L 730 188 M 748 154 L 750 188" fill="none" stroke="${SKIN_F}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 722 106 Q 740 98 758 106 L 762 150 Q 761 158 752 158 L 728 158 Q 719 158 718 150 Z" fill="${SKIN_F}" stroke="${SKIN_S}" stroke-width="2.4" stroke-linejoin="round"/>
+    <ellipse cx="734" cy="124" rx="5" ry="9" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="1.4"/>
+    <ellipse cx="746" cy="124" rx="5" ry="9" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="1.4"/>
+    <circle cx="740" cy="84" r="15" fill="${SKIN_F}" stroke="${SKIN_S}" stroke-width="2.4"/>
 
     <text x="84" y="212" font-family="${FONT}" font-size="20" font-weight="bold" fill="${KEY}" text-anchor="middle">cell</text>
     <text x="248" y="212" font-family="${FONT}" font-size="20" font-weight="bold" fill="${KEY}" text-anchor="middle">tissue</text>
@@ -321,19 +333,25 @@ export const DIAGRAMS = {
     ${plate(440, 420)}
     ${bodyOutline(GHOST, GHOST_S, 2.5)}
 
-    <ellipse cx="200" cy="84" rx="15" ry="8" fill="${AIR}"/>
-    <path d="M 200 90 v 82" fill="none" stroke="${AIR}" stroke-width="9" stroke-linecap="round"/>
-    <path d="M 200 172 l -24 22 M 200 172 l 24 22" fill="none" stroke="${AIR}" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 200 50 Q 193 64 191 72 Q 200 77 209 72 Q 207 64 200 50 Z" fill="#cfe4f3" stroke="${AIR}" stroke-width="2" stroke-linejoin="round"/>
+    <ellipse cx="195.5" cy="72" rx="2.6" ry="2" fill="${AIR}"/><ellipse cx="204.5" cy="72" rx="2.6" ry="2" fill="${AIR}"/>
+    <ellipse cx="200" cy="88" rx="11" ry="6" fill="${AIR}"/>
 
-    ${lungs(3)}
+    <path d="M 190 184 Q 150 188 144 240 Q 138 292 168 300 Q 190 304 192 278 Z" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M 210 184 Q 250 188 256 240 Q 262 292 232 300 Q 210 304 208 278 Z" fill="${LUNG_F}" stroke="${LUNG_S}" stroke-width="3" stroke-linejoin="round"/>
 
-    ${lead(292, 86, 216, 84)}
+    <path d="M 200 98 V 176" fill="none" stroke="${AIR}" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 195 110 h 10 M 195 120 h 10 M 195 130 h 10 M 195 140 h 10 M 195 150 h 10 M 195 160 h 10" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85"/>
+    <path d="M 200 176 L 182 198 M 200 176 L 218 198" fill="none" stroke="${AIR}" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 182 198 L 170 224 L 158 250 M 170 224 L 174 258 M 182 198 L 180 236 L 168 274 M 180 236 L 186 276 M 218 198 L 230 224 L 242 250 M 230 224 L 226 258 M 218 198 L 220 236 L 232 274 M 220 236 L 214 276" fill="none" stroke="${AIR}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    ${lead(292, 82, 209, 87)}
     ${lead(292, 140, 206, 140)}
-    ${lead(292, 226, 242, 224)}
+    ${lead(292, 240, 248, 236)}
 
-    <text x="302" y="92" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">nose and mouth</text>
+    <text x="302" y="88" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">nose and mouth</text>
     <text x="302" y="146" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">windpipe</text>
-    <text x="302" y="232" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">lungs</text>
+    <text x="302" y="246" font-family="${FONT}" font-size="16" font-weight="bold" fill="${KEY}" text-anchor="start">lungs</text>
   </svg>`,
 
   DIGESTIVE_SYSTEM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 420" class="w-full h-full">

@@ -39,8 +39,8 @@ const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fi
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
 /** A leader line from a label to the thing, ending in a small dot. */
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
 
 /** One particle. */
 const p = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${PART_F}" stroke="${PART_S}" stroke-width="2"/>`
@@ -65,6 +65,17 @@ const arrow = (x, y, dx, dy) => {
   const px = -uy * 5, py = ux * 5
   return `<line x1="${x}" y1="${y}" x2="${bx}" y2="${by}" stroke="${MOVE}" stroke-width="2.6" stroke-linecap="round"/>
     <path d="M ${tipX} ${tipY} L ${bx + px} ${by + py} L ${bx - px} ${by - py} Z" fill="${MOVE}"/>`
+}
+
+/** A bold arrow for a push or a "then", head sized independently of length. */
+const fatArrow = (x, y, dx, dy) => {
+  const len = Math.hypot(dx, dy)
+  const ux = dx / len, uy = dy / len
+  const tipX = x + dx, tipY = y + dy
+  const bx = tipX - ux * 18, by = tipY - uy * 18
+  const px = -uy * 11, py = ux * 11
+  return `<line x1="${x}" y1="${y}" x2="${bx}" y2="${by}" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M ${tipX} ${tipY} L ${bx + px} ${by + py} L ${bx - px} ${by - py} Z" fill="${INK}"/>`
 }
 
 /** A regular block of touching particles, w x h of them, top-left at (x, y). */
@@ -213,25 +224,26 @@ export const DIAGRAMS = {
   COMPRESSING_GAS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" class="w-full h-full">
     ${plate(820, 380)}
 
-    <rect x="70" y="86" width="230" height="220" rx="6" fill="none" stroke="${GLASS_S}" stroke-width="3.2"/>
-    <rect x="73" y="89" width="224" height="16" rx="4" fill="${INK}" opacity="0.5"/>
-    ${p(112, 140, 15)}${p(212, 128, 15)}${p(272, 168, 15)}
-    ${p(150, 196, 15)}${p(244, 216, 15)}
-    ${p(104, 248, 15)}${p(196, 268, 15)}${p(268, 260, 15)}
+    <rect x="70" y="110" width="230" height="200" rx="6" fill="#fbf8fe" stroke="${GLASS_S}" stroke-width="3.2"/>
+    <rect x="73" y="113" width="224" height="16" rx="4" fill="#334155"/>
+    ${p(112, 160, 15)}${p(212, 150, 15)}${p(272, 186, 15)}
+    ${p(150, 212, 15)}${p(244, 230, 15)}
+    ${p(104, 262, 15)}${p(196, 282, 15)}${p(268, 278, 15)}
 
-    <rect x="520" y="86" width="230" height="220" rx="6" fill="none" stroke="${GLASS_S}" stroke-width="3.2"/>
-    <rect x="523" y="199" width="224" height="16" rx="4" fill="${INK}" opacity="0.5"/>
-    ${p(552, 242, 15)}${p(612, 248, 15)}${p(676, 240, 15)}${p(732, 246, 15)}
-    ${p(562, 282, 15)}${p(620, 276, 15)}${p(684, 284, 15)}${p(728, 278, 15)}
+    <rect x="520" y="110" width="230" height="200" rx="6" fill="#fbf8fe" stroke="${GLASS_S}" stroke-width="3.2"/>
+    <rect x="523" y="213" width="224" height="16" rx="4" fill="#334155"/>
+    ${p(552, 252, 15)}${p(612, 256, 15)}${p(676, 250, 15)}${p(732, 254, 15)}
+    ${p(562, 288, 15)}${p(620, 286, 15)}${p(684, 290, 15)}${p(728, 286, 15)}
 
-    ${arrow(390, 196, 60, 0)}
-    <text x="410" y="176" font-family="${FONT}" font-size="18" font-weight="bold" fill="${KEY}" text-anchor="middle">push</text>
+    ${fatArrow(340, 210, 130, 0)}
+    ${fatArrow(635, 128, 0, 78)}
 
-    <text x="185" y="66" font-family="${FONT}" font-size="19" font-weight="bold" fill="${INK}" text-anchor="middle">eight particles, big gaps</text>
-    <text x="635" y="66" font-family="${FONT}" font-size="19" font-weight="bold" fill="${INK}" text-anchor="middle">eight particles, small gaps</text>
+    ${lead(185, 66, 262, 121)}
+    <text x="185" y="56" font-family="${FONT}" font-size="18" font-weight="bold" fill="${KEY}" text-anchor="middle">plunger</text>
+    <text x="635" y="62" font-family="${FONT}" font-size="18" font-weight="bold" fill="${KEY}" text-anchor="middle">push</text>
 
-    <text x="185" y="344" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">Nothing is lost.</text>
-    <text x="635" y="344" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">Only the space between them shrank.</text>
+    <text x="185" y="350" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">big gaps between particles</text>
+    <text x="635" y="350" font-family="${FONT}" font-size="17" fill="${INK}" text-anchor="middle">small gaps between particles</text>
   </svg>`,
 
   // ───────────────────────────────────────────────────────────────────────────

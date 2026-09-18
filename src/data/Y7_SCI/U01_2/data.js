@@ -242,22 +242,21 @@ export const U01_2_DATA = {
   ],
 
   // Label It (ENGAGEMENT-PLAN §2.2): the unit's own diagrams, labels stripped
-  // at runtime, a pin where each label's leader line ended. Coordinates from
-  // `node scripts/svg-coords.mjs Y7_SCI/U01_2 <KEY>`. Each bank carries one
-  // or two distractors. SLIDE_PREP's four boxes each get a pin at the hand's
-  // endpoint in that box, with the step name as the answer.
+  // at runtime. Each pin is a blank box: (x, y) is where its leader line meets
+  // the box, `to` is the part the line points at; a pin with no `to` is a
+  // caption box centred on (x, y). Part coordinates from
+  // `node scripts/svg-coords.mjs Y7_SCI/U01_2 <KEY>`. Each bank carries one or
+  // two distractors.
   labelIt: [
     {
       id: 'animal',
       title: 'Label the animal cell', titleVn: 'Gắn nhãn tế bào động vật',
       inlineSvg: DIAGRAMS.ANIMAL_CELL, viewBox: '0 0 760 430',
       pins: [
-        // Pins sit where the printed label was (the outer end of each leader
-        // line), so the line still points at the part.
-        { id: 'p1', x: 650, y: 96, answer: 'membrane' },
-        { id: 'p2', x: 690, y: 176, answer: 'cyto' },
-        { id: 'p3', x: 650, y: 248, answer: 'mito' },
-        { id: 'p4', x: 706, y: 326, answer: 'nucleus' },
+        { id: 'p1', x: 560, y: 90, to: [424, 92], answer: 'membrane' },
+        { id: 'p2', x: 560, y: 170, to: [360, 178], answer: 'cyto' },
+        { id: 'p3', x: 560, y: 250, to: [414, 197], answer: 'mito' },
+        { id: 'p4', x: 560, y: 330, to: [372, 292], answer: 'nucleus' },
       ],
       bank: [
         { val: 'membrane', text: 'Cell membrane', textVn: 'Màng tế bào' },
@@ -270,18 +269,20 @@ export const U01_2_DATA = {
     {
       id: 'slide_prep',
       title: 'Label the steps for making a slide', titleVn: 'Gắn nhãn các bước chuẩn bị tiêu bản',
-      inlineSvg: DIAGRAMS.SLIDE_PREP, viewBox: '0 0 760 240',
+      inlineSvg: DIAGRAMS.SLIDE_PREP, viewBox: '0 0 760 260', slotW: 170,
+      // A caption box under each picture; the distractors are real steps that
+      // come AFTER these four, so knowing the order is what gets them right.
       pins: [
-        { id: 'p1', x: 146, y: 64, answer: 'cheek' },
-        { id: 'p2', x: 290, y: 88, answer: 'slide' },
-        { id: 'p3', x: 476, y: 44, answer: 'stain' },
-        { id: 'p4', x: 662, y: 132, answer: 'coverslip' },
+        { id: 'p1', x: 104, y: 222, answer: 'cheek' },
+        { id: 'p2', x: 290, y: 222, answer: 'slide' },
+        { id: 'p3', x: 476, y: 222, answer: 'stain' },
+        { id: 'p4', x: 662, y: 222, answer: 'coverslip' },
       ],
       bank: [
-        { val: 'cheek', text: 'Rub the cotton bud on your cheek', textVn: 'Chà tăm bông vào má' },
-        { val: 'slide', text: 'Rub the bud on the slide', textVn: 'Chà tăm bông lên lam kính' },
-        { val: 'stain', text: 'Add the methylene blue', textVn: 'Nhỏ xanh methylen' },
-        { val: 'coverslip', text: 'Lower the cover slip', textVn: 'Hạ lamen xuống' },
+        { val: 'cheek', text: 'Rub a cotton bud inside your cheek', textVn: 'Chà tăm bông vào mặt trong má' },
+        { val: 'slide', text: 'Rub the bud on a clean slide', textVn: 'Chà tăm bông lên lam kính sạch' },
+        { val: 'stain', text: 'Add a drop of methylene blue', textVn: 'Nhỏ một giọt xanh methylen' },
+        { val: 'coverslip', text: 'Lower a cover slip over it', textVn: 'Hạ lamen phủ lên' },
         { val: 'eyepiece', text: 'Look down the eyepiece', textVn: 'Nhìn qua thị kính' },
         { val: 'objective', text: 'Choose the smallest objective lens', textVn: 'Chọn vật kính nhỏ nhất' },
       ],

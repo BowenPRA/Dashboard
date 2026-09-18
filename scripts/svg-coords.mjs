@@ -6,7 +6,7 @@
 // Evaluates the unit's diagrams module (so `${FONT}`-style template values are
 // real numbers), then lists the viewBox and every <text>, <line>, <circle> and
 // <ellipse> with its position. A label's leader line ends where the part is —
-// that end is where the pin goes.
+// that end is the pin's `to`; the label's own text is where its box goes.
 import path from 'path';
 import { pathToFileURL } from 'url';
 

@@ -208,8 +208,9 @@ export const U02_7_DATA = {
   ],
 
   // Label It (ENGAGEMENT-PLAN §2.2): the deck's own diagrams, labels stripped
-  // at runtime, a pin where each label's leader line ended or, for a label with
-  // no leader line, on the label's own text. Coordinates from
+  // at runtime. Each pin is a blank box: (x, y) is where its leader line meets
+  // the box and `to` is the part it names; a pin with no `to` is a box centred
+  // on (x, y) — beside a key particle or a pie-chart swatch. Coordinates from
   // `node scripts/svg-coords.mjs Y7_SCI/U02_7 <KEY>`. Each bank has distractors.
   // MINERAL_LABEL is not used: its printed text IS the content, so stripping
   // it leaves nothing to label.
@@ -217,33 +218,36 @@ export const U02_7_DATA = {
     {
       id: 'mix_compound',
       title: 'Label mixed, then bonded', titleVn: 'Gắn nhãn trộn lẫn, rồi liên kết',
-      inlineSvg: DIAGRAMS.MIX_COMPOUND, viewBox: '0 0 1120 440',
+      inlineSvg: DIAGRAMS.MIX_COMPOUND, viewBox: '0 0 1120 440', slotW: 270,
+      // The sulfur box points at a sulfur atom in the compound: an atom keeps
+      // its name whether it is loose or bonded.
       pins: [
-        { id: 'p1', x: 86, y: 100, answer: 'iron' },
-        { id: 'p2', x: 326, y: 116, answer: 'sulfur' },
-        { id: 'p3', x: 556, y: 166, answer: 'heat' },
-        { id: 'p4', x: 245, y: 385, answer: 'mixture' },
-        { id: 'p5', x: 875, y: 385, answer: 'compound' },
+        { id: 'p1', x: 150, y: 52, to: [86, 100], side: 'above', answer: 'iron' },
+        { id: 'p2', x: 556, y: 52, to: [556, 196], side: 'above', answer: 'heat' },
+        { id: 'p3', x: 880, y: 52, to: [857, 115], side: 'above', answer: 'sulfur' },
+        { id: 'p4', x: 245, y: 382, answer: 'mixture' },
+        { id: 'p5', x: 875, y: 382, answer: 'compound' },
       ],
       bank: [
         { val: 'iron', text: 'Iron atom', textVn: 'Nguyên tử sắt' },
         { val: 'sulfur', text: 'Sulfur atom', textVn: 'Nguyên tử lưu huỳnh' },
         { val: 'heat', text: 'Heat', textVn: 'Đun nóng' },
-        { val: 'mixture', text: 'A mixture — not bonded', textVn: 'Hỗn hợp — không liên kết' },
-        { val: 'compound', text: 'A compound — iron sulfide, bonded', textVn: 'Hợp chất — sắt sunfua, liên kết' },
+        { val: 'mixture', text: 'Mixture: not bonded', textVn: 'Hỗn hợp: không liên kết' },
+        { val: 'compound', text: 'Compound: bonded', textVn: 'Hợp chất: có liên kết' },
+        { val: 'cool', text: 'Cool', textVn: 'Làm lạnh' },
         { val: 'element', text: 'An element', textVn: 'Một nguyên tố' },
-        { val: 'magnet', text: 'A magnet', textVn: 'Nam châm' },
       ],
     },
     {
       id: 'air',
       title: 'Label the particles of air', titleVn: 'Gắn nhãn các hạt trong không khí',
-      inlineSvg: DIAGRAMS.AIR, viewBox: '0 0 840 560',
+      inlineSvg: DIAGRAMS.AIR, viewBox: '0 0 840 560', slotW: 200,
+      // One box beside each particle in the key below the sample.
       pins: [
-        { id: 'p1', x: 215, y: 440, answer: 'nitrogen' },
-        { id: 'p2', x: 590, y: 440, answer: 'oxygen' },
-        { id: 'p3', x: 265, y: 512, answer: 'co2' },
-        { id: 'p4', x: 585, y: 512, answer: 'water' },
+        { id: 'p1', x: 250, y: 440, answer: 'nitrogen' },
+        { id: 'p2', x: 640, y: 440, answer: 'oxygen' },
+        { id: 'p3', x: 250, y: 512, answer: 'co2' },
+        { id: 'p4', x: 640, y: 512, answer: 'water' },
       ],
       bank: [
         { val: 'nitrogen', text: 'Nitrogen', textVn: 'Nitơ' },
@@ -256,16 +260,18 @@ export const U02_7_DATA = {
     {
       id: 'air_pie',
       title: 'Label the composition of air', titleVn: 'Gắn nhãn thành phần không khí',
-      inlineSvg: DIAGRAMS.AIR_PIE, viewBox: '0 0 840 560',
+      inlineSvg: DIAGRAMS.AIR_PIE, viewBox: '0 0 840 560', slotW: 230,
+      // A box beside each colour swatch: match the swatch to its slice, then
+      // the slice's size to its share.
       pins: [
-        { id: 'p1', x: 700, y: 140, answer: 'nitrogen' },
-        { id: 'p2', x: 700, y: 280, answer: 'oxygen' },
-        { id: 'p3', x: 720, y: 440, answer: 'other' },
+        { id: 'p1', x: 715, y: 110, answer: 'nitrogen' },
+        { id: 'p2', x: 715, y: 250, answer: 'oxygen' },
+        { id: 'p3', x: 715, y: 390, answer: 'other' },
       ],
       bank: [
         { val: 'nitrogen', text: '78% nitrogen', textVn: '78% nitơ' },
         { val: 'oxygen', text: '21% oxygen', textVn: '21% oxi' },
-        { val: 'other', text: '1% carbon dioxide, argon, water and other gases', textVn: '1% cacbon đioxit, agon, nước và các khí khác' },
+        { val: 'other', text: '1% other gases', textVn: '1% khí khác' },
         { val: 'oxygen78', text: '78% oxygen', textVn: '78% oxi' },
         { val: 'co2_21', text: '21% carbon dioxide', textVn: '21% cacbon đioxit' },
       ],

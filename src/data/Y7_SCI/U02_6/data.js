@@ -200,68 +200,67 @@ export const U02_6_DATA = {
   ],
 
   // Label It (ENGAGEMENT-PLAN §2.2): three drawn diagrams, labels stripped at
-  // runtime. None of the three has leader lines, so each pin sits on the
-  // label's own text position (`node scripts/svg-coords.mjs Y7_SCI/U02_6
-  // <KEY>`; start-anchored labels get the pin a little inside the word).
-  // Stripping also removes the atom letters, so the atoms are known by colour
-  // — the title gives the key. FORMULA_READ is not used: its text IS the
-  // diagram, and nothing is left once it is stripped.
+  // runtime. None has leader lines, so every pin is a caption box centred where
+  // its printed label sat. The letters on the atoms (C, O, H, Na, Cl, Au) are
+  // part of the drawing — class="keep" — so they survive the stripping.
+  // FORMULA_READ is not used: its text IS the diagram.
   labelIt: [
     {
       id: 'particles',
-      title: 'Name the four particles (grey = carbon, red = oxygen, white = hydrogen)',
-      titleVn: 'Gọi tên bốn hạt (xám = cacbon, đỏ = oxi, trắng = hiđro)',
-      inlineSvg: DIAGRAMS.PARTICLES, viewBox: '0 0 1120 440',
+      title: 'Name the four particles', titleVn: 'Gọi tên bốn hạt',
+      inlineSvg: DIAGRAMS.PARTICLES, viewBox: '0 0 1120 440', slotW: 240,
       pins: [
-        { id: 'p1', x: 150, y: 380, answer: 'co2' },
-        { id: 'p2', x: 430, y: 380, answer: 'h2o' },
-        { id: 'p3', x: 710, y: 380, answer: 'o2' },
-        { id: 'p4', x: 980, y: 380, answer: 'ch4' },
+        { id: 'p1', x: 150, y: 372, answer: 'co2' },
+        { id: 'p2', x: 430, y: 372, answer: 'h2o' },
+        { id: 'p3', x: 710, y: 372, answer: 'o2' },
+        { id: 'p4', x: 980, y: 372, answer: 'ch4' },
       ],
       bank: [
-        { val: 'co2', text: 'carbon dioxide, CO₂', textVn: 'carbon dioxide, CO₂' },
-        { val: 'h2o', text: 'water, H₂O', textVn: 'nước, H₂O' },
-        { val: 'o2', text: 'oxygen, O₂', textVn: 'oxi, O₂' },
-        { val: 'ch4', text: 'methane, CH₄', textVn: 'metan, CH₄' },
-        { val: 'co', text: 'carbon monoxide, CO', textVn: 'carbon monoxide, CO' },
-        { val: 'h2', text: 'hydrogen, H₂', textVn: 'hiđro, H₂' },
+        { val: 'co2', text: 'Carbon dioxide, CO₂', textVn: 'Carbon dioxide, CO₂' },
+        { val: 'h2o', text: 'Water, H₂O', textVn: 'Nước, H₂O' },
+        { val: 'o2', text: 'Oxygen, O₂', textVn: 'Oxi, O₂' },
+        { val: 'ch4', text: 'Methane, CH₄', textVn: 'Metan, CH₄' },
+        { val: 'co', text: 'Carbon monoxide, CO', textVn: 'Carbon monoxide, CO' },
+        { val: 'h2', text: 'Hydrogen, H₂', textVn: 'Hiđro, H₂' },
       ],
     },
     {
       id: 'element_compound',
       title: 'Label the element and the compound',
       titleVn: 'Gắn nhãn nguyên tố và hợp chất',
-      inlineSvg: DIAGRAMS.ELEMENT_COMPOUND, viewBox: '0 0 840 560',
+      inlineSvg: DIAGRAMS.ELEMENT_COMPOUND, viewBox: '0 0 840 560', slotW: 360,
+      // Name on top, what it is made of and an example underneath.
       pins: [
-        { id: 'p1', x: 216, y: 70, answer: 'element' },
-        { id: 'p2', x: 624, y: 70, answer: 'compound' },
-        { id: 'p3', x: 216, y: 438, answer: 'one_kind' },
-        { id: 'p4', x: 624, y: 454, answer: 'bonded' },
-        { id: 'p5', x: 216, y: 482, answer: 'gold' },
-        { id: 'p6', x: 624, y: 510, answer: 'nacl' },
+        { id: 'p1', x: 216, y: 74, answer: 'element' },
+        { id: 'p2', x: 624, y: 74, answer: 'compound' },
+        { id: 'p3', x: 216, y: 440, answer: 'one_kind' },
+        { id: 'p4', x: 624, y: 440, answer: 'bonded' },
+        { id: 'p5', x: 216, y: 494, answer: 'gold' },
+        { id: 'p6', x: 624, y: 494, answer: 'nacl' },
       ],
       bank: [
         { val: 'element', text: 'Element', textVn: 'Nguyên tố' },
         { val: 'compound', text: 'Compound', textVn: 'Hợp chất' },
-        { val: 'one_kind', text: 'one kind of atom', textVn: 'một loại nguyên tử' },
-        { val: 'bonded', text: 'different kinds of atom, bonded together', textVn: 'các loại nguyên tử khác nhau, liên kết với nhau' },
-        { val: 'gold', text: 'gold', textVn: 'vàng' },
-        { val: 'nacl', text: 'sodium chloride', textVn: 'natri clorua' },
-        { val: 'same_two', text: 'two atoms of the same kind', textVn: 'hai nguyên tử cùng loại' },
+        { val: 'one_kind', text: 'One kind of atom', textVn: 'Một loại nguyên tử' },
+        { val: 'bonded', text: 'Different atoms bonded together', textVn: 'Nguyên tử khác loại, liên kết' },
+        { val: 'gold', text: 'Gold', textVn: 'Vàng' },
+        { val: 'nacl', text: 'Sodium chloride', textVn: 'Natri clorua' },
+        { val: 'same_two', text: 'Two atoms of the same kind', textVn: 'Hai nguyên tử cùng loại' },
       ],
     },
     {
       id: 'prefixes',
-      title: 'Label carbon monoxide and carbon dioxide (grey = carbon, red = oxygen)',
-      titleVn: 'Gắn nhãn carbon monoxide và carbon dioxide (xám = cacbon, đỏ = oxi)',
-      inlineSvg: DIAGRAMS.PREFIXES, viewBox: '0 0 840 560',
+      title: 'Label carbon monoxide and carbon dioxide',
+      titleVn: 'Gắn nhãn carbon monoxide và carbon dioxide',
+      inlineSvg: DIAGRAMS.PREFIXES, viewBox: '0 0 840 560', slotW: 300,
+      // Beside each particle: its name, what the prefix means, its formula.
       pins: [
-        { id: 'p1', x: 340, y: 106, answer: 'monoxide' },
-        { id: 'p2', x: 340, y: 168, answer: 'mono' },
-        { id: 'p3', x: 340, y: 221, answer: 'co' },
-        { id: 'p4', x: 340, y: 372, answer: 'dioxide' },
-        { id: 'p5', x: 340, y: 434, answer: 'di' },
-        { id: 'p6', x: 340, y: 487, answer: 'co2' },
+        { id: 'p1', x: 470, y: 94, answer: 'monoxide' },
+        { id: 'p2', x: 470, y: 150, answer: 'mono' },
+        { id: 'p3', x: 470, y: 206, answer: 'co' },
+        { id: 'p4', x: 470, y: 360, answer: 'dioxide' },
+        { id: 'p5', x: 470, y: 416, answer: 'di' },
+        { id: 'p6', x: 470, y: 472, answer: 'co2' },
       ],
       bank: [
         { val: 'monoxide', text: 'carbon monoxide', textVn: 'carbon monoxide' },

@@ -69,7 +69,13 @@ function saltGrid(x0, y0, step) {
 
 function goldGrid(x0, y0, r) {
   let out = '';
-  for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) out += atom(x0 + i * 2 * r, y0 + j * 2 * r, r, 'Au');
+  for (let j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      const x = x0 + i * 2 * r, y = y0 + j * 2 * r;
+      out += atom(x, y, r, 'Au') +
+        `<text class="keep" x="${x}" y="${y + 6}" font-family="${FONT}" font-size="17" font-weight="bold" fill="${INK}" text-anchor="middle">Au</text>`;
+    }
+  }
   return out;
 }
 
@@ -86,22 +92,22 @@ export const DIAGRAMS = {
     <rect x="432" y="24" width="384" height="512" rx="16" fill="#f4faf4" stroke="#9cc79c" stroke-width="2.5"/>
     <text x="624" y="82" font-family="${FONT}" font-size="38" font-weight="bold" fill="${KEY}" text-anchor="middle">Compound</text>
     ${saltGrid(534, 150, 60)}
-    <text x="534" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="594" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="654" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="714" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="534" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="594" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="654" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="714" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="534" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="594" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="654" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="714" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="534" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="594" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
-    <text x="654" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
-    <text x="714" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="534" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="594" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="654" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="714" y="157" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="534" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="594" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="654" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="714" y="217" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="534" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="594" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="654" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="714" y="277" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="534" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="594" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
+    <text class="keep" x="654" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Cl</text>
+    <text class="keep" x="714" y="337" font-family="${FONT}" font-size="18" font-weight="bold" fill="${INK}" text-anchor="middle">Na</text>
     <text x="624" y="448" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">different kinds of atom,</text>
     <text x="624" y="482" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">bonded together</text>
     <text x="624" y="518" font-family="${FONT}" font-size="24" fill="${MUTED}" text-anchor="middle">sodium chloride</text>
@@ -192,17 +198,17 @@ export const DIAGRAMS = {
 
     <rect x="24" y="24" width="792" height="246" rx="16" fill="#ffffff" stroke="${RULE}" stroke-width="2"/>
     ${atom(128, 147, 46, 'C')}${atom(214, 147, 46, 'O')}
-    <text x="128" y="158" font-family="${FONT}" font-size="32" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
-    <text x="214" y="158" font-family="${FONT}" font-size="32" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="128" y="158" font-family="${FONT}" font-size="32" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
+    <text class="keep" x="214" y="158" font-family="${FONT}" font-size="32" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
     <text x="320" y="118" font-family="${FONT}" font-size="40" font-weight="bold" fill="${INK}" text-anchor="start">carbon monoxide</text>
     <text x="320" y="180" font-family="${FONT}" font-size="34" font-weight="bold" fill="${KEY}" text-anchor="start">mono = one oxygen</text>
     <text x="320" y="232" font-family="${FONT}" font-size="32" fill="${MUTED}" text-anchor="start">CO</text>
 
     <rect x="24" y="290" width="792" height="246" rx="16" fill="#ffffff" stroke="${RULE}" stroke-width="2"/>
     ${atom(84, 413, 40, 'O')}${atom(160, 413, 40, 'C')}${atom(236, 413, 40, 'O')}
-    <text x="84" y="423" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
-    <text x="160" y="423" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
-    <text x="236" y="423" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="84" y="423" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="160" y="423" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
+    <text class="keep" x="236" y="423" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
     <text x="320" y="384" font-family="${FONT}" font-size="40" font-weight="bold" fill="${INK}" text-anchor="start">carbon dioxide</text>
     <text x="320" y="446" font-family="${FONT}" font-size="34" font-weight="bold" fill="${KEY}" text-anchor="start">di = two oxygens</text>
     <text x="320" y="498" font-family="${FONT}" font-size="32" fill="${MUTED}" text-anchor="start">CO₂</text>
@@ -213,34 +219,34 @@ export const DIAGRAMS = {
 
     <rect x="20" y="16" width="260" height="300" rx="14" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
     ${atom(68, 166, 42, 'O')}${atom(232, 166, 42, 'O')}${atom(150, 166, 42, 'C')}
-    <text x="68" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
-    <text x="150" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
-    <text x="232" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="68" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="150" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
+    <text class="keep" x="232" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
     <text x="150" y="362" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">carbon dioxide</text>
     <text x="150" y="402" font-family="${FONT}" font-size="32" font-weight="bold" fill="${KEY}" text-anchor="middle">CO₂</text>
 
     <rect x="300" y="16" width="260" height="300" rx="14" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
-    ${atom(364, 196, 34, 'H')}${atom(496, 196, 34, 'H')}${atom(430, 150, 46, 'O')}
-    <text x="364" y="206" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
-    <text x="430" y="161" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
-    <text x="496" y="206" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    ${atom(370, 194, 34, 'H')}${atom(490, 194, 34, 'H')}${atom(430, 150, 46, 'O')}
+    <text class="keep" x="370" y="204" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="430" y="161" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="490" y="204" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
     <text x="430" y="362" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">water</text>
     <text x="430" y="402" font-family="${FONT}" font-size="32" font-weight="bold" fill="${KEY}" text-anchor="middle">H₂O</text>
 
     <rect x="580" y="16" width="260" height="300" rx="14" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
     ${atom(666, 166, 46, 'O')}${atom(754, 166, 46, 'O')}
-    <text x="666" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
-    <text x="754" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="666" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="754" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
     <text x="710" y="362" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">oxygen</text>
     <text x="710" y="402" font-family="${FONT}" font-size="32" font-weight="bold" fill="${KEY}" text-anchor="middle">O₂</text>
 
     <rect x="860" y="16" width="240" height="300" rx="14" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
-    ${atom(924, 110, 32, 'H')}${atom(1036, 110, 32, 'H')}${atom(924, 222, 32, 'H')}${atom(1036, 222, 32, 'H')}${atom(980, 166, 44, 'C')}
-    <text x="924" y="120" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
-    <text x="1036" y="120" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
-    <text x="924" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
-    <text x="1036" y="232" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
-    <text x="980" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
+    ${atom(930, 116, 32, 'H')}${atom(1030, 116, 32, 'H')}${atom(930, 216, 32, 'H')}${atom(1030, 216, 32, 'H')}${atom(980, 166, 44, 'C')}
+    <text class="keep" x="930" y="125" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="1030" y="125" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="930" y="225" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="1030" y="225" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="980" y="177" font-family="${FONT}" font-size="30" font-weight="bold" fill="${INK}" text-anchor="middle">C</text>
     <text x="980" y="362" font-family="${FONT}" font-size="28" font-weight="bold" fill="${INK}" text-anchor="middle">methane</text>
     <text x="980" y="402" font-family="${FONT}" font-size="32" font-weight="bold" fill="${KEY}" text-anchor="middle">CH₄</text>
   </svg>`,
@@ -248,9 +254,9 @@ export const DIAGRAMS = {
   FORMULA_READ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">
     ${plate(840, 560)}
 
-    <text x="300" y="262" font-family="${FONT}" font-size="170" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
+    <text class="keep" x="300" y="262" font-family="${FONT}" font-size="170" font-weight="bold" fill="${INK}" text-anchor="middle">H</text>
     <text x="392" y="306" font-family="${FONT}" font-size="100" font-weight="bold" fill="${KEY}" text-anchor="middle">2</text>
-    <text x="500" y="262" font-family="${FONT}" font-size="170" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
+    <text class="keep" x="500" y="262" font-family="${FONT}" font-size="170" font-weight="bold" fill="${INK}" text-anchor="middle">O</text>
 
     <line x1="196" y1="108" x2="258" y2="140" stroke="${KEY}" stroke-width="3"/><circle cx="258" cy="140" r="6" fill="${KEY}"/>
     <text x="150" y="92" font-family="${FONT}" font-size="30" font-weight="bold" fill="${KEY}" text-anchor="middle">H = hydrogen</text>

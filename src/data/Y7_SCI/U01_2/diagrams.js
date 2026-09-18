@@ -36,12 +36,15 @@ const plate = (w, h) => `<rect x="0" y="0" width="${w}" height="${h}" rx="14" fi
     <rect x="0.75" y="0.75" width="${w - 1.5}" height="${h - 1.5}" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>`
 
 /** A leader line from the label to the thing, ending in a small dot. */
-const lead = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
-    <circle cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
+const lead = (x1, y1, x2, y2) => `<line class="lbl" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LEAD}" stroke-width="1.6"/>
+    <circle class="lbl" cx="${x2}" cy="${y2}" r="3.2" fill="${LEAD}"/>`
 
 /** A mitochondrion: white oval with the folded inner membrane drawn in. */
 const mito = (x, y, rx = 14, ry = 9) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#ffffff" stroke="${INK}" stroke-width="2"/>
     <path d="M ${x - rx + 3} ${y} q ${(rx - 3) / 2} -${ry} ${rx - 3} 0 q ${(rx - 3) / 2} ${ry} ${rx - 3} 0" fill="none" stroke="${INK}" stroke-width="1.5"/>`
+
+/** Ribosome specks: tiny dots scattered through the cytoplasm. */
+const specks = (pts) => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#9fb0c6"/>`).join('')
 
 /** A chloroplast: green oval with two darker grana bands. */
 const chloro = (x, y, vertical = true) => {
@@ -91,7 +94,9 @@ export const DIAGRAMS = {
 
     <path d="M 62 216 C 62 116, 168 58, 296 58 C 428 58, 486 120, 486 212 C 486 310, 412 374, 288 374 C 158 374, 62 316, 62 216 Z" fill="${CYTO_F}" stroke="${AMEM_S}" stroke-width="4"/>
     ${mito(190, 128, 17, 10)}${mito(286, 108, 17, 10)}${mito(140, 240, 17, 10)}${mito(238, 304, 17, 10)}${mito(410, 196, 17, 10)}
-    <ellipse cx="336" cy="286" rx="54" ry="34" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="2.5"/>
+    ${specks([[120, 190], [176, 200], [228, 150], [340, 150], [390, 120], [300, 210], [214, 236], [168, 300], [420, 250], [440, 150], [262, 250], [300, 340]])}
+    <ellipse cx="336" cy="286" rx="54" ry="34" fill="${NUC_F}" stroke="${NUC_S}" stroke-width="3"/>
+    <circle cx="350" cy="278" r="12" fill="${NUC_S}"/>
 
     ${lead(606, 94, 424, 92)}
     ${lead(645, 174, 370, 175)}
@@ -166,44 +171,61 @@ export const DIAGRAMS = {
   // Learner's Book steps 1–4. The stain is drawn blue because methylene blue
   // is what turns an invisible smear into something worth looking at.
   // ─────────────────────────────────────────────────────────────────────────
-  SLIDE_PREP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 240" class="w-full h-full">
-    <rect x="0" y="0" width="760" height="240" rx="14" fill="#ffffff"/>
-    <rect x="0.75" y="0.75" width="758.5" height="238.5" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+  SLIDE_PREP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" class="w-full h-full">
+    <rect x="0" y="0" width="760" height="260" rx="14" fill="#ffffff"/>
+    <rect x="0.75" y="0.75" width="758.5" height="258.5" rx="13" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
 
-    <rect x="14" y="20" width="180" height="160" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
-    <rect x="200" y="20" width="180" height="160" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
-    <rect x="386" y="20" width="180" height="160" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
-    <rect x="572" y="20" width="180" height="160" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="14" y="14" width="180" height="170" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="200" y="14" width="180" height="170" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="386" y="14" width="180" height="170" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="572" y="14" width="180" height="170" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
 
-    <defs><marker id="sp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="${INK}"/></marker></defs>
+    <defs><marker id="sp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${INK}"/></marker></defs>
 
-    <line x1="62" y1="146" x2="146" y2="64" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="62" cy="146" r="13" fill="#ffffff" stroke="${INK}" stroke-width="2"/>
-    <circle cx="146" cy="64" r="13" fill="#ffffff" stroke="${INK}" stroke-width="2"/>
-    <ellipse cx="46" cy="132" rx="7" ry="5" fill="#dbe6f2" stroke="#8fa6c4" stroke-width="1.5"/>
-    <ellipse cx="70" cy="163" rx="7" ry="5" fill="#dbe6f2" stroke="#8fa6c4" stroke-width="1.5"/>
-    <ellipse cx="49" cy="158" rx="7" ry="5" fill="#dbe6f2" stroke="#8fa6c4" stroke-width="1.5"/>
+    <!-- 1 · a face; a cotton bud rubs along the inside of the cheek -->
+    <circle cx="87" cy="94" r="52" fill="#fde2c8" stroke="${INK}" stroke-width="2.5"/>
+    <path d="M 36 82 Q 38 40 86 38 Q 134 40 138 82 Q 120 60 86 60 Q 54 60 36 82 Z" fill="#6b4f3a"/>
+    <circle cx="70" cy="88" r="4.5" fill="${INK}"/><circle cx="106" cy="88" r="4.5" fill="${INK}"/>
+    <ellipse cx="124" cy="110" rx="10" ry="6.5" fill="#fca5a5" opacity="0.85"/>
+    <ellipse cx="92" cy="124" rx="15" ry="10" fill="#9f1239" stroke="${INK}" stroke-width="2"/>
+    <line x1="100" y1="123" x2="176" y2="168" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="100" cy="123" rx="8" ry="6" fill="#ffffff" stroke="${INK}" stroke-width="1.8"/>
+    <ellipse cx="176" cy="168" rx="8" ry="6" fill="#ffffff" stroke="${INK}" stroke-width="1.8"/>
 
-    <rect x="220" y="104" width="140" height="40" rx="4" fill="#eef5f9" stroke="#7ba7d4" stroke-width="2.5"/>
-    <ellipse cx="290" cy="124" rx="30" ry="13" fill="#e2e8f0"/>
-    <line x1="290" y1="88" x2="346" y2="44" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="290" cy="88" r="11" fill="#ffffff" stroke="${INK}" stroke-width="2"/>
+    <!-- 2 · the bud smears the cheek cells on a clean slide -->
+    <rect x="214" y="118" width="152" height="40" rx="4" fill="#eef5f9" stroke="#7ba7d4" stroke-width="2.5"/>
+    <rect x="216" y="120" width="26" height="36" rx="2" fill="#dbe4ec"/>
+    <path d="M 262 140 q 10 -9 20 0 q 10 9 20 0 q 10 -9 20 0" fill="none" stroke="#b8c6d6" stroke-width="5" stroke-linecap="round"/>
+    <line x1="308" y1="126" x2="350" y2="46" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="306" cy="131" rx="9" ry="6.5" fill="#ffffff" stroke="${INK}" stroke-width="1.8"/>
+    <path d="M 258 100 L 302 100" fill="none" stroke="${INK}" stroke-width="2" marker-start="url(#sp-arrow)" marker-end="url(#sp-arrow)"/>
 
-    <rect x="406" y="112" width="140" height="40" rx="4" fill="#eef5f9" stroke="#7ba7d4" stroke-width="2.5"/>
-    <ellipse cx="476" cy="132" rx="30" ry="13" fill="#cfe3f2"/>
-    <circle cx="476" cy="44" r="15" fill="#ffffff" stroke="${INK}" stroke-width="2.5"/>
-    <path d="M 466 56 L 486 56 L 480 86 L 472 86 Z" fill="#ffffff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
-    <path d="M 476 90 C 487 102, 491 111, 476 114 C 461 111, 465 102, 476 90 Z" fill="${VAC_S}"/>
+    <!-- 3 · a dropper lets one drop of methylene blue fall on the smear -->
+    <rect x="400" y="128" width="152" height="40" rx="4" fill="#eef5f9" stroke="#7ba7d4" stroke-width="2.5"/>
+    <rect x="402" y="130" width="26" height="36" rx="2" fill="#dbe4ec"/>
+    <ellipse cx="482" cy="148" rx="30" ry="10" fill="#bfdbfe"/>
+    <ellipse cx="482" cy="38" rx="14" ry="17" fill="#475569" stroke="${INK}" stroke-width="2"/>
+    <path d="M 473 52 L 491 52 L 486 92 L 478 92 Z" fill="#f1f7fb" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M 476 72 L 488 72 L 486 91 L 478 91 Z" fill="#3b82f6"/>
+    <path d="M 482 100 C 490 110, 492 116, 482 118 C 472 116, 474 110, 482 100 Z" fill="#2563eb"/>
 
-    <rect x="592" y="112" width="140" height="40" rx="4" fill="#eef5f9" stroke="#7ba7d4" stroke-width="2.5"/>
-    <ellipse cx="662" cy="132" rx="28" ry="12" fill="#cfe3f2"/>
-    <line x1="610" y1="110" x2="714" y2="66" stroke="#7ba7d4" stroke-width="5" stroke-linecap="round"/>
-    <path d="M 724 62 Q 744 84, 722 104" fill="none" stroke="${INK}" stroke-width="2.5" marker-end="url(#sp-arrow)"/>
+    <!-- 4 · a cover slip lowered on at an angle, resting on a mounted needle -->
+    <rect x="586" y="128" width="152" height="40" rx="4" fill="#eef5f9" stroke="#7ba7d4" stroke-width="2.5"/>
+    <rect x="588" y="130" width="26" height="36" rx="2" fill="#dbe4ec"/>
+    <ellipse cx="668" cy="148" rx="28" ry="10" fill="#bfdbfe"/>
+    <line x1="636" y1="127" x2="704" y2="86" stroke="#7ba7d4" stroke-width="5" stroke-linecap="round"/>
+    <line x1="696" y1="92" x2="724" y2="56" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="722" y1="58" x2="742" y2="32" stroke="#a16207" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 664 66 Q 640 80 648 108" fill="none" stroke="${INK}" stroke-width="2.5" marker-end="url(#sp-arrow)"/>
 
-    <text x="104" y="212" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">1 · rub your cheek</text>
-    <text x="290" y="212" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">2 · rub the slide</text>
-    <text x="476" y="212" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">3 · add the stain</text>
-    <text x="662" y="212" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">4 · cover slip</text>
+    <!-- step to step -->
+    <g fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"><circle cx="197" cy="99" r="11"/><circle cx="383" cy="99" r="11"/><circle cx="569" cy="99" r="11"/></g>
+    <path d="M 195 93 L 201 99 L 195 105 M 381 93 L 387 99 L 381 105 M 567 93 L 573 99 L 567 105" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <text x="104" y="227" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">1 · rub your cheek</text>
+    <text x="290" y="227" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">2 · rub the slide</text>
+    <text x="476" y="227" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">3 · add the stain</text>
+    <text x="662" y="227" font-family="${FONT}" font-size="15" font-weight="bold" fill="${KEY}" text-anchor="middle">4 · cover slip</text>
   </svg>`,
 
   // ── Gallery isolates: the three parts an animal cell has NOT got ──────────

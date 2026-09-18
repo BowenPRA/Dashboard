@@ -252,13 +252,14 @@ export const U01_4_DATA = {
     {
       id: 'ladder',
       title: 'Label the five levels', titleVn: 'Gắn nhãn năm cấp độ',
-      inlineSvg: DIAGRAMS.LEVELS_LADDER, viewBox: '0 0 820 325',
+      inlineSvg: DIAGRAMS.LEVELS_LADDER, viewBox: '0 0 820 325', slotW: 128,
+      // A caption box in each panel, under its picture.
       pins: [
-        { id: 'p1', x: 84, y: 212, answer: 'cell' },
-        { id: 'p2', x: 248, y: 212, answer: 'tissue' },
-        { id: 'p3', x: 412, y: 212, answer: 'organ' },
-        { id: 'p4', x: 576, y: 212, answer: 'organsys' },
-        { id: 'p5', x: 740, y: 212, answer: 'organism' },
+        { id: 'p1', x: 84, y: 226, answer: 'cell' },
+        { id: 'p2', x: 248, y: 226, answer: 'tissue' },
+        { id: 'p3', x: 412, y: 226, answer: 'organ' },
+        { id: 'p4', x: 576, y: 226, answer: 'organsys' },
+        { id: 'p5', x: 740, y: 226, answer: 'organism' },
       ],
       bank: [
         { val: 'cell', text: 'Cell', textVn: 'Tế bào' },
@@ -273,34 +274,40 @@ export const U01_4_DATA = {
       id: 'leaf',
       title: 'Label the leaf section', titleVn: 'Gắn nhãn lát cắt lá',
       inlineSvg: DIAGRAMS.LEAF_SECTION, viewBox: '0 0 720 380',
+      // Root hair cells are the distractor: a specialised cell from 1.3 that
+      // lives underground, never in a leaf.
       pins: [
-        { id: 'p1', x: 545, y: 64, answer: 'upper' },
-        { id: 'p2', x: 545, y: 144, answer: 'palisade' },
-        { id: 'p3', x: 545, y: 254, answer: 'spongy' },
-        { id: 'p4', x: 545, y: 334, answer: 'lower' },
+        { id: 'p1', x: 490, y: 67, to: [440, 67], answer: 'upper' },
+        { id: 'p2', x: 490, y: 146, to: [440, 146], answer: 'palisade' },
+        { id: 'p3', x: 490, y: 222, to: [400, 236], answer: 'spongy' },
+        { id: 'p4', x: 490, y: 278, to: [440, 256], answer: 'air' },
+        { id: 'p5', x: 490, y: 334, to: [440, 331], answer: 'lower' },
       ],
       bank: [
         { val: 'upper', text: 'Upper epidermis', textVn: 'Biểu bì trên' },
         { val: 'palisade', text: 'Palisade layer', textVn: 'Lớp mô giậu' },
         { val: 'spongy', text: 'Spongy layer', textVn: 'Lớp mô xốp' },
+        { val: 'air', text: 'Air space', textVn: 'Khoang khí' },
         { val: 'lower', text: 'Lower epidermis', textVn: 'Biểu bì dưới' },
-        { val: 'cuticle', text: 'Cuticle', textVn: 'Lớp cutin' },
+        { val: 'roothair', text: 'Root hair cells', textVn: 'Tế bào lông hút' },
       ],
     },
     {
       id: 'respiratory',
       title: 'Label the breathing system', titleVn: 'Gắn nhãn hệ hô hấp',
       inlineSvg: DIAGRAMS.RESPIRATORY_SYSTEM, viewBox: '0 0 440 420',
+      // The distractors are organs from OTHER systems — the lesson's point.
       pins: [
-        { id: 'p1', x: 335, y: 88, answer: 'nose' },
-        { id: 'p2', x: 335, y: 142, answer: 'windpipe' },
-        { id: 'p3', x: 335, y: 228, answer: 'lungs' },
+        { id: 'p1', x: 290, y: 78, to: [[206, 66], [209, 88]], answer: 'nose' },
+        { id: 'p2', x: 290, y: 140, to: [205, 140], answer: 'windpipe' },
+        { id: 'p3', x: 290, y: 240, to: [248, 236], answer: 'lungs' },
       ],
       bank: [
         { val: 'nose', text: 'Nose and mouth', textVn: 'Mũi và miệng' },
         { val: 'windpipe', text: 'Windpipe', textVn: 'Khí quản' },
         { val: 'lungs', text: 'Lungs', textVn: 'Phổi' },
-        { val: 'diaphragm', text: 'Diaphragm', textVn: 'Cơ hoành' },
+        { val: 'heart', text: 'Heart', textVn: 'Tim' },
+        { val: 'stomach', text: 'Stomach', textVn: 'Dạ dày' },
       ],
     },
   ],

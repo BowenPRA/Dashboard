@@ -272,16 +272,18 @@ export const U02_2_DATA = {
     {
       id: 'cycle',
       title: 'Label the changes of state', titleVn: 'Gắn nhãn sự chuyển thể',
-      inlineSvg: DIAGRAMS.STATE_CYCLE, viewBox: '0 0 900 470',
+      inlineSvg: DIAGRAMS.STATE_CYCLE, viewBox: '0 0 900 470', slotW: 200,
+      // The state is named from its particles; the change words hang off the
+      // arrows — heating (flame) above, cooling (snowflake) below.
       pins: [
-        { id: 'p1', x: 145, y: 212, answer: 'solid' },
-        { id: 'p2', x: 450, y: 212, answer: 'liquid' },
-        { id: 'p3', x: 755, y: 212, answer: 'gas' },
-        { id: 'p4', x: 297, y: 166, answer: 'melt' },
-        { id: 'p5', x: 297, y: 286, answer: 'freeze' },
+        { id: 'p1', x: 145, y: 350, answer: 'solid' },
+        { id: 'p2', x: 450, y: 350, answer: 'liquid' },
+        { id: 'p3', x: 755, y: 350, answer: 'gas' },
+        { id: 'p4', x: 297, y: 100, to: [297, 150], side: 'above', answer: 'melt' },
+        { id: 'p5', x: 297, y: 282, to: [297, 232], side: 'below', answer: 'freeze' },
         // "boiling" and "evaporating" share one arrow on the diagram, so one pin.
-        { id: 'p6', x: 602, y: 166, answer: 'boil' },
-        { id: 'p8', x: 602, y: 286, answer: 'condense' },
+        { id: 'p6', x: 602, y: 100, to: [602, 150], side: 'above', answer: 'boil' },
+        { id: 'p8', x: 602, y: 282, to: [602, 232], side: 'below', answer: 'condense' },
       ],
       bank: [
         { val: 'solid', text: 'Solid', textVn: 'Rắn' },
@@ -299,12 +301,12 @@ export const U02_2_DATA = {
       title: 'Label the heating apparatus', titleVn: 'Gắn nhãn bộ dụng cụ đun nóng',
       inlineSvg: MEASURE.APPARATUS, viewBox: '0 0 820 560',
       pins: [
-        { id: 'p1', x: 610, y: 158, answer: 'thermometer' },
-        { id: 'p2', x: 610, y: 354, answer: 'beaker' },
-        { id: 'p3', x: 610, y: 400, answer: 'gauze' },
-        { id: 'p4', x: 610, y: 472, answer: 'bunsen' },
-        { id: 'p5', x: 250, y: 536, answer: 'mat' },
-        { id: 'p6', x: 108, y: 150, answer: 'clamp' },
+        { id: 'p1', x: 540, y: 170, to: [438, 190], answer: 'thermometer' },
+        { id: 'p2', x: 540, y: 345, to: [488, 350], answer: 'beaker' },
+        { id: 'p3', x: 540, y: 400, to: [507, 396], answer: 'gauze' },
+        { id: 'p4', x: 540, y: 458, to: [439, 458], answer: 'bunsen' },
+        { id: 'p5', x: 250, y: 512, to: [250, 494], side: 'below', answer: 'mat' },
+        { id: 'p6', x: 211, y: 96, to: [211, 128], side: 'above', answer: 'clamp' },
       ],
       bank: [
         { val: 'thermometer', text: 'Thermometer', textVn: 'Nhiệt kế' },
@@ -319,18 +321,21 @@ export const U02_2_DATA = {
     {
       id: 'meniscus',
       title: 'Label the measuring cylinder', titleVn: 'Gắn nhãn ống đong',
-      inlineSvg: MEASURE.MENISCUS, viewBox: '0 0 760 430',
+      inlineSvg: MEASURE.MENISCUS, viewBox: '0 0 760 430', slotW: 220,
+      // "Read from the top" is the mistake the lesson exists to stop.
       pins: [
-        { id: 'p1', x: 365, y: 134, answer: 'meniscus' },
-        { id: 'p2', x: 240, y: 72, answer: 'scale' },
-        { id: 'p3', x: 620, y: 290, answer: 'eye' },
+        { id: 'p1', x: 160, y: 66, to: [158, 148], side: 'above', answer: 'scale' },
+        { id: 'p2', x: 290, y: 130, to: [252, 213], answer: 'meniscus' },
+        { id: 'p3', x: 290, y: 262, to: [207, 224], answer: 'bottom' },
+        { id: 'p4', x: 630, y: 262, to: [620, 250], side: 'below', answer: 'eye' },
       ],
       bank: [
-        { val: 'meniscus', text: 'The meniscus (curved surface)', textVn: 'Mặt khum (mặt cong)' },
-        { val: 'scale', text: 'The cm³ scale', textVn: 'Thang đo cm³' },
-        { val: 'eye', text: 'Your eye, at eye level', textVn: 'Mắt em, ngang tầm mắt' },
-        { val: 'bulb', text: 'The bulb of a thermometer', textVn: 'Bầu nhiệt kế' },
-        { val: 'base', text: 'The base of the cylinder', textVn: 'Đáy ống đong' },
+        { val: 'scale', text: 'Scale in cm³', textVn: 'Thang chia cm³' },
+        { val: 'meniscus', text: 'Meniscus', textVn: 'Mặt khum' },
+        { val: 'bottom', text: 'Read from the bottom', textVn: 'Đọc ở đáy mặt khum' },
+        { val: 'eye', text: 'Eye level with the water', textVn: 'Mắt ngang mặt nước' },
+        { val: 'top', text: 'Read from the top', textVn: 'Đọc ở mép trên' },
+        { val: 'bulb', text: 'Thermometer bulb', textVn: 'Bầu nhiệt kế' },
       ],
     },
   ],
