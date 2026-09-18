@@ -12,6 +12,40 @@ import { getTrack } from './data/index';
 import { getTask } from './tasks/taskRegistry';
 import { arcadeConfig } from './components/towerdefense/unitDifficulty';
 
+// `?clock=manual` hands the game's clock to the test: requestAnimationFrame never
+// fires on its own (a hidden pane pauses it anyway), and window.__pump(n) runs n
+// frames synchronously, 1/30 s apart. A whole wave can be played out and
+// asserted on in a fraction of a second. Must be installed before anything
+// mounts, because the engine asks for its first frame on mount.
+if (new URLSearchParams(window.location.search).get('clock') === 'manual') {
+  let fakeNow = performance.now();
+  let pending = null;
+  performance.now = () => fakeNow;
+  // Only the GAME's loop is captured (its frame callback is named `loop`);
+  // everything else — the browser tooling's own "has it painted?" probe
+  // included — keeps the real rAF, or screenshots of the page would hang.
+  const nativeRaf = window.requestAnimationFrame.bind(window);
+  const nativeCancel = window.cancelAnimationFrame.bind(window);
+  window.requestAnimationFrame = (cb) => {
+    if (cb?.name !== 'loop') return nativeRaf(cb);
+    pending = cb;
+    return -1;
+  };
+  window.cancelAnimationFrame = (id) => { if (id === -1) pending = null; else nativeCancel(id); };
+  window.__pump = (frames = 1, ms = 1000 / 30) => {
+    let ran = 0;
+    for (let i = 0; i < frames; i++) {
+      const cb = pending;
+      pending = null;
+      if (!cb) break;
+      fakeNow += ms;
+      cb(fakeNow);
+      ran++;
+    }
+    return ran;
+  };
+}
+
 // Below the 80 XP gate, then over it with an arcade high score already banked.
 const LOCKED_SCORES = { p10: { current: 10 }, p1: { current: 10 }, p11: { current: 25 }, p14: { current: 15 } };
 const UNLOCKED_SCORES = { ...LOCKED_SCORES, p7: { current: 20 }, p9: { current: 10 }, GAMES: { current: 4820 } };

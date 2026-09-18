@@ -74,6 +74,40 @@ function toImage(markup, px) {
 }
 
 /**
+ * Bakes a loaded sprite into plain bitmap canvases — the base artwork plus the
+ * two tints the games need mid-fight.
+ *
+ * An <img> whose source is an SVG is not a bitmap: drawn at a new size or angle
+ * the browser may rasterise the vector again, and with two hundred bodies on
+ * screen that is the frame budget gone. A canvas is pixels, so drawImage from it
+ * is a straight blit. The tints are baked for the same reason: a hit flash or a
+ * frozen enemy used to cost a per-body CSS filter (TD) or an extra circle over
+ * the sprite (Survivor); now it is just a different source image.
+ *
+ *   atlas[key]            the artwork
+ *   atlas[`${key}:flash`] whited out — one frame of "that hit landed"
+ *   atlas[`${key}:frost`] iced over — chilled / frozen
+ */
+function bake(img, px) {
+  const make = (tint) => {
+    const c = document.createElement('canvas');
+    c.width = px; c.height = px;
+    const ctx = c.getContext('2d');
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0, px, px);
+    if (tint) {
+      // source-atop paints only where the sprite already has pixels, so the tint
+      // takes the sprite's exact silhouette.
+      ctx.globalCompositeOperation = 'source-atop';
+      ctx.fillStyle = tint;
+      ctx.fillRect(0, 0, px, px);
+    }
+    return c;
+  };
+  return { base: make(null), flash: make('rgba(255,255,255,0.82)'), frost: make('rgba(125,211,252,0.58)') };
+}
+
+/**
  * Mounts every sprite the run needs, hidden, and hands back a ready atlas.
  *
  * `tribeId` decides which artwork the five role slots wear, so an ICE arena
@@ -83,7 +117,7 @@ function toImage(markup, px) {
  * The atlas is keyed by role slot (`ANT`, `WASP`, …) and by tower id (`DART`,
  * `SNIPER`, …), so the renderer never needs to know which tribe it was handed.
  */
-export default function SpriteForge({ tribeId = 'INSECT', onReady }) {
+export default function SpriteForge({ tribeId = 'INSECT', onReady, towers = true }) {
   const hostRef = useRef(null);
 
   useEffect(() => {
@@ -102,7 +136,13 @@ export default function SpriteForge({ tribeId = 'INSECT', onReady }) {
 
       if (cancelled) return;
       const atlas = {};
-      for (const [key, img] of entries) if (img) atlas[key] = img;
+      for (const [key, img] of entries) {
+        if (!img) continue;
+        const baked = bake(img, SPRITE_PX);
+        atlas[key] = baked.base || img;
+        if (baked.flash) atlas[`${key}:flash`] = baked.flash;
+        if (baked.frost) atlas[`${key}:frost`] = baked.frost;
+      }
       onReady(atlas);
     })();
 
@@ -125,7 +165,8 @@ export default function SpriteForge({ tribeId = 'INSECT', onReady }) {
           <InsectVisual type={enemySkin(slot, tribeId).visual} />
         </SpriteSlot>
       ))}
-      {RECRUITABLE.map((typeId) => (
+      {/* Tower Defense keeps its towers in the DOM, so it forges enemies only. */}
+      {towers && RECRUITABLE.map((typeId) => (
         <SpriteSlot key={typeId} name={typeId}>
           <TowerVisual typeId={typeId} size="xl" />
         </SpriteSlot>

@@ -67,8 +67,16 @@ if (MANUAL || SPEED > 1) {
 
 if (MANUAL) {
   let pending = null;
-  window.requestAnimationFrame = (cb) => { pending = cb; return 1; };
-  window.cancelAnimationFrame = () => { pending = null; };
+  // Only the GAME's loop is captured (its callback is named `frame`); anything
+  // else keeps the real rAF, or the browser tooling's paint probe would hang.
+  const nativeRaf = window.requestAnimationFrame.bind(window);
+  const nativeCancel = window.cancelAnimationFrame.bind(window);
+  window.requestAnimationFrame = (cb) => {
+    if (cb?.name !== 'frame') return nativeRaf(cb);
+    pending = cb;
+    return -1;
+  };
+  window.cancelAnimationFrame = (id) => { if (id === -1) pending = null; else nativeCancel(id); };
   /** Run `frames` simulation frames synchronously. Returns how many actually ran. */
   window.__pump = (frames = 1) => {
     let ran = 0;

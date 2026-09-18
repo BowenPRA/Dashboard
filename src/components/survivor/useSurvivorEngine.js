@@ -4,21 +4,28 @@
 // The Swarm Survivor simulation.
 //
 // Same shape as the Tower Defense engine (useGameEngine.js) and for the same
-// reasons: all mutable game state lives in one ref-held object `g` that the loop
-// mutates in place, the loop runs a STRICT FIXED TIMESTEP at 30fps so the maths
-// is deterministic regardless of monitor refresh, and React is told to re-render
-// through a latest-value ref so the rAF loop is never torn down and rebuilt.
+// reasons. All mutable game state lives in one ref-held object `g` that the loop
+// mutates in place, and three clocks are kept apart:
 //
-// Where it differs: Survivor draws to a canvas, so `render()` here does not
-// reconcile two hundred DOM nodes — the draw pass reads `g` directly. That is
-// what makes the density the genre needs affordable.
+//   SIMULATION  a strict fixed step of 1/30 s, so the maths is deterministic
+//               whatever the monitor's refresh rate.
+//   PAINT       every display frame. SurvivorCanvas registers a painter on
+//               `drawRef`; it is handed `alpha` — how far we are between the
+//               last two steps — and draws every body interpolated to that
+//               instant. Each moving thing therefore keeps the position it had
+//               one step ago (`px`, `py`). Thirty simulated frames look like
+//               sixty on screen.
+//   REACT       the HUD, about ten times a second, and at once for anything a
+//               player must not miss. It used to re-render every frame.
 // =====================================================================
 
 import { useEffect, useRef } from 'react';
 import {
   WORLD, STEP_MS, LIMITS, SURVIVOR_ENEMIES, timeScale, RUN,
   SPAWN_PHASES, SWARM_EVENT, WEAPONS, weaponStats, xpForLevel, MAX_WEAPON_LEVEL,
+  DASH, COMBO, PICKUPS, ATTACKS,
 } from './survivorData';
+import { sfx } from '../../arcade/sfx';
 
 /** Drops dead entries in place, without allocating a new array every frame. */
 function compact(arr, keep) {
@@ -31,6 +38,11 @@ function compact(arr, keep) {
 }
 
 const TAU = Math.PI * 2;
+const between = ([lo, hi]) => lo + Math.random() * (hi - lo);
+
+const SHARD_COLOR = {
+  ANT: '#fca5a5', WASP: '#fde047', BEETLE: '#d97706', QUEEN: '#c084fc', GIANT_ANT: '#ef4444',
+};
 
 // ---------------------------------------------------------------------
 // Construction
@@ -45,6 +57,7 @@ const TAU = Math.PI * 2;
  */
 export function createRun({ hero, loadout, difficulty = {} }) {
   const maxHp = hero.hp + (hero.hpBonus || 0) + loadout.hpBonus;
+  const cx = WORLD.width / 2, cy = WORLD.height / 2;
   const g = {
     t: 0,
     state: 'PLAYING',
@@ -52,8 +65,7 @@ export function createRun({ hero, loadout, difficulty = {} }) {
 
     hero: {
       typeId: hero.typeId,
-      x: WORLD.width / 2,
-      y: WORLD.height / 2,
+      x: cx, y: cy, px: cx, py: cy,
       hp: maxHp,
       maxHp,
       baseSpeed: hero.speed * (1 + (hero.speedBonus || 0)) * loadout.speedMul,
@@ -75,6 +87,10 @@ export function createRun({ hero, loadout, difficulty = {} }) {
       facing: 1,
       hurtFlash: 0,
       walkPhase: 0,
+      // The dash: time left in the burst, time until it is ready again, and the
+      // direction it committed to (and the last way the hero walked, which is
+      // where a standing dash goes).
+      dashT: 0, dashCd: 0, dashX: 1, dashY: 0, lastX: 1, lastY: 0,
     },
 
     // Index 0 is always the hero's own weapon; 1.. are recruited companions,
@@ -86,6 +102,9 @@ export function createRun({ hero, loadout, difficulty = {} }) {
     gems: [],
     pops: [],
     fx: [],
+    shards: [],   // bits a body bursts into
+    nums: [],     // damage numbers
+    slams: [],    // a Broodmother's telegraphed ground-slams
 
     // The endless boss scheduler. `bossTimer` counts down to the next
     // Broodmother; it starts at the first-boss time and is reset to bossEveryMs
@@ -108,7 +127,12 @@ export function createRun({ hero, loadout, difficulty = {} }) {
     pendingLevels: 0,
     nextId: 1,
 
-    cam: { x: WORLD.width / 2, y: WORLD.height / 2 },
+    // The kill chain, and how long since luck last dropped a power-up.
+    combo: 0, comboT: 0, bestCombo: 0,
+    killsSincePickup: 0,
+    gemStreak: 0, gemStreakT: 0,
+
+    cam: { x: cx, y: cy, px: cx, py: cy },
     shake: 0,
 
     difficulty: {
@@ -166,17 +190,19 @@ export function applyUpgrade(g, card) {
       default: break;
     }
   }
+  // The new power arrives with a ring, so the pick is felt on the field too.
+  if (g.fx.length < LIMITS.fx) {
+    g.fx.push({ id: g.nextId++, kind: 'nova', x: h.x, y: h.y, r: 150, life: 480, max: 480, color: '#fbbf24' });
+  }
 }
 
 /**
  * A plain, immutable read of everything the HUD shows.
  *
  * The simulation lives in a mutable ref for speed, but React screens must not
- * read a ref while rendering — they would be reading a value the loop is free to
- * change underneath them, and nothing would tell React it had changed. So the
- * loop's per-frame commit hands the UI this snapshot instead: ordinary props,
- * ordinary re-render, and the canvas (which is not React) keeps reading the ref
- * directly in its layout effect where that is safe.
+ * read a ref while rendering. So the loop hands the UI this snapshot instead:
+ * ordinary props, ordinary re-render. The canvas (which is not React) reads the
+ * ref directly from its painter, where that is safe.
  */
 export function hudSnapshot(g) {
   const h = g.hero;
@@ -186,6 +212,9 @@ export function hudSnapshot(g) {
     revives: h.revives,
     t: g.t,
     score: g.score,
+    kills: g.kills,
+    combo: g.combo,
+    dashReady: h.dashCd <= 0,
     // Endless: there is no single "boss spawned" moment. The HUD tracks whether
     // one is on the field right now, how long until the next, and how many have
     // been felled.
@@ -207,7 +236,7 @@ export function resumeAfterLevel(g) {
 // The loop
 // ---------------------------------------------------------------------
 
-export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd, pausedRef }) {
+export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd, pausedRef, drawRef }) {
   const renderRef = useRef(render);
   const levelRef = useRef(onLevelUp);
   const endRef = useRef(onRunEnd);
@@ -242,6 +271,22 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       g.fx.push({ id: newId(), kind, x, y, r, life, max: life, color });
     }
 
+    /** A body coming apart. Bigger bodies throw more, and further. */
+    function burst(e) {
+      const big = e.boss || e.elite;
+      const n = big ? 16 : e.slot === 'BEETLE' ? 7 : 4;
+      const color = SHARD_COLOR[e.slot] || '#fbbf24';
+      for (let i = 0; i < n && g.shards.length < LIMITS.shards; i++) {
+        const a = Math.random() * TAU;
+        const v = (big ? 260 : 170) * (0.35 + Math.random() * 0.8);
+        const life = 300 + Math.random() * 280;
+        g.shards.push({
+          x: e.x, y: e.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+          size: (big ? 6 : 3.5) + Math.random() * 3, color, life, max: life,
+        });
+      }
+    }
+
     // ---- spawning ------------------------------------------------------
 
     function spawnAt(slot, x, y, opts = {}) {
@@ -255,10 +300,11 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       const scheduled = opts.boss || opts.elite;
       const scale = (scheduled ? 1 : timeScale(g.t)) * D.hpMul * (opts.hpMul || 1);
       const hp = Math.round(conf.hp * scale);
+      const attack = opts.boss ? ATTACKS.BOSS : (!opts.elite && ATTACKS[slot]) || null;
       const e = {
         id: newId(),
         slot,
-        x, y,
+        x, y, px: x, py: y,
         hp,
         maxHp: hp,
         speed: conf.speed * D.speedMul * (opts.speedMul || 1),
@@ -274,6 +320,14 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         boss: !!opts.boss,
         elite: !!opts.elite,
         sizeMul: opts.sizeMul || 1,
+        age: 0,
+        // Its attack pattern, if it has one (see ATTACKS): 'seek' until it is
+        // close and off cooldown, 'wind' while it telegraphs, 'go' while it
+        // commits along (ax, ay).
+        attack,
+        mode: 'seek', modeT: 0, ax: 0, ay: 0,
+        atkCd: attack ? (opts.boss ? 3500 : 900 + Math.random() * 2600) : 0,
+        summonCd: opts.boss ? ATTACKS.BOSS.summonEveryMs : 0,
       };
       g.enemies.push(e);
       return e;
@@ -324,6 +378,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         }
         pop('THE SWARM CLOSES IN', g.hero.x, g.hero.y - 90, '#f43f5e');
         g.shake = Math.max(g.shake, 10);
+        sfx('waveStart', { pitch: 0.7 });
       }
 
       // Mini-bosses on a schedule through the opening climb...
@@ -358,6 +413,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         g.bossCount += 1;
         pop(g.bossCount === 1 ? 'THE BROODMOTHER' : 'ANOTHER BROODMOTHER', g.hero.x, g.hero.y - 120, '#ef4444');
         g.shake = 16;
+        sfx('boss');
       }
     }
 
@@ -370,6 +426,10 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         : Math.max(1, rawDamage - e.dr);
       e.hp -= dmg;
       e.flash = 120;
+      // Only the hits worth reading get a number; a dart's chip damage is noise.
+      if (dmg >= 22 && g.nums.length < LIMITS.nums) {
+        g.nums.push({ text: String(Math.round(dmg)), x: e.x + (Math.random() - 0.5) * 14, y: e.y - e.r, life: 520, max: 520, big: dmg >= 60 });
+      }
       if (opts.slowPct) {
         // Strongest chill wins rather than stacking, matching the board's Cryo.
         if (opts.slowPct >= e.slowPct || e.slowT <= 0) {
@@ -378,23 +438,57 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         }
       }
       if (e.hp <= 0) kill(e);
+      else sfx('hit');
+    }
+
+    function dropGem(gem) {
+      if (g.gems.length < LIMITS.gems) { g.gems.push(gem); return; }
+      // The field is full of gems nobody has collected. The experience used to
+      // be thrown away here; it is folded into a gem already on the ground.
+      const host = g.gems[(Math.random() * g.gems.length) | 0];
+      if (host && !host.heal && !host.power) { host.value += gem.value; host.big = true; }
     }
 
     function kill(e) {
       const conf = SURVIVOR_ENEMIES[e.slot];
       g.kills += 1;
-      g.score += Math.round(conf.score * D.scoreMul);
 
-      const value = Math.max(1, Math.round(conf.xp * D.rewardMul * g.hero.xpMul));
-      if (g.gems.length < LIMITS.gems) {
-        g.gems.push({
-          id: newId(), x: e.x, y: e.y, value,
-          vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40,
-          big: conf.elite || conf.boss,
-        });
+      // The chain. Each kill inside the window extends it, and the longer it is
+      // the more every kill is worth.
+      g.combo += 1;
+      g.comboT = COMBO.windowMs;
+      if (g.combo > g.bestCombo) g.bestCombo = g.combo;
+      const chain = 1 + COMBO.maxBonus * Math.min(1, g.combo / COMBO.fullAt);
+      g.score += Math.round(conf.score * D.scoreMul * chain);
+      const shout = COMBO.milestones[g.combo];
+      if (shout) {
+        pop(`${shout}  ×${g.combo}`, g.hero.x, g.hero.y - 100, '#fbbf24');
+        sfx('powerup');
       }
 
+      const value = Math.max(1, Math.round(conf.xp * D.rewardMul * g.hero.xpMul));
+      dropGem({
+        id: newId(), x: e.x, y: e.y, px: e.x, py: e.y, value,
+        vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40,
+        big: conf.elite || conf.boss,
+      });
+
       fx('burst', e.x, e.y, e.r * 1.2, 320, conf.boss ? '#ef4444' : '#fbbf24');
+      burst(e);
+      sfx('kill');
+
+      // A power-up, by luck or by pity.
+      if (!e.boss && !e.elite) {
+        g.killsSincePickup += 1;
+        if (Math.random() < PICKUPS.chance || g.killsSincePickup >= PICKUPS.pityKills) {
+          g.killsSincePickup = 0;
+          // Meat only when it would be welcome.
+          const hurtHero = g.hero.hp < g.hero.maxHp * 0.7;
+          const kinds = hurtHero ? PICKUPS.kinds : PICKUPS.kinds.filter(k => k !== 'MEAT');
+          const power = kinds[(Math.random() * kinds.length) | 0];
+          g.gems.push({ id: newId(), x: e.x, y: e.y, px: e.x, py: e.y, value: 0, power, vx: 0, vy: 0, big: true });
+        }
+      }
 
       if (e.boss) {
         // A boss dying does NOT end the run — it clears the slot, banks a bonus
@@ -405,12 +499,74 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         g.score += Math.round(RUN.bossBonus * g.bossKills * D.scoreMul);
         g.bossTimer = RUN.bossEveryMs;
         g.shake = 20;
+        g.slams.length = 0;
         pop('BROODMOTHER DOWN', e.x, e.y - 40, '#fbbf24');
-        g.gems.push({ id: newId(), x: e.x, y: e.y, value: 0, heal: RUN.bossHeal, vx: 0, vy: 0, big: true });
+        g.gems.push({ id: newId(), x: e.x, y: e.y, px: e.x, py: e.y, value: 0, heal: RUN.bossHeal, vx: 0, vy: 0, big: true });
+        sfx('waveClear');
       } else if (e.elite) {
         // An elite drops a health orb — the only healing in the run that is not
         // bought with a level-up, so killing one is always worth the risk.
-        g.gems.push({ id: newId(), x: e.x, y: e.y, value: 0, heal: 30, vx: 0, vy: 0, big: true });
+        g.gems.push({ id: newId(), x: e.x, y: e.y, px: e.x, py: e.y, value: 0, heal: 30, vx: 0, vy: 0, big: true });
+      }
+    }
+
+    /**
+     * Everything that hurts the hero goes through here, so the one global window
+     * of invulnerability, the dash, armour and the revive all apply equally to a
+     * touch, a charge and a slam.
+     */
+    function damageHero(raw, opts = {}) {
+      const h = g.hero;
+      if (h.iframe > 0) return false;
+      const taken = Math.max(1, Math.round(raw) - h.armor);
+      h.hp -= taken;
+      h.iframe = 650;
+      h.hurtFlash = 220;
+      g.shake = Math.max(g.shake, opts.heavy ? 12 : 5);
+      pop(`-${taken}`, h.x, h.y - 30, '#f87171');
+      sfx('hurt');
+      if (h.hp <= 0) {
+        if (h.revives > 0) {
+          h.revives -= 1;
+          h.hp = Math.round(h.maxHp * 0.5);
+          h.iframe = 2200;
+          pop('SECOND WIND', h.x, h.y - 60, '#34d399');
+          // The revive clears the field so it is a real reprieve.
+          for (const e of g.enemies) if (!e.boss) hurt(e, 99999, { armorPiercing: true });
+          fx('nova', h.x, h.y, 700, 600, '#34d399');
+          g.shake = 18;
+          sfx('heal');
+        } else {
+          h.hp = 0;
+          g.state = 'DEAD';
+          g.outcome = 'DEAD';
+          sfx('gameOver');
+        }
+      }
+      return true;
+    }
+
+    // ---- the spatial grid ----------------------------------------------
+    //
+    // A coarse uniform grid, rebuilt twice a step (before the bullets fly and
+    // after the bodies move). It makes pushing bodies apart O(n) instead of
+    // O(n²), and it means a bullet only tests the handful of enemies near it
+    // rather than all two hundred — that loop was the simulation's hot spot.
+    // Bodies too big for the cell size (elites, bosses) are kept in `bigs` and
+    // simply tested every time; there are never more than a few.
+    const CELL = 56;
+    const grid = new Map();
+    const bigs = [];
+    function rebuildGrid() {
+      grid.clear();
+      bigs.length = 0;
+      for (const e of g.enemies) {
+        if (e.hp <= 0) continue;
+        if (e.r > 30) { bigs.push(e); continue; }
+        const key = ((e.x / CELL) | 0) * 4096 + ((e.y / CELL) | 0);
+        let bucket = grid.get(key);
+        if (!bucket) { bucket = []; grid.set(key, bucket); }
+        bucket.push(e);
       }
     }
 
@@ -490,6 +646,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
 
     function addBullet(b) {
       if (g.bullets.length >= LIMITS.bullets) return;
+      b.px = b.x; b.py = b.y;
       g.bullets.push(b);
     }
 
@@ -518,6 +675,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
           hits: null,
         });
       }
+      sfx('shoot', w.id === 'SNIPER' ? { pitch: 0.5, volume: 1.3 } : undefined);
       return true;
     }
 
@@ -538,6 +696,8 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         splash: s.splash,
         arc: travel,
         arcT: 0,
+        // Where it will land, so the painter can mark the spot.
+        tx: target.x, ty: target.y,
       });
       return true;
     }
@@ -554,6 +714,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         }
       }
       fx('nova', origin.x, origin.y, s.radius, 420, '#67e8f9');
+      if (hit > 0) sfx('freeze');
       return hit > 0;
     }
 
@@ -570,7 +731,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         if (g.fx.length < LIMITS.fx) {
           g.fx.push({
             id: newId(), kind: 'arc', color: '#fbbf24', life: 180, max: 180,
-            x: from.x, y: from.y, x2: node.x, y2: node.y, r: 0,
+            x: from.x, y: from.y, x2: node.x, y2: node.y, r: 0, seed: Math.random() * 1000,
           });
         }
         from = node;
@@ -584,6 +745,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         }
         node = next;
       }
+      sfx('zap');
       return true;
     }
 
@@ -615,6 +777,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         w.beamTick = 0;
         w.sweepFrom = Math.random() * TAU;
         g.shake = Math.max(g.shake, 6);
+        sfx('beam');
       }
     }
 
@@ -658,9 +821,28 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
 
     // ---- bullets -------------------------------------------------------
 
+    /** Tests one bullet against one enemy. Returns true if the bullet is spent. */
+    function strike(b, e) {
+      if (e.hp <= 0) return false;
+      const dx = e.x - b.x, dy = e.y - b.y;
+      const rr = e.r + b.r;
+      if (dx * dx + dy * dy > rr * rr) return false;
+      if (b.hits && b.hits.has(e.id)) return false;
+      hurt(e, b.damage, { armorPiercing: b.armorPiercing });
+      if (b.pierce > 0) {
+        b.pierce -= 1;
+        if (!b.hits) b.hits = new Set();
+        b.hits.add(e.id);
+        return false;
+      }
+      b.life = -1;
+      return true;
+    }
+
     function stepBullets(dt) {
       const sec = dt / 1000;
       for (const b of g.bullets) {
+        b.px = b.x; b.py = b.y;
         b.x += b.vx * sec;
         b.y += b.vy * sec;
         b.life -= dt;
@@ -676,45 +858,94 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
             }
             fx('boom', b.x, b.y, b.splash, 300, '#fb7185');
             g.shake = Math.max(g.shake, 3);
+            sfx('boom');
           }
           continue;
         }
 
-        for (const e of g.enemies) {
-          if (e.hp <= 0) continue;
-          const dx = e.x - b.x, dy = e.y - b.y;
-          const rr = e.r + b.r;
-          if (dx * dx + dy * dy > rr * rr) continue;
-          if (b.hits && b.hits.has(e.id)) continue;
-          hurt(e, b.damage, { armorPiercing: b.armorPiercing });
-          if (b.pierce > 0) {
-            b.pierce -= 1;
-            if (!b.hits) b.hits = new Set();
-            b.hits.add(e.id);
-          } else {
-            b.life = -1;
-            break;
+        // Only the cells the bullet could possibly be touching.
+        let spent = false;
+        const cx = (b.x / CELL) | 0, cy = (b.y / CELL) | 0;
+        for (let ox = -1; ox <= 1 && !spent; ox++) {
+          for (let oy = -1; oy <= 1 && !spent; oy++) {
+            const bucket = grid.get((cx + ox) * 4096 + (cy + oy));
+            if (!bucket) continue;
+            for (const e of bucket) { if (strike(b, e)) { spent = true; break; } }
           }
         }
+        if (!spent) for (const e of bigs) { if (strike(b, e)) break; }
       }
       compact(g.bullets, b => b.life > 0);
     }
 
     // ---- enemies -------------------------------------------------------
 
-    // A coarse uniform grid, rebuilt each frame, so pushing bodies apart costs
-    // O(n) instead of O(n squared). Without it two hundred enemies stack into a
-    // single sprite the moment they reach the player.
-    const CELL = 56;
-    const grid = new Map();
-    function rebuildGrid() {
-      grid.clear();
-      for (const e of g.enemies) {
-        const key = ((e.x / CELL) | 0) * 4096 + ((e.y / CELL) | 0);
-        let bucket = grid.get(key);
-        if (!bucket) { bucket = []; grid.set(key, bucket); }
-        bucket.push(e);
+    /**
+     * Runs an enemy's attack pattern and returns the velocity it wants this
+     * step, or null to mean "walk at the hero as usual".
+     */
+    function attackStep(e, dt, dist, ux, uy) {
+      const A = e.attack;
+      // No pattern — or chilled before it could start one: just walk.
+      if (!A || (e.slowT > 0 && e.mode === 'seek')) { if (e.atkCd > 0) e.atkCd -= dt; return null; }
+
+      if (e.boss) {
+        // The slam: she stops, a ring grows on the ground, and it lands.
+        e.atkCd -= dt;
+        if (e.atkCd <= 0 && dist < A.slamDist) {
+          e.atkCd = A.slamEveryMs;
+          e.mode = 'wind'; e.modeT = A.slamMs * 0.55;
+          g.slams.push({ x: e.x, y: e.y, r: A.slamRadius * e.sizeMul, life: A.slamMs, max: A.slamMs, damage: A.slamDamage });
+          sfx('boss', { pitch: 1.4, volume: 0.7 });
+        }
+        // Workers rally to her, exactly as they pour out of her on the TD road.
+        e.summonCd -= dt;
+        if (e.summonCd <= 0) {
+          e.summonCd = A.summonEveryMs;
+          for (let i = 0; i < A.summonCount; i++) {
+            const a = (i / A.summonCount) * TAU + Math.random();
+            spawnAt('ANT', clamp(e.x + Math.cos(a) * 70, 30, WORLD.width - 30), clamp(e.y + Math.sin(a) * 70, 30, WORLD.height - 30), { speedMul: 1.15 });
+          }
+          fx('burst', e.x, e.y, e.r * 1.6, 360, '#b91c1c');
+        }
+        if (e.mode === 'wind') {
+          e.modeT -= dt;
+          if (e.modeT <= 0) e.mode = 'seek';
+          return { vx: 0, vy: 0 };
+        }
+        return null;
       }
+
+      if (e.mode === 'seek') {
+        e.atkCd -= dt;
+        if (e.atkCd <= 0 && dist < A.triggerDist && dist > 60) {
+          e.mode = 'wind'; e.modeT = A.windMs;
+          e.ax = ux; e.ay = uy;              // committed: it will not re-aim
+        }
+        return null;
+      }
+      if (e.mode === 'wind') {
+        e.modeT -= dt;
+        if (e.modeT <= 0) { e.mode = 'go'; e.modeT = A.goMs; }
+        // Plant its feet and shudder — the warning — without giving up ground.
+        return { vx: 0, vy: 0 };
+      }
+      // 'go' — committed, but with a little steer: a charge that could never
+      // bend was simply walked around, and the pattern stopped being a threat.
+      // The turn rate is low enough that a real sidestep, or the dash, still
+      // beats it.
+      e.modeT -= dt;
+      if (e.modeT <= 0) { e.mode = 'seek'; e.atkCd = between(A.cooldownMs); }
+      const turn = (A.turnRate || 1.6) * (dt / 1000);
+      const cross = e.ax * uy - e.ay * ux;
+      const dot = e.ax * ux + e.ay * uy;
+      if (dot > 0.2) {
+        const ang = Math.max(-turn, Math.min(turn, Math.asin(Math.max(-1, Math.min(1, cross)))));
+        const c = Math.cos(ang), sn = Math.sin(ang);
+        const nx = e.ax * c - e.ay * sn, ny = e.ax * sn + e.ay * c;
+        e.ax = nx; e.ay = ny;
+      }
+      return { vx: e.ax * e.speed * A.speedMul, vy: e.ay * e.speed * A.speedMul };
     }
 
     function stepEnemies(dt) {
@@ -727,6 +958,9 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       let contactMax = 0;
       let contactCount = 0;
       for (const e of g.enemies) {
+        if (e.hp <= 0) continue;
+        e.px = e.x; e.py = e.y;
+        e.age += dt;
         if (e.flash > 0) e.flash -= dt;
         let mul = 1;
         if (e.slowT > 0) { e.slowT -= dt; mul = 1 - e.slowPct; }
@@ -741,37 +975,45 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         const dist = Math.hypot(dx, dy) || 1;
         let ux = dx / dist, uy = dy / dist;
 
-        if (e.weave) {
-          e.phase += sec * 3.4;
-          const wob = Math.sin(e.phase) * e.weave;
-          const px = -uy, py = ux;
-          ux += px * wob; uy += py * wob;
-          const n = Math.hypot(ux, uy) || 1;
-          ux /= n; uy /= n;
+        const move = attackStep(e, dt, dist, ux, uy);
+        if (move) {
+          e.x += move.vx * mul * sec;
+          e.y += move.vy * mul * sec;
+        } else {
+          if (e.weave) {
+            e.phase += sec * 3.4;
+            const wob = Math.sin(e.phase) * e.weave;
+            const px = -uy, py = ux;
+            ux += px * wob; uy += py * wob;
+            const n = Math.hypot(ux, uy) || 1;
+            ux /= n; uy /= n;
+          }
+          e.x += ux * speed * mul * sec;
+          e.y += uy * speed * mul * sec;
         }
 
-        e.x += ux * speed * mul * sec;
-        e.y += uy * speed * mul * sec;
-
-        // Separation against the eight neighbouring cells only.
-        const cx = (e.x / CELL) | 0, cy = (e.y / CELL) | 0;
-        let checked = 0;
-        for (let ox = -1; ox <= 1 && checked < 10; ox++) {
-          for (let oy = -1; oy <= 1 && checked < 10; oy++) {
-            const bucket = grid.get((cx + ox) * 4096 + (cy + oy));
-            if (!bucket) continue;
-            for (const o of bucket) {
-              if (o === e) continue;
-              checked++;
-              if (checked > 10) break;
-              const ddx = e.x - o.x, ddy = e.y - o.y;
-              const min = (e.r + o.r) * 0.78;
-              const d2 = ddx * ddx + ddy * ddy;
-              if (d2 > 0.01 && d2 < min * min) {
-                const d = Math.sqrt(d2);
-                const push = (min - d) * 0.5;
-                e.x += (ddx / d) * push;
-                e.y += (ddy / d) * push;
+        // Separation against the eight neighbouring cells only. A body mid-charge
+        // ploughs through the crowd rather than being nudged off its line.
+        if (e.mode !== 'go') {
+          const cx = (e.x / CELL) | 0, cy = (e.y / CELL) | 0;
+          let checked = 0;
+          for (let ox = -1; ox <= 1 && checked < 10; ox++) {
+            for (let oy = -1; oy <= 1 && checked < 10; oy++) {
+              const bucket = grid.get((cx + ox) * 4096 + (cy + oy));
+              if (!bucket) continue;
+              for (const o of bucket) {
+                if (o === e) continue;
+                checked++;
+                if (checked > 10) break;
+                const ddx = e.x - o.x, ddy = e.y - o.y;
+                const min = (e.r + o.r) * 0.78;
+                const d2 = ddx * ddx + ddy * ddy;
+                if (d2 > 0.01 && d2 < min * min) {
+                  const d = Math.sqrt(d2);
+                  const push = (min - d) * 0.5;
+                  e.x += (ddx / d) * push;
+                  e.y += (ddy / d) * push;
+                }
               }
             }
           }
@@ -782,7 +1024,10 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
 
         if (dist < e.r + 20) {
           contactCount++;
-          if (e.damage > contactMax) contactMax = e.damage;
+          // A landed charge hurts more than a walk-in — that is what the wind-up
+          // was warning about.
+          const hit = e.mode === 'go' ? Math.round(e.damage * 1.5) : e.damage;
+          if (hit > contactMax) contactMax = hit;
         }
       }
 
@@ -798,42 +1043,85 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       // a dozen ants — while a crowd is still worse than a single body, which is
       // what keeps the swarm frightening rather than decorative.
       h.iframe -= dt;
-      if (contactCount > 0 && h.iframe <= 0) {
+      if (contactCount > 0) {
         const crowd = Math.min(6, Math.floor(contactCount / 5));
-        const taken = Math.max(1, contactMax + crowd - h.armor);
-        h.hp -= taken;
-        h.iframe = 650;
-        h.hurtFlash = 220;
-        g.shake = Math.max(g.shake, 5);
-        pop(`-${taken}`, h.x, h.y - 30, '#f87171');
-        if (h.hp <= 0) {
-          if (h.revives > 0) {
-            h.revives -= 1;
-            h.hp = Math.round(h.maxHp * 0.5);
-            h.iframe = 2200;
-            pop('SECOND WIND', h.x, h.y - 60, '#34d399');
-            // The revive clears the field so it is a real reprieve.
-            for (const e of g.enemies) if (!e.boss) hurt(e, 99999, { armorPiercing: true });
-            g.shake = 18;
-          } else {
-            h.hp = 0;
-            g.state = 'DEAD';
-            g.outcome = 'DEAD';
-          }
+        damageHero(contactMax + crowd);
+      }
+
+      // Slams land when their ring is full.
+      for (const s of g.slams) {
+        s.life -= dt;
+        if (s.life <= 0) {
+          const dx = h.x - s.x, dy = h.y - s.y;
+          if (dx * dx + dy * dy <= s.r * s.r) damageHero(s.damage, { heavy: true });
+          fx('boom', s.x, s.y, s.r, 380, '#ef4444');
+          g.shake = Math.max(g.shake, 14);
+          sfx('boom', { pitch: 0.6, volume: 1.3 });
         }
       }
+      compact(g.slams, s => s.life > 0);
     }
 
     // ---- gems ----------------------------------------------------------
+
+    function collect(gem) {
+      const h = g.hero;
+      if (gem.heal) {
+        h.hp = Math.min(h.maxHp, h.hp + gem.heal);
+        pop(`+${gem.heal}`, h.x, h.y - 40, '#34d399');
+        sfx('heal');
+        return;
+      }
+      if (gem.power === 'MAGNET') {
+        // Everything on the field comes to you.
+        for (const o of g.gems) if (!o.power && !o.heal) o.pulled = true;
+        pop(PICKUPS.MAGNET.label, h.x, h.y - 50, PICKUPS.MAGNET.color);
+        fx('nova', h.x, h.y, 420, 520, PICKUPS.MAGNET.color);
+        sfx('powerup');
+        return;
+      }
+      if (gem.power === 'BOMB') {
+        const B = PICKUPS.BOMB;
+        const dmg = B.damage + B.perLevel * h.level;
+        const r2 = B.radius * B.radius;
+        for (const e of g.enemies) {
+          const dx = e.x - h.x, dy = e.y - h.y;
+          if (dx * dx + dy * dy <= r2) hurt(e, e.boss ? dmg * 0.5 : dmg, { armorPiercing: true });
+        }
+        pop(B.label, h.x, h.y - 50, B.color);
+        fx('boom', h.x, h.y, B.radius, 520, B.color);
+        g.shake = 22;
+        sfx('boom', { pitch: 0.5, volume: 1.5 });
+        return;
+      }
+      if (gem.power === 'MEAT') {
+        const M = PICKUPS.MEAT;
+        h.hp = Math.min(h.maxHp, h.hp + M.heal);
+        pop(M.label, h.x, h.y - 40, M.color);
+        sfx('heal');
+        return;
+      }
+      h.xp += gem.value;
+      // A run of gems plays a rising scale — the sound of a good sweep.
+      g.gemStreak = g.gemStreakT > 0 ? Math.min(14, g.gemStreak + 1) : 0;
+      g.gemStreakT = 420;
+      sfx('pickup', { pitch: 1 + g.gemStreak * 0.06 });
+    }
 
     function stepGems(dt) {
       const sec = dt / 1000;
       const h = g.hero;
       const pull = h.pickupR;
+      if (g.gemStreakT > 0) g.gemStreakT -= dt;
       for (const gem of g.gems) {
+        gem.px = gem.x; gem.py = gem.y;
         const dx = h.x - gem.x, dy = h.y - gem.y;
         const d = Math.hypot(dx, dy) || 1;
-        if (d < pull) {
+        if (gem.pulled) {
+          const s = 900;
+          gem.x += (dx / d) * s * sec;
+          gem.y += (dy / d) * s * sec;
+        } else if (d < pull) {
           // Accelerating pull, so a magnet build feels like a vacuum.
           const s = 260 + (1 - d / pull) * 520;
           gem.x += (dx / d) * s * sec;
@@ -844,24 +1132,19 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
           gem.vx *= 0.92;
           gem.vy *= 0.92;
         }
-        if (d < 26) {
-          gem.taken = true;
-          if (gem.heal) {
-            h.hp = Math.min(h.maxHp, h.hp + gem.heal);
-            pop(`+${gem.heal}`, h.x, h.y - 40, '#34d399');
-          } else {
-            h.xp += gem.value;
-          }
-        }
+        if (d < 30) { gem.taken = true; collect(gem); }
       }
       compact(g.gems, gem => !gem.taken);
 
+      let levelled = false;
       while (h.xp >= h.xpNext) {
         h.xp -= h.xpNext;
         h.level += 1;
         h.xpNext = xpForLevel(h.level);
         g.pendingLevels += 1;
+        levelled = true;
       }
+      if (levelled) sfx('levelUp');
       if (g.pendingLevels > 0 && g.state === 'PLAYING') {
         g.state = 'LEVELUP';
         levelRef.current?.();
@@ -876,6 +1159,9 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       const input = inputRef.current || {};
       const aura = auraBonus();
       const speed = h.baseSpeed * h.speedMul * (1 + aura.moveSpeed);
+
+      h.px = h.x; h.py = h.y;
+      g.cam.px = g.cam.x; g.cam.py = g.cam.y;
 
       let dx = 0, dy = 0;
       const keys = input.keys;
@@ -892,13 +1178,37 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       }
 
       const mag = Math.hypot(dx, dy);
-      if (mag > 0) {
-        dx /= mag; dy /= mag;
+      if (mag > 0) { dx /= mag; dy /= mag; h.lastX = dx; h.lastY = dy; }
+
+      // The dash. Requested by the shell (a key, a button, a double-tap); it goes
+      // the way the hero is moving, or the way it last moved if it is standing.
+      if (h.dashCd > 0) h.dashCd -= dt;
+      if (input.dash) {
+        input.dash = false;
+        if (h.dashCd <= 0 && h.dashT <= 0) {
+          h.dashT = DASH.ms;
+          h.dashCd = DASH.cooldownMs;
+          h.dashX = mag > 0 ? dx : h.lastX;
+          h.dashY = mag > 0 ? dy : h.lastY;
+          h.iframe = Math.max(h.iframe, DASH.iframeMs);
+          fx('burst', h.x, h.y, 34, 260, '#e0f2fe');
+          sfx('dash');
+        }
+      }
+
+      if (h.dashT > 0) {
+        h.dashT -= dt;
+        h.x = clamp(h.x + h.dashX * speed * DASH.speedMul * sec, 24, WORLD.width - 24);
+        h.y = clamp(h.y + h.dashY * speed * DASH.speedMul * sec, 24, WORLD.height - 24);
+        h.walkPhase += sec * 18;
+        // Afterimages, so the burst reads as speed rather than a teleport.
+        if (g.fx.length < LIMITS.fx) g.fx.push({ id: newId(), kind: 'ghost', x: h.x, y: h.y, r: 0, life: 200, max: 200, facing: h.facing });
+      } else if (mag > 0) {
         h.x = clamp(h.x + dx * speed * sec, 24, WORLD.width - 24);
         h.y = clamp(h.y + dy * speed * sec, 24, WORLD.height - 24);
         h.walkPhase += sec * 9;
-        if (dx !== 0) h.facing = dx > 0 ? 1 : -1;
       }
+      if (mag > 0 && dx !== 0) h.facing = dx > 0 ? 1 : -1;
 
       if (h.regen > 0 && h.hp < h.maxHp) {
         h.hp = Math.min(h.maxHp, h.hp + h.regen * sec);
@@ -923,17 +1233,32 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         g.scoreFrac -= whole;
       }
 
+      if (g.comboT > 0) {
+        g.comboT -= dt;
+        if (g.comboT <= 0) g.combo = 0;
+      }
+
       stepHero(dt);
       runSpawns(dt);
+      rebuildGrid();
       stepWeapons(dt);
       stepBullets(dt);
       stepEnemies(dt);
       stepGems(dt);
 
+      const sec = dt / 1000;
       for (const p of g.pops) { p.life -= dt; p.y -= dt * 0.03; }
       compact(g.pops, p => p.life > 0);
+      for (const n of g.nums) { n.life -= dt; n.y -= dt * 0.05; }
+      compact(g.nums, n => n.life > 0);
       for (const f of g.fx) f.life -= dt;
       compact(g.fx, f => f.life > 0);
+      for (const s of g.shards) {
+        s.life -= dt;
+        s.x += s.vx * sec; s.y += s.vy * sec;
+        s.vx *= 0.9; s.vy *= 0.9;
+      }
+      compact(g.shards, s => s.life > 0);
 
       // The only way a run ends is death — there is no victory state any more.
       if (g.state === 'DEAD') endRef.current?.(g.outcome, g.score);
@@ -941,17 +1266,27 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
 
     // ---- rAF -----------------------------------------------------------
 
+    // What React shows. Rendered when it changes: at once for the things a
+    // player must not miss, and at most ~10 times a second for the rest.
+    let shown = '';
+    let urgentShown = '';
+    let lastReact = 0;
+    const hudKey = () => {
+      const h = g.hero;
+      return `${Math.ceil(h.hp)}|${h.xp}|${Math.round(g.score / 10)}|${(g.t / 1000) | 0}|${g.combo}|${h.dashCd <= 0}|${g.boss ? Math.ceil(g.boss.hp / 20) : 0}`;
+    };
+    const urgentKey = () => `${g.state}|${g.hero.level}|${g.hero.revives}|${!!g.boss}|${g.weapons.length}`;
+
     const frame = (now) => {
       raf = requestAnimationFrame(frame);
       const elapsed = now - last;
       last = now;
 
-      // A tab that was in the background hands back a huge delta; clamping stops
-      // the sim fast-forwarding through a minute of spawns in one frame.
-      acc += Math.min(elapsed, 250);
-
       const running = g.state === 'PLAYING' && !pausedRef.current;
       if (running) {
+        // A tab that was in the background hands back a huge delta; clamping stops
+        // the sim fast-forwarding through a minute of spawns in one frame.
+        acc += Math.min(elapsed, 250);
         let guard = 0;
         while (acc >= STEP_MS && guard < 5) {
           step(STEP_MS);
@@ -964,7 +1299,18 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         acc = 0;
       }
 
-      renderRef.current();
+      // Paint every frame — even paused or behind a modal, so a resize or a
+      // rotation never leaves the arena black.
+      drawRef?.current?.(running ? acc / STEP_MS : 1);
+
+      const urgent = urgentKey();
+      const key = hudKey();
+      if (urgent !== urgentShown || (key !== shown && now - lastReact > 95)) {
+        urgentShown = urgent;
+        shown = key;
+        lastReact = now;
+        renderRef.current();
+      }
     };
 
     raf = requestAnimationFrame(frame);

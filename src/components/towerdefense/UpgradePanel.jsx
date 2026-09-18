@@ -5,6 +5,7 @@ import {
   Trash2, Check, Lock, X, ShieldAlert, Wand2
 } from 'lucide-react';
 import { TOWERS, getEffectiveStats, getSellValue } from './gameData';
+import { TARGET_MODES, towerTargetingMode } from './useGameEngine';
 import TowerVisual from './TowerVisual';
 
 const UPGRADE_ORDER = ['rate', 'damage', 'range', 'targeting', 'passive'];
@@ -17,7 +18,7 @@ const UPGRADE_ICONS = {
 };
 
 export default function UpgradePanel({
-  tower, towers, credits, onUpgrade, onSell, onClose,
+  tower, towers, credits, onUpgrade, onSell, onClose, onSetTargetMode,
   unicornChargePct = 0, unicornReady = false
 }) {
   if (!tower) {
@@ -37,6 +38,14 @@ export default function UpgradePanel({
   const sellValue = getSellValue(tower);
   const upgrades = tower.upgrades || {};
   const isUnicorn = tConf.type === 'UNICORN';
+  // Towers that pick a target get a priority selector; the aura and the
+  // hand-aimed unicorn have nothing to prioritise.
+  const aims = tConf.type !== 'BUFF' && !isUnicorn;
+  const smartLabel = upgrades.targeting ? tConf.upgrades?.targeting?.label : null;
+  const activeMode = tower.targetMode || (smartLabel ? 'SMART' : towerTargetingMode(tower));
+  const modes = smartLabel
+    ? [...TARGET_MODES, { id: 'SMART', label: smartLabel, hint: tConf.upgrades.targeting.desc }]
+    : TARGET_MODES;
 
   return (
     <aside className="order-2 md:order-none flex w-full md:w-80 h-auto md:h-full bg-slate-800 md:border-l-4 border-b-4 md:border-b-0 border-slate-950 flex-col md:flex-col flex-shrink-0 z-20 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)] md:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.3)]">
@@ -105,6 +114,37 @@ export default function UpgradePanel({
             ) : (
               <span className="text-slate-400">Charging {Math.round(unicornChargePct * 100)}% — the rainbow ring fills as it powers up.</span>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Who to shoot. Free, instant, and the difference between a Marksman that
+          wastes a 3-second shot on an ant and one that saves it for the Beetle. */}
+      {aims && (
+        <div className="px-3 py-2 md:px-4 md:py-3 bg-slate-900 border-b-2 md:border-b-0 border-t-2 md:border-t-0 border-slate-700 shrink-0">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-slate-500">
+              <Target className="w-3 h-3" strokeWidth={3} /> Target
+            </span>
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 tabular-nums">
+              {tower.kills || 0} kills · {formatDealt(tower.dealt || 0)} dmg
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {modes.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => onSetTargetMode?.(m.id)}
+                title={m.hint}
+                aria-pressed={activeMode === m.id}
+                className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border-b-2 active:border-b-0 active:translate-y-[2px]
+                  ${activeMode === m.id
+                    ? (m.id === 'SMART' ? 'bg-[#FFC800] border-[#b38c00] text-amber-950' : 'bg-[#1CB0F6] border-[#1899D6] text-white')
+                    : 'bg-slate-700 border-slate-950 text-slate-300 hover:bg-slate-600'}`}
+              >
+                {m.label}
+              </button>
+            ))}
           </div>
         </div>
       )}
@@ -188,6 +228,8 @@ export default function UpgradePanel({
     </aside>
   );
 }
+
+const formatDealt = (n) => (n >= 10000 ? `${(n / 1000).toFixed(1)}k` : Math.round(n));
 
 function Stat({ label, value, modified }) {
   return (

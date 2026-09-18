@@ -94,11 +94,28 @@ export default function Arcade() {
   // arcadeKey names the cabinet's board, so saveScore folds it into the level's
   // leaderboard record atomically. The p12 XP is clamped to nothing (it is a
   // reward, not graded work) — the prize is the board.
-  const finishGame = (score, arcadeKey) => {
+  //
+  // A score is banked the moment its run ends (onRunEnd), not only on Exit, so
+  // "Play Again" followed by a closed tab cannot lose it. `banked` remembers the
+  // best already saved this sitting so the same score is never logged twice.
+  const banked = useRef(0);
+  const bankScore = (score, arcadeKey) => {
     // Backing straight out scores nothing — don't put a 0 on the board for it.
-    if (score > 0) saveScore(selectedId, 'p12', 0, null, { arcadeScore: score, arcadeKey });
+    if (!(score > banked.current)) return;
+    banked.current = score;
+    saveScore(selectedId, 'p12', 0, null, { arcadeScore: score, arcadeKey });
+  };
+  const finishGame = (score, arcadeKey) => {
+    bankScore(score, arcadeKey);
+    banked.current = 0;
     setActiveGame(null);
   };
+
+  // "Play Again" is another play, and costs what a play costs. Both games show
+  // the price on the button and disable it when the wallet cannot cover it.
+  const replay = free.unlocked
+    ? null
+    : { cost: PLAY_COST, canAfford: balance >= PLAY_COST, onCharge: () => spendGold(PLAY_COST) };
 
   // Tabs can be clicked faster than the network answers; only the latest
   // request may fill the board, or one game's rows land under the other's tab.
@@ -147,6 +164,8 @@ export default function Arcade() {
         unitId={selectedId}
         mathUnitId={questions.mathUnitId}
         startingCredits={startingCredits}
+        replay={replay}
+        onRunEnd={(score) => bankScore(score, ARCADE_KEY)}
         onComplete={(score) => finishGame(score, ARCADE_KEY)}
         onQuit={() => setActiveGame(null)}
       />
@@ -162,6 +181,8 @@ export default function Arcade() {
         startingCredits={startingCredits}
         onStart={() => { if (!free.unlocked) spendGold(PLAY_COST); }}
         purseNote="Your kit budget for this run — none of it carries over."
+        replay={replay}
+        onRunEnd={(score) => bankScore(score, SURVIVOR_KEY)}
         onComplete={(score) => finishGame(score, SURVIVOR_KEY)}
         onQuit={() => setActiveGame(null)}
       />

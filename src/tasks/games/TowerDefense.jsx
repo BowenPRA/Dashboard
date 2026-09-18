@@ -9,6 +9,8 @@ import HUD from '../../components/towerdefense/HUD';
 import ExitConfirmModal from '../../components/towerdefense/ExitConfirmModal';
 import { useGameEngine } from '../../components/towerdefense/useGameEngine';
 import { mathChallengeFor } from '../../components/towerdefense/mathChallenges';
+import SpriteForge from '../../components/survivor/spriteForge';
+import { sfx, isMuted, toggleMuted, unlockAudio } from '../../arcade/sfx';
 
 const CHALLENGE_DURATION = 15;
 const ALL_TOWER_IDS = ['DART', 'SNIPER', 'SPLASH', 'FROST', 'CHAIN', 'NITRO', 'UNICORN'];
@@ -103,7 +105,14 @@ export default function TowerDefense({
   mathUnitId = unitId,
   themeId = 'STANDARD',
   onQuit = () => window.history.back(),
-  onComplete = () => {}
+  onComplete = () => {},
+  // Fired every time a run ends (win or lose) with that run's score, so the
+  // Arcade can bank it at once — a student who plays again and then closes the
+  // tab must not lose the run they just finished.
+  onRunEnd,
+  // What "Play Again" costs here, if anything: { cost, canAfford, onCharge }.
+  // The Arcade charges gold per play; a unit's own game passes nothing (free).
+  replay = null,
 }) {
   const layout = MAP_LAYOUTS[gameConfig.mapId] || MAP_LAYOUTS.WAVE;
   const lives = gameConfig.lives || 20;
@@ -180,6 +189,11 @@ export default function TowerDefense({
       credits: startingCredits, lives, maxLives: lives, wave: 0, score: 0, bolts: 0,
       speed: 1, gameState: 'PLAYING',
       towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
+      // Cosmetics the painter draws and the engine ages: death bits, the ids of
+      // towers that fired this frame (for their recoil), the banner, the shake.
+      shards: [], fired: [], banner: null, shake: 0, hurt: 0, time: 0,
+      // The run's tally, for the results screen and the perfect-wave streak.
+      kills: 0, leaks: 0, leaksThisWave: 0, perfectStreak: 0, towersBuilt: 0, paused: false,
       decorations: generateDecorations(layout, pathSet),
       waveInProgress: false, spawnQueue: [], spawnTimer: 0,
       fireCooldowns: {}, nextId: 1, challengeTimer: Infinity, wave5ChallengeSpawned: false,
@@ -189,9 +203,8 @@ export default function TowerDefense({
       // one-shot {row,col} the player queues by aiming, consumed on the next frame.
       unicornCharge: 0, unicornFire: null,
       // Stamped on every build/sell/upgrade so the effective-stats cache and the
-      // memoised tower layer know the board actually changed; creepsVersion is
-      // the same signal for spawns and deaths.
-      towersVersion: 0, creepsVersion: 0
+      // memoised tower layer know the board actually changed.
+      towersVersion: 0
     };
   }
   const g = gRef.current;
@@ -230,11 +243,22 @@ export default function TowerDefense({
   const boardWrapperRef = useRef(null);
   const [boardScale, setBoardScale] = useState(1);
 
+  // The board's canvas registers its painter here; the engine calls it once per
+  // display frame. The sprite atlas is forged once from the real enemy artwork.
+  const drawRef = useRef(null);
+  const [sprites, setSprites] = useState(null);
+  const handleSprites = useCallback((atlas) => setSprites(atlas), []);
+
+  const [userPaused, setUserPaused] = useState(false);
+  const [muted, setMutedState] = useState(() => isMuted());
+  const handleToggleMute = useCallback(() => setMutedState(toggleMuted()), []);
+  const handleTogglePause = useCallback(() => { unlockAudio(); setUserPaused(p => !p); }, []);
+
   useGameEngine({
     gRef, render, layout, engineConfig,
     onTriggerChallenge: buildChallengeTrigger,
     onAutoStartWave: handleStartWave,
-    challengeActiveRef, autoPlayRef
+    challengeActiveRef, autoPlayRef, drawRef
   });
 
   useEffect(() => {
@@ -347,18 +371,16 @@ export default function TowerDefense({
   function awardChallengeWin() {
     g.bolts += 1;
     g.score += 50;
-    g.floaters.push({
-      id: g.nextId++, text: '⚡ +1', row: 1, col: layout.cols / 2, colorClass: 'text-[#FFC800] font-black', life: 1500, maxLife: 1500
-    });
+    g.floaters.push({ id: g.nextId++, text: '⚡ +1 BOLT', row: 1, col: layout.cols / 2, kind: 'bolt', life: 1500, maxLife: 1500 });
+    sfx('correct');
   }
 
   function punishChallengeFail() {
     const count = Math.max(1, Math.floor(g.wave / 2));
     g.spawnQueue.unshift({ type: basicEnemyType, count, interval: 350 });
     g.spawnTimer = 9999;
-    g.floaters.push({
-      id: g.nextId++, text: `+${count} 👾`, row: 1, col: layout.cols / 2, colorClass: 'text-[#EA2B2B] font-black', life: 1600, maxLife: 1600
-    });
+    g.floaters.push({ id: g.nextId++, text: `+${count} 👾`, row: 1, col: layout.cols / 2, kind: 'bad', life: 1600, maxLife: 1600 });
+    sfx('wrong');
   }
 
   // Countdown for the vocab challenge. The expiry runs inside the timer callback
@@ -396,12 +418,15 @@ export default function TowerDefense({
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (challengeActiveRef.current) return;
       if (g.gameState !== 'PLAYING') return;
+      if (e.code === 'KeyM') { handleToggleMute(); return; }
       // The exit dialog is up: Space/Enter belong to its buttons, not to the wave.
+      if (showExitConfirmRef.current) return;
+      if (e.code === 'KeyP') { handleTogglePause(); return; }
       if (g.paused) return;
 
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
-        if (!g.waveInProgress) handleStartWave();
+        handleStartWave();
         return;
       }
       if (e.code === 'Escape') {
@@ -428,8 +453,17 @@ export default function TowerDefense({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buildableOrder, g]);
 
+  // A wave can be RUSHED — sent on top of the one still on the road — once that
+  // one has finished spawning. It pays the clear bonus the player is giving up
+  // by not waiting, and a little more for the nerve.
+  const earlyBonus = Math.round(65 * (Number(gameConfig.difficulty?.rewardMul) > 0 ? Number(gameConfig.difficulty.rewardMul) : 1));
+  const canRush = g.waveInProgress && g.spawnQueue.length === 0 && g.gameState === 'PLAYING';
+
   function handleStartWave() {
-    if (g.waveInProgress || g.gameState !== 'PLAYING') return;
+    if (g.gameState !== 'PLAYING' || g.paused) return;
+    const rushing = g.waveInProgress;
+    if (rushing && g.spawnQueue.length > 0) return;
+    unlockAudio();
     let data;
     if (g.wave < engineConfig.waves.length) {
       data = engineConfig.waves[g.wave];
@@ -443,7 +477,22 @@ export default function TowerDefense({
     g.spawnTimer = 9999;
     g.wave += 1;
     g.waveInProgress = true;
-    if (g.wave === 5 && !g.wave5ChallengeSpawned) g.challengeTimer = 8000; 
+    if (g.wave === 5 && !g.wave5ChallengeSpawned) g.challengeTimer = 8000;
+
+    if (rushing) {
+      g.credits += earlyBonus;
+      g.score += Math.round(earlyBonus * 2);
+      g.floaters.push({ id: g.nextId++, text: `RUSH +${earlyBonus}`, row: 1, col: layout.cols / 2, kind: 'bolt', life: 1400, maxLife: 1400 });
+    } else {
+      g.leaksThisWave = 0;
+    }
+
+    // Name the wave as it starts, and say so loudly when it carries a boss.
+    const hasBoss = data.some(w => w.type === 'GIANT_ANT' || w.type === 'QUEEN');
+    g.banner = hasBoss
+      ? { text: `Wave ${g.wave} — Boss`, sub: 'Something big is coming', tone: 'boss', life: 2400, maxLife: 2400 }
+      : { text: `Wave ${g.wave}`, sub: null, tone: 'plain', life: 1200, maxLife: 1200 };
+    sfx(hasBoss ? 'boss' : 'waveStart');
     render();
   }
 
@@ -479,10 +528,13 @@ export default function TowerDefense({
         setHoverCell({ row: -1, col: -1, valid: false });
         return;
       }
-      if (g.credits < conf.cost) return;
+      if (g.credits < conf.cost) { sfx('deny'); return; }
       g.credits -= conf.cost;
-      g.towers.push({ id: g.nextId++, typeId: builder.typeId, row: r, col: c, upgrades: {} });
+      g.towers.push({ id: g.nextId++, typeId: builder.typeId, row: r, col: c, upgrades: {}, kills: 0, dealt: 0 });
       g.towersVersion++;
+      g.towersBuilt += 1;
+      unlockAudio();
+      sfx('place');
       setActiveBuilder(null);
       setHoverCell({ row: -1, col: -1, valid: false });
       render();
@@ -542,6 +594,16 @@ export default function TowerDefense({
     g.credits -= upg.cost;
     t.upgrades = { ...t.upgrades, [key]: true };
     g.towersVersion++;
+    sfx('upgrade');
+    render();
+  }
+
+  /** Free and instant: who this tower shoots first. See TARGET_MODES. */
+  function handleSetTargetMode(mode) {
+    const t = g.towers.find(x => x.id === selectedTowerId);
+    if (!t) return;
+    t.targetMode = mode;
+    sfx('click');
     render();
   }
 
@@ -553,6 +615,7 @@ export default function TowerDefense({
     g.towersVersion++;
     delete g.fireCooldowns[t.id];
     setSelectedTowerId(null);
+    sfx('sell');
     render();
   }
 
@@ -594,21 +657,36 @@ export default function TowerDefense({
     resolveChallenge(false, true);
   }
 
-  // A run also ends by winning or losing, not only by exiting.
+  // A run also ends by winning or losing, not only by exiting. The score is
+  // handed up straight away (onRunEnd) rather than waiting for Exit.
   useEffect(() => {
-    if (g.gameState !== 'PLAYING') persistBest();
+    if (g.gameState === 'PLAYING') return;
+    // Whether this run beat the best on this device is decided BEFORE the best
+    // is updated — and strictly, so a tie is not announced as a record.
+    setNewBest(g.score > bestRef.current && g.score > 0);
+    persistBest();
+    onRunEnd?.(g.score);
   }, [g.gameState]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleReset() {
+    // In the Arcade a replay is another play, and costs what a play costs.
+    if (replay) {
+      if (!replay.canAfford) { sfx('deny'); return; }
+      replay.onCharge?.();
+    }
     persistBest();
+    setUserPaused(false);
+    setNewBest(false);
     Object.assign(g, {
+      shards: [], fired: [], banner: null, shake: 0, hurt: 0, time: 0,
+      kills: 0, leaks: 0, leaksThisWave: 0, perfectStreak: 0, towersBuilt: 0,
       credits: startingCredits, lives, maxLives: lives, wave: 0, score: 0, bolts: 0,
       gameState: 'PLAYING', towers: [], creeps: [], projectiles: [], floaters: [], particles: [], burnZones: [],
       waveInProgress: false, spawnQueue: [], spawnTimer: 0, fireCooldowns: {}, challengeTimer: Infinity, wave5ChallengeSpawned: false,
       usedVocab: {}, // Reset the tracker dictionary entirely
       autoPlayDelay: 0,
       unicornCharge: 0, unicornFire: null,
-      towersVersion: g.towersVersion + 1, creepsVersion: g.creepsVersion + 1
+      towersVersion: g.towersVersion + 1
     });
     challengeActiveRef.current = false;
     challengeResolvedRef.current = false;
@@ -651,15 +729,20 @@ export default function TowerDefense({
   // else's — so it is the score to beat on the HUD but is never submitted.
   const sessionBestRef = useRef(0);
 
-  // The exit dialog pauses the battle; the engine loop checks `g.paused`.
-  useEffect(() => { g.paused = showExitConfirm; }, [g, showExitConfirm]);
+  // The exit dialog and the pause button both stop the battle; the engine loop
+  // checks `g.paused`. The ref lets the key handler tell the two apart.
+  const showExitConfirmRef = useRef(false);
+  useEffect(() => {
+    showExitConfirmRef.current = showExitConfirm;
+    g.paused = showExitConfirm || userPaused;
+  }, [g, showExitConfirm, userPaused]);
+  const [newBest, setNewBest] = useState(false);
   const liveBest = Math.max(bestScore, g.score);
 
   const selectedTower = g.towers.find(t => t.id === selectedTowerId) || null;
 
-  // Live unicorn charge, recomputed each frame (this component re-renders every
-  // frame while the loop runs). Drives the board ring, the panel bar and whether
-  // the FIRE button is armed.
+  // Unicorn charge for the side panel. The board's ring is painted from `g`
+  // every frame; this only refreshes when the engine asks React to render.
   const unicornTower = g.towers.find(t => t.typeId === 'UNICORN') || null;
   const unicornStats = unicornTower ? getEffectiveStats(unicornTower, g.towers) : null;
   const unicornChargePct = unicornTower ? Math.min(1, g.unicornCharge / (unicornStats?.chargeTime || 1)) : 0;
@@ -673,6 +756,7 @@ export default function TowerDefense({
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col bg-slate-900 text-white font-sans overflow-hidden">
+      {!sprites && <SpriteForge tribeId={tribeId} towers={false} onReady={handleSprites} />}
       <HUD
         credits={g.credits}
         lives={g.lives}
@@ -686,6 +770,9 @@ export default function TowerDefense({
         autoPlay={autoPlayRef.current}
         tierLabel={gameConfig.tierLabel}
         nextWavePreview={nextWavePreview}
+        paused={userPaused} muted={muted} streak={g.perfectStreak}
+        earlyBonus={canRush ? earlyBonus : 0}
+        onTogglePause={handleTogglePause} onToggleMute={handleToggleMute}
         onStartWave={handleStartWave}
         onToggleAutoPlay={() => { autoPlayRef.current = !autoPlayRef.current; render(); }}
         onSetSpeed={(s) => { g.speed = s; render(); }}
@@ -696,18 +783,28 @@ export default function TowerDefense({
         <main ref={boardWrapperRef} className="flex-1 order-1 flex items-center justify-center overflow-hidden p-0 sm:p-0">
           <div style={{ transform: `scale(${boardScale})`, transformOrigin: 'center' }}>
              <GameBoard
-               layout={layout} towers={g.towers} creeps={g.creeps} projectiles={g.projectiles}
-               floaters={g.floaters} particles={g.particles} burnZones={g.burnZones}
+               layout={layout} gRef={gRef} drawRef={drawRef} sprites={sprites} boardScale={boardScale}
+               towers={g.towers}
                decorations={g.decorations} lives={g.lives} maxLives={g.maxLives}
-               towersVersion={g.towersVersion} creepsVersion={g.creepsVersion}
+               towersVersion={g.towersVersion}
                selectedTowerId={selectedTowerId} hoveredTowerId={hoveredTowerId}
                activeBuilder={activeBuilder} hoverCell={hoverCell}
                onCellClick={handleCellClick} onCellHover={handleCellHover}
                onCellLeave={handleCellLeave}
                onTowerClick={handleTowerClick} themeId={activeThemeId}
-               unicorn={unicornTower} unicornChargePct={unicornChargePct} aiming={aiming}
+               unicorn={unicornTower} aiming={aiming}
              />
           </div>
+
+          {userPaused && g.gameState === 'PLAYING' && !showExitConfirm && (
+            <button
+              onClick={handleTogglePause}
+              className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-slate-950/55 backdrop-blur-[2px] text-white"
+            >
+              <span className="text-4xl font-black uppercase tracking-widest drop-shadow">Paused</span>
+              <span className="text-xs font-black uppercase tracking-widest text-slate-300">Tap or press P to resume</span>
+            </button>
+          )}
 
           {/* Aiming banner — the whole board is a target while this is up. */}
           {aiming && (
@@ -722,6 +819,7 @@ export default function TowerDefense({
           <UpgradePanel
             tower={selectedTower} towers={g.towers} credits={g.credits}
             onUpgrade={handleUpgrade} onSell={handleSell} onClose={() => setSelectedTowerId(null)}
+            onSetTargetMode={handleSetTargetMode}
             unicornChargePct={unicornChargePct} unicornReady={unicornReady}
           />
         </div>
@@ -760,14 +858,33 @@ export default function TowerDefense({
             <div className="text-base font-bold text-slate-500 mb-6">
               {g.gameState === 'WON' ? 'You defended every wave!' : 'Too many enemies got through.'}
             </div>
+            <div className="grid grid-cols-4 gap-2 mb-4">
+              {[['Wave', g.wave], ['Kills', g.kills], ['Leaks', g.leaks], ['Towers', g.towersBuilt]].map(([label, value]) => (
+                <div key={label} className="bg-slate-100 rounded-2xl py-3">
+                  <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</div>
+                  <div className="text-xl font-black text-slate-700 tabular-nums">{value}</div>
+                </div>
+              ))}
+            </div>
             <div className="bg-slate-100 border-2 border-slate-200 rounded-2xl py-4 mb-6 shadow-inner">
               <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Final Score</div>
-              <div className="text-4xl font-black text-[#1CB0F6] tabular-nums">{g.score}</div>
-              {g.score >= bestScore && g.score > 0 && <div className="text-sm font-bold text-[#FFC800] mt-1">New Best!</div>}
+              <div className="text-4xl font-black text-[#1CB0F6] tabular-nums">{g.score.toLocaleString()}</div>
+              {newBest
+                ? <div className="text-sm font-black text-[#e6a800] mt-1 animate-bounce">★ New Best! ★</div>
+                : bestScore > 0 && <div className="text-xs font-bold text-slate-400 mt-1">Best {bestScore.toLocaleString()}</div>}
             </div>
             <div className="flex gap-3">
-              <button onClick={handleReset} className="flex-1 px-5 py-4 rounded-2xl bg-[#58A700] border-b-[4px] border-[#46a802] active:border-b-0 active:translate-y-[4px] text-white font-black transition-all uppercase tracking-widest text-sm">
+              <button
+                onClick={handleReset}
+                disabled={!!replay && !replay.canAfford}
+                className="flex-1 px-5 py-4 rounded-2xl bg-[#58A700] border-b-[4px] border-[#46a802] active:border-b-0 active:translate-y-[4px] text-white font-black transition-all uppercase tracking-widest text-sm disabled:bg-slate-300 disabled:border-slate-400 disabled:text-slate-500 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:border-b-[4px]"
+              >
                 Play Again
+                {replay && replay.cost > 0 && (
+                  <span className="block text-[10px] tracking-widest mt-0.5 opacity-90">
+                    {replay.canAfford ? `${replay.cost} gold` : `Need ${replay.cost} gold`}
+                  </span>
+                )}
               </button>
               <button onClick={confirmExit} className="flex-1 px-5 py-4 rounded-2xl bg-slate-200 border-b-[4px] border-slate-300 active:border-b-0 active:translate-y-[4px] text-slate-600 font-black transition-all uppercase tracking-widest text-sm">
                 Exit

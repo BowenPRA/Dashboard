@@ -1,23 +1,75 @@
 // src/components/towerdefense/HUD.jsx
-import React from 'react';
-import { Coins, Heart, Play, X, Shield, ShieldCheck, FastForward } from 'lucide-react';
+import React, { memo } from 'react';
+import { Coins, Heart, Play, Pause, X, Shield, ShieldCheck, FastForward, Volume2, VolumeX, ChevronsRight } from 'lucide-react';
 
 function formatScore(num) {
   if (num >= 10000) return Number((num / 1000).toFixed(1)) + 'k';
   return num;
 }
 
-export default function HUD({
+const ICON_BTN = 'w-10 h-10 rounded-2xl flex items-center justify-center border-b-4 active:border-b-0 active:translate-y-[4px] transition-all';
+
+/** Pause, mute, speed and exit — one cluster, shown top-right at every width. */
+function Controls({ speed, paused, muted, onSetSpeed, onTogglePause, onToggleMute, onQuit, compact }) {
+  return (
+    <div className={`flex items-center ${compact ? 'gap-2' : 'gap-3'}`}>
+      <button
+        onClick={onToggleMute}
+        title={muted ? 'Sound off (M)' : 'Sound on (M)'}
+        aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
+        className={`${ICON_BTN} ${compact ? 'hidden sm:flex' : ''} bg-slate-700 hover:bg-slate-600 border-slate-950 ${muted ? 'text-slate-500' : 'text-slate-200'}`}
+      >
+        {muted ? <VolumeX className="w-5 h-5" strokeWidth={2.5} /> : <Volume2 className="w-5 h-5" strokeWidth={2.5} />}
+      </button>
+
+      <button
+        onClick={onTogglePause}
+        title={paused ? 'Resume (P)' : 'Pause (P)'}
+        aria-label={paused ? 'Resume' : 'Pause'}
+        className={`${ICON_BTN} ${paused ? 'bg-[#FFC800] hover:bg-[#e6b400] border-[#b38c00] text-amber-950' : 'bg-slate-700 hover:bg-slate-600 border-slate-950 text-slate-200'}`}
+      >
+        {paused ? <Play className="w-5 h-5 fill-current" strokeWidth={2.5} /> : <Pause className="w-5 h-5 fill-current" strokeWidth={2.5} />}
+      </button>
+
+      <div className="flex items-center bg-slate-900 border-b-4 border-slate-950 rounded-2xl p-1 h-10">
+        <FastForward className={`w-4 h-4 text-slate-500 mx-1.5 ${compact ? 'hidden sm:block' : ''}`} strokeWidth={3} />
+        {[1, 2, 3].map(s => (
+          <button
+            key={s} onClick={() => onSetSpeed(s)}
+            aria-label={`Speed ${s} times`} aria-pressed={speed === s}
+            className={`${compact ? 'px-2' : 'px-3'} h-7 text-xs font-black rounded-xl transition-all uppercase ${speed === s ? 'bg-[#1CB0F6] text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+          >
+            {s}×
+          </button>
+        ))}
+      </div>
+
+      <button
+        onClick={onQuit} title="Exit" aria-label="Exit"
+        className={`${ICON_BTN} bg-rose-500 hover:bg-rose-600 border-rose-700 text-white`}
+      >
+        <X className="w-5 h-5" strokeWidth={3} />
+      </button>
+    </div>
+  );
+}
+
+function HUD({
   credits, lives, wave, totalWaves, score, bestScore, speed,
   gameState, waveInProgress, autoPlay, tierLabel, nextWavePreview,
-  onStartWave, onToggleAutoPlay, onSetSpeed, onQuit
+  paused = false, muted = false, streak = 0,
+  // Credits on offer for calling the next wave while this one is still on the
+  // road; 0 when it cannot be called yet.
+  earlyBonus = 0,
+  onStartWave, onToggleAutoPlay, onSetSpeed, onQuit, onTogglePause, onToggleMute
 }) {
+  const controls = { speed, paused, muted, onSetSpeed, onTogglePause, onToggleMute, onQuit };
+  const idle = !waveInProgress && gameState === 'PLAYING';
+
   return (
     <header className="relative z-30 bg-slate-800 border-b-4 border-slate-950 flex flex-col md:flex-row items-center px-4 sm:px-6 justify-between flex-shrink-0 shadow-sm py-3 md:py-0 md:h-16 gap-3 md:gap-0">
-      
-      {/* Top Row / Desktop Left & Right Wraps */}
+
       <div className="flex w-full md:w-auto items-center justify-between">
-        
         {/* Left: Stats */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden lg:flex items-center gap-2 mr-2">
@@ -33,56 +85,51 @@ export default function HUD({
 
           <StatPill icon={<Coins className="w-5 h-5 text-[#FFC800]" />} value={credits} size="lg" />
           <StatPill icon={<Heart className="w-5 h-5 text-[#EA2B2B]" />} value={lives} size="lg" />
-          
+
           <div className="hidden md:flex flex-col ml-2 justify-center">
             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Score</div>
             <div className="text-white font-black leading-none text-xl tabular-nums">{formatScore(score)}</div>
           </div>
 
-          {/* Prominent High Score Tag */}
           {bestScore > 0 && (
-            <div className="hidden md:flex flex-col ml-3 justify-center items-center px-3 py-1 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-xl border-b-2 border-amber-600 shadow-md transform -rotate-2 hover:rotate-0 transition-transform">
+            <div className="hidden xl:flex flex-col ml-3 justify-center items-center px-3 py-1 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-xl border-b-2 border-amber-600 shadow-md transform -rotate-2 hover:rotate-0 transition-transform">
               <div className="text-[9px] font-black text-amber-900 uppercase tracking-widest leading-none">Best</div>
               <div className="text-amber-950 font-black leading-none text-lg tabular-nums drop-shadow-sm">{formatScore(bestScore)}</div>
             </div>
           )}
         </div>
 
-        {/* Mobile-only Speed & Exit (Stays top-right) */}
-        <div className="flex md:hidden items-center gap-2">
-          <div className="flex items-center bg-slate-900 border-b-4 border-slate-950 rounded-2xl p-1 h-10">
-            <FastForward className="w-4 h-4 text-slate-500 mx-1.5 hidden sm:block" strokeWidth={3} />
-            {[1, 2, 3].map(s => (
-              <button
-                key={s} onClick={() => onSetSpeed(s)}
-                className={`px-2 h-7 text-xs font-black rounded-xl transition-all uppercase ${speed === s ? 'bg-[#1CB0F6] text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
-              >
-                {s}×
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={onQuit} title="Exit"
-            className="w-10 h-10 rounded-2xl flex items-center justify-center bg-rose-500 hover:bg-rose-600 border-b-4 border-rose-700 active:border-b-0 active:translate-y-[4px] text-white transition-all"
-          >
-            <X className="w-5 h-5" strokeWidth={3} />
-          </button>
-        </div>
+        <div className="flex md:hidden"><Controls {...controls} compact /></div>
       </div>
 
-      {/* CENTER: Wave Controls (Stacks underneath main header on mobile) */}
+      {/* CENTER: Wave Controls (stacks under the main header on mobile) */}
       <div className="flex items-center justify-center w-full md:w-auto md:absolute md:left-1/2 md:-translate-x-1/2 gap-2 bg-slate-900 p-1.5 rounded-[1.25rem] border-b-4 border-slate-950 shadow-inner">
-        <div className="px-3 text-xs font-black text-slate-400 uppercase tracking-widest tabular-nums border-r-2 border-slate-700">
-          Wave {wave}{wave <= totalWaves ? `/${totalWaves}` : ''}
+        <div className="px-3 text-xs font-black text-slate-400 uppercase tracking-widest tabular-nums border-r-2 border-slate-700 flex items-center gap-2">
+          <span>Wave {wave}{wave <= totalWaves ? `/${totalWaves}` : ''}</span>
+          {streak > 1 && (
+            <span className="px-1.5 py-0.5 rounded-md bg-[#58A700]/20 text-[#7bd42f] text-[10px]" title="Perfect waves in a row — each is worth more score">
+              ★×{streak}
+            </span>
+          )}
         </div>
-        
-        {!waveInProgress && gameState === 'PLAYING' ? (
+
+        {idle ? (
           <button
             onClick={onStartWave}
             className="flex flex-1 md:flex-none items-center justify-center gap-1.5 h-8 px-4 rounded-xl bg-[#58A700] hover:bg-[#46a802] text-white font-black uppercase tracking-widest text-xs transition-all shadow-sm"
           >
             <Play className="w-4 h-4 fill-white" strokeWidth={3} /> Next
+          </button>
+        ) : earlyBonus > 0 && gameState === 'PLAYING' ? (
+          // The road is still busy, but everything has spawned: the next wave can
+          // be piled on top for a bounty. Greed against safety — the oldest
+          // decision in the genre, and the game had no version of it.
+          <button
+            onClick={onStartWave}
+            title="Send the next wave now, on top of this one, for bonus credits"
+            className="flex flex-1 md:flex-none items-center justify-center gap-1.5 h-8 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-black uppercase tracking-widest text-[11px] transition-all shadow-sm"
+          >
+            <ChevronsRight className="w-4 h-4" strokeWidth={3} /> Rush +{earlyBonus}
           </button>
         ) : (
           <div className="flex flex-1 md:flex-none items-center justify-center gap-1.5 h-8 px-4 rounded-xl bg-slate-800 text-slate-500 font-black uppercase tracking-widest text-xs border border-slate-700">
@@ -93,6 +140,7 @@ export default function HUD({
 
         <button
           onClick={onToggleAutoPlay}
+          aria-pressed={!!autoPlay}
           className={`flex items-center justify-center h-8 px-3 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all border ${autoPlay ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/50 hover:bg-indigo-500/30' : 'bg-slate-800 text-slate-500 border-transparent hover:bg-slate-700'}`}
           title="Auto-start next wave"
         >
@@ -114,30 +162,12 @@ export default function HUD({
         )}
       </div>
 
-      {/* RIGHT: Desktop Speed & Exit */}
-      <div className="hidden md:flex items-center gap-3">
-        <div className="flex items-center bg-slate-900 border-b-4 border-slate-950 rounded-2xl p-1 h-10">
-          <FastForward className="w-4 h-4 text-slate-500 mx-1.5" strokeWidth={3} />
-          {[1, 2, 3].map(s => (
-            <button
-              key={s} onClick={() => onSetSpeed(s)}
-              className={`px-3 h-7 text-xs font-black rounded-xl transition-all uppercase ${speed === s ? 'bg-[#1CB0F6] text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
-            >
-              {s}×
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={onQuit} title="Exit"
-          className="w-10 h-10 rounded-2xl flex items-center justify-center bg-rose-500 hover:bg-rose-600 border-b-4 border-rose-700 active:border-b-0 active:translate-y-[4px] text-white transition-all"
-        >
-          <X className="w-5 h-5" strokeWidth={3} />
-        </button>
-      </div>
+      <div className="hidden md:flex"><Controls {...controls} /></div>
     </header>
   );
 }
+
+export default memo(HUD);
 
 function StatPill({ icon, value, size = "md" }) {
   return (

@@ -31,6 +31,7 @@ import {
   LoadoutScreen, SurvivorHUD, SquadBar, LevelUpModal, RunEndModal, ForgeSplash,
 } from '../../components/survivor/SurvivorUI';
 import { fmtTime } from '../../components/survivor/format';
+import { sfx, isMuted, toggleMuted, unlockAudio } from '../../arcade/sfx';
 
 const KEY_MAP = {
   KeyW: 'up', ArrowUp: 'up',
@@ -57,6 +58,11 @@ export default function Survivor({
   // Overrides the loadout's line about where the purse came from (the Arcade
   // hands out a flat budget, not banked unit XP).
   purseNote,
+  // Fired each time a run ends, with that run's score, so the Arcade can bank
+  // it at once rather than only on Exit.
+  onRunEnd,
+  // What "Play Again" costs here, if anything: { cost, canAfford, onCharge }.
+  replay = null,
 }) {
   const themeId = gameConfig.themeId || 'STANDARD';
   const tribeId = THEME_TRIBE[themeId] || 'INSECT';
@@ -81,23 +87,39 @@ export default function Survivor({
   // chosen a hero and spent their gold the atlas is already warm.
   const handleSprites = useCallback((atlas) => setSprites(atlas), []);
 
+  // Whether the run that just ended beat this device's best — decided before
+  // the best is updated, and strictly, so a tie is not announced as a record.
+  const [newBest, setNewBest] = useState(false);
+
   const bankBest = useCallback((score) => {
     sessionBestRef.current = Math.max(sessionBestRef.current, score);
+    setNewBest(score > bestRef.current && score > 0);
+    onRunEnd?.(score);
     if (score > bestRef.current) {
       bestRef.current = score;
       try { localStorage.setItem(`surv_best_${unitId}`, String(score)); } catch { /* private mode */ }
       setBestScore(score);
     }
-  }, [unitId]);
+  }, [unitId, onRunEnd]);
 
   const finish = useCallback((score) => {
-    bankBest(score);
+    sessionBestRef.current = Math.max(sessionBestRef.current, score);
     // Submit the best run of the session, not whatever was on screen at exit —
     // the same rule Tower Defense follows, so "Play Again" can never cost a
     // student their high score.
     onComplete(Math.max(score, sessionBestRef.current));
     onQuit();
-  }, [bankBest, onComplete, onQuit]);
+  }, [onComplete, onQuit]);
+
+  // In the Arcade a replay is another play, and costs what a play costs.
+  const retry = useCallback(() => {
+    if (replay) {
+      if (!replay.canAfford) { sfx('deny'); return; }
+      replay.onCharge?.();
+    }
+    setNewBest(false);
+    setRunId(n => n + 1);
+  }, [replay]);
 
   if (!deployed) {
     return (
@@ -109,7 +131,7 @@ export default function Survivor({
           mapName={gameConfig.mapName || 'The Open Field'}
           briefing={gameConfig.briefing}
           purseNote={purseNote}
-          onDeploy={(d) => { onStart?.(); setDeployed(d); }}
+          onDeploy={(d) => { unlockAudio(); onStart?.(); setDeployed(d); }}
           onBack={onQuit}
         />
       </>
@@ -135,8 +157,10 @@ export default function Survivor({
       pool={pool}
       mathUnitId={mathUnitId}
       bestScore={bestScore}
+      newBest={newBest}
+      replay={replay}
       onBank={bankBest}
-      onRetry={() => setRunId(n => n + 1)}
+      onRetry={retry}
       onFinish={finish}
     />
   );
@@ -148,7 +172,7 @@ export default function Survivor({
 // =====================================================================
 
 function SurvivorRun({
-  deployed, sprites, themeId, gameConfig, pool, mathUnitId, bestScore, onBank, onRetry, onFinish,
+  deployed, sprites, themeId, gameConfig, pool, mathUnitId, bestScore, newBest, replay, onBank, onRetry, onFinish,
 }) {
   const hero = useMemo(
     () => HEROES.find(h => h.typeId === deployed.heroId) || HEROES[0],
@@ -164,6 +188,10 @@ function SurvivorRun({
     difficulty: gameConfig.difficulty || {},
   }));
   const gRef = useRef(run);
+  // Dev only: lets the preview harness's test bot read the simulation.
+  useEffect(() => {
+    if (import.meta.env.DEV) window.__survivor = gRef;
+  }, []);
 
   // The engine's per-frame commit. It publishes a snapshot rather than a bare
   // tick, so every React screen below reads plain values and the mutable run
@@ -171,8 +199,16 @@ function SurvivorRun({
   const [hud, setHud] = useState(() => hudSnapshot(run));
   const render = useCallback(() => setHud(hudSnapshot(run)), [run]);
 
-  const inputRef = useRef({ keys: new Set(), pointerDown: false, wx: 0, wy: 0 });
+  const inputRef = useRef({ keys: new Set(), pointerDown: false, wx: 0, wy: 0, dash: false });
   const pausedRef = useRef(false);
+  // The canvas registers its painter here; the engine calls it every frame.
+  const drawRef = useRef(null);
+
+  const [showHint, setShowHint] = useState(true);
+  const [userPaused, setUserPaused] = useState(false);
+  const [muted, setMutedState] = useState(() => isMuted());
+  const toggleMute = useCallback(() => setMutedState(toggleMuted()), []);
+  const dash = useCallback(() => { inputRef.current.dash = true; setShowHint(false); }, []);
 
   const [draft, setDraft] = useState(null);     // { cards, challenge, level }
   // The results card is built from a SNAPSHOT taken when the run ends, not from
@@ -180,7 +216,6 @@ function SurvivorRun({
   // ref while rendering a static screen is asking for a stale number.
   const [ended, setEnded] = useState(null);
   const [showExit, setShowExit] = useState(false);
-  const [showHint, setShowHint] = useState(true);
 
   // The unit's own question bank — its vocabulary and its arithmetic generator.
   const nextChallenge = useMemo(() => makeChallengeBank(pool, mathUnitId), [pool, mathUnitId]);
@@ -209,6 +244,7 @@ function SurvivorRun({
     setEnded(prev => prev || {
       outcome, score,
       kills: run.kills,
+      combo: run.bestCombo,
       level: run.hero.level,
       time: fmtTime(run.t),
       bosses: run.bossKills,
@@ -220,7 +256,7 @@ function SurvivorRun({
     gRef, render, inputRef,
     onLevelUp: openDraft,
     onRunEnd: handleRunEnd,
-    pausedRef,
+    pausedRef, drawRef,
   });
 
   // ---- input -----------------------------------------------------------
@@ -231,6 +267,13 @@ function SurvivorRun({
       const tag = document.activeElement?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (e.code === 'Escape') { setShowExit(true); return; }
+      if (e.code === 'KeyM') { toggleMute(); return; }
+      if (e.code === 'KeyP') { setUserPaused(p => !p); return; }
+      if (e.code === 'Space' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        e.preventDefault();
+        if (!e.repeat) dash();
+        return;
+      }
       const dir = KEY_MAP[e.code];
       if (dir) {
         e.preventDefault();
@@ -253,13 +296,21 @@ function SurvivorRun({
       window.removeEventListener('keyup', up);
       window.removeEventListener('blur', blur);
     };
-  }, []);
+  }, [dash, toggleMute]);
 
+  // A second tap soon after the first is a dash — the touch equivalent of Space,
+  // for a thumb that is already on the glass steering.
+  const lastTapRef = useRef(0);
   const handlePointer = useCallback((patch) => {
     Object.assign(inputRef.current, patch);
-    // The control hint has done its job the moment they touch the arena.
-    if (patch.pointerDown) setShowHint(false);
-  }, []);
+    if (patch.pointerDown) {
+      // The control hint has done its job the moment they touch the arena.
+      setShowHint(false);
+      const now = performance.now();
+      if (now - lastTapRef.current < 280) dash();
+      lastTapRef.current = now;
+    }
+  }, [dash]);
 
   // ...and it times out on its own for anyone reading rather than playing.
   useEffect(() => {
@@ -274,8 +325,8 @@ function SurvivorRun({
       inputRef.current.keys.clear();
       inputRef.current.pointerDown = false;
     }
-    pausedRef.current = !!showExit;
-  }, [draft, ended, showExit]);
+    pausedRef.current = !!showExit || userPaused;
+  }, [draft, ended, showExit, userPaused]);
 
   // ---- the draft -------------------------------------------------------
 
@@ -294,10 +345,15 @@ function SurvivorRun({
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col bg-slate-900 text-white font-sans overflow-hidden">
-      <SurvivorHUD hud={hud} onQuit={() => setShowExit(true)} />
+      <SurvivorHUD
+        hud={hud} muted={muted} paused={userPaused}
+        onToggleMute={toggleMute} onTogglePause={() => setUserPaused(p => !p)}
+        onQuit={() => setShowExit(true)}
+      />
 
       <SurvivorCanvas
         gRef={gRef}
+        drawRef={drawRef}
         sprites={sprites}
         themeId={themeId}
         onPointer={handlePointer}
@@ -305,12 +361,36 @@ function SurvivorRun({
 
       <SquadBar squad={hud.squad} />
 
+      {/* The dash, for thumbs. Keyboards have Space; a tablet has this. */}
+      {!draft && !ended && (
+        <button
+          onPointerDown={(e) => { e.preventDefault(); dash(); }}
+          aria-label="Dash"
+          className={`absolute right-4 bottom-24 sm:right-6 sm:bottom-28 z-20 w-20 h-20 rounded-full flex flex-col items-center justify-center font-black uppercase tracking-widest text-[10px] border-b-[6px] active:border-b-0 active:translate-y-[6px] transition-all select-none touch-none
+            ${hud.dashReady ? 'bg-sky-400 border-sky-600 text-sky-950 shadow-[0_0_24px_rgba(56,189,248,0.55)]' : 'bg-slate-700 border-slate-900 text-slate-400'}`}
+        >
+          <span className="text-2xl leading-none mb-0.5">💨</span>
+          Dash
+        </button>
+      )}
+
+      {userPaused && !draft && !ended && !showExit && (
+        <button
+          onClick={() => setUserPaused(false)}
+          className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-slate-950/60 backdrop-blur-[2px] text-white"
+        >
+          <span className="text-4xl font-black uppercase tracking-widest drop-shadow">Paused</span>
+          <span className="text-xs font-black uppercase tracking-widest text-slate-300">Tap or press P to resume</span>
+        </button>
+      )}
+
       {/* One-time control hint, gone the moment the student starts moving. */}
       {showHint && !draft && !ended && (
         <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center px-6">
           <div className="bg-slate-950/80 rounded-2xl px-6 py-4 text-center border-b-4 border-black/60">
             <div className="font-black uppercase tracking-widest text-xs text-slate-400 mb-1">Move</div>
             <div className="font-black text-lg">Hold anywhere to walk · or use WASD</div>
+            <div className="font-bold text-sm text-slate-300 mt-1">Dash with Space, or double-tap — you can’t be hurt mid-dash.</div>
             <div className="font-bold text-sm text-slate-400 mt-1">Your weapons fire themselves. Stay alive.</div>
           </div>
         </div>
@@ -337,6 +417,9 @@ function SurvivorRun({
         <RunEndModal
           score={ended.score}
           best={bestScore}
+          newBest={newBest}
+          replay={replay}
+          combo={ended.combo}
           kills={ended.kills}
           time={ended.time}
           level={ended.level}

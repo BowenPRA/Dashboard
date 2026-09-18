@@ -1,11 +1,30 @@
 // src/components/towerdefense/GameBoard.jsx
-import React, { useMemo, useRef, useState, useCallback, useLayoutEffect, memo } from 'react';
+//
+// The board is two things stacked:
+//
+//   DOM     what stands still — the ground, the road, the scenery, the towers,
+//           the range ring and the build ghost. React renders these, and only
+//           when the player does something.
+//   CANVAS  what moves — every enemy, shot, spark, number and beam. The engine
+//           calls the painter registered on `drawRef` once per display frame and
+//           React is not involved at all.
+//
+// It used to be all DOM: each enemy was a live animated <svg> pushed around by
+// style writes at a capped 30fps, a frozen enemy wore a four-stage CSS filter,
+// and every projectile, particle and damage number was a React element
+// reconciled thirty times a second. A heavy wave was several hundred nodes.
+import React, { useMemo, useRef, useState, useCallback, useEffect, memo } from 'react';
 import { ENEMIES, TOWERS, getEffectiveStats, getNitroBuff } from './gameData';
 import { MAP_THEMES } from './themeData';
-import TowerVisual, { InsectVisual, DonutBase } from './TowerVisual';
+import TowerVisual, { DonutBase } from './TowerVisual';
 import UpgradeBadges from './UpgradeBadges';
 
 export const CELL_SIZE = 48;
+const HALF = CELL_SIZE / 2;
+const TAU = Math.PI * 2;
+
+const X = (col) => col * CELL_SIZE + HALF;
+const Y = (row) => row * CELL_SIZE + HALF;
 
 const StaticEnvironment = memo(({ width, height, theme, pathPoints, decorations }) => {
   const fallbackDecos = ['🌳', '🌲', '🍄', '🌿', '🪨'];
@@ -45,36 +64,34 @@ const StaticEnvironment = memo(({ width, height, theme, pathPoints, decorations 
 });
 
 export default function GameBoard({
-  layout, towers, creeps, projectiles, floaters, particles, burnZones, decorations,
+  layout, gRef, drawRef, sprites, boardScale = 1,
+  towers, decorations,
   lives, maxLives, selectedTowerId, hoveredTowerId, activeBuilder, hoverCell,
   onCellClick, onCellHover, onCellLeave, onTowerClick, themeId = 'STANDARD',
-  // Unicorn super-weapon state, read every frame (this component re-renders per
-  // frame): the placed unicorn tower (or null), its charge 0..1, and whether the
-  // player is currently aiming a beam.
-  unicorn = null, unicornChargePct = 0, aiming = false,
-  // Bumped by the game screen whenever a tower is built, sold or upgraded. The
-  // engine mutates towers in place, so array identity alone cannot tell the
-  // memoised tower layer that an upgrade needs repainting. `creepsVersion` is
-  // the same idea for the creep roster.
-  towersVersion = 0, creepsVersion = 0
+  // The placed unicorn tower (or null) and whether the player is aiming a beam.
+  // Its charge ring and aim line are painted on the canvas from `g` directly.
+  unicorn = null, aiming = false,
+  // Bumped whenever a tower is built, sold or upgraded. The engine mutates
+  // towers in place, so array identity alone cannot tell the memoised tower
+  // layer that an upgrade needs repainting.
+  towersVersion = 0
 }) {
   const { rows, cols, path } = layout;
   const width = cols * CELL_SIZE;
   const height = rows * CELL_SIZE;
   const theme = MAP_THEMES[themeId] || MAP_THEMES.STANDARD;
   const boardRef = useRef(null);
+  const canvasRef = useRef(null);
 
-  // id -> mounted creep root. Populated by ref callbacks in <Creep>.
-  // useState, not useRef: the identity must be stable for the whole mount and
-  // React forbids reading a ref's `current` during render.
-  const [creepNodes] = useState(() => new Map());
+  // id -> the tower's DOM node, so the painter can give it a recoil kick when
+  // the engine reports it fired. useState, not useRef: the identity must be
+  // stable for the whole mount and is read during render by the tower layer.
+  const [towerNodes] = useState(() => new Map());
 
-  // Runs after every board render — which is every frame — but the creep layer
-  // itself has already bailed out of reconciliation by then, so this is the only
-  // per-frame work creeps cost. Layout effect so the write lands in the same
-  // frame as the paint and creeps never lag a frame behind everything else.
-  useLayoutEffect(() => {
-    syncCreeps(creeps, creepNodes);
+  // What the painter needs from React, without making the painter depend on it.
+  const liveRef = useRef(null);
+  useEffect(() => {
+    liveRef.current = { sprites, boardScale, unicorn, aiming, hoverCell };
   });
 
   const pathCellSet = useMemo(() => {
@@ -95,15 +112,51 @@ export default function GameBoard({
     path.map(([r, c]) => `${c * CELL_SIZE + CELL_SIZE / 2},${r * CELL_SIZE + CELL_SIZE / 2}`).join(' ')
   , [path]);
 
+  // ---- the painter --------------------------------------------------------
+  useEffect(() => {
+    if (!drawRef) return undefined;
+    drawRef.current = (alpha) => {
+      const canvas = canvasRef.current;
+      const g = gRef.current;
+      const live = liveRef.current;
+      if (!canvas || !g || !live) return;
+      paint(canvas, g, live, alpha, width, height);
+
+      // A tower that fired gets a quick squash — the one bit of motion the DOM
+      // towers have, and what makes a quiet board read as "working".
+      if (g.fired.length) {
+        for (const id of g.fired) {
+          const node = towerNodes.get(id);
+          if (node?.animate) {
+            node.animate(
+              [{ transform: 'scale(1)' }, { transform: 'scale(1.16)' }, { transform: 'scale(1)' }],
+              { duration: 130, easing: 'ease-out' }
+            );
+          }
+        }
+        g.fired.length = 0;
+      }
+
+      // The whole board shakes together, so towers never slide against the road.
+      const board = boardRef.current;
+      if (board) {
+        const s = g.shake > 0.3 ? g.shake : 0;
+        const next = s ? `translate(${((Math.random() - 0.5) * s).toFixed(1)}px, ${((Math.random() - 0.5) * s).toFixed(1)}px)` : '';
+        if (board.style.transform !== next) board.style.transform = next;
+      }
+    };
+    return () => { drawRef.current = null; };
+  }, [drawRef, gRef, width, height, towerNodes]);
+
   const handlePointerInteraction = (e, isClick) => {
     if (!boardRef.current) return;
     const rect = boardRef.current.getBoundingClientRect();
     const scaleX = rect.width / width;
     const scaleY = rect.height / height;
-    
+
     const x = (e.clientX - rect.left) / scaleX;
     const y = (e.clientY - rect.top) / scaleY;
-    
+
     const col = Math.floor(x / CELL_SIZE);
     const row = Math.floor(y / CELL_SIZE);
 
@@ -111,10 +164,8 @@ export default function GameBoard({
       const isPath = pathCellSet.has(`${row}_${col}`);
       if (isClick) {
         onCellClick(row, col, isPath);
-      } else {
-        if (hoverCell.row !== row || hoverCell.col !== col) {
-          onCellHover(row, col, isPath);
-        }
+      } else if (hoverCell.row !== row || hoverCell.col !== col) {
+        onCellHover(row, col, isPath);
       }
     }
   };
@@ -140,34 +191,16 @@ export default function GameBoard({
           100% { transform: scale(1) translateY(0); }
         }
         .td-pop-in { animation: td-pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .gpu-accel { will-change: transform; backface-visibility: hidden; }
-
-        .creep-visual * {
-          animation-duration: 0.6s !important;
-          animation-timing-function: steps(2, end) !important;
-        }
       `}</style>
 
-      <StaticEnvironment 
-        width={width} height={height} 
-        theme={theme} pathPoints={pathPoints} 
-        decorations={decorations} 
+      <StaticEnvironment
+        width={width} height={height}
+        theme={theme} pathPoints={pathPoints}
+        decorations={decorations}
       />
 
       <PortalMarker row={path[0][0]} col={path[0][1]} kind="in" />
       <PortalMarker row={path[path.length - 1][0]} col={path[path.length - 1][1]} kind="out" healthPct={lives / maxLives} />
-
-      {burnZones.map(z => (
-        <div
-          key={z.id}
-          className="absolute pointer-events-none rounded-full z-10 gpu-accel bg-rose-500"
-          style={{
-            transform: `translate(${z.col * CELL_SIZE + CELL_SIZE / 2 - z.radius * CELL_SIZE}px, ${z.row * CELL_SIZE + CELL_SIZE / 2 - z.radius * CELL_SIZE}px)`,
-            width: z.radius * 2 * CELL_SIZE, height: z.radius * 2 * CELL_SIZE,
-            opacity: Math.min(0.25, z.life / z.maxLife)
-          }}
-        />
-      ))}
 
       {rangeTower && rangeStats && rangeVal > 0 && (
         <div
@@ -184,9 +217,9 @@ export default function GameBoard({
         const tConf = TOWERS[activeBuilder.typeId];
         if (!tConf) return null;
         const fakeTower = { id: 'temp_builder', typeId: activeBuilder.typeId, row: hoverCell.row, col: hoverCell.col, upgrades: {} };
-        const rangeStats = getEffectiveStats(fakeTower, towers);
+        const ghostStats = getEffectiveStats(fakeTower, towers);
         // The unicorn covers the whole board on a line — its range isn't a circle.
-        const range = activeBuilder.typeId === 'UNICORN' ? 0 : (rangeStats.range || rangeStats.auraRange || 0);
+        const range = activeBuilder.typeId === 'UNICORN' ? 0 : (ghostStats.range || ghostStats.auraRange || 0);
         return (
           <>
             {range > 0 && (
@@ -218,373 +251,413 @@ export default function GameBoard({
         towers={towers} towersVersion={towersVersion}
         selectedTowerId={selectedTowerId}
         hoveredTowerId={hoveredTowerId} onTowerClick={onTowerClick}
+        registry={towerNodes}
       />
 
-      <UnicornOverlay
-        unicorn={unicorn} chargePct={unicornChargePct} aiming={aiming}
-        hoverCell={hoverCell} width={width} height={height}
+      {/* Everything that moves. Above the towers so a shot is never hidden by
+          the tower that fired it; pointer-events off so taps reach the board. */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none z-30"
+        style={{ width, height }}
       />
-
-
-      {projectiles.map(p => {
-        if (p.kind === 'DART_PROJ') {
-          const angleDeg = Math.atan2(p.targetRow - p.row, p.targetCol - p.col) * (180 / Math.PI);
-          return (
-            <div key={p.id} className="absolute z-30 pointer-events-none gpu-accel" 
-                 style={{ transform: `translate(${p.col * CELL_SIZE + CELL_SIZE / 2}px, ${p.row * CELL_SIZE + CELL_SIZE / 2}px)` }}>
-              <div className="absolute flex items-center justify-center" style={{ width: p.passive ? 24 : 16, height: p.passive ? 24 : 16, transform: `translate(-50%, -50%) rotate(${angleDeg + 90}deg)` }}>
-                 <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-sm">
-                    {p.passive ? <polygon points="12,2 18,22 12,18 6,22" fill="#ef4444" stroke="#7f1d1d" strokeWidth="2"/> : <polygon points="12,4 16,20 12,16 8,20" fill="#a855f7" stroke="#4c1d95" strokeWidth="2"/>}
-                 </svg>
-              </div>
-            </div>
-          );
-        }
-        
-        if (p.kind === 'SNIPER_PROJ') {
-          const angleDeg = Math.atan2(p.targetRow - p.row, p.targetCol - p.col) * (180 / Math.PI);
-          return (
-            <div key={p.id} className="absolute z-30 pointer-events-none gpu-accel" 
-                 style={{ transform: `translate(${p.col * CELL_SIZE + CELL_SIZE / 2}px, ${p.row * CELL_SIZE + CELL_SIZE / 2}px)` }}>
-               <div className="absolute border border-white/50" style={{ 
-                 width: p.passive ? 28 : 20, height: p.passive ? 8 : 4, background: p.passive ? '#f59e0b' : '#10b981', 
-                 borderRadius: '4px', transform: `translate(-50%, -50%) rotate(${angleDeg}deg)` 
-               }} />
-            </div>
-          );
-        }
-
-        return (
-          <div
-            key={p.id} className="absolute pointer-events-none z-30 gpu-accel"
-            style={{ transform: `translate(${p.col * CELL_SIZE + CELL_SIZE / 2}px, ${p.row * CELL_SIZE + CELL_SIZE / 2}px) translate(-50%, -50%)` }}
-          >
-            {p.kind === 'CHAIN' ? (
-              <svg width={(p.range || 6) * CELL_SIZE * 2} height={(p.range || 6) * CELL_SIZE * 2}
-                   className="absolute pointer-events-none"
-                   style={{ transform: `translate(${-(p.range || 6) * CELL_SIZE}px, ${-(p.range || 6) * CELL_SIZE}px)` }}>
-                {(p.lines || []).map((ln, i) => (
-                  <line key={i} x1={(p.range || 6) * CELL_SIZE} y1={(p.range || 6) * CELL_SIZE} x2={(ln.col - p.col) * CELL_SIZE + (p.range || 6) * CELL_SIZE} y2={(ln.row - p.row) * CELL_SIZE + (p.range || 6) * CELL_SIZE} stroke="#FFC800" strokeWidth="4" strokeLinecap="round" opacity={p.life / p.maxLife} />
-                ))}
-              </svg>
-            ) : p.kind === 'LANCE' ? (
-              <div
-                className="absolute border border-amber-300/50"
-                style={{
-                  width: p.length * CELL_SIZE, height: 12, borderRadius: 6,
-                  background: 'linear-gradient(90deg, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0.8) 40%, rgba(239,68,68,1) 100%)',
-                  transform: `translate(0, -6px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
-                  opacity: Math.max(0, p.life / p.maxLife)
-                }}
-              />
-            ) : p.kind === 'RAINBOW_BEAM' ? (() => {
-              const thick = Math.max(14, (p.width || 0.75) * 2 * CELL_SIZE);
-              const len = (p.length || 20) * CELL_SIZE;
-              const fade = Math.max(0, p.life / p.maxLife);
-              return (
-                <>
-                  {/* Soft rainbow glow */}
-                  <div
-                    className="absolute"
-                    style={{
-                      width: len, height: thick * 1.6, borderRadius: thick,
-                      background: 'linear-gradient(90deg, rgba(244,63,94,0.35), rgba(245,158,11,0.35), rgba(250,204,21,0.35), rgba(34,197,94,0.35), rgba(56,189,248,0.35), rgba(99,102,241,0.35))',
-                      transform: `translate(0, ${-thick * 0.8}px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
-                      filter: 'blur(6px)', opacity: fade
-                    }}
-                  />
-                  {/* Rainbow core */}
-                  <div
-                    className="absolute"
-                    style={{
-                      width: len, height: thick, borderRadius: thick,
-                      background: 'linear-gradient(90deg, #f43f5e, #f59e0b, #facc15, #22c55e, #38bdf8, #6366f1, #a855f7)',
-                      transform: `translate(0, ${-thick / 2}px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
-                      opacity: fade
-                    }}
-                  />
-                  {/* White-hot center line */}
-                  <div
-                    className="absolute"
-                    style={{
-                      width: len, height: Math.max(3, thick * 0.22), borderRadius: 999,
-                      background: 'rgba(255,255,255,0.95)',
-                      transform: `translate(0, ${-Math.max(1.5, thick * 0.11)}px) rotate(${p.angle}rad)`, transformOrigin: '0 50%',
-                      opacity: fade
-                    }}
-                  />
-                </>
-              );
-            })() : (
-              <div
-                className="rounded-full border border-white/50"
-                style={{
-                  width: p.kind === 'SPLASH' ? 14 : 8, height: p.kind === 'SPLASH' ? 14 : 8,
-                  background: p.color || '#fff', transform: 'translate(-50%, -50%)'
-                }}
-              />
-            )}
-          </div>
-        );
-      })}
-
-      {particles.map(p => (
-        <div
-          key={p.id} className="absolute pointer-events-none rounded-full z-30 gpu-accel border border-white/20"
-          style={{
-            transform: `translate(${p.col * CELL_SIZE + CELL_SIZE / 2 - p.radius * CELL_SIZE}px, ${p.row * CELL_SIZE + CELL_SIZE / 2 - p.radius * CELL_SIZE}px) scale(${1 - p.life / p.maxLife * 0.3})`,
-            width: p.radius * 2 * CELL_SIZE, height: p.radius * 2 * CELL_SIZE,
-            background: p.color || 'rgba(255,255,255,0.5)', opacity: p.life / p.maxLife,
-          }}
-        />
-      ))}
-
-      <CreepLayer creeps={creeps} creepsVersion={creepsVersion} registry={creepNodes} />
-
-
-      {floaters.map(f => (
-        <div
-          key={f.id} className={`absolute pointer-events-none font-black text-sm sm:text-base z-40 gpu-accel ${f.colorClass}`}
-          style={{
-            transform: `translate(${f.col * CELL_SIZE + CELL_SIZE / 2}px, ${f.row * CELL_SIZE + CELL_SIZE / 2 - (1 - f.life / f.maxLife) * 35}px) translate(-50%, -50%)`,
-            opacity: f.life / f.maxLife, WebkitTextStroke: '1px rgba(0,0,0,0.8)'
-          }}
-        >
-          {f.text}
-        </div>
-      ))}
     </div>
   );
 }
 
-/**
- * One creep. Rendered exactly once — when it spawns — and never re-rendered
- * while it walks.
- *
- * Everything that changes frame to frame (position, facing, health bar, frozen
- * tint, status pips) is written straight to these nodes by `syncCreeps` below.
- * The artwork, the DOM shape and the class names are identical to what React
- * used to produce on every frame; only the update path changed.
- */
-const Creep = memo(function Creep({ creep, registry }) {
-  const eConf = ENEMIES[creep.typeKey];
-  // Resolve the three mutable children ONCE, at mount. Looking them up with
-  // querySelector on every frame cost more than the reconciliation this whole
-  // layer exists to avoid.
-  const ref = useCallback((el) => {
-    if (!el) { registry.delete(creep.id); return; }
-    registry.set(creep.id, {
-      root: el,
-      bar: el.querySelector('[data-hp]'),
-      visual: el.querySelector('[data-visual]'),
-      status: el.querySelector('[data-status]'),
-      lastStatus: '',
-    });
-  }, [creep.id, registry]);
+// =====================================================================
+// The painter. Plain functions over a 2D context — nothing here is React.
+// =====================================================================
 
-  if (!eConf) return null;
+const FLOATER_STYLE = {
+  dmg:  { color: '#ffffff', size: 13 },
+  gold: { color: '#FFC800', size: 15 },
+  bolt: { color: '#FFC800', size: 20 },
+  bad:  { color: '#fb7185', size: 20 },
+};
 
-  // The tribe skin (set at spawn) decides the artwork and on-board size; the slot
-  // (typeKey) still owns the armour badge, since armour is a balance stat.
-  const radius = creep.radius || eConf.radius;
-  const visual = creep.visual || creep.typeKey;
+const BANNER_TONE = {
+  good:  ['#58A700', '#ffffff'],
+  plain: ['rgba(15,23,42,0.88)', '#ffffff'],
+  warn:  ['#EA2B2B', '#ffffff'],
+  boss:  ['#7f1d1d', '#fecaca'],
+};
 
-  return (
-    <div
-      ref={ref}
-      data-creep={creep.id}
-      className="absolute pointer-events-none z-20 flex flex-col items-center justify-center gpu-accel"
-      style={{ transform: `translate(${creep.col * CELL_SIZE + CELL_SIZE / 2}px, ${creep.row * CELL_SIZE + CELL_SIZE / 2}px) translate(-50%, -50%)` }}
-    >
-      <div className="absolute -top-4 w-10 h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-700 z-30">
-        <div data-hp className="h-full rounded-full" style={{ width: '100%', background: '#58A700' }} />
-      </div>
+const lerp = (a, b, t) => a + (b - a) * t;
 
-      <div
-        data-visual
-        className="flex items-center justify-center relative creep-visual"
-        style={{
-          width: radius * 2.5,
-          height: radius * 2.5,
-          transform: `rotate(${(creep.angle || 0) + 90}deg)`,
-          filter: 'none'
-        }}
-      >
-        <InsectVisual type={visual} />
-      </div>
+/** A repeatable 0..1 from a number — for lightning jitter that must not strobe. */
+const hash = (n) => {
+  const s = Math.sin(n * 12.9898) * 43758.5453;
+  return s - Math.floor(s);
+};
 
-      <div data-status className="absolute -top-8 text-xs" style={{ display: 'none' }} />
-      {eConf.damageReduction > 0 && (
-        <div className="absolute -bottom-5 text-[10px] bg-slate-800 text-slate-300 font-black px-1 rounded-sm border border-slate-700">🛡️</div>
-      )}
-    </div>
-  );
-});
+function paint(canvas, g, live, alpha, width, height) {
+  // Match the backing store to how big the board is actually shown. The board is
+  // CSS-scaled to fit the screen, and a canvas at 1x under a 2x scale is mush.
+  const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
+  const res = Math.max(1, Math.min(3, (live.boardScale || 1) * dpr));
+  const bw = Math.round(width * res), bh = Math.round(height * res);
+  if (canvas.width !== bw || canvas.height !== bh) { canvas.width = bw; canvas.height = bh; }
 
-/**
- * The creep roster. Only re-renders when a creep actually spawns or dies —
- * `creepsVersion` is the engine's stamp for that — because the array itself is
- * mutated in place and cannot signal the change on its own.
- */
-// eslint-disable-next-line no-unused-vars -- creepsVersion is a memo cache key
-const CreepLayer = memo(function CreepLayer({ creeps, creepsVersion, registry }) {
-  return creeps.map((c) => <Creep key={c.id} creep={c} registry={registry} />);
-});
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.setTransform(res, 0, 0, res, 0, 0);
+  ctx.clearRect(0, 0, width, height);
 
-/**
- * Writes this frame's creep state onto the mounted nodes.
- *
- * Two hundred creeps × six elements each was ~1300 React element updates per
- * frame purely to move things that had not changed shape. Touching the four
- * style properties that actually vary is far cheaper, and produces the same
- * pixels.
- */
-const FROZEN_FILTER = 'sepia(1) hue-rotate(180deg) saturate(4) brightness(1.2)';
-const HALF = CELL_SIZE / 2;
+  const sprites = live.sprites || {};
+  const time = (g.time || 0) + alpha * 33;
 
-function syncCreeps(creeps, registry) {
-  for (let i = 0; i < creeps.length; i++) {
-    const c = creeps[i];
-    const n = registry.get(c.id);
-    if (!n) continue;
+  // --- napalm on the ground -----------------------------------------------
+  for (const z of g.burnZones) {
+    const k = z.life / z.maxLife;
+    const r = z.radius * CELL_SIZE;
+    const grad = ctx.createRadialGradient(X(z.col), Y(z.row), r * 0.15, X(z.col), Y(z.row), r);
+    grad.addColorStop(0, `rgba(251,146,60,${0.42 * Math.min(1, k * 2)})`);
+    grad.addColorStop(1, 'rgba(244,63,94,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(X(z.col), Y(z.row), r * (0.94 + 0.06 * Math.sin(time / 130 + z.id)), 0, TAU);
+    ctx.fill();
+  }
 
-    n.root.style.transform =
-      `translate(${c.col * CELL_SIZE + HALF}px, ${c.row * CELL_SIZE + HALF}px) translate(-50%, -50%)`;
+  // --- enemies ---------------------------------------------------------------
+  for (const c of g.creeps) {
+    if (c.hp <= 0) continue;
+    const x = X(lerp(c.pc, c.col, alpha));
+    const y = Y(lerp(c.pr, c.row, alpha));
+    const eConf = ENEMIES[c.typeKey];
+    const radius = c.radius || eConf?.radius || 14;
+    // A fresh spawn pops in rather than appearing.
+    const grow = c.age < 220 ? 0.35 + 0.65 * (c.age / 220) : 1;
+    const size = radius * 2.5 * grow;
+    const frozen = c.freezeTimer > 0;
 
-    if (n.bar) {
-      const hpPct = c.hp > 0 ? c.hp / c.maxHp : 0;
-      n.bar.style.width = `${hpPct * 100}%`;
-      n.bar.style.background = hpPct > 0.5 ? '#58A700' : hpPct > 0.25 ? '#FFC800' : '#EA2B2B';
+    // Ground shadow — bodies, not stickers.
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    ctx.beginPath();
+    ctx.ellipse(x, y + size * 0.3, size * 0.32, size * 0.13, 0, 0, TAU);
+    ctx.fill();
+
+    const key = c.flash > 0 ? `${c.typeKey}:flash` : frozen ? `${c.typeKey}:frost` : c.typeKey;
+    const img = sprites[key] || sprites[c.typeKey];
+    // The rasterised sprite lost its CSS leg animation; a scuttle (a sway plus a
+    // tiny squash, stilled when frozen) puts the life back for almost nothing.
+    const gait = frozen ? 0 : Math.sin(time / 85 + c.phase);
+    const ang = ((c.angle || 0) + 90) * (Math.PI / 180) + gait * 0.09;
+    const cos = Math.cos(ang), sin = Math.sin(ang);
+    const sx = 1 + gait * 0.04, sy = 1 - gait * 0.04;
+    ctx.setTransform(res * cos * sx, res * sin * sx, -res * sin * sy, res * cos * sy, res * x, res * y);
+    if (img) ctx.drawImage(img, -size / 2, -size / 2, size, size);
+    else {
+      ctx.fillStyle = '#7f1d1d';
+      ctx.beginPath(); ctx.arc(0, 0, radius, 0, TAU); ctx.fill();
+    }
+    ctx.setTransform(res, 0, 0, res, 0, 0);
+
+    // A health bar only once something has been done to it: a road of full green
+    // bars says nothing and hides the bodies.
+    if (c.hp < c.maxHp) {
+      const pct = Math.max(0, c.hp / c.maxHp);
+      const w = Math.max(26, radius * 1.9);
+      const by = y - size / 2 - 8;
+      ctx.fillStyle = 'rgba(15,23,42,0.85)';
+      ctx.fillRect(x - w / 2 - 1, by - 1, w + 2, 6);
+      ctx.fillStyle = pct > 0.5 ? '#58A700' : pct > 0.25 ? '#FFC800' : '#EA2B2B';
+      ctx.fillRect(x - w / 2, by, w * pct, 4);
     }
 
-    if (n.visual) {
-      n.visual.style.transform = `rotate(${(c.angle || 0) + 90}deg)`;
-      n.visual.style.filter = c.freezeTimer > 0 ? FROZEN_FILTER : 'none';
+    if (c.burning > 0 || (c.burnStacks && c.burnStacks.length > 0)) {
+      ctx.font = '12px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🔥', x + size * 0.34, y - size * 0.34);
     }
-
-    if (n.status) {
-      const text = c.freezeTimer > 0
-        ? '❄️'
-        : (c.burning > 0 || (c.burnStacks && c.burnStacks.length > 0)) ? '🔥' : '';
-      // Status rarely changes; skip the write (and its style recalc) when it hasn't.
-      if (text !== n.lastStatus) {
-        n.lastStatus = text;
-        n.status.textContent = text;
-        n.status.style.display = text ? '' : 'none';
-      }
+    // Armour is a balance stat the player has to plan around, so it is marked.
+    if (eConf?.damageReduction > 0) {
+      ctx.font = '10px system-ui';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🛡️', x, y + size * 0.5 + 5);
     }
   }
+
+  // --- shots ---------------------------------------------------------------------
+  for (const p of g.projectiles) {
+    const fade = Math.max(0, p.life / p.maxLife);
+
+    if (p.kind === 'CHAIN') {
+      // Lightning, jagged and re-rolled every few frames so it crackles.
+      const tick = Math.floor(time / 45);
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (let pass = 0; pass < 2; pass++) {
+        ctx.beginPath();
+        ctx.moveTo(X(p.col), Y(p.row));
+        let fx = X(p.col), fy = Y(p.row);
+        (p.lines || []).forEach((ln, li) => {
+          const tx = X(ln.col), ty = Y(ln.row);
+          const dx = tx - fx, dy = ty - fy;
+          const len = Math.hypot(dx, dy) || 1;
+          const nx = -dy / len, ny = dx / len;
+          for (let s = 1; s < 4; s++) {
+            const j = (hash(p.seed + tick * 7.3 + li * 31 + s) - 0.5) * 16;
+            ctx.lineTo(fx + dx * (s / 4) + nx * j, fy + dy * (s / 4) + ny * j);
+          }
+          ctx.lineTo(tx, ty);
+          fx = tx; fy = ty;
+        });
+        ctx.strokeStyle = pass === 0 ? `rgba(251,191,36,${0.45 * fade})` : `rgba(255,255,255,${0.95 * fade})`;
+        ctx.lineWidth = pass === 0 ? 7 : 2.5;
+        ctx.stroke();
+      }
+      continue;
+    }
+
+    if (p.kind === 'LANCE' || p.kind === 'RAINBOW_BEAM') {
+      const rainbow = p.kind === 'RAINBOW_BEAM';
+      const len = (p.length || 20) * CELL_SIZE;
+      const thick = rainbow ? Math.max(14, (p.width || 0.75) * 2 * CELL_SIZE) : 12;
+      const cos = Math.cos(p.angle), sin = Math.sin(p.angle);
+      ctx.setTransform(res * cos, res * sin, -res * sin, res * cos, res * X(p.col), res * Y(p.row));
+      const grad = ctx.createLinearGradient(0, 0, len, 0);
+      if (rainbow) {
+        ['#f43f5e', '#f59e0b', '#facc15', '#22c55e', '#38bdf8', '#6366f1', '#a855f7']
+          .forEach((col, i, arr) => grad.addColorStop(i / (arr.length - 1), col));
+      } else {
+        grad.addColorStop(0, 'rgba(245,158,11,0.2)');
+        grad.addColorStop(0.4, 'rgba(245,158,11,0.85)');
+        grad.addColorStop(1, 'rgba(239,68,68,1)');
+      }
+      // The beam swells in, then thins away — it reads as a discharge, not a bar.
+      const swell = rainbow ? (fade > 0.75 ? (1 - fade) / 0.25 : 1) : 1;
+      ctx.globalAlpha = fade * (rainbow ? 0.35 : 0);
+      if (rainbow) { ctx.fillStyle = grad; ctx.fillRect(0, -thick * 0.9 * swell, len, thick * 1.8 * swell); }
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, (-thick / 2) * swell, len, thick * swell);
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.fillRect(0, -Math.max(1.5, thick * 0.11), len, Math.max(3, thick * 0.22));
+      ctx.globalAlpha = 1;
+      ctx.setTransform(res, 0, 0, res, 0, 0);
+      continue;
+    }
+
+    const px = X(lerp(p.pc ?? p.col, p.col, alpha));
+    const py = Y(lerp(p.pr ?? p.row, p.row, alpha));
+    const ang = Math.atan2(p.targetRow - p.row, p.targetCol - p.col);
+
+    if (p.kind === 'SPLASH') {
+      // A lobbed shell: its shadow runs along the ground while the shell rides an
+      // arc above it, so the player can see where it is going to land.
+      const total = p.dist0 || 1;
+      const left = Math.hypot(p.targetRow - lerp(p.pr, p.row, alpha), p.targetCol - lerp(p.pc, p.col, alpha));
+      const k = Math.max(0, Math.min(1, 1 - left / total));
+      const lift = Math.sin(k * Math.PI) * (14 + total * 9);
+      ctx.fillStyle = 'rgba(0,0,0,0.22)';
+      ctx.beginPath(); ctx.ellipse(px, py, 6, 3, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = p.color || '#f43f5e';
+      ctx.beginPath(); ctx.arc(px, py - lift, 7, 0, TAU); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+      continue;
+    }
+
+    const cos = Math.cos(ang), sin = Math.sin(ang);
+    ctx.setTransform(res * cos, res * sin, -res * sin, res * cos, res * px, res * py);
+    if (p.kind === 'DART_PROJ') {
+      const L = p.passive ? 12 : 8;
+      ctx.fillStyle = p.passive ? '#ef4444' : '#a855f7';
+      ctx.strokeStyle = p.passive ? '#7f1d1d' : '#4c1d95';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(L, 0); ctx.lineTo(-L, -L * 0.5); ctx.lineTo(-L * 0.55, 0); ctx.lineTo(-L, L * 0.5);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else if (p.kind === 'SNIPER_PROJ') {
+      const L = p.passive ? 30 : 22, T = p.passive ? 7 : 4;
+      const trail = ctx.createLinearGradient(-L, 0, L * 0.4, 0);
+      trail.addColorStop(0, 'rgba(16,185,129,0)');
+      trail.addColorStop(1, p.passive ? '#f59e0b' : '#10b981');
+      ctx.fillStyle = trail;
+      ctx.fillRect(-L, -T / 2, L * 1.4, T);
+    } else {
+      // A plain bullet, with a short tail so its direction reads at speed.
+      ctx.fillStyle = p.color || '#fff';
+      ctx.globalAlpha = 0.35;
+      ctx.fillRect(-12, -2, 12, 4);
+      ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(0, 0, 4, 0, TAU); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1; ctx.stroke();
+    }
+    ctx.setTransform(res, 0, 0, res, 0, 0);
+  }
+
+  // --- blasts and bits -------------------------------------------------------------
+  for (const p of g.particles) {
+    const k = p.life / p.maxLife;
+    ctx.globalAlpha = k;
+    ctx.fillStyle = p.color || 'rgba(255,255,255,0.5)';
+    ctx.beginPath();
+    ctx.arc(X(p.col), Y(p.row), p.radius * CELL_SIZE * (1 - k * 0.3), 0, TAU);
+    ctx.fill();
+  }
+  for (const s of g.shards) {
+    const k = s.life / s.maxLife;
+    ctx.globalAlpha = Math.min(1, k * 1.5);
+    ctx.fillStyle = s.color;
+    const sz = s.size * (0.5 + k * 0.5);
+    ctx.fillRect(X(s.col) - sz / 2, Y(s.row) - sz / 2, sz, sz);
+  }
+  ctx.globalAlpha = 1;
+
+  // --- the unicorn's charge ring and aim line -------------------------------------------
+  const uni = live.unicorn;
+  if (uni) {
+    const stats = getEffectiveStats(uni, g.towers);
+    const pct = Math.max(0, Math.min(1, (g.unicornCharge || 0) / (stats?.chargeTime || 1)));
+    const cx = X(uni.col), cy = Y(uni.row);
+    const ready = pct >= 1;
+
+    if (ready && live.aiming && live.hoverCell && live.hoverCell.row >= 0) {
+      const dx = X(live.hoverCell.col) - cx, dy = Y(live.hoverCell.row) - cy;
+      const d = Math.hypot(dx, dy) || 1;
+      const far = width + height;
+      const ex = cx + (dx / d) * far, ey = cy + (dy / d) * far;
+      const grad = ctx.createLinearGradient(cx, cy, ex, ey);
+      grad.addColorStop(0, '#f43f5e'); grad.addColorStop(0.35, '#facc15');
+      grad.addColorStop(0.65, '#22c55e'); grad.addColorStop(1, '#6366f1');
+      ctx.lineCap = 'round';
+      ctx.globalAlpha = 0.45; ctx.strokeStyle = grad; ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke();
+      ctx.globalAlpha = 0.9; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+      ctx.setLineDash([2, 12]); ctx.lineDashOffset = -time / 30;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+
+    if (ready) {
+      const pulse = 0.5 + 0.5 * Math.sin(time / 160);
+      const glow = ctx.createRadialGradient(cx, cy, 6, cx, cy, 34 + pulse * 8);
+      glow.addColorStop(0, 'rgba(250,204,21,0.45)');
+      glow.addColorStop(0.6, 'rgba(236,72,153,0.18)');
+      glow.addColorStop(1, 'rgba(236,72,153,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(cx, cy, 44, 0, TAU); ctx.fill();
+    }
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(15,23,42,0.55)'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(cx, cy, 25, 0, TAU); ctx.stroke();
+    const ringGrad = ctx.createLinearGradient(cx - 25, cy - 25, cx + 25, cy + 25);
+    ['#f43f5e', '#f59e0b', '#facc15', '#22c55e', '#38bdf8', '#a855f7']
+      .forEach((col, i, arr) => ringGrad.addColorStop(i / (arr.length - 1), col));
+    ctx.strokeStyle = ringGrad;
+    ctx.beginPath(); ctx.arc(cx, cy, 25, -Math.PI / 2, -Math.PI / 2 + TAU * pct); ctx.stroke();
+    if (ready) {
+      ctx.font = '16px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('✨', cx, cy - 36 - Math.abs(Math.sin(time / 220)) * 5);
+    }
+  }
+
+  // --- numbers ------------------------------------------------------------------------------
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  for (const f of g.floaters) {
+    const k = f.life / f.maxLife;
+    const st = FLOATER_STYLE[f.kind] || FLOATER_STYLE.dmg;
+    ctx.globalAlpha = Math.min(1, k * 1.8);
+    ctx.font = `900 ${st.size}px system-ui, sans-serif`;
+    const fy = Y(f.row) - (1 - k) * 34;
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+    ctx.strokeText(f.text, X(f.col), fy);
+    ctx.fillStyle = st.color;
+    ctx.fillText(f.text, X(f.col), fy);
+  }
+  ctx.globalAlpha = 1;
+
+  // --- a life lost: the edges of the board flash red -----------------------------------------
+  if (g.hurt > 0) {
+    const k = Math.min(1, g.hurt / 500);
+    const v = ctx.createRadialGradient(width / 2, height / 2, Math.min(width, height) * 0.3, width / 2, height / 2, Math.max(width, height) * 0.72);
+    v.addColorStop(0, 'rgba(234,43,43,0)');
+    v.addColorStop(1, `rgba(234,43,43,${0.5 * k})`);
+    ctx.fillStyle = v;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  // --- the announcement banner ------------------------------------------------------------------
+  const b = g.banner;
+  if (b) {
+    const k = b.life / b.maxLife;
+    const inT = Math.min(1, (1 - k) / 0.12), outT = Math.min(1, k / 0.18);
+    const a = Math.min(inT, outT);
+    const [bg, fg] = BANNER_TONE[b.tone] || BANNER_TONE.plain;
+    ctx.font = '900 22px system-ui, sans-serif';
+    const tw = ctx.measureText(b.text.toUpperCase()).width;
+    const bwid = Math.max(tw + 56, 220), bht = b.sub ? 62 : 46;
+    const bx = width / 2 - bwid / 2, by = height * 0.2 - bht / 2 + (1 - inT) * -14;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    roundRect(ctx, bx, by + 5, bwid, bht, 16); ctx.fill();
+    ctx.fillStyle = bg;
+    roundRect(ctx, bx, by, bwid, bht, 16); ctx.fill();
+    ctx.fillStyle = fg;
+    ctx.fillText(b.text.toUpperCase(), width / 2, by + (b.sub ? 22 : bht / 2 + 1));
+    if (b.sub) {
+      ctx.font = '800 12px system-ui, sans-serif';
+      ctx.globalAlpha = a * 0.85;
+      ctx.fillText(b.sub.toUpperCase(), width / 2, by + 45);
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
 }
 
 /**
  * Towers, isolated behind memo.
  *
  * Towers do not move — they change only when one is built, sold, upgraded,
- * selected or hovered — but they sat inline in a board that re-renders every
- * frame, so their artwork and the O(towers²) Nitro-buff scan ran thirty times a
- * second for nothing. The array identity is stable between those events (the
- * engine mutates in place), so a plain memo is enough to skip the whole layer.
+ * selected or hovered. The array identity is stable between those events (the
+ * engine mutates in place), so a plain memo skips the whole layer otherwise.
+ * Each registers its node so the painter can kick it when it fires.
  */
 // eslint-disable-next-line no-unused-vars -- towersVersion is a memo cache key
-const TowerLayer = memo(function TowerLayer({ towers, towersVersion, selectedTowerId, hoveredTowerId, onTowerClick }) {
-  return towers.map(t => {
-    const isSelected = selectedTowerId === t.id;
-    const isHovered = hoveredTowerId === t.id;
-    const isBuffed = t.typeId !== 'NITRO' && getNitroBuff(t, towers).rateMul < 1;
-
-    return (
-      <div
-        key={t.id}
-        onClick={(e) => { e.stopPropagation(); onTowerClick(t.id); }}
-        className="absolute cursor-pointer z-20"
-        style={{
-          transform: `translate(${t.col * CELL_SIZE}px, ${t.row * CELL_SIZE}px)`,
-          width: CELL_SIZE, height: CELL_SIZE
-        }}
-      >
-        <div className="relative w-full h-full flex items-center justify-center td-pop-in">
-          {isBuffed && <div className="absolute inset-0 scale-125 bg-yellow-400/20 border-2 border-yellow-400/40 rounded-full animate-pulse z-0 pointer-events-none" />}
-          <UpgradeBadges upgrades={t.upgrades} />
-          <div className="relative z-10 w-full h-full flex items-center justify-center">
-            <TowerVisual typeId={t.typeId} size="md" selected={isSelected} hovered={isHovered} upgrades={t.upgrades} />
-          </div>
-        </div>
-      </div>
-    );
-  });
+const TowerLayer = memo(function TowerLayer({ towers, towersVersion, selectedTowerId, hoveredTowerId, onTowerClick, registry }) {
+  return towers.map(t => (
+    <TowerNode
+      key={t.id} tower={t} towers={towers} registry={registry}
+      isSelected={selectedTowerId === t.id} isHovered={hoveredTowerId === t.id}
+      onTowerClick={onTowerClick}
+    />
+  ));
 });
 
-/**
- * The unicorn's on-board furniture: a charge ring that fills around the tower, a
- * pulsing rainbow glow once it is ready, and a rainbow aim line from the horn
- * through the pointer while the player is aiming a beam.
- */
-function UnicornOverlay({ unicorn, chargePct, aiming, hoverCell, width, height }) {
-  if (!unicorn) return null;
-  const cx = unicorn.col * CELL_SIZE + CELL_SIZE / 2;
-  const cy = unicorn.row * CELL_SIZE + CELL_SIZE / 2;
-  const ready = chargePct >= 1;
-  const R = 22;
-  const circ = 2 * Math.PI * R;
-  const pct = Math.max(0, Math.min(1, chargePct));
-
-  let aim = null;
-  if (aiming && ready && hoverCell && hoverCell.row >= 0) {
-    const hx = hoverCell.col * CELL_SIZE + CELL_SIZE / 2;
-    const hy = hoverCell.row * CELL_SIZE + CELL_SIZE / 2;
-    const dx = hx - cx, dy = hy - cy;
-    const d = Math.hypot(dx, dy) || 1;
-    const far = width + height;
-    aim = { ex: cx + (dx / d) * far, ey: cy + (dy / d) * far };
-  }
+function TowerNode({ tower: t, towers, registry, isSelected, isHovered, onTowerClick }) {
+  const isBuffed = t.typeId !== 'NITRO' && getNitroBuff(t, towers).rateMul < 1;
+  const kickRef = useCallback((el) => {
+    if (el) registry.set(t.id, el); else registry.delete(t.id);
+  }, [registry, t.id]);
 
   return (
-    <>
-      {aim && (
-        <svg className="absolute inset-0 pointer-events-none z-30" width={width} height={height}>
-          <defs>
-            <linearGradient id="uni-aim" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#f43f5e" />
-              <stop offset="35%" stopColor="#facc15" />
-              <stop offset="65%" stopColor="#22c55e" />
-              <stop offset="100%" stopColor="#6366f1" />
-            </linearGradient>
-          </defs>
-          <line x1={cx} y1={cy} x2={aim.ex} y2={aim.ey} stroke="url(#uni-aim)" strokeWidth="7" strokeLinecap="round" opacity="0.45" />
-          <line x1={cx} y1={cy} x2={aim.ex} y2={aim.ey} stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 12" opacity="0.9" />
-        </svg>
-      )}
-
-      <div
-        className="absolute pointer-events-none z-30"
-        style={{ transform: `translate(${cx}px, ${cy}px) translate(-50%, -50%)`, width: 64, height: 64 }}
-      >
-        {ready && (
-          <div className="absolute inset-[-10px] rounded-full animate-ping"
-               style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.4), rgba(236,72,153,0.15), transparent 70%)' }} />
-        )}
-        <svg viewBox="0 0 64 64" className="w-full h-full" style={{ transform: 'rotate(-90deg)' }}>
-          <defs>
-            <linearGradient id="uni-ring" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#f43f5e" />
-              <stop offset="25%" stopColor="#f59e0b" />
-              <stop offset="45%" stopColor="#facc15" />
-              <stop offset="65%" stopColor="#22c55e" />
-              <stop offset="85%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#a855f7" />
-            </linearGradient>
-          </defs>
-          <circle cx="32" cy="32" r={R} fill="none" stroke="rgba(15,23,42,0.55)" strokeWidth="5" />
-          <circle
-            cx="32" cy="32" r={R} fill="none"
-            stroke="url(#uni-ring)" strokeWidth="5" strokeLinecap="round"
-            strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)}
-            style={{ transition: 'stroke-dashoffset 0.1s linear', filter: ready ? 'drop-shadow(0 0 4px rgba(236,72,153,0.9))' : 'none' }}
-          />
-        </svg>
-        {ready && <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-lg animate-bounce">✨</div>}
+    <div
+      onClick={(e) => { e.stopPropagation(); onTowerClick(t.id); }}
+      className="absolute cursor-pointer z-20"
+      style={{
+        transform: `translate(${t.col * CELL_SIZE}px, ${t.row * CELL_SIZE}px)`,
+        width: CELL_SIZE, height: CELL_SIZE
+      }}
+    >
+      <div className="relative w-full h-full flex items-center justify-center td-pop-in">
+        {isBuffed && <div className="absolute inset-0 scale-125 bg-yellow-400/20 border-2 border-yellow-400/40 rounded-full animate-pulse z-0 pointer-events-none" />}
+        <UpgradeBadges upgrades={t.upgrades} />
+        <div ref={kickRef} className="relative z-10 w-full h-full flex items-center justify-center">
+          <TowerVisual typeId={t.typeId} size="md" selected={isSelected} hovered={isHovered} upgrades={t.upgrades} />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

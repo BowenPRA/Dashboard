@@ -10,6 +10,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Coins, Heart, X, ChevronLeft, Skull, Zap, Clock, Swords, Check, Minus, Plus,
+  Volume2, VolumeX, Play, Pause,
 } from 'lucide-react';
 import TowerVisual from '../towerdefense/TowerVisual';
 import { TOWERS } from '../towerdefense/gameData';
@@ -203,7 +204,7 @@ export function LoadoutScreen({ gold, tierLabel, mapName, briefing, onDeploy, on
 // =====================================================================
 
 /** Driven by hudSnapshot — plain numbers, refreshed once per frame. */
-export function SurvivorHUD({ hud, onQuit }) {
+export function SurvivorHUD({ hud, onQuit, muted = false, paused = false, onToggleMute, onTogglePause }) {
   const hpPct = Math.max(0, hud.hp / hud.maxHp);
   const xpPct = Math.max(0, Math.min(1, hud.xp / hud.xpNext));
   const boss = hud.boss;
@@ -252,6 +253,13 @@ export function SurvivorHUD({ hud, onQuit }) {
             <div className="text-[9px] font-black uppercase tracking-widest text-slate-500 leading-none">Score</div>
             <div className="text-white font-black text-lg leading-tight tabular-nums">{fmtScore(hud.score)}</div>
           </div>
+          {/* The kill chain: every kill inside the window is worth more. */}
+          {hud.combo >= 5 && (
+            <div className="flex flex-col items-center px-2.5 py-1 rounded-xl bg-amber-400/15 border border-amber-400/40">
+              <div className="text-[9px] font-black uppercase tracking-widest text-amber-300/80 leading-none">Combo</div>
+              <div className="text-amber-300 font-black text-lg leading-tight tabular-nums">×{hud.combo}</div>
+            </div>
+          )}
           {hud.revives > 0 && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-xl bg-rose-500/20 border border-rose-500/40">
               <span className="text-base leading-none">💖</span>
@@ -259,7 +267,24 @@ export function SurvivorHUD({ hud, onQuit }) {
             </div>
           )}
           <button
+            onClick={onToggleMute}
+            title={muted ? 'Sound off (M)' : 'Sound on (M)'}
+            aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
+            className={`hidden sm:block p-2.5 bg-slate-900 hover:bg-slate-700 rounded-2xl transition-all border-b-4 border-black/50 active:border-b-0 active:translate-y-[4px] ${muted ? 'text-slate-500' : 'text-slate-200'}`}
+          >
+            {muted ? <VolumeX className="w-5 h-5" strokeWidth={2.5} /> : <Volume2 className="w-5 h-5" strokeWidth={2.5} />}
+          </button>
+          <button
+            onClick={onTogglePause}
+            title={paused ? 'Resume (P)' : 'Pause (P)'}
+            aria-label={paused ? 'Resume' : 'Pause'}
+            className={`p-2.5 rounded-2xl transition-all border-b-4 active:border-b-0 active:translate-y-[4px] ${paused ? 'bg-[#FFC800] border-[#b38c00] text-amber-950' : 'bg-slate-900 hover:bg-slate-700 border-black/50 text-slate-200'}`}
+          >
+            {paused ? <Play className="w-5 h-5 fill-current" strokeWidth={2.5} /> : <Pause className="w-5 h-5 fill-current" strokeWidth={2.5} />}
+          </button>
+          <button
             onClick={onQuit}
+            aria-label="Exit"
             className="p-2.5 bg-slate-900 hover:bg-rose-500 rounded-2xl transition-all border-b-4 border-black/50 active:border-b-0 active:translate-y-[4px]"
           >
             <X className="w-5 h-5 text-white" strokeWidth={3} />
@@ -482,7 +507,7 @@ export function LevelUpModal({ level, cards, challenge, onPick }) {
 // RESULTS
 // =====================================================================
 
-export function RunEndModal({ score, best, kills, time, level, bosses = 0, onRetry, onExit }) {
+export function RunEndModal({ score, best, newBest = false, replay = null, kills, combo = 0, time, level, bosses = 0, onRetry, onExit }) {
   // Every run ends the same way now — the swarm wins eventually. The screen
   // celebrates how FAR you got: how long you lasted and how many Broodmothers
   // fell first.
@@ -500,7 +525,7 @@ export function RunEndModal({ score, best, kills, time, level, bosses = 0, onRet
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
-          {[['Time', time], ['Kills', kills], ['Level', level], ['Bosses', bosses]].map(([label, value]) => (
+          {[['Time', time], ['Kills', kills], ['Level', level], [bosses > 0 ? 'Bosses' : 'Best combo', bosses > 0 ? bosses : `×${combo}`]].map(([label, value]) => (
             <div key={label} className="bg-slate-100 rounded-2xl py-3">
               <div className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</div>
               <div className="text-xl font-black text-slate-700 tabular-nums">{value}</div>
@@ -511,12 +536,23 @@ export function RunEndModal({ score, best, kills, time, level, bosses = 0, onRet
         <div className="bg-slate-100 border-2 border-slate-200 rounded-2xl py-4 mb-6 shadow-inner">
           <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Final Score</div>
           <div className="text-4xl font-black text-[#EA2B2B] tabular-nums">{Math.round(score).toLocaleString()}</div>
-          {score >= best && score > 0 && <div className="text-sm font-bold text-[#FFC800] mt-1">New Best!</div>}
+          {newBest
+            ? <div className="text-sm font-black text-[#e6a800] mt-1 animate-bounce">★ New Best! ★</div>
+            : best > 0 && <div className="text-xs font-bold text-slate-400 mt-1">Best {Math.round(best).toLocaleString()}</div>}
         </div>
 
         <div className="flex gap-3">
-          <button onClick={onRetry} className="flex-1 px-5 py-4 rounded-2xl bg-[#58A700] border-b-4 border-[#3f7a00] active:border-b-0 active:translate-y-[4px] text-white font-black uppercase tracking-widest text-sm">
+          <button
+            onClick={onRetry}
+            disabled={!!replay && !replay.canAfford}
+            className="flex-1 px-5 py-4 rounded-2xl bg-[#58A700] border-b-4 border-[#3f7a00] active:border-b-0 active:translate-y-[4px] text-white font-black uppercase tracking-widest text-sm disabled:bg-slate-300 disabled:border-slate-400 disabled:text-slate-500 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:border-b-4"
+          >
             Play Again
+            {replay && replay.cost > 0 && (
+              <span className="block text-[10px] tracking-widest mt-0.5 opacity-90">
+                {replay.canAfford ? `${replay.cost} gold` : `Need ${replay.cost} gold`}
+              </span>
+            )}
           </button>
           <button onClick={onExit} className="flex-1 px-5 py-4 rounded-2xl bg-slate-200 border-b-4 border-slate-300 active:border-b-0 active:translate-y-[4px] text-slate-600 font-black uppercase tracking-widest text-sm">
             Exit

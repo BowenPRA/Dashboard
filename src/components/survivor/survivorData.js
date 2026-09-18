@@ -51,6 +51,66 @@ export const LIMITS = {
   gems: 320,
   pops: 26,
   fx: 60,
+  shards: 150,
+  nums: 34,
+};
+
+// ---------- The dash ----------
+//
+// The one thing the student DOES, as opposed to decides. Everything else in the
+// run is positioning and drafting; the dash is a button with a cooldown that
+// gets you out of a closing ring, through a Beetle's charge, or out from under a
+// Broodmother's slam — so every telegraphed attack below has an answer that is
+// skill rather than stats. It grants invulnerability for slightly longer than
+// the burst itself, which is what makes dashing THROUGH a crowd a real move.
+export const DASH = {
+  speedMul: 3.6,
+  ms: 170,
+  iframeMs: 260,
+  cooldownMs: 3000,
+};
+
+// ---------- Kill combo ----------
+//
+// Kills in quick succession build a chain; the chain multiplies the score of
+// each kill (up to +50% at `fullAt`) and lapses after `windowMs` without one.
+// It rewards standing in the fight over circling the edge of it.
+export const COMBO = {
+  windowMs: 2600,
+  fullAt: 60,
+  maxBonus: 0.5,
+  milestones: { 25: 'KILLING SPREE', 50: 'RAMPAGE', 100: 'UNSTOPPABLE', 200: 'LEGENDARY' },
+};
+
+// ---------- Power-ups ----------
+//
+// Rare drops from ordinary kills. `pityKills` guarantees one if luck has been
+// bad for that long, so a run never goes without.
+export const PICKUPS = {
+  chance: 0.008,
+  pityKills: 110,
+  kinds: ['MAGNET', 'BOMB', 'MEAT'],
+  MAGNET: { icon: '🧲', color: '#60a5fa', label: 'MAGNET' },
+  BOMB:   { icon: '💣', color: '#fb7185', label: 'BOOM', radius: 560, damage: 70, perLevel: 10 },
+  MEAT:   { icon: '🍖', color: '#34d399', label: '+25', heal: 25 },
+};
+
+// ---------- Enemy attack patterns ----------
+//
+// Until now every enemy did one thing: walk at you. These give the three that
+// matter a move of their own, each with a WIND-UP the student can read and a
+// commitment they can punish — the body stops tracking once it commits, so a
+// sidestep (or the dash) beats it. Contact damage is unchanged; only the
+// delivery is new.
+export const ATTACKS = {
+  // Flyers hang back, then dart in.
+  WASP:   { triggerDist: 270, windMs: 300, goMs: 380, speedMul: 3.1, cooldownMs: [2000, 3200], turnRate: 2.4 },
+  // Tanks lower their head and charge in a straight line.
+  BEETLE: { triggerDist: 340, windMs: 560, goMs: 760, speedMul: 3.3, cooldownMs: [2600, 4000], turnRate: 1.3 },
+  // The Broodmother slams the ground — a ring you must be OUT of when it lands —
+  // and calls workers to her, as she does on the Tower Defense road.
+  BOSS:   { slamDist: 470, slamRadius: 235, slamMs: 1150, slamDamage: 26, slamEveryMs: 6500,
+            summonEveryMs: 10000, summonCount: 4 },
 };
 
 // ---------- Enemies ----------
@@ -103,7 +163,7 @@ export const SURVIVOR_ENEMIES = {
  * feel the pressure climb steadily, not fall off a cliff at minute four. At the
  * boss (5:00) this is 1.80x on top of whatever the unit's difficulty tier adds.
  */
-export const timeScale = (ms) => 1 + 0.16 * (ms / 60000);
+export const timeScale = (ms) => 1 + 0.19 * (ms / 60000);
 
 // ---------- The run ----------
 
