@@ -406,6 +406,12 @@ const mergePassages = (...lists) => {
   });
 };
 
+// A quiz passage's text is authored either as one string with line breaks or
+// as an array of paragraphs (every GED English quiz uses the array). Calling
+// .split on the array crashed the quiz on its first passage question.
+const passageParagraphs = (text) =>
+  (Array.isArray(text) ? text : String(text || '').split('\n')).filter((p) => String(p).trim());
+
 // --- MAIN ASSESSMENT COMPONENT ---
 
 export default function Assessment(props) {
@@ -745,7 +751,7 @@ export default function Assessment(props) {
                         </div>
                       )}
                       <div className="space-y-4 text-slate-700 dark:text-slate-300 text-lg leading-relaxed font-medium">
-                        {((lang === 'vn' && currentPassage.vnText ? currentPassage.vnText : currentPassage.text) || "").split('\n').map((p, i) => (
+                        {passageParagraphs(lang === 'vn' && currentPassage.vnText ? currentPassage.vnText : currentPassage.text).map((p, i) => (
                           <p key={i}>{renderPassageWithGlossary(p)}</p>
                         ))}
                       </div>

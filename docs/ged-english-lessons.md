@@ -92,15 +92,40 @@ Rules of thumb:
 
 ## 4. The essay standard
 
-- `minutesAllowed: 60` (ESL accommodation vs. the real 45).
+- **Timing.** A prompt's `minutesAllowed` applies in *practice* mode only (the reading
+  units' `er1` allow 60 as an ESL accommodation). **Exam mode is always 45** — test day —
+  whatever the prompt says (`GED_EXAM_MINUTES` in `src/utils/essayPrompts.js`), and it
+  hides the `guidelines`, which are coaching the real test never prints.
 - Exactly **two `sources`** presenting **opposing positions** on one contemporary
-  issue, in an informational/argumentative register — short enough for an ESL reader
-  (~one tight paragraph each), like the real Extended Response. ENG_0A's phones-in-
-  class pair is the reference shape.
-- `task`: analyze which position is better supported and write an evidence-based
-  argument — GED extended-response phrasing.
-- Grades on the two-part model (Content mark scheme + English) per
-  [question-quality.md](question-quality.md); the essay grader stays GED-calibrated.
+  issue, in an informational/argumentative register.
+- **The test-length format** — what the real stimulus looks like, and the standard for
+  every new prompt. `ENG_11` (six prompts) and the reading units' `er1` are the reference:
+  - **550–650 words across the two sources**, four to six paragraphs each (separate
+    paragraphs with `\n\n`; the screen numbers them straight through both texts). The
+    validator fails a prompt over 700; at 500+ the picker tags it **Test length**.
+  - Each source carries a **`type`** (*Op-ed, Speech, Letter to the editor, Press release,
+    News article, Government report, Public statement*) and a **`byline`** (*"By Dr. Rebecca
+    Tran, professor of economics at…"*, *"Issued by the … Association, which represents…"*).
+    Who is speaking is evidence — an interested party vs. a researcher — so the byline is
+    shown under the title **and** folded into what the grader reads (`graderSources()`; the
+    backend only reads `title` and `text`).
+  - **Both sides use some evidence and at least one fair point.** The weaker side leans on
+    the moves the GED rewards naming: one story as proof, a forecast stated as fact,
+    "everyone agrees", the unnamed expert, cause read into coincidence, fear/feelings, a
+    stake in the outcome. Give the stronger side one soft spot too.
+  - Vary which side is stronger (not always Source 1, not always the change), and make
+    some prompts genuinely close — `ENG_11`'s leaf-blower pair is the model.
+  - American spelling and settings; invented places, people and organizations.
+  - `task` in the test's words: *"The [kind] and the [kind] present opposing views on
+    whether …. In your response, analyze both positions presented in the two texts to
+    determine which one is best supported. Use relevant and specific evidence from both
+    texts to support your response. You should expect to spend up to 45 minutes planning,
+    drafting, and editing your response."*
+- The shorter practice pairs (~150 words a side — `ENG_10`'s bank, the reading units' `er2`)
+  stay as the lower rung of the ladder: the formula first, then test length.
+- Graded on the GED's three traits (argument & evidence, development & organisation,
+  conventions; 0–2 each) by the GED-calibrated grader — never the Content-mark-scheme
+  model. A GED prompt needs no `markScheme`/`modelAnswer`.
 - **A GED unit's `essay` is a bank** — an array of prompts, each with an `id` (it keys
   the student's saved work) and a short `title` for the picker. `src/utils/essayPrompts.js`
   normalises a single object and a bank to the same shape, and the validator requires
@@ -137,6 +162,7 @@ Add lessons later if a topic needs its own; for now, ten.
 | 8 | Author's Purpose, Tone & Point of View | Reading | **ENG_1B — built** |
 | 9 | Claims, Evidence & Evaluating Arguments | Reading | **ENG_1C — built** |
 | 10 | The Extended Response Essay | Writing | **ENG_10 — built** (capstone, no assessment) |
+| 11 | The Full-Length Extended Response | Writing | **ENG_11 — built** (test-length sources) |
 
 **Current inventory:**
 - **ENG_0A (Pronouns), ENG_0B (Subject–Verb Agreement)** → lessons 1–2. Built and polished.
@@ -157,7 +183,15 @@ Reading + Short Answers + Find & Fix + Diagrams + Essay + Assessment, with
 - **ENG_10** → lesson 10, the capstone: Reading (the sources) · Order It · Short Answers
   (frame drill) | Essay 30 · Find & Fix 10. No assessment — the essay is the test.
 - ENG_0A/0B gained Find & Fix in the Prove phase; ENG_1A/1B/1C gained it in Drill and
-  a two-prompt essay bank.
+  a two-prompt essay bank. Their `er1` prompts were rebuilt at test length on 2026-09-18
+  (same ids, tasks and positions), and every deck now carries three Notes checks.
+- **ENG_11** → lesson 11, added after the ten: the essay against **test-length sources**.
+  Notes (the real stimulus, reading 600 words in ten minutes, who is speaking, six
+  reasoning moves, weighing two sides that both have numbers) + Vocab | an argument-
+  evaluation Quiz 20 (in Drill: spotting the moves is practice, not the test) + four
+  paragraph-writing assignments 20 (credibility, name two flaws, weigh two sets of
+  numbers, concede-and-rebut) | a six-prompt test-length Essay bank 30 + Find & Fix 10.
+  Its prompts add frames for credibility and reasoning moves (`frames` on each prompt).
 
 ## 6. Authoring checklist (per lesson)
 
@@ -168,8 +202,9 @@ Reading + Short Answers + Find & Fix + Diagrams + Essay + Assessment, with
 - [ ] GrammarEdit / Reading / Short Answer items follow [question-quality.md](question-quality.md).
 - [ ] MCQ distractors are clean and parallel — each isolates the one thing being
       tested, with no smuggled extra words (e.g. verb-form options differ only in the verb).
-- [ ] Essay: 60 minutes, two GED-style opposing sources; in a bank, every prompt has an
-      `id` and a `title`.
+- [ ] Essay: two opposing sources in the test-length format (§4) — `type`, `byline`,
+      550–650 words, evidence and a fair point on both sides; in a bank, every prompt has
+      an `id` and a `title`.
 - [ ] Find & Fix errors quote the passage exactly, once each; `kind` uses the essay
       report's names so the Writing page totals them together.
 - [ ] Bilingual `vn` fields present.

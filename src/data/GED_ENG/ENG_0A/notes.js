@@ -34,6 +34,19 @@ export const notes = [
     example: "The dog wagged its tail. (belongs to it)\nIt's raining outside. (it is raining)",
     exampleVn: "Con chó vẫy đuôi của nó. (thuộc về nó)\nTrời đang mưa. (it is raining)",
     inlineSvg: DIAGRAMS.ITS_VS_ITS,
+    check: {
+      id: "chk_its_its",
+      q: "\"The store changed (1) ___ hours, so (2) ___ open until nine now.\" Which words fill the blanks?",
+      qVn: "\"The store changed (1) ___ hours, so (2) ___ open until nine now.\" Những từ nào điền vào chỗ trống?",
+      options: [
+        { val: "A", text: "(1) it's, (2) its", textVn: "(1) it's, (2) its" },
+        { val: "B", text: "(1) its, (2) its", textVn: "(1) its, (2) its" },
+        { val: "C", text: "(1) its, (2) it's", textVn: "(1) its, (2) it's" },
+      ],
+      correct: "C",
+      expEn: "Say \"it is\" in each blank. \"Changed it is hours\" makes no sense, so blank 1 is its — the store's hours. \"It is open until nine\" makes sense, so blank 2 is it's. A swaps them: the apostrophe in it's never shows who owns something. B forgets that blank 2 needs \"it is\".",
+      expVn: "Thử nói \"it is\" ở mỗi chỗ trống. \"Changed it is hours\" vô nghĩa, nên chỗ (1) là its — giờ mở cửa của cửa hàng. \"It is open until nine\" có nghĩa, nên chỗ (2) là it's. A đảo ngược hai từ: dấu nháy trong it's không bao giờ chỉ sự sở hữu. B quên rằng chỗ (2) cần \"it is\".",
+    },
   },
   {
     type: "concept",
@@ -46,6 +59,19 @@ export const notes = [
     example: "✗ The company requires their employees to wear uniforms.\n✓ The company requires its employees to wear uniforms.",
     exampleVn: "✗ Công ty yêu cầu their nhân viên mặc đồng phục.\n✓ Công ty yêu cầu its nhân viên mặc đồng phục.",
     inlineSvg: DIAGRAMS.SINGULAR_TRAP,
+    check: {
+      id: "chk_singular_its",
+      q: "Which word does the GED expect? \"The Riverside Clinic will change ___ opening hours in May.\"",
+      qVn: "Bài thi GED muốn dùng từ nào? \"The Riverside Clinic will change ___ opening hours in May.\"",
+      options: [
+        { val: "A", text: "their", textVn: "their" },
+        { val: "B", text: "its", textVn: "its" },
+        { val: "C", text: "his or her", textVn: "his or her" },
+      ],
+      correct: "B",
+      expEn: "A clinic is ONE place, so it takes its. Their is what people often say, but the GED marks it wrong for one organization. His or her is singular too, but it is for one person, not a place.",
+      expVn: "Một phòng khám là MỘT nơi, nên dùng its. Their là cách người ta hay nói, nhưng bài thi GED chấm sai khi dùng cho một tổ chức. His or her cũng là số ít, nhưng dùng cho một người, không phải một nơi.",
+    },
   },
   {
     type: "concept",
@@ -58,6 +84,19 @@ export const notes = [
     example: "✗ Sarah handed the report to Jason, but she forgot to sign it.\n✓ Sarah handed the report to Jason, but Sarah forgot to sign it.",
     exampleVn: "✗ Sarah đưa báo cáo cho Jason, nhưng cô ấy quên ký.\n✓ Sarah đưa báo cáo cho Jason, nhưng Sarah quên ký.",
     inlineSvg: DIAGRAMS.UNCLEAR_PRONOUN,
+    check: {
+      id: "chk_unclear_name",
+      q: "\"Rosa told Kim that she had won the prize.\" Kim is the winner. Which revision makes that clear?",
+      qVn: "\"Rosa told Kim that she had won the prize.\" Kim là người thắng giải. Câu sửa nào làm rõ điều đó?",
+      options: [
+        { val: "A", text: "Rosa told Kim that Kim had won the prize.", textVn: "Rosa told Kim that Kim had won the prize." },
+        { val: "B", text: "Rosa told Kim that they had won the prize.", textVn: "Rosa told Kim that they had won the prize." },
+        { val: "C", text: "Rosa told Kim that Rosa had won the prize.", textVn: "Rosa told Kim that Rosa had won the prize." },
+      ],
+      correct: "A",
+      expEn: "A names the winner, so the sentence can only be read one way. B swaps in another pronoun, and a pronoun is still unclear — \"they\" now sounds as if both women won. C uses a name, but the wrong one: Rosa is the one giving the news.",
+      expVn: "A gọi tên người thắng, nên câu chỉ có thể hiểu theo một cách. B đổi sang một đại từ khác, mà đại từ thì vẫn không rõ ràng — \"they\" giờ nghe như cả hai người đều thắng. C dùng tên, nhưng sai người: Rosa là người báo tin.",
+    },
   },
   {
     type: "summary",

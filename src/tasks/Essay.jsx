@@ -12,7 +12,7 @@ import EssayReport from '../components/essay/EssayReport';
 
 import { gradeEssay } from '../utils/aiGrader';
 import { EmptyState } from '../components/ui';
-import { essayPrompts } from '../utils/essayPrompts';
+import { essayPrompts, graderSources, GED_EXAM_MINUTES } from '../utils/essayPrompts';
 import { buildEssayEntry, newEssayId } from '../utils/essayArchive';
 
 const calculateSimilarity = (str1, str2) => {
@@ -59,6 +59,30 @@ const countWords = (s) => (s || '').trim().split(/\s+/).filter(Boolean).length;
 /** Splits a source into the numbered paragraphs the GED stimulus pane shows. */
 const splitParagraphs = (text) =>
   String(text || '').split(/\n\s*\n|\n/).map((p) => p.trim()).filter(Boolean);
+
+/**
+ * A source's header as the stimulus prints it: which source and what kind of
+ * writing it is, its title, then who wrote it. The byline is part of the
+ * evidence — a study by a researcher and a press release from the people who
+ * would profit are not equally trustworthy — so it is shown, not hidden.
+ */
+function SourceHeading({ source, index, compact = false }) {
+  return (
+    <>
+      <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mb-1">
+        Source {index + 1}{source.type ? ` · ${source.type}` : ''}
+      </h4>
+      {source.title && (
+        <h3 className={`${compact ? 'text-lg mb-3' : 'text-xl mb-4'} font-black text-slate-800 dark:text-white leading-snug`}>{source.title}</h3>
+      )}
+      {source.byline && (
+        <p className={`${compact ? '-mt-1.5 mb-3' : '-mt-2 mb-4'} text-[13px] italic font-medium text-slate-500 dark:text-slate-400 leading-snug`}>
+          {source.byline}
+        </p>
+      )}
+    </>
+  );
+}
 
 // Legacy (Cambridge / ESL) essays keep the old character floor.
 const MIN_CHARS = 100;
@@ -133,13 +157,17 @@ export default function Essay({
   const currentQ = prompts[promptIndex];
   const promptKey = currentQ?.key ?? '0';
 
-  // The GED Extended Response is a timed, unaided piece of writing. Units may
-  // override the limit; 45 minutes matches the real test.
-  const minutesAllowed = currentQ?.minutesAllowed ?? 45;
+  const [mode, setMode] = useState('practice');
+
+  // The GED Extended Response is a timed, unaided piece of writing. A prompt may
+  // allow extra time for practice; exam conditions are test day, which is 45
+  // minutes whatever the prompt says.
+  const minutesAllowed = isGedTrack && mode === 'exam'
+    ? GED_EXAM_MINUTES
+    : currentQ?.minutesAllowed ?? GED_EXAM_MINUTES;
 
   const [localAnswers, setLocalAnswers] = useState(savedData);
   const [gameState, setGameState] = useState(isGedTrack ? 'START' : 'Q');
-  const [mode, setMode] = useState('practice');
   const [plan, setPlan] = useState(EMPTY_PLAN);
   const [pane, setPane] = useState('sources');
   const [userAnswer, setUserAnswer] = useState('');
@@ -433,8 +461,9 @@ export default function Essay({
       scienceMaxMarks: currentQ.scienceMaxMarks,
       markScheme: currentQ.markScheme,
       guidelines: currentQ.guidelines || [],
-      // GED grading judges use of the two source passages, so send them.
-      sources: currentQ.sources || [],
+      // GED grading judges use of the two source passages, so send them — with
+      // each one's kind and byline, since who is speaking is evidence too.
+      sources: graderSources(currentQ.sources),
       track,
       unitTitle,
       minutesAllowed
@@ -785,8 +814,7 @@ export default function Essay({
                 <p className="text-[15px] font-bold text-slate-800 dark:text-white leading-relaxed mb-5">{currentQ.task}</p>
                 {numberedSources.map((s, i) => (
                   <div key={i} className={i > 0 ? 'mt-6 pt-6 border-t-2 border-dashed border-slate-200 dark:border-slate-800' : ''}>
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1">Source {i + 1}</h4>
-                    {s.title && <h3 className="text-lg font-black text-slate-800 dark:text-white mb-3">{s.title}</h3>}
+                    <SourceHeading source={s} index={i} compact />
                     {s.paragraphs.map((p) => (
                       <p key={p.n} className="text-[14px] text-slate-700 dark:text-slate-300 font-medium leading-[1.8] mb-3">{p.text}</p>
                     ))}
@@ -861,12 +889,7 @@ export default function Essay({
                     <div className="px-6 sm:px-8 py-6">
                       {numberedSources.map((s, i) => (
                         <div key={i} className={i > 0 ? 'mt-8 pt-8 border-t-2 border-dashed border-slate-200 dark:border-slate-800' : ''}>
-                          <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mb-1">
-                            Source {i + 1}
-                          </h4>
-                          {s.title && (
-                            <h3 className="text-xl font-black text-slate-800 dark:text-white mb-4 leading-snug">{s.title}</h3>
-                          )}
+                          <SourceHeading source={s} index={i} />
                           <div className="space-y-4">
                             {s.paragraphs.map((p) => (
                               <div key={p.n} className="flex">
@@ -950,7 +973,9 @@ export default function Essay({
                   <p className="text-lg font-bold text-slate-800 dark:text-white leading-relaxed">
                     {currentQ.task}
                   </p>
-                  {(currentQ.guidelines || []).length > 0 && (
+                  {/* The guidelines are coaching. Test day prints the prompt and
+                      nothing else, so exam conditions do too. */}
+                  {mode !== 'exam' && (currentQ.guidelines || []).length > 0 && (
                     <ul className="mt-5 space-y-2 pl-1">
                       {(currentQ.guidelines || []).map((guide, idx) => (
                         <li key={idx} className="flex items-start">

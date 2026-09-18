@@ -209,7 +209,7 @@ charts, or any rewrite of a built unit that a diagnostic hasn't flagged.
 
 The week grid above is the **shipping schedule**; the subject module maps below are the
 **coverage target** (the six most-tested topics per subject). Science was widened from 3 to 6
-after a topic review, so the maps now hold **29 modules — all 29 built as of 2026-09-17** (English 10 ·
+after a topic review, so the maps now hold **29 modules — all 29 built as of 2026-09-17** (English 10 + `ENG_11`, the full-length Extended Response added 2026-09-18 ·
 Social Studies 7 · Math 6 · Science 6). The three reading/number-sense spines `HIST_0A`,
 `SCI_0A` and `MATH_0B` are now built on the flexible layout Notes. That is more than six weeks can author, which is the
 point of the drop-order: build down the maps in risk order and let the tail fall.

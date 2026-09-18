@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { ArrowRight, BookOpen, Clock, Eye, EyeOff, Sparkles, History } from 'lucide-react';
 import { watchList } from '../../utils/essayArchive';
+import { GED_EXAM_MINUTES, isFullLength, stimulusWords } from '../../utils/essayPrompts';
+
+/** Marks a prompt whose sources are as long as test day's. */
+const FullLengthTag = () => (
+  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 whitespace-nowrap">
+    Test length
+  </span>
+);
 
 /**
  * The screen before the clock starts: which prompt, which mode, and what to
@@ -24,6 +32,10 @@ export default function EssayStart({ prompts, index, onPick, mode, onMode, archi
   const watch = watchList(archive);
   const attemptsFor = (p) => archive.filter((e) => e.promptKey === p.key && e.task === p.task);
   const past = attemptsFor(prompt);
+  const minutes = mode === 'exam' ? GED_EXAM_MINUTES : prompt.minutesAllowed ?? GED_EXAM_MINUTES;
+  const sourceNames = (prompt.sources || [])
+    .map((s) => [s.type, s.title].filter(Boolean).join(': '))
+    .filter(Boolean);
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 mt-2 sm:mt-6 animate-in fade-in">
@@ -44,11 +56,15 @@ export default function EssayStart({ prompts, index, onPick, mode, onMode, archi
           )}
         </div>
         <div className="px-6 sm:px-8 py-5">
-          <h3 className="text-xl font-black text-slate-800 dark:text-white">{prompt.title}</h3>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h3 className="text-xl font-black text-slate-800 dark:text-white">{prompt.title}</h3>
+            {isFullLength(prompt) && <FullLengthTag />}
+          </div>
           <p className="mt-2 text-[15px] font-medium text-slate-600 dark:text-slate-400 leading-relaxed">{prompt.task}</p>
           <p className="mt-3 text-xs font-bold text-slate-400">
-            Sources: {(prompt.sources || []).map((s) => s.title).filter(Boolean).join(' · ') || 'two opposing passages'}
-            {' · '}{prompt.minutesAllowed ?? 45} minutes
+            Sources: {sourceNames.join(' · ') || 'two opposing passages'}
+            {' · '}{stimulusWords(prompt)} words to read
+            {' · '}{minutes} minutes
             {past.length > 0 && ` · you have written this ${past.length} time${past.length === 1 ? '' : 's'}`}
           </p>
         </div>
@@ -63,7 +79,10 @@ export default function EssayStart({ prompts, index, onPick, mode, onMode, archi
                   onClick={() => { onPick(i); setOpen(false); }}
                   className={`w-full text-left flex items-center justify-between gap-4 px-6 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors ${i === index ? 'bg-indigo-50/60 dark:bg-indigo-950/30' : ''}`}
                 >
-                  <span className="font-bold text-slate-700 dark:text-slate-200">{p.title}</span>
+                  <span className="flex flex-wrap items-center gap-2 font-bold text-slate-700 dark:text-slate-200">
+                    {p.title}
+                    {isFullLength(p) && <FullLengthTag />}
+                  </span>
                   <span className="text-[11px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap">
                     {done.length ? `${done.length}× · best ${best}/6` : 'not yet written'}
                   </span>
@@ -78,7 +97,7 @@ export default function EssayStart({ prompts, index, onPick, mode, onMode, archi
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
           { id: 'practice', icon: Eye, title: 'Practice', desc: 'Plan first, and keep the sentence frames beside you while you write.' },
-          { id: 'exam', icon: EyeOff, title: 'Exam conditions', desc: 'Sources and prompt only, 45 minutes. Exactly what test day looks like.' },
+          { id: 'exam', icon: EyeOff, title: 'Exam conditions', desc: `Sources and prompt only, ${GED_EXAM_MINUTES} minutes, no tips. Exactly what test day looks like.` },
         ].map((m) => {
           const Icon = m.icon;
           const on = mode === m.id;

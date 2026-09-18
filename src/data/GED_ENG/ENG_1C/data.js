@@ -399,45 +399,51 @@ export const ENGLISH_1C_DATA = {
       id: "er1",
       title: "Free buses",
       titleVn: "Xe buýt miễn phí",
-      // The Lesson-9 capstone essay: a full GED Extended Response. Two opposing,
-      // contemporary sources with checkable evidence on each side; 60 minutes as an
-      // ESL accommodation (the real test is 45). The student argues which side is
-      // BETTER SUPPORTED, not which they personally prefer.
+      // The Lesson-9 capstone essay at test length: two kinds of writing with
+      // bylines, ~600 words between them, a measured example on EACH side, so
+      // the student has to weigh rather than spot. Practice allows 60 minutes
+      // (an ESL accommodation); exam conditions are always the real 45.
       minutesAllowed: 60,
       sources: [
         {
+          type: "Op-ed",
           title: "Make the Buses Free",
-          text:
-            "A city should let everyone ride the public bus for free. When the city of Elmwood removed bus fares for one year, ridership rose by thirty percent, and the roads carried noticeably fewer cars at rush hour. Collecting fares is not cheap either: ticket machines, cards and inspectors all cost money to run, so a large part of every fare is eaten up by the cost of collecting it. Free buses also help the people who need transport most — those who cannot afford a car can still reach work, clinics and shops without counting coins at the door.",
+          byline: "By Rosa Delgado, a transportation planner and member of the group Riders for Better Transit",
+          text: [
+            "Our city should let everyone ride the public bus for free. It is the fastest way to take cars off our crowded roads and to help the people who need transport most.",
+            "We know it works. When the city of Elmwood removed bus fares for one year, ridership rose by thirty percent, and traffic counters recorded 8 percent fewer cars on the main roads at rush hour. Air-quality monitors near the city's busiest intersection also showed a small drop in pollution.",
+            "Collecting fares is not cheap, either. Ticket machines, fare cards and inspectors all cost money to run. In Elmwood, the transit authority found that about a quarter of every dollar it collected in fares was spent on collecting it.",
+            "Critics always ask who will pay. In Elmwood, the lost fares were covered partly by a small increase in downtown parking charges, which also encouraged drivers to leave their cars at home. Other cities could do the same, and every car taken off the road saves money on road repairs as well.",
+            "Free buses also help the people who need them most. Those who cannot afford a car can reach work, clinics and shops without counting coins at the door. In Elmwood, a survey of new riders found that 4 in 10 of them earned less than $25,000 a year. Drivers say the buses run faster too, because no one stops to pay.",
+            "A city that builds roads for drivers without charging them at every corner can surely run buses for everyone. It is time to make the bus free.",
+          ].join("\n\n"),
         },
         {
+          type: "Letter to the editor",
           title: "Keep a Small Fare",
-          text:
-            "Free buses sound generous, but someone still has to pay for them. A bus system needs drivers, fuel and repairs, and fares cover a real share of that bill. When the town of Marsden made its buses free, the extra riders crowded the buses so badly that the town had to buy new vehicles it had not budgeted for, and the service grew less reliable. A small, low fare keeps a steady income for maintenance and asks riders to share the cost of a service they use, rather than passing the whole bill to taxpayers who may never board a bus.",
+          byline: "From Alan Brooks, a retired bus mechanic and the city's former transit budget officer",
+          text: [
+            "Free buses sound generous, but someone still has to pay for them. A bus system needs drivers, fuel and repairs, and in our city fares cover about a third of that bill. If fares disappear, that money has to come from taxpayers, including many who never board a bus.",
+            "Look at what happened in Marsden. When the town made its buses free, the extra riders crowded the buses so badly that the town had to buy six new vehicles it had not budgeted for, at a cost of $3 million. Buses ran late more often, and some riders who depended on them to get to work gave up and bought cars.",
+            "Free buses may not even reach the people they are meant to help. A study in Marsden found that many of the new riders were people who used to walk or cycle, not drivers leaving their cars at home.",
+            "Supporters like to point to Elmwood, but one year is a short trial. In its second year, Elmwood's ridership gain fell by half as the novelty wore off, and the parking charges covered less than half of the lost fares. The city council is still arguing over where the rest of the money will come from.",
+            "A small, low fare — with free passes for students, seniors and people on low incomes — keeps a steady income for maintenance and asks riders to share the cost of a service they use. The town of Grantville already does this, and its low-income riders rose by a fifth in two years. That is fairer to everyone.",
+          ].join("\n\n"),
         },
       ],
       task:
         "Both writers argue about whether a city's public buses should be free. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
       guidelines: [
         "State clearly which position is better supported.",
-        "Use specific evidence from BOTH sources.",
-        "Judge how strong each side's evidence is — do not just repeat it.",
-        "Write in paragraphs, with a short conclusion.",
+        "Both writers give a measured example. Weigh them against each other.",
+        "Look for the question one side never answers — who pays, and who actually rides?",
+        "Read each byline: does either writer speak for a group, or from experience of the budget?",
       ],
       suggestedWords: [
         ["Evidence", "proof", "prove"],
         ["Claim", "argues", "position"],
         ["Cost", "fund", "pay"],
       ],
-      scienceMaxMarks: 4,
-      markScheme: [
-        "States clearly which position is better supported, rather than only which the writer personally prefers.",
-        "Refers to specific evidence from Source 1 (for example the 30% rise in ridership in Elmwood or the cost of collecting fares).",
-        "Refers to specific evidence from Source 2 (for example the overcrowding and unbudgeted new vehicles in Marsden).",
-        "Evaluates the quality of the evidence rather than simply restating it, for example weighing the two measured results against each other.",
-      ],
-      modelAnswer:
-        "Both sources support their claims with a measured example, so this is a close case, but Source 2 is slightly better supported because its evidence points to a cost the other side never answers. Source 1 argues that buses should be free and gives a real result: after Elmwood dropped its fares, ridership rose by thirty percent and fewer cars used the roads at rush hour. It also makes the fair point that collecting fares is itself expensive. However, Source 1 never says how the free service was paid for. Source 2 answers exactly that gap. It agrees a bus system is worth having but shows, with the example of Marsden, that free buses drew so many riders that the town had to buy vehicles it had not budgeted for, and the service became less reliable. That is a concrete, measured harm, not just a worry. Because Source 2 both provides its own evidence and exposes the missing cost in Source 1's argument, its position is the better supported of the two.",
     },
     {
       id: "er2",

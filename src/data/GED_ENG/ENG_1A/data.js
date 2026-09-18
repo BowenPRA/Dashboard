@@ -386,44 +386,50 @@ export const ENGLISH_1A_DATA = {
       id: "er1",
       title: "School uniforms",
       titleVn: "Đồng phục học sinh",
-      // Every reading unit carries a full GED Extended Response for practice: two
-      // opposing contemporary sources, 60 minutes (ESL accommodation vs. the real
-      // 45), argue which side is BETTER SUPPORTED.
+      // A test-length Extended Response: two kinds of writing with bylines,
+      // ~600 words between them, evidence on both sides. Practice allows 60
+      // minutes (an ESL accommodation); exam conditions are always the real 45.
       minutesAllowed: 60,
       sources: [
         {
+          type: "Op-ed",
           title: "The Case for School Uniforms",
-          text:
-            "Schools should require students to wear a simple uniform. When Lincoln Middle School introduced uniforms, staff recorded far fewer arguments over clothing and brand-name pressure, and teachers said the mornings ran more calmly. Uniforms can also save families money: instead of buying new outfits to keep up with fashion, parents buy two or three sets that last the whole year. A shared uniform quietly reminds every student that they belong to the same school.",
+          byline: "By Karen Mills, principal of Lincoln Middle School",
+          text: [
+            "Schools should require students to wear a simple uniform. Three years ago, Lincoln Middle School became the first school in our district to try it, and I have watched the results every day since.",
+            "In the first year, staff recorded far fewer arguments over clothing and brand-name pressure, and teachers told me that the mornings ran more calmly. Students no longer spend the first ten minutes of class comparing sneakers. A shared uniform quietly reminds every student that they belong to the same school.",
+            "Uniforms can also save families money. Instead of buying new outfits to keep up with fashion, parents buy two or three sets that last the whole year. At Lincoln, a set of two shirts and two pairs of pants costs about $60, and the school gives free sets to any family that asks.",
+            "The change has been popular, too. When we asked Lincoln families at the end of the first year, 7 in 10 of the parents who answered said they wanted to keep the uniform. Several told me that getting ready for school had stopped being a daily fight. Our attendance office also reports that far fewer students are now sent home for breaking the dress code, because there is almost nothing left to argue about.",
+            "Some parents worried that their children would lose a way to express themselves. But students still choose their shoes, bags, hair and jackets, and they express themselves in their work, their clubs and their friendships. A shirt is not a personality.",
+            "Most importantly, uniforms keep the focus on learning. When I visit other schools, I can see the difference the moment I walk through the door. Every school that cares about learning should follow Lincoln's lead.",
+          ].join("\n\n"),
         },
         {
+          type: "Letter to the editor",
           title: "Uniforms Miss the Point",
-          text:
-            "A uniform is an easy answer to a hard question. Requiring one does nothing about the real causes of trouble at school, such as bullying or boredom in class. Uniforms also cost money that some families do not have, because a required set must be bought whether or not last year's clothes still fit. One district that switched to uniforms found no measurable change in student behaviour after two years. Students learn respect from how they are treated, not from matching shirts.",
+          byline: "From Dr. James Ortiz, an education researcher at Hillcrest University and the parent of a middle school student",
+          text: [
+            "A uniform is an easy answer to a hard question. Requiring one does nothing about the real causes of trouble at school, such as bullying, crowded classrooms or boredom in lessons.",
+            "The best evidence we have shows little effect. When the Clearwater district switched all of its middle schools to uniforms, it tracked discipline reports, attendance and test scores for two years and compared them with the two years before. It found no measurable change in student behavior, and attendance stayed the same. A national review of uniform policies reached a similar conclusion: schools that adopted uniforms did not become safer or calmer than similar schools that did not.",
+            "Supporters often point to one school's calmer mornings, but a single school's experience can be misleading. A new rule usually arrives with other changes — a new principal, new teachers, more attention from parents — and any of them could explain a calmer year. That is why researchers compare schools that adopted uniforms with similar schools that did not, instead of asking the staff who chose the rule whether it worked.",
+            "Uniforms also cost money that some families do not have, because a required set must be bought whether or not last year's clothes still fit. For a family with three children, even a cheap uniform can mean hundreds of dollars at the start of the school year.",
+            "Finally, there is what students learn from a rule like this. Teenagers learn respect from how they are treated, not from matching shirts. When a school spends its energy checking the color of students' socks, it is not spending that energy on the things that actually help students behave well.",
+          ].join("\n\n"),
         },
       ],
       task:
         "Both writers argue about whether schools should require students to wear a uniform. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
       guidelines: [
         "State clearly which position is better supported.",
-        "Use specific evidence from BOTH sources.",
-        "Weigh how strong each side's evidence is — do not just repeat it.",
-        "Write in paragraphs, with a short conclusion.",
+        "Read each byline: who is the writer, and how might that shape what they say?",
+        "Weigh the evidence: what was measured, and what is only an impression?",
+        "Concede the other side's best point, then answer it.",
       ],
       suggestedWords: [
         ["Evidence", "proof", "prove"],
         ["Claim", "argues", "position"],
-        ["School", "students"],
+        ["measured", "impression"],
       ],
-      scienceMaxMarks: 4,
-      markScheme: [
-        "States clearly which position is better supported, rather than only which the writer personally prefers.",
-        "Refers to specific evidence from Source 1 (for example the calmer mornings at Lincoln or the saving for families).",
-        "Refers to specific evidence from Source 2 (for example the district that found no measurable change, or the cost of a required set).",
-        "Evaluates the quality of the evidence rather than simply restating it, for example noting that a measured result is stronger than a staff impression.",
-      ],
-      modelAnswer:
-        "This is a close case, but Source 2 is slightly better supported because it relies on a measured result while Source 1 relies mostly on impressions. Source 1 argues for uniforms and offers real reasons: staff at Lincoln Middle School recorded fewer arguments over clothing, and families can save money by buying a few sets that last the year. However, the calmer mornings come from what teachers 'said,' which is an impression rather than a measured figure. Source 2 answers with a stronger kind of evidence: it points to a district that switched to uniforms and found no measurable change in behaviour after two years. That is a checkable result, and it directly weakens Source 1's main promise. Source 2 also raises a fair cost problem for families who must buy a required set. Because Source 2 supports its position with a measured outcome and answers Source 1's strongest claim, its argument is the better supported of the two.",
     },
     {
       id: "er2",

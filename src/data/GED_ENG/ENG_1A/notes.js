@@ -92,6 +92,19 @@ export const notes = [
       answer: "**Bees matter to farmers.** The other two sentences are details that support it.",
       answerVn: "**Ong quan trọng với nông dân.** Hai câu còn lại là chi tiết hỗ trợ cho nó.",
     },
+    check: {
+      id: "chk_find_main",
+      q: '"Last spring, Millbrook painted bike lanes on Main Street. Bike trips downtown doubled within a year. Shops on the street also had more customers. The new lanes have been good for the town." Which sentence states the main idea?',
+      qVn: '"Mùa xuân năm ngoái, Millbrook đã sơn làn đường xe đạp trên phố Main. Số chuyến đi xe đạp vào trung tâm tăng gấp đôi trong vòng một năm. Các cửa hàng trên phố cũng có nhiều khách hơn. Làn đường mới đã có lợi cho thị trấn." Câu nào nêu ý chính?',
+      options: [
+        { val: "A", text: "Last spring, Millbrook painted bike lanes on Main Street.", textVn: "Mùa xuân năm ngoái, Millbrook đã sơn làn đường xe đạp trên phố Main." },
+        { val: "B", text: "Bike trips downtown doubled within a year.", textVn: "Số chuyến đi xe đạp vào trung tâm tăng gấp đôi trong vòng một năm." },
+        { val: "C", text: "The new lanes have been good for the town.", textVn: "Làn đường mới đã có lợi cho thị trấn." },
+      ],
+      correct: "C",
+      expEn: "C is the one point the other sentences support: the doubled bike trips and the busier shops both show the lanes have been good for the town. A only sets the scene — the main idea is not always the first line. B is a strong detail, but it is only one piece of the proof.",
+      expVn: "C là điểm mà các câu khác cùng hỗ trợ: số chuyến xe đạp tăng gấp đôi và các cửa hàng đông khách hơn đều cho thấy làn đường mới có lợi cho thị trấn. A chỉ giới thiệu bối cảnh — ý chính không phải lúc nào cũng là câu đầu. B là một chi tiết mạnh, nhưng chỉ là một phần của bằng chứng.",
+    },
   },
   {
     layout: "split",
@@ -115,6 +128,19 @@ export const notes = [
       labelVn: "Chi tiết nào mạnh hơn?",
       answer: "The **study** is stronger — it directly proves that reading builds vocabulary. \"Libraries are quiet\" is true but off-topic.",
       answerVn: "**Nghiên cứu** mạnh hơn — nó chứng minh trực tiếp rằng đọc sách xây dựng vốn từ. \"Thư viện yên tĩnh\" thì đúng nhưng lạc đề.",
+    },
+    check: {
+      id: "chk_best_detail",
+      q: 'Main idea: "Our school should start classes later in the morning." Which detail best supports it?',
+      qVn: 'Ý chính: "Trường chúng ta nên bắt đầu giờ học muộn hơn vào buổi sáng." Chi tiết nào hỗ trợ nó tốt nhất?',
+      options: [
+        { val: "A", text: "The school buses were painted bright yellow last summer.", textVn: "Xe buýt của trường được sơn màu vàng tươi vào mùa hè năm ngoái." },
+        { val: "B", text: "After Lakeview schools started an hour later, attendance rose.", textVn: "Sau khi các trường ở Lakeview bắt đầu muộn hơn một giờ, tỷ lệ đi học đã tăng." },
+        { val: "C", text: "Our school day ends at 2:30 in the afternoon.", textVn: "Ngày học của trường chúng ta kết thúc lúc 2:30 chiều." },
+      ],
+      correct: "B",
+      expEn: "B points straight at the main idea: schools tried a later start, and attendance rose. A is true but off-topic — bus paint says nothing about start times. C is about the school day, but it gives no reason to start later.",
+      expVn: "B chỉ thẳng vào ý chính: các trường đã thử bắt đầu muộn hơn, và tỷ lệ đi học tăng lên. A đúng nhưng lạc đề — màu sơn xe buýt không nói gì về giờ vào học. C nói về ngày học, nhưng không đưa ra lý do nào để bắt đầu muộn hơn.",
     },
   },
   {

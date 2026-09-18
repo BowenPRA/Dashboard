@@ -13,6 +13,35 @@
  * is orphaned by the change.
  */
 
+/** Test day's time limit. Exam mode always uses it, whatever the prompt says. */
+export const GED_EXAM_MINUTES = 45;
+
+/** The real stimulus runs to roughly 550–650 words; a prompt at or above this
+ *  is a test-length rehearsal, and the picker says so. */
+export const FULL_LENGTH_WORDS = 500;
+
+const wordsIn = (s) => String(s || '').trim().split(/\s+/).filter(Boolean).length;
+
+/** Words across both sources — what the student has to read before writing. */
+export const stimulusWords = (prompt) =>
+  (prompt?.sources || []).reduce((n, s) => n + wordsIn(s?.text), 0);
+
+export const isFullLength = (prompt) => stimulusWords(prompt) >= FULL_LENGTH_WORDS;
+
+/**
+ * A source may say what kind of writing it is (`type`: "Op-ed", "Speech",
+ * "Press release"…) and who wrote it (`byline`), as the real stimulus does.
+ * Who is speaking is evidence in its own right — a press release from the
+ * people who would profit is not a neutral study — so the grader has to see
+ * the byline to credit a student who questions it. The backend reads only
+ * `title` and `text`, so both are folded in here.
+ */
+export const graderSources = (sources = []) =>
+  (sources || []).map((s) => ({
+    title: [s?.title, s?.type ? `(${s.type})` : ''].filter(Boolean).join(' '),
+    text: [s?.byline, s?.text].filter(Boolean).join('\n\n'),
+  }));
+
 export function essayPrompts(essay) {
   const list = Array.isArray(essay) ? essay : essay ? [essay] : [];
   return list
@@ -45,9 +74,14 @@ export function checkEssayPrompts(essay, { ged = false } = {}) {
       const sources = p.sources || [];
       if (sources.length !== 2) problems.push(`${at}: a GED Extended Response needs exactly 2 opposing sources (has ${sources.length})`);
       sources.forEach((s, j) => {
-        const words = String(s?.text || '').trim().split(/\s+/).filter(Boolean).length;
+        const words = wordsIn(s?.text);
         if (words < 60) problems.push(`${at}: source ${j + 1} is only ${words} words — too thin to argue from`);
+        for (const f of ['type', 'byline']) {
+          if (s?.[f] !== undefined && !(typeof s[f] === 'string' && s[f].trim())) problems.push(`${at}: source ${j + 1} ${f} must be a non-empty string`);
+        }
       });
+      const total = stimulusWords(p);
+      if (total > 700) problems.push(`${at}: the two sources run to ${total} words — the real stimulus stops at about 650`);
       if (Array.isArray(essay) && !p.title) problems.push(`${at}: prompts in a bank need a short title for the picker`);
     }
   });

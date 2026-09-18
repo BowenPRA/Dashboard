@@ -23,6 +23,19 @@ export const notes = [
     example: "An editorial urging the city to build a park is written to persuade.\nA report listing the city's parks is written to inform.",
     exampleVn: "Một bài xã luận thúc giục thành phố xây công viên được viết để thuyết phục.\nMột báo cáo liệt kê các công viên của thành phố được viết để cung cấp thông tin.",
     inlineSvg: DIAGRAMS.AUTHORS_PURPOSE,
+    check: {
+      id: "chk_purpose",
+      q: "A flyer says: \"Our town's tap water meets every state safety rule. Even so, a ClearSpring filter removes 99% of the chlorine. Order yours today and taste the difference!\" What is the author's main purpose?",
+      qVn: "Một tờ rơi viết: \"Nước máy của thị trấn chúng ta đạt mọi quy định an toàn của bang. Dù vậy, bộ lọc ClearSpring loại bỏ 99% lượng clo. Hãy đặt mua ngay hôm nay và cảm nhận sự khác biệt!\" Mục đích chính của tác giả là gì?",
+      options: [
+        { val: "A", text: "To persuade — to get readers to buy a filter", textVn: "Thuyết phục — khiến người đọc mua bộ lọc" },
+        { val: "B", text: "To inform — to report facts about the town's water", textVn: "Cung cấp thông tin — đưa tin về nước của thị trấn" },
+        { val: "C", text: "To entertain — to tell an enjoyable story", textVn: "Giải trí — kể một câu chuyện thú vị" },
+      ],
+      correct: "A",
+      expEn: "The flyer ends by asking you to act — \"Order yours today\" — so its purpose is to persuade. B is tempting because the first sentence is a fact, but the writer uses that fact to sell a filter, not just to inform. There is no story, so C does not fit.",
+      expVn: "Tờ rơi kết thúc bằng việc yêu cầu bạn hành động — \"Hãy đặt mua ngay hôm nay\" — nên mục đích của nó là thuyết phục. B dễ gây nhầm vì câu đầu là một sự thật, nhưng người viết dùng sự thật đó để bán bộ lọc, không chỉ để cung cấp thông tin. Không có câu chuyện nào, nên C không phù hợp.",
+    },
   },
   {
     type: "concept",
@@ -35,6 +48,19 @@ export const notes = [
     example: "\"The plan is a bold, welcome change.\" → approving.\n\"The plan is a careless, costly mistake.\" → critical.",
     exampleVn: "\"Kế hoạch là một sự thay đổi táo bạo, đáng hoan nghênh.\" → tán thành.\n\"Kế hoạch là một sai lầm cẩu thả, tốn kém.\" → chỉ trích.",
     inlineSvg: DIAGRAMS.TONE_SPECTRUM,
+    check: {
+      id: "chk_tone_words",
+      q: "All three sentences are about the same new stadium. Which one has a critical tone?",
+      qVn: "Cả ba câu đều nói về cùng một sân vận động mới. Câu nào có giọng điệu chỉ trích?",
+      options: [
+        { val: "A", text: "The new stadium opened on Saturday with 20,000 seats.", textVn: "Sân vận động mới khai trương vào thứ Bảy với 20.000 chỗ ngồi." },
+        { val: "B", text: "The new stadium is a stunning gift to the city.", textVn: "Sân vận động mới là một món quà tuyệt đẹp cho thành phố." },
+        { val: "C", text: "The new stadium is a bloated, wasteful project.", textVn: "Sân vận động mới là một dự án cồng kềnh, lãng phí." },
+      ],
+      correct: "C",
+      expEn: "\"Bloated\" and \"wasteful\" are sharp words, so C is critical. B is about the same stadium, but \"stunning gift\" is warm — that tone is approving. A only gives facts, so it is neutral. Same topic, three tones: the word choice decides.",
+      expVn: "\"Bloated\" (cồng kềnh) và \"wasteful\" (lãng phí) là những từ sắc bén, nên C mang giọng chỉ trích. B nói về cùng sân vận động, nhưng \"stunning gift\" (món quà tuyệt đẹp) là từ ấm áp — đó là giọng tán thành. A chỉ đưa ra sự thật, nên giọng trung lập. Cùng một chủ đề, ba giọng điệu: cách chọn từ quyết định.",
+    },
   },
   {
     type: "concept",
@@ -58,6 +84,19 @@ export const notes = [
     example: "\"We must act now\" → first person, taking a side.\n\"The council voted on Tuesday\" → third person, neutral.",
     exampleVn: "\"Chúng ta phải hành động ngay\" → ngôi thứ nhất, đứng về một phía.\n\"Hội đồng đã bỏ phiếu vào thứ Ba\" → ngôi thứ ba, trung lập.",
     inlineSvg: DIAGRAMS.POINT_OF_VIEW,
+    check: {
+      id: "chk_point_of_view",
+      q: "\"We parents cannot sit back while the city closes our only pool.\" What is the point of view?",
+      qVn: "\"We parents cannot sit back while the city closes our only pool.\" (Chúng tôi, những bậc phụ huynh, không thể ngồi yên khi thành phố đóng cửa hồ bơi duy nhất của chúng tôi.) Góc nhìn của câu này là gì?",
+      options: [
+        { val: "A", text: "Third person, against the closing", textVn: "Ngôi thứ ba, phản đối việc đóng cửa" },
+        { val: "B", text: "First person, against the closing", textVn: "Ngôi thứ nhất, phản đối việc đóng cửa" },
+        { val: "C", text: "First person, neutral about the closing", textVn: "Ngôi thứ nhất, trung lập về việc đóng cửa" },
+      ],
+      correct: "B",
+      expEn: "\"We\" puts the writer inside the argument, so it is first person, and \"cannot sit back\" shows a clear stand against closing the pool. A misses the \"we\" — the city is mentioned, but the writer is not standing outside. C misses the stance: this writer is not just reporting the news.",
+      expVn: "\"We\" (chúng tôi) đặt người viết vào bên trong lập luận, nên đây là ngôi thứ nhất, và \"cannot sit back\" (không thể ngồi yên) cho thấy lập trường rõ ràng phản đối việc đóng cửa hồ bơi. A bỏ sót từ \"we\" — câu có nhắc đến thành phố, nhưng người viết không đứng bên ngoài. C bỏ sót lập trường: người viết này không chỉ đưa tin.",
+    },
   },
   {
     type: "summary",

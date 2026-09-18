@@ -86,6 +86,7 @@ export const CONTENT_BLUEPRINT = {
     { id: 'ENG_5', title: 'Punctuation & Confusables', strand: 'Language' },
     { id: 'ENG_6', title: 'Transitions & Organization', strand: 'Language' },
     { id: 'ENG_10', title: 'Extended Response (Essay)', strand: 'Writing', critical: true },
+    { id: 'ENG_11', title: 'Full-Length Extended Response', strand: 'Writing' },
   ],
   GED_HISTORY: [
     { id: 'HIST_0A', title: 'Reading Social Studies Sources', strand: 'Spine', critical: true },

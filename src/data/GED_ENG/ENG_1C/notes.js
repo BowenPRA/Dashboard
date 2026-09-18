@@ -23,6 +23,19 @@ export const notes = [
     example: "Claim: The new bus lane helps the city.\nEvidence: Travel times fell by nine minutes after it opened.",
     exampleVn: "Luận điểm: Làn xe buýt mới giúp ích cho thành phố.\nBằng chứng: Thời gian di chuyển giảm chín phút sau khi nó mở.",
     inlineSvg: DIAGRAMS.CLAIM_EVIDENCE_REASONING,
+    check: {
+      id: "chk_find_claim",
+      q: "\"The city should keep its night buses running. Late-shift workers now save about 40 minutes a trip. Night-bus ridership has grown every month.\" Which sentence is the writer's claim?",
+      qVn: "\"Thành phố nên tiếp tục duy trì các tuyến xe buýt đêm. Người làm ca đêm hiện tiết kiệm được khoảng 40 phút mỗi chuyến. Số người đi xe buýt đêm đã tăng mỗi tháng.\" Câu nào là luận điểm của người viết?",
+      options: [
+        { val: "A", text: "Late-shift workers now save about 40 minutes a trip.", textVn: "Người làm ca đêm hiện tiết kiệm được khoảng 40 phút mỗi chuyến." },
+        { val: "B", text: "The city should keep its night buses running.", textVn: "Thành phố nên tiếp tục duy trì các tuyến xe buýt đêm." },
+        { val: "C", text: "Night-bus ridership has grown every month.", textVn: "Số người đi xe buýt đêm đã tăng mỗi tháng." },
+      ],
+      correct: "B",
+      expEn: "B is the one point the writer wants you to believe; the other two sentences are there to prove it. A is the most tempting because it is the strongest fact, but a fact that backs up a point is evidence, not the claim. C is evidence too — a record you could check.",
+      expVn: "B là điểm duy nhất người viết muốn bạn tin; hai câu còn lại có mặt để chứng minh nó. A dễ gây nhầm nhất vì đó là sự thật mạnh nhất, nhưng một sự thật dùng để hỗ trợ một điểm là bằng chứng, không phải luận điểm. C cũng là bằng chứng — một số liệu bạn có thể kiểm tra.",
+    },
   },
   {
     type: "concept",
@@ -35,6 +48,19 @@ export const notes = [
     example: "Fact: The library lends 400 books a week.\nOpinion: The library is the best place in town.",
     exampleVn: "Sự thật: Thư viện cho mượn 400 cuốn sách mỗi tuần.\nÝ kiến: Thư viện là nơi tốt nhất trong thị trấn.",
     inlineSvg: DIAGRAMS.FACT_VS_OPINION,
+    check: {
+      id: "chk_fact_opinion",
+      q: "Which sentence is a FACT?",
+      qVn: "Câu nào là SỰ THẬT?",
+      options: [
+        { val: "A", text: "The recycling program collected 12 tons of plastic in March.", textVn: "Chương trình tái chế đã thu gom 12 tấn nhựa vào tháng Ba." },
+        { val: "B", text: "Twelve tons of plastic in March was an amazing result.", textVn: "Mười hai tấn nhựa trong tháng Ba là một kết quả tuyệt vời." },
+        { val: "C", text: "The town should add a second recycling truck.", textVn: "Thị trấn nên có thêm một xe tái chế thứ hai." },
+      ],
+      correct: "A",
+      expEn: "A can be checked against the town's records, so it is a fact. B is the trap: it uses the same number, but \"amazing\" is a judgement, so the sentence is an opinion. C uses \"should\", which signals an opinion.",
+      expVn: "A có thể được kiểm tra bằng hồ sơ của thị trấn, nên nó là sự thật. B là cái bẫy: nó dùng cùng con số, nhưng \"amazing\" (tuyệt vời) là một đánh giá, nên câu này là ý kiến. C dùng \"should\" (nên), một từ báo hiệu ý kiến.",
+    },
   },
   {
     type: "concept",
@@ -47,6 +73,19 @@ export const notes = [
     example: "Strong: \"Crime fell 12% in the year after the change.\"\nWeak: \"Everybody knows the change made things worse.\"",
     exampleVn: "Mạnh: \"Tội phạm giảm 12% trong năm sau khi thay đổi.\"\nYếu: \"Ai cũng biết sự thay đổi làm mọi thứ tệ hơn.\"",
     inlineSvg: DIAGRAMS.EVIDENCE_STRENGTH,
+    check: {
+      id: "chk_evidence_rank",
+      q: "Claim: \"The new crosswalk on Elm Street has made the road safer.\" Which evidence is strongest?",
+      qVn: "Luận điểm: \"Vạch qua đường mới trên phố Elm đã làm con đường an toàn hơn.\" Bằng chứng nào mạnh nhất?",
+      options: [
+        { val: "A", text: "Many neighbors say the road feels much safer than it used to.", textVn: "Nhiều hàng xóm nói con đường giờ có cảm giác an toàn hơn trước nhiều." },
+        { val: "B", text: "It is obviously safer now — anyone who walks there can see that.", textVn: "Giờ rõ ràng là an toàn hơn — ai đi bộ ở đó cũng thấy điều đó." },
+        { val: "C", text: "Crashes at the corner fell from 14 to 3 in the year after it was painted.", textVn: "Số vụ va chạm ở góc đường giảm từ 14 xuống 3 trong năm sau khi vạch được sơn." },
+      ],
+      correct: "C",
+      expEn: "C gives numbers you could check in accident records — the strongest kind of evidence. A is tempting because it mentions real people, but \"many neighbors say\" is vague: which neighbors, and how many? B is a feeling only, the weakest kind.",
+      expVn: "C đưa ra con số bạn có thể kiểm tra trong hồ sơ tai nạn — loại bằng chứng mạnh nhất. A dễ gây nhầm vì nó nhắc đến người thật, nhưng \"nhiều hàng xóm nói\" rất mơ hồ: hàng xóm nào, và bao nhiêu người? B chỉ là cảm xúc, loại yếu nhất.",
+    },
   },
   {
     type: "concept",

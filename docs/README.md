@@ -142,9 +142,11 @@ status* section so it can be closed deliberately.
   history.
 - [ged-english-lessons.md](ged-english-lessons.md) — how to build the GED English
   (RLA) track for an ESL learner: what the test assesses, bite-size design principles,
-  the activity toolkit (incl. **Find & Fix** and **Order It** item shapes), the 60-minute
-  essay standard (prompt banks, planner, frames, the saved-essay archive behind **My
-  Writing** and the teacher's essay notes), and the **10-lesson blueprint** — all ten built.
+  the activity toolkit (incl. **Find & Fix** and **Order It** item shapes), the essay
+  standard (the **test-length source format** — two kinds of writing, bylines, 550–650
+  words — prompt banks, planner, frames, exam vs. practice timing, the saved-essay archive
+  behind **My Writing** and the teacher's essay notes), and the **lesson blueprint** —
+  ten lessons plus `ENG_11`, the full-length Extended Response.
 
 ## How to use these
 

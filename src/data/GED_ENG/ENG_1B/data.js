@@ -400,44 +400,50 @@ export const ENGLISH_1B_DATA = {
       id: "er1",
       title: "Community service requirement",
       titleVn: "Yêu cầu phục vụ cộng đồng",
-      // A full GED Extended Response for practice: two opposing contemporary sources
-      // with checkable evidence on each side; 60 minutes (ESL accommodation vs. the
-      // real 45). The student argues which side is BETTER SUPPORTED.
+      // A test-length Extended Response: two kinds of writing with bylines,
+      // ~600 words between them, evidence on both sides. Practice allows 60
+      // minutes (an ESL accommodation); exam conditions are always the real 45.
       minutesAllowed: 60,
       sources: [
         {
+          type: "Speech",
           title: "Make Service a Graduation Requirement",
-          text:
-            "High schools should require students to complete a set number of community-service hours before they graduate. When Oak Ridge High added a forty-hour requirement, the share of seniors who volunteered rose sharply, and a follow-up survey found that many of them kept volunteering a year after leaving school. Service also teaches lessons a classroom cannot: students learn to show up on time, work beside strangers, and see how their town actually runs.",
+          byline: "Excerpt from remarks by Linda Owusu, a member of the Oak Ridge school board, at a state education hearing",
+          text: [
+            "Thank you for the chance to speak. Four years ago, Oak Ridge High added a simple rule: before graduating, every student must complete forty hours of community service. I am here to tell you what happened.",
+            "In the year before the rule, fewer than one senior in five volunteered anywhere. In the first year after it, every senior did, because they had to, and many did far more than forty hours. When we surveyed that class a year after graduation, 62 percent said they were still volunteering.",
+            "Our local charities noticed the difference. The director of the Oak Ridge food bank says that student volunteers now cover nearly a third of its Saturday shifts, and the animal shelter has a waiting list of teenagers who want to help. The rule cost the school almost nothing to run: a part-time coordinator and a simple online form for logging hours.",
+            "Service teaches lessons a classroom cannot. Students learn to show up on time, work beside strangers and see how their town actually runs. One of our graduates, who spent her hours at a food bank, now manages it. She told me the requirement changed her life. Colleges notice, too: our counselors report that service hours now appear in almost every Oak Ridge college application.",
+            "Some people say that a required good deed is not a real one. But we require students to take math and to read novels, and nobody says those lessons do not count because they were required. Sometimes young people need a push to discover what they are capable of.",
+            "I urge this committee to make community service a requirement in every high school in the state.",
+          ].join("\n\n"),
         },
         {
+          type: "Op-ed",
           title: "Service Should Be a Choice",
-          text:
-            "Requiring service turns a good deed into a chore. A student who volunteers only to tick a box learns little about kindness, and the rule falls hardest on teenagers who already work paid jobs to help their families. One district that tracked its graduates found no lasting difference in volunteering between students who had been required to serve and those who had not. Real generosity cannot be forced onto a form.",
+          byline: "By Marcus Webb, director of the Hillside Volunteer Center",
+          text: [
+            "I have spent twenty years matching volunteers with local charities, and nothing makes me happier than seeing young people serve. But requiring service turns a good deed into a chore.",
+            "A student who volunteers only to tick a box learns little about kindness. Every spring, our center fills with seniors rushing to finish their hours before graduation, and most of them never come back. One told me she had spent her last ten hours sorting the same box of donated books twice. The rule also falls hardest on teenagers who already work paid jobs to help their families; for them, forty unpaid hours can mean forty hours of lost wages.",
+            "The research supports this. When the Pine Valley district required service for five years and then dropped the rule, researchers compared graduates from both periods. Three years after graduation, 31 percent of the students who had been required to serve were still volunteering — almost exactly the same as the 30 percent of students who had never been required to.",
+            "Supporters of a requirement often point to surveys of students who were required to serve. Those surveys cannot tell us much on their own, because they have nothing to compare with: many of those students might have volunteered anyway. Only a comparison between required and non-required students can show what the rule itself changed, and when that comparison was made, the answer was almost nothing.",
+            "Schools that want more young volunteers should make service easy instead of mandatory: give course credit for it, bring charities into school, and let students choose causes they care about. Real generosity cannot be forced onto a form.",
+          ].join("\n\n"),
         },
       ],
       task:
         "Both writers argue about whether high schools should require community service to graduate. In your response, analyse both positions to decide which one is better supported. Use specific evidence from the sources.",
       guidelines: [
         "State clearly which position is better supported.",
-        "Use specific evidence from BOTH sources.",
-        "Weigh how strong each side's evidence is — do not just repeat it.",
-        "Write in paragraphs, with a short conclusion.",
+        "Read each byline: who is the writer, and what have they seen for themselves?",
+        "Ask who each survey or study compared. Following one group is weaker than comparing two.",
+        "Concede the other side's best point, then answer it.",
       ],
       suggestedWords: [
         ["Evidence", "proof", "prove"],
         ["Claim", "argues", "position"],
-        ["Service", "volunteer"],
+        ["compared", "survey"],
       ],
-      scienceMaxMarks: 4,
-      markScheme: [
-        "States clearly which position is better supported, rather than only which the writer personally prefers.",
-        "Refers to specific evidence from Source 1 (for example the rise in volunteering at Oak Ridge or the follow-up survey).",
-        "Refers to specific evidence from Source 2 (for example the district that found no lasting difference, or the burden on working students).",
-        "Evaluates the quality of the evidence rather than simply restating it, for example noting that comparing two groups is stronger than surveying only one.",
-      ],
-      modelAnswer:
-        "Both sources use real evidence, but Source 2 is slightly better supported because its evidence compares two groups, while Source 1's looks at only one. Source 1 argues for a requirement and reports that after Oak Ridge High added forty hours, more seniors volunteered and a survey found many kept volunteering later. That sounds convincing, yet the survey follows only the students who were required to serve, so it cannot show whether the rule itself made the difference. Source 2 answers exactly that weakness: it points to a district that tracked its graduates and found no lasting difference in volunteering between students who had been required to serve and those who had not. Comparing the two groups is a stronger test than following one, because it rules out the chance that those students would have volunteered anyway. Source 2 also raises a fair point about the burden on teenagers who already work. Because its evidence is a fairer comparison and answers Source 1's main claim, Source 2's position is the better supported.",
     },
     {
       id: "er2",
