@@ -1,0 +1,1 @@
+function e(e){let t=String(e??``),n=[],r=``,i=0,a=()=>{r&&=(n.push({text:r}),``)};for(;i<t.length;){let e=t[i];if(e===`\\`&&t[i+1]===`$`){r+=`$`,i+=2;continue}if(e===`$`){let e=i+1;for(;e<t.length&&t[e]!==`$`;)e+=t[e]===`\\`?2:1;if(e<t.length&&e>i+1){a(),n.push({math:t.slice(i+1,e).trim()}),i=e+1;continue}}r+=e,i+=1}return a(),n}export{e as t};
