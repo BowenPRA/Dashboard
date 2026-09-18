@@ -3,13 +3,18 @@ import {
   ChevronRight, ChevronLeft, BookOpen, Scale, Target,
   MessageSquare, ShieldCheck, CheckCircle2, Construction,
   PlayCircle, PauseCircle, Maximize2, X, Pencil, MonitorPlay, Minimize2,
-  Volume2, Repeat, AlertTriangle, UserCheck, HelpCircle, Equal, Scissors, Users
+  Volume2, Repeat, AlertTriangle, UserCheck, HelpCircle, Equal, Scissors, Users,
+  Wrench, RotateCcw, Lightbulb, ClipboardCheck, XCircle
 } from 'lucide-react';
 
 import TopBar from '../components/TopBar';
 import WidgetRenderer from '../components/WidgetRenderer';
 import { SlideLayout } from '../components/notes/layouts';
 import ActivityBlock from '../components/notes/ActivityBlock';
+import NotesReview from '../components/notes/NotesReview';
+import Modal from '../components/ui/Modal';
+import { retryKeepsParts } from '../utils/activity';
+import { NOTES_BLOB_VERSION, deckItems, mistakesOf, restoreNotes } from '../utils/notesReview';
 import { isLayout } from '../components/notes/layouts/helpers.jsx';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import { splitInlineMath } from '../components/notes/splitInlineMath.js';
@@ -59,7 +64,7 @@ class WidgetErrorBoundary extends Component {
  * full marks, which taught the student that clicking Next is the goal; the deck
  * now has to ask, and the answer has to be right.
  */
-function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, compact = false, side = false }) {
+function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, compact = false, side = false, badge = null }) {
   const question = lang === 'vn' ? (check.qVn || check.q) : check.q;
   const explanation = lang === 'vn' ? (check.expVn || check.expEn) : (check.expEn || check.expVn);
 
@@ -73,9 +78,10 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
 
   return (
     <div className={shell}>
-      <div className={`flex items-center text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest ${compact ? 'mb-2' : 'mb-3'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
+      <div className={`flex flex-wrap items-center gap-y-1 text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest ${compact ? 'mb-2' : 'mb-3'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
         <HelpCircle className={isDisplayMode ? 'w-5 h-5 mr-2' : 'w-4 h-4 mr-2'} strokeWidth={3} />
         {lang === 'vn' ? 'Kiểm tra nhanh' : 'Quick Check'}
+        {badge}
       </div>
 
       <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug ${compact ? 'mb-2.5' : 'mb-4'} ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
@@ -127,31 +133,66 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
   );
 }
 
-/**
- * The resume blob Notes keeps in `progress[...].answers`:
- *   { slide, total, checks: { [slideIndex]: { val, correct } } }
- * `total` guards the restore — if the deck has been re-authored to a different
- * length since the save, the slide position and the check answers no longer
- * line up with the slides they were made on, so both are dropped.
- */
-const restoreFrom = (saved, slides) => {
-  const total = slides?.length || 0;
-  if (!saved || typeof saved !== 'object' || saved.total !== total) return { slide: 0, checks: {} };
-  const slide = Math.min(Math.max(Number(saved.slide) || 0, 0), Math.max(total - 1, 0));
-  const checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {};
-  return { slide, checks };
-};
-
 // Activities that read fine in a column beside the slide. A number line needs
 // the full width to be tappable, so it keeps the footer under the slide.
 const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula']);
 
-export default function Notes({ slides, onComplete, onProgress, onQuit, savedData, bilingual = true }) {
+// The words around fixing mistakes (the results screen has its own, in NotesReview).
+const FIX_T = {
+  en: {
+    fixLater: 'No problem — you can fix this at the end of the lesson.',
+    tryAgain: 'Try again',
+    again: 'Have another go',
+    kept: 'your right answers are kept',
+    wasRight: 'You got this one right.',
+    wasWrong: 'You got this one wrong last time.',
+    fixing: (p, n) => `Fixing mistakes · ${p} of ${n}`,
+    finishedBar: (r, n) => `Lesson finished · ${r} of ${n} right`,
+    results: 'Results',
+    skip: 'Skip',
+    next: 'Next',
+    finish: 'Finish',
+    startOver: 'Start over',
+    restartTitle: 'Start the lesson again?',
+    restartBody: 'This clears your answers and goes back to slide 1. Your best score stays saved.',
+    restartHint: "You don't need to start over to fix a mistake. At the end of the lesson you can redo every question you got wrong — and your right answers are kept.",
+    restartHintDone: "You don't need to start over to fix your mistakes. “Fix my mistakes” redoes only the ones you got wrong — your right answers are kept.",
+    keep: 'Keep my answers',
+    modeFix: 'Fix Mistakes',
+    modeResults: 'Lesson Results',
+  },
+  vn: {
+    fixLater: 'Không sao — em có thể sửa câu này ở cuối bài.',
+    tryAgain: 'Làm lại',
+    again: 'Thử lại lần nữa',
+    kept: 'các câu đúng vẫn được giữ',
+    wasRight: 'Em đã làm đúng câu này.',
+    wasWrong: 'Lần trước em làm sai câu này.',
+    fixing: (p, n) => `Sửa câu sai · ${p} / ${n}`,
+    finishedBar: (r, n) => `Đã học xong · đúng ${r} / ${n}`,
+    results: 'Kết quả',
+    skip: 'Bỏ qua',
+    next: 'Tiếp',
+    finish: 'Hoàn thành',
+    startOver: 'Làm lại từ đầu',
+    restartTitle: 'Học lại từ đầu?',
+    restartBody: 'Thao tác này xoá các câu trả lời và quay về slide 1. Điểm cao nhất của em vẫn được lưu.',
+    restartHint: 'Em không cần học lại từ đầu để sửa lỗi. Ở cuối bài, em có thể làm lại mọi câu sai — và các câu đúng vẫn được giữ.',
+    restartHintDone: 'Em không cần học lại từ đầu để sửa lỗi. “Sửa câu sai” chỉ làm lại những câu em làm sai — các câu đúng vẫn được giữ.',
+    keep: 'Giữ câu trả lời',
+    modeFix: 'Sửa Câu Sai',
+    modeResults: 'Kết Quả Bài Học',
+  },
+};
+
+export default function Notes({ slides, onComplete, onProgress, onQuit, savedData, itemLog, bilingual = true }) {
   // Resume where the student left off. Students routinely close a deck part
   // way through (the tablet sleeps, the lesson ends, they tap the X), and
   // before this every slide read and every check answered was thrown away.
-  const restored = restoreFrom(savedData, slides);
+  // A finished deck keeps its answers too (utils/notesReview.js), so it can
+  // reopen on its results with the wrong ones ready to fix.
+  const [restored] = useState(() => restoreNotes(savedData, slides, itemLog));
 
   const [currentIndex, setCurrentIndex] = useState(restored.slide);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -159,9 +200,29 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   const [lang, setLang] = useState('en');
   const [isDisplayMode, setIsDisplayMode] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
-  const [checkAnswers, setCheckAnswers] = useState(restored.checks); // slide index -> { val, correct }
+  const [checkAnswers, setCheckAnswers] = useState(restored.checks); // slide index -> result
   // Show "picked up where you left off" until the student moves on.
-  const [resumedAt, setResumedAt] = useState(restored.slide > 0 ? restored.slide : null);
+  const [resumedAt, setResumedAt] = useState(!restored.finished && restored.slide > 0 ? restored.slide : null);
+
+  // Reached the end at least once. From then on nothing blocks navigation, a
+  // wrong answer can be reopened, and the end of the deck is the results.
+  const [finished, setFinished] = useState(restored.finished);
+  // 'deck' (the slides) or 'review' (the results). A finished deck with
+  // mistakes left opens on its results: that is what the student came back for.
+  const [view, setView] = useState(() => (restored.finished && mistakesOf(slides, restored.checks).length ? 'review' : 'deck'));
+  // "Fix my mistakes": the wrong items' slides, walked in order.
+  const [fixing, setFixing] = useState(null); // { queue: [slideIndex], pos }
+  // Slides whose check or activity is open again for another go. The old
+  // answer stays in `checkAnswers` until the new one replaces it, so leaving
+  // a retry unanswered loses nothing.
+  const [reopened, setReopened] = useState({}); // slide index -> true
+  const [attempt, setAttempt] = useState({});   // slide index -> retries, a remount key
+  const [session, setSession] = useState(0);    // bumped by Start over, a remount key
+  const [confirmRestart, setConfirmRestart] = useState(false);
+  // Answered anything this visit? Opening a finished deck and closing it again
+  // must not log a fresh attempt (it would turn the study plan's "today" green
+  // for no work — the QA-pass pattern).
+  const [dirty, setDirty] = useState(false);
 
   const audioRef = useRef(null);
   const activeAudioUrl = useRef(null);
@@ -252,51 +313,68 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   // Every scored item in the deck — a `check` question or an interactive
   // `activity` (sort/order/estimate/hotspot/predict) — with the slide it sits
   // on. Both score alike: one item, right or wrong.
-  const checks = (slides || [])
-    .map((slide, i) => (slide?.check || slide?.activity
-      ? { i, check: slide.check || null, activity: slide.activity || null }
-      : null))
-    .filter(Boolean);
+  const items = deckItems(slides);
+  const mistakes = mistakesOf(slides, checkAnswers);
+  const rightCount = items.length - mistakes.length;
+  const hasItem = (i) => !!(slides?.[i]?.check || slides?.[i]?.activity);
+  // What a slide shows as answered: nothing while it is open for another go.
+  const answerOf = (i) => (reopened[i] ? null : checkAnswers[i] || null);
 
-  // A slide's check or activity must be finished before it can be left behind —
-  // the reveal is the teaching, so skipping past it would skip the point.
-  const pendingCheck = !!(slides?.[currentIndex]?.check || slides?.[currentIndex]?.activity)
-    && !checkAnswers[currentIndex];
-
-  // An activity reports its result once (`{ done, correct, ... }`); it is kept
-  // in the same per-slide map as the check answers so resume covers both.
-  const finishActivity = (index, result) => {
-    if (checkAnswers[index]) return;
-    const next = { ...checkAnswers, [index]: { ...result, correct: !!result?.correct } };
-    setCheckAnswers(next);
-    checkpoint(next, Math.max(furthest, index));
-  };
+  // First time through, a slide's check or activity must be finished before it
+  // can be left behind — the reveal is the teaching, so skipping past it would
+  // skip the point. Once the deck is finished nothing blocks: a retry left
+  // unanswered simply keeps the old answer.
+  const pendingCheck = !finished && view === 'deck' && hasItem(currentIndex) && !checkAnswers[currentIndex];
 
   // Notes is a native-10 task (taskRegistry), so score out of 10. A deck with
   // no check questions pays on completion only, so decks written before checks
   // existed keep their XP until they are authored with them.
-  const scoreOf = (answers, finished) => {
-    if (!checks.length) return finished ? 10 : 0;
-    const right = checks.filter(({ i }) => answers[i]?.correct).length;
-    return Math.round((right / checks.length) * 10);
+  const scoreOf = (answers, done) => {
+    if (!items.length) return done ? 10 : 0;
+    const right = items.filter(({ i }) => answers[i]?.correct).length;
+    return Math.round((right / items.length) * 10);
   };
-  const itemsOf = (answers) => checks.map(({ i, check, activity }) => ({
-    itemId: check?.id || activity?.id || `slide-${i + 1}`,
+  const itemsOf = (answers) => items.map(({ i, id }) => ({
+    itemId: id,
     correct: !!answers[i]?.correct,
+    ...(answers[i]?.retried ? { retried: true } : null),
   }));
-  const blobOf = (answers, slide) => ({ slide, total: slides?.length || 0, checks: answers });
+  // A finished deck keeps its answers (v2) — the old reset to `{}` is what made
+  // a single wrong check cost the mark for good.
+  const blobOf = (answers, slide, done) => ({
+    v: NOTES_BLOB_VERSION, slide: done ? 0 : slide, total: slides?.length || 0, checks: answers,
+    ...(done ? { finished: true } : null),
+  });
 
   // A checkpoint: persist the score so far and where to resume, without
   // logging an attempt. Undefined in the dev harnesses.
-  const checkpoint = (answers, slide) => {
-    onProgress?.(scoreOf(answers, false), blobOf(answers, slide));
+  const checkpoint = (answers, slide, done = finished) => {
+    onProgress?.(scoreOf(answers, done), blobOf(answers, slide, done));
   };
 
-  const answerCheck = (index, option, check) => {
-    if (checkAnswers[index]) return;
-    const next = { ...checkAnswers, [index]: { val: option.val, correct: option.val === check.correct } };
+  // A check answered, or an activity reporting its result (`{ done, correct,
+  // ... }`, once) — kept in one per-slide map so resume covers both. On a
+  // retry the new answer replaces the old one, and `retried` remembers the
+  // item was missed first (the item log keeps it).
+  const record = (index, result) => {
+    if (answerOf(index)) return;
+    const before = checkAnswers[index];
+    const next = {
+      ...checkAnswers,
+      [index]: { ...result, correct: !!result?.correct, ...(before ? { retried: true } : null) },
+    };
+    setDirty(true);
     setCheckAnswers(next);
+    setReopened((r) => { const n = { ...r }; delete n[index]; return n; });
     checkpoint(next, Math.max(furthest, index));
+  };
+  const finishActivity = (index, result) => record(index, result);
+  const answerCheck = (index, option, check) => record(index, { val: option.val, correct: option.val === check.correct });
+
+  // Open a slide's check or activity for another go.
+  const reopen = (index) => {
+    setReopened((r) => ({ ...r, [index]: true }));
+    setAttempt((a) => ({ ...a, [index]: (a[index] || 0) + 1 }));
   };
 
   const leaveScreen = () => {
@@ -304,62 +382,120 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     if (document.fullscreenElement) document.exitFullscreen();
   };
 
-  const handleComplete = () => {
+  // The final save. A deck with nothing new this visit (re-read, or its results
+  // looked at and closed) logs no attempt — see `dirty`.
+  const complete = () => {
     leaveScreen();
-    if (typeof onComplete !== 'function') return;
-    // Finishing resets the resume point, so the next open starts at the top
-    // with fresh checks: `current` keeps the best score, so a re-read can only
-    // help, and a check answered wrong is worth answering again.
-    onComplete(scoreOf(checkAnswers, true), blobOf({}, 0), { items: itemsOf(checkAnswers) });
-  };
-
-  // The X button SAVES. A student who has answered a check gets the same
-  // save a finished deck gets (one attempt, the per-item log); one who has
-  // only read ahead keeps their place without logging a zero-score attempt.
-  const handleQuit = () => {
-    leaveScreen();
-    const answered = Object.keys(checkAnswers).length > 0;
-    const slide = Math.max(furthest, currentIndex);
-    if (answered && typeof onComplete === 'function') {
-      onComplete(scoreOf(checkAnswers, false), blobOf(checkAnswers, slide), { items: itemsOf(checkAnswers) });
+    if ((dirty || !restored.finished) && typeof onComplete === 'function') {
+      onComplete(scoreOf(checkAnswers, true), blobOf(checkAnswers, 0, true), { items: itemsOf(checkAnswers) });
       return;
     }
-    if (slide > 0) checkpoint(checkAnswers, slide);
     if (typeof onQuit === 'function') onQuit();
   };
 
-  // "Start over": back to slide one with the checks cleared, and the saved
-  // resume point cleared with them so a reload does not bring the old answers back.
+  // The end of the deck. Every item right: done. Anything wrong: the results,
+  // where the student can put it right — saved as finished first, so a closed
+  // tab reopens there too.
+  const reachEnd = () => {
+    setFinished(true);
+    if (!items.length || mistakes.length === 0) { complete(); return; }
+    leaveScreen();
+    setReopened({});
+    setView('review');
+    checkpoint(checkAnswers, 0, true);
+  };
+
+  // The X button SAVES. A student who has answered something this visit gets
+  // the same save a finished deck gets (one attempt, the per-item log); one
+  // who has only read ahead keeps their place without logging an attempt.
+  const handleQuit = () => {
+    leaveScreen();
+    const slide = Math.max(furthest, currentIndex);
+    if (dirty && typeof onComplete === 'function') {
+      onComplete(scoreOf(checkAnswers, finished), blobOf(checkAnswers, slide, finished), { items: itemsOf(checkAnswers) });
+      return;
+    }
+    if (!finished && slide > 0) checkpoint(checkAnswers, slide);
+    if (typeof onQuit === 'function') onQuit();
+  };
+
+  // "Start over": back to slide one with the answers cleared, and the saved
+  // resume point cleared with them so a reload does not bring them back. It
+  // is asked first (confirmRestart) — a student with one wrong answer tended to
+  // reach for it, and lose every right one, when fixing at the end is what they wanted.
   const restart = () => {
     stopAudio();
+    setConfirmRestart(false);
+    setFinished(false);
+    setView('deck');
+    setFixing(null);
+    setReopened({});
     setFurthest(0);
     setResumedAt(null);
     setCheckAnswers({});
     setCurrentIndex(0);
-    checkpoint({}, 0);
+    setSession((s) => s + 1);
+    setDirty(false);
+    checkpoint({}, 0, false);
   };
 
   const goTo = (index) => {
     setResumedAt(null);
+    setReopened({});
     setCurrentIndex(index);
     if (index > furthest) {
       setFurthest(index);
       // Reaching a new slide is progress worth keeping: save the position so
       // closing the tab mid-deck reopens on this slide, not slide one.
-      checkpoint(checkAnswers, index);
+      if (!finished) checkpoint(checkAnswers, index);
     }
   };
 
+  // Show a slide from the results: reopened for another go when it is still wrong.
+  const showSlide = (index, retry) => {
+    setResumedAt(null);
+    setView('deck');
+    setReopened(retry ? { [index]: true } : {});
+    if (retry) setAttempt((a) => ({ ...a, [index]: (a[index] || 0) + 1 }));
+    setCurrentIndex(index);
+  };
+
+  // "Fix my mistakes" (or one "Redo" row): walk the wrong items in order, each
+  // on its own slide and open for another go, then come back to the results.
+  const startFix = (queue) => {
+    if (!queue.length) return;
+    setFixing({ queue, pos: 0 });
+    showSlide(queue[0], true);
+  };
+  const backToResults = () => {
+    stopAudio();
+    setFixing(null);
+    setReopened({});
+    setView('review');
+  };
+  const fixStep = (dir) => {
+    const pos = fixing.pos + dir;
+    if (pos < 0) return;
+    if (pos >= fixing.queue.length) { backToResults(); return; }
+    setFixing({ ...fixing, pos });
+    const index = fixing.queue[pos];
+    showSlide(index, !checkAnswers[index]?.correct);
+  };
+
   const handleNext = () => {
+    if (view === 'review' || confirmRestart) return;
+    if (fixing) { fixStep(1); return; }
     if (pendingCheck) return;
     if (currentIndex < slides.length - 1) {
       goTo(currentIndex + 1);
     } else {
-      handleComplete();
+      reachEnd();
     }
   };
 
   const handlePrev = () => {
+    if (view === 'review' || confirmRestart) return;
+    if (fixing) { fixStep(-1); return; }
     if (currentIndex > 0) goTo(currentIndex - 1);
   };
 
@@ -381,7 +517,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
         handlePrev();
       } else if (e.key === 'Escape' && zoomedImage) {
         setZoomedImage(null);
-      } else if (e.key.toLowerCase() === 'f' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      } else if (e.key.toLowerCase() === 'f' && !e.ctrlKey && !e.metaKey && !e.altKey && view === 'deck' && !confirmRestart) {
         // (Bare F only — Ctrl/Cmd+F is the browser's find.)
         e.preventDefault();
         toggleDisplayMode();
@@ -390,8 +526,8 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     window.addEventListener('keydown', handleGlobalNav);
     return () => window.removeEventListener('keydown', handleGlobalNav);
     // checkAnswers: answering the check on the current slide unblocks Enter/→,
-    // and the listener has to be rebuilt to see it.
-  }, [currentIndex, slides?.length, zoomedImage, checkAnswers]); // eslint-disable-line react-hooks/exhaustive-deps -- handleNext/handlePrev are stable navigation, re-binding the key listener each render is worse
+    // and the listener has to be rebuilt to see it; the rest steer what → does.
+  }, [currentIndex, slides?.length, zoomedImage, checkAnswers, view, fixing, reopened, finished, confirmRestart]); // eslint-disable-line react-hooks/exhaustive-deps -- handleNext/handlePrev are stable navigation, re-binding the key listener each render is worse
 
   if (!slides || !Array.isArray(slides) || slides.length === 0) {
     return (
@@ -423,8 +559,13 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   const hasExample = !!slideExample;
   const hasDiagram = !!currentSlide.widget || !!currentSlide.image || !!currentSlide.inlineSvg;
 
+  const t = FIX_T[lang] || FIX_T.en;
   const slideCheck = currentSlide.check || null;
-  const slideAnswer = checkAnswers[currentIndex] || null;
+  // What the slide shows as answered (nothing while it is open for another go),
+  // and the answer on file, which a retry of a several-part activity starts from.
+  const slideAnswer = answerOf(currentIndex);
+  const slideStored = checkAnswers[currentIndex] || null;
+  const slideRetrying = !!reopened[currentIndex];
 
   // Flexible lesson layouts ported from the classroom Lessons project. A slide
   // with a `layout` renders through one of these; slides with only a `type`
@@ -526,6 +667,55 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     });
   };
 
+  // "Have another go" beside the check's or activity's heading while it is
+  // reopened — with a promise that the right parts are kept, where they are.
+  const retryBadge = (activity = null) => (slideRetrying ? (
+    <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 normal-case tracking-normal font-black text-[11px] leading-tight">
+      <RotateCcw className="w-3 h-3 shrink-0" strokeWidth={3} />
+      {t.again}{activity && retryKeepsParts(activity) && slideStored && !slideStored.restored ? ` · ${t.kept}` : ''}
+    </span>
+  ) : null);
+
+  // Under a wrong answer. The first time through: the reassurance that it can
+  // be fixed at the end (the lesson is not over because of one slip). Once
+  // the deck is finished: the way to fix it, right here.
+  const itemFooter = () => {
+    if (!slideAnswer || slideAnswer.correct) return null;
+    if (!finished) {
+      return (
+        <div className="mt-2.5 flex items-start gap-2 text-xs lg:text-sm font-bold leading-snug text-slate-500 dark:text-slate-400 animate-in fade-in">
+          <Repeat className="w-4 h-4 shrink-0 mt-px text-[#1cb0f6]" strokeWidth={3} />
+          <span>{t.fixLater}</span>
+        </div>
+      );
+    }
+    return (
+      <div className="mt-2.5 flex justify-end animate-in fade-in">
+        <button
+          onClick={() => reopen(currentIndex)}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#ff9600] hover:bg-[#f08c00] border-b-[4px] border-[#cc7800] text-white font-black uppercase tracking-widest text-xs active:border-b-0 active:translate-y-[4px] transition-all"
+        >
+          <RotateCcw className="w-4 h-4" strokeWidth={3} />
+          {t.tryAgain}
+        </button>
+      </div>
+    );
+  };
+
+  // An activity result rebuilt from the item log keeps right/wrong and nothing
+  // else, so it cannot be drawn in its checked state — say which it was.
+  const restoredActivity = (activity, result) => (
+    <div>
+      <div className="font-black text-slate-800 dark:text-slate-100 leading-snug mb-2 text-[15px] sm:text-base lg:text-lg">
+        {parseInlineText(pick(activity.prompt, activity.promptVn))}
+      </div>
+      <div className={`flex items-center gap-2 rounded-xl border-2 p-3 font-bold text-sm lg:text-base ${result.correct ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-[#ffdfe0] border-[#ea2b2b] text-[#a32d23]'}`}>
+        {result.correct ? <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} /> : <XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />}
+        {result.correct ? t.wasRight : t.wasWrong}
+      </div>
+    </div>
+  );
+
   const renderContent = (text, isExample = false) => {
     if (!text || typeof text !== 'string') return null;
 
@@ -587,6 +777,18 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
     return elements;
   };
 
+  // The nav's right-hand button. On the results it closes the lesson; while
+  // fixing it steps to the next mistake (or skips one left unanswered), then
+  // back to the results; otherwise it walks the deck.
+  const lastSlide = currentIndex === slides.length - 1;
+  const lastFix = !!fixing && fixing.pos === fixing.queue.length - 1;
+  const fixNext = lastFix ? t.results : slideAnswer ? t.next : t.skip;
+  const next = view === 'review'
+    ? { long: t.finish, short: t.finish, green: true, chevron: false }
+    : fixing
+      ? { long: fixNext, short: fixNext, green: lastFix, chevron: !lastFix }
+      : { long: lastSlide ? 'Finish' : 'Continue', short: lastSlide ? 'End' : 'Next', green: lastSlide, chevron: !lastSlide };
+
   return (
     <div 
       ref={containerRef} 
@@ -600,11 +802,11 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
       `}} />
 
       {!isDisplayMode && (
-        <TopBar 
-          onQuit={handleQuit} 
-          current={currentIndex + 1} 
-          total={slides.length} 
-          modeTitle="Lesson Notes" 
+        <TopBar
+          onQuit={handleQuit}
+          current={view === 'review' ? rightCount : fixing ? fixing.pos + 1 : currentIndex + 1}
+          total={view === 'review' ? items.length : fixing ? fixing.queue.length : slides.length}
+          modeTitle={view === 'review' ? t.modeResults : fixing ? t.modeFix : 'Lesson Notes'}
         />
       )}
 
@@ -615,8 +817,23 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
             with a side panel lays out as a row from lg; the legacy `type`
             slides render header + body as siblings, so they must stay a
             column. */}
+        {/* The results, in place of the slide: what was right, what was
+            wrong, and the way back into the wrong ones. */}
+        {view === 'review' ? (
+          <NotesReview
+            slides={slides}
+            checks={checkAnswers}
+            lang={lang}
+            parseText={parseInlineText}
+            onFixAll={() => startFix(mistakes)}
+            onFixOne={(i) => startFix([i])}
+            onView={(i) => showSlide(i, false)}
+            onReadAgain={() => showSlide(0, false)}
+            onStartOver={() => setConfirmRestart(true)}
+          />
+        ) : (
         <div
-          key={currentIndex}
+          key={`${session}:${currentIndex}`}
           className={`w-full max-h-full flex flex-col bg-white dark:bg-slate-900 overflow-hidden transition-all duration-500 animate-in fade-in zoom-in-[0.98]
           ${sidePanel ? 'lg:flex-row' : ''}
           ${isDisplayMode
@@ -653,7 +870,9 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                       parseText={parseInlineText}
                       compact
                       side
+                      badge={retryBadge()}
                     />
+                    {itemFooter()}
                   </div>
                 </div>
               )}
@@ -661,15 +880,24 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                 <div className={`shrink-0 max-h-[55%] overflow-y-auto custom-scrollbar border-t-2 border-[#1cb0f6]/30 bg-[#1cb0f6]/[0.05] dark:bg-[#1cb0f6]/[0.08] px-4 sm:px-6 py-3
                   ${sidePanel ? 'lg:max-h-none lg:h-auto lg:w-[42%] lg:max-w-[34rem] lg:border-t-0 lg:border-l-2 lg:px-5 lg:py-5 lg:flex lg:flex-col' : 'lg:px-8'}`}>
                   <div className="w-full lg:my-auto">
-                    <ActivityBlock
-                      activity={slideActivity}
-                      lang={lang}
-                      result={slideAnswer}
-                      onResult={(res) => finishActivity(currentIndex, res)}
-                      parseText={parseInlineText}
-                      isDisplayMode={isDisplayMode}
-                      side={sidePanel}
-                    />
+                    {slideAnswer?.restored ? restoredActivity(slideActivity, slideAnswer) : (
+                      // Keyed by the retry count: reopening remounts it, so no
+                      // state from the last go (a tap count, a half-built
+                      // order) carries into the new one.
+                      <ActivityBlock
+                        key={`${currentIndex}:${attempt[currentIndex] || 0}`}
+                        activity={slideActivity}
+                        lang={lang}
+                        result={slideAnswer}
+                        retry={slideRetrying && slideStored && !slideStored.restored ? slideStored : null}
+                        badge={retryBadge(slideActivity)}
+                        onResult={(res) => finishActivity(currentIndex, res)}
+                        parseText={parseInlineText}
+                        isDisplayMode={isDisplayMode}
+                        side={sidePanel}
+                      />
+                    )}
+                    {itemFooter()}
                   </div>
                 </div>
               )}
@@ -778,14 +1006,18 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                       )}
 
                       {slideCheck && (
-                        <CheckBlock
-                          check={slideCheck}
-                          lang={lang}
-                          answer={slideAnswer}
-                          onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
-                          isDisplayMode={isDisplayMode}
-                          parseText={parseInlineText}
-                        />
+                        <>
+                          <CheckBlock
+                            check={slideCheck}
+                            lang={lang}
+                            answer={slideAnswer}
+                            onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
+                            isDisplayMode={isDisplayMode}
+                            parseText={parseInlineText}
+                            badge={retryBadge()}
+                          />
+                          {itemFooter()}
+                        </>
                       )}
                     </div>
                   )}
@@ -902,14 +1134,18 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                   <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-6 lg:p-10'} ${currentSlide.inlineSvg ? 'lg:w-[55%] lg:border-r-2 border-slate-100 dark:border-slate-800' : 'w-full max-w-4xl mx-auto'}`}>
                     {renderContent(slideContent)}
                     {slideCheck && (
-                      <CheckBlock
-                        check={slideCheck}
-                        lang={lang}
-                        answer={slideAnswer}
-                        onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
-                        isDisplayMode={isDisplayMode}
-                        parseText={parseInlineText}
-                      />
+                      <>
+                        <CheckBlock
+                          check={slideCheck}
+                          lang={lang}
+                          answer={slideAnswer}
+                          onAnswer={(opt) => answerCheck(currentIndex, opt, slideCheck)}
+                          isDisplayMode={isDisplayMode}
+                          parseText={parseInlineText}
+                          badge={retryBadge()}
+                        />
+                        {itemFooter()}
+                      </>
                     )}
                   </div>
                   {currentSlide.inlineSvg && (
@@ -925,6 +1161,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
             );
           })()}
         </div>
+        )}
       </div>
 
       {/* Top-Right Floating Presenter Control Dock (Display Mode Only) */}
@@ -975,21 +1212,52 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
         </div>
       )}
 
-      {/* Resume notice: says where the deck reopened, and offers the top. */}
-      {!isDisplayMode && resumedAt !== null && (
-        <div className="bg-[#1cb0f6]/10 dark:bg-[#1cb0f6]/15 border-t-2 border-[#1cb0f6]/30 px-4 py-2 z-20 flex-shrink-0 flex items-center justify-center gap-3 text-xs sm:text-sm font-bold text-[#1899d6] dark:text-[#5cc8ff] animate-in fade-in">
-          <Repeat className="w-4 h-4 shrink-0" strokeWidth={3} />
-          <span>
-            {lang === 'vn'
-              ? `Tiếp tục từ slide ${resumedAt + 1} / ${slides.length}`
-              : `Picked up where you left off — slide ${resumedAt + 1} of ${slides.length}`}
-          </span>
-          <button
-            onClick={restart}
-            className="px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border-2 border-[#1cb0f6]/40 hover:border-[#1cb0f6] text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest text-[10px] sm:text-xs transition-colors"
-          >
-            {lang === 'vn' ? 'Làm lại từ đầu' : 'Start over'}
-          </button>
+      {/* The strip above the nav: where the deck reopened (with Start over),
+          which mistake is being fixed, or — on a finished deck being read
+          again — the score and the way back to the results. */}
+      {!isDisplayMode && view === 'deck' && (fixing || (finished && items.length > 0) || resumedAt !== null) && (
+        <div className={`border-t-2 px-4 py-2 z-20 flex-shrink-0 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs sm:text-sm font-bold animate-in fade-in
+          ${fixing
+            ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300/70 dark:border-amber-700/60 text-amber-800 dark:text-amber-200'
+            : 'bg-[#1cb0f6]/10 dark:bg-[#1cb0f6]/15 border-[#1cb0f6]/30 text-[#1899d6] dark:text-[#5cc8ff]'}`}>
+          {fixing ? (
+            <>
+              <Wrench className="w-4 h-4 shrink-0" strokeWidth={3} />
+              <span>{t.fixing(fixing.pos + 1, fixing.queue.length)}</span>
+              <button
+                onClick={backToResults}
+                className="px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border-2 border-amber-300 dark:border-amber-700 hover:border-amber-500 text-amber-700 dark:text-amber-300 font-black uppercase tracking-widest text-[10px] sm:text-xs transition-colors"
+              >
+                {t.results}
+              </button>
+            </>
+          ) : finished ? (
+            <>
+              <ClipboardCheck className="w-4 h-4 shrink-0" strokeWidth={3} />
+              <span>{t.finishedBar(rightCount, items.length)}</span>
+              <button
+                onClick={backToResults}
+                className="px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border-2 border-[#1cb0f6]/40 hover:border-[#1cb0f6] text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest text-[10px] sm:text-xs transition-colors"
+              >
+                {t.results}
+              </button>
+            </>
+          ) : (
+            <>
+              <Repeat className="w-4 h-4 shrink-0" strokeWidth={3} />
+              <span>
+                {lang === 'vn'
+                  ? `Tiếp tục từ slide ${resumedAt + 1} / ${slides.length}`
+                  : `Picked up where you left off — slide ${resumedAt + 1} of ${slides.length}`}
+              </span>
+              <button
+                onClick={() => setConfirmRestart(true)}
+                className="px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border-2 border-[#1cb0f6]/40 hover:border-[#1cb0f6] text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest text-[10px] sm:text-xs transition-colors"
+              >
+                {t.startOver}
+              </button>
+            </>
+          )}
         </div>
       )}
 
@@ -998,13 +1266,17 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
         <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 px-3 py-2 sm:px-5 sm:py-2.5 z-20 flex-shrink-0 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
           <div className="max-w-5xl mx-auto flex items-center justify-between px-1 sm:px-2 gap-3 sm:gap-4">
 
-            <button
-              onClick={handlePrev}
-              disabled={currentIndex === 0}
-              className="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-30 disabled:pointer-events-none bg-white dark:bg-slate-900"
-            >
-              <ChevronLeft className="w-6 h-6" strokeWidth={3} />
-            </button>
+            {view === 'review' ? (
+              <div className="w-11 h-11 sm:w-12 sm:h-12" aria-hidden="true" />
+            ) : (
+              <button
+                onClick={handlePrev}
+                disabled={fixing ? fixing.pos === 0 : currentIndex === 0}
+                className="w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-30 disabled:pointer-events-none bg-white dark:bg-slate-900"
+              >
+                <ChevronLeft className="w-6 h-6" strokeWidth={3} />
+              </button>
+            )}
 
             <div className="flex items-center gap-2 sm:gap-4">
               {/* An English-only track (ADD_MATH, COORD_SCI) has no Vietnamese
@@ -1028,7 +1300,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
 
               {/* Narration for a layout slide (the legacy slide types carry
                   their own button in their header or hero). */}
-              {hasLayout && currentSlide.audio && (
+              {view === 'deck' && hasLayout && currentSlide.audio && (
                 <button
                   onClick={() => toggleAudio(currentSlide.audio)}
                   className={`flex items-center justify-center px-3 sm:px-4 py-2 rounded-xl transition-all border-2 active:scale-95 ${isPlayingAudio
@@ -1041,33 +1313,65 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                 </button>
               )}
 
-              <button
-                onClick={toggleDisplayMode}
-                className="hidden md:flex items-center justify-center px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 hover:text-[#1cb0f6] transition-all border-2 border-slate-200 dark:border-slate-700 active:scale-95"
-                title="Project to TV (Fullscreen)"
-              >
-                <MonitorPlay className="w-5 h-5 mr-2" strokeWidth={2.5} />
-                <span className="text-xs font-black uppercase tracking-widest">Project</span>
-              </button>
+              {view === 'deck' && (
+                <button
+                  onClick={toggleDisplayMode}
+                  className="hidden md:flex items-center justify-center px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 hover:text-[#1cb0f6] transition-all border-2 border-slate-200 dark:border-slate-700 active:scale-95"
+                  title="Project to TV (Fullscreen)"
+                >
+                  <MonitorPlay className="w-5 h-5 mr-2" strokeWidth={2.5} />
+                  <span className="text-xs font-black uppercase tracking-widest">Project</span>
+                </button>
+              )}
             </div>
 
             <button
-              onClick={handleNext}
+              onClick={view === 'review' ? complete : handleNext}
               disabled={pendingCheck}
               title={pendingCheck ? 'Answer the check question first' : undefined}
               className={`flex items-center px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all border-b-[4px] active:border-b-0 active:translate-y-[4px] disabled:opacity-40 disabled:pointer-events-none
-                ${currentIndex === slides.length - 1
+                ${next.green
                   ? 'bg-[#58cc02] border-[#58a700] text-white hover:bg-[#46a802]'
                   : 'bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159bd9]'}`}
             >
-              <span className="hidden sm:inline">{currentIndex === slides.length - 1 ? 'Finish' : 'Continue'}</span>
-              <span className="sm:hidden">{currentIndex === slides.length - 1 ? 'End' : 'Next'}</span>
-              {currentIndex !== slides.length - 1 && <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 ml-1 sm:ml-2 -mr-1 sm:-mr-2" strokeWidth={3} />}
+              <span className="hidden sm:inline">{next.long}</span>
+              <span className="sm:hidden">{next.short}</span>
+              {next.chevron && <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 ml-1 sm:ml-2 -mr-1 sm:-mr-2" strokeWidth={3} />}
             </button>
 
           </div>
         </div>
       )}
+
+      {/* Start over, asked first. Students with one wrong answer reached for
+          it to get another go — and lost every right answer with it — when
+          fixing just that one at the end is what they wanted. */}
+      <Modal isOpen={confirmRestart} onClose={() => setConfirmRestart(false)} size="sm" showClose={false}>
+        <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300 flex items-center justify-center mb-4">
+          <RotateCcw className="w-6 h-6" strokeWidth={2.5} />
+        </div>
+        <h2 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight mb-2">{t.restartTitle}</h2>
+        <p className="font-bold text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">{t.restartBody}</p>
+        <div className="flex items-start gap-2.5 rounded-2xl bg-[#1cb0f6]/10 border-2 border-[#1cb0f6]/30 p-3.5 mb-6 text-sm font-bold leading-snug text-[#1480b8] dark:text-[#5cc8ff]">
+          <Lightbulb className="w-5 h-5 shrink-0" strokeWidth={2.5} />
+          <span>{finished && mistakes.length ? t.restartHintDone : t.restartHint}</span>
+        </div>
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+          <button
+            onClick={restart}
+            className="px-5 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-black uppercase tracking-widest text-xs active:border-b-2 active:translate-y-[2px] transition-all"
+          >
+            {t.startOver}
+          </button>
+          <button
+            onClick={() => setConfirmRestart(false)}
+            autoFocus
+            className="px-5 py-3 rounded-xl bg-[#1cb0f6] hover:bg-[#159bd9] border-b-[4px] border-[#1899d6] text-white font-black uppercase tracking-widest text-xs active:border-b-0 active:translate-y-[4px] transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-[#1cb0f6]/40"
+          >
+            {t.keep}
+          </button>
+        </div>
+      </Modal>
 
       {/* Zoom Modal */}
       {zoomedImage && (

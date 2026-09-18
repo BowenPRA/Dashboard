@@ -5,7 +5,7 @@ import {
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
   Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash,
   Boxes, Layers, ScanEye, History, MonitorPlay, ExternalLink, Variable, Droplets,
-  Thermometer, Sigma, Orbit, SquareRadical, Blend
+  Thermometer, Sigma, Orbit, SquareRadical, Blend, Wrench
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEYS } from '../utils/progressSchema';
@@ -23,8 +23,10 @@ const canResume = (record, maxXP) => {
   if ((record.current || 0) >= maxXP) return false;
   if (Array.isArray(blob)) return blob.length > 0;
   // Notes keeps { slide, total, checks }: in progress past slide one, or with
-  // a check answered. A finished deck saves { slide: 0, checks: {} }.
+  // a check answered. A finished deck is not "in the middle" — it keeps its
+  // answers (`finished: true`) and gets the "Fix N" pill instead.
   if ('slide' in blob && 'checks' in blob) {
+    if (blob.finished) return false;
     return (blob.slide || 0) > 0 || Object.keys(blob.checks || {}).length > 0;
   }
   return Object.keys(blob).length > 0;
@@ -109,6 +111,7 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
     const TaskIcon = task.icon;
     const taskMaxXP = task.maxXP;
     const taskScore = Math.min(scores[task.dbKey]?.current || 0, taskMaxXP);
+    const fixCount = task.fixCount ? task.fixCount(unit, scores[task.dbKey], taskMaxXP) : 0;
 
     if (task.empty) {
       return (
@@ -131,8 +134,15 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
           }`}
       >
         {isLocked && <Lock className="absolute top-4 right-4 w-5 h-5 text-white/80 drop-shadow-sm" strokeWidth={3} />}
+        {/* A finished task with mistakes it lets the student put right (Notes):
+            it reopens on its results, one tap from redoing just those. */}
+        {!isLocked && fixCount > 0 && (
+          <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-300 text-amber-950 text-[9px] font-black uppercase tracking-widest shadow-sm">
+            <Wrench className="w-3 h-3" strokeWidth={3} /> Fix {fixCount}
+          </span>
+        )}
         {/* Saved work waiting: the task reopens where it was left. */}
-        {!isLocked && canResume(scores[task.dbKey], taskMaxXP) && (
+        {!isLocked && !fixCount && canResume(scores[task.dbKey], taskMaxXP) && (
           <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 text-slate-700 text-[9px] font-black uppercase tracking-widest shadow-sm">
             <History className="w-3 h-3" strokeWidth={3} /> Continue
           </span>

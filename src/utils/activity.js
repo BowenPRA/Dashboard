@@ -250,3 +250,25 @@ export function checkActivity(a, { bilingual = true } = {}) {
   }
   return out;
 }
+
+// ── retrying an activity ────────────────────────────────────────────────────
+// Notes lets a student reopen an activity they got wrong (the end-of-lesson
+// "Fix my mistakes"); ActivityBlock and Y7Activities seed the retry from the
+// previous result with these.
+
+/** The entries of a saved `{ key: value }` answer map that pass `keep`. */
+export function keepWhere(map, keep) {
+  if (!map || typeof map !== 'object') return {};
+  return Object.fromEntries(Object.entries(map).filter(([k, v]) => keep(k, v)));
+}
+
+/**
+ * Does a retry of this activity keep the parts the student got right? True for
+ * the several-part activities; a one-answer activity (a prediction, a slider,
+ * one tap) simply starts again. Notes uses it to word its "second try" note.
+ */
+export function retryKeepsParts(activity) {
+  if (!activity) return false;
+  if (activity.type === 'formula') return activity.ask !== 'write';
+  return ['sort', 'order', 'plot', 'reflect', 'venn', 'terms', 'grid', 'flow', 'particles'].includes(activity.type);
+}

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
+import { notesToFix } from '../utils/notesReview';
 
 /**
  * Does this track carry Vietnamese twins? A track that declares
@@ -34,6 +35,8 @@ const bilingualOf = (track) => getTrackConfig(track)?.bilingual !== false;
  *   hasContent   (unit) => boolean — false renders the "no content" tile
  *   buildPool    (unit, ctx) => whatever the component expects as its data
  *   props        (ctx) => props object for the component
+ *   fixCount     optional (unit, record, maxXP) => number of mistakes a
+ *                finished task still offers to fix (the unit card's "Fix N")
  *
  * ctx = { unit, unitId, track, pool, scores, savedData, strikes, maxXP,
  *         onComplete, onQuit, onAddStrike }
@@ -78,9 +81,14 @@ export const TASKS = [
     // deck (a deck with none still pays on completion — see Notes.jsx), and
     // forwards a per-item log. It must NOT be hardwired to 10 here.
     // `savedData`/`onProgress` are the resume round-trip: the deck reopens on
-    // the slide it was closed on, with the checks already answered kept.
-    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
-      ({ slides: pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+    // the slide it was closed on, with the checks already answered kept. A
+    // finished deck keeps its answers too, and reopens on its results so the
+    // student can redo just the ones they got wrong (utils/notesReview.js).
+    // `itemLog` lets a deck finished before that recover its last result.
+    props: ({ pool, track, savedData, scores, onComplete, onProgress, onQuit }) =>
+      ({ slides: pool, savedData, itemLog: scores?.p10?.items, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+    // The unit card's "Fix 3": mistakes left on a finished, not-full-marks deck.
+    fixCount: (u, record, maxXP) => notesToFix(u.notes, record, maxXP),
   },
   {
     id: 'WORD_REC',

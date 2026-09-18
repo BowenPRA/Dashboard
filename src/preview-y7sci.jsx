@@ -9,11 +9,18 @@
 //   ?item=N    open LABEL_IT on its N-th diagram
 //   ?lang=vn   mount the widget bench in Vietnamese
 // DIAGRAMS lays every SVG on one page; WIDGETS mounts every widget.
+//
+// Saves round-trip as they do on the dashboard: each onProgress/onComplete is
+// folded into a progress record by the real recordAttempt, the next open gets
+// that record's `answers` back as savedData, and the unit card at the top of
+// the menu reads the records (Continue / Fix N pills). A reload clears them.
 import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getTrack } from './data/index';
-import { getTask, resolveTask } from './tasks/taskRegistry';
+import { getTask, resolveTask, normalizeScore } from './tasks/taskRegistry';
+import { recordAttempt } from './utils/progressSchema';
+import UnitCard from './components/UnitCard';
 
 const TRACK = 'Y7_SCI';
 const PARAMS = new URLSearchParams(window.location.search);
@@ -93,6 +100,7 @@ function WidgetBench({ onBack }) {
 
 function Harness() {
   const [open, setOpen] = useState(OPEN);
+  const [records, setRecords] = useState({}); // dbKey -> progress record
   const unit = getTrack(TRACK).data[UNIT];
 
   if (!unit) return <div className="p-8 font-black">No unit {UNIT} in {TRACK}.</div>;
@@ -103,11 +111,16 @@ function Harness() {
     const def = getTask(open);
     const resolved = resolveTask({ id: open });
     const pool = def.buildPool(unit, { track: TRACK, unitId: UNIT });
+    // Scores go through normalizeScore against the unit's declared maxXP, as
+    // YearDashboard's saveScore does, so the XP on the card is the real one.
+    const declared = (unit.phases || []).flatMap((ph) => ph.tasks || []).find((t) => t.id === open);
+    const task = { ...def, maxXP: declared?.maxXP ?? def.defaultMaxXP };
+    const save = (score, blob, meta) => setRecords((r) => ({ ...r, [def.dbKey]: recordAttempt(r[def.dbKey], normalizeScore(task, score), blob, meta) }));
     const ctx = {
       pool, unit, unitId: UNIT, track: TRACK,
-      scores: {}, savedData: resumeFor(open, pool), strikes: 0, maxXP: resolved.maxXP,
-      onComplete: (score, _b, log) => { console.log(`[harness] ${open} complete`, score, log); setOpen(null); },
-      onProgress: (score, blob, log) => console.log(`[harness] ${open} progress`, score, blob, log),
+      scores: records, savedData: records[def.dbKey]?.answers || resumeFor(open, pool), strikes: 0, maxXP: resolved.maxXP,
+      onComplete: (score, blob, log) => { console.log(`[harness] ${open} complete`, score, blob, log); save(score, blob, log); setOpen(null); },
+      onProgress: (score, blob, log) => { console.log(`[harness] ${open} progress`, score, blob, log); save(score, blob, { ...log, partial: true }); },
       onQuit: () => setOpen(null),
       onAddStrike: () => console.log(`[harness] ${open} strike`),
     };
@@ -123,6 +136,9 @@ function Harness() {
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 p-8">
       <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-1">Y7 Science harness</h1>
       <p className="text-slate-500 font-bold mb-6">{TRACK} · {UNIT} “{unit?.meta?.title}”, mounted without auth.</p>
+      <div className="max-w-5xl">
+        <UnitCard unit={{ ...unit, id: UNIT }} scores={records} startMode={(_u, taskId) => setOpen(taskId)} isExpanded onToggle={() => {}} previewAll />
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 max-w-3xl">
         {[...casesFor(unit),
           ['DIAGRAMS', `Every SVG in this unit (${Object.keys(DIAGRAMS).length}), on one page`],

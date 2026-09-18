@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, AlertTriangle, XCircle, GripVertical, CornerDownRight, ArrowRight, ArrowLeft, Lightbulb } from 'lucide-react';
 import { SafeInlineMath } from './SafeMath.jsx';
+import { keepWhere } from '../../utils/activity';
 import {
   collectModel, expandModel, equationModel, diagnoseSimplify, diagnoseExpand, diagnoseSolve, diagnoseCell,
   opLatex, opText, inverseOf, sameOp, valueText,
@@ -19,7 +20,9 @@ import PeriodicTableSVG from '../science/PeriodicTableSVG.jsx';
  * `explain`.
  *
  * Contract (the same as the other activities): `result` is the stored
- * `{ done, correct, … }`; `onResult` is called once, with done: true.
+ * `{ done, correct, … }`; `onResult` is called once, with done: true. `retry`
+ * is the previous wrong result when the activity is reopened to be fixed: the
+ * several-part ones start from the parts that were right (ActivityBlock.jsx).
  */
 
 const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
@@ -110,12 +113,13 @@ const signedChip = (t) => `${t.coef[0] < 0 ? '-' : '+'}\\,${t.abs}`;
 
 // ── terms: sort the signed terms into like-term baskets ─────────────────────
 
-export function TermsActivity({ activity, lang, result, onResult, parseText }) {
+export function TermsActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const model = useMemo(() => collectModel(activity.expr), [activity.expr]);
   const chips = useMemo(() => seeded(model.written, `${activity.id}-chips`), [model, activity.id]);
   const baskets = useMemo(() => seeded(model.baskets, `${activity.id}-baskets`), [model, activity.id]);
-  const [placed, setPlaced] = useState(result?.placed || {});
+  const [placed, setPlaced] = useState(() => result?.placed
+    || keepWhere(retry?.placed, (idx, key) => model.written.some((w) => String(w.index) === idx && w.key === key)));
   const [picked, setPicked] = useState(null);
   const [dragged, setDragged] = useState(null);
   const checked = !!result?.done;
@@ -248,11 +252,11 @@ export function AlgebraActivity({ activity, lang, result, onResult, parseText })
 
 // ── grid: expand one bracket box by box ─────────────────────────────────────
 
-export function GridActivity({ activity, lang, result, onResult, parseText }) {
+export function GridActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const model = useMemo(() => expandModel(activity.expr), [activity.expr]);
   const b = model.brackets[0];
-  const [cells, setCells] = useState(result?.cells || {});
+  const [cells, setCells] = useState(() => result?.cells || keepWhere(retry?.cells, (i) => retry?.marks?.[i] === 'good'));
   const checked = !!result?.done;
   const marks = checked ? result.marks : {};
   const filled = b.inner.every((_, i) => String(cells[i] ?? '').trim());
@@ -309,7 +313,7 @@ export function GridActivity({ activity, lang, result, onResult, parseText }) {
 
 const opKey = (o) => `${o.op}${o.n}`;
 
-export function FlowActivity({ activity, lang, result, onResult, parseText }) {
+export function FlowActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const model = useMemo(() => equationModel({ eq: activity.eq }), [activity.eq]);
   const steps = model.inverse.length;
@@ -322,8 +326,8 @@ export function FlowActivity({ activity, lang, result, onResult, parseText }) {
     for (const o of pool) if (!uniq.some((u) => sameOp(u, o))) uniq.push(o);
     return seeded(uniq, `${activity.id}-${k}`);
   }), [model, activity.id]);
-  const [picks, setPicks] = useState(result?.picks || {});
-  const [vals, setVals] = useState(result?.vals || {});
+  const [picks, setPicks] = useState(() => result?.picks || keepWhere(retry?.picks, (k) => !!retry?.opOk?.[k]));
+  const [vals, setVals] = useState(() => result?.vals || keepWhere(retry?.vals, (k) => !!retry?.valOk?.[k]));
   const checked = !!result?.done;
   const ready = Array.from({ length: steps }, (_, k) => picks[k] && String(vals[k] ?? '').trim()).every(Boolean);
 
@@ -420,11 +424,13 @@ export function FlowActivity({ activity, lang, result, onResult, parseText }) {
 
 // ── periodic: tap tiles on the first-20 table ──────────────────────────────
 
-export function PeriodicActivity({ activity, lang, result, onResult, parseText }) {
+export function PeriodicActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const targets = useMemo(() => querySymbols(activity.query), [activity.query]);
   const single = targets.length === 1 && (activity.query.sym || activity.query.name || (activity.query.period != null && activity.query.group != null));
-  const [sel, setSel] = useState(result?.sel || []);
+  // A retry of a pick-them-all question keeps the right tiles; a one-tile
+  // question starts again.
+  const [sel, setSel] = useState(() => result?.sel || (single ? [] : (retry?.sel || []).filter((x) => targets.includes(x))));
   const [tries, setTries] = useState(result?.tries || 0);
   const [miss, setMiss] = useState(null);
   const checked = !!result?.done;
@@ -498,14 +504,13 @@ const verdictWords = (v, lang) => {
   return pickL(lang, `Mixture ${of[0]} — ${v.substances.length} substances`, `Hỗn hợp ${of[1]} — ${v.substances.length} chất`);
 };
 
-export function ParticlesActivity({ activity, lang, result, onResult, parseText }) {
+export function ParticlesActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const ask = activity.ask || 'kind';
   const boxes = useMemo(() => activity.boxes || [], [activity.boxes]);
   const verdicts = useMemo(() => boxes.map(classifyBox), [boxes]);
   const svgs = useMemo(() => boxes.map((b, i) => boxSvg(b, hashOf(`${activity.id}-${i}`))), [boxes, activity.id]);
   const symbols = useMemo(() => [...new Set(boxes.flatMap((b) => b.flatMap((f) => countsOf(f).map((c) => c.el))))], [boxes]);
-  const [answers, setAnswers] = useState(result?.answers || {});
   const checked = !!result?.done;
 
   const options = ask === 'kind' ? (activity.choices || ['element', 'compound', 'mixture']).map((c) => [c, t[c]])
@@ -518,6 +523,10 @@ export function ParticlesActivity({ activity, lang, result, onResult, parseText 
     if (ask === 'magnet') return v.magnet ? 'yes' : 'no';
     return activity.find === 'pure' ? v.pure : v.kind === activity.find;
   };
+  // A retry keeps the boxes that were answered right.
+  const [answers, setAnswers] = useState(() => result?.answers
+    || keepWhere(retry?.answers, (i, v) => Number(i) < boxes.length
+      && (ask === 'find' ? !!v === truth(Number(i)) : v === truth(Number(i)))));
   const ready = ask === 'find' ? Object.values(answers).some(Boolean) : boxes.every((_, i) => answers[i] != null);
   const check = () => {
     const correct = boxes.every((_, i) => (ask === 'find' ? !!answers[i] === truth(i) : answers[i] === truth(i)));
@@ -563,12 +572,15 @@ export function ParticlesActivity({ activity, lang, result, onResult, parseText 
 
 // ── formula: count the atoms, or write the formula of a drawn particle ──────
 
-export function FormulaActivity({ activity, lang, result, onResult, parseText }) {
+export function FormulaActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const ask = activity.ask || 'count';
   const counts = useMemo(() => countsOf(activity.formula), [activity.formula]);
   const total = counts.reduce((s, c) => s + c.n, 0);
-  const [vals, setVals] = useState(result?.vals || {});
+  // A retry of the counting table keeps the counts that were right; the
+  // write-the-formula question starts again.
+  const [vals, setVals] = useState(() => result?.vals
+    || (ask === 'write' ? {} : keepWhere(retry?.vals, (k) => retry?.marks?.[k] === 'good')));
   const [tries, setTries] = useState(result?.tries || 0);
   const [msg, setMsg] = useState(null);
   const checked = !!result?.done;

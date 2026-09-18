@@ -13,7 +13,7 @@
  *     answers,    // resume blob, unchanged
  *     updatedAt,  // ISO — "when was this last touched"
  *     attempts,   // [{ score, at }], newest last, capped
- *     items,      // [{ itemId, correct, at }] — per-item log for targeted review
+ *     items,      // [{ itemId, correct, retried?, at }] — per-item log for targeted review
  *   }
  *
  *   progress[track][VOCAB_KEY] = {
@@ -135,7 +135,10 @@ export function recordAttempt(prev, score, answers = null, meta = {}) {
 
   const logged = (partial ? [] : (meta.items || []))
     .filter((i) => i && i.itemId != null)
-    .map((i) => ({ itemId: String(i.itemId), correct: !!i.correct, at }));
+    // `retried`: answered more than once (Notes lets a student fix a wrong
+    // check at the end of the lesson), so a right answer here can still mark
+    // an item that was missed the first time.
+    .map((i) => ({ itemId: String(i.itemId), correct: !!i.correct, ...(i.retried ? { retried: true } : null), at }));
   const items = [...(previous.items || []), ...logged].slice(-MAX_ITEMS);
 
   return {

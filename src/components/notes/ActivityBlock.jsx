@@ -4,7 +4,7 @@ import {
   Sparkles, XCircle, CornerDownRight, MousePointerClick,
 } from 'lucide-react';
 import { stripLabels } from '../../utils/labelIt';
-import { plotTargets } from '../../utils/activity';
+import { plotTargets, keepWhere } from '../../utils/activity';
 import { kindOf } from '../../utils/graphCurve';
 import { parseInequality, sameSet, interval, union, NEG_INF, POS_INF } from '../../utils/interval';
 import { arcsOf } from '../../utils/cubic';
@@ -33,6 +33,13 @@ import {
  * `result` is `{ correct, done, ... }` from the deck's answer map; `onResult`
  * is called exactly once with it. Field names avoid `text`/`content` so the
  * narration generator does not read the cards aloud.
+ *
+ * `retry` is the previous, wrong result when the student reopens an activity
+ * to fix it (the end-of-lesson "Fix my mistakes" in Notes.jsx). An activity
+ * with several parts starts from the parts that were RIGHT — the cards already
+ * in their true bins, the boxes already correct — so only the wrong ones are
+ * redone; a one-answer activity starts fresh. `result` still wins: once the
+ * retry is checked, it is the new result that shows.
  */
 
 const GREEN = '#58cc02';
@@ -55,6 +62,10 @@ function seededShuffle(list, seed) {
   return out;
 }
 
+/** True when `order` is a rearrangement of exactly these steps' ids. */
+const isArrangementOf = (order, steps) => Array.isArray(order) && order.length === steps.length
+  && steps.every((s) => order.includes(s.id));
+
 const T = {
   en: {
     check: 'Check', done: 'Done', tapCard: 'Tap a card, then tap its bin', dropHere: 'Tap to place',
@@ -74,12 +85,13 @@ const T = {
 
 // ── shared chrome ────────────────────────────────────────────────────────────
 
-function Header({ activity, lang, parseText, isDisplayMode }) {
+function Header({ activity, lang, parseText, isDisplayMode, badge }) {
   return (
     <>
-      <div className={`flex items-center text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest mb-2 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
+      <div className={`flex flex-wrap items-center gap-y-1 text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest mb-2 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
         <MousePointerClick className="w-4 h-4 mr-2" strokeWidth={3} />
         {lang === 'vn' ? 'Hoạt động' : 'Try it'}
+        {badge}
       </div>
       <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug mb-3 ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
         {parseText(pickL(lang, activity.prompt, activity.promptVn))}
@@ -106,10 +118,11 @@ const primary = `${btn} bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159b
 
 // ── sort ─────────────────────────────────────────────────────────────────────
 
-function SortActivity({ activity, lang, result, onResult, parseText }) {
+function SortActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const cards = useMemo(() => seededShuffle(activity.cards || [], activity.id || 'sort'), [activity]);
-  const [placed, setPlaced] = useState(result?.placed || {});   // cardId -> binId
+  const [placed, setPlaced] = useState(() => result?.placed || keepWhere(retry?.placed,
+    (cardId, binId) => (activity.cards || []).some((c) => String(c.id) === cardId && c.bin === binId)));   // cardId -> binId
   const [picked, setPicked] = useState(null);
   const [dragged, setDragged] = useState(null);
   const checked = !!result?.done;
@@ -206,10 +219,14 @@ function SortActivity({ activity, lang, result, onResult, parseText }) {
 
 // ── order ────────────────────────────────────────────────────────────────────
 
-function OrderActivity({ activity, lang, result, onResult, parseText }) {
+function OrderActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const steps = activity.steps || [];
-  const [order, setOrder] = useState(() => result?.order || seededShuffle(steps.map((s) => s.id), activity.id || 'order'));
+  // A retry starts from the student's own last order, so the steps they had
+  // in place stay there and only the misplaced ones need moving.
+  const [order, setOrder] = useState(() => result?.order
+    || (isArrangementOf(retry?.order, steps) ? retry.order : null)
+    || seededShuffle(steps.map((s) => s.id), activity.id || 'order'));
   const [dragged, setDragged] = useState(null);
   const checked = !!result?.done;
   const byId = Object.fromEntries(steps.map((s) => [s.id, s]));
@@ -442,10 +459,11 @@ const PLOT_GRID = { xMin: -7, xMax: 7, yMin: -6, yMax: 8 };
 const samePt = (p, q) => p[0] === q[0] && p[1] === q[1];
 const pt = (x, y) => `(${x < 0 ? `−${-x}` : x}, ${y < 0 ? `−${-y}` : y})`;
 
-function PlotActivity({ activity, lang, result, onResult, parseText }) {
+function PlotActivity({ activity, lang, result, onResult, parseText, retry }) {
   const t = T[lang] || T.en;
   const svgRef = useRef(null);
-  const [placed, setPlaced] = useState(result?.placed || []);
+  const [placed, setPlaced] = useState(() => result?.placed
+    || (retry?.placed || []).filter((p) => plotTargets(activity).some((tg) => samePt(tg, p))));
   const checked = !!result?.done;
   const grid = { ...PLOT_GRID, ...(activity.grid || {}) };
   const targets = useMemo(() => plotTargets(activity), [activity]);
@@ -617,10 +635,10 @@ function NumberLineActivity({ activity, lang, result, onResult, parseText }) {
 // Tap the pieces of a cubic that lie below the axis; they fold up into the
 // modulus graph. Derived from the factors by utils/cubic.js.
 
-function ReflectActivity({ activity, lang, result, onResult, parseText }) {
+function ReflectActivity({ activity, lang, result, onResult, parseText, retry }) {
   const item = useMemo(() => ({ id: activity.id, factors: activity.factors, k: activity.k, display: activity.display }), [activity]);
   const below = useMemo(() => arcsOf(item).filter((a) => a.below).map((a) => a.i), [item]);
-  const [sel, setSel] = useState(result?.sel || []);
+  const [sel, setSel] = useState(() => result?.sel || (retry?.sel || []).filter((i) => below.includes(i)));
   const checked = !!result?.done;
   const check = () => onResult({ done: true, correct: sel.length === below.length && below.every((i) => sel.includes(i)), sel });
   return (
@@ -645,10 +663,10 @@ function ReflectActivity({ activity, lang, result, onResult, parseText }) {
 // region set derived by utils/sets.js; after the check the right regions stay
 // shaded (green when right, amber when shown).
 
-function VennActivity({ activity, lang, result, onResult, parseText }) {
+function VennActivity({ activity, lang, result, onResult, parseText, retry }) {
   const sets = activity.sets || ['A', 'B'];
   const want = useMemo(() => vennRegionsOf(activity.expr, activity.sets || ['A', 'B']), [activity]);
-  const [sel, setSel] = useState(result?.sel || []);
+  const [sel, setSel] = useState(() => result?.sel || (retry?.sel || []).filter((k) => want.includes(k)));
   const checked = !!result?.done;
   const check = () => onResult({ done: true, correct: sameRegions(sel, want), sel });
   return (
@@ -671,11 +689,11 @@ function VennActivity({ activity, lang, result, onResult, parseText }) {
 
 // ── dispatcher ───────────────────────────────────────────────────────────────
 
-export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false, side = false }) {
+export default function ActivityBlock({ activity, lang = 'en', result, onResult, parseText = (x) => x, isDisplayMode = false, side = false, retry = null, badge = null }) {
   if (!activity) return null;
   // `side`: the block sits in a column beside the slide (Notes.jsx, from lg)
-  // rather than in a full-width footer under it.
-  const common = { activity, lang, result, onResult, parseText, side };
+  // rather than in a full-width footer under it. `retry`: see the top of file.
+  const common = { activity, lang, result, onResult, parseText, side, retry };
   let body;
   switch (activity.type) {
     case 'sort': body = <SortActivity {...common} />; break;
@@ -699,7 +717,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
   }
   return (
     <div>
-      <Header activity={activity} lang={lang} parseText={parseText} isDisplayMode={isDisplayMode} />
+      <Header activity={activity} lang={lang} parseText={parseText} isDisplayMode={isDisplayMode} badge={badge} />
       {body}
     </div>
   );
