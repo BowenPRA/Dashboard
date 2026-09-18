@@ -307,6 +307,19 @@ export function SurvivorHUD({ hud, onQuit, muted = false, paused = false, onTogg
         </div>
       )}
 
+      {/* The end-game warnings: the Blight closing, and the Reapers coming. */}
+      {(hud.blightWarn || hud.outside || (hud.reaperInMs > 0 && hud.reaperInMs < 60000)) && (
+        <div className={`relative z-20 py-1.5 text-center border-b-2 shrink-0 ${hud.outside ? 'bg-rose-600 border-rose-900' : 'bg-fuchsia-950/85 border-fuchsia-900'}`}>
+          <span className={`font-black uppercase tracking-widest text-xs animate-pulse ${hud.outside ? 'text-white' : 'text-fuchsia-300'}`}>
+            {hud.outside
+              ? 'You are in the Blight \u2014 get back inside the ring'
+              : hud.reaperInMs > 0 && hud.reaperInMs < 60000
+                ? `The Reapers come in ${fmtTime(hud.reaperInMs)} \u2014 nothing kills them`
+                : 'The Blight is coming \u2014 the arena will start to close'}
+          </span>
+        </div>
+      )}
+
       {/* Countdown to the NEXT Broodmother, once it is close enough to matter —
           shown before the first one and again between every recurring boss. */}
       {!hud.bossAlive && toBoss > 0 && toBoss < 30000 && (

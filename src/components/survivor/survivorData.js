@@ -165,6 +165,44 @@ export const SURVIVOR_ENEMIES = {
  */
 export const timeScale = (ms) => 1 + 0.19 * (ms / 60000);
 
+// ---------- Why a run ends ----------
+//
+// A survivor game with a fixed enemy speed has an infinite strategy: walk in a
+// circle. The swarm never catches you, your weapons farm it, and levels heal
+// you forever. Four things below make sure a run is a CLIMB and not a loop:
+//
+//   SPEED   the swarm gets quicker every minute until the flyers outrun you
+//           (`speedScale`) — so kiting buys time early and nothing late;
+//   DENSITY past the last authored phase the spawn interval keeps shrinking
+//           and bursts keep growing (`lateDensity`);
+//   BLIGHT  from `blight.startMs` the arena closes toward its centre; outside
+//           the ring you lose health fast, so the space to kite in shrinks;
+//   REAPERS at `reapers.atMs` unkillable hunters arrive, faster than any hero
+//           and immune to everything. They are the end of the run, and they
+//           are announced a minute ahead so it is a countdown, not a cheat.
+export const SCALING = {
+  /** Enemy speed multiplier at minute m: 1 + perMin·m, capped. Hero base ≈ 150. */
+  speedPerMin: 0.075,
+  speedCap: 1.9,
+  /** After the last SPAWN_PHASE: interval ×(1−cut) and +1 burst per extra minute. */
+  lateDensity: { intervalCutPerMin: 0.1, intervalFloor: 180, burstPerMin: 0.6, burstCap: 10 },
+  /** Level-up healing shrinks with level: max(floor, base − perLevel·level). */
+  levelHeal: { base: 0.08, perLevel: 0.0025, floor: 0.02 },
+  blight: { startMs: 5 * 60000, closeMs: 6 * 60000, minRadius: 560, dps: 0.07, warnMs: 30000 },
+  reapers: { atMs: 12 * 60000, count: 2, everyMs: 60000, speedMul: 1.28, damage: 45, r: 30, warnMs: 60000 },
+};
+export const speedScale = (ms) => Math.min(SCALING.speedCap, 1 + SCALING.speedPerMin * (ms / 60000));
+
+/** The playable circle at time t: radius around the arena's centre, or null before the Blight. */
+export function blightRadius(ms) {
+  const B = SCALING.blight;
+  if (ms < B.startMs) return null;
+  const full = Math.hypot(WORLD.width, WORLD.height) / 2;
+  const k = Math.min(1, (ms - B.startMs) / B.closeMs);
+  // Eases in: slow at first so the first minute is a warning, then quick.
+  return full - (full - B.minRadius) * k * k;
+}
+
 // ---------- The run ----------
 
 export const RUN = {
@@ -179,6 +217,9 @@ export const RUN = {
   bossAtMs: 4 * 60 * 1000,
   /** After a Broodmother FALLS, how long until the next one arrives (a breather). */
   bossEveryMs: 150000,
+  /** Each felled Broodmother brings the next one sooner, down to a floor. */
+  bossEveryCut: 18000,
+  bossEveryFloor: 70000,
   /** Each successive Broodmother is this much tougher than the first, so they
    *  keep pace with a hero who has been levelling the whole time. */
   bossHpGrowth: 0.6,

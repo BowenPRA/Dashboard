@@ -258,6 +258,21 @@ export default function SurvivorCanvas({ gRef, drawRef, sprites, themeId = 'STAN
     ctx.strokeRect(0, 0, WORLD.width, WORLD.height);
     ctx.setLineDash([]);
 
+    // The Blight: everything outside the ring is darkened and the ring's edge
+    // pulses, so where it is safe to stand is never in doubt.
+    if (g.blightR != null) {
+      const cx = WORLD.width / 2, cy = WORLD.height / 2;
+      ctx.beginPath();
+      ctx.rect(left - 200, top - 200, right - left + 400, bottom - top + 400);
+      ctx.arc(cx, cy, g.blightR, 0, TAU, true);
+      ctx.fillStyle = g.outside ? 'rgba(127,29,29,0.5)' : 'rgba(76,5,25,0.42)';
+      ctx.fill('evenodd');
+      ctx.beginPath(); ctx.arc(cx, cy, g.blightR, 0, TAU);
+      ctx.lineWidth = 6 + Math.sin(now / 160) * 2;
+      ctx.strokeStyle = `rgba(244,63,94,${0.55 + Math.sin(now / 160) * 0.2})`;
+      ctx.stroke();
+    }
+
     // --- a Broodmother's slam: get OUT of the ring before it fills ----------
     for (const s of g.slams) {
       const p = 1 - Math.max(0, s.life - A * 33) / s.max;
@@ -404,7 +419,7 @@ export default function SurvivorCanvas({ gRef, drawRef, sprites, themeId = 'STAN
       const x = lx(e), y = ly(e);
       if (!visible(x, y, e.r * 2)) continue;
       // The pre-tinted sprite does the hit flash and the chill — no overlay pass.
-      const key = e.flash > 0 ? `${e.slot}:flash` : e.slowT > 0 ? `${e.slot}:frost` : e.slot;
+      const key = e.reaper ? `${e.slot}:reaper` : e.flash > 0 ? `${e.slot}:flash` : e.slowT > 0 ? `${e.slot}:frost` : e.slot;
       const img = sprites[key] || sprites[e.slot];
       // Drawn a little larger than the body radius: the artwork has transparent
       // margins, and a forgiving hitbox is the right way round for students.
@@ -438,6 +453,17 @@ export default function SurvivorCanvas({ gRef, drawRef, sprites, themeId = 'STAN
       ctx.fillRect(x - bw / 2, y - e.r - 16, bw, 7);
       ctx.fillStyle = e.boss ? '#ef4444' : '#a855f7';
       ctx.fillRect(x - bw / 2, y - e.r - 16, bw * Math.max(0, e.hp / e.maxHp), 7);
+    }
+
+    // Reapers wear a dark halo — the one body a student must never touch.
+    for (const e of g.enemies) {
+      if (!e.reaper) continue;
+      const x = lx(e), y = ly(e);
+      const glow = ctx.createRadialGradient(x, y, e.r * 0.4, x, y, e.r * 2.2);
+      glow.addColorStop(0, 'rgba(192,132,252,0.35)');
+      glow.addColorStop(1, 'rgba(76,29,149,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(x, y, e.r * 2.2, 0, TAU); ctx.fill();
     }
 
     // --- bits of what used to be enemies ------------------------------------
@@ -623,7 +649,8 @@ export default function SurvivorCanvas({ gRef, drawRef, sprites, themeId = 'STAN
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       if (glyph) { ctx.font = '14px system-ui'; ctx.fillText(glyph, rx - c * 24, ry - s * 24); }
     };
-    for (const e of g.enemies) if (e.boss || e.elite) rim(e.x, e.y, e.boss ? '#ef4444' : '#a855f7');
+    for (const e of g.enemies) if (e.boss || e.elite || e.reaper) rim(e.x, e.y, e.reaper ? '#c084fc' : e.boss ? '#ef4444' : '#a855f7', e.reaper ? '\u2620\ufe0f' : null);
+    if (g.outside) rim(WORLD.width / 2, WORLD.height / 2, '#f43f5e', '\u2b06\ufe0f');
     for (const gem of g.gems) if (gem.power) rim(gem.x, gem.y, PICKUPS[gem.power].color, PICKUPS[gem.power].icon);
   }, [gRef, sprites, theme, decor]);
 

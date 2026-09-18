@@ -23,7 +23,7 @@ import { useEffect, useRef } from 'react';
 import {
   WORLD, STEP_MS, LIMITS, SURVIVOR_ENEMIES, timeScale, RUN,
   SPAWN_PHASES, SWARM_EVENT, WEAPONS, weaponStats, xpForLevel, MAX_WEAPON_LEVEL,
-  DASH, COMBO, PICKUPS, ATTACKS,
+  DASH, COMBO, PICKUPS, ATTACKS, SCALING, speedScale, blightRadius,
 } from './survivorData';
 import { sfx } from '../../arcade/sfx';
 
@@ -124,6 +124,8 @@ export function createRun({ hero, loadout, difficulty = {} }) {
     kills: 0,
     score: 0,
     scoreFrac: 0,
+    // The closing arena and the hunters that end the run (see SCALING).
+    blightR: null, outside: false, reapers: 0, reaperTimer: 0,
     pendingLevels: 0,
     nextId: 1,
 
@@ -169,7 +171,10 @@ export function createRun({ hero, loadout, difficulty = {} }) {
  */
 export function applyUpgrade(g, card) {
   const h = g.hero;
-  h.hp = Math.min(h.maxHp, h.hp + Math.round(h.maxHp * 0.08));
+  // The heal tapers with level: at level 1 it is 8%, by level 24 it is 2%. A
+  // high-level hero has to earn health from elites and boss kills instead.
+  const L = SCALING.levelHeal;
+  h.hp = Math.min(h.maxHp, h.hp + Math.round(h.maxHp * Math.max(L.floor, L.base - L.perLevel * h.level)));
 
   if (card.kind === 'RECRUIT') {
     g.weapons.push({ id: card.weaponId, level: 1, cd: 0, charge: 0, sweep: -1, sweepFrom: 0, beamTick: 0 });
@@ -218,6 +223,11 @@ export function hudSnapshot(g) {
     // Endless: there is no single "boss spawned" moment. The HUD tracks whether
     // one is on the field right now, how long until the next, and how many have
     // been felled.
+    blightR: g.blightR,
+    blightWarn: g.blightR == null && g.t >= SCALING.blight.startMs - SCALING.blight.warnMs,
+    outside: g.outside,
+    reaperInMs: g.reapers ? 0 : Math.max(0, SCALING.reapers.atMs - g.t),
+    reapers: g.reapers,
     bossAlive: !!g.boss,
     nextBossInMs: g.boss ? 0 : Math.max(0, g.bossTimer),
     bossCount: g.bossCount,
@@ -253,6 +263,8 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
 
     const g = gRef.current;
     if (!g) return undefined;
+    // Dev only: lets the harness compress the end-game schedule for a test.
+    if (import.meta.env.DEV) window.__scaling = SCALING;
 
     const D = g.difficulty;
     const newId = () => g.nextId++;
@@ -299,6 +311,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
       // a fight. Only the unit's difficulty tier scales them.
       const scheduled = opts.boss || opts.elite;
       const scale = (scheduled ? 1 : timeScale(g.t)) * D.hpMul * (opts.hpMul || 1);
+      const quick = scheduled ? 1 : speedScale(g.t);
       const hp = Math.round(conf.hp * scale);
       const attack = opts.boss ? ATTACKS.BOSS : (!opts.elite && ATTACKS[slot]) || null;
       const e = {
@@ -307,7 +320,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         x, y, px: x, py: y,
         hp,
         maxHp: hp,
-        speed: conf.speed * D.speedMul * (opts.speedMul || 1),
+        speed: conf.speed * D.speedMul * (opts.speedMul || 1) * quick,
         damage: conf.damage,
         dr: conf.dr,
         r: conf.r * (opts.sizeMul || 1),
@@ -352,10 +365,16 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
 
     function runSpawns(dt) {
       const phase = livePhase();
+      // Past the last authored phase the pressure keeps rising on its own.
+      const lastAt = SPAWN_PHASES[SPAWN_PHASES.length - 1].atMs;
+      const extraMin = Math.max(0, (g.t - lastAt) / 60000);
+      const LD = SCALING.lateDensity;
+      const interval = Math.max(LD.intervalFloor, phase.interval * Math.pow(1 - LD.intervalCutPerMin, extraMin));
+      const burst = Math.min(LD.burstCap, Math.round(phase.burst + LD.burstPerMin * extraMin));
       g.spawnTimer -= dt;
       if (g.spawnTimer <= 0) {
-        g.spawnTimer += phase.interval;
-        for (let i = 0; i < phase.burst; i++) {
+        g.spawnTimer += interval;
+        for (let i = 0; i < burst; i++) {
           const slot = phase.pool[Math.floor(Math.random() * phase.pool.length)];
           const p = ringPoint(620 + Math.random() * 160);
           spawnAt(slot, p.x, p.y);
@@ -400,6 +419,28 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         }
       }
 
+      // The Reapers. Unkillable, faster than you, and the end of every run.
+      const R = SCALING.reapers;
+      if (g.t >= R.atMs) {
+        g.reaperTimer -= dt;
+        if (g.reapers === 0 || g.reaperTimer <= 0) {
+          g.reaperTimer = R.everyMs;
+          const n = g.reapers === 0 ? R.count : 1;
+          for (let i = 0; i < n; i++) {
+            const p = ringPoint(700);
+            const e = spawnAt('QUEEN', p.x, p.y, { force: true, elite: true });
+            if (!e) continue;
+            e.reaper = true; e.elite = false; e.attack = null;
+            e.hp = Infinity; e.maxHp = Infinity; e.dr = 0;
+            e.speed = g.hero.baseSpeed * R.speedMul; e.damage = R.damage; e.r = R.r;
+            g.reapers += 1;
+          }
+          pop(g.reapers <= R.count ? 'THE REAPERS HAVE COME' : 'ANOTHER REAPER', g.hero.x, g.hero.y - 120, '#c084fc');
+          g.shake = 18;
+          sfx('boss', { pitch: 0.7 });
+        }
+      }
+
       // The Broodmother — and then more of them. The run NEVER ends on a boss;
       // each is a spike in an endless climb. The next arrives bossEveryMs after
       // the last one falls (the timer is reset on the kill), and each is tougher
@@ -420,7 +461,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
     // ---- damage --------------------------------------------------------
 
     function hurt(e, rawDamage, opts = {}) {
-      if (e.hp <= 0) return;
+      if (e.hp <= 0 || e.reaper) return;
       const dmg = opts.armorPiercing
         ? rawDamage
         : Math.max(1, rawDamage - e.dr);
@@ -497,7 +538,7 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         g.boss = null;
         g.bossKills += 1;
         g.score += Math.round(RUN.bossBonus * g.bossKills * D.scoreMul);
-        g.bossTimer = RUN.bossEveryMs;
+        g.bossTimer = Math.max(RUN.bossEveryFloor, RUN.bossEveryMs - RUN.bossEveryCut * g.bossKills);
         g.shake = 20;
         g.slams.length = 0;
         pop('BROODMOTHER DOWN', e.x, e.y - 40, '#fbbf24');
@@ -1214,6 +1255,22 @@ export function useSurvivorEngine({ gRef, render, inputRef, onLevelUp, onRunEnd,
         h.hp = Math.min(h.maxHp, h.hp + h.regen * sec);
       }
       if (h.hurtFlash > 0) h.hurtFlash -= dt;
+
+      // The Blight: the arena closes toward its centre and the air outside the
+      // ring eats health — through armour and invulnerability alike, since it is
+      // not a hit but a place. So the space to kite in keeps shrinking.
+      g.blightR = blightRadius(g.t);
+      if (g.blightR != null) {
+        const dx = h.x - WORLD.width / 2, dy = h.y - WORLD.height / 2;
+        const out = Math.hypot(dx, dy) > g.blightR;
+        if (out && !g.outside) { pop('GET INSIDE THE RING', h.x, h.y - 70, '#f43f5e'); sfx('hurt'); }
+        g.outside = out;
+        if (out) {
+          h.hp -= h.maxHp * SCALING.blight.dps * sec;
+          h.hurtFlash = 120;
+          if (h.hp <= 0) { h.hp = 0; g.state = 'DEAD'; g.outcome = 'DEAD'; sfx('gameOver'); }
+        }
+      }
 
       // Camera eases toward the hero so a sharp change of direction does not
       // snap the whole world sideways.

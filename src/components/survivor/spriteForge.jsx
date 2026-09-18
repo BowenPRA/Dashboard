@@ -104,7 +104,7 @@ function bake(img, px) {
     }
     return c;
   };
-  return { base: make(null), flash: make('rgba(255,255,255,0.82)'), frost: make('rgba(125,211,252,0.58)') };
+  return { base: make(null), flash: make('rgba(255,255,255,0.82)'), frost: make('rgba(125,211,252,0.58)'), reaper: make('rgba(76,29,149,0.82)') };
 }
 
 /**
@@ -142,6 +142,7 @@ export default function SpriteForge({ tribeId = 'INSECT', onReady, towers = true
         atlas[key] = baked.base || img;
         if (baked.flash) atlas[`${key}:flash`] = baked.flash;
         if (baked.frost) atlas[`${key}:frost`] = baked.frost;
+        if (baked.reaper) atlas[`${key}:reaper`] = baked.reaper;
       }
       onReady(atlas);
     })();
