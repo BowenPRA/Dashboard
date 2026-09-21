@@ -119,7 +119,8 @@ const primary = `${btn} bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159b
 // ── sort ─────────────────────────────────────────────────────────────────────
 
 function SortActivity({ activity, lang, result, onResult, parseText, retry, side }) {
-  const compact = !!side && activity.bins.length >= 4;
+  // Beside a slide, a big sort (four bins, or seven cards or more) packs tighter.
+  const compact = !!side && (activity.bins.length >= 4 || (activity.cards || []).length >= 7);
   const t = T[lang] || T.en;
   const cards = useMemo(() => seededShuffle(activity.cards || [], activity.id || 'sort'), [activity]);
   const [placed, setPlaced] = useState(() => result?.placed || keepWhere(retry?.placed,
