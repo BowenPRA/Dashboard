@@ -23,13 +23,13 @@
 //     addresses — so the typing practises the vocabulary as well.
 //
 // Config (unit data `typeGym`), documented in docs/primary-tech/UPGRADE-PLAN.md §3.2:
-//   { title, titleVn, modes: ['home'|'words'|'sentences'|'addresses'|'names'],
+//   { title, titleVn, modes: ['home'|'top'|'bottom'|'shift'|'words'|'sentences'|'addresses'|'names'],
 //     rounds?: 6, words?, sentences?, addresses?, names?,
 //     target: { wpm, accuracy } }
 
-export const TYPE_MODES = ['home', 'words', 'sentences', 'addresses', 'names'];
+export const TYPE_MODES = ['home', 'top', 'bottom', 'shift', 'words', 'sentences', 'addresses', 'names'];
 
-/** The unit pool each mode draws from. `home` needs none — it is generated. */
+/** The unit pool each mode draws from. home, top, bottom and shift need none — they are generated. */
 const POOL = { words: 'words', sentences: 'sentences', addresses: 'addresses', names: 'names' };
 
 /** What a keyboard can type without a special key: letters, digits, space and a little punctuation. */
@@ -40,6 +40,9 @@ export const MAX_LINE = 40;
 
 export const MODE_LABEL = {
   home: { en: 'The home row', vn: 'Hàng phím cơ sở' },
+  top: { en: 'Reaching up to the top row', vn: 'Với lên hàng phím trên' },
+  bottom: { en: 'Reaching down to the bottom row', vn: 'Với xuống hàng phím dưới' },
+  shift: { en: 'Capital letters with Shift', vn: 'Chữ in hoa với phím Shift' },
   words: { en: 'Words from this unit', vn: 'Từ trong bài' },
   sentences: { en: 'A sentence', vn: 'Một câu' },
   addresses: { en: 'Web addresses', vn: 'Địa chỉ trang web' },
@@ -61,6 +64,27 @@ const HOME_DRILLS = [
 const HOME_WORDS = [
   'dad', 'sad', 'had', 'has', 'lad', 'all', 'add', 'ask', 'fall', 'hall',
   'half', 'glad', 'flag', 'dash', 'flash', 'salad', 'flask', 'shall', 'gas', 'ash',
+];
+
+/**
+ * Reaches. Each drill goes out from a home key and comes straight back — "frf"
+ * is the left index finger up to R and home to F — the habit that stops a
+ * typist losing the home row. The words use home-row letters plus that row.
+ */
+const TOP_DRILLS = ['frf juj frf juj', 'ded kik ded kik', 'sws lol sws lol', 'aqa ;p; aqa ;p;', 'ftf jyj ftf jyj', 'fr ju de ki sw lo'];
+const TOP_WORDS = [
+  'tree', 'fire', 'kite', 'water', 'story', 'sister', 'yellow', 'purple', 'quiet',
+  'your', 'draw', 'week', 'paper', 'party', 'sport', 'hotel', 'tiger', 'user',
+];
+const BOTTOM_DRILLS = ['fvf jmj fvf jmj', 'dcd k,k dcd k,k', 'sxs l.l sxs l.l', 'aza ;/; aza ;/;', 'fbf jnj fbf jnj', 'fv jm dc k, fb jn'];
+const BOTTOM_WORDS = [
+  'can', 'van', 'man', 'band', 'lamb', 'calm', 'mask', 'black', 'snack', 'bank',
+  'hand', 'sand', 'class', 'small', 'ball', 'call', 'jam', 'cab',
+];
+/** Capitals: every word starts with one, typed with the OTHER hand's Shift. */
+const SHIFT_WORDS = [
+  'Monday', 'Tuesday', 'Friday', 'Sunday', 'May', 'June', 'Hanoi', 'Hue', 'Vietnam',
+  'London', 'English', 'Minh', 'Lan', 'Mai', 'Nam', 'Ha Vi', 'Riverside', 'Tom',
 ];
 
 /** mulberry32 — small, fast, and the same sequence for the same seed everywhere. */
@@ -96,18 +120,25 @@ function fill(items, sep, min = 1) {
   return out.join(sep);
 }
 
-/** One line for one round. `k` is how many home rounds came before this one. */
-function lineFor(mode, rand, cfg, k) {
-  if (mode === 'home') {
-    // Even home rounds are key drills, odd ones are real words — and the drills
-    // open up one step at a time, so the first round is always index fingers.
-    if (k % 2 === 0) {
-      const reach = Math.min(HOME_DRILLS.length, 1 + k);
-      const pick = HOME_DRILLS[Math.floor(rand() * reach)];
-      return k === 0 ? HOME_DRILLS[0] : pick;
-    }
-    return fill(shuffle(HOME_WORDS, rand), ' ', 4);
+/**
+ * Even rounds of a mode are key drills, odd ones are real words, and the drills
+ * open up one step at a time — so the first home round is always the index
+ * fingers, and the first reach round always starts from F.
+ */
+function drillOrWords(drills, words, rand, k) {
+  if (k % 2 === 0) {
+    const reach = Math.min(drills.length, 1 + k);
+    return k === 0 ? drills[0] : drills[Math.floor(rand() * reach)];
   }
+  return fill(shuffle(words, rand), ' ', 4);
+}
+
+/** One line for one round. `k` is how many rounds of this mode came before it. */
+function lineFor(mode, rand, cfg, k) {
+  if (mode === 'home') return drillOrWords(HOME_DRILLS, HOME_WORDS, rand, k);
+  if (mode === 'top') return drillOrWords(TOP_DRILLS, TOP_WORDS, rand, k);
+  if (mode === 'bottom') return drillOrWords(BOTTOM_DRILLS, BOTTOM_WORDS, rand, k);
+  if (mode === 'shift') return fill(shuffle(SHIFT_WORDS, rand), ' ', 3);
   const pool = shuffle(cfg[POOL[mode]] || [], rand);
   if (!pool.length) return '';
   if (mode === 'words') return fill(pool, ' ', 3);
@@ -129,15 +160,16 @@ export function makeSession(cfg, seed = Date.now()) {
   const rounds = Math.max(3, Math.min(12, Number(cfg?.rounds) || 6));
   const out = [];
   const used = new Set();
-  let homeSoFar = 0;
+  const soFar = {};
   for (let i = 0; i < rounds && modes.length; i += 1) {
     const mode = modes[i % modes.length];
+    const k = soFar[mode] || 0;
     let text = '';
     for (let tries = 0; tries < 6; tries += 1) {
-      text = lineFor(mode, rand, cfg, homeSoFar);
+      text = lineFor(mode, rand, cfg, k);
       if (text && !used.has(text)) break;
     }
-    if (mode === 'home') homeSoFar += 1;
+    soFar[mode] = k + 1;
     if (!text) continue;
     used.add(text);
     out.push({ id: `r${out.length + 1}`, mode, text });

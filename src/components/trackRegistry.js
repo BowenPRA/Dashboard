@@ -325,11 +325,17 @@ export const getTrackConfig = (id) => TRACK_REGISTRY.find((t) => t.id === id);
  *
  * `index` and `previousUnitXP` come from the caller's own ordering (the unit
  * listing is sorted by id in src/data/index.js), so this stays a pure function
- * of two numbers and cannot disagree with what the student is looking at.
+ * of numbers and cannot disagree with what the student is looking at. `ownXP`
+ * is the unit's own score: anything above zero keeps it open.
  */
-export function unitGateOf(trackId, index, previousUnitXP = 0) {
+export function unitGateOf(trackId, index, previousUnitXP = 0, ownXP = 0) {
   const need = getTrackConfig(trackId)?.unitGate || 0;
   if (!need || index <= 0) return { locked: false, need: 0 };
+  // A unit the student has already STARTED never locks. The gate stops a
+  // student skipping ahead; it must not take away work in progress — which is
+  // exactly what it did when a new unit was published in the middle of a track
+  // (T2 and T3 slotting in before T4 re-locked T4 for everyone working in it).
+  if (ownXP > 0) return { locked: false, need };
   return { locked: previousUnitXP < need, need };
 }
 

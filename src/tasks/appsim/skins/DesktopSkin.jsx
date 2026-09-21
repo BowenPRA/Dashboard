@@ -1,9 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Power, Moon, LogOut, RotateCw, LayoutGrid, Palette, Globe, Folder, Calculator, FileText,
-  Minus, Square, Copy, X, Save, ArrowRight, Search, Hourglass, UserRound,
+  Minus, Square, Copy, X, Save, ArrowRight, Search, Hourglass, UserRound, Trash2, CornerUpLeft,
+  Image as ImageIcon,
 } from 'lucide-react';
-import { APPS } from '../../../utils/appSim/desktop';
+import { APPS, CONTEXT_CHOICES } from '../../../utils/appSim/desktop';
 
 /* ------------------------------------------------------------------ *
  * DESKTOP SKIN — the machine itself: the power button on the case, the login
@@ -110,7 +111,15 @@ export default function DesktopSkin({ state, onAction, hint = null, disabled = f
         if (top && DOC_APPS.has(top.app)) { e.preventDefault(); act({ type: 'save', title: top.title }); }
         return;
       }
-      if (!typing && e.key === 'Escape' && state.menu) act({ type: 'closeMenu' });
+      if (typing) return;
+      if (e.key === 'Escape' && state.context) { act({ type: 'closeContext' }); return; }
+      if (e.key === 'Escape' && state.menu) act({ type: 'closeMenu' });
+      // Delete puts the selected file or folder in the Recycle Bin — the key
+      // route to the same place as dragging it there or right-click ▸ Delete.
+      if (e.key === 'Delete' && String(selectedIcon).startsWith('item:')) {
+        e.preventDefault();
+        act({ type: 'deleteItem', name: String(selectedIcon).slice(5) });
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -136,7 +145,7 @@ export default function DesktopSkin({ state, onAction, hint = null, disabled = f
           {state.power === 'login' && <LoginScreen state={state} act={act} hint={hint} />}
           {on && (
             <OnScreen
-              state={state} act={act} hint={hint}
+              state={state} act={act} hint={hint} scale={scale} disabled={disabled}
               selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon}
               frozenPing={nudgeFrozen} />
           )}
@@ -207,57 +216,268 @@ function LoginScreen({ state, act, hint }) {
   );
 }
 
-function OnScreen({ state, act, hint, selectedIcon, setSelectedIcon, frozenPing }) {
-  const close = () => { if (state.menu) act({ type: 'closeMenu' }); };
+/* ---- icons on the desktop: apps, files, folders, the Recycle Bin ------- */
+
+const ICON_STEP = 86;
+/** Where an icon sits: app shortcuts in the first column, files and folders in the next two, the bin top right. */
+function iconPos(kind, index) {
+  if (kind === 'bin') return { left: SCREEN.w - 92, top: 12 };
+  if (kind === 'app') return { left: 12, top: 12 + index * ICON_STEP };
+  return { left: 96 + Math.floor(index / 4) * 84, top: 12 + (index % 4) * ICON_STEP };
+}
+
+const ITEM_ICON = { folder: Folder, image: ImageIcon, pdf: FileText, doc: FileText, audio: FileText, video: FileText };
+const CONTEXT_LABEL = { newFolder: 'New folder', open: 'Open', rename: 'Rename', delete: 'Delete', close: 'Close window' };
+
+/**
+ * One icon, however the student gets at it: a click selects, a double-click
+ * (or one tap on a touch screen) opens, a right-click (or press-and-hold)
+ * opens its menu, and pressing and moving drags it. Everything that moves the
+ * machine is an engine action; selection and the drag in flight are the only
+ * things the skin keeps.
+ */
+function DeskIcon({ id, label, Icon, tint = '#475569', selected, onSelect, onOpen, onMenu, drag, glowOn, dropId, children, disabled }) {
+  const press = useRef(null);
+  const onPointerDown = (e) => {
+    if (disabled || e.button === 2) return;
+    press.current = { x: e.clientX, y: e.clientY, moved: false, long: false, touch: e.pointerType === 'touch', timer: null };
+    if (e.pointerType === 'touch' && onMenu) {
+      // Press-and-hold is a tablet's right-click.
+      press.current.timer = setTimeout(() => {
+        if (press.current && !press.current.moved) { press.current.long = true; onMenu(); }
+      }, 550);
+    }
+  };
+  const onPointerMove = (e) => {
+    const p = press.current;
+    if (!p || !drag) return;
+    if (!p.moved && Math.hypot(e.clientX - p.x, e.clientY - p.y) > 6) {
+      p.moved = true;
+      clearTimeout(p.timer);
+      // Keep the moves coming once the pointer leaves the icon. A pointer the
+      // browser cannot capture (a synthetic one) must not break the drag.
+      try { e.currentTarget.setPointerCapture?.(e.pointerId); } catch { /* not capturable */ }
+      drag.start(id, label, Icon, tint);
+    }
+    if (p.moved) drag.move(e.clientX, e.clientY);
+  };
+  const onPointerUp = (e) => {
+    const p = press.current;
+    press.current = null;
+    if (!p) return;
+    clearTimeout(p.timer);
+    if (p.moved) { drag.drop(e.clientX, e.clientY); return; }
+    if (p.touch && !p.long) onOpen();
+  };
   return (
-    <div className="absolute inset-0" style={{ background: 'linear-gradient(170deg,#dbeafe 0%,#eef6ff 55%,#e0f2fe 100%)' }}
-      onClick={close}>
-      {/* desktop icons: double-click with a mouse, one tap on a touch screen */}
-      <div className="absolute left-4 top-4 flex flex-col gap-3">
-        {DESKTOP_ICONS.map(({ app, label }) => {
-          const Icon = APP_ICON[app];
-          return (
-            <button
-              key={app}
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setSelectedIcon(app); }}
-              onDoubleClick={() => act({ type: 'openApp', app })}
-              onPointerUp={(e) => { if (e.pointerType === 'touch') act({ type: 'openApp', app }); }}
-              aria-label={`open ${label}`}
-              className={`w-[76px] flex flex-col items-center gap-1 rounded-xl p-1.5 ${selectedIcon === app ? 'bg-sky-200/70 ring-2 ring-sky-400' : 'hover:bg-white/50'} ${glow(hint === `app:${app}`)}`}>
-              <span className="w-11 h-11 rounded-xl bg-white shadow flex items-center justify-center">
-                <Icon className="w-6 h-6 text-slate-600" strokeWidth={2.2} />
-              </span>
-              <span className="text-[12px] font-bold text-slate-700 leading-tight text-center">{label}</span>
-            </button>
-          );
-        })}
+    <button
+      type="button"
+      data-drop={dropId || undefined}
+      aria-label={label}
+      onClick={(e) => { e.stopPropagation(); onSelect(); }}
+      onDoubleClick={(e) => { e.stopPropagation(); onOpen(); }}
+      onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); onSelect(); onMenu?.(); }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => { clearTimeout(press.current?.timer); press.current = null; drag?.cancel(); }}
+      className={`w-[76px] flex flex-col items-center gap-1 rounded-xl p-1.5 touch-none ${selected ? 'bg-sky-200/70 ring-2 ring-sky-400' : 'hover:bg-white/50'} ${glow(glowOn)}`}>
+      <span className="w-11 h-11 rounded-xl bg-white shadow flex items-center justify-center pointer-events-none">
+        <Icon className="w-6 h-6" style={{ color: tint }} strokeWidth={2.2} fill={Icon === Folder ? '#fde68a' : 'none'} />
+      </span>
+      {children || <span className="text-[12px] font-bold text-slate-700 leading-tight text-center break-words w-full pointer-events-none">{label}</span>}
+    </button>
+  );
+}
+
+/** The name box under an icon while it is being renamed (a new folder arrives with one). */
+function RenameBox({ state, act, hint }) {
+  const r = state.renaming;
+  return (
+    <span className="flex flex-col items-center w-full" onClick={(e) => e.stopPropagation()}>
+      <input
+        autoFocus
+        value={r.text}
+        aria-label="new name"
+        onFocus={(e) => e.target.select()}
+        onChange={(e) => act({ type: 'typeName', text: e.target.value })}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') { e.preventDefault(); act({ type: 'commitName' }); }
+          if (e.key === 'Escape') { e.preventDefault(); act({ type: 'cancelName' }); }
+        }}
+        onBlur={() => act({ type: 'commitName' })}
+        spellCheck={false}
+        autoCapitalize="off"
+        autoComplete="off"
+        className={`w-[92px] -mx-2 rounded border-2 border-sky-500 bg-white px-1 text-[12px] font-bold text-slate-800 text-center outline-none ${glow(hint === 'rename')}`} />
+      {r.error && (
+        <span className="mt-0.5 text-[10px] font-bold text-rose-600 leading-tight text-center">
+          {r.error === 'taken' ? 'That name is used.' : 'Type a name.'}
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** The right-click menu, beside the thing that was right-clicked. */
+function ContextMenu({ state, act, hint, at }) {
+  const kind = String(state.context).split(':')[0];
+  const choices = CONTEXT_CHOICES[kind] || [];
+  return (
+    <div onClick={(e) => e.stopPropagation()} onContextMenu={(e) => e.preventDefault()}
+      className="absolute z-30 w-40 rounded-xl bg-white border border-slate-300 shadow-2xl p-1"
+      style={{ left: Math.min(at.x, SCREEN.w - 170), top: Math.min(at.y, SCREEN.h - TASKBAR_H - 16 - choices.length * 36) }}>
+      {choices.map((c) => (
+        <button key={c} type="button" onClick={() => act({ type: 'contextChoose', choice: c })}
+          className={`w-full text-left px-3 py-2 rounded-lg text-[13px] font-bold ${c === 'delete' ? 'text-rose-600 hover:bg-rose-50' : 'text-slate-700 hover:bg-slate-100'} ${glow(hint === `context:${c}`)}`}>
+          {CONTEXT_LABEL[c] || c}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Where a right-click menu opens when no pointer placed it (a demo, or a keyboard). */
+function contextAnchor(state) {
+  const [kind, ...rest] = String(state.context || '').split(':');
+  const name = rest.join(':');
+  if (kind === 'app') {
+    const i = DESKTOP_ICONS.findIndex((d) => d.app === name);
+    const p = iconPos('app', Math.max(0, i));
+    return { x: p.left + 70, y: p.top + 20 };
+  }
+  if (kind === 'item') {
+    const onDesk = state.items.filter((it) => it.in === 'desktop');
+    const i = onDesk.findIndex((it) => it.name === name);
+    if (i >= 0) { const p = iconPos('item', i); return { x: p.left + 70, y: p.top + 20 }; }
+    return { x: 300, y: 140 };
+  }
+  if (kind === 'bin') { const p = iconPos('bin'); return { x: p.left - 150, y: p.top + 30 }; }
+  if (kind === 'taskbar') {
+    const i = state.windows.findIndex((w) => w.title === name);
+    return { x: 190 + Math.max(0, i) * 120, y: SCREEN.h - TASKBAR_H - 50 };
+  }
+  return { x: 330, y: 150 };
+}
+
+function OnScreen({ state, act, hint, selectedIcon, setSelectedIcon, frozenPing, scale, disabled }) {
+  const screenRef = useRef(null);
+  const [ghost, setGhost] = useState(null);     // the icon being dragged: { name, label, Icon, tint, x, y }
+  const [menuAt, setMenuAt] = useState(null);   // where the pointer right-clicked, in screen units
+
+  const local = (cx, cy) => {
+    const r = screenRef.current?.getBoundingClientRect();
+    return r ? { x: (cx - r.left) / scale, y: (cy - r.top) / scale } : { x: 0, y: 0 };
+  };
+  // Drag and drop, by pointer — the same on a mouse and a finger. The drop
+  // target is whatever carries `data-drop` under the pointer when it lets go.
+  const drag = {
+    start: (name, label, Icon, tint) => setGhost({ name, label, Icon, tint, x: -999, y: -999 }),
+    move: (cx, cy) => setGhost((g) => (g ? { ...g, ...local(cx, cy) } : g)),
+    cancel: () => setGhost(null),
+    drop: (cx, cy) => {
+      const g = ghost;
+      setGhost(null);
+      if (!g) return;
+      const hit = document.elementsFromPoint(cx, cy)
+        .map((el) => el.closest?.('[data-drop]')?.getAttribute('data-drop'))
+        .find((d) => d && d !== `folder:${g.name}`);
+      if (!hit) return;
+      const to = hit === 'bin' ? 'bin' : hit === 'desktop' ? 'desktop' : hit.replace(/^folder:/, '');
+      act({ type: 'drag', name: g.name, to });
+    },
+  };
+
+  const background = () => {
+    setSelectedIcon(null);
+    if (state.menu) act({ type: 'closeMenu' });
+    if (state.context) act({ type: 'closeContext' });
+  };
+  const menuFor = (target, e) => {
+    if (e) setMenuAt(local(e.clientX, e.clientY)); else setMenuAt(null);
+    act({ type: 'openContext', target });
+  };
+  const onDesk = state.items.filter((it) => it.in === 'desktop');
+
+  return (
+    <div ref={screenRef} className="absolute inset-0" data-drop="desktop"
+      style={{ background: 'linear-gradient(170deg,#dbeafe 0%,#eef6ff 55%,#e0f2fe 100%)' }}
+      onClick={background}
+      onContextMenu={(e) => { e.preventDefault(); if (!disabled) menuFor('desktop', e); }}>
+      {/* the app shortcuts */}
+      {DESKTOP_ICONS.map(({ app, label }, i) => (
+        <div key={app} className="absolute" style={iconPos('app', i)}>
+          <DeskIcon id={`app:${app}`} label={label} Icon={APP_ICON[app]} disabled={disabled}
+            selected={selectedIcon === `app:${app}`} onSelect={() => setSelectedIcon(`app:${app}`)}
+            onOpen={() => act({ type: 'openApp', app })}
+            onMenu={() => act({ type: 'openContext', target: `app:${app}` })}
+            glowOn={hint === `app:${app}`} />
+        </div>
+      ))}
+
+      {/* files and folders on the desktop */}
+      {onDesk.map((it, i) => (
+        <div key={it.name} className="absolute" style={iconPos('item', i)}>
+          <DeskIcon id={it.name} label={it.name} Icon={ITEM_ICON[it.kind] || FileText} disabled={disabled}
+            tint={it.kind === 'folder' ? '#d97706' : it.kind === 'image' ? '#0ea5e9' : '#475569'}
+            dropId={it.kind === 'folder' ? `folder:${it.name}` : null}
+            selected={selectedIcon === `item:${it.name}`} onSelect={() => setSelectedIcon(`item:${it.name}`)}
+            onOpen={() => act({ type: 'openItem', name: it.name })}
+            onMenu={() => act({ type: 'openContext', target: `item:${it.name}` })}
+            drag={drag}
+            glowOn={hint === `item:${it.name}`}>
+            {state.renaming?.name === it.name ? <RenameBox state={state} act={act} hint={hint} /> : null}
+          </DeskIcon>
+        </div>
+      ))}
+
+      {/* the Recycle Bin, always there */}
+      <div className="absolute" style={iconPos('bin')}>
+        <DeskIcon id="bin" label="Recycle Bin" Icon={Trash2} disabled={disabled} dropId="bin"
+          tint={state.items.some((it) => it.in === 'bin') ? '#0f766e' : '#64748b'}
+          selected={selectedIcon === 'bin'} onSelect={() => setSelectedIcon('bin')}
+          onOpen={() => act({ type: 'openBin' })}
+          onMenu={() => act({ type: 'openContext', target: 'bin' })}
+          glowOn={hint === 'bin'} />
       </div>
 
       {/* windows: list order is stacking order, the last is on top */}
-      <div className="absolute left-0 top-0" style={{ width: SCREEN.w, height: SCREEN.h - TASKBAR_H }}>
+      <div className="absolute left-0 top-0 pointer-events-none" style={{ width: SCREEN.w, height: SCREEN.h - TASKBAR_H }}>
         {state.windows.map((w, i) => (w.state === 'min' ? null : (
           <AppWindow key={w.title} w={w} i={i} focused={state.focus === w.title} frozen={state.frozen}
-            act={act} hint={hint} frozenPing={frozenPing} />
+            state={state} act={act} hint={hint} frozenPing={frozenPing} drag={drag} disabled={disabled}
+            selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon} />
         )))}
       </div>
 
+      {ghost && (
+        <div className="absolute z-40 pointer-events-none opacity-80 -translate-x-1/2 -translate-y-1/2" style={{ left: ghost.x, top: ghost.y }}>
+          <span className="w-11 h-11 rounded-xl bg-white shadow-xl ring-2 ring-sky-400 flex items-center justify-center">
+            <ghost.Icon className="w-6 h-6" style={{ color: ghost.tint }} strokeWidth={2.2} />
+          </span>
+        </div>
+      )}
+
       {state.menu && <StartMenu state={state} act={act} hint={hint} />}
-      <Taskbar state={state} act={act} hint={hint} />
+      {state.context && <ContextMenu state={state} act={act} hint={hint} at={menuAt && String(state.context) === 'desktop' ? menuAt : contextAnchor(state)} />}
+      <Taskbar state={state} act={act} hint={hint} onMenu={(title, e) => menuFor(`taskbar:${title}`, e)} />
       {state.dialog && <DesktopDialog state={state} act={act} hint={hint} />}
     </div>
   );
 }
 
-function AppWindow({ w, i, focused, frozen, act, hint, frozenPing }) {
+function AppWindow({ w, i, focused, frozen, state, act, hint, frozenPing, drag, disabled, selectedIcon, setSelectedIcon }) {
   const f = frameOf(w.state, i);
   const Icon = APP_ICON[w.app] || FileText;
   const btn = 'w-7 h-[22px] rounded-md flex items-center justify-center transition-colors';
   const stop = (e) => e.stopPropagation();
   return (
     <div
-      className={`absolute flex flex-col rounded-lg overflow-hidden border-2 bg-white shadow-lg ${focused ? 'border-slate-500' : 'border-slate-300'} ${glow(hint === `win:${w.title}`)}`}
+      className={`absolute pointer-events-auto flex flex-col rounded-lg overflow-hidden border-2 bg-white shadow-lg ${focused ? 'border-slate-500' : 'border-slate-300'} ${glow(hint === `win:${w.title}`)}`}
       style={f}
+      // A folder window takes drops, so a file can be dragged INTO an open folder.
+      data-drop={w.folder && w.folder !== 'bin' ? `folder:${w.folder}` : w.folder === 'bin' ? 'bin' : undefined}
+      onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
       onClick={(e) => { stop(e); if (!focused) act({ type: 'restore', title: w.title }); }}>
       {/* title bar */}
       <div className={`h-8 shrink-0 flex items-center gap-2 pl-3 pr-1.5 ${focused ? 'bg-slate-200' : 'bg-slate-100'}`}>
@@ -297,7 +517,8 @@ function AppWindow({ w, i, focused, frozen, act, hint, frozenPing }) {
       )}
 
       <div className="relative flex-1 min-h-0 overflow-hidden">
-        <WindowBody w={w} />
+        <WindowBody w={w} state={state} act={act} hint={hint} drag={drag} disabled={disabled}
+          selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon} />
         {frozen && (
           <div key={frozenPing} className="absolute inset-0 bg-white/55 flex items-center justify-center">
             <Hourglass className="w-8 h-8 text-slate-500 animate-spin" style={{ animationDuration: '2.4s' }} strokeWidth={2} />
@@ -308,8 +529,55 @@ function AppWindow({ w, i, focused, frozen, act, hint, frozenPing }) {
   );
 }
 
-/** What is inside a window. Decoration only — the job is on the frame, not in here. */
-function WindowBody({ w }) {
+/**
+ * What is inside a window. For a program it is decoration — the job is on the
+ * frame, not in here. A folder window (T2) shows what is in that folder, and
+ * those icons work like the ones on the desktop; the Recycle Bin window lists
+ * what was deleted, with "Put it back".
+ */
+function WindowBody({ w, state, act, hint, drag, disabled, selectedIcon, setSelectedIcon }) {
+  if (w.folder === 'bin') {
+    const binned = state.items.filter((it) => it.in === 'bin');
+    return (
+      <div className="p-2 space-y-1 h-full overflow-y-auto">
+        {binned.length === 0 && <div className="p-4 text-center text-[12px] font-bold text-slate-400">The Recycle Bin is empty.</div>}
+        {binned.map((it) => {
+          const I = ITEM_ICON[it.kind] || FileText;
+          return (
+            <div key={it.name} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50">
+              <I className="w-4 h-4 text-slate-500 shrink-0" strokeWidth={2.4} />
+              <span className="flex-1 min-w-0 truncate text-[13px] font-bold text-slate-700">{it.name}</span>
+              <button type="button" onClick={(e) => { e.stopPropagation(); act({ type: 'restoreItem', name: it.name }); }}
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-md border border-slate-300 text-[11px] font-black text-slate-600 hover:bg-slate-100 ${glow(hint === `restore:${it.name}`)}`}>
+                <CornerUpLeft className="w-3 h-3" strokeWidth={3} /> Put it back
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+  if (w.folder) {
+    const inside = state.items.filter((it) => it.in === w.folder);
+    return (
+      <div className="p-2 h-full overflow-y-auto">
+        {inside.length === 0 && <div className="p-4 text-center text-[12px] font-bold text-slate-400">This folder is empty.</div>}
+        <div className="flex flex-wrap gap-1">
+          {inside.map((it) => (
+            <DeskIcon key={it.name} id={it.name} label={it.name} Icon={ITEM_ICON[it.kind] || FileText} disabled={disabled}
+              tint={it.kind === 'folder' ? '#d97706' : it.kind === 'image' ? '#0ea5e9' : '#475569'}
+              dropId={it.kind === 'folder' ? `folder:${it.name}` : null}
+              selected={selectedIcon === `item:${it.name}`} onSelect={() => setSelectedIcon(`item:${it.name}`)}
+              onOpen={() => act({ type: 'openItem', name: it.name })}
+              onMenu={() => act({ type: 'openContext', target: `item:${it.name}` })}
+              drag={drag} glowOn={hint === `item:${it.name}`}>
+              {state.renaming?.name === it.name ? <RenameBox state={state} act={act} hint={hint} /> : null}
+            </DeskIcon>
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (w.app === 'notes') {
     return (
       <div className="p-4 space-y-2">
@@ -404,9 +672,9 @@ function StartMenu({ state, act, hint }) {
   );
 }
 
-function Taskbar({ state, act, hint }) {
+function Taskbar({ state, act, hint, onMenu }) {
   return (
-    <div onClick={(e) => e.stopPropagation()}
+    <div onClick={(e) => e.stopPropagation()} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
       className={`absolute left-0 right-0 bottom-0 flex items-center gap-1.5 px-2 bg-slate-800 ${glow(hint === 'taskbar')}`}
       style={{ height: TASKBAR_H }}>
       <button type="button" aria-label="menu" onClick={() => act({ type: 'openMenu' })}
@@ -423,6 +691,7 @@ function Taskbar({ state, act, hint }) {
           return (
             <button key={w.title} type="button" aria-label={`taskbar ${w.title}`}
               onClick={() => act({ type: 'restore', title: w.title })}
+              onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); onMenu?.(w.title, e); }}
               className={`h-8 max-w-[130px] flex items-center gap-1.5 px-2 rounded-lg text-[12px] font-bold border-b-2
                 ${active ? 'bg-slate-600 text-white border-sky-400' : 'bg-slate-700/60 text-slate-300 border-transparent hover:bg-slate-600'}
                 ${w.state === 'min' ? 'opacity-70' : ''} ${glow(hint === `taskbar:${w.title}`)}`}>

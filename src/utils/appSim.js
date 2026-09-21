@@ -82,6 +82,10 @@ export function initialState(item) {
       : null,
     dialog: null,
     search: '',
+    // Files written over since the start. The simulator has no file CONTENTS,
+    // so this is how a goal can tell "kept the first draft" from "saved over it
+    // and then made a copy" — which looks identical in the folder listing.
+    overwritten: [],
   };
 }
 
@@ -191,10 +195,18 @@ function applyFiles(state, a) {
 
     // Save on a document that has never been saved cannot silently pick a name
     // and a folder for the student — so it opens the same dialog Save As does.
-    case 'save':
+    case 'save': {
       if (!state.editor) return state;
       if (!state.editor.folder) return apply(state, { type: 'saveAs' });
-      return { ...state, editor: { ...state.editor, saved: true } };
+      // Save on a file that already exists writes over it — the whole point of
+      // Save As is the one time you do not want that.
+      const over = state.files.some((f) => f.name === state.editor.name && f.folder === state.editor.folder);
+      return {
+        ...state,
+        editor: { ...state.editor, saved: true },
+        overwritten: over ? addOnce(state.overwritten, state.editor.name) : state.overwritten,
+      };
+    }
 
     case 'saveAs':
       if (!state.editor) return state;
@@ -202,23 +214,28 @@ function applyFiles(state, a) {
         ...state,
         dialog: {
           kind: 'saveAs',
-          name: state.editor.name === 'Untitled' ? '' : state.editor.name,
+          // The name without its extension, as a real Save As box shows it: a
+          // student adding " 2" must get "report 2.docx", not "report.docx 2".
+          name: state.editor.name === 'Untitled' ? '' : baseName(state.editor.name),
           folder: state.editor.folder || state.cwd,
         },
       };
 
     case 'dialogName':
-      return state.dialog ? { ...state, dialog: { ...state.dialog, name: String(a.name ?? '') } } : state;
+      return state.dialog ? { ...state, dialog: { ...state.dialog, name: String(a.name ?? ''), replacing: null } } : state;
 
     // `picked` records that the student CHOSE a folder, even the one already
     // highlighted — "choose Documents" is a real step when Documents is where
     // the box happened to open, and not a step the engine ignored.
     case 'dialogFolder':
       return state.dialog && FOLDERS.includes(a.folder)
-        ? { ...state, dialog: { ...state.dialog, folder: a.folder, picked: true } }
+        ? { ...state, dialog: { ...state.dialog, folder: a.folder, picked: true, replacing: null } }
         : state;
 
+    // Cancel on "Replace it?" goes back to the Save As box, as a real "No" does;
+    // anywhere else it closes the box and saves nothing.
     case 'dialogCancel':
+      if (state.dialog?.replacing) return { ...state, dialog: { ...state.dialog, replacing: null } };
       return { ...state, dialog: null };
 
     case 'dialogConfirm': {
@@ -226,9 +243,14 @@ function applyFiles(state, a) {
       // A nameless save is refused by the dialog itself, not by silence.
       if (!d || !d.name.trim()) return state;
       const name = ensureExt(d.name.trim(), state.editor?.name, state.editor?.ext);
+      const exists = state.files.some((f) => f.name === name && f.folder === d.folder);
+      // A name that is already taken in that folder is not saved over silently:
+      // the box asks first, and only a second Save (the "Replace" button) does it.
+      if (exists && d.replacing !== name) return { ...state, dialog: { ...d, replacing: name } };
       const rest = state.files.filter((f) => !(f.name === name && f.folder === d.folder));
       return {
         ...state,
+        overwritten: exists ? addOnce(state.overwritten, name) : state.overwritten,
         files: [...rest, { name, folder: d.folder, kind: kindOf(name), from: null }],
         // Spread rather than rebuild: the editor's `ext` has to survive a save,
         // or a second Save As would produce a file with no extension.
@@ -279,6 +301,14 @@ function ensureExt(name, modelName = '', fallbackExt = '') {
   if (name.includes('.')) return name;
   const ext = String(modelName).includes('.') ? modelName.split('.').pop() : fallbackExt;
   return ext ? `${name}.${ext}` : name;
+}
+
+const addOnce = (list = [], x) => (list.includes(x) ? list : [...list, x]);
+
+/** A file name without its extension: "volcano report.docx" → "volcano report". */
+function baseName(name = '') {
+  const dot = String(name).lastIndexOf('.');
+  return dot > 0 ? String(name).slice(0, dot) : String(name);
 }
 
 /** Fold a list of actions over a starting state. Replay, undo and solve all use this. */

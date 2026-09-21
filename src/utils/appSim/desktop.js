@@ -37,10 +37,39 @@ export const ACTIONS = [
   'minimise', 'maximise', 'restore', 'close', 'edit', 'save',
   'sleep', 'logout', 'restart', 'shutdown',
   'dialogSave', 'dialogDiscard', 'dialogAnyway', 'dialogCancel',
+  // T2 · Mouse, Keys and Windows: things on the desktop, right-click, drag.
+  'openItem', 'openContext', 'closeContext', 'contextChoose', 'drag', 'deleteItem',
+  'typeName', 'commitName', 'cancelName', 'restoreItem', 'openBin',
 ];
 
 /** Actions that carry what is typed so far; consecutive ones are one move. */
-export const TEXT_ACTIONS = ['typePassword'];
+export const TEXT_ACTIONS = ['typePassword', 'typeName'];
+
+/** Where the Recycle Bin keeps things, as an item's `in`. */
+export const BIN = 'bin';
+
+/** What a right-click on each kind of target offers (UPGRADE-PLAN §8.2). */
+export const CONTEXT_CHOICES = {
+  desktop: ['newFolder'],
+  item: ['open', 'rename', 'delete'],
+  app: ['open'],
+  bin: ['open'],
+  taskbar: ['close'],
+};
+
+/** An item's kind from its name, unless the author said (a folder has no extension). */
+export function itemKind(name = '', kind = null) {
+  if (kind) return kind;
+  const ext = String(name).toLowerCase().includes('.') ? String(name).toLowerCase().split('.').pop() : '';
+  if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) return 'image';
+  if (ext === 'pdf') return 'pdf';
+  if (['mp3', 'wav'].includes(ext)) return 'audio';
+  if (['mp4', 'mov'].includes(ext)) return 'video';
+  return ext ? 'doc' : 'folder';
+}
+
+/** The program an item opens in: a folder in Files, a picture in Paint, anything else in Notes. */
+const APP_FOR_KIND = { folder: 'files', image: 'paint' };
 
 const DEFAULT_USER = 'Ha Vi';
 const DEFAULT_PASSWORD = 'sunflower';
@@ -59,8 +88,17 @@ export function initial(item) {
       // comes back maximised, as it does on a real machine.
       was: w.state === 'max' ? 'max' : 'normal',
       saved: w.saved !== false,
+      ...(w.folder ? { folder: w.folder } : {}),
     }))
     : [];
+  // Things on the desktop are files on the machine: unlike windows, they are
+  // there whether or not anyone is logged in, and stopping never touches them.
+  const items = (i.items || []).map((it) => ({
+    name: it.name,
+    kind: itemKind(it.name, it.kind),
+    in: it.in || 'desktop',
+    from: null,
+  }));
   return {
     skin: 'desktop',
     power,
@@ -78,6 +116,9 @@ export function initial(item) {
     lost: [],
     counts: { forced: 0, shutdowns: 0, restarts: 0, logouts: 0, sleeps: 0 },
     lastStop: null,
+    items,
+    context: null,        // the target of the open right-click menu
+    renaming: null,       // { name, text, error } while a name box is open
   };
 }
 
@@ -117,6 +158,8 @@ function stop(s, how) {
     typed: '',
     loginError: false,
     lastStop: how,
+    context: null,
+    renaming: null,
   };
   if (how === 'shutdown') return { ...base, power: 'off', counts: { ...s.counts, shutdowns: s.counts.shutdowns + 1 } };
   if (how === 'restart') return { ...base, power: 'login', counts: { ...s.counts, restarts: s.counts.restarts + 1 } };
@@ -129,8 +172,103 @@ function goToSleep(s, from) {
     power: 'sleep',
     sleptFrom: from,
     menu: false,
+    context: null,
     lastStop: 'sleep',
     counts: { ...s.counts, sleeps: s.counts.sleeps + 1 },
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * Things on the desktop (T2): files and folders, the Recycle Bin, right-click
+ * menus, dragging and renaming. An item is a file on the machine; `in` is
+ * 'desktop', 'bin' or the name of a desktop folder.
+ * ------------------------------------------------------------------ */
+
+const findItem = (s, name) => s.items.find((it) => it.name === name);
+const isFolder = (s, name) => findItem(s, name)?.kind === 'folder' && findItem(s, name).in !== BIN;
+
+/** Where an item may be dragged: the bin, the desktop, or a folder that is not itself. */
+function canDrop(s, name, to) {
+  const it = findItem(s, name);
+  if (!it || it.in === BIN) return false;
+  if (to === BIN || to === 'desktop') return it.in !== to;
+  return isFolder(s, to) && to !== name && it.in !== to;
+}
+
+function moveItem(s, name, to) {
+  return {
+    ...s,
+    context: null,
+    items: s.items.map((it) => (it.name === name
+      ? { ...it, in: to, from: to === BIN ? it.in : null }
+      : it)),
+  };
+}
+
+/** Open an item the way double-clicking it does: a folder in Files, a picture in Paint, the rest in Notes. */
+function openItem(s, name) {
+  const it = findItem(s, name);
+  if (!it || it.in === BIN) return s;
+  const existing = findWin(s, name);
+  const base = { ...s, context: null, menu: false };
+  if (existing) {
+    const back = existing.state === 'min' ? { state: existing.was || 'normal' } : {};
+    return raise(withWin(base, name, back), name);
+  }
+  const app = APP_FOR_KIND[it.kind] || 'notes';
+  const win = { app, title: name, state: 'normal', was: 'normal', saved: true, ...(it.kind === 'folder' ? { folder: name } : {}) };
+  return { ...base, windows: [...s.windows, win], focus: name };
+}
+
+function openBin(s) {
+  const title = 'Recycle Bin';
+  const existing = findWin(s, title);
+  const base = { ...s, context: null, menu: false };
+  if (existing) return raise(withWin(base, title, existing.state === 'min' ? { state: existing.was || 'normal' } : {}), title);
+  return { ...base, windows: [...s.windows, { app: 'files', title, state: 'normal', was: 'normal', saved: true, folder: BIN }], focus: title };
+}
+
+/** Is `target` something a right-click can land on right now? */
+function targetExists(s, target = '') {
+  const [kind, ...rest] = String(target).split(':');
+  const name = rest.join(':');
+  if (target === 'desktop' || target === 'bin') return true;
+  if (kind === 'item') return !!findItem(s, name) && findItem(s, name).in !== BIN;
+  if (kind === 'app') return !!APPS[name];
+  if (kind === 'taskbar') return !!findWin(s, name);
+  return false;
+}
+
+/** A renamed file keeps its extension when the student types a bare name, as a real one does. */
+function keepExt(newName, oldName) {
+  if (newName.includes('.')) return newName;
+  const dot = oldName.lastIndexOf('.');
+  return dot > 0 ? `${newName}${oldName.slice(dot)}` : newName;
+}
+
+function commitRename(s) {
+  const r = s.renaming;
+  if (!r) return s;
+  const typed = String(r.text || '').trim();
+  if (!typed) return { ...s, renaming: { ...r, error: 'empty' } };
+  const to = keepExt(typed, r.name);
+  if (to === r.name) return { ...s, renaming: null };
+  const it = findItem(s, r.name);
+  if (!it) return { ...s, renaming: null };
+  // Two things cannot share a name — the machine refuses, and says so. (A real
+  // one only refuses within one folder; here an item is addressed by its name,
+  // so the rule is machine-wide, which a student never meets in a six-item job.)
+  if (s.items.some((x) => x.name === to)) return { ...s, renaming: { ...r, error: 'taken' } };
+  return {
+    ...s,
+    renaming: null,
+    items: s.items.map((x) => {
+      if (x.name === r.name) return { ...x, name: to };
+      if (x.in === r.name) return { ...x, in: to };   // a renamed folder keeps what is in it
+      return x;
+    }),
+    windows: s.windows.map((w) => (w.title === r.name ? { ...w, title: to, ...(w.folder ? { folder: to } : {}) } : w)),
+    focus: s.focus === r.name ? to : s.focus,
   };
 }
 
@@ -169,6 +307,8 @@ export function apply(s, a) {
         focus: null,
         lastStop: 'forced',
         counts: { ...s.counts, forced: s.counts.forced + 1 },
+        context: null,
+        renaming: null,
       };
 
     case 'wake':
@@ -277,6 +417,77 @@ export function apply(s, a) {
     case 'dialogCancel':
       return s.dialog ? { ...s, dialog: null } : s;
 
+    // ---- things on the desktop (T2) ----------------------------------------
+
+    case 'openItem':
+      return s.power === 'on' ? openItem(s, a.name) : s;
+
+    case 'openBin':
+      // Double-clicking the Recycle Bin — the same window right-click ▸ Open gives.
+      return s.power === 'on' ? openBin(s) : s;
+
+    case 'openContext':
+      // A right-click (press-and-hold on a tablet) opens the menu for the thing
+      // under the pointer — and only that thing. It also closes the start menu.
+      return s.power === 'on' && targetExists(s, a.target) && s.context !== a.target
+        ? { ...s, context: a.target, menu: false }
+        : s;
+
+    case 'closeContext':
+      return s.context ? { ...s, context: null } : s;
+
+    case 'contextChoose': {
+      if (s.power !== 'on' || !s.context) return s;
+      const [kind, ...rest] = s.context.split(':');
+      const name = rest.join(':');
+      const offered = CONTEXT_CHOICES[kind] || [];
+      if (!offered.includes(a.choice)) return s;
+      const closed = { ...s, context: null };
+      if (kind === 'desktop' && a.choice === 'newFolder') {
+        let folder = 'New folder';
+        // Names are unique across the machine here (an item is addressed by its name).
+        for (let n = 2; closed.items.some((x) => x.name === folder); n += 1) folder = `New folder ${n}`;
+        return {
+          ...closed,
+          items: [...closed.items, { name: folder, kind: 'folder', in: 'desktop', from: null }],
+          // A new folder arrives with its name box open, as it does on a real machine.
+          renaming: { name: folder, text: folder, error: null },
+        };
+      }
+      if (kind === 'item') {
+        if (a.choice === 'open') return openItem(closed, name);
+        if (a.choice === 'rename') return { ...closed, renaming: { name, text: name, error: null } };
+        if (a.choice === 'delete') return moveItem(closed, name, BIN);
+      }
+      if (kind === 'app') return apply(closed, { type: 'openApp', app: name });
+      if (kind === 'bin') return openBin(closed);
+      if (kind === 'taskbar') return apply(closed, { type: 'close', title: name });
+      return s;
+    }
+
+    case 'drag':
+      return s.power === 'on' && canDrop(s, a.name, a.to) ? moveItem(s, a.name, a.to) : s;
+
+    case 'deleteItem':
+      return s.power === 'on' && canDrop(s, a.name, BIN) ? moveItem(s, a.name, BIN) : s;
+
+    case 'typeName':
+      return s.renaming ? { ...s, renaming: { ...s.renaming, text: String(a.text ?? ''), error: null } } : s;
+
+    case 'commitName':
+      return commitRename(s);
+
+    case 'cancelName':
+      return s.renaming ? { ...s, renaming: null } : s;
+
+    case 'restoreItem': {
+      const it = findItem(s, a.name);
+      if (s.power !== 'on' || !it || it.in !== BIN) return s;
+      // Back to where it was deleted from, if that folder still exists.
+      const back = it.from && (it.from === 'desktop' || isFolder(s, it.from)) ? it.from : 'desktop';
+      return { ...s, items: s.items.map((x) => (x.name === a.name ? { ...x, in: back, from: null } : x)) };
+    }
+
     default:
       return s;
   }
@@ -305,6 +516,10 @@ export function view(s) {
     restarts: s.counts.restarts,
     logouts: s.counts.logouts,
     sleeps: s.counts.sleeps,
+    // Things on the desktop, by where they are: at.desktop, at.bin, at.<folder>.
+    at: s.items.reduce((acc, it) => ({ ...acc, [it.in]: [...(acc[it.in] || []), it.name] }), { desktop: [], [BIN]: [] }),
+    folders: s.items.filter((it) => it.kind === 'folder' && it.in !== BIN).map((it) => it.name),
+    renaming: s.renaming ? s.renaming.name : null,
   };
 }
 
@@ -316,6 +531,12 @@ export function view(s) {
  */
 export function regionFor(path = '', s = null) {
   if (s?.dialog) return 'dialog';
+  if (s?.renaming) return 'rename';
+  if (path.startsWith('at.bin')) return 'bin';
+  const folder = /^at\.([^.[]+)/.exec(path)?.[1];
+  if (folder && folder !== 'desktop') return `item:${folder}`;
+  if (path === 'at.desktop' || path === 'folders') return 'desktop';
+  if (path === 'focus') return 'taskbar';
   if (s?.frozen) return 'power';
   if (s?.power === 'off') return 'power';
   if (s?.power === 'sleep') return 'screen';
@@ -348,6 +569,21 @@ export function checkInitial(item) {
     if (seen.has(t)) out.push(`${id}: two windows are titled "${t}" — titles address windows, so they must differ`);
     seen.add(t);
     if (w.state !== undefined && !WINDOW_STATES.includes(w.state)) out.push(`${id}: window "${t}" state "${w.state}"`);
+  }
+  // Desktop items are addressed by name, so names must be unique, and an item
+  // can only be inside the desktop, the bin, or a folder that exists.
+  const names = new Set();
+  const items = i.items || [];
+  for (const it of items) {
+    if (!it?.name) { out.push(`${id}: a desktop item has no name`); continue; }
+    if (names.has(it.name)) out.push(`${id}: two desktop items are called "${it.name}"`);
+    names.add(it.name);
+  }
+  const folders = new Set(items.filter((it) => itemKind(it.name, it.kind) === 'folder').map((it) => it.name));
+  for (const it of items) {
+    const where = it.in || 'desktop';
+    if (where !== 'desktop' && where !== BIN && !folders.has(where)) out.push(`${id}: item "${it.name}" is in "${where}", which is not the desktop, the bin or a folder`);
+    if (where === it.name) out.push(`${id}: item "${it.name}" is inside itself`);
   }
   return out;
 }

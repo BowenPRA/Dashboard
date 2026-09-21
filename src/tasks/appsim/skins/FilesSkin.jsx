@@ -255,8 +255,32 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
         </div>
       </div>
 
+      {/* "Replace it?" — a Save As onto a name already in that folder asks first */}
+      {state.dialog?.kind === 'saveAs' && state.dialog.replacing && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+          <div className="w-full max-w-sm rounded-2xl border-2 border-amber-300 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+            <div className="px-4 py-2.5 bg-amber-50 dark:bg-amber-950/40 border-b-2 border-amber-200 font-black text-sm text-slate-700 dark:text-slate-200">
+              Confirm Save As
+            </div>
+            <div className="p-4 text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug">
+              <b>{state.dialog.replacing}</b> already exists in {state.dialog.folder}. Do you want to replace it?
+            </div>
+            <div className="flex justify-end gap-2 px-4 pb-4">
+              <button onClick={() => act({ type: 'dialogCancel' })}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest text-white bg-[#0ea5e9] border-b-[3px] border-[#0369a1] ${glow(hint === 'dialogCancel')}`}>
+                No
+              </button>
+              <button onClick={() => act({ type: 'dialogConfirm' })}
+                className="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest text-rose-600 bg-white dark:bg-slate-800 border-2 border-rose-300">
+                Yes, replace it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Save As dialog */}
-      {state.dialog?.kind === 'saveAs' && (
+      {state.dialog?.kind === 'saveAs' && !state.dialog.replacing && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-slate-900/40 p-4">
           <div className="w-full max-w-sm rounded-2xl border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
             <div className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 border-b-2 border-slate-200 dark:border-slate-700 font-black text-sm text-slate-700 dark:text-slate-200">

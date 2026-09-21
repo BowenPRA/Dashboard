@@ -45,6 +45,36 @@ const JOBS = {
       parMoves: 4, hintAfter: 2,
     },
   ],
+  // T2: things on the desktop — right-click, drag, rename.
+  desktop2: [
+    {
+      id: 'bin-it', skin: 'desktop',
+      brief: 'Put the old drawing in the Recycle Bin.',
+      briefVn: 'Hãy bỏ bức vẽ cũ vào Thùng rác.',
+      initial: { items: [{ name: 'old drawing.png' }, { name: 'Holiday', kind: 'folder' }, { name: 'beach.jpg' }, { name: 'boat.jpg' }] },
+      goal: [{ path: 'at.bin', contains: 'old drawing.png' }],
+      solution: [{ type: 'drag', name: 'old drawing.png', to: 'bin' }],
+      parMoves: 2, hintAfter: 3,
+    },
+    {
+      id: 'new-folder', skin: 'desktop',
+      brief: 'Right-click the desktop and make a folder called My Games.',
+      briefVn: 'Hãy bấm chuột phải vào màn hình nền và tạo một thư mục tên My Games.',
+      initial: { items: [{ name: 'Holiday', kind: 'folder' }] },
+      goal: [{ path: 'folders', contains: 'My Games' }],
+      solution: [{ type: 'openContext', target: 'desktop' }, { type: 'contextChoose', choice: 'newFolder' }, { type: 'typeName', text: 'My Games' }, { type: 'commitName' }],
+      parMoves: 4, hintAfter: 3,
+    },
+    {
+      id: 'photos', skin: 'desktop',
+      brief: 'Drag both photos into the Holiday folder.',
+      briefVn: 'Hãy kéo cả hai tấm ảnh vào thư mục Holiday.',
+      initial: { items: [{ name: 'Holiday', kind: 'folder' }, { name: 'beach.jpg' }, { name: 'boat.jpg' }] },
+      goal: [{ path: 'at.Holiday', contains: 'beach.jpg' }, { path: 'at.Holiday', contains: 'boat.jpg' }],
+      solution: [{ type: 'drag', name: 'beach.jpg', to: 'Holiday' }, { type: 'drag', name: 'boat.jpg', to: 'Holiday' }],
+      parMoves: 2, hintAfter: 3,
+    },
+  ],
   browser: [
     {
       id: 'go-there', skin: 'browser',
@@ -87,6 +117,20 @@ const DEMOS = {
       { type: 'openMenu', say: 'Open the menu.', sayVn: 'Mở trình đơn.' },
       { type: 'openPowerMenu', say: 'The power button in the menu.', sayVn: 'Nút nguồn trong trình đơn.' },
       { type: 'shutdown', say: 'Shut down.', sayVn: 'Tắt máy.' },
+    ],
+  },
+  desktop2: {
+    skin: 'desktop',
+    initial: { items: [{ name: 'old drawing.png' }, { name: 'Holiday', kind: 'folder' }, { name: 'beach.jpg' }] },
+    script: [
+      { type: 'openContext', target: 'item:old drawing.png', say: 'Right-click the old drawing.', sayVn: 'Bấm chuột phải.' },
+      { type: 'contextChoose', choice: 'delete', say: 'Delete.', sayVn: 'Xoá.' },
+      { type: 'openContext', target: 'desktop', say: 'Right-click the desktop.', sayVn: 'Bấm chuột phải vào nền.' },
+      { type: 'contextChoose', choice: 'newFolder', say: 'New folder.', sayVn: 'Thư mục mới.' },
+      { type: 'typeName', text: 'My Games', say: 'Type a name.', sayVn: 'Gõ tên.' },
+      { type: 'commitName', say: 'Enter.', sayVn: 'Enter.' },
+      { type: 'drag', name: 'beach.jpg', to: 'Holiday', say: 'Drag the photo in.', sayVn: 'Kéo ảnh vào.' },
+      { type: 'openItem', name: 'Holiday', say: 'Double-click the folder.', sayVn: 'Bấm đúp.' },
     ],
   },
   browser: {

@@ -79,7 +79,7 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
     // Finished = 100 XP, or 80+ with the quiz sat (taskRegistry.isUnitComplete).
     const complete = isUnitComplete(contentData, scores);
 
-    const gate = unitGateOf(track, unitIndex, prevUnitXP);
+    const gate = unitGateOf(track, unitIndex, prevUnitXP, unitXP);
     // Preview/QA accounts ignore this exactly as they ignore phase locks, so
     // the whole track stays walkable for checking.
     const unitLock = gate.locked && !previewAll

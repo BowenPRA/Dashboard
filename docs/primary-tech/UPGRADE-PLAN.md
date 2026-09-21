@@ -448,6 +448,21 @@ initial: {
 | `deleteItem` | `name` | select it and press Delete |
 | `typeName` · `commitName` · `cancelName` | `text` · — · — | the rename box (a text action), Enter, Esc. `newFolder` opens the box on "New folder" |
 | `restoreItem` | `name` | "Put it back" inside the Recycle Bin window |
+| `openBin` | | double-click the Recycle Bin (the same window right-click ▸ Open gives) |
+
+Drag in the skin is by pointer (mouse and finger alike) and drops onto whatever carries
+`data-drop` — the bin, a folder icon, an open folder window, or the desktop. A tablet's
+press-and-hold opens the right-click menu. Delete removes the selected item; Esc closes
+a menu or a name box. Names are unique across the whole machine (an item is addressed
+by its name), so author distinct names.
+
+**`files` skin — two fixes found while authoring T4.** Save As now pre-fills the name
+WITHOUT its extension (a student adding " 2" gets `report 2.docx`, not `report.docx 2`),
+and a Save As onto a name already in that folder asks **"Replace it?"** first (a second
+`dialogConfirm` replaces; `dialogCancel` goes back to the box). The new goal path
+`overwritten` lists files written over since the start — by Save on an existing file or a
+confirmed replace — so "keep the first draft" can finally tell a real Save As from
+"Save, then Save As": `{ path: 'overwritten', excludes: 'volcano report.docx' }`.
 
 New goal paths: `at.desktop`, `at.bin`, `at.<folder>` (item names), `folders` (desktop
 folders), `focus` (the title of the window on top), `context` (the open right-click menu's
