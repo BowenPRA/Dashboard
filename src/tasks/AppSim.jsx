@@ -3,9 +3,11 @@ import {
   MonitorSmartphone, CheckCircle2, Trophy, Construction, Undo2, RotateCcw, Lightbulb, Target, XCircle,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
-import { initialState, replay, evaluate, checkAll } from '../utils/appSim';
+import { initialState, replay, evaluate, checkAll, record, regionFor } from '../utils/appSim';
 
 const FilesSkin = lazy(() => import('./appsim/skins/FilesSkin.jsx'));
+const DesktopSkin = lazy(() => import('./appsim/skins/DesktopSkin.jsx'));
+const BrowserSkin = lazy(() => import('./appsim/skins/BrowserSkin.jsx'));
 
 /* ------------------------------------------------------------------ *
  * TRY IT (SIM) — a fake computer, a real job, and an assertion about the
@@ -31,7 +33,12 @@ const FilesSkin = lazy(() => import('./appsim/skins/FilesSkin.jsx'));
  *
  * Reads a unit's `sim` array:
  *   { id, skin, brief, briefVn, initial, goal[], solution[], parMoves, hintAfter,
- *     hints?: [{ after, region, say, sayVn }] }
+ *     hints?: [{ after, region, say, sayVn, when? }] }
+ *
+ * A hint's optional `when` is a goal clause (or a list of them) about the state
+ * NOW — `{ path: 'power', equals: 'off' }` — so "the power button is on the
+ * case" is never shown to a student who is already at the login screen. The
+ * last hint whose `after` has passed and whose `when` holds is the one shown.
  *
  * SCORING, out of nativeMax 10 per item, averaged across items:
  *   10  finished, no hint needed, inside par
@@ -156,23 +163,33 @@ export default function AppSim({ pool, onComplete, onQuit }) {
   // the first unmet goal clause names the area it is about.
   const hintFor = () => {
     if (!nudged || solved) return null;
-    const authored = (item.hints || []).filter((h) => log.length >= (h.after || hintAfter));
+    const authored = (item.hints || [])
+      .filter((h) => log.length >= (h.after || hintAfter))
+      .filter((h) => !h.when || evaluate(state, [h.when].flat()).met);
     if (authored.length) return authored[authored.length - 1];
     const first = verdict.failed[0];
-    return first ? { region: regionForPath(first.path), say: t.nudge, sayVn: VN.nudge } : null;
+    return first ? { region: regionFor(item.skin, first.path, state), say: t.nudge, sayVn: VN.nudge } : null;
   };
   const hint = hintFor();
 
   const doAction = (action) => {
     if (solved || watched) return;
     const before = evaluate(state, item.goal).failed.length;
-    const next = [...log, action];
+    // Typing folds into one move: the next keystroke in the same box replaces
+    // the last one in the log instead of adding a move (utils/appSim.js record).
+    const { log: next, appended } = record(log, action);
     setLog(next);
+    if (!appended) return;
     const after = evaluate(replay(initialState(item), next), item.goal).failed.length;
     // Getting closer resets the patience counter; going sideways spends it.
     const stuck = after < before ? 0 : stuckFor + 1;
     setStuckFor(stuck);
-    if (stuck >= hintAfter) setNudged(true);
+    // A nudge needs BOTH: `hintAfter` moves without getting closer, and more
+    // moves than par. Most jobs are several steps that close no goal clause
+    // until the last (menu → Power → Shut down), so counting "no progress"
+    // alone nudged a student on the PERFECT route before its final step — and
+    // a nudge caps the job at 6/10.
+    if (stuck >= hintAfter && next.length > (item.parMoves || 0)) setNudged(true);
   };
 
   const undoOne = () => { if (!watched) { setLog(log.slice(0, -1)); setStuckFor(0); } };
@@ -229,8 +246,12 @@ export default function AppSim({ pool, onComplete, onQuit }) {
         lang={lang}
         onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
 
-      <div className="flex-1 w-full max-w-3xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-2">
+      {/* Stacked below lg; from lg (the 1280×720 laptop) the job, the feedback
+          and the buttons sit in a column beside the machine, so the machine can
+          have the full height and nothing the student needs is below the fold. */}
+      <div className="flex-1 w-full max-w-3xl lg:max-w-6xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4
+        lg:grid lg:grid-cols-[19rem_minmax(0,1fr)] lg:grid-rows-[auto_auto_auto_1fr] lg:gap-x-6 lg:content-start lg:items-start">
+        <div className="flex flex-wrap items-center justify-between gap-2 lg:col-start-1">
           <div className="flex items-center gap-2 rounded-xl px-3 py-1.5 border-2" style={{ borderColor: SKY, backgroundColor: `${SKY}14` }}>
             <MonitorSmartphone className="w-4 h-4" style={{ color: SKY_DARK }} strokeWidth={2.5} />
             <span className="font-black text-sm text-slate-800 dark:text-slate-100">
@@ -249,7 +270,7 @@ export default function AppSim({ pool, onComplete, onQuit }) {
         </div>
 
         {/* the brief */}
-        <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm px-5 py-4">
+        <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm px-5 py-4 lg:col-start-1">
           <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{t.job}</div>
           <div className="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-100 leading-snug">
             {lang === 'vn' ? (item.briefVn || item.brief) : item.brief}
@@ -257,14 +278,18 @@ export default function AppSim({ pool, onComplete, onQuit }) {
         </div>
 
         {/* the machine */}
+        <div className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-4">
         <Suspense fallback={<div className="p-8 text-center font-black text-slate-400">Loading…</div>}>
-          {item.skin === 'files' && (
-            <FilesSkin state={state} onAction={doAction} hint={hint?.region || null} disabled={solved || watched} />
-          )}
+          {/* literal tags, not a lookup: a component picked at render time trips the
+              react-hooks "component created during render" rule */}
+          {item.skin === 'files' && <FilesSkin state={state} onAction={doAction} hint={hint?.region || null} disabled={solved || watched} />}
+          {item.skin === 'desktop' && <DesktopSkin state={state} onAction={doAction} hint={hint?.region || null} disabled={solved || watched} />}
+          {item.skin === 'browser' && <BrowserSkin state={state} onAction={doAction} hint={hint?.region || null} disabled={solved || watched} />}
         </Suspense>
+        </div>
 
         {/* feedback */}
-        <div className="flex items-start gap-2 rounded-xl border-2 p-3" style={{ borderColor: tone, backgroundColor: `${tone}14` }}>
+        <div className="flex items-start gap-2 rounded-xl border-2 p-3 lg:col-start-1" style={{ borderColor: tone, backgroundColor: `${tone}14` }}>
           {solved
             ? <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" style={{ color: GREEN_DARK }} strokeWidth={2.5} />
             : <Lightbulb className="w-5 h-5 shrink-0 mt-0.5" style={{ color: hint || watched ? AMBER : SKY_DARK }} strokeWidth={2.5} />}
@@ -272,8 +297,8 @@ export default function AppSim({ pool, onComplete, onQuit }) {
         </div>
 
         {/* actions. Undo and Start again are always there — no dead ends. */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 lg:col-start-1">
+          <div className="flex flex-wrap gap-2">
             <button onClick={undoOne} disabled={!log.length || solved || watched}
               className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border-2 border-b-[3px] flex items-center gap-1.5
                 ${log.length && !solved && !watched
@@ -313,16 +338,4 @@ export default function AppSim({ pool, onComplete, onQuit }) {
       </div>
     </div>
   );
-}
-
-/**
- * Which part of the window a failing goal clause is about, so the default nudge
- * points somewhere useful without every item having to author its own hints.
- */
-function regionForPath(path = '') {
-  if (path.startsWith('saved')) return 'save';
-  if (path.startsWith('bin') || path.includes('Recycle')) return 'folder:Recycle Bin';
-  const folder = /^at\.([^.[]+)/.exec(path)?.[1];
-  if (folder) return `folder:${folder}`;
-  return 'list';
 }

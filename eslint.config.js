@@ -5,7 +5,8 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules']),
+  // .validate-*: a worktree's own validator bundle (see vite.validate.config.js).
+  globalIgnores(['dist', 'node_modules', '.validate-*']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [

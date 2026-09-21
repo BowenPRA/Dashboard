@@ -52,9 +52,14 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
 
   const act = (action) => { if (!disabled) onAction(action); };
 
-  const visible = state.files
-    .filter((f) => f.folder === state.cwd)
-    .filter((f) => !state.search || f.name.toLowerCase().includes(state.search.toLowerCase()));
+  // Search looks in EVERY folder, the way a real file manager's does — "I saved
+  // it but I don't know where" is exactly the problem search exists to solve,
+  // and a box that only searched the folder you are already in would not.
+  const query = state.search.trim().toLowerCase();
+  const visible = query
+    ? state.files.filter((f) => f.name.toLowerCase().includes(query))
+    : state.files.filter((f) => f.folder === state.cwd);
+  const inBin = (name) => state.files.find((f) => f.name === name)?.folder === BIN;
 
   // Keyboard routes. Skipped whenever the student is typing, so Ctrl+S in the
   // Save As name box still saves but a plain Delete does not eat their text.
@@ -70,7 +75,7 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
       if (typing) return;
       if (e.key === 'Delete' && state.selected) {
         e.preventDefault();
-        act({ type: state.cwd === BIN ? 'restore' : 'remove', name: state.selected });
+        act({ type: inBin(state.selected) ? 'restore' : 'remove', name: state.selected });
       }
       if (e.key === 'F2' && state.selected) {
         e.preventDefault();
@@ -155,7 +160,7 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
         {/* file list */}
         <div className="flex-1 min-w-0 flex flex-col">
           <div className="flex items-center gap-2 px-3 py-2 border-b-2 border-slate-100 dark:border-slate-800">
-            <span className="font-black text-sm text-slate-700 dark:text-slate-200">{state.cwd}</span>
+            <span className="font-black text-sm text-slate-700 dark:text-slate-200">{query ? 'Search results' : state.cwd}</span>
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
               {visible.length} item{visible.length === 1 ? '' : 's'}
             </span>
@@ -187,7 +192,7 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
               return (
                 <div
                   key={f.name}
-                  draggable={!disabled && state.cwd !== BIN}
+                  draggable={!disabled && f.folder !== BIN}
                   onDragStart={() => setDragging(f.name)}
                   onDragEnd={() => setDragging(null)}
                   onClick={() => act({ type: 'select', name: f.name })}
@@ -209,7 +214,10 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
                       spellCheck={false}
                       className="flex-1 min-w-0 bg-white dark:bg-slate-900 border-2 border-[#0ea5e9] rounded-lg px-2 py-0.5 text-sm font-bold outline-none text-slate-800 dark:text-slate-100" />
                   ) : (
-                    <span className="flex-1 min-w-0 truncate font-bold text-sm text-slate-700 dark:text-slate-200">{f.name}</span>
+                    <span className="flex-1 min-w-0 truncate font-bold text-sm text-slate-700 dark:text-slate-200">
+                      {f.name}
+                      {query && <span className="ml-2 text-[10px] font-black uppercase tracking-widest text-slate-400">in {f.folder}</span>}
+                    </span>
                   )}
                   <button
                     onClick={(e) => { e.stopPropagation(); act({ type: 'select', name: f.name }); setMenuFor(menuFor === f.name ? null : f.name); }}
@@ -222,7 +230,7 @@ export default function FilesSkin({ state, onAction, hint = null, disabled = fal
                     <div
                       onClick={(e) => e.stopPropagation()}
                       className="absolute right-2 top-full mt-1 z-30 w-44 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl p-1">
-                      {state.cwd === BIN ? (
+                      {f.folder === BIN ? (
                         <MenuItem icon={CornerUpLeft} label="Put it back"
                           onClick={() => { act({ type: 'restore', name: f.name }); setMenuFor(null); }} />
                       ) : (

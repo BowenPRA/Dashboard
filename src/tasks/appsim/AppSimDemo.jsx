@@ -3,6 +3,8 @@ import { Play, Pause, SkipForward, RotateCcw } from 'lucide-react';
 import { initialState, replay } from '../../utils/appSim';
 
 const FilesSkin = lazy(() => import('./skins/FilesSkin.jsx'));
+const DesktopSkin = lazy(() => import('./skins/DesktopSkin.jsx'));
+const BrowserSkin = lazy(() => import('./skins/BrowserSkin.jsx'));
 
 /* ------------------------------------------------------------------ *
  * APP SIM — DEMO MODE. The same engine and the same skin as the Try It task,
@@ -19,7 +21,7 @@ const FilesSkin = lazy(() => import('./skins/FilesSkin.jsx'));
  * doing happens in the SIM task.
  *
  * Widget params:
- *   { skin: 'files',
+ *   { skin: 'files' | 'desktop' | 'browser',
  *     initial: { … },                 // same shape as a sim item's `initial`
  *     script: [ { type, …, say, sayVn } ],   // engine actions, optionally narrated
  *     autoplay?: true }
@@ -60,6 +62,8 @@ export default function AppSimDemo({ skin = 'files', initial = {}, script = [], 
       <div className="flex-1 min-h-0 overflow-hidden">
         <Suspense fallback={<div className="p-6 text-center font-black text-slate-400">Loading…</div>}>
           {skin === 'files' && <FilesSkin state={state} onAction={() => {}} disabled />}
+          {skin === 'desktop' && <DesktopSkin state={state} onAction={() => {}} disabled fit="parent" />}
+          {skin === 'browser' && <BrowserSkin state={state} onAction={() => {}} disabled />}
         </Suspense>
       </div>
 

@@ -26,13 +26,18 @@
 // THE ACTION LOG is the whole design. Replay, undo and the solvability
 // self-check all fall out of "state is a fold of actions over an initial state",
 // which is why every gesture becomes an action rather than a setState.
+//
+// SKINS. `files` lives in this file (it was the first); `desktop` and `browser`
+// live in ./appSim/ and export the same five things — initial, apply, view,
+// regionFor, checkInitial — plus their ACTIONS and TEXT_ACTIONS. Everything
+// below dispatches on `state.skin`, so a new skin is one module and one line in
+// SKIN_MODULES (docs/primary-tech/UPGRADE-PLAN.md §3.1).
+import * as desktopSkin from './appSim/desktop.js';
+import * as browserSkin from './appSim/browser.js';
 
 /** The folders the `files` skin models. Order is the order they are drawn. */
 export const FOLDERS = ['Documents', 'Downloads', 'Desktop', 'Recycle Bin'];
 export const BIN = 'Recycle Bin';
-
-/** Skins the engine knows how to build a state for. */
-export const SKINS = ['files'];
 
 /* ------------------------------------------------------------------ *
  * State
@@ -46,6 +51,8 @@ export const SKINS = ['files'];
  * works with, so unit data never has to spell out fields it does not care about.
  */
 export function initialState(item) {
+  const mod = SKIN_MODULES[item?.skin];
+  if (mod) return mod.initial(item);
   const init = item?.initial || {};
   return {
     skin: item?.skin || 'files',
@@ -93,11 +100,62 @@ export function kindOf(name = '') {
  * ------------------------------------------------------------------ */
 
 /** Every action type the `files` skin can produce. */
-export const ACTIONS = [
+export const FILE_ACTIONS = [
   'openFolder', 'select', 'save', 'saveAs',
   'dialogName', 'dialogFolder', 'dialogConfirm', 'dialogCancel',
   'rename', 'move', 'remove', 'restore', 'search',
 ];
+
+/** The skins that live in their own module. `files` is the fallback in here. */
+const SKIN_MODULES = { desktop: desktopSkin, browser: browserSkin };
+
+/** Skins the engine knows how to build a state for. */
+export const SKINS = ['files', ...Object.keys(SKIN_MODULES)];
+
+/** Every action type each skin can produce. */
+export const ACTIONS_BY_SKIN = {
+  files: FILE_ACTIONS,
+  desktop: desktopSkin.ACTIONS,
+  browser: browserSkin.ACTIONS,
+};
+
+/** @deprecated the `files` list, kept for older imports — use ACTIONS_BY_SKIN. */
+export const ACTIONS = FILE_ACTIONS;
+
+/**
+ * Actions that carry "what is typed so far" rather than a gesture. Two in a row
+ * of the same type are ONE move: the second replaces the first in the log.
+ *
+ * Without this every keystroke was a move. A student typing "volcano report"
+ * into Save As had spent fourteen moves against a par of four, and — since a
+ * keystroke brings no goal clause closer — was "stuck" after three letters and
+ * nudged, which capped a job they were doing perfectly at 6/10.
+ */
+export const TEXT_ACTIONS = ['dialogName', 'search', ...desktopSkin.TEXT_ACTIONS, ...browserSkin.TEXT_ACTIONS];
+
+/**
+ * Append an action to a session log, folding consecutive typing into one move.
+ * Returns `{ log, appended }` — `appended` is false when the action replaced
+ * the last one, so a screen can tell a new move from more of the same typing.
+ */
+export function record(log = [], action) {
+  const last = log[log.length - 1];
+  if (action && TEXT_ACTIONS.includes(action.type) && last?.type === action.type) {
+    return { log: [...log.slice(0, -1), action], appended: false };
+  }
+  return { log: [...log, action], appended: true };
+}
+
+/** Where the default nudge should point for a failing goal clause, given the state now. */
+export function regionFor(skin, path = '', state = null) {
+  const mod = SKIN_MODULES[skin];
+  if (mod) return mod.regionFor(path, state);
+  if (path.startsWith('saved')) return 'save';
+  if (path.startsWith('bin') || path.includes('Recycle')) return 'folder:Recycle Bin';
+  const folder = /^at\.([^.[]+)/.exec(path)?.[1];
+  if (folder) return `folder:${folder}`;
+  return 'list';
+}
 
 const withFile = (state, name, fn) => ({
   ...state,
@@ -114,10 +172,16 @@ const has = (state, name) => state.files.some((f) => f.name === name);
  */
 export function apply(state, action) {
   if (!state || !action) return state;
-  const a = action;
+  const mod = SKIN_MODULES[state.skin];
+  return mod ? mod.apply(state, action) : applyFiles(state, action);
+}
+
+function applyFiles(state, a) {
   switch (a.type) {
+    // Opening a folder ends a search: search spans every folder (the skin lists
+    // matches from all of them), and a folder click means "show me this one".
     case 'openFolder':
-      return FOLDERS.includes(a.folder) ? { ...state, cwd: a.folder, selected: null } : state;
+      return FOLDERS.includes(a.folder) ? { ...state, cwd: a.folder, selected: null, search: '' } : state;
 
     case 'select':
       return has(state, a.name) ? { ...state, selected: a.name } : state;
@@ -146,9 +210,12 @@ export function apply(state, action) {
     case 'dialogName':
       return state.dialog ? { ...state, dialog: { ...state.dialog, name: String(a.name ?? '') } } : state;
 
+    // `picked` records that the student CHOSE a folder, even the one already
+    // highlighted — "choose Documents" is a real step when Documents is where
+    // the box happened to open, and not a step the engine ignored.
     case 'dialogFolder':
       return state.dialog && FOLDERS.includes(a.folder)
-        ? { ...state, dialog: { ...state.dialog, folder: a.folder } }
+        ? { ...state, dialog: { ...state.dialog, folder: a.folder, picked: true } }
         : state;
 
     case 'dialogCancel':
@@ -236,6 +303,8 @@ export function undo(item, actions = []) {
  * `files[3].folder`, which depends on an ordering nothing guarantees.
  */
 export function view(state) {
+  const mod = SKIN_MODULES[state?.skin];
+  if (mod) return mod.view(state);
   const at = Object.fromEntries(
     FOLDERS.map((f) => [f, state.files.filter((x) => x.folder === f).map((x) => x.name)])
   );
@@ -302,7 +371,8 @@ export function solve(item) {
   return {
     start,
     end,
-    moves: (item?.solution || []).length,
+    // Counted the way the screen counts them: consecutive typing is one move.
+    moves: (item?.solution || []).reduce((log, a) => record(log, a).log, []).length,
     before: evaluate(start, item?.goal || []),
     after: evaluate(end, item?.goal || []),
   };
@@ -324,7 +394,9 @@ export function checkItem(item) {
   if (!item?.brief) problems.push(`${id}: no brief — the student is not told what the job is`);
   if (!item?.briefVn) problems.push(`${id}: no Vietnamese brief (briefVn)`);
 
-  for (const f of item?.initial?.files || []) {
+  const mod = SKIN_MODULES[item?.skin];
+  if (mod) problems.push(...mod.checkInitial(item));
+  for (const f of mod ? [] : item?.initial?.files || []) {
     if (!f.name) problems.push(`${id}: a starting file has no name`);
     if (f.in && !FOLDERS.includes(f.in)) problems.push(`${id}: file "${f.name}" starts in "${f.in}", which is not a folder`);
   }
@@ -339,14 +411,30 @@ export function checkItem(item) {
     }
   }
 
+  // A hint's `when` is a goal clause about the state now (AppSim.jsx picks the
+  // hint by it); a malformed one would silently never show its hint.
+  for (const h of item?.hints || []) {
+    for (const c of h?.when ? [h.when].flat() : []) {
+      const ops = OPERATORS.filter((o) => o in (c || {}));
+      if (!c?.path || ops.length !== 1) problems.push(`${id}: hint "${h.say || h.region}" has a malformed \`when\` clause`);
+    }
+    if (!h?.say || !h?.sayVn) problems.push(`${id}: hint for "${h?.region}" needs say and sayVn`);
+  }
+
   const solution = item?.solution || [];
   if (!solution.length) problems.push(`${id}: no solution — nothing proves the job can be done`);
+  const known = ACTIONS_BY_SKIN[item?.skin] || [];
   for (const a of solution) {
-    if (!ACTIONS.includes(a?.type)) problems.push(`${id}: solution step "${a?.type}" is not one of ${ACTIONS.join(', ')}`);
+    if (!known.includes(a?.type)) problems.push(`${id}: solution step "${a?.type}" is not a ${item?.skin} action (${known.join(', ')})`);
   }
 
   // Everything below needs a well-formed item to say anything useful about.
   if (problems.length) return problems;
+
+  // A step the engine ignores is an authoring slip that the goal may not catch —
+  // a link that is not on the page, a window title spelt differently — and it
+  // quietly inflates the move count the par is measured against.
+  problems.push(...deadSteps(item, solution).map((p) => `${id}: solution ${p}`));
 
   const run = solve(item);
   if (run.before.met) {
@@ -372,4 +460,43 @@ export function checkItem(item) {
 /** Every problem across a unit's `sim` array. */
 export function checkAll(items) {
   return (items || []).flatMap(checkItem);
+}
+
+/** Steps in an action list that leave the state exactly as it was — the engine ignored them. */
+function deadSteps(item, actions) {
+  const out = [];
+  let state = initialState(item);
+  actions.forEach((a, i) => {
+    const next = apply(state, a);
+    if (next === state || JSON.stringify(next) === JSON.stringify(state)) {
+      out.push(`step ${i + 1} (${a?.type}${a?.title ? ` "${a.title}"` : ''}${a?.to ? ` → ${a.to}` : ''}${a?.file ? ` ${a.file}` : ''}${a?.app ? ` ${a.app}` : ''}) changes nothing — the engine ignored it`);
+    }
+    state = next;
+  });
+  return out;
+}
+
+/**
+ * Check an AppSim DEMO (a notes slide's `widget: { type: 'AppSim', params }`).
+ * A demo is never graded, so nothing else would notice a script whose steps the
+ * engine ignores: the narration would describe a click and the window would sit
+ * there. Every step must change something, and every step should say what it does.
+ */
+export function checkScript(params = {}) {
+  const out = [];
+  const skin = params.skin || 'files';
+  if (!SKINS.includes(skin)) return [`demo skin "${skin}" is not one of ${SKINS.join(', ')}`];
+  const script = params.script || [];
+  if (!script.length) out.push('demo has no script');
+  const known = ACTIONS_BY_SKIN[skin];
+  for (const a of script) {
+    if (!known.includes(a?.type)) out.push(`demo step "${a?.type}" is not a ${skin} action`);
+    if (!a?.say || !a?.sayVn) out.push(`demo step "${a?.type}" needs say and sayVn (the caption that explains it)`);
+  }
+  if (out.length) return out;
+  const item = { skin, initial: params.initial || {} };
+  const mod = SKIN_MODULES[skin];
+  if (mod) out.push(...mod.checkInitial({ ...item, id: 'demo' }));
+  out.push(...deadSteps(item, script).map((p) => `demo ${p}`));
+  return out;
 }

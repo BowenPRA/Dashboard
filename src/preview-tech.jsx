@@ -63,6 +63,8 @@ const countOf = (def, unit, unitId) => {
   if (def.id === 'POINT_IT') {
     return (unit?.pointIt || []).reduce((s, it) => s + (it.prompts?.length || 0), 0) || null;
   }
+  // Typing Gym draws its lines per session; the count is the rounds it will ask for.
+  if (def.id === 'TYPE_GYM') return unit?.typeGym?.rounds || 6;
   const direct = sizeOf(def?.buildPool?.(unit, { track: TRACK, unitId }));
   if (direct) return direct;
   // ASSESSMENT hands the component an empty pool and reads the unit itself.

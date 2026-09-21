@@ -586,6 +586,28 @@ export const TASKS = [
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
   {
+    id: 'TYPE_GYM',
+    nativeMax: 10,
+    // p26 was held for this task since the Technology track began: p24–p26
+    // belong to that track (POINT_IT, SIM, TYPE_GYM).
+    dbKey: 'p26',
+    // "Typing." Touch typing, home row first, stop-on-error: the caret moves only
+    // on the right key and the on-screen keyboard lights the next one, so the
+    // eyes stay on the screen. Every session's lines are drawn fresh from a seed
+    // out of the unit's own words, file names and web addresses — never the same
+    // twice — and speed and accuracy are DERIVED from the keystrokes against the
+    // unit's target (src/utils/typeGym.js, which the validator also runs).
+    label: 'Typing',
+    icon: Keyboard,
+    color: { bg: 'bg-[#0891b2]', border: 'border-[#0e7490]', text: 'text-white' },
+    defaultMaxXP: 10,
+    phase: 'practice',
+    component: lazy(() => import('./TypeGym.jsx')),
+    hasContent: (u) => !!(u.typeGym && Array.isArray(u.typeGym.modes) && u.typeGym.modes.length),
+    buildPool: (u) => u.typeGym || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
     id: 'INTERVAL',
     nativeMax: 10,
     // p1–p25 are taken (p5 is reserved as a workbook question id), and p26 is
