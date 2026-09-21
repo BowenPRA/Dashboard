@@ -61,6 +61,25 @@ student typing "volcano report" blew par on the first word and, because each key
 "made no progress", was nudged after three letters — capping the job at 6/10. A solution
 therefore types each field in ONE action: `{ type: 'dialogName', name: 'volcano report' }`.
 
+**A nudge waits for par.** The nudge (glow + score capped at 6) needs `hintAfter` moves
+without getting closer AND more moves than `parMoves`. Most jobs are several steps that
+close no goal clause until the last (menu → Power → Shut down), so the old "no progress"
+count alone nudged a student on the *perfect* route before its final step.
+
+**Hints can say when they apply.** `hints: [{ after, region, say, sayVn, when? }]` —
+`when` is a goal clause (or list) about the state NOW, e.g. `{ path: 'power', equals: 'off' }`.
+The shown hint is the last one whose `after` has passed and whose `when` holds, so "the
+power button is on the case" is never shown to a student already at the login screen.
+Without an authored hint, the default glow reads the state too (unsaved work → its Save
+button; never the power button on a working machine).
+
+**Every step must do something.** The validator replays each solution and each deck demo
+and refuses a step the engine ignores (a link not on the page, a mistyped window title).
+
+**Layout.** From `lg` the Try It screen is two columns — the job, feedback and buttons on
+the left, the machine on the right at full height — so nothing is below the fold on a
+1280×720 laptop. The desktop is drawn at 720×486 and scaled to fit.
+
 #### `desktop` — the machine itself
 
 ```js
