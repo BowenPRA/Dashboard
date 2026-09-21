@@ -205,7 +205,7 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
 
     if (aiData.isHarmful || aiData.isGarbage) {
       const newStrikes = strikes + 1;
-      if (onAddStrike) onAddStrike(newStrikes);
+      if (onAddStrike) onAddStrike(newStrikes, { task: 'DIAGRAMS', question: currentQ.prompt || currentQ.promptText || '', text: userAnswer.trim(), reason: aiData.isHarmful ? 'harmful' : 'garbage' });
       
       if (newStrikes >= 3) {
         alert("Strike 3! You have submitted too many inappropriate or nonsense answers. The AI Grader is permanently disabled for this unit.");

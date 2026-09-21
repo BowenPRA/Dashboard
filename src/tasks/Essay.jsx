@@ -488,7 +488,7 @@ export default function Essay({
 
     if (aiData.isHarmful || aiData.isGarbage) {
       const newStrikes = strikes + 1;
-      if (onAddStrike) onAddStrike(newStrikes);
+      if (onAddStrike) onAddStrike(newStrikes, { task: 'ESSAY', question: currentQ?.task || currentQ?.title || '', text: trimmedAnswer, reason: aiData.isHarmful ? 'harmful' : 'garbage' });
 
       if (newStrikes >= 3) {
         alert("Strike 3! You have submitted too many inappropriate or nonsense answers. The AI Grader is permanently disabled for this unit.");

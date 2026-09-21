@@ -4,7 +4,7 @@ import { getTrackConfig } from '../trackRegistry';
 import { getTrack } from '../../data/index';
 import { unitNumberOf } from '../../utils/trackSections';
 import ActivityStrip from './ActivityStrip';
-import { relTime, daysSince, weekActivity, latestUnit, attentionReasons, INACTIVE_DAYS } from './teacherStats';
+import { relTime, daysSince, weekActivity, latestUnit, attentionReasons, strikeCount, INACTIVE_DAYS } from './teacherStats';
 
 /** "Working on": the unit a student touched last, in its track's colour. */
 function WorkingOn({ student }) {
@@ -110,6 +110,11 @@ export default function RosterList({ students, classNameById = {}, showClass = t
               {student.is_locked && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-md border text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800" title={reasons.join(' · ')}>
                   <AlertTriangle className="w-3 h-3" strokeWidth={2.5} /> AI lock
+                </span>
+              )}
+              {!student.is_locked && strikeCount(student) > 0 && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-md border text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-900" title="AI grader strikes — open the student to read what was typed">
+                  <AlertTriangle className="w-3 h-3" strokeWidth={2.5} /> {strikeCount(student)} {strikeCount(student) === 1 ? 'strike' : 'strikes'}
                 </span>
               )}
             </div>

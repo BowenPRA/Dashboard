@@ -179,7 +179,7 @@ export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, sav
 
     if (aiData.isHarmful || aiData.isGarbage) {
       const newStrikes = strikes + 1;
-      if (onAddStrike) onAddStrike(newStrikes);
+      if (onAddStrike) onAddStrike(newStrikes, { task: 'SHORT_ANSWERS', question: currentQ.question, text: userAnswer.trim(), reason: aiData.isHarmful ? 'harmful' : 'garbage' });
       
       if (newStrikes >= 3) {
         alert("Strike 3! You have submitted too many inappropriate or nonsense answers. The AI Grader is permanently disabled for this unit.");
@@ -219,6 +219,13 @@ export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, sav
       setLocalAnswers(next);
       // Checkpoint the moment a question is passed, so its marks are banked and
       // it is skipped next time even if the student exits before finishing.
+      onProgress?.(bankedXP(next), next);
+    } else {
+      // Keep the latest marked attempt too, so a teacher can read what was
+      // written, not just that it fell short. `attempted` banks no XP (only
+      // `perfect` does) and restores as an editable draft next time.
+      const next = { ...localAnswers, [currentIndex]: { text: userAnswer.trim(), status: 'attempted', score: Math.min(score, maxMarks), maxMarks } };
+      setLocalAnswers(next);
       onProgress?.(bankedXP(next), next);
     }
 

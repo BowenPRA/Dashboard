@@ -97,12 +97,16 @@ const BLOBS = {};
 function rosterRow(id, name, classId, progress, pra) {
   BLOBS[id] = progress;
   const units = {};
+  const flags = [];
   const recent = [];
-  let total = 0; let completed = 0; let lastActive = null;
+  let total = 0; let completed = 0; let lastActive = null; let locked = false;
   for (const [track, td] of Object.entries(progress)) {
     for (const [unit, ud] of Object.entries(td)) {
       let xp = 0; let last = null;
+      if (ud.strikes > 0) flags.push({ track, unit, strikes: ud.strikes });
+      if (ud.strikes >= 3) locked = true;
       for (const [key, rec] of Object.entries(ud)) {
+        if (!/^p\d+$/.test(key)) continue;
         xp += rec.current;
         if (!last || rec.updatedAt > last) last = rec.updatedAt;
         rec.attempts.forEach((a) => recent.push({ at: a.at, track, unit, key, score: a.score }));
@@ -116,8 +120,8 @@ function rosterRow(id, name, classId, progress, pra) {
   const cutoff = hoursAgo(14 * 24);
   return {
     id, name, pra_id: pra, class_id: classId, current_track: Object.keys(progress)[0] || null,
-    total_xp: total, units_completed: completed, is_locked: id === 's4', last_active: lastActive,
-    units, recent: recent.filter((r) => r.at >= cutoff).sort((a, b) => (a.at < b.at ? 1 : -1)),
+    total_xp: total, units_completed: completed, is_locked: locked, last_active: lastActive,
+    units, flags, recent: recent.filter((r) => r.at >= cutoff).sort((a, b) => (a.at < b.at ? 1 : -1)),
   };
 }
 
@@ -129,10 +133,30 @@ const ROSTER = NAMES.map((name, i) => {
   if (i === 6) return rosterRow(id, name, null, {}, null);
   // Spread the Year 7s out: a leader, a pack, and one who stopped three weeks ago.
   const age = i === 5 ? 24 * 21 : 2 + i * 20;
-  return rosterRow(id, name, 'c7', {
+  const progress = {
     Y7_MATH: synthTrack('Y7_MATH', 8 - i, 0.3 + i * 0.1, age),
     Y7_SCI: synthTrack('Y7_SCI', Math.max(0, 5 - i), 0.5, age + 10),
-  }, 1000 + i);
+  };
+  // One locked student (two of the three strikes logged — the first predates
+  // the log) and one with a single warning, plus some saved writing to read.
+  if (i === 4) {
+    const u = progress.Y7_MATH.U01_3;
+    u.strikes = 3;
+    u.strikeLog = [
+      { at: hoursAgo(50), task: 'SHORT_ANSWERS', reason: 'garbage', question: 'Explain why the LCM of 4 and 6 is 12 and not 24.', text: 'asdfgh jkl idk lol' },
+      { at: hoursAgo(49), task: 'SHORT_ANSWERS', reason: 'harmful', question: 'Explain why the LCM of 4 and 6 is 12 and not 24.', text: 'this is stupid and so are you' },
+    ];
+    u.p6.answers = {
+      0: { text: '12 is the first number in both lists: 4, 8, 12 and 6, 12. 24 is a common multiple too but it is not the lowest one.', status: 'perfect' },
+      1: { text: 'because you times them', status: 'attempted', score: 1, maxMarks: 2 },
+    };
+  }
+  if (i === 2) {
+    const u = progress.Y7_MATH.U01_1;
+    u.strikes = 1;
+    u.strikeLog = [{ at: hoursAgo(30), task: 'SHORT_ANSWERS', reason: 'garbage', question: 'Why is −3 − (−5) equal to 2?', text: 'jjjjjjjjjjjj' }];
+  }
+  return rosterRow(id, name, 'c7', progress, 1000 + i);
 });
 
 // The drawer talks to the admin API. Stand in for it: a fake session so
@@ -156,6 +180,11 @@ function stubAdminApi() {
         unit[op.dbKey] = { ...(unit[op.dbKey] || {}), current: op.value };
       }
       payload = { ok: true, progress: JSON.parse(JSON.stringify(BLOBS[row.id])) };
+    } else if (action === 'clearStrikes') {
+      const unit = BLOBS[row.id][body.track][body.unit];
+      unit.strikes = 0;
+      unit.strikeLog = (unit.strikeLog || []).map((e) => ({ ...e, clearedAt: new Date().toISOString() }));
+      payload = { ok: true, cleared: 1, progress: JSON.parse(JSON.stringify(BLOBS[row.id])) };
     }
     return new Response(JSON.stringify(payload), { status: 200, headers: { 'Content-Type': 'application/json' } });
   };

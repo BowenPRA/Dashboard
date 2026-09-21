@@ -66,6 +66,10 @@ export function latestUnit(student) {
   return best;
 }
 
+/** Live AI-grader strikes across every unit (`flags` — absent on an older backend). */
+export const strikeCount = (student) =>
+  (student?.flags || []).reduce((sum, f) => sum + (Number(f.strikes) || 0), 0);
+
 /**
  * Why a student is worth a look, as short labels — empty when they are fine.
  * A student who has never worked is "Not started" rather than "inactive": the
@@ -74,6 +78,7 @@ export function latestUnit(student) {
 export function attentionReasons(student) {
   const reasons = [];
   if (student.is_locked) reasons.push('AI lock');
+  else if (strikeCount(student) > 0) reasons.push('AI warnings');
   if (!student.last_active) reasons.push('Not started');
   else if (daysSince(student.last_active) >= INACTIVE_DAYS) reasons.push(`Quiet ${relTime(student.last_active).replace(' ago', '')}`);
   return reasons;

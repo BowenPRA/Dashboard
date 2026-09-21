@@ -91,8 +91,37 @@ export const ESSAYS_KEY = '__essays';
 /** Keys inside a track's progress that are not units. */
 const RESERVED_TRACK_KEYS = [VOCAB_KEY, WALLET_KEY, ESSAYS_KEY];
 
+/**
+ * What the student typed each time the AI grader flagged an answer, beside the
+ * unit's `strikes` count:
+ *
+ *   progress[track][unitId].strikeLog = [
+ *     { at, task, question, text, reason: 'harmful' | 'garbage', clearedAt? }
+ *   ]
+ *
+ * The count alone told a teacher THAT a student was locked out, never WHY — the
+ * flagged text was discarded the moment the warning showed. The teacher's
+ * drawer reads this; `clearedAt` is stamped by the clearStrikes admin action
+ * when a teacher resets the unit, so the history survives the reset.
+ */
+export const STRIKE_LOG_KEY = 'strikeLog';
+export const MAX_STRIKE_LOG = 20;
+const MAX_STRIKE_TEXT = 4000;
+
+/** Appends one flagged answer to a unit's log, newest last, capped. */
+export function appendStrike(log, detail = {}) {
+  const entry = {
+    at: new Date().toISOString(),
+    task: String(detail.task || ''),
+    question: String(detail.question || '').slice(0, 600),
+    text: String(detail.text || '').slice(0, MAX_STRIKE_TEXT),
+    reason: detail.reason === 'harmful' ? 'harmful' : 'garbage',
+  };
+  return [...(Array.isArray(log) ? log : []), entry].slice(-MAX_STRIKE_LOG);
+}
+
 /** Keys inside a unit's progress that are not task dbKeys. */
-const RESERVED_UNIT_KEYS = ['strikes', ...ARCADE_KEYS];
+const RESERVED_UNIT_KEYS = ['strikes', STRIKE_LOG_KEY, ...ARCADE_KEYS];
 
 /** True for keys that address a real unit. Use before iterating a track. */
 export const isUnitKey = (key) => !RESERVED_TRACK_KEYS.includes(key);

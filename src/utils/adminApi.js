@@ -48,3 +48,8 @@ export const updateClass = (patch) => post('updateClass', patch);
 export const deleteClass = (classId) => post('deleteClass', { classId });
 export const assignStudents = (classId, studentIds) => post('assignStudents', { classId, studentIds });
 export const bulkEnroll = (classId, overrides = {}) => post('bulkEnroll', { classId, ...overrides });
+
+// Remove the AI-grader lock: reset the strikes on one unit, or (no track/unit)
+// on every unit with a strike. The flagged-answer log is kept, stamped cleared.
+export const clearStrikes = (studentId, track = null, unit = null) =>
+  post('clearStrikes', track && unit ? { studentId, track, unit } : { studentId, all: true });

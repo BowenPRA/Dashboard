@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { TRACK_REGISTRY } from '../components/trackRegistry';
-import { recordAttempt, mergeVocab, VOCAB_KEY, WALLET_KEY, ARCADE_KEY, isArcadeKey } from './progressSchema';
+import { recordAttempt, mergeVocab, VOCAB_KEY, WALLET_KEY, ARCADE_KEY, isArcadeKey, STRIKE_LOG_KEY, appendStrike } from './progressSchema';
 import { ESSAYS_KEY, upsertEssay } from './essayArchive';
 import { ARCADE_TRACK_ID } from '../components/trackRegistry';
 
@@ -264,7 +264,9 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
     return nextSpent;
   };
 
-  const addStrike = async (unitId, newStrikes) => {
+  // `detail` — { task, question, text, reason } — is what was typed; it is kept
+  // in the unit's strike log so a teacher can see why the warning fired.
+  const addStrike = async (unitId, newStrikes, detail = null) => {
     setAllProgress(prev => {
       const newProgress = JSON.parse(JSON.stringify(prev));
 
@@ -272,6 +274,9 @@ export function useStudentProgress(navigate, track = 'GED_MATH') {
       if (!newProgress[track][unitId]) newProgress[track][unitId] = {};
 
       newProgress[track][unitId].strikes = newStrikes;
+      if (detail) {
+        newProgress[track][unitId][STRIKE_LOG_KEY] = appendStrike(newProgress[track][unitId][STRIKE_LOG_KEY], detail);
+      }
 
       // A Supabase query is lazy — it only runs once it is awaited or `.then`ed.
       // The bare call that used to sit here never sent anything, so strikes

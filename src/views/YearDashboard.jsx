@@ -159,7 +159,7 @@ export default function YearDashboard({ track }) {
         strikes: activeScores.strikes || 0,
         // The track's saved essays, for the Essay task's watch-list and picker.
         essayArchive: essaysOf(unitScores),
-        onAddStrike: (n) => addStrike(activeUnit, n),
+        onAddStrike: (n, detail) => addStrike(activeUnit, n, detail),
         onComplete: (score, answers, meta) => handleTaskComplete(activeTask.id, score, answers, meta),
         onProgress: (score, answers, meta) => handleTaskProgress(activeTask.id, score, answers, meta),
         onQuit: closeTask,

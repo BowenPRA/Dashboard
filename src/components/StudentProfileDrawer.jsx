@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getStudentDetail, updateStudent, setProgress, assignStudents } from '../utils/adminApi';
+import { getStudentDetail, updateStudent, setProgress, assignStudents, clearStrikes } from '../utils/adminApi';
 import { getTrack } from '../data/index';
 import { TRACK_IDS, TRACK_REGISTRY, ARCADE_TRACK_ID, getTrackConfig } from './trackRegistry';
 import { TASKS, resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
@@ -8,6 +8,8 @@ import { essaysOf, ESSAYS_KEY } from '../utils/essayArchive';
 import { sectionsOf, unitNumberOf, unitLastTouched } from '../utils/trackSections';
 import { relTime, weekActivity } from './teacher/teacherStats';
 import ActivityStrip from './teacher/ActivityStrip';
+import SafetyPanel from './teacher/SafetyPanel';
+import WrittenWork from './teacher/WrittenWork';
 import EssayReviewPanel from './essay/EssayReviewPanel';
 import {
   X, Loader2, Edit2, Check, XCircle, Gamepad2, BookOpen, Settings2, UserCog,
@@ -139,6 +141,13 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
     } finally {
       setBusyUnit(null);
     }
+  };
+
+  // Remove the AI-grader lock on one unit; adopt the server's progress. Throws
+  // on failure — SafetyPanel shows the message beside the button.
+  const handleClearStrikes = async (trackId, unitId) => {
+    const { progress } = await clearStrikes(studentId, trackId, unitId);
+    setDetail((prev) => ({ ...prev, progress }));
   };
 
   // annotateEssay returns the updated archive entry; swap it in place rather
@@ -348,6 +357,8 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
                 </div>
               )}
 
+              {progressData && <SafetyPanel progress={progressData} onClear={handleClearStrikes} />}
+
               {progressData && (
                 <EssayReviewPanel studentId={studentId} progress={progressData} onEssayUpdated={handleEssayUpdated} />
               )}
@@ -400,7 +411,8 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
                           const unitKey = `${activeTrack}/${u.id}`;
                           const bulkBusy = busyUnit === unitKey;
                           const arcadeBest = Math.max(0, ...ARCADE_KEYS.map((k) => unitData?.[k]?.current || 0), unitData?.p12?.current || 0);
-                          const locked = (unitData.strikes || 0) >= 3;
+                          const strikes = Number(unitData.strikes) || 0;
+                          const locked = strikes >= 3;
                           const declared = declaredTasks(activeTrack, u.id);
                           const declaredKeys = new Set(declared.map((t) => t.dbKey));
                           // Records under a key the unit no longer declares still show, so they can be zeroed.
@@ -424,7 +436,11 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
                                     {touched ? `Last worked ${relTime(touched).toLowerCase()}` : 'Not started'}
                                   </span>
                                 </span>
-                                {locked && <ShieldAlert className="w-4 h-4 text-rose-500 flex-shrink-0" strokeWidth={2.5} aria-label="AI safety lock engaged" />}
+                                {strikes > 0 && (
+                                  <span className={`flex items-center gap-1 text-[11px] font-black flex-shrink-0 ${locked ? 'text-rose-500' : 'text-amber-500'}`} title={locked ? 'AI safety lock engaged' : `${strikes}/3 AI grader strikes`}>
+                                    <ShieldAlert className="w-4 h-4" strokeWidth={2.5} />{strikes}/3
+                                  </span>
+                                )}
                                 {arcadeBest > 0 && (
                                   <span className="hidden sm:flex items-center gap-1 text-[11px] font-black text-amber-600 dark:text-amber-400 flex-shrink-0" title="Arcade high score">
                                     <Gamepad2 className="w-3.5 h-3.5" strokeWidth={2.5} />{arcadeBest.toLocaleString()}
@@ -439,8 +455,11 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
 
                               {isOpenUnit && (
                                 <div className="px-4 pb-4 pt-1 bg-slate-50/60 dark:bg-slate-800/20 animate-in fade-in duration-150">
-                                  {locked && (
-                                    <p className="mb-3 text-xs font-bold text-rose-600 dark:text-rose-400">AI safety lock engaged on this unit (3 strikes).</p>
+                                  {strikes > 0 && (
+                                    <p className={`mb-3 text-xs font-bold ${locked ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                                      {locked ? 'AI safety lock engaged on this unit (3 strikes) — AI marking is off.' : `${strikes}/3 AI grader strikes on this unit.`}
+                                      {' '}What was typed, and the reset, are under "AI grader warnings" above.
+                                    </p>
                                   )}
                                   <div className="flex flex-wrap gap-2">
                                     {chips.map((chip) => {
@@ -494,6 +513,8 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
                                       </button>
                                     </div>
                                   )}
+
+                                  <WrittenWork unit={trackContent[u.id]} unitData={unitData} />
                                 </div>
                               )}
                             </div>
