@@ -1,10 +1,14 @@
 // src/data/PRIMARY_TECH/T01/assessment.js
-// T1 Starting and Stopping — the Quiz (ASSESSMENT, 20 XP). Six questions, eight
-// minutes. Short, because this is a nine-year-old and the unit is 45 minutes.
+// T1 Starting and Stopping — the Quiz (ASSESSMENT, 20 XP). Eight questions, ten
+// minutes: 1–2 logging in and the password, 3 the window buttons, 4 when to
+// hold the power button, 5–6 which way to stop, 7 locked or off, 8 why you wait
+// for the lights.
 //
-// The Quiz asks WHEN and WHY, because Find It has already tested WHERE
-// (docs/digital-skills-course.md §5.1). Nothing here repeats a notes check or a
-// workbook question.
+// The Quiz asks WHEN and WHY, because Find It and Label It have already tested
+// WHERE (docs/digital-skills-course.md §5.1). No item copies a deck check: the
+// deck asks what minimise does, which choice is all the way off and which
+// computer is frozen, so the quiz asks about maximise, Log out and holding the
+// button instead.
 //
 // Bilingual convention for this track's quizzes follows Y7_MATH: the question
 // and its options are English (Assessment.jsx renders only the explanation
@@ -12,11 +16,10 @@
 // Vietnamese carries the teaching in `expVn`.
 //
 // Every distractor is a nameable mistake — confusing "off" with "locked",
-// reading minimise as close, treating the power button hold as a normal way to
-// stop — and the correct letter is spread across A/B/C/D so the key cannot be
-// guessed.
+// reading one window button as another, treating the power button hold as a
+// normal way to stop — and the right letter is spread two apiece across A–D.
 export const assessment = {
-  timeLimit: 480, // 8 minutes
+  timeLimit: 600, // 10 minutes
   passages: [],
   questions: [
     {
@@ -34,32 +37,32 @@ export const assessment = {
       expVn: 'Đăng nhập diễn ra sau khi máy đã bật. Đó là cách máy biết phải hiện màn hình nền và tệp của ai — vì vậy một chiếc máy có thể thuộc về nhiều người.',
     },
     {
-      id: 'a2_which_stops',
+      id: 'a_password',
       type: 'mcq',
-      title: '2. Which choice turns the computer all the way off?',
+      title: '2. Where is the safest place to keep your password?',
       options: [
-        { val: 'A', text: 'A. Sleep' },
-        { val: 'B', text: 'B. Log out' },
-        { val: 'C', text: 'C. Restart' },
-        { val: 'D', text: 'D. Shut down' },
+        { val: 'A', text: 'A. On a note stuck to the screen' },
+        { val: 'B', text: 'B. With your best friend, in case you forget it' },
+        { val: 'C', text: 'C. On the front of your school book' },
+        { val: 'D', text: 'D. Only in your head — you tell nobody' },
       ],
       correct: 'D',
-      expEn: 'Sleep rests the machine, Log out ends your session but leaves it running, and Restart turns it off and straight back on. Only Shut down leaves it off.',
-      expVn: 'Ngủ chỉ cho máy nghỉ, Đăng xuất kết thúc phiên của em nhưng máy vẫn chạy, còn Khởi động lại thì tắt rồi bật lên ngay. Chỉ có Tắt máy là để máy tắt hẳn.',
+      expEn: 'A password only works while nobody else knows it. A note on the screen or on a book can be read by anyone who walks past, and a friend who knows it can log in as you — even a good friend.',
+      expVn: 'Mật khẩu chỉ có tác dụng khi không ai khác biết nó. Tờ giấy trên màn hình hay trên quyển vở thì ai đi ngang qua cũng đọc được, còn người bạn biết mật khẩu thì có thể đăng nhập với tư cách của em — dù đó là bạn tốt.',
     },
     {
-      id: 'a3_minimise',
+      id: 'a_maximise',
       type: 'mcq',
-      title: '3. You press the minimise button (–) on a window. What has happened to your work?',
+      title: '3. Which window button makes a window fill the whole screen?',
       options: [
-        { val: 'A', text: 'A. It has been deleted' },
-        { val: 'B', text: 'B. It has been saved' },
-        { val: 'C', text: 'C. It is still open — the window is waiting on the taskbar' },
-        { val: 'D', text: 'D. It has been closed' },
+        { val: 'A', text: 'A. The line (–)' },
+        { val: 'B', text: 'B. The cross (X)' },
+        { val: 'C', text: 'C. The square (□)' },
+        { val: 'D', text: 'D. The menu button on the taskbar' },
       ],
       correct: 'C',
-      expEn: 'Minimise only hides. Click the window on the taskbar and it comes back exactly as it was. Note that it does not save either — minimising and saving are different jobs.',
-      expVn: 'Thu nhỏ chỉ giấu cửa sổ đi. Bấm vào cửa sổ đó trên thanh tác vụ là nó trở lại y như cũ. Lưu ý nó cũng không lưu bài — thu nhỏ và lưu là hai việc khác nhau.',
+      expEn: 'The square is maximise: it makes the window fill the screen, and pressing it again makes it smaller. The line (–) hides the window on the taskbar, the cross (X) closes it, and the menu button lists your programs.',
+      expVn: 'Ô vuông là phóng to: nó cho cửa sổ chiếm đầy màn hình, và bấm lại thì cửa sổ nhỏ đi. Dấu gạch (–) giấu cửa sổ xuống thanh tác vụ, dấu nhân (X) đóng nó, còn nút trình đơn liệt kê các chương trình của em.',
     },
     {
       id: 'a4_hold_power',
@@ -72,8 +75,8 @@ export const assessment = {
         { val: 'D', text: 'D. Never, under any circumstances' },
       ],
       correct: 'A',
-      expEn: 'Holding the button cuts the power in the middle of whatever the computer was doing, so it can lose work. That is a fair price when nothing else responds, and a bad one when the machine is merely slow.',
-      expVn: 'Giữ nút nguồn sẽ cắt điện ngay giữa lúc máy đang làm dở việc gì đó, nên có thể mất bài. Cái giá đó chấp nhận được khi không còn cách nào khác, nhưng không đáng khi máy chỉ đang chạy chậm.',
+      expEn: 'Holding the button cuts the power in the middle of whatever the computer was doing, so it can lose work. That is a fair price when nothing else responds, and a bad one when the machine is merely slow. It is not "never", though: a frozen computer answers nothing else.',
+      expVn: 'Giữ nút nguồn sẽ cắt điện ngay giữa lúc máy đang làm dở việc gì đó, nên có thể mất bài. Cái giá đó chấp nhận được khi không còn cách nào khác, nhưng không đáng khi máy chỉ đang chạy chậm. Nhưng cũng không phải là "không bao giờ": máy bị treo thì không phản hồi gì khác cả.',
     },
     {
       id: 'a5_twenty_minutes',
@@ -90,9 +93,23 @@ export const assessment = {
       expVn: 'Chế độ Ngủ sinh ra cho quãng nghỉ ngắn: máy thức dậy trong một giây với mọi cửa sổ nguyên chỗ cũ. Ba cách còn lại đều đóng bài của em, nên em sẽ phải mở lại tất cả.',
     },
     {
+      id: 'a_logout',
+      type: 'mcq',
+      title: '6. Which choice closes your work but leaves the computer on, ready for the next person to log in?',
+      options: [
+        { val: 'A', text: 'A. Sleep' },
+        { val: 'B', text: 'B. Shut down' },
+        { val: 'C', text: 'C. Minimise' },
+        { val: 'D', text: 'D. Log out' },
+      ],
+      correct: 'D',
+      expEn: 'Log out ends YOUR session and goes back to the login screen, with the computer still on. Sleep keeps your work open for you, Shut down turns the whole machine off, and minimise only hides one window.',
+      expVn: 'Đăng xuất kết thúc phiên làm việc CỦA EM và quay về màn hình đăng nhập, máy vẫn bật. Ngủ giữ bài của em đang mở, Tắt máy tắt cả chiếc máy, còn thu nhỏ chỉ giấu một cửa sổ.',
+    },
+    {
       id: 'a6_black_screen',
       type: 'mcq',
-      title: '6. A screen is black. A fan is humming inside the case and a small light is on. Is the computer off?',
+      title: '7. A screen is black. A fan is humming inside the case and a small light is on. Is the computer off?',
       options: [
         { val: 'A', text: 'A. Yes — a black screen always means it is off' },
         { val: 'B', text: 'B. Yes, because you cannot see anything on it' },
@@ -100,8 +117,22 @@ export const assessment = {
         { val: 'D', text: 'D. You cannot tell without pressing a key' },
       ],
       correct: 'C',
-      expEn: 'A dark screen is not the same thing as a machine that is off. If a fan is running and a light is on, the computer is awake or asleep — and your unsaved work is still in there. Look for the lights, not the screen.',
+      expEn: 'A dark screen is not the same thing as a machine that is off. If a fan is running and a light is on, the computer is awake or asleep — and your unsaved work is still in there. Look at the lights, not the screen.',
       expVn: 'Màn hình tối không có nghĩa là máy đã tắt. Nếu quạt còn chạy và đèn còn sáng thì máy vẫn đang bật hoặc đang ngủ — và bài chưa lưu của em vẫn còn trong đó. Hãy nhìn đèn, đừng nhìn màn hình.',
+    },
+    {
+      id: 'a_wait_lights',
+      type: 'mcq',
+      title: '8. You chose Shut down and the screen went black. Why should you wait for the lights to go out before you close the lid?',
+      options: [
+        { val: 'A', text: 'A. The screen goes dark before the computer has finished putting your files away' },
+        { val: 'B', text: 'B. The lights have to cool down first' },
+        { val: 'C', text: 'C. The computer needs to restart before it can stop' },
+        { val: 'D', text: 'D. You do not need to wait — a black screen means it is finished' },
+      ],
+      correct: 'A',
+      expEn: 'Shutting down is a job, and the computer is still tidying up after the screen goes dark. The lights going out is the real signal that it has finished. Close the lid too soon and you can interrupt it, like pulling the plug.',
+      expVn: 'Tắt máy là cả một công việc, và máy vẫn đang dọn dẹp sau khi màn hình đã tối. Đèn tắt mới là tín hiệu thật rằng máy đã xong. Gập máy quá sớm có thể làm gián đoạn nó, giống như rút điện.',
     },
   ],
 };

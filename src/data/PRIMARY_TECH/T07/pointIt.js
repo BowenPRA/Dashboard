@@ -1,14 +1,15 @@
 // src/data/PRIMARY_TECH/T07/pointIt.js
-// T7 Inside a Browser — "Find It" (POINT_IT, 25 XP).
+// T7 Inside a Browser — "Find It" (POINT_IT). Two pictures, five prompts each.
+// Item shape is in src/tasks/PointIt.jsx; the mark comes from which region the
+// click lands in, so there is no answer key here beyond each prompt's `target`.
 //
-// Two pictures, eight prompts. Item shape is in src/tasks/PointIt.jsx; the mark
-// comes from which region the click lands in, so there is no answer key here
-// beyond each prompt's `target`.
-//
-// The address-bar-versus-search-box pair is the reason this task was built first
-// (docs/digital-skills-course.md §4.2). Both regions carry a `misfire` that says
-// what the box the student actually hit is FOR, because "that only searches this
-// one website" is the entire fix and a red X is not.
+// Prompts ask by FUNCTION ("the box you would type it into"), not by name, so
+// a student who has only memorised the words still has to know what each part
+// does. Every control in the picture is a region, so a wrong click is always
+// told what it hit; the ones students reliably confuse carry a `misfire` that
+// says what the thing they hit is FOR — "that only searches this one website"
+// is the entire fix, and a red X is not. Regions nest (a button inside the
+// page, an X inside its tab) and the smallest one containing the click wins.
 import { DIAGRAMS } from './diagrams.js';
 
 export const pointIt = [
@@ -26,7 +27,7 @@ export const pointIt = [
         misfireVn: 'Đó là thanh địa chỉ. Nó thuộc về trình duyệt, nằm trên cùng, và cho biết em đang ở trang web nào.',
       },
       {
-        id: 'search', rect: [250, 210, 300, 48],
+        id: 'search', rect: [250, 195, 300, 48],
         label: 'the search box on the page', labelVn: 'ô tìm kiếm trên trang',
         misfire: 'That is the search box inside the page — it only looks through this one website. The address bar is the long box at the very top.',
         misfireVn: 'Đó là ô tìm kiếm bên trong trang — nó chỉ tìm trong website này thôi. Thanh địa chỉ là ô dài ở trên cùng.',
@@ -52,28 +53,66 @@ export const pointIt = [
         label: 'the bookmark star', labelVn: 'ngôi sao đánh dấu trang',
       },
       {
-        id: 'newtab', rect: [440, 18, 28, 28],
+        id: 'newtab', rect: [448, 18, 28, 28],
         label: 'the new tab button', labelVn: 'nút mở thẻ mới',
       },
       {
-        id: 'tab2', rect: [238, 12, 190, 40],
+        id: 'tab1', rect: [20, 12, 200, 40],
         label: 'a tab that is already open', labelVn: 'một thẻ đang mở sẵn',
-        misfire: 'That is a tab that is already open. The button that opens a NEW one is the small + just after the last tab.',
-        misfireVn: 'Đó là một thẻ đã mở sẵn. Nút mở thẻ MỚI là dấu + nhỏ ngay sau thẻ cuối cùng.',
+        misfire: 'That is a tab that is already open — clicking it swaps to that page. The button that opens a NEW one is the small + just after the last tab.',
+        misfireVn: 'Đó là một thẻ đã mở sẵn — bấm vào là chuyển sang trang đó. Nút mở thẻ MỚI là dấu + nhỏ ngay sau thẻ cuối cùng.',
       },
       {
-        id: 'link', rect: [295, 292, 210, 30],
+        id: 'tab1-close', rect: [194, 22, 20, 20],
+        label: 'the X on a tab', labelVn: 'dấu X trên một thẻ',
+        misfire: 'That X closes the Riverside School tab. It closes a page; it does not open one.',
+        misfireVn: 'Dấu X đó đóng thẻ Riverside School. Nó đóng một trang; nó không mở trang nào.',
+      },
+      {
+        id: 'tab2', rect: [228, 12, 210, 40],
+        label: 'the tab you are looking at', labelVn: 'thẻ em đang xem',
+        misfire: 'That is the tab you are looking at now. It shows the page’s NAME; the address is in the long box below it.',
+        misfireVn: 'Đó là thẻ em đang xem. Nó hiện TÊN trang; còn địa chỉ nằm trong ô dài bên dưới.',
+      },
+      {
+        id: 'tab2-close', rect: [410, 22, 20, 20],
+        label: 'the X on this tab', labelVn: 'dấu X trên thẻ này',
+        misfire: 'That X closes this page. It does not open anything.',
+        misfireVn: 'Dấu X đó đóng trang này. Nó không mở thứ gì cả.',
+      },
+      {
+        id: 'minimise', rect: [688, 20, 24, 24],
+        label: 'the window’s minimise button', labelVn: 'nút thu nhỏ của cửa sổ',
+      },
+      {
+        id: 'maximise', rect: [718, 20, 24, 24],
+        label: 'the window’s maximise button', labelVn: 'nút phóng to của cửa sổ',
+      },
+      {
+        id: 'close', rect: [750, 20, 24, 24],
+        label: 'the X that closes the whole browser', labelVn: 'dấu X đóng cả trình duyệt',
+        misfire: 'Careful — that X closes the WHOLE browser, every tab in it.',
+        misfireVn: 'Cẩn thận — dấu X đó đóng CẢ trình duyệt, mọi thẻ trong đó.',
+      },
+      {
+        id: 'link', rect: [300, 276, 200, 30],
         label: 'a link', labelVn: 'một liên kết',
       },
       {
-        id: 'download', rect: [310, 350, 180, 48],
-        label: 'the download button', labelVn: 'nút tải xuống',
+        id: 'download', rect: [310, 330, 180, 48],
+        label: 'the page’s Download button', labelVn: 'nút Tải xuống của trang',
+      },
+      {
+        id: 'page', rect: [20, 112, 760, 372],
+        label: 'the web page', labelVn: 'trang web',
+        misfire: 'That is the page itself. It belongs to the website, not to the browser.',
+        misfireVn: 'Đó là chính trang web. Nó thuộc về website, không thuộc về trình duyệt.',
       },
     ],
     prompts: [
       {
-        ask: 'Click the address bar.',
-        askVn: 'Bấm vào thanh địa chỉ.',
+        ask: 'Your teacher gives you www.citylibrary.org. Click the box you would type it into.',
+        askVn: 'Cô giáo cho em địa chỉ www.citylibrary.org. Bấm vào ô em sẽ gõ nó vào.',
         target: 'addr',
       },
       {
@@ -87,13 +126,13 @@ export const pointIt = [
         target: 'back',
       },
       {
-        ask: 'Click the button that opens a new tab.',
-        askVn: 'Bấm vào nút mở một thẻ mới.',
+        ask: 'Click the button that opens a new, empty tab.',
+        askVn: 'Bấm vào nút mở một thẻ mới, trống.',
         target: 'newtab',
       },
       {
-        ask: 'Click the star that saves this page so you can find it again tomorrow.',
-        askVn: 'Bấm vào ngôi sao lưu trang này để mai em tìm lại được.',
+        ask: 'Click the button that saves a way back to this page, so you can find it again tomorrow.',
+        askVn: 'Bấm vào nút lưu đường quay lại trang này, để mai em tìm lại được.',
         target: 'bookmark',
       },
     ],
@@ -134,6 +173,30 @@ export const pointIt = [
         label: 'the address bar', labelVn: 'thanh địa chỉ',
       },
       {
+        id: 'back', rect: [20, 64, 36, 36],
+        label: 'the back button', labelVn: 'nút quay lại',
+      },
+      {
+        id: 'reload', rect: [108, 64, 36, 36],
+        label: 'the reload button', labelVn: 'nút tải lại',
+      },
+      {
+        id: 'bookmark', rect: [724, 64, 36, 36],
+        label: 'the bookmark star', labelVn: 'ngôi sao đánh dấu trang',
+      },
+      {
+        id: 'tab2', rect: [228, 12, 210, 40],
+        label: 'the tab you are looking at', labelVn: 'thẻ em đang xem',
+        misfire: 'That is the tab. It shows the page’s name — the address is in the long box below it.',
+        misfireVn: 'Đó là thẻ. Nó hiện tên trang — còn địa chỉ nằm trong ô dài bên dưới.',
+      },
+      {
+        id: 'page-download', rect: [310, 330, 180, 48],
+        label: 'the page’s Download button', labelVn: 'nút Tải xuống của trang',
+        misfire: 'That is the page’s own Download button. Clicking it again would download a second copy.',
+        misfireVn: 'Đó là nút Tải xuống của chính trang. Bấm lại sẽ tải thêm một bản nữa.',
+      },
+      {
         id: 'page', rect: [20, 112, 760, 330],
         label: 'the web page', labelVn: 'trang web',
         misfire: 'That is the page you downloaded FROM. The file is not in there — look at the bar along the bottom.',
@@ -155,6 +218,16 @@ export const pointIt = [
         ask: 'Click the button that lists every file you have downloaded, not just this one.',
         askVn: 'Bấm vào nút liệt kê mọi tệp em đã tải về, không chỉ riêng tệp này.',
         target: 'all-downloads',
+      },
+      {
+        ask: 'Click the button on the page that downloaded the file in the first place.',
+        askVn: 'Bấm vào nút trên trang đã tải tệp này về lúc đầu.',
+        target: 'page-download',
+      },
+      {
+        ask: 'Click the box that tells you which website the file came from.',
+        askVn: 'Bấm vào ô cho em biết tệp đến từ website nào.',
+        target: 'addr',
       },
     ],
   },
