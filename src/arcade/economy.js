@@ -10,15 +10,16 @@
 //     the only thing that needs persisting, so a single running total lives in
 //     the wallet (progress.ARCADE.__wallet.spent).
 //   - Gold available = earned − spent, floored at zero.
-//   - FREE PLAY is the mastery reward: once every currently-available unit sits
-//     at FREE_PLAY_MIN_XP or above, the arcade stops charging.
+//   - FREE PLAY is the mastery reward: the arcade stops charging while the
+//     student has EITHER finished every unit, OR holds FREE_PLAY_RATIO of all
+//     the XP on offer (see freePlayState for why there are two ways in).
 //
 // The arcade track itself is excluded from every sum here — its leaderboard
 // scores and wallet are not XP, and letting a good run bankroll the next one
 // would defeat the point of charging for a play.
 
 import { getTrack } from '../data/index';
-import { unitXPOf } from '../tasks/taskRegistry';
+import { unitXPOf, isUnitComplete } from '../tasks/taskRegistry';
 import { ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { WALLET_KEY } from '../utils/progressSchema';
 
@@ -29,10 +30,10 @@ export const GOLD_PER_XP = 1;
 export const PLAY_COST = 10;
 
 /**
- * The per-unit XP that counts as "mastered" for the free-play unlock. Kept in
- * step with the arcade phase gate the units used to carry (80 of 100).
+ * The share of ALL available XP that unlocks free play: 80%, the same bar a
+ * single unit has to clear before its quiz can finish it (COMPLETE_MIN_XP).
  */
-export const FREE_PLAY_MIN_XP = 80;
+export const FREE_PLAY_RATIO = 0.8;
 
 /**
  * The units that count toward gold and free play: every published unit in the
@@ -75,18 +76,42 @@ export function goldBalance(allProgress = {}, units = []) {
 }
 
 /**
- * Free-play status: unlocked once every available unit is at or above the
- * mastery bar. Also returns the count so the arcade can show "7 / 9 mastered"
- * as a goal to chase rather than a silent locked door.
+ * Free-play status. Two ways in, and either is enough:
+ *
+ *   1. every available unit is FINISHED (isUnitComplete: 100 XP, or 80+ with
+ *      the quiz sat), or
+ *   2. total XP is at least FREE_PLAY_RATIO of the maximum possible — the same
+ *      "1,416 / 2,000 XP" the student sees on Home.
+ *
+ * The old rule was "every unit at 80+", all or nothing. That had two problems:
+ * one forgotten unit at 75 shut out a student sitting on 95% overall, and the
+ * day a new unit was published everybody lost free play at once, however much
+ * they had done. The ratio fixes both — a new 0-XP unit moves 1,100/1,100 to
+ * 1,100/1,200, still 92% — while route 1 keeps a clean finish line for the
+ * student who simply completes everything without chasing every last point.
+ *
+ * It is a live reading, not a permanent unlock: fall under both bars (new units
+ * arrive and go untouched) and plays cost gold again until the work is done.
  *
  * With no available units there is nothing to master, so free play stays locked
  * — otherwise a brand-new account would get it for free.
  */
 export function freePlayState(allProgress = {}, units = []) {
   const total = units.length;
-  const mastered = units.filter(
-    ({ track, unitId, unit }) =>
-      unitXPOf(unit, allProgress?.[track]?.[unitId] || {}) >= FREE_PLAY_MIN_XP
-  ).length;
-  return { unlocked: total > 0 && mastered === total, mastered, total };
+  let done = 0;
+  let xp = 0;
+  for (const { track, unitId, unit } of units) {
+    const scores = allProgress?.[track]?.[unitId] || {};
+    xp += unitXPOf(unit, scores);
+    if (isUnitComplete(unit, scores)) done += 1;
+  }
+  const maxXp = total * 100;
+  const needXp = Math.ceil(maxXp * FREE_PLAY_RATIO);
+  const allDone = total > 0 && done === total;
+  const ratioMet = total > 0 && xp >= needXp;
+  return {
+    unlocked: allDone || ratioMet,
+    via: allDone ? 'units' : ratioMet ? 'xp' : null,
+    done, total, xp, maxXp, needXp,
+  };
 }

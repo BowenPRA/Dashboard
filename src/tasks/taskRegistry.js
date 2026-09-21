@@ -1014,3 +1014,35 @@ export function unitXPOf(unit, scores = {}) {
   );
   return Math.min(raw, 100);
 }
+
+/** The XP a unit needs before sitting its quiz can finish it. */
+export const COMPLETE_MIN_XP = 80;
+
+/**
+ * Whether a unit counts as FINISHED — the one rule behind every "units done"
+ * count, the Continue button, and the arcade's free play:
+ *
+ *   100 XP, or 80+ XP with the quiz sat.
+ *
+ * 100 used to be the only bar, which left a student who had done everything and
+ * scored 17/20 on the quiz looking permanently unfinished — most units offer
+ * more than 100 XP precisely so a less-than-perfect run can still get there, but
+ * not all do. "Sat" means a quiz record exists with an attempt or a score; the
+ * mark itself does not matter, the 80 already says the work was done. A unit
+ * with no quiz (the GED Extended Response) finishes on the 80 alone.
+ *
+ * The backend mirrors this for the teacher's roster (progressStats.js) without
+ * the unit content, so it cannot see "no quiz" and asks those units for 100.
+ */
+export function isUnitComplete(unit, scores = {}) {
+  const xp = unitXPOf(unit, scores);
+  if (xp >= 100) return true;
+  if (xp < COMPLETE_MIN_XP) return false;
+  const quiz = (unit?.phases || [])
+    .flatMap((p) => p.tasks || [])
+    .map(resolveTask)
+    .find((t) => t?.id === 'ASSESSMENT' && t.maxXP > 0);
+  if (!quiz) return true;
+  const rec = scores?.[quiz.dbKey];
+  return !!rec && ((rec.attempts?.length || 0) > 0 || (Number(rec.current) || 0) > 0);
+}

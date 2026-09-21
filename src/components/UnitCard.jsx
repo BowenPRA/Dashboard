@@ -5,7 +5,7 @@ import {
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
   Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash,
   Boxes, Layers, ScanEye, History, MonitorPlay, ExternalLink, Variable, Droplets,
-  Thermometer, Sigma, Orbit, SquareRadical, Blend, Wrench
+  Thermometer, Sigma, Orbit, SquareRadical, Blend, Wrench, Check
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEYS } from '../utils/progressSchema';
@@ -58,8 +58,12 @@ const IconMap = {
  * deliberately compact when closed — one line of description, a small header —
  * because a track is a LIST of these and the list keeps growing; the full
  * description comes back when the card is open.
+ *
+ * `complete` is the track's verdict (taskRegistry.isUnitComplete: 100 XP, or
+ * 80+ with the quiz sat). A finished unit under 100 gets a green "Done" tick —
+ * the rainbow border stays the reward for the full 100.
  */
-export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false, unitLock = null, number = '' }) {
+export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false, unitLock = null, number = '', complete = false }) {
   if (!unit) return null;
 
   const { title, description, icon } = unit.meta || {};
@@ -234,8 +238,15 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                 <div className={`relative z-10 flex items-center justify-center px-3 py-1.5 rounded-xl transition-all shadow-sm font-black ${trophy.container}`}>
                   <Trophy className={`w-4 h-4 mr-1.5 ${trophy.icon}`} strokeWidth={2.5} />
                   <span className="text-lg tracking-tight tabular-nums">{unitXP}</span>
+                  <span className="text-[11px] tracking-tight tabular-nums opacity-60 ml-0.5 mt-1">/100</span>
                 </div>
               </div>
+
+              {complete && unitXP < 100 && (
+                <span className="flex items-center gap-1 px-2.5 py-1 whitespace-nowrap bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-300/60 dark:border-emerald-700/50 shadow-sm" title="Finished: 80+ XP with the quiz done. Keep going for the full 100!">
+                  <Check className="w-3 h-3" strokeWidth={4} /> Done
+                </span>
+              )}
 
               {showNeedsWork && (
                 <div className="relative group/badge">

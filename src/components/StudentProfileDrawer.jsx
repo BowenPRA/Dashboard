@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getStudentDetail, updateStudent, setProgress, assignStudents, clearStrikes } from '../utils/adminApi';
 import { getTrack } from '../data/index';
 import { TRACK_IDS, TRACK_REGISTRY, ARCADE_TRACK_ID, getTrackConfig } from './trackRegistry';
-import { TASKS, resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
+import { TASKS, resolveUnitTasks, unitXPOf, isUnitComplete } from '../tasks/taskRegistry';
 import { isUnitKey, ARCADE_KEYS } from '../utils/progressSchema';
 import { essaysOf, ESSAYS_KEY } from '../utils/essayArchive';
 import { sectionsOf, unitNumberOf, unitLastTouched } from '../utils/trackSections';
@@ -220,7 +220,9 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
 
   const xpFor = (unitId) => (trackContent[unitId] ? unitXPOf(trackContent[unitId], trackData[unitId] || {}) : rawUnitXP(trackData[unitId]));
   const allUnits = sections.flatMap((s) => s.units);
-  const trackDone = allUnits.filter((u) => xpFor(u.id) >= 100).length;
+  // Finished = 100 XP, or 80+ with the quiz sat; archived units can only go by XP.
+  const doneFor = (unitId) => (trackContent[unitId] ? isUnitComplete(trackContent[unitId], trackData[unitId] || {}) : xpFor(unitId) >= 100);
+  const trackDone = allUnits.filter((u) => doneFor(u.id)).length;
 
   const defaultOpen = (focusTrack === activeTrack && focusUnit)
     || allUnits.map((u) => ({ id: u.id, at: unitLastTouched(trackData[u.id]) })).filter((u) => u.at).sort((a, b) => (a.at < b.at ? 1 : -1))[0]?.id
@@ -234,7 +236,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
     for (const u of unitKeysOf(td)) {
       const xp = content[u] ? unitXPOf(content[u], td[u]) : rawUnitXP(td[u]);
       acc.xp += xp;
-      if (xp >= 100) acc.done += 1;
+      if (content[u] ? isUnitComplete(content[u], td[u]) : xp >= 100) acc.done += 1;
     }
     return acc;
   }, { xp: 0, done: 0 });
@@ -447,9 +449,9 @@ export default function StudentProfileDrawer({ isOpen, onClose, student, focusTr
                                   </span>
                                 )}
                                 <span className="hidden sm:block w-24 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex-shrink-0">
-                                  <span className={`block h-full rounded-full ${xp >= 100 ? 'bg-emerald-500' : cfg?.theme.bg || 'bg-slate-400'}`} style={{ width: `${xp}%` }} />
+                                  <span className={`block h-full rounded-full ${doneFor(u.id) ? 'bg-emerald-500' : cfg?.theme.bg || 'bg-slate-400'}`} style={{ width: `${xp}%` }} />
                                 </span>
-                                <span className="w-9 text-right text-sm font-black tabular-nums text-slate-700 dark:text-slate-200 flex-shrink-0">{xp}</span>
+                                <span className={`w-9 text-right text-sm font-black tabular-nums flex-shrink-0 ${doneFor(u.id) ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200'}`} title={doneFor(u.id) ? 'Finished' : undefined}>{xp}</span>
                                 <ChevronDown className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${isOpenUnit ? 'rotate-180' : ''}`} strokeWidth={3} />
                               </button>
 

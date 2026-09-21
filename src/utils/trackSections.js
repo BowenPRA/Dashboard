@@ -4,7 +4,7 @@
 
 import { getTrackConfig } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
-import { unitXPOf } from '../tasks/taskRegistry';
+import { unitXPOf, isUnitComplete } from '../tasks/taskRegistry';
 import { isUnitKey, isTaskKey } from './progressSchema';
 
 /**
@@ -63,7 +63,9 @@ export function unitLastTouched(unitScores = {}) {
 
 /**
  * One track's progress at a glance, from that track's slice of the progress
- * blob: `{ total, done, started, xp, lastAt, lastUnitId }`.
+ * blob: `{ total, done, started, xp, lastAt, lastUnitId, units }`. `units` is
+ * one `{ id, title, xp, complete }` per unit, in track order, for Home's chips.
+ * "Done" is taskRegistry.isUnitComplete — 100 XP, or 80+ with the quiz sat.
  *
  * `lastUnitId` is the unit most recently worked on that still has XP to earn —
  * "where you left off". A finished unit is not somewhere to go back to.
@@ -75,22 +77,25 @@ export function trackSummary(trackId, trackProgress = {}) {
   let xp = 0;
   let lastAt = null;
   let lastUnitId = null;
+  const units = [];
 
   for (const m of meta) {
     const scores = trackProgress?.[m.id] || {};
     const unitXP = unitXPOf(data[m.id], scores);
+    const complete = isUnitComplete(data[m.id], scores);
     xp += unitXP;
-    if (unitXP >= 100) done += 1;
+    if (complete) done += 1;
     else if (unitXP > 0) started += 1;
+    units.push({ id: m.id, title: m.title, xp: unitXP, complete });
 
     const at = unitLastTouched(scores);
-    if (at && unitXP < 100 && (!lastAt || at > lastAt)) {
+    if (at && !complete && (!lastAt || at > lastAt)) {
       lastAt = at;
       lastUnitId = m.id;
     }
   }
 
-  return { total: meta.length, done, started, xp, lastAt, lastUnitId };
+  return { total: meta.length, done, started, xp, lastAt, lastUnitId, units };
 }
 
 /** Unit ids a student has any record in, for a track's slice of progress. */

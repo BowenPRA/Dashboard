@@ -7,6 +7,9 @@ import { daysSince, xpCellClass, XP_LEGEND, RECENT_DAYS } from './teacherStats';
 
 const xpOf = (student, track, unitId) => student.units?.[track]?.[unitId]?.[0] || 0;
 const touchedOf = (student, track, unitId) => student.units?.[track]?.[unitId]?.[1] || null;
+// Finished = 100 XP, or 80+ with the quiz sat (the backend's verdict; an older
+// backend sends no flag, and 100 is then the only thing that can be known).
+const doneOf = (student, track, unitId) => student.units?.[track]?.[unitId]?.[2] ?? xpOf(student, track, unitId) >= 100;
 
 /**
  * Students down the side, a track's units across the top, unit XP in the cells
@@ -122,7 +125,7 @@ export default function Gradebook({ students, preferTracks = [], isExpected = ()
 
             <tbody>
               {rows.map((s) => {
-                const done = units.filter((u) => xpOf(s, trackId, u.id) >= 100).length;
+                const done = units.filter((u) => doneOf(s, trackId, u.id)).length;
                 const pct = Math.round(units.reduce((sum, u) => sum + xpOf(s, trackId, u.id), 0) / units.length);
                 return (
                   <tr key={s.id} className="group">
@@ -135,12 +138,13 @@ export default function Gradebook({ students, preferTracks = [], isExpected = ()
                       const xp = xpOf(s, trackId, u.id);
                       const at = touchedOf(s, trackId, u.id);
                       const fresh = at && daysSince(at) < RECENT_DAYS;
+                      const finished = doneOf(s, trackId, u.id);
                       return (
                         <td key={u.id} className={`p-1 border-b border-slate-100 dark:border-slate-800 text-center ${i === 0 && showSections ? 'border-l-2 border-l-slate-100 dark:border-l-slate-800' : ''}`}>
                           <button
                             onClick={() => onOpen(s, { track: trackId, unitId: u.id })}
-                            title={`${s.name} — ${u.title}: ${xp} XP`}
-                            className={`w-11 h-8 rounded-lg text-xs font-black tabular-nums transition-transform hover:scale-110 ${xpCellClass(xp)} ${fresh ? 'ring-2 ring-sky-400 ring-offset-1 ring-offset-white dark:ring-offset-slate-900' : ''}`}
+                            title={`${s.name} — ${u.title}: ${xp} XP${finished ? ' · finished' : ''}`}
+                            className={`w-11 h-8 rounded-lg text-xs font-black tabular-nums transition-transform hover:scale-110 ${xpCellClass(finished ? 100 : xp)} ${fresh ? 'ring-2 ring-sky-400 ring-offset-1 ring-offset-white dark:ring-offset-slate-900' : ''}`}
                           >
                             {xp || '·'}
                           </button>
@@ -186,6 +190,7 @@ export default function Gradebook({ students, preferTracks = [], isExpected = ()
             <span className={`w-5 h-4 rounded ${xpCellClass(l.xp)}`} /> {l.label}
           </span>
         ))}
+        <span>Solid green = finished (100, or 80+ with the quiz done)</span>
         <span className="flex items-center gap-1.5">
           <span className="w-5 h-4 rounded bg-slate-100 dark:bg-slate-800 ring-2 ring-sky-400 ring-offset-1 ring-offset-slate-50 dark:ring-offset-slate-950" /> worked on in the last {RECENT_DAYS} days
         </span>

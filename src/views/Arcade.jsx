@@ -13,7 +13,7 @@ import { arcadeConfig, ARCADE_LEVELS } from '../components/towerdefense/unitDiff
 import { ARCADE_KEY, SURVIVOR_KEY, ARCADE_BOARDS } from '../utils/progressSchema';
 import {
   availableUnits, goldBalance, goldEarned, freePlayState,
-  PLAY_COST, GOLD_PER_XP, FREE_PLAY_MIN_XP,
+  PLAY_COST, GOLD_PER_XP, FREE_PLAY_RATIO,
 } from '../arcade/economy';
 import { arcadeQuestionSource } from '../arcade/questionSource';
 import ProgressLoadError from '../components/ProgressLoadError';
@@ -298,21 +298,33 @@ export default function Arcade() {
                     </h2>
                     <p className="text-slate-300 font-bold text-sm leading-relaxed">
                       {free.unlocked
-                        ? 'You have mastered every one of your units, so every arcade game is now FREE. Play as much as you like.'
-                        : `Reach ${FREE_PLAY_MIN_XP}+ XP on every one of your units and all arcade games become free — forever.`}
+                        ? (free.via === 'units'
+                          ? 'You have finished every one of your units, so every arcade game is FREE. Play as much as you like.'
+                          : `You hold ${Math.round((free.xp / free.maxXp) * 100)}% of all your XP, so every arcade game is FREE. Keep it above ${Math.round(FREE_PLAY_RATIO * 100)}% as new units arrive.`)
+                        : `Two ways to make every game free: finish all your units, or earn ${Math.round(FREE_PLAY_RATIO * 100)}% of all the XP you can get. Whichever comes first!`}
                     </p>
-                    {!free.unlocked && free.total > 0 && (
-                      <div className="mt-3">
-                        <div className="flex items-center justify-between text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5">
-                          <span>Units mastered</span>
-                          <span>{free.mastered} / {free.total}</span>
-                        </div>
-                        <div className="h-3 bg-black/40 rounded-full overflow-hidden border border-white/10">
-                          <div
-                            className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-500"
-                            style={{ width: `${Math.round((free.mastered / free.total) * 100)}%` }}
-                          />
-                        </div>
+                    {free.total > 0 && (
+                      <div className="mt-3 grid sm:grid-cols-2 gap-x-5 gap-y-3">
+                        {[
+                          { label: 'Your XP', value: `${free.xp.toLocaleString()} / ${free.maxXp.toLocaleString()}`, pct: free.xp / free.maxXp, goal: FREE_PLAY_RATIO, note: free.xp >= free.needXp ? 'Goal reached' : `${(free.needXp - free.xp).toLocaleString()} XP to go` },
+                          { label: 'Units finished', value: `${free.done} / ${free.total}`, pct: free.done / free.total, goal: 1, note: free.done === free.total ? 'Goal reached' : `${free.total - free.done} to go` },
+                        ].map((bar) => (
+                          <div key={bar.label}>
+                            <div className="flex items-center justify-between text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                              <span>{bar.label}</span>
+                              <span className="tabular-nums">{bar.value}</span>
+                            </div>
+                            <div className="relative h-3 bg-black/40 rounded-full overflow-hidden border border-white/10">
+                              <div
+                                className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-500"
+                                style={{ width: `${Math.round(bar.pct * 100)}%` }}
+                              />
+                              {/* The finish line, where it is not simply the end of the bar. */}
+                              {bar.goal < 1 && <div className="absolute top-0 bottom-0 w-0.5 bg-white/70" style={{ left: `${bar.goal * 100}%` }} />}
+                            </div>
+                            <p className="mt-1 text-[11px] font-bold text-slate-400">{bar.note}</p>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>

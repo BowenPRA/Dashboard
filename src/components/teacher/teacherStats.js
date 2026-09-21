@@ -96,6 +96,6 @@ export function xpCellClass(xp) {
 export const XP_LEGEND = [
   { label: '1–39', xp: 20 },
   { label: '40–79', xp: 60 },
-  { label: '80–99', xp: 90 },
-  { label: '100', xp: 100 },
+  { label: '80–99, quiz not done', xp: 90 },
+  { label: 'Finished', xp: 100 },
 ];

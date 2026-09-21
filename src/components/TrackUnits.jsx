@@ -4,7 +4,7 @@ import { ChevronRight, ChevronDown, Check, Play, PackageOpen } from 'lucide-reac
 import UnitCard from './UnitCard';
 import { getTrackConfig, unitGateOf } from './trackRegistry';
 import { getTrack } from '../data/index';
-import { unitXPOf } from '../tasks/taskRegistry';
+import { unitXPOf, isUnitComplete } from '../tasks/taskRegistry';
 import { sectionsOf, unitNumberOf, unitLastTouched } from '../utils/trackSections';
 
 function EmptyTrack({ title, theme }) {
@@ -76,6 +76,8 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
     const contentData = UNIT_DATA[metaUnit.id] || {};
     const scores = unitScores?.[metaUnit.id] || {};
     const unitXP = unitXPOf(contentData, scores);
+    // Finished = 100 XP, or 80+ with the quiz sat (taskRegistry.isUnitComplete).
+    const complete = isUnitComplete(contentData, scores);
 
     const gate = unitGateOf(track, unitIndex, prevUnitXP);
     // Preview/QA accounts ignore this exactly as they ignore phase locks, so
@@ -86,16 +88,17 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
     prevUnitXP = unitXP;
     prevUnitTitle = metaUnit.title;
 
-    const isInProgress = unitXP > 0 && unitXP < 100;
+    const isInProgress = unitXP > 0 && !complete;
     // A locked unit is not the one to nudge them towards, and it must not
     // consume the "next up" slot from the unit that is.
     const isNext = unitXP === 0 && !firstIncompleteFound && !unitLock;
-    if (unitXP < 100 && !unitLock) firstIncompleteFound = true;
+    if (!complete && !unitLock) firstIncompleteFound = true;
 
     unitRows.push({
       meta: metaUnit,
       scores,
       unitXP,
+      complete,
       unitLock,
       isNext,
       needsWork: (isInProgress || isNext) && !unitLock,
@@ -124,7 +127,7 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
     return {
       ...s,
       rows,
-      done: rows.filter((r) => r.unitXP >= 100).length,
+      done: rows.filter((r) => r.complete).length,
       xp: rows.reduce((sum, r) => sum + r.unitXP, 0),
     };
   });
@@ -135,7 +138,7 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
   // the first unit not yet started.
   const continueRow =
     unitRows.filter((r) => r.touchedAt).sort((a, b) => (a.touchedAt < b.touchedAt ? 1 : -1))[0]
-    || unitRows.find((r) => r.unitXP > 0 && r.unitXP < 100 && !r.unitLock)
+    || unitRows.find((r) => r.unitXP > 0 && !r.complete && !r.unitLock)
     || unitRows.find((r) => r.isNext)
     || null;
 
@@ -275,6 +278,7 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
                         previewAll={previewAll}
                         unitLock={row.unitLock}
                         number={row.number}
+                        complete={row.complete}
                       />
                     </div>
                   ))}

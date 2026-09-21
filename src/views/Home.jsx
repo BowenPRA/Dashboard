@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine, Play, Check } from 'lucide-react';
+import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine, Play, Check, Trophy } from 'lucide-react';
 import { TRACK_REGISTRY, getTrackConfig, ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
 import { planForDate, todayISO } from '../utils/studyPlan';
 import { getTrack } from '../data/index';
-import { trackSummary, unitNumberOf } from '../utils/trackSections';
+import { trackSummary, unitNumberOf, unitShortLabel } from '../utils/trackSections';
 import useDarkMode from '../hooks/useDarkMode';
 
 export default function Home() {
@@ -107,9 +107,23 @@ export default function Home() {
     return meta ? { track: getTrackConfig(trackId), unitId: meta.id, title: meta.title, number: unitNumberOf(meta.id) } : null;
   }, [summaries, showPlan]);
 
-  // Past four tracks the big two-up cards turn the menu into a long scroll, so
-  // the same cards are drawn smaller and three across.
-  const compact = visibleTracks.length > 4;
+  // Everything the student can earn, against everything they have: the same
+  // two numbers the arcade's free play is measured on (arcade/economy.js).
+  const overall = useMemo(() => {
+    const all = Object.values(summaries);
+    return {
+      xp: all.reduce((n, s) => n + s.xp, 0),
+      maxXp: all.reduce((n, s) => n + s.total * 100, 0),
+      done: all.reduce((n, s) => n + s.done, 0),
+      total: all.reduce((n, s) => n + s.total, 0),
+    };
+  }, [summaries]);
+  const overallPct = overall.maxXp ? Math.round((overall.xp / overall.maxXp) * 100) : 0;
+
+  // Past four subjects the big two-up cards turn the menu into a long scroll,
+  // so the same cards are drawn smaller and three across. The Arcade does not
+  // count: the four-subject GED student keeps the big cards.
+  const compact = visibleTracks.filter(t => t.id !== ARCADE_TRACK_ID).length > 4;
 
   if (loading) {
     return (
@@ -120,7 +134,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`relative min-h-screen flex flex-col items-center justify-center p-6 ${compact ? 'py-16' : ''} overflow-hidden font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300`}>
+    <div className={`relative min-h-screen flex flex-col items-center p-6 py-12 sm:py-16 overflow-hidden font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300`}>
       
       <button 
         onClick={toggleDarkMode}
@@ -133,16 +147,41 @@ export default function Home() {
 
       <div className="relative z-10 w-full max-w-5xl">
         
-        <div className={`${compact ? 'mb-8' : 'mb-12'} text-center animate-in fade-in slide-in-from-bottom-4 duration-300`}>
-          <div className={`inline-flex items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 ${compact ? 'mb-5' : 'mb-8'} border-b-[6px] transform hover:-translate-y-1 transition-transform`}>
-             <LayoutDashboard className={`${compact ? 'w-8 h-8' : 'w-10 h-10'} text-slate-800 dark:text-white`} strokeWidth={2.5} />
+        <div className="mb-6 flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center justify-center w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-800 border-b-[5px] flex-shrink-0">
+            <LayoutDashboard className="w-7 h-7 text-slate-800 dark:text-white" strokeWidth={2.5} />
           </div>
-          <h1 className={`${compact ? 'text-4xl md:text-5xl' : 'text-5xl md:text-7xl'} font-black tracking-tight mb-4 text-slate-800 dark:text-white drop-shadow-sm`}>
-            Curriculum
-          </h1>
-          <p className="text-sm font-black tracking-widest uppercase text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 inline-block px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
-            Select Learning Track
-          </p>
+          <div className="min-w-0 pr-14">
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800 dark:text-white leading-tight">Curriculum</h1>
+            <p className="text-xs font-black tracking-widest uppercase text-slate-400">Choose a track, or jump straight into a unit</p>
+          </div>
+        </div>
+
+        {/* Everything earned, out of everything on offer. Its space is held
+            while progress loads, so nothing below it jumps. */}
+        <div className={`mb-8 p-5 sm:p-6 rounded-[2rem] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 border-b-[6px] animate-in fade-in duration-300 ${overall.total ? '' : 'invisible'}`}>
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-amber-400 border-b-[4px] border-amber-600 flex items-center justify-center flex-shrink-0">
+                <Trophy className="w-5 h-5 text-amber-950" strokeWidth={2.5} />
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Your XP</p>
+                <p className="text-2xl sm:text-3xl font-black tabular-nums text-slate-800 dark:text-white leading-none">
+                  {overall.xp.toLocaleString()}
+                  <span className="text-base sm:text-lg text-slate-400"> / {overall.maxXp.toLocaleString()}</span>
+                </p>
+              </div>
+            </div>
+            <p className="text-sm font-black tabular-nums text-slate-500 dark:text-slate-400">
+              <span className="text-slate-800 dark:text-white">{overall.done}</span> / {overall.total} units finished
+              <span className="mx-2 text-slate-300 dark:text-slate-600">·</span>
+              <span className="text-slate-800 dark:text-white">{overallPct}%</span>
+            </p>
+          </div>
+          <div className="h-3.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-700" style={{ width: `${overallPct}%` }} />
+          </div>
         </div>
 
         {/* Today's plan — the intended way in for the two GED-sprint students.
@@ -245,57 +284,83 @@ export default function Home() {
         </button>
         )}
 
-        <div className={compact ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8'}>
+        <div className={compact ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start' : 'grid grid-cols-1 md:grid-cols-2 gap-6 items-start'}>
           {visibleTracks.map((t, index) => {
             const Icon = t.icon;
             const sum = summaries[t.id];
+            const isArcade = t.id === ARCADE_TRACK_ID;
             const pct = sum?.total ? Math.round((sum.xp / (sum.total * 100)) * 100) : 0;
             const allDone = sum?.total > 0 && sum.done === sum.total;
             return (
-              <button
+              // A card, not one big button: the header opens the track and each
+              // unit chip opens that unit, and buttons cannot nest.
+              <div
                 key={t.id}
-                onClick={() => navigate(`/${t.id}`)}
-                className={`group relative w-full text-left flex flex-col border-2 border-slate-200 dark:border-slate-800 transition-all duration-200 active:border-b-2 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 overflow-hidden animate-in fade-in slide-in-from-bottom-4
-                  ${compact ? 'p-5 rounded-[1.75rem] border-b-[6px] active:translate-y-[4px]' : 'p-8 sm:p-10 rounded-[2.5rem] border-b-[8px] active:translate-y-[8px]'}`}
+                className={`relative w-full flex flex-col border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-colors overflow-hidden animate-in fade-in slide-in-from-bottom-4
+                  ${compact ? 'rounded-[1.75rem] border-b-[6px]' : 'rounded-[2.25rem] border-b-[8px]'}`}
                 style={{ animationFillMode: 'both', animationDelay: `${Math.min(index, 8) * 40}ms` }}
               >
-                <div className="flex items-center justify-between relative z-10">
-                  <div className={`flex min-w-0 ${compact ? 'items-center gap-4' : 'flex-col'}`}>
-                    <div className={`${t.theme.bg} rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] ${t.theme.border} flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 ${compact ? 'w-12 h-12' : 'w-16 h-16 mb-6'}`}>
-                      <Icon className={`${compact ? 'w-6 h-6' : 'w-8 h-8'} ${t.id === 'ESL' ? 'text-amber-950' : 'text-white'} drop-shadow-sm`} strokeWidth={2.5} />
-                    </div>
-
-                    <div className="min-w-0">
-                      <h2 className={`font-black text-slate-800 dark:text-white tracking-tight group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors ${compact ? 'text-lg leading-tight' : 'text-3xl sm:text-4xl mb-2'}`}>
-                        {t.title}
-                      </h2>
-                      <p className={`text-slate-500 dark:text-slate-400 font-bold tracking-wide ${compact ? 'text-xs line-clamp-1' : 'text-base'}`}>
-                        {t.desc}
-                      </p>
-                    </div>
+                <button
+                  onClick={() => navigate(`/${t.id}`)}
+                  className={`group w-full text-left flex items-center gap-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40 active:bg-slate-100 dark:active:bg-slate-800 ${compact ? 'p-5' : 'p-6 sm:p-7'} ${isArcade ? '' : 'pb-3 sm:pb-3'}`}
+                >
+                  <div className={`${t.theme.bg} rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] ${t.theme.border} flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 ${compact ? 'w-12 h-12' : 'w-14 h-14 sm:w-16 sm:h-16'}`}>
+                    <Icon className={`${compact ? 'w-6 h-6' : 'w-7 h-7 sm:w-8 sm:h-8'} ${t.id === 'ESL' ? 'text-amber-950' : 'text-white'} drop-shadow-sm`} strokeWidth={2.5} />
                   </div>
-
-                  {!compact && (
-                  <div className="hidden sm:flex w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:bg-[#1cb0f6] group-hover:border-[#1899d6] group-hover:text-white transition-all transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 duration-300 border-b-[4px] group-hover:border-b-[4px]">
-                    <ChevronRight className="w-7 h-7" strokeWidth={3} />
+                  <div className="min-w-0 flex-1">
+                    <h2 className={`font-black text-slate-800 dark:text-white tracking-tight leading-tight ${compact ? 'text-lg' : 'text-2xl sm:text-3xl'}`}>
+                      {t.title}
+                    </h2>
+                    <p className={`text-slate-500 dark:text-slate-400 font-bold tracking-wide line-clamp-1 ${compact ? 'text-xs' : 'text-sm'}`}>
+                      {t.desc}
+                    </p>
                   </div>
-                  )}
-                </div>
+                  <div className="hidden sm:flex w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 border-b-[4px] flex-shrink-0 group-hover:bg-[#1cb0f6] group-hover:border-[#1899d6] group-hover:text-white transition-all">
+                    <ChevronRight className="w-5 h-5" strokeWidth={3} />
+                  </div>
+                </button>
 
-                {/* Progress through the track. Its space is held before the
-                    numbers load so the cards do not jump when they arrive. */}
-                {t.id !== ARCADE_TRACK_ID && (
-                  <div className={`relative z-10 flex items-center gap-3 ${compact ? 'mt-4' : 'mt-6'} ${sum?.total ? '' : 'invisible'}`}>
-                    <div className="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                      <div className={`h-full rounded-full transition-all duration-700 ${allDone ? 'bg-amber-400' : t.theme.bg}`} style={{ width: `${pct}%` }} />
+                {/* XP for the track, then for every unit in it. The space is
+                    held while progress loads so the cards do not jump. */}
+                {!isArcade && (
+                  <div className={`${compact ? 'px-5 pb-5' : 'px-6 sm:px-7 pb-6'} ${sum?.total ? '' : 'invisible'}`}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                        <div className={`h-full rounded-full transition-all duration-700 ${allDone ? 'bg-amber-400' : t.theme.bg}`} style={{ width: `${pct}%` }} />
+                      </div>
+                      <span className="text-[11px] font-black tabular-nums text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                        {(sum?.xp ?? 0).toLocaleString()}<span className="text-slate-400"> / {((sum?.total ?? 0) * 100).toLocaleString()} XP</span>
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] font-black tabular-nums text-slate-400 whitespace-nowrap">
+                        {allDone && <Check className="w-3.5 h-3.5 text-amber-500" strokeWidth={4} />}
+                        {sum?.done ?? 0}/{sum?.total ?? 0} done
+                      </span>
                     </div>
-                    <span className="flex items-center gap-1 text-[11px] font-black tabular-nums text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                      {allDone && <Check className="w-3.5 h-3.5 text-amber-500" strokeWidth={4} />}
-                      {sum?.done ?? 0}/{sum?.total ?? 0} units
-                    </span>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {(sum?.units || []).map((u) => (
+                        <button
+                          key={u.id}
+                          onClick={() => navigate(`/${t.id}?unit=${u.id}`)}
+                          title={`${u.title} — ${u.xp} / 100 XP${u.complete ? ' · finished' : ''}`}
+                          className={`flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-lg border-2 border-b-[3px] text-[11px] font-black tabular-nums transition-all hover:-translate-y-0.5 active:translate-y-0 active:border-b-2
+                            ${u.complete
+                              ? 'bg-amber-400 border-amber-600 text-amber-950'
+                              : u.xp > 0
+                                ? `bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 ${t.theme.text}`
+                                : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'}`}
+                        >
+                          <span className="opacity-70">{unitShortLabel(u.id)}</span>
+                          <span className={`px-1 rounded ${u.complete ? 'bg-black/10' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                            {u.complete && <Check className="inline w-3 h-3 -mt-0.5 mr-0.5" strokeWidth={4} />}
+                            {u.xp}<span className="opacity-50">/100</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
