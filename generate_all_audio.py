@@ -161,6 +161,42 @@ def speechify(text):
     t = re.sub(r'(?:\.\s*){2,}', '. ', t)
     return t.strip()
 
+def strip_widget_blocks(src):
+    """Remove every `widget: { ... }` object from a slide's source, braces
+    balanced. A widget's params are machinery, not teaching: an AppSim demo's
+    script carries `text:` for what it types (an address, a password, a file
+    name), and the narration regex below would read those aloud mid-sentence.
+    Strings are skipped while counting braces, so a brace inside one is safe."""
+    out = []
+    i = 0
+    pat = re.compile(r'\bwidget\s*:\s*\{')
+    while True:
+        m = pat.search(src, i)
+        if not m:
+            out.append(src[i:])
+            break
+        out.append(src[i:m.start()])
+        j = m.end()
+        depth = 1
+        quote = None
+        while j < len(src) and depth:
+            c = src[j]
+            if quote:
+                if c == '\\':
+                    j += 2
+                    continue
+                if c == quote:
+                    quote = None
+            elif c in '"\'`':
+                quote = c
+            elif c == '{':
+                depth += 1
+            elif c == '}':
+                depth -= 1
+            j += 1
+        i = j
+    return ''.join(out)
+
 def build_layout_narration(slide):
     """Narration for a flexible `layout` slide. Reads the teaching fields in
     document order (title, headings, content, notes, steps, checklist items,
@@ -169,6 +205,7 @@ def build_layout_narration(slide):
     # `check:` and `activity:` are both interactive and both sit LAST on a
     # slide, so everything before them is the teaching and nothing after it is.
     s = re.split(r'(?m)^\s*(?:check|activity)\s*:\s*\{', slide)[0]
+    s = strip_widget_blocks(s)
     pieces = []
     for m in re.finditer(
         r'\b(title|subtitle|objective|sub|heading|content|text|prompt|caption)\b\s*:\s*(["\'`])((?:\\.|[^\\])*?)\2',
