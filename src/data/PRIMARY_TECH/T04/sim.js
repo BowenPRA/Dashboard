@@ -35,10 +35,11 @@ const A_REAL_NAME = '^(?!Untitled)[A-Za-z0-9][A-Za-z0-9 _-]{2,}\\.docx$';
 
 /**
  * The second version's name: anything the student chose that is NOT the first
- * draft's own name (which would write over it) and not the computer's Untitled.
- * Deliberately loose about the rest: the Save As box pre-fills
- * "volcano report.docx", and a student who clicks at the end and types " 2"
- * has done the job, even though the name reads oddly.
+ * draft's own name and not the computer's Untitled. The Save As box pre-fills
+ * "volcano report" (no extension), so clicking at the end and typing " 2" gives
+ * "volcano report 2.docx". Writing OVER the draft is refused separately, by the
+ * `overwritten` clause: a Save before the Save As, or a Save As onto the same
+ * name confirmed with "Yes, replace it", both put the draft on that list.
  */
 const NOT_THE_DRAFT = '^(?!volcano report\\.docx$)(?!Untitled)\\S.{2,}$';
 
@@ -67,10 +68,9 @@ export const sim = [
       { type: 'dialogConfirm' },
     ],
     parMoves: 4,
-    // 4, not 3: Save, the name and the folder each leave the goal exactly as
-    // unmet as before (only the final Save in the box meets it), and AppSim
-    // counts a move that makes no progress towards the nudge. At 3 the perfect
-    // route was nudged on its third move and capped at 6/10.
+    // Save, the name and the folder each leave the goal as unmet as before (only
+    // the final Save in the box meets it). The nudge now also waits until the
+    // student is past par, so the perfect route is never nudged.
     hintAfter: 4,
     hints: [
       { after: 4, region: 'save', say: 'Start with Save, at the top (or press Ctrl+S).', sayVn: 'Hãy bắt đầu bằng nút Save ở phía trên (hoặc bấm Ctrl+S).' },
@@ -85,11 +85,9 @@ export const sim = [
     // folder replaces the draft, so it fails too; a copy saved into Downloads
     // leaves Documents one file short.
     //
-    // What the engine CANNOT see: Save first and Save As afterwards. On a real
-    // machine that writes the new ending over the draft before copying it; the
-    // simulator does not model a file's contents, so that route passes (it
-    // loses the par bonus only if the student also clicks the folder). The brief says
-    // not to write over the draft, and the hint names Save as the way you would.
+    // Save first and Save As afterwards writes the new ending over the draft
+    // before copying it. The folder listing cannot show that, so the engine
+    // keeps a list of files written over (`overwritten`) and the goal refuses it.
     id: 'keep-your-first-draft',
     skin: 'files',
     brief: 'Your teacher liked the first draft of your volcano report. You have changed the ending. Keep the first draft exactly as it is (do not write over it), and save this new version as a SECOND file in Documents.',
@@ -108,6 +106,9 @@ export const sim = [
       { path: 'at.Documents', contains: 'volcano report.docx' },
       { path: 'at.Documents.length', equals: 3 },
       { path: 'savedName', matches: NOT_THE_DRAFT },
+      // Kept means never written over — the one thing the folder listing
+      // cannot show, since Save-then-Save-As also ends with three files.
+      { path: 'overwritten', excludes: 'volcano report.docx' },
     ],
     solution: [
       { type: 'saveAs' },

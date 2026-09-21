@@ -4,13 +4,11 @@
 // (with /library, /homework, /news), www.citylibrary.org (with /kids),
 // www.weathernow.org and www.kidsmaths.org.
 //
-// TEMP (integration): the `browser` skin is being added to src/utils/appSim.js
-// by the lead, so this file is written to the §3.1 action table and goal paths
-// but NOT imported into data.js yet. `npm run validate` will replay every
-// `solution` once it is, and refuse a job that is unsolvable or already done.
+// `npm run validate` replays every `solution` and refuses a job that is
+// unsolvable, already done, or has a step the engine ignores.
 //
 // EVERY GOAL IS A STATEMENT ABOUT THE BROWSER, never about a click, so every
-// honest route passes: Back or typing the address, the + or Ctrl+T. And each
+// honest route passes: Back or typing the address, the + button or a link. And each
 // goal is written so the wrong-but-plausible route FAILS, the way it fails in
 // life:
 //   · an address typed into the page's own search box never changes `url` —

@@ -97,7 +97,7 @@ export const notes = [
   {
     layout: 'hero',
     color: SKY,
-    icon: 'Zap',
+    icon: 'Power',
     brand: 'Technology',
     brandVn: 'Công nghệ',
     eyebrow: 'Unit T1',
@@ -119,7 +119,7 @@ export const notes = [
   {
     layout: 'statement',
     accent: SKY,
-    icon: 'Zap',
+    icon: 'Power',
     eyebrow: 'Start with what you know',
     eyebrowVn: 'Bắt đầu từ điều em đã biết',
     title: 'Find the Power Symbol',
@@ -153,7 +153,7 @@ export const notes = [
   // 3 ─ Turning it on (steps + the laptop, labelled) ──────────────────────────
   {
     layout: 'steps',
-    icon: 'Zap',
+    icon: 'Power',
     accent: SKY,
     eyebrow: 'One press, then wait',
     eyebrowVn: 'Bấm một lần, rồi chờ',

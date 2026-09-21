@@ -18,13 +18,6 @@
 // 150 XP, capped at 100 by unitXPOf. Gate 1 is 25 of 35 (71%), Gate 2 is 80 of
 // 110 (73%) — both inside the 80% rule the validator enforces.
 //
-// TEMP (integration): SIM and TYPE_GYM are not in the phases below yet — the
-// `desktop` skin and the TYPE_GYM engine are being built by the lead and do not
-// exist on this branch. sim.js is written and deliberately NOT imported; the
-// `typeGym` config below is inert until the engine reads it. Without those two
-// tasks Gate 1 holds 40 XP, so Gate 2 sits at 55 of 75 (73%) until integration
-// puts SIM and TYPE_GYM back and restores it to 80.
-//
 // This track IS bilingual (see trackRegistry): every learner-facing field needs
 // its `vn*` twin and the validator enforces it. The Quiz and the Source
 // Analysis render only their explanations bilingually, so those questions are
@@ -36,6 +29,7 @@
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
 import { pointIt } from './pointIt.js';
+import { sim } from './sim.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
 import { DIAGRAMS } from './diagrams.js';
@@ -49,9 +43,6 @@ export const T01_DATA = {
     icon: 'Zap',
   },
 
-  // TEMP (integration): final shape is §2 of UPGRADE-PLAN — Gate 1 gains
-  // { id: 'SIM', dbKey: 'p25', maxXP: 25 } first and { id: 'TYPE_GYM',
-  // dbKey: 'p26', maxXP: 10 } last, and Gate 2's threshold goes back to 80.
   phases: [
     {
       id: 'concept',
@@ -68,16 +59,18 @@ export const T01_DATA = {
       title: 'Gate 1: Do',
       threshold: 25,
       tasks: [
+        { id: 'SIM', dbKey: 'p25', maxXP: 25 },
         { id: 'LABEL_IT', dbKey: 'p28', maxXP: 15 },
         { id: 'POINT_IT', dbKey: 'p24', maxXP: 10 },
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 15 },
+        { id: 'TYPE_GYM', dbKey: 'p26', maxXP: 10 },
       ],
     },
     {
-      // TEMP: 55 of the 75 XP before it (73%). Final: 80 of 110 (73%).
+      // 80 of the 110 XP before it (73%).
       id: 'mastery',
       title: 'Gate 2: Prove',
-      threshold: 55,
+      threshold: 80,
       tasks: [
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 10 },
         { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 10 },
@@ -350,8 +343,7 @@ export const T01_DATA = {
 
   // Typing Gym (UPGRADE-PLAN §3.2) — never the same twice: every line is drawn
   // fresh from a seed. T1 is the first time on the home row, so the target is
-  // the course's lowest. Plain ASCII only. TEMP (integration): inert until the
-  // TYPE_GYM engine lands and the task joins Gate 1.
+  // the course's lowest. Plain ASCII only.
   typeGym: {
     title: 'Typing Gym',
     titleVn: 'Phòng tập gõ phím',
@@ -372,6 +364,7 @@ export const T01_DATA = {
   notes: notes,
   workbook: workbook,
   pointIt: pointIt,
+  sim: sim,
   assessment: assessment,
   games: games,
 };

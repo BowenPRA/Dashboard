@@ -18,16 +18,12 @@
 //                        · TYPE_GYM 10                                        = 75
 //   Gate 2 · Prove   80  SHORT_ANSWERS 10 · DIAGRAMS 10 · ASSESSMENT 20 · GAMES 0 = 40
 //
-// TEMP (integration): SIM and TYPE_GYM are not in this worktree's registry yet,
-// so sim.js is written but not imported and both are left out of `phases`.
-// Without their 35 XP, Gate 2 sits at 60 of the 75 before it (80%) instead of
-// 80 of 110; the lead restores the §2 shape when the engines land.
-//
 // Module properties are written in full (`notes: notes,`): a shorthand right
 // after realWords makes the audio generator skip the word audio.
 import { notes } from './notes.js';
 import { workbook } from './workbook.js';
 import { pointIt } from './pointIt.js';
+import { sim } from './sim.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
 import { DIAGRAMS } from './diagrams.js';
@@ -41,8 +37,6 @@ export const T07_DATA = {
     icon: 'Globe',
   },
 
-  // TEMP (integration): final shape is §2 of UPGRADE-PLAN — Gate 1 gains
-  // SIM 25 (p25) and TYPE_GYM 10 (p26), and Gate 2's threshold goes back to 80.
   phases: [
     {
       id: 'concept',
@@ -59,17 +53,18 @@ export const T07_DATA = {
       title: 'Gate 1: Do',
       threshold: 25,
       tasks: [
+        { id: 'SIM', dbKey: 'p25', maxXP: 25 },
         { id: 'LABEL_IT', dbKey: 'p28', maxXP: 15 },
         { id: 'POINT_IT', dbKey: 'p24', maxXP: 10 },
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 15 },
+        { id: 'TYPE_GYM', dbKey: 'p26', maxXP: 10 },
       ],
     },
     {
-      // TEMP (integration): final shape is §2 of UPGRADE-PLAN — threshold 80 of
-      // the 110 before it once SIM and TYPE_GYM are in Gate 1. Today: 60 of 75.
+      // 80 of the 110 XP before it (73%).
       id: 'mastery',
       title: 'Gate 2: Prove',
-      threshold: 60,
+      threshold: 80,
       tasks: [
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 10 },
         { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 10 },
@@ -103,7 +98,7 @@ export const T07_DATA = {
       'Open a new tab for the library.',
       'Press reload if the page looks broken.',
       'Click the star to bookmark this page.',
-      'Check the spelling before you press Enter.',
+      'Check the spelling, then press Enter.',
       'Show in folder tells you where it went.',
     ],
     target: { wpm: 10, accuracy: 0.9 },
@@ -351,6 +346,7 @@ export const T07_DATA = {
   notes: notes,
   workbook: workbook,
   pointIt: pointIt,
+  sim: sim,
   assessment: assessment,
   games: games,
 };

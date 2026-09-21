@@ -40,6 +40,10 @@ import {
   // Sets and surds (EXT_MATH EM_06): the Venn diagram, the root, the fraction,
   // chance, and the empty set.
   Blend, SquareRadical, Divide, Dices, CircleSlash, Shapes, MousePointerClick,
+  // Technology (PRIMARY_TECH): the power button, the lock screen, sleep, the
+  // keyboard and mouse, windows, files, the browser and a download.
+  Power, Lock, Moon, Keyboard, Mouse, MousePointer2, AppWindow, Folder, FolderOpen,
+  Trash2, Download, Save, Search, Wifi, Monitor, Laptop, Bookmark, Link, Type,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -82,6 +86,8 @@ const ICONS = {
   Bug, Timer, Hammer, Spline, Circle, MapPin, Droplets, Waves, CloudFog, Gauge,
   Clapperboard, Gamepad2, Presentation, Hand,
   Blend, SquareRadical, Divide, Dices, CircleSlash, Shapes, MousePointerClick,
+  Power, Lock, Moon, Keyboard, Mouse, MousePointer2, AppWindow, Folder, FolderOpen,
+  Trash2, Download, Save, Search, Wifi, Monitor, Laptop, Bookmark, Link, Type,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

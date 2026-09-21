@@ -178,7 +178,8 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry }) {
             : bank.map((c) => chip(c, false))}
         </div>
       )}
-      <div className={`grid gap-2 ${activity.bins.length > 2 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
+      {/* Four bins go 2 × 2: three columns left the fourth alone on a row. */}
+      <div className={`grid gap-2 ${activity.bins.length === 3 || activity.bins.length > 4 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
         {activity.bins.map((bin) => {
           const here = cards.filter((c) => placed[c.id] === bin.id);
           const active = !!picked && !checked;
@@ -283,7 +284,9 @@ function OrderActivity({ activity, lang, result, onResult, parseText, retry }) {
 
 function EstimateActivity({ activity, lang, result, onResult, parseText }) {
   const t = T[lang] || T.en;
-  const { min = 0, max = 100, step = 1, answer, unit = '' } = activity;
+  const { min = 0, max = 100, step = 1, answer } = activity;
+  // `unitVn` is the unit's Vietnamese twin ("giây" for "seconds"), when it has one.
+  const unit = (lang === 'vn' && activity.unitVn) || activity.unit || '';
   const [value, setValue] = useState(result?.guess ?? Math.round(((min + max) / 2) / step) * step);
   const checked = !!result?.done;
   const tol = activity.tolerance ?? 0.2;

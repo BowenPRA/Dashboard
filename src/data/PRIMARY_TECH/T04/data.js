@@ -12,13 +12,12 @@
 //
 //   Gate 0 · Learn   0   NOTES 20 · WORD_REC 15                                  = 35
 //   Gate 1 · Do      25  SIM 25 · LABEL_IT 15 · POINT_IT 10 · WORKBOOK 15
-//                        (· TYPE_GYM 10 once the engine lands)                  = 65 (75)
-//   Gate 2 · Prove   80* SHORT_ANSWERS 10 · DIAGRAMS 10 · ASSESSMENT 20 · GAMES 0 = 40
+//                        · TYPE_GYM 10                                          = 75
+//   Gate 2 · Prove   80  SHORT_ANSWERS 10 · DIAGRAMS 10 · ASSESSMENT 20 · GAMES 0 = 40
 //
-// Gate 1 sits at 25 of the 35 before it (71%). With TYPE_GYM in place Gate 2 is
-// 80 of 110 (73%); *until then it is set to 75 of 100 — see the TEMP note on
-// the phase. 150 XP available (140 today), capped at 100. Both gates inside the
-// 80% rule the validator enforces — re-derive whenever a task's XP changes.
+// Gate 1 sits at 25 of the 35 before it (71%); Gate 2 at 80 of 110 (73%).
+// 150 XP available, capped at 100. Both gates inside the 80% rule the
+// validator enforces — re-derive whenever a task's XP changes.
 //
 // Module properties are written in full (`notes: notes,`): a shorthand right
 // after realWords makes the audio generator skip the word audio.
@@ -59,16 +58,14 @@ export const T04_DATA = {
         { id: 'LABEL_IT', dbKey: 'p28', maxXP: 15 },
         { id: 'POINT_IT', dbKey: 'p24', maxXP: 10 },
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 15 },
+        { id: 'TYPE_GYM', dbKey: 'p26', maxXP: 10 },
       ],
     },
     {
-      // TEMP (integration): final shape is §2 of UPGRADE-PLAN — TYPE_GYM (p26,
-      // 10 XP) joins Gate 1 and this threshold goes to 80 (of 110, 73%). Until
-      // TYPE_GYM exists only 100 XP sit before this gate, and 80 would be the
-      // whole 80% allowance, so it is 75 (75%).
+      // 80 of the 110 XP before it (73%).
       id: 'mastery',
       title: 'Gate 2: Prove',
-      threshold: 75,
+      threshold: 80,
       tasks: [
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 10 },
         { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 10 },
@@ -317,8 +314,8 @@ export const T04_DATA = {
     },
   ],
 
-  // Typing Gym (UPGRADE-PLAN §3.2) — read by TYPE_GYM once it lands; harmless
-  // until then (the task is not in `phases` yet). Plain ASCII only.
+  // Typing Gym (UPGRADE-PLAN §3.2): lines drawn fresh every session from these
+  // pools and the home row. Plain ASCII only.
   typeGym: {
     title: 'Typing Gym',
     titleVn: 'Phòng tập gõ phím',

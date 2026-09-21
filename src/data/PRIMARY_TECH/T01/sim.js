@@ -4,11 +4,9 @@
 // button on the case, the login screen, the menu and its Power choices, and
 // windows with their three corner buttons.
 //
-// TEMP (integration): the `desktop` skin is being built by the lead and does not
-// exist on this branch, so this file is written but NOT imported by data.js yet.
-// When it is wired in (`sim: sim,` in data.js, SIM in Gate 1), `npm run
-// validate` replays every `solution` below and refuses an item it cannot solve,
-// or one whose goal is met before the student does anything.
+// `npm run validate` replays every `solution` below and refuses an item it
+// cannot solve, one whose goal is met before the student does anything, and a
+// solution step the engine ignores.
 //
 // EVERY GOAL IS A STATEMENT ABOUT THE MACHINE, never about a click. "The
 // computer is asleep and the story is still open" is true whether the student
