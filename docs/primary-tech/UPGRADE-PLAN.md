@@ -392,3 +392,138 @@ The spines below are the design; adapt a beat if something reads better on the s
 - Every Try It job done by hand at least once by the route a student would take.
 - Slide audio regenerated (delete `public/audio/PRIMARY_TECH/T0x/` first — slide audio is
   keyed by position, and every deck grew).
+
+---
+
+## 8. New units: T2 and T3 (asked for 2026-09-21)
+
+"Make units 2 and 3" — **T2 · Mouse, Keys and Windows** and **T3 · Typing Properly**
+from the course map (docs/digital-skills-course.md §6), built to this plan from the start.
+Both became buildable the day the `desktop` skin and `TYPE_GYM` landed.
+
+**The unit gate.** Units sort by id, so T2 and T3 slot in between T1 and T4 — and the
+track's `unitGate` locks a unit until the one before it has 50 XP. From now on **a unit
+the student has already started never locks**: the gate stops skipping ahead, it does not
+take away work in progress. Without that, adding T2 would have re-locked T4 for every
+student already working in it.
+
+### 8.1 Shapes
+
+| Gate | T2 · Mouse, Keys and Windows | T3 · Typing Properly |
+|---|---|---|
+| **0 · Learn** (0) | `NOTES` 20 · `WORD_REC` 15 | `NOTES` 20 · `WORD_REC` 15 |
+| **1 · Do** (25) | `SIM` 25 · `MOUSE_GYM` 15 · `LABEL_IT` 10 · `WORKBOOK` 15 · `TYPE_GYM` 10 | `TYPE_GYM` 30 · `LABEL_IT` 15 · `POINT_IT` 10 · `WORKBOOK` 15 |
+| **2 · Prove** (80) | `SHORT_ANSWERS` 10 · `DIAGRAMS` 10 · `ASSESSMENT` 20 · `GAMES` 0 | `SHORT_ANSWERS` 10 · `DIAGRAMS` 10 · `ASSESSMENT` 20 · `GAMES` 0 |
+| total | 150 | 145 |
+
+Gate 2 is 80 of 115 (T2, 70%) and 80 of 105 (T3, 76%). T3 has no Try It — the course map
+gives it none; the Typing Gym *is* the doing, so it carries 30 XP. T2 swaps Find It for
+the Mouse Gym, so no two units share a task list.
+
+### 8.2 Engine additions
+
+**`desktop` skin — things on the desktop, right-click, drag.** An item is a file or a
+folder that sits on the desktop (the four app shortcuts and the Recycle Bin are always
+there):
+
+```js
+initial: {
+  items: [
+    { name: 'old drawing.png' },               // kind comes from the extension
+    { name: 'Holiday', kind: 'folder' },
+    { name: 'beach.jpg', in: 'Holiday' },      // inside a desktop folder
+    { name: 'test.docx', in: 'bin' },          // already in the Recycle Bin
+  ],
+  windows: [ … ],                               // as before
+}
+```
+
+| action | params | what it does |
+|---|---|---|
+| `openItem` | `name` | double-click an item: a folder opens a Files window titled with its name, a document opens Notes, a picture opens Paint |
+| `openContext` | `target` | right-click (press-and-hold on a tablet) on `desktop`, `item:<name>`, `app:<app>`, `bin` or `taskbar:<title>` |
+| `closeContext` | | click away / Esc |
+| `contextChoose` | `choice` | desktop → `newFolder`; item → `open` · `rename` · `delete`; app → `open`; bin → `open`; taskbar → `close` |
+| `drag` | `name`, `to` | drag an item onto `bin` or onto a desktop folder's name |
+| `deleteItem` | `name` | select it and press Delete |
+| `typeName` · `commitName` · `cancelName` | `text` · — · — | the rename box (a text action), Enter, Esc. `newFolder` opens the box on "New folder" |
+| `restoreItem` | `name` | "Put it back" inside the Recycle Bin window |
+
+New goal paths: `at.desktop`, `at.bin`, `at.<folder>` (item names), `folders` (desktop
+folders), `focus` (the title of the window on top), `context` (the open right-click menu's
+target, or null), `renaming`. Hint regions: `item:<name>`, `bin`, `context:<choice>`,
+`rename`.
+
+**`MOUSE_GYM` — "Mouse Gym" (`p45`), generative.** Twelve quick rounds on a play area:
+click the target (decoys around it), double-click it, right-click it and choose the named
+thing from its menu, drag it into the box. On a tablet: tap, double-tap, press-and-hold,
+drag — the screen says which, by the pointer it sees. Positions, targets and menu choices
+are drawn from a seed (`src/utils/mouseGym.js`). A round done first time scores in full; a
+slip (one click where two were needed, the left button for the right) is named and the
+round carries on.
+
+```js
+mouseGym: { title: 'Mouse Gym', titleVn: 'Phòng tập chuột', modes: ['click', 'double', 'right', 'drag'], rounds: 12 }
+```
+
+**`TYPE_GYM` — three more generated modes:** `top` (top-row reaches from the home row),
+`bottom` (bottom-row reaches) and `shift` (capital letters with the OPPOSITE hand's
+Shift). They need no pool.
+
+### 8.3 T2 · Mouse, Keys and Windows (`desktop` skin)
+
+- **Starter:** `hotspot` on a drawn mouse — "tap the button you press most" (left; decoys
+  the right button and the wheel).
+- The mouse (split, MOUSE diagram) + check → the four things a mouse does (steps: click,
+  double-click, right-click, drag) → `sort` jobs into the four → on a touch screen and a
+  touchpad (tap, double-tap, press-and-hold / two-finger tap, drag) + check.
+- **AppSim demo:** double-click Paint's icon; right-click the old drawing and Delete;
+  right-click the desktop → New folder, type a name, Enter.
+- A right-click menu is about the thing you clicked (statement) + `predict`.
+- Drag and drop (steps) + `order`.
+- Many windows: the one on top is the one you are using → `hotspot` on TWO_WINDOWS →
+  switching from the taskbar (**AppSim demo**) + check.
+- Keys that do a job (Enter, Backspace, Delete, Shift, Caps Lock, Space, Esc, Ctrl) →
+  `hotspot` Backspace and Esc on a keyboard → Backspace vs Delete + check → Shift vs Caps
+  Lock + `predict` → Ctrl shortcuts (Ctrl+S, Ctrl+Z, Ctrl+C, Ctrl+V) + `sort` → Esc, the
+  way out + check.
+- Checklist + exit check → On your own computer.
+- **Try It (6):** open Paint from its desktop icon (double-click, right-click ▸ Open and the
+  menu all pass); the Calculator is hidden behind — bring it to the front (`focus`); make
+  Paint fill the screen, then close the Calculator and keep Paint; put the old drawing in
+  the Recycle Bin (drag, right-click ▸ Delete, Delete key); right-click the desktop and
+  make a folder called "My Games"; drag both photos into the Holiday folder.
+- **Label It:** `LB_MOUSE` (left button, right button, scroll wheel, cable; distractor
+  Touchpad), `LB_KEYS` (Enter, Backspace, Shift, Space bar, Esc, Ctrl; distractor Power
+  button), optionally `LB_WINDOW_PAIR` (the window on top, the window behind, the taskbar).
+- **Source analysis:** five windows stacked — which one is the student using (MCQ); a
+  right-click menu open on a file (MCQ); written — "I double-clicked the folder and
+  nothing opened" (two clicks too slow, or a click-and-move that became a drag).
+- **Mouse Gym:** all four modes, 12 rounds. **Typing:** `words`, `shift`, `sentences`
+  (the keys unit — capitals and full stops); target 6 wpm / 85%.
+
+### 8.4 T3 · Typing Properly (no Try It)
+
+- **Starter:** `estimate` — how many words a minute does a good touch typist type? (about
+  40; tolerance 0.35).
+- Why type properly (statement: looking down costs twice) → sit like this (split,
+  POSTURE) + `sort` good and bad habits.
+- The home row (showcase) → `hotspot` F → the bumps on F and J + check → every finger has
+  its own keys (FINGER_ZONES showcase) → `hotspot` a key the right little finger presses →
+  thumbs on the space bar + check.
+- Reach and come home (steps) + `order`. Shift for capitals, the other hand's Shift +
+  `predict`. Enter and Backspace + check. Full stops, commas, question marks.
+- Accuracy first, then speed (statement) + `estimate`/check; little and often (callout);
+  don't look down — how to check without looking + check.
+- Checklist + exit check → On your own computer.
+- **Label It:** `LB_KEYBOARD` (home row, space bar, Shift, Enter, Backspace, Caps Lock, Tab;
+  distractor Scroll wheel), `LB_HANDS` (the finger zones: left little, left index, right
+  index, right little, thumbs; distractor "a palm key").
+- **Find It:** the keyboard, prompts by job ("the key your left index finger rests on", "the
+  key that makes the next letter a capital", "the long key under your thumbs"…); a second
+  picture of your choice (a laptop keyboard, or the finger-zone keyboard).
+- **Source analysis:** a student sitting badly (MCQ: what to fix first); two typists'
+  results — fast and 60% right vs slower and 95% right (MCQ); written — why F and J have
+  bumps, and why looking down slows you.
+- **Typing:** `home`, `top`, `bottom`, `shift`, `words`, `sentences`, 10 rounds; target
+  8 wpm / 90%.
