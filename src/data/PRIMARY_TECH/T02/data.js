@@ -62,25 +62,22 @@ export const T02_DATA = {
     },
     {
       // 25 of the 35 XP before it (71%).
-      // TEMP (integration): add MOUSE_GYM 15 to Gate 1 and set Gate 2 to 80 (§8.1)
-      // — { id: 'MOUSE_GYM', dbKey: 'p45', maxXP: 15 }, second, after SIM.
       id: 'practice',
       title: 'Gate 1: Do',
       threshold: 25,
       tasks: [
         { id: 'SIM', dbKey: 'p25', maxXP: 25 },
+        { id: 'MOUSE_GYM', dbKey: 'p45', maxXP: 15 },
         { id: 'LABEL_IT', dbKey: 'p28', maxXP: 10 },
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 15 },
         { id: 'TYPE_GYM', dbKey: 'p26', maxXP: 10 },
       ],
     },
     {
-      // TEMP (integration): add MOUSE_GYM 15 to Gate 1 and set Gate 2 to 80 (§8.1).
-      // Without the Mouse Gym's 15 XP, 95 is reachable before this gate, so it
-      // sits at 66 (69%) — the final 80 of 115 is the same 70%.
+      // 80 of the 115 XP before it (70%).
       id: 'mastery',
       title: 'Gate 2: Prove',
-      threshold: 66,
+      threshold: 80,
       tasks: [
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 10 },
         { id: 'DIAGRAMS', dbKey: 'p7', maxXP: 10 },
@@ -356,7 +353,6 @@ export const T02_DATA = {
   // Mouse Gym (UPGRADE-PLAN §8.2) — generative: twelve rounds of click,
   // double-click, right-click ▸ choose, and drag, positions and targets drawn
   // from a seed; on a tablet, tap, double-tap, press-and-hold and drag.
-  // TEMP (integration): the MOUSE_GYM engine is the lead's; the config is final.
   mouseGym: { title: 'Mouse Gym', titleVn: 'Phòng tập chuột', modes: ['click', 'double', 'right', 'drag'], rounds: 12 },
 
   // Typing Gym (UPGRADE-PLAN §3.2) — never the same twice: every line is drawn

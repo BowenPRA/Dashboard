@@ -156,9 +156,9 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry, side
         draggable={!checked}
         onDragStart={(e) => { setDragged(c.id); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(c.id)); }}
         onClick={(e) => { e.stopPropagation(); if (checked) return; if (inBin) unput(c.id); else setPicked(picked === c.id ? null : c.id); }}
-        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 border-b-[4px] font-bold text-sm transition-all cursor-pointer ${style}`}
+        className={`flex items-center gap-1.5 rounded-xl border-2 border-b-[4px] font-bold transition-all cursor-pointer ${compact ? 'px-2 py-1.5 text-xs' : 'px-3 py-2 text-sm'} ${style}`}
       >
-        {!checked && !inBin && <GripVertical className="w-4 h-4 opacity-40" strokeWidth={3} />}
+        {!checked && !inBin && <GripVertical className={`${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'} opacity-40`} strokeWidth={3} />}
         {parseText(pickL(lang, c.name, c.nameVn))}
         {checked && !ok && (
           <span className="ml-1 text-[10px] uppercase tracking-widest opacity-80">
