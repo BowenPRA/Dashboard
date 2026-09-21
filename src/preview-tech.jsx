@@ -16,7 +16,24 @@ import { getTrackConfig, unitGateOf } from './components/trackRegistry';
 import UnitCard from './components/UnitCard';
 
 const TRACK = 'PRIMARY_TECH';
-const WANTED = new URLSearchParams(window.location.search).get('unit');
+const PARAMS = new URLSearchParams(window.location.search);
+const WANTED = PARAMS.get('unit');
+// `?open=NOTES` mounts a task straight away; with `&slide=N` a deck opens on that
+// slide and with `&item=N` Label It opens on that diagram, so a whole unit can be
+// swept from a script (the same contract as preview-y7sci.html).
+const OPEN = PARAMS.get('open');
+const RESUME_SLIDE = Number(PARAMS.get('slide')) || 0;
+const RESUME_ITEM = Number(PARAMS.get('item')) || 0;
+
+const resumeFor = (open, pool) => {
+  if (open === 'NOTES' && RESUME_SLIDE > 0) return { slide: RESUME_SLIDE - 1, total: pool.length, checks: {} };
+  if (open === 'LABEL_IT' && RESUME_ITEM > 1) {
+    const done = {};
+    pool.slice(0, RESUME_ITEM - 1).forEach((it) => { done[it.id] = { placements: {}, perPin: {}, correct: 0, total: it.pins.length }; });
+    return { done };
+  }
+  return {};
+};
 
 /** Task list DERIVED from the loaded unit, so it can never offer a task the unit lacks. */
 function casesFor(unit) {
@@ -140,7 +157,7 @@ function UnitLadder({ meta, data }) {
 function Harness() {
   const { data, meta } = getTrack(TRACK);
   const [unitId, setUnitId] = useState(WANTED && data[WANTED] ? WANTED : meta[0]?.id);
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(OPEN);
   const unit = data[unitId];
 
   if (!unit) {
@@ -165,7 +182,7 @@ function Harness() {
     const pool = def.buildPool(unit, { track: TRACK, unitId });
     const ctx = {
       pool, unit, unitId, track: TRACK,
-      scores: {}, savedData: {}, strikes: 0, maxXP: resolved.maxXP,
+      scores: {}, savedData: resumeFor(open, pool), strikes: 0, maxXP: resolved.maxXP,
       // The XP the task would actually award is worked out here rather than just
       // logging the raw score: "does it award XP" is a done-condition for this
       // track, and a raw 10 tells you nothing about a 25-XP tile.
