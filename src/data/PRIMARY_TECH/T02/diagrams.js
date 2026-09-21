@@ -259,7 +259,7 @@ const TOUCH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" cla
   <rect x="200" y="16" width="180" height="76" rx="10" fill="#e0f2fe"/>
   <rect x="384" y="16" width="180" height="76" rx="10" fill="#e0f2fe"/>
   <rect x="568" y="16" width="180" height="76" rx="10" fill="#e0f2fe"/>
-  ${mouseShape(275, 24, 0.15)}
+  ${mouseShape(276, 26, 0.14)}
   <rect x="446" y="22" width="56" height="40" rx="6" fill="${BAR_SOFT}"/>
   <rect x="451" y="27" width="46" height="30" rx="2" fill="${WALL}"/>
   <circle cx="474" cy="42" r="12" fill="none" stroke="${AMBER}" stroke-width="2"/>

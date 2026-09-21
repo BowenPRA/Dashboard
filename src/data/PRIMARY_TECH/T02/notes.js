@@ -80,7 +80,7 @@ const KEY_NAMES = {
   ctrl: ['Ctrl — hold it with a letter for a shortcut, like Ctrl+S', 'Ctrl — giữ phím này cùng một chữ cái để dùng phím tắt, như Ctrl+S'],
   space: ['the space bar — it puts a gap between words', 'phím cách — nó tạo khoảng trống giữa các từ'],
   tab: ['Tab — it jumps to the next box', 'Tab — nó nhảy sang ô tiếp theo'],
-  letter: ['a letter key — it types that letter', 'một phím chữ — nó gõ ra chữ cái đó'],
+  letter: ['a letter key — it types that letter or mark', 'một phím chữ — nó gõ ra chữ cái hoặc dấu đó'],
   number: ['a number key — it types that number or mark', 'một phím số — nó gõ ra số hoặc dấu đó'],
   fkey: ['a function key (F1 to F12) — a shortcut for a program', 'một phím chức năng (F1 đến F12) — phím tắt của chương trình'],
   other: ['Fn or Alt — keys for other shortcuts', 'Fn hoặc Alt — các phím dùng cho phím tắt khác'],
