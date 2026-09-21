@@ -118,7 +118,8 @@ const primary = `${btn} bg-[#1cb0f6] border-[#1899d6] text-white hover:bg-[#159b
 
 // ── sort ─────────────────────────────────────────────────────────────────────
 
-function SortActivity({ activity, lang, result, onResult, parseText, retry }) {
+function SortActivity({ activity, lang, result, onResult, parseText, retry, side }) {
+  const compact = !!side && activity.bins.length >= 4;
   const t = T[lang] || T.en;
   const cards = useMemo(() => seededShuffle(activity.cards || [], activity.id || 'sort'), [activity]);
   const [placed, setPlaced] = useState(() => result?.placed || keepWhere(retry?.placed,
@@ -179,6 +180,8 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry }) {
         </div>
       )}
       {/* Four bins go 2 × 2: three columns left the fourth alone on a row. */}
+      {/* Beside the slide, four or more bins sit tighter, so the Check button
+          stays on screen on a 1280×720 laptop. */}
       <div className={`grid gap-2 ${activity.bins.length === 3 || activity.bins.length > 4 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
         {activity.bins.map((bin) => {
           const here = cards.filter((c) => placed[c.id] === bin.id);
@@ -191,10 +194,10 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry }) {
               onDrop={(e) => { e.preventDefault(); if (dragged) put(dragged, bin.id); }}
               className={`rounded-2xl border-2 overflow-hidden bg-white dark:bg-slate-800 transition-all ${active ? 'border-[#1cb0f6] ring-4 ring-[#1cb0f6]/20 cursor-pointer' : 'border-slate-200 dark:border-slate-700'}`}
             >
-              <div className="bg-slate-50 dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-700 px-3 py-2 font-black text-slate-600 dark:text-slate-300 text-sm text-center">
+              <div className={`bg-slate-50 dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-700 px-3 font-black text-slate-600 dark:text-slate-300 text-sm text-center ${compact ? 'py-1' : 'py-2'}`}>
                 {parseText(pickL(lang, bin.name, bin.nameVn))}
               </div>
-              <div className="p-2.5 min-h-[56px] flex flex-wrap gap-2 items-center">
+              <div className={`p-2.5 flex flex-wrap gap-2 items-center ${compact ? 'min-h-[40px] py-1.5' : 'min-h-[56px]'}`}>
                 {here.length === 0 && (
                   <span className={`flex items-center gap-1.5 font-black uppercase tracking-widest text-[10px] ${active ? 'text-[#1cb0f6] animate-pulse' : 'text-slate-300 dark:text-slate-600'}`}>
                     <CornerDownRight className="w-3.5 h-3.5" />{active ? t.dropHere : t.tapCard}

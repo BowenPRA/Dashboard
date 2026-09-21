@@ -9,7 +9,9 @@ export default function StackLayout({ slide: s, ctx }) {
   const accent = toHex(s.accent || s.color, '#3b82f6');
   const title = pick(s.title, s.titleVn);
   const content = pick(s.content, s.contentVn);
-  const columns = s.columns === 1 ? 1 : 2;
+  // 1, 2 or 3 columns (3 fits three short task cards across a laptop screen).
+  const columns = s.columns === 1 ? 1 : s.columns === 3 ? 3 : 2;
+  const grid = columns === 3 ? 'grid-cols-1 md:grid-cols-3' : columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1';
   const isChecklist = s.variant === 'checklist';
 
   return (
@@ -20,7 +22,7 @@ export default function StackLayout({ slide: s, ctx }) {
           {content && <div className="mb-5">{renderContent(content, { isDisplayMode })}</div>}
 
           {isChecklist ? (
-            <div className={`grid gap-3 sm:gap-4 ${columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+            <div className={`grid gap-3 sm:gap-4 ${grid}`}>
               {(s.items || []).map((item, i) => {
                 const text = pick(item.text ?? item, item.textVn);
                 return (
@@ -34,7 +36,7 @@ export default function StackLayout({ slide: s, ctx }) {
               })}
             </div>
           ) : (
-            <div className={`grid gap-3 sm:gap-4 ${columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+            <div className={`grid gap-3 sm:gap-4 ${grid}`}>
               {(s.notes || []).map((note, i) => <Note key={i} note={note} lang={lang} isDisplayMode={isDisplayMode} />)}
             </div>
           )}
