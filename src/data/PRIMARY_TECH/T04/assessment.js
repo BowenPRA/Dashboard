@@ -1,17 +1,20 @@
 // src/data/PRIMARY_TECH/T04/assessment.js
-// T4 Saving Your Work — the Quiz (ASSESSMENT, 20 XP). Six questions, eight
+// T4 Saving Your Work — the Quiz (ASSESSMENT, 20 XP). Eight questions, ten
 // minutes.
 //
 // The Quiz asks WHEN and WHY; Try It already tested whether they can do it, and
 // Find It tested where the controls are. Bilingual convention follows Y7_MATH:
-// plain English question and options, teaching carried in `expVn`.
+// plain English question and options, teaching carried in `expVn`. No question
+// repeats a deck check or prediction: where the deck asked "how many files after
+// Save As", the quiz asks what Save did to the old ending; where the deck asked
+// what to type in the search box, the quiz asks whether capitals matter.
 //
 // Distractors are nameable mistakes: thinking Save and Save As are two names for
 // one button, thinking Downloads is a fine home for your own work, thinking a
-// deleted file is gone, thinking a file with no name can exist. Correct letters
-// are spread across A/B/C/D.
+// deleted file is gone, thinking a rename changes what is inside, thinking there
+// is only one way to save. Correct letters: two each of A, B, C and D.
 export const assessment = {
-  timeLimit: 480, // 8 minutes
+  timeLimit: 600, // 10 minutes
   passages: [],
   questions: [
     {
@@ -29,18 +32,18 @@ export const assessment = {
       expVn: 'Một tệp không thể tồn tại nếu không có tên và chỗ, nên hộp thoại buộc phải hỏi cả hai. Đáp án D là cảm giác khi em bấm bỏ qua mà không đọc: máy tính đã chọn thay, và chọn rất tệ.',
     },
     {
-      id: 'a2_save_vs_saveas',
+      id: 'a2_save_writes_over',
       type: 'mcq',
-      title: '2. You have a saved file open. You press Save As and give it a new name. How many files do you have now?',
+      title: '2. Your story is saved. You open it, change the ending, and press Save. What happened to the old ending?',
       options: [
-        { val: 'A', text: 'A. Two — the old one and the new one' },
-        { val: 'B', text: 'B. One — it was renamed' },
-        { val: 'C', text: 'C. One — the old one was replaced' },
-        { val: 'D', text: 'D. None until you close the document' },
+        { val: 'A', text: 'A. It is gone — Save wrote the new ending over the same file' },
+        { val: 'B', text: 'B. It was kept in a second file called "story 2"' },
+        { val: 'C', text: 'C. It went to the Recycle Bin' },
+        { val: 'D', text: 'D. It is still in the file, hidden under the new ending' },
       ],
       correct: 'A',
-      expEn: 'Save As makes a copy under the new name and leaves the original alone. That is the difference from Save, which writes over what you already had — and it is why Save As is how you keep a draft.',
-      expVn: 'Save As tạo một bản sao với tên mới và giữ nguyên bản gốc. Đó là điểm khác với Save, vốn ghi đè lên cái em đang có — và vì thế Save As là cách để giữ lại bản nháp.',
+      expEn: 'Save writes over the file you already have, so you still have one file — with the new ending. A second file (B) only appears with Save As. Nothing goes to the Recycle Bin (C) unless you delete it. If you wanted the old ending, Save As with a new name was the button to press BEFORE saving.',
+      expVn: 'Save ghi đè lên tệp em đang có, nên em vẫn chỉ có một tệp — với phần kết mới. Một tệp thứ hai (B) chỉ xuất hiện khi dùng Save As. Không có gì vào Recycle Bin (C) trừ khi em xoá nó. Nếu em muốn giữ phần kết cũ, Save As với tên mới mới là nút cần bấm TRƯỚC khi lưu.',
     },
     {
       id: 'a3_downloads',
@@ -53,8 +56,8 @@ export const assessment = {
         { val: 'D', text: 'D. Only the teacher can see inside it' },
       ],
       correct: 'C',
-      expEn: 'Nothing is wrong with the folder — the problem is that the browser keeps adding to it. Your one important file ends up in a pile of installers and pictures you looked at once.',
-      expVn: 'Thư mục đó không có gì sai — vấn đề là trình duyệt cứ liên tục thêm đồ vào. Một tệp quan trọng của em sẽ lọt thỏm giữa đống phần mềm cài đặt và ảnh em chỉ xem một lần.',
+      expEn: 'Nothing is wrong with the folder — the problem is that the browser keeps adding to it. Your one important file ends up in a pile of worksheets and pictures you looked at once.',
+      expVn: 'Thư mục đó không có gì sai — vấn đề là trình duyệt cứ liên tục thêm đồ vào. Một tệp quan trọng của em sẽ lọt thỏm giữa đống phiếu bài tập và ảnh em chỉ xem một lần.',
     },
     {
       id: 'a4_deleted',
@@ -85,18 +88,46 @@ export const assessment = {
       expVn: 'Máy tính hoàn toàn hài lòng với Untitled1. Chính em mới là người phải tìm lại nó sau một tháng, nên phép thử của một cái tên tốt là liệu lúc đó em còn hiểu nó không.',
     },
     {
-      id: 'a6_where_did_it_go',
+      id: 'a6_ctrl_s',
       type: 'mcq',
-      title: '6. You saved something but cannot find it. What is the most likely explanation?',
+      title: '6. Your mouse stops working halfway through a story. How can you still save it?',
       options: [
-        { val: 'A', text: 'A. It is somewhere on the computer, under a name or in a folder you did not choose' },
-        { val: 'B', text: 'B. The computer deleted it to save space' },
-        { val: 'C', text: 'C. It was never saved' },
-        { val: 'D', text: 'D. It went to the Recycle Bin by itself' },
+        { val: 'A', text: 'A. You cannot save without a mouse' },
+        { val: 'B', text: 'B. Close the window — it saves as it closes' },
+        { val: 'C', text: 'C. Press the power button' },
+        { val: 'D', text: 'D. Press Ctrl+S (Cmd+S on a Mac)' },
+      ],
+      correct: 'D',
+      expEn: 'Ctrl+S is Save on the keyboard, in almost every program — the second way to do the same job. Closing the window (B) asks whether to save at best and loses the work at worst, and the power button (C) is the power cut all over again.',
+      expVn: 'Ctrl+S là lệnh Save trên bàn phím, dùng được trong hầu hết mọi chương trình — cách thứ hai để làm cùng một việc. Đóng cửa sổ (B) may lắm thì được hỏi có lưu không, tệ nhất thì mất bài, còn nút nguồn (C) thì lại là chuyện mất điện một lần nữa.',
+    },
+    {
+      id: 'a7_rename',
+      type: 'mcq',
+      title: '7. You rename "Untitled1" to "volcano report". What happens to the writing inside it?',
+      options: [
+        { val: 'A', text: 'A. Nothing — only the name changes' },
+        { val: 'B', text: 'B. It is deleted, because it is a new file now' },
+        { val: 'C', text: 'C. A copy is made, so you now have two files' },
+        { val: 'D', text: 'D. It moves to the Documents folder' },
       ],
       correct: 'A',
-      expEn: 'Saving almost never fails. What goes missing is the answer to "where" — which is why the two questions in the box are worth two seconds, and why the search box exists for the times they were not.',
-      expVn: 'Việc lưu hầu như không bao giờ thất bại. Thứ bị mất là câu trả lời cho "ở đâu" — vì vậy hai câu hỏi trong hộp thoại đáng bỏ ra hai giây, và vì vậy mới có ô tìm kiếm cho những lần em bỏ qua chúng.',
+      expEn: 'Renaming changes what a file is CALLED, not what is in it or where it lives. There is still one file (not C), in the same folder (not D), with every word exactly as it was.',
+      expVn: 'Đổi tên chỉ thay đổi tên GỌI của tệp, không thay đổi nội dung bên trong hay nơi nó nằm. Vẫn chỉ có một tệp (không phải C), trong cùng thư mục (không phải D), và mọi chữ vẫn y nguyên như cũ.',
+    },
+    {
+      id: 'a8_search_capitals',
+      type: 'mcq',
+      title: '8. Hoa types "Volcano" in the search box. Her file is called "volcano report". What happens?',
+      options: [
+        { val: 'A', text: 'A. Nothing is found, because the capital V does not match' },
+        { val: 'B', text: 'B. Nothing is found, because she did not type the whole name' },
+        { val: 'C', text: 'C. The file is found — search matches part of a name, and capitals do not matter' },
+        { val: 'D', text: 'D. The search renames her file to "Volcano"' },
+      ],
+      correct: 'C',
+      expEn: 'The search box looks for those letters anywhere in a file\'s name, and it does not care about capital letters (not A). That is why you only need one word you are sure of, not the exact name (B). Searching only finds; it never changes a file (D).',
+      expVn: 'Ô tìm kiếm tìm những chữ đó ở bất kỳ đâu trong tên tệp, và không phân biệt chữ hoa chữ thường (không phải A). Vì vậy em chỉ cần một từ em chắc chắn, không cần tên chính xác (B). Tìm kiếm chỉ để tìm; nó không bao giờ thay đổi tệp (D).',
     },
   ],
 };
