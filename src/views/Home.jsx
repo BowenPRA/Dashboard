@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine } from 'lucide-react';
+import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine, Play, Check } from 'lucide-react';
 import { TRACK_REGISTRY, getTrackConfig, ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
 import { planForDate, todayISO } from '../utils/studyPlan';
+import { getTrack } from '../data/index';
+import { trackSummary, unitNumberOf } from '../utils/trackSections';
 import useDarkMode from '../hooks/useDarkMode';
 
 export default function Home() {
@@ -14,6 +16,10 @@ export default function Home() {
   const [visibleTracks, setVisibleTracks] = useState([]);
   const [showPlan, setShowPlan] = useState(false);
   const [loading, setLoading] = useState(true);
+  // The student's progress, for the bars on the cards and the Continue card.
+  // Fetched AFTER the menu is on screen and never waited for: the tracks are
+  // what the page is for, and a slow or failed read just leaves the bars off.
+  const [progress, setProgress] = useState(null);
 
   // The banner only needs the plan, not the progress behind it — /today owns
   // the per-goal detail, and Home stays a one-query screen.
@@ -64,6 +70,9 @@ export default function Home() {
         setVisibleTracks(withArcade(defaultTracks));
       }
       setLoading(false);
+
+      supabase.from('students').select('progress').eq('id', session.user.id).single()
+        .then(({ data }) => setProgress(data?.progress || {}), () => {});
     };
 
     fetchUserAndTracks();
@@ -75,6 +84,33 @@ export default function Home() {
 
   const hasWriting = visibleTracks.some(t => t.id === 'GED_ENG');
 
+  // Per-track progress, once it has arrived. The Arcade holds no units.
+  const summaries = useMemo(() => {
+    if (!progress) return {};
+    return Object.fromEntries(
+      visibleTracks
+        .filter(t => t.id !== ARCADE_TRACK_ID)
+        .map(t => [t.id, trackSummary(t.id, progress[t.id])])
+    );
+  }, [progress, visibleTracks]);
+
+  // Where they left off: the unfinished unit touched most recently, across
+  // every track they can see. Students on the daily plan get the plan instead.
+  const resume = useMemo(() => {
+    if (showPlan) return null;
+    const best = Object.entries(summaries)
+      .filter(([, s]) => s.lastUnitId)
+      .sort(([, a], [, b]) => (a.lastAt < b.lastAt ? 1 : -1))[0];
+    if (!best) return null;
+    const [trackId, s] = best;
+    const meta = getTrack(trackId).meta.find(m => m.id === s.lastUnitId);
+    return meta ? { track: getTrackConfig(trackId), unitId: meta.id, title: meta.title, number: unitNumberOf(meta.id) } : null;
+  }, [summaries, showPlan]);
+
+  // Past four tracks the big two-up cards turn the menu into a long scroll, so
+  // the same cards are drawn smaller and three across.
+  const compact = visibleTracks.length > 4;
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
@@ -84,7 +120,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div className={`relative min-h-screen flex flex-col items-center justify-center p-6 ${compact ? 'py-16' : ''} overflow-hidden font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300`}>
       
       <button 
         onClick={toggleDarkMode}
@@ -97,11 +133,11 @@ export default function Home() {
 
       <div className="relative z-10 w-full max-w-5xl">
         
-        <div className="mb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="inline-flex items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 mb-8 border-b-[6px] transform hover:-translate-y-1 transition-transform">
-             <LayoutDashboard className="w-10 h-10 text-slate-800 dark:text-white" strokeWidth={2.5} />
+        <div className={`${compact ? 'mb-8' : 'mb-12'} text-center animate-in fade-in slide-in-from-bottom-4 duration-300`}>
+          <div className={`inline-flex items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 ${compact ? 'mb-5' : 'mb-8'} border-b-[6px] transform hover:-translate-y-1 transition-transform`}>
+             <LayoutDashboard className={`${compact ? 'w-8 h-8' : 'w-10 h-10'} text-slate-800 dark:text-white`} strokeWidth={2.5} />
           </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-4 text-slate-800 dark:text-white drop-shadow-sm">
+          <h1 className={`${compact ? 'text-4xl md:text-5xl' : 'text-5xl md:text-7xl'} font-black tracking-tight mb-4 text-slate-800 dark:text-white drop-shadow-sm`}>
             Curriculum
           </h1>
           <p className="text-sm font-black tracking-widest uppercase text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 inline-block px-6 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
@@ -163,6 +199,28 @@ export default function Home() {
         </button>
         )}
 
+        {/* Where you left off — straight back into the unit, not just the track. */}
+        {resume && (
+        <button
+          onClick={() => navigate(`/${resume.track.id}?unit=${resume.unitId}`)}
+          className={`group w-full mb-8 flex items-center gap-4 p-4 sm:p-5 rounded-[1.75rem] text-left text-white border-b-[6px] transition-all hover:brightness-110 active:border-b-0 active:translate-y-[6px] animate-in fade-in duration-300 ${resume.track.theme.bg} ${resume.track.theme.border}`}
+        >
+          <span className="w-11 h-11 rounded-xl bg-black/15 flex items-center justify-center flex-shrink-0">
+            <Play className="w-5 h-5 fill-current" strokeWidth={2.5} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-black uppercase tracking-widest opacity-80">
+              Continue · {resume.track.title}
+            </span>
+            <span className="block text-lg sm:text-xl font-black tracking-tight truncate">
+              {resume.number && <span className="mr-2 tabular-nums opacity-80">{resume.number}</span>}
+              {resume.title}
+            </span>
+          </span>
+          <ChevronRight className="w-6 h-6 flex-shrink-0 transition-transform group-hover:translate-x-1" strokeWidth={3} />
+        </button>
+        )}
+
         {/* My Writing — the student's saved essays. Only for students who can
             reach GED Language Arts, since that is where essays are written. */}
         {hasWriting && (
@@ -187,34 +245,56 @@ export default function Home() {
         </button>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className={compact ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8'}>
           {visibleTracks.map((t, index) => {
             const Icon = t.icon;
+            const sum = summaries[t.id];
+            const pct = sum?.total ? Math.round((sum.xp / (sum.total * 100)) * 100) : 0;
+            const allDone = sum?.total > 0 && sum.done === sum.total;
             return (
-              <button 
+              <button
                 key={t.id}
                 onClick={() => navigate(`/${t.id}`)}
-                className="group relative w-full text-left flex flex-col p-8 sm:p-10 rounded-[2.5rem] border-2 border-slate-200 dark:border-slate-800 transition-all duration-200 active:translate-y-[8px] active:border-b-2 bg-white dark:bg-slate-900 border-b-[8px] hover:border-slate-300 dark:hover:border-slate-700 overflow-hidden animate-in fade-in slide-in-from-bottom-8"
-                style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
+                className={`group relative w-full text-left flex flex-col border-2 border-slate-200 dark:border-slate-800 transition-all duration-200 active:border-b-2 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 overflow-hidden animate-in fade-in slide-in-from-bottom-4
+                  ${compact ? 'p-5 rounded-[1.75rem] border-b-[6px] active:translate-y-[4px]' : 'p-8 sm:p-10 rounded-[2.5rem] border-b-[8px] active:translate-y-[8px]'}`}
+                style={{ animationFillMode: 'both', animationDelay: `${Math.min(index, 8) * 40}ms` }}
               >
                 <div className="flex items-center justify-between relative z-10">
-                  <div className="flex flex-col">
-                    <div className={`w-16 h-16 ${t.theme.bg} rounded-2xl flex items-center justify-center mb-6 shadow-sm border-b-[4px] ${t.theme.border} group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300`}>
-                      <Icon className={`w-8 h-8 ${t.id === 'ESL' ? 'text-amber-950' : 'text-white'} drop-shadow-sm`} strokeWidth={2.5} />
+                  <div className={`flex min-w-0 ${compact ? 'items-center gap-4' : 'flex-col'}`}>
+                    <div className={`${t.theme.bg} rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] ${t.theme.border} flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 ${compact ? 'w-12 h-12' : 'w-16 h-16 mb-6'}`}>
+                      <Icon className={`${compact ? 'w-6 h-6' : 'w-8 h-8'} ${t.id === 'ESL' ? 'text-amber-950' : 'text-white'} drop-shadow-sm`} strokeWidth={2.5} />
                     </div>
-                    
-                    <h2 className="text-3xl sm:text-4xl font-black text-slate-800 dark:text-white mb-2 tracking-tight group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
-                      {t.title}
-                    </h2>
-                    <p className="text-slate-500 dark:text-slate-400 font-bold text-base tracking-wide">
-                      {t.desc}
-                    </p>
+
+                    <div className="min-w-0">
+                      <h2 className={`font-black text-slate-800 dark:text-white tracking-tight group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors ${compact ? 'text-lg leading-tight' : 'text-3xl sm:text-4xl mb-2'}`}>
+                        {t.title}
+                      </h2>
+                      <p className={`text-slate-500 dark:text-slate-400 font-bold tracking-wide ${compact ? 'text-xs line-clamp-1' : 'text-base'}`}>
+                        {t.desc}
+                      </p>
+                    </div>
                   </div>
 
+                  {!compact && (
                   <div className="hidden sm:flex w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:bg-[#1cb0f6] group-hover:border-[#1899d6] group-hover:text-white transition-all transform translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 duration-300 border-b-[4px] group-hover:border-b-[4px]">
                     <ChevronRight className="w-7 h-7" strokeWidth={3} />
                   </div>
+                  )}
                 </div>
+
+                {/* Progress through the track. Its space is held before the
+                    numbers load so the cards do not jump when they arrive. */}
+                {t.id !== ARCADE_TRACK_ID && (
+                  <div className={`relative z-10 flex items-center gap-3 ${compact ? 'mt-4' : 'mt-6'} ${sum?.total ? '' : 'invisible'}`}>
+                    <div className="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-700 ${allDone ? 'bg-amber-400' : t.theme.bg}`} style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="flex items-center gap-1 text-[11px] font-black tabular-nums text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      {allDone && <Check className="w-3.5 h-3.5 text-amber-500" strokeWidth={4} />}
+                      {sum?.done ?? 0}/{sum?.total ?? 0} units
+                    </span>
+                  </div>
+                )}
               </button>
             );
           })}

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { getStudentDetail, updateStudent, setProgress, assignStudents } from '../utils/adminApi';
 import { getTrack } from '../data/index';
-import { TRACK_IDS, TRACK_REGISTRY } from './trackRegistry';
-import { TASKS, resolveUnitTasks } from '../tasks/taskRegistry';
-import { isUnitKey } from '../utils/progressSchema';
+import { TRACK_IDS, TRACK_REGISTRY, ARCADE_TRACK_ID, getTrackConfig } from './trackRegistry';
+import { TASKS, resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
+import { isUnitKey, ARCADE_KEYS } from '../utils/progressSchema';
 import { essaysOf, ESSAYS_KEY } from '../utils/essayArchive';
+import { sectionsOf, unitNumberOf, unitLastTouched } from '../utils/trackSections';
+import { relTime, weekActivity } from './teacher/teacherStats';
+import ActivityStrip from './teacher/ActivityStrip';
 import EssayReviewPanel from './essay/EssayReviewPanel';
 import {
   X, Loader2, Edit2, Check, XCircle, Gamepad2, BookOpen, Settings2, UserCog,
-  Eraser, Rocket, Save
+  Eraser, Rocket, Save, ChevronDown, ShieldAlert,
 } from 'lucide-react';
 
 // Derived from the task registry — the one place a task/dbKey is defined — so a
@@ -17,19 +20,39 @@ const TASK_MAP = Object.fromEntries(
   TASKS.map((t) => [t.dbKey, { label: t.label, bg: t.color.bg, border: t.color.border, text: t.color.text }])
 );
 
-const getUnitMeta = (trackId, unitId) =>
-  getTrack(trackId).meta.find((u) => u.id === unitId) || { title: 'Unknown Unit', desc: '' };
-
 // Registry-resolved tasks (with real maxXP) for a unit, for bulk clear/advance.
 const declaredTasks = (trackId, unitId) => {
   const unit = getTrack(trackId).data?.[unitId];
   return unit ? resolveUnitTasks(unit) : [];
 };
 
-export default function StudentProfileDrawer({ isOpen, onClose, studentId, studentName, classes = [] }) {
+// XP for a unit the content library no longer has (archived, or an unknown
+// track): the sum of its task records, capped like any other unit.
+const rawUnitXP = (unitData = {}) =>
+  Math.min(100, Object.entries(unitData).reduce((sum, [k, v]) => sum + (/^p\d+$/.test(k) ? Number(v?.current) || 0 : 0), 0));
+
+const unitKeysOf = (trackData) => Object.keys(trackData || {}).filter(isUnitKey);
+
+/**
+ * One student, in depth. `student` is their roster row (for the name and the
+ * activity strip while the full record loads); `focusTrack` / `focusUnit` open
+ * the drawer AT a unit — how a gradebook cell hands a teacher straight to the
+ * thing they clicked.
+ *
+ * Progress is shown a track at a time, in course order, under the same
+ * coursebook sections the student sees. Units start folded: the header line
+ * (number, title, XP, last touched) is what a teacher reads; the task chips and
+ * the clear/advance buttons are one click in.
+ */
+export default function StudentProfileDrawer({ isOpen, onClose, student, focusTrack = null, focusUnit = null, classes = [] }) {
+  const studentId = student?.id;
   const [detail, setDetail] = useState(null); // { progress, name, pra_id, enrolled_tracks, role, class_id }
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const [trackTab, setTrackTab] = useState(null);
+  // undefined = "whatever the default is"; null = the teacher folded everything.
+  const [openUnit, setOpenUnit] = useState(undefined);
 
   const [editingTask, setEditingTask] = useState(null);
   const [draftXp, setDraftXp] = useState('');
@@ -52,6 +75,8 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
       setError('');
       setShowEdit(false);
       setEditingTask(null);
+      setTrackTab(null);
+      setOpenUnit(undefined);
       try {
         const d = await getStudentDetail(studentId);
         if (!alive) return;
@@ -65,6 +90,20 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
     })();
     return () => { alive = false; };
   }, [isOpen, studentId]);
+
+  // Opened from a gradebook cell: bring that unit into view once it exists.
+  useEffect(() => {
+    if (!detail || !focusUnit) return;
+    document.getElementById(`drawer-unit-${focusUnit}`)?.scrollIntoView({ block: 'center' });
+  }, [detail, focusUnit]);
+
+  // Escape closes the drawer, like every other overlay in the app.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
 
   // Apply an ops list via the backend, then adopt its authoritative progress.
   const applyOps = async (ops) => {
@@ -142,37 +181,111 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
 
   if (!isOpen) return null;
 
+  // --- which tracks get a tab --------------------------------------------------
+  // Enrolled tracks and anything with progress, in registry order; then any
+  // progress key that isn't a registered track, so nothing a student has done
+  // can silently vanish from this drawer (the failure mode that hid newer
+  // tracks). The Arcade holds scores, not units, and has nothing to edit.
+  const enrolled = detail?.enrolled_tracks || [];
+  const tabs = progressData ? [
+    ...TRACK_IDS.filter((id) => id !== ARCADE_TRACK_ID && (unitKeysOf(progressData[id]).length > 0 || enrolled.includes(id))),
+    ...Object.keys(progressData).filter((k) => !TRACK_IDS.includes(k) && unitKeysOf(progressData[k]).length > 0),
+  ] : [];
+
+  const trackLastTouched = (id) => unitKeysOf(progressData?.[id])
+    .map((u) => unitLastTouched(progressData[id][u]))
+    .filter(Boolean).sort().pop() || '';
+  const mostRecentTrack = [...tabs].sort((a, b) => (trackLastTouched(a) < trackLastTouched(b) ? 1 : -1))[0];
+  const activeTrack = [trackTab, focusTrack, mostRecentTrack].find((t) => t && tabs.includes(t)) || null;
+
+  // --- the active track's units, in course order -------------------------------
+  const trackData = (activeTrack && progressData?.[activeTrack]) || {};
+  const { meta: trackMeta, data: trackContent } = getTrack(activeTrack);
+  const known = new Set(trackMeta.map((m) => m.id));
+  const orphans = unitKeysOf(trackData).filter((u) => !known.has(u)).map((id) => ({ id, title: id, desc: '', orphan: true }));
+  const sections = activeTrack ? [
+    ...sectionsOf(activeTrack, trackMeta).filter((s) => s.units.length),
+    ...(orphans.length ? [{ key: '__orphans', label: 'Archived', title: 'Units no longer in the course', units: orphans }] : []),
+  ] : [];
+  const showSectionHeads = sections.length > 1;
+
+  const xpFor = (unitId) => (trackContent[unitId] ? unitXPOf(trackContent[unitId], trackData[unitId] || {}) : rawUnitXP(trackData[unitId]));
+  const allUnits = sections.flatMap((s) => s.units);
+  const trackDone = allUnits.filter((u) => xpFor(u.id) >= 100).length;
+
+  const defaultOpen = (focusTrack === activeTrack && focusUnit)
+    || allUnits.map((u) => ({ id: u.id, at: unitLastTouched(trackData[u.id]) })).filter((u) => u.at).sort((a, b) => (a.at < b.at ? 1 : -1))[0]?.id
+    || null;
+  const activeUnit = openUnit === undefined ? defaultOpen : openUnit;
+
+  // Headline numbers from the live record, so they follow edits made here.
+  const totals = Object.entries(progressData || {}).reduce((acc, [id, td]) => {
+    if (id === ARCADE_TRACK_ID) return acc;
+    const content = getTrack(id).data;
+    for (const u of unitKeysOf(td)) {
+      const xp = content[u] ? unitXPOf(content[u], td[u]) : rawUnitXP(td[u]);
+      acc.xp += xp;
+      if (xp >= 100) acc.done += 1;
+    }
+    return acc;
+  }, { xp: 0, done: 0 });
+  const week = weekActivity(student);
+  const cfg = getTrackConfig(activeTrack);
+
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
-      <div className="relative w-full max-w-4xl bg-slate-50 dark:bg-slate-950 h-full shadow-2xl border-l-2 border-slate-200 dark:border-slate-800 flex flex-col animate-in slide-in-from-right-full duration-300">
+      <div className="relative w-full max-w-3xl bg-slate-50 dark:bg-slate-950 h-full shadow-2xl border-l-2 border-slate-200 dark:border-slate-800 flex flex-col animate-in slide-in-from-right-full duration-200">
 
-        <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 border-b-2 border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 shrink-0">
-          <div className="min-w-0">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-1 break-words">
-              {detail?.name || studentName}'s Profile
-            </h2>
-            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Detailed Academic Record</p>
+        <div className="bg-white dark:bg-slate-900 px-5 sm:px-7 pt-5 sm:pt-6 pb-4 border-b-2 border-slate-200 dark:border-slate-800 shrink-0">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-xl bg-[#1cb0f6] border-b-[4px] border-[#1899d6] flex-shrink-0">
+                {(detail?.name || student?.name || '?').charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight leading-tight break-words">
+                  {detail?.name || student?.name}
+                </h2>
+                <p className="text-slate-400 font-bold text-xs">
+                  {[classes.find((c) => c.id === (detail?.class_id ?? student?.class_id))?.name, (detail?.pra_id ?? student?.pra_id) ? `PRA ${detail?.pra_id ?? student?.pra_id}` : null].filter(Boolean).join(' · ') || 'Student record'}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setShowEdit((v) => !v)}
+                className={`h-10 px-4 flex items-center gap-2 rounded-xl border-2 font-black text-xs uppercase tracking-widest transition-colors active:scale-95 ${showEdit ? 'bg-indigo-500 text-white border-indigo-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700 hover:text-indigo-500'}`}
+              >
+                <UserCog className="w-4 h-4" strokeWidth={2.5} /> Edit
+              </button>
+              <button onClick={onClose} aria-label="Close" className="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors border-2 border-slate-200 dark:border-slate-700 active:scale-95">
+                <X className="w-6 h-6" strokeWidth={2.5} />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setShowEdit((v) => !v)}
-              className={`h-10 px-4 flex items-center gap-2 rounded-xl border-2 font-black text-xs uppercase tracking-widest transition-colors active:scale-95 ${showEdit ? 'bg-indigo-500 text-white border-indigo-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700 hover:text-indigo-500'}`}
-            >
-              <UserCog className="w-4 h-4" strokeWidth={2.5} /> Edit
-            </button>
-            <button onClick={onClose} aria-label="Close" className="w-10 h-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors border-2 border-slate-200 dark:border-slate-700 active:scale-95">
-              <X className="w-6 h-6" strokeWidth={2.5} />
-            </button>
+
+          {/* At a glance */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-4">
+            <Stat label="Total XP" value={progressData ? totals.xp.toLocaleString() : (student?.total_xp || 0).toLocaleString()} />
+            <Stat label="Units done" value={progressData ? totals.done : (student?.units_completed || 0)} />
+            <Stat label="Last active" value={relTime(student?.last_active)} />
+            {week && <Stat label="This week" value={`${week.tasks} ${week.tasks === 1 ? 'task' : 'tasks'}`} />}
+            {Array.isArray(student?.recent) && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Last 14 days</p>
+                <ActivityStrip recent={student.recent} />
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-6">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-64">
-              <Loader2 className="w-12 h-12 animate-spin text-[#1cb0f6] mb-4" strokeWidth={3} />
-              <p className="text-sm font-black tracking-widest uppercase text-slate-400">Loading Records...</p>
+              <Loader2 className="w-10 h-10 animate-spin text-[#1cb0f6] mb-4" strokeWidth={3} />
+              <p className="text-xs font-black tracking-widest uppercase text-slate-400">Loading Records...</p>
             </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center h-64 text-rose-500">
@@ -183,7 +296,7 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
             <>
               {/* Edit panel */}
               {showEdit && (
-                <div className="bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-indigo-200 dark:border-indigo-900 p-6 shadow-sm space-y-5">
+                <div className="bg-white dark:bg-slate-900 rounded-[1.75rem] border-2 border-indigo-200 dark:border-indigo-900 p-6 shadow-sm space-y-5">
                   <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
                     <Settings2 className="w-5 h-5" strokeWidth={2.5} />
                     <h3 className="font-black uppercase tracking-widest text-sm">Edit Student</h3>
@@ -206,9 +319,9 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                       {TRACK_REGISTRY.map((t) => {
                         const on = form.tracks.includes(t.id);
                         return (
-                          <button type="button" key={t.id} onClick={() => toggleTrack(t.id)}
-                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-xs font-black uppercase tracking-wide transition-all active:scale-95 ${on ? 'bg-[#1cb0f6] text-white border-[#1899d6]' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}`}>
-                            {on && <Check className="w-3.5 h-3.5" strokeWidth={3} />}{t.id}
+                          <button type="button" key={t.id} onClick={() => toggleTrack(t.id)} title={t.id}
+                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-xs font-black tracking-wide transition-all active:scale-95 ${on ? 'bg-[#1cb0f6] text-white border-[#1899d6]' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}`}>
+                            {on && <Check className="w-3.5 h-3.5" strokeWidth={3} />}{t.title}
                           </button>
                         );
                       })}
@@ -239,123 +352,178 @@ export default function StudentProfileDrawer({ isOpen, onClose, studentId, stude
                 <EssayReviewPanel studentId={studentId} progress={progressData} onEssayUpdated={handleEssayUpdated} />
               )}
 
-              {progressData && [
-                ...TRACK_IDS,
-                // Any progress key that isn't a registered track still gets a
-                // section, so nothing a student has done can silently vanish
-                // from this drawer (the failure mode that hid newer tracks).
-                ...Object.keys(progressData).filter((k) => !TRACK_IDS.includes(k)),
-              ].map((trackId) => {
-                const trackData = progressData[trackId];
-                if (!trackData || Object.keys(trackData).filter(isUnitKey).length === 0) return null;
+              {/* Track tabs */}
+              {tabs.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tabs.map((id) => {
+                    const t = getTrackConfig(id);
+                    const on = id === activeTrack;
+                    const Icon = t?.icon || BookOpen;
+                    return (
+                      <button
+                        key={id}
+                        onClick={() => { setTrackTab(id); setOpenUnit(undefined); setEditingTask(null); }}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-b-[3px] text-xs font-black tracking-wide transition-all active:border-b-2 active:translate-y-[1px]
+                          ${on ? `${t?.theme.bg || 'bg-slate-500'} ${t?.theme.border || 'border-slate-700'} text-white` : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'}`}
+                      >
+                        <Icon className="w-4 h-4" strokeWidth={2.5} />
+                        {t?.title || id}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
-                return (
-                  <div key={trackId} className="space-y-6">
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white border-b-4 border-slate-200 dark:border-slate-800 pb-3 flex items-center">
-                      <BookOpen className="w-6 h-6 mr-3 text-indigo-500" strokeWidth={3} />
-                      Track: {trackId}
-                    </h3>
-
-                    {Object.entries(trackData).filter(([key]) => isUnitKey(key)).map(([unitId, unitData]) => {
-                      const unitMeta = getUnitMeta(trackId, unitId);
-                      const p12Score = unitData?.p12?.current || 0;
-                      const gamesScore = unitData?.GAMES?.current || 0;
-                      const gamesLowerScore = unitData?.games?.current || 0;
-                      const unitArcadeScore = Math.max(p12Score, gamesScore, gamesLowerScore);
-                      const unitKey = `${trackId}/${unitId}`;
-                      const bulkBusy = busyUnit === unitKey;
-
-                      return (
-                        <div key={unitId} className="bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-slate-200 dark:border-slate-800 p-6 shadow-sm overflow-hidden">
-
-                          <div className="mb-6 border-b-2 border-slate-100 dark:border-slate-800/50 pb-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                            <div>
-                              <div className="flex items-center gap-3 mb-1.5">
-                                <h4 className="font-black text-slate-800 dark:text-white text-xl md:text-2xl tracking-tight">{unitMeta.title}</h4>
-                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-400 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">{unitId}</span>
-                              </div>
-                              {unitMeta.desc && <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-wide">{unitMeta.desc}</p>}
-                            </div>
-
-                            <div className="flex items-center gap-4">
-                              {unitArcadeScore > 0 && (
-                                <div className="flex flex-col sm:items-end">
-                                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1">Arcade High</span>
-                                  <div className="flex items-center text-sm font-black tracking-widest uppercase bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3.5 py-1.5 rounded-xl border-b-[3px] border-orange-700 shadow-sm">
-                                    <Gamepad2 className="w-4 h-4 mr-2 drop-shadow-sm" strokeWidth={2.5} />{unitArcadeScore.toLocaleString()}
-                                  </div>
-                                </div>
-                              )}
-                              {(unitData.strikes || 0) >= 3 && (
-                                <div className="flex flex-col sm:items-end">
-                                  <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 mb-1">Safety Lock</span>
-                                  <span className="text-xs font-black uppercase tracking-widest bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl border border-rose-200">Engaged</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap gap-3">
-                            {Object.entries(unitData)
-                              .filter(([taskId]) => taskId !== 'strikes' && TASK_MAP[taskId])
-                              .map(([taskId, taskData]) => {
-                                const config = TASK_MAP[taskId];
-                                const currentXp = taskData?.current || 0;
-                                const isEditingThis = editingTask?.unitId === unitId && editingTask?.taskId === taskId && editingTask?.trackId === trackId;
-
-                                return isEditingThis ? (
-                                  <div key={taskId} className={`flex items-center p-1.5 pl-4 rounded-xl border-b-[4px] shadow-sm animate-in zoom-in-95 ${config.bg} ${config.border} ${config.text}`}>
-                                    <span className="text-xs font-black uppercase tracking-wider mr-3">{config.label}:</span>
-                                    <input type="number" autoFocus value={draftXp} onChange={(e) => setDraftXp(e.target.value)}
-                                      className="w-16 text-center font-black text-slate-800 rounded-lg py-1 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-inner" disabled={isSaving} />
-                                    <button onClick={() => handleSaveXp(trackId, unitId, taskId)} disabled={isSaving} className="ml-2 p-2 bg-white/20 hover:bg-white/40 rounded-lg transition-colors active:scale-95">
-                                      {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={3} />}
-                                    </button>
-                                    <button onClick={() => setEditingTask(null)} disabled={isSaving} className="ml-1 p-2 bg-white/20 hover:bg-white/40 hover:text-rose-200 rounded-lg transition-colors mr-1 active:scale-95">
-                                      <XCircle className="w-4 h-4" strokeWidth={3} />
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <button key={taskId} onClick={() => { setEditingTask({ trackId, unitId, taskId }); setDraftXp(currentXp.toString()); }}
-                                    className={`group relative flex items-center px-4 py-2.5 rounded-xl border-b-[4px] shadow-sm transition-all hover:scale-[1.03] active:scale-95 active:border-b-[2px] active:translate-y-[2px] ${config.bg} ${config.border} ${config.text}`}>
-                                    <span className="text-xs font-black uppercase tracking-wider mr-2">{config.label}:</span>
-                                    <span className="text-sm font-black bg-black/10 px-2 py-0.5 rounded-md">{currentXp} XP</span>
-                                    <div className="absolute inset-0 bg-black/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end pr-3">
-                                      <Edit2 className="w-4 h-4 text-white drop-shadow-md" strokeWidth={3} />
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                          </div>
-
-                          {/* Bulk unit actions */}
-                          <div className="mt-5 pt-5 border-t-2 border-slate-100 dark:border-slate-800/50 flex flex-wrap gap-3">
-                            <button onClick={() => handleBulk(trackId, unitId, 'clear')} disabled={bulkBusy}
-                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 font-black text-xs uppercase tracking-widest hover:bg-rose-100 active:scale-95 transition-all disabled:opacity-50">
-                              {bulkBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Eraser className="w-4 h-4" strokeWidth={2.5} />} Clear Unit
-                            </button>
-                            <button onClick={() => handleBulk(trackId, unitId, 'advance')} disabled={bulkBusy}
-                              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-emerald-200 dark:border-emerald-900 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 font-black text-xs uppercase tracking-widest hover:bg-emerald-100 active:scale-95 transition-all disabled:opacity-50">
-                              {bulkBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" strokeWidth={2.5} />} Advance to Full
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
+              {activeTrack && (
+                <div>
+                  <div className="flex items-baseline justify-between gap-3 mb-3">
+                    <h3 className={`text-lg font-black tracking-tight ${cfg?.theme.text || 'text-slate-700 dark:text-slate-200'}`}>{cfg?.title || activeTrack}</h3>
+                    <p className="text-xs font-black tabular-nums text-slate-400">{trackDone}/{allUnits.length} units done</p>
                   </div>
-                );
-              })}
 
-              {progressData && !TRACK_IDS.some((t) => progressData[t] && Object.keys(progressData[t]).filter(isUnitKey).length) && (
+                  {sections.map((section) => (
+                    <div key={section.key} className="mb-5">
+                      {showSectionHeads && (
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-white ${section.key === '__orphans' ? 'bg-slate-400' : cfg?.theme.bg || 'bg-slate-400'}`}>{section.label}</span>
+                          <span className="text-xs font-black text-slate-500 dark:text-slate-400">{section.title}</span>
+                          <span className="flex-1 h-0.5 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                        </div>
+                      )}
+
+                      <div className="bg-white dark:bg-slate-900 rounded-[1.5rem] border-2 border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden divide-y-2 divide-slate-100 dark:divide-slate-800">
+                        {section.units.map((u) => {
+                          const unitData = trackData[u.id] || {};
+                          const xp = xpFor(u.id);
+                          const touched = unitLastTouched(unitData);
+                          const isOpenUnit = activeUnit === u.id;
+                          const unitKey = `${activeTrack}/${u.id}`;
+                          const bulkBusy = busyUnit === unitKey;
+                          const arcadeBest = Math.max(0, ...ARCADE_KEYS.map((k) => unitData?.[k]?.current || 0), unitData?.p12?.current || 0);
+                          const locked = (unitData.strikes || 0) >= 3;
+                          const declared = declaredTasks(activeTrack, u.id);
+                          const declaredKeys = new Set(declared.map((t) => t.dbKey));
+                          // Records under a key the unit no longer declares still show, so they can be zeroed.
+                          const strays = Object.keys(unitData).filter((k) => TASK_MAP[k] && !declaredKeys.has(k) && k !== 'p12');
+                          const chips = [
+                            ...declared.map((t) => ({ key: t.dbKey, label: t.label, max: t.maxXP, color: t.color })),
+                            ...strays.map((k) => ({ key: k, label: TASK_MAP[k].label, max: null, color: TASK_MAP[k] })),
+                          ];
+
+                          return (
+                            <div key={u.id} id={`drawer-unit-${u.id}`}>
+                              <button
+                                onClick={() => { setOpenUnit(isOpenUnit ? null : u.id); setEditingTask(null); }}
+                                aria-expanded={isOpenUnit}
+                                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${xp === 0 && !touched ? 'opacity-60' : ''}`}
+                              >
+                                <span className="w-9 text-xs font-black tabular-nums text-slate-400 flex-shrink-0">{unitNumberOf(u.id) || '—'}</span>
+                                <span className="min-w-0 flex-1">
+                                  <span className="block font-black text-slate-800 dark:text-white truncate leading-tight">{u.title}</span>
+                                  <span className="block text-[11px] font-bold text-slate-400">
+                                    {touched ? `Last worked ${relTime(touched).toLowerCase()}` : 'Not started'}
+                                  </span>
+                                </span>
+                                {locked && <ShieldAlert className="w-4 h-4 text-rose-500 flex-shrink-0" strokeWidth={2.5} aria-label="AI safety lock engaged" />}
+                                {arcadeBest > 0 && (
+                                  <span className="hidden sm:flex items-center gap-1 text-[11px] font-black text-amber-600 dark:text-amber-400 flex-shrink-0" title="Arcade high score">
+                                    <Gamepad2 className="w-3.5 h-3.5" strokeWidth={2.5} />{arcadeBest.toLocaleString()}
+                                  </span>
+                                )}
+                                <span className="hidden sm:block w-24 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex-shrink-0">
+                                  <span className={`block h-full rounded-full ${xp >= 100 ? 'bg-emerald-500' : cfg?.theme.bg || 'bg-slate-400'}`} style={{ width: `${xp}%` }} />
+                                </span>
+                                <span className="w-9 text-right text-sm font-black tabular-nums text-slate-700 dark:text-slate-200 flex-shrink-0">{xp}</span>
+                                <ChevronDown className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${isOpenUnit ? 'rotate-180' : ''}`} strokeWidth={3} />
+                              </button>
+
+                              {isOpenUnit && (
+                                <div className="px-4 pb-4 pt-1 bg-slate-50/60 dark:bg-slate-800/20 animate-in fade-in duration-150">
+                                  {locked && (
+                                    <p className="mb-3 text-xs font-bold text-rose-600 dark:text-rose-400">AI safety lock engaged on this unit (3 strikes).</p>
+                                  )}
+                                  <div className="flex flex-wrap gap-2">
+                                    {chips.map((chip) => {
+                                      const rec = unitData[chip.key];
+                                      const currentXp = rec?.current || 0;
+                                      const attempts = rec?.attempts?.length || 0;
+                                      const hint = rec
+                                        ? `${attempts} ${attempts === 1 ? 'attempt' : 'attempts'}${rec.last != null ? ` · last score ${rec.last}` : ''}${rec.updatedAt ? ` · ${relTime(rec.updatedAt).toLowerCase()}` : ''}`
+                                        : 'Not attempted';
+                                      const isEditingThis = editingTask?.unitId === u.id && editingTask?.taskId === chip.key;
+                                      const c = chip.color;
+
+                                      return isEditingThis ? (
+                                        <div key={chip.key} className={`flex items-center p-1 pl-3 rounded-xl border-b-[3px] shadow-sm animate-in zoom-in-95 ${c.bg} ${c.border} ${c.text}`}>
+                                          <span className="text-[11px] font-black uppercase tracking-wider mr-2">{chip.label}</span>
+                                          <input type="number" autoFocus value={draftXp} onChange={(e) => setDraftXp(e.target.value)}
+                                            onFocus={(e) => e.target.select()}
+                                            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveXp(activeTrack, u.id, chip.key); if (e.key === 'Escape') { e.stopPropagation(); setEditingTask(null); } }}
+                                            className="w-14 text-center font-black text-slate-800 rounded-lg py-1 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-inner" disabled={isSaving} />
+                                          <button onClick={() => handleSaveXp(activeTrack, u.id, chip.key)} disabled={isSaving} aria-label="Save" className="ml-1.5 p-1.5 bg-white/20 hover:bg-white/40 rounded-lg transition-colors active:scale-95">
+                                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={3} />}
+                                          </button>
+                                          <button onClick={() => setEditingTask(null)} disabled={isSaving} aria-label="Cancel" className="ml-1 p-1.5 bg-white/20 hover:bg-white/40 rounded-lg transition-colors active:scale-95">
+                                            <XCircle className="w-4 h-4" strokeWidth={3} />
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <button key={chip.key} title={`${hint} — click to edit`}
+                                          onClick={() => { setEditingTask({ unitId: u.id, taskId: chip.key }); setDraftXp(currentXp.toString()); }}
+                                          className={`group flex items-center gap-2 px-3 py-2 rounded-xl border-b-[3px] shadow-sm transition-all hover:brightness-110 active:border-b-[1px] active:translate-y-[2px] ${c.bg} ${c.border} ${c.text} ${rec ? '' : 'opacity-50 saturate-50'}`}>
+                                          <span className="text-[11px] font-black uppercase tracking-wider">{chip.label}</span>
+                                          <span className="text-xs font-black tabular-nums bg-black/15 px-1.5 py-0.5 rounded-md">
+                                            {currentXp}{chip.max != null ? `/${chip.max}` : ''}
+                                          </span>
+                                          <Edit2 className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={3} />
+                                        </button>
+                                      );
+                                    })}
+                                    {chips.length === 0 && <p className="text-xs font-bold text-slate-400">No editable tasks recorded for this unit.</p>}
+                                  </div>
+
+                                  {declared.length > 0 && (
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                      <button onClick={() => handleBulk(activeTrack, u.id, 'clear')} disabled={bulkBusy}
+                                        className="flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 font-black text-[11px] uppercase tracking-widest hover:bg-rose-100 active:scale-95 transition-all disabled:opacity-50">
+                                        {bulkBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Eraser className="w-3.5 h-3.5" strokeWidth={2.5} />} Clear Unit
+                                      </button>
+                                      <button onClick={() => handleBulk(activeTrack, u.id, 'advance')} disabled={bulkBusy}
+                                        className="flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-emerald-200 dark:border-emerald-900 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 font-black text-[11px] uppercase tracking-widest hover:bg-emerald-100 active:scale-95 transition-all disabled:opacity-50">
+                                        {bulkBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Rocket className="w-3.5 h-3.5" strokeWidth={2.5} />} Advance to Full
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {progressData && tabs.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-64 text-slate-400">
                   <BookOpen className="w-16 h-16 mb-4 opacity-20" strokeWidth={2} />
-                  <p className="text-center font-bold text-lg">No progress recorded yet. Use the buttons above once the student starts a unit.</p>
+                  <p className="text-center font-bold text-lg max-w-sm">No progress recorded yet, and no tracks enrolled. Use Edit to enrol this student in a track.</p>
                 </div>
               )}
             </>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div>
+      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</p>
+      <p className="text-lg font-black tabular-nums text-slate-800 dark:text-white leading-tight">{value}</p>
     </div>
   );
 }

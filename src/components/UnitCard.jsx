@@ -53,8 +53,13 @@ const IconMap = {
  * null whenever the unit is available. The card then refuses to expand: the
  * phase locks inside it are about pacing within a unit, while this one is about
  * the order the units are taken in, so it has to sit outside them.
+ *
+ * `number` is the coursebook number ("2.3") where the track has one. The card is
+ * deliberately compact when closed — one line of description, a small header —
+ * because a track is a LIST of these and the list keeps growing; the full
+ * description comes back when the card is open.
  */
-export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false, unitLock = null }) {
+export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMode, isExpanded, onToggle, needsWork, previewAll = false, unitLock = null, number = '' }) {
   if (!unit) return null;
 
   const { title, description, icon } = unit.meta || {};
@@ -168,13 +173,13 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
   };
 
   return (
-    <div className={`relative w-full rounded-[2.5rem] mb-8 transition-all duration-300 z-10 hover:z-50
-      ${unitXP === 100 ? 'bg-gradient-to-r from-rose-400 via-amber-300 to-fuchsia-500 p-[3px] pb-[8px] shadow-lg shadow-fuchsia-500/20' : ''}
+    <div className={`relative w-full rounded-[2rem] mb-4 transition-all duration-200 z-10 hover:z-50
+      ${unitXP === 100 ? 'bg-gradient-to-r from-rose-400 via-amber-300 to-fuchsia-500 p-[3px] pb-[6px] shadow-md shadow-fuchsia-500/20' : ''}
       ${showNeedsWork && unitXP !== 100 ? 'shadow-[0_0_15px_rgba(244,63,94,0.15)]' : 'shadow-sm'}
     `}>
       
       <div className={`w-full bg-white dark:bg-slate-900 transition-all duration-300 relative
-        ${unitXP === 100 ? 'rounded-[2.35rem] h-full overflow-hidden' : 'rounded-[2.5rem] border-2 border-b-[8px] hover:border-slate-300 dark:hover:border-slate-700'}
+        ${unitXP === 100 ? 'rounded-[1.85rem] h-full overflow-hidden' : 'rounded-[2rem] border-2 border-b-[6px] hover:border-slate-300 dark:hover:border-slate-700'}
         ${unitXP >= 90 && unitXP < 100 ? 'border-amber-400 dark:border-amber-500 hover:border-amber-500 dark:hover:border-amber-400' : ''}
         ${unitXP >= 75 && unitXP < 90 ? 'border-slate-400 dark:border-slate-500 hover:border-slate-500 dark:hover:border-slate-400' : ''}
         ${unitXP >= 60 && unitXP < 75 ? 'border-orange-700 dark:border-orange-900 hover:border-orange-800 dark:hover:border-orange-800' : ''}
@@ -191,18 +196,19 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
             if (unitLock || e.target !== e.currentTarget) return;
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); }
           }}
-          className={`p-6 sm:p-8 relative group flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${unitLock ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
-          
-          <div className={`relative z-10 flex items-center w-full md:w-auto ${unitLock ? 'opacity-60' : ''}`}>
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] flex-shrink-0 transition-transform duration-300
+          className={`p-4 sm:p-5 relative group flex justify-between items-center gap-3 sm:gap-4 ${unitLock ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+
+          <div className={`relative z-10 flex items-center min-w-0 flex-1 ${unitLock ? 'opacity-60' : ''}`}>
+            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] flex-shrink-0 transition-transform duration-300
               ${unitLock ? 'bg-slate-300 border-slate-400 dark:bg-slate-700 dark:border-slate-800' : `${unitThemeColor} group-hover:scale-110 group-hover:-rotate-6`}`}>
               {unitLock
-                ? <Lock className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-sm" strokeWidth={2.5} />
-                : <HeaderIcon className="w-7 h-7 sm:w-8 sm:h-8 text-white drop-shadow-sm" strokeWidth={2.5} />}
+                ? <Lock className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-sm" strokeWidth={2.5} />
+                : <HeaderIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-sm" strokeWidth={2.5} />}
             </div>
 
-            <div className="ml-4 sm:ml-6">
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-1 flex items-center flex-wrap gap-3 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
+            <div className="ml-3 sm:ml-5 min-w-0">
+              <h2 className="text-lg sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight mb-0.5 leading-tight group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
+                {number && <span className={`mr-2 tabular-nums ${currentTheme.text || 'text-slate-400'}`}>{number}</span>}
                 {title || 'Unit Title'}
               </h2>
               {/* A locked unit says what opens it, not what is in it — naming the
@@ -215,19 +221,19 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                   {' '}<span className="text-slate-400 dark:text-slate-500">({unitLock.prevXP} so far)</span>
                 </p>
               ) : (
-                <p className="text-slate-500 dark:text-slate-400 font-bold text-sm sm:text-base tracking-wide">{description || 'Complete the tasks below.'}</p>
+                <p className={`text-slate-500 dark:text-slate-400 font-bold text-sm tracking-wide ${isExpanded ? '' : 'line-clamp-1'}`}>{description || 'Complete the tasks below.'}</p>
               )}
             </div>
           </div>
           
-          <div className="relative z-10 flex items-center gap-4 self-end md:self-auto w-full md:w-auto justify-end md:justify-start mt-4 md:mt-0">
-            
-            <div className="flex flex-col items-center gap-2 relative z-50">
+          <div className="relative z-10 flex items-center gap-2 sm:gap-3 flex-shrink-0">
+
+            <div className="flex flex-col sm:flex-row-reverse items-center gap-2 relative z-50">
               <div className="relative flex items-center justify-center">
                 {trophy.aura && <div className={trophy.aura}></div>}
-                <div className={`relative z-10 flex items-center justify-center px-4 py-2 rounded-xl transition-all shadow-sm font-black ${trophy.container}`}>
-                  <Trophy className={`w-5 h-5 mr-2 ${trophy.icon}`} strokeWidth={2.5} />
-                  <span className="text-xl tracking-tight">{unitXP}</span>
+                <div className={`relative z-10 flex items-center justify-center px-3 py-1.5 rounded-xl transition-all shadow-sm font-black ${trophy.container}`}>
+                  <Trophy className={`w-4 h-4 mr-1.5 ${trophy.icon}`} strokeWidth={2.5} />
+                  <span className="text-lg tracking-tight tabular-nums">{unitXP}</span>
                 </div>
               </div>
 
@@ -264,22 +270,22 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
               )}
             </div>
 
-            <div className={`flex w-10 h-10 sm:w-14 sm:h-14 rounded-full items-center justify-center border-2 shadow-sm transition-all duration-300 border-b-[4px]
+            <div className={`hidden sm:flex w-10 h-10 rounded-full items-center justify-center border-2 shadow-sm transition-all duration-200 border-b-[4px]
               ${unitLock
                 ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700'
                 : isExpanded
                   ? 'bg-[#1cb0f6] border-[#1899d6] text-white translate-x-0 opacity-100'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 sm:translate-x-4 sm:opacity-0 sm:group-hover:translate-x-0 sm:group-hover:opacity-100 sm:group-hover:bg-[#1cb0f6] sm:group-hover:border-[#1899d6] sm:group-hover:text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 group-hover:bg-[#1cb0f6] group-hover:border-[#1899d6] group-hover:text-white'
               }`}>
               {unitLock
-                ? <Lock className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={3} />
-                : isExpanded ? <ChevronUp className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} /> : <ChevronDown className="w-5 h-5 sm:w-7 sm:h-7" strokeWidth={3} />}
+                ? <Lock className="w-5 h-5" strokeWidth={3} />
+                : isExpanded ? <ChevronUp className="w-5 h-5" strokeWidth={3} /> : <ChevronDown className="w-5 h-5" strokeWidth={3} />}
             </div>
           </div>
         </div>
 
         {isExpanded && !unitLock && (
-          <div className="animate-in slide-in-from-top-4 duration-300 border-t-2 border-slate-100 dark:border-slate-800 pb-4">
+          <div className="animate-in fade-in slide-in-from-top-2 duration-200 border-t-2 border-slate-100 dark:border-slate-800 pb-4">
             {isAILocked && (
               <div className="mx-6 sm:mx-8 mt-8 bg-rose-100 dark:bg-rose-900/40 border-2 border-rose-300 dark:border-rose-800 p-4 rounded-[1.5rem] flex items-start shadow-sm">
                 <AlertCircle className="w-6 h-6 text-rose-600 dark:text-rose-400 mr-3 flex-shrink-0 mt-0.5" />

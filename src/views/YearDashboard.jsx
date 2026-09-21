@@ -1,11 +1,12 @@
 import React, { useState, Suspense, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction, Trophy, Sun, Moon, Sparkles, PackageOpen } from 'lucide-react';
+import { ChevronLeft, Info, XCircle, Loader2, LogOut, AlertTriangle, Construction, Trophy, Sun, Moon, Sparkles } from 'lucide-react';
 
 import { useStudentProgress } from '../utils/supabaseClient';
-import UnitCard from '../components/UnitCard';
+import TrackUnits from '../components/TrackUnits';
+import useTrackNav from '../hooks/useTrackNav';
 import ProgressLoadError from '../components/ProgressLoadError';
-import { getTrackConfig, unitGateOf } from '../components/trackRegistry';
+import { getTrackConfig } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
 import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
 import { isPreviewAccount } from '../utils/previewAccount';
@@ -32,20 +33,6 @@ function PlaceholderView({ title, onQuit }) {
   );
 }
 
-function EmptyTrack({ title, theme }) {
-  return (
-    <div className="max-w-xl mx-auto px-6 py-24 text-center animate-in fade-in duration-500">
-      <div className="w-24 h-24 mx-auto bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] flex items-center justify-center mb-8 shadow-sm">
-        <PackageOpen className={`w-10 h-10 ${theme?.text || 'text-slate-400'}`} strokeWidth={2.5} />
-      </div>
-      <h2 className="text-3xl font-black text-slate-800 dark:text-white mb-4 tracking-tight">No units yet</h2>
-      <p className="text-base text-slate-500 dark:text-slate-400 font-bold leading-relaxed">
-        {title} is set up and ready, but no lessons have been published to it yet. Check back soon!
-      </p>
-    </div>
-  );
-}
-
 export default function YearDashboard({ track }) {
   const navigate = useNavigate();
   const { user, unitScores = {}, isLoadingDB, loadError, saveScore, addStrike, handleLogout } = useStudentProgress(navigate, track);
@@ -59,16 +46,10 @@ export default function YearDashboard({ track }) {
   const [activeUnit, setActiveUnit] = useState(null);
   const [currentPool, setCurrentPool] = useState([]);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
-  const [expandedUnit, setExpandedUnit] = useState(requestedUnit);
+  // Which unit is open and which sections are unfolded — held here, above the
+  // list, so it survives the list unmounting while a task is on screen.
+  const nav = useTrackNav(requestedUnit);
   const [isDark, toggleDarkMode] = useDarkMode();
-
-  // Scroll the requested unit into view once the cards have rendered. Expanding
-  // a card below the fold otherwise looks like nothing happened.
-  useEffect(() => {
-    if (!requestedUnit || isLoadingDB) return;
-    const el = document.getElementById(`unit-${requestedUnit}`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [requestedUnit, isLoadingDB]);
 
   // Escape closes the How It Works modal, like every other modal in the app.
   useEffect(() => {
@@ -86,7 +67,6 @@ export default function YearDashboard({ track }) {
   const previewAll = isPreviewAccount(user);
 
   const { meta: META_DATA, data: UNIT_DATA } = getTrack(track);
-  const activeExpandedUnit = expandedUnit !== null ? expandedUnit : 'NONE';
 
   if (loadError) return <ProgressLoadError />;
 
@@ -197,7 +177,7 @@ export default function YearDashboard({ track }) {
       </div>
 
       {!activeTask && (
-        <div className="animate-in fade-in duration-500 pb-20 relative z-10">
+        <div className="animate-in fade-in duration-200 pb-20 relative z-10">
 
           <div className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b-2 border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 h-20 flex items-center justify-between">
@@ -260,72 +240,14 @@ export default function YearDashboard({ track }) {
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-12 relative z-10">
-            {META_DATA.length === 0 ? (
-              <EmptyTrack title={trackTitle} theme={currentTheme} />
-            ) : (() => {
-              let firstIncompleteFound = false;
-              // Carries the previous unit's score down the list so a track with
-              // `unitGate` can hold each unit shut until the one before it is
-              // half done. Tracks without the setting see `unitLock` null.
-              let prevUnitXP = 0;
-              let prevUnitTitle = '';
-
-              return META_DATA.map((metaUnit, unitIndex) => {
-                const contentData = UNIT_DATA[metaUnit.id] || {};
-                const scores = unitScores?.[metaUnit.id] || {};
-                const unitXP = unitXPOf(contentData, scores);
-
-                const gate = unitGateOf(track, unitIndex, prevUnitXP);
-                // Preview/QA accounts ignore this exactly as they ignore phase
-                // locks, so the whole track stays walkable for checking.
-                const unitLock = gate.locked && !previewAll
-                  ? { need: gate.need, prevTitle: prevUnitTitle, prevXP: prevUnitXP }
-                  : null;
-                prevUnitXP = unitXP;
-                prevUnitTitle = metaUnit.title;
-
-                const isInProgress = unitXP > 0 && unitXP < 100;
-                // A locked unit is not the one to nudge them towards, and it
-                // must not consume the "next up" slot from the unit that is.
-                const isNext = unitXP === 0 && !firstIncompleteFound && !unitLock;
-                if (unitXP < 100 && !unitLock) firstIncompleteFound = true;
-
-                const needsWork = (isInProgress || isNext) && !unitLock;
-
-                const combinedUnitPayload = {
-                  ...contentData,
-                  id: metaUnit.id,
-                  meta: {
-                    id: metaUnit.id,
-                    title: metaUnit.title,
-                    description: metaUnit.desc,
-                    icon: contentData.meta?.icon || 'BookOpen',
-                    themeColor: contentData.meta?.themeColor,
-                    glowColor: contentData.meta?.glowColor,
-                    thresholds: contentData.meta?.thresholds
-                  }
-                };
-
-                return (
-                  // The id is the scroll anchor for `?unit=` deep links.
-                  <div key={metaUnit.id} id={`unit-${metaUnit.id}`} className="scroll-mt-24">
-                    <UnitCard
-                      unit={combinedUnitPayload}
-                      scores={scores}
-                      currentTheme={currentTheme}
-                      startMode={startMode}
-                      isExpanded={activeExpandedUnit === metaUnit.id}
-                      onToggle={() => setExpandedUnit(activeExpandedUnit === metaUnit.id ? 'NONE' : metaUnit.id)}
-                      needsWork={needsWork}
-                      previewAll={previewAll}
-                      unitLock={unitLock}
-                    />
-                  </div>
-                );
-              });
-            })()}
-          </div>
+          <TrackUnits
+            track={track}
+            unitScores={unitScores}
+            previewAll={previewAll}
+            requestedUnit={requestedUnit}
+            startMode={startMode}
+            nav={nav}
+          />
         </div>
       )}
 
