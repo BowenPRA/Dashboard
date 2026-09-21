@@ -61,7 +61,7 @@ export const notes = [
       id: 'a1', type: 'estimate',
       prompt: 'How tall would Mr Bowen be, in kilometres?',
       promptVn: 'Thầy Bowen sẽ cao bao nhiêu ki-lô-mét?',
-      min: 0, max: 20, step: 0.5, unit: 'km', answer: 10.5, tolerance: 0.3,
+      min: 0, max: 40, step: 0.5, unit: 'km', answer: 10.5, tolerance: 0.3,
       explain: 'About **10.7 km** — taller than Everest. A soda can is about 6000 times bigger than a cell, so he is 6000 times taller too. The next slide works it out.',
       explainVn: 'Khoảng **10,7 km** — cao hơn cả Everest. Một lon nước ngọt lớn hơn tế bào khoảng 6000 lần, nên thầy cũng cao hơn 6000 lần. Slide sau sẽ tính ra.',
     },

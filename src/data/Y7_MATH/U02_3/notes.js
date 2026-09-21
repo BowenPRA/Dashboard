@@ -601,7 +601,7 @@ export const notes = [
       prompt: 'One brick is $x = 22$ cm long. About how long is the row of five bricks, $5x$?',
       promptVn: 'Một viên gạch dài $x = 22$ cm. Hàng năm viên gạch, $5x$, dài khoảng bao nhiêu?',
       min: 0,
-      max: 200,
+      max: 300,
       step: 5,
       unit: 'cm',
       answer: 110,

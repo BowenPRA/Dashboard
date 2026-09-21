@@ -47,7 +47,7 @@ export const T02_DATA = {
     title: 'Mouse, Keys and Windows',
     desc: 'Click, double-click, right-click and drag — with a mouse, a touch screen or a touchpad; use Enter, Backspace, Delete, Shift, Caps Lock, Esc and Ctrl; and switch between windows without closing anything.',
     track: 'PRIMARY_TECH',
-    icon: 'Layers',
+    icon: 'MousePointerClick',
   },
 
   phases: [

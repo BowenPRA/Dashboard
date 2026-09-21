@@ -88,6 +88,15 @@ export function checkActivity(a, { bilingual = true } = {}) {
     if (Number.isFinite(a.answer) && Number.isFinite(a.min) && Number.isFinite(a.max) && (a.answer < a.min || a.answer > a.max)) out.push('estimate answer is outside min..max');
     if (a.step !== undefined && !(a.step > 0)) out.push('estimate step must be positive');
     if (a.tolerance !== undefined && !(a.tolerance >= 0 && a.tolerance <= 1)) out.push('estimate tolerance is a fraction 0..1');
+    // The slider starts at the middle of its range (EstimateActivity). If that
+    // middle already counts as close, locking in without moving scores.
+    if ([a.min, a.max, a.answer].every(Number.isFinite) && a.min < a.max) {
+      const step = a.step > 0 ? a.step : 1;
+      const start = Math.round(((a.min + a.max) / 2) / step) * step;
+      if (Math.abs(start - a.answer) <= Math.max(Math.abs(a.answer) * (a.tolerance ?? 0.2), step / 2)) {
+        out.push(`estimate slider starts at ${start}, already close enough to the answer ${a.answer} — move min/max so the middle is off`);
+      }
+    }
   }
 
   if (a.type === 'hotspot') {

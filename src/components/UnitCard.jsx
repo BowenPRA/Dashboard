@@ -5,7 +5,7 @@ import {
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
   Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash,
   Boxes, Layers, ScanEye, History, MonitorPlay, ExternalLink, Variable, Droplets,
-  Thermometer, Sigma, Orbit, SquareRadical, Blend, Wrench, Check, Play, ChevronRight
+  Thermometer, Sigma, Orbit, SquareRadical, Blend, Keyboard, MousePointerClick, Wrench, Check, Play, ChevronRight
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEYS } from '../utils/progressSchema';
@@ -21,7 +21,8 @@ const IconMap = {
   "Landmark": Landmark, "Magnet": Magnet, "Move3d": Move3d, "Grid3x3": Grid3x3,
   "Hash": Hash, "Boxes": Boxes, "Layers": Layers, "ScanEye": ScanEye,
   "Variable": Variable, "Droplets": Droplets, "Thermometer": Thermometer, "Sigma": Sigma,
-  "Orbit": Orbit, "SquareRadical": SquareRadical, "Blend": Blend
+  "Orbit": Orbit, "SquareRadical": SquareRadical, "Blend": Blend,
+  "Keyboard": Keyboard, "MousePointerClick": MousePointerClick
 };
 
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card

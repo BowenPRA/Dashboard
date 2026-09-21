@@ -43,7 +43,7 @@ export const T03_DATA = {
     title: 'Typing Properly',
     desc: 'Type with all ten fingers and your eyes on the screen: sit well, switch the keyboard to English, rest on the home row, reach and come home, use the other hand’s Shift for capitals — and get it right before you get fast.',
     track: 'PRIMARY_TECH',
-    icon: 'Grid3x3',
+    icon: 'Keyboard',
   },
 
   phases: [

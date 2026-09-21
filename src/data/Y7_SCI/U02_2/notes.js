@@ -304,7 +304,7 @@ export const notes = [
       id: 'a2', type: 'estimate',
       prompt: 'A warm bath is about how many °C?',
       promptVn: 'Một bồn tắm ấm có nhiệt độ khoảng bao nhiêu °C?',
-      min: 0, max: 100, step: 1, unit: '°C', answer: 40, tolerance: 0.25,
+      min: 10, max: 100, step: 1, unit: '°C', answer: 40, tolerance: 0.25,
       explain: 'About **40 °C** — much warmer than a warm room (around 20 °C), but nowhere near boiling (100 °C). Hot enough to feel warm on skin, cool enough not to burn.',
       explainVn: 'Khoảng **40 °C** — ấm hơn nhiều so với phòng ấm (khoảng 20 °C), nhưng còn cách xa điểm sôi (100 °C). Đủ nóng để cảm thấy ấm trên da, đủ mát để không bị bỏng.',
     },
