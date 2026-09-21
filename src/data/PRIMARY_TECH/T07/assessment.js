@@ -1,33 +1,34 @@
 // src/data/PRIMARY_TECH/T07/assessment.js
-// T7 Inside a Browser — the Quiz (ASSESSMENT, 20 XP). Six questions, eight
+// T7 Inside a Browser — the Quiz (ASSESSMENT, 20 XP). Eight questions, ten
 // minutes.
 //
-// The Quiz asks WHEN and WHY; Find It already tested WHERE. Bilingual convention
-// follows Y7_MATH: the question and options are plain English (Assessment.jsx
-// renders only the explanation bilingually) and the teaching is carried in
-// `expVn`.
+// The Quiz asks WHEN and WHY; Find It, Label It and Try It already tested WHERE
+// and HOW. Bilingual convention follows Y7_MATH: the question and options are
+// plain English (Assessment.jsx renders only the explanation bilingually) and
+// the teaching is carried in `expVn`. No question repeats a deck check.
 //
-// Distractors are nameable mistakes: treating the search box as an address bar,
-// thinking a bookmark is a copy of the page, believing a download lives inside
-// the browser, thinking closing a tab closes the browser. The correct letter is
-// spread across A/B/C/D.
+// Distractors are nameable mistakes: treating the search box as an address
+// bar, thinking a one-letter typo "breaks" a website, thinking a bookmark is a
+// copy, believing a download lives inside the browser or the website, reading
+// /kids as something other than a page. The right letters run
+// B D C A C A B D — two of each.
 export const assessment = {
-  timeLimit: 480, // 8 minutes
+  timeLimit: 600, // 10 minutes
   passages: [],
   questions: [
     {
-      id: 'a1_where_to_type',
+      id: 'a1_typo',
       type: 'mcq',
-      title: '1. A friend gives you the address www.schoolsite.org. Where should you type it?',
+      title: '1. You type www.citylibary.org and press Enter. The browser says it cannot find the site. What should you do?',
       options: [
-        { val: 'A', text: 'A. In the address bar at the top of the browser' },
-        { val: 'B', text: 'B. In the search box on whatever page is open' },
-        { val: 'C', text: 'C. In a new document' },
-        { val: 'D', text: 'D. Anywhere — the browser works it out' },
+        { val: 'A', text: 'A. Restart the computer' },
+        { val: 'B', text: 'B. Look at the address bar and fix the spelling' },
+        { val: 'C', text: 'C. Type the address into the page’s search box instead' },
+        { val: 'D', text: 'D. Wait until tomorrow — the website must be closed' },
       ],
-      correct: 'A',
-      expEn: 'An address names a place, so it goes in the box that takes you to places. A search box on a page only looks through that one website, and it cannot take you to a different one.',
-      expVn: 'Địa chỉ gọi tên một nơi chốn, nên nó phải vào ô đưa em tới các nơi. Ô tìm kiếm trên một trang chỉ tìm trong riêng website đó, và không đưa em sang trang khác được.',
+      correct: 'B',
+      expEn: 'Addresses are exact. www.citylibary.org is missing an r, so it is a different address, and nobody owns that one. Read what you typed in the address bar, fix the one letter and press Enter again. The page’s search box would not help: it only searches its own website.',
+      expVn: 'Địa chỉ web phải chính xác tuyệt đối. www.citylibary.org thiếu một chữ r, nên nó là một địa chỉ khác, và chẳng ai sở hữu địa chỉ đó. Hãy đọc lại những gì em đã gõ trong thanh địa chỉ, sửa chữ cái sai rồi bấm Enter lần nữa. Ô tìm kiếm của trang không giúp được gì: nó chỉ tìm trong website của chính nó.',
     },
     {
       id: 'a2_search_box_reach',
@@ -35,27 +36,27 @@ export const assessment = {
       title: '2. You type the word "volcano" into the search box on a school website. What will it look through?',
       options: [
         { val: 'A', text: 'A. Every website in the world' },
-        { val: 'B', text: 'B. Only that school website' },
-        { val: 'C', text: 'C. The files saved on your computer' },
-        { val: 'D', text: 'D. Your bookmarks' },
+        { val: 'B', text: 'B. The files saved on your computer' },
+        { val: 'C', text: 'C. Your bookmarks' },
+        { val: 'D', text: 'D. Only that school website' },
       ],
-      correct: 'B',
+      correct: 'D',
       expEn: 'That box belongs to the website, not to the browser, so its reach stops at the edge of that site. This is why the same word can find nothing here and plenty somewhere else.',
       expVn: 'Ô đó thuộc về website, không thuộc về trình duyệt, nên phạm vi của nó dừng lại ở ranh giới của trang đó. Vì thế cùng một từ có thể không tìm thấy gì ở đây nhưng lại có rất nhiều ở nơi khác.',
     },
     {
-      id: 'a3_bookmark',
+      id: 'a3_is_address',
       type: 'mcq',
-      title: '3. What does a bookmark actually save?',
+      title: '3. Which of these is an address, not words to search for?',
       options: [
-        { val: 'A', text: 'A. A copy of the page, so you can read it with no internet' },
-        { val: 'B', text: 'B. A picture of what the page looked like today' },
-        { val: 'C', text: 'C. A way back to the page, so you do not have to remember the address' },
-        { val: 'D', text: 'D. The page, onto your computer as a file' },
+        { val: 'A', text: 'A. city library opening times' },
+        { val: 'B', text: 'B. kids maths games' },
+        { val: 'C', text: 'C. www.weathernow.org' },
+        { val: 'D', text: 'D. weather now today' },
       ],
       correct: 'C',
-      expEn: 'A bookmark is a signpost, not a copy. Click it tomorrow and the browser goes and fetches the page again — so if the website has changed, you get the new version, and if the site has gone, so has your bookmark.',
-      expVn: 'Dấu trang là một biển chỉ đường, không phải bản sao. Ngày mai em bấm vào nó thì trình duyệt sẽ đi lấy lại trang đó — nên nếu website đã đổi, em nhận bản mới, còn nếu trang đã biến mất thì dấu trang cũng vô dụng.',
+      expEn: 'An address has no spaces, and it has dots and an ending like .org. The other three have spaces between the words: they are words to look for, not a place to go.',
+      expVn: 'Địa chỉ không có dấu cách, và có dấu chấm cùng phần đuôi như .org. Ba cái còn lại có dấu cách giữa các từ: đó là các từ để tìm, không phải một nơi để đến.',
     },
     {
       id: 'a4_close_tab',
@@ -74,30 +75,58 @@ export const assessment = {
     {
       id: 'a5_download_location',
       type: 'mcq',
-      title: '5. You download a file. Where can you find it afterwards?',
+      title: '5. Yesterday you downloaded summer-reading.pdf from the City Library website. Where is the first place to look for it today?',
       options: [
-        { val: 'A', text: 'A. Inside the browser — it disappears when the browser closes' },
-        { val: 'B', text: 'B. Only on the website you took it from' },
-        { val: 'C', text: 'C. Inside the bookmark you made' },
-        { val: 'D', text: 'D. In a folder on your computer, usually called Downloads' },
+        { val: 'A', text: 'A. The City Library website’s search box' },
+        { val: 'B', text: 'B. The Recycle Bin' },
+        { val: 'C', text: 'C. The Downloads folder on your computer' },
+        { val: 'D', text: 'D. Your bookmarks' },
       ],
-      correct: 'D',
-      expEn: 'Downloading makes a real file on your machine, with a name and a date. You can open it with the browser closed — and the browser tells you exactly where it put it, on the bar along the bottom, if you read it before clicking it away.',
-      expVn: 'Tải xuống tạo ra một tệp thật trên máy của em, có tên và có ngày. Em mở được nó ngay cả khi trình duyệt đã đóng — và trình duyệt nói rõ nó cất tệp ở đâu, trên thanh chạy dọc phía dưới, nếu em chịu đọc trước khi bấm bỏ đi.',
+      correct: 'C',
+      expEn: 'A downloaded file is a real file on your computer, and unless you chose somewhere else, the browser put it in Downloads. Your copy is not on the website (A), you did not delete it (B), and a bookmark is a way back to a page, not a file (D).',
+      expVn: 'Tệp đã tải về là một tệp thật trên máy của em, và nếu em không chọn nơi khác thì trình duyệt đã cất nó vào Downloads. Bản của em không nằm trên website (A), em cũng không xoá nó (B), còn dấu trang là đường quay lại một trang, không phải một tệp (D).',
     },
     {
-      id: 'a6_lost',
+      id: 'a6_forward',
       type: 'mcq',
-      title: '6. You clicked a link and the new page is not what you wanted. What is the quickest way back?',
+      title: '6. You are on the Kids’ Books page. You press Back and land on the City Library home page. How do you get to Kids’ Books again with one click?',
       options: [
-        { val: 'A', text: 'A. Restart the computer' },
-        { val: 'B', text: 'B. The back button' },
-        { val: 'C', text: 'C. Close the browser and open it again' },
-        { val: 'D', text: 'D. Type the whole address again from memory' },
+        { val: 'A', text: 'A. Press Forward' },
+        { val: 'B', text: 'B. Press Back again' },
+        { val: 'C', text: 'C. Press Reload' },
+        { val: 'D', text: 'D. Close the tab' },
+      ],
+      correct: 'A',
+      expEn: 'Forward undoes a Back: it walks one step the other way along the pages you visited. Back again would take you further away, and Reload only fetches the home page you are already on.',
+      expVn: 'Đi tới hoàn tác một lần Quay lại: nó đi một bước theo chiều ngược lại dọc các trang em đã xem. Bấm Quay lại lần nữa sẽ đưa em đi xa hơn, còn Tải lại chỉ lấy lại trang chủ em đang xem.',
+    },
+    {
+      id: 'a7_bookmark_tab',
+      type: 'mcq',
+      title: '7. You use the Kids Maths website every week. Why is a bookmark better than leaving its tab open?',
+      options: [
+        { val: 'A', text: 'A. A bookmark makes the website load faster' },
+        { val: 'B', text: 'B. A bookmark stays until you remove it; an open tab is gone as soon as somebody closes the browser' },
+        { val: 'C', text: 'C. A bookmark saves a copy of the website on your computer' },
+        { val: 'D', text: 'D. An open tab stops working after one hour' },
       ],
       correct: 'B',
-      expEn: 'Back walks you to the page you were on a moment ago, and you can press it as many times as you like. Almost nothing in a browser is one-way — knowing that is what stops a page you did not expect from being frightening.',
-      expVn: 'Nút quay lại đưa em về trang em vừa xem lúc nãy, và em bấm bao nhiêu lần cũng được. Hầu như không có gì trong trình duyệt là một chiều — biết điều đó khiến một trang bất ngờ hiện ra không còn đáng sợ nữa.',
+      expEn: 'A bookmark is kept by the browser, so it is still there tomorrow and next month. A tab only lasts while the browser is open. A bookmark is a way back, not a copy (C), and it does not change how fast the page loads (A).',
+      expVn: 'Dấu trang được trình duyệt lưu giữ, nên ngày mai hay tháng sau nó vẫn còn. Một thẻ chỉ tồn tại khi trình duyệt còn mở. Dấu trang là đường quay lại, không phải bản sao (C), và nó không làm trang tải nhanh hơn (A).',
+    },
+    {
+      id: 'a8_address_page',
+      type: 'mcq',
+      title: '8. Look at this address: www.citylibrary.org/kids. What does /kids tell you?',
+      options: [
+        { val: 'A', text: 'A. The website’s name' },
+        { val: 'B', text: 'B. The ending of the address, like .org' },
+        { val: 'C', text: 'C. The password for the website' },
+        { val: 'D', text: 'D. Which page of the City Library website you are on' },
+      ],
+      correct: 'D',
+      expEn: 'After the ending (.org) comes a / and then one page on that website — here the Kids’ Books page. The website’s name is citylibrary (A), the ending is .org (B), and a password never goes in an address (C).',
+      expVn: 'Sau phần đuôi (.org) là dấu / rồi đến một trang trên website đó — ở đây là trang Kids’ Books (sách thiếu nhi). Tên website là citylibrary (A), phần đuôi là .org (B), và mật khẩu không bao giờ nằm trong địa chỉ (C).',
     },
   ],
 };
