@@ -23,11 +23,11 @@ import { unitXPOf, isUnitComplete } from '../tasks/taskRegistry';
 import { ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { WALLET_KEY } from '../utils/progressSchema';
 
-/** One XP earns one gold. A finished unit (100 XP) buys ten plays. */
+/** One XP earns one gold. A finished unit (100 XP) buys four plays. */
 export const GOLD_PER_XP = 1;
 
-/** What one game costs. */
-export const PLAY_COST = 10;
+/** What one game costs. Raised from 10 on 2026-09-21: ten plays a unit was too cheap to feel earned. */
+export const PLAY_COST = 25;
 
 /**
  * The share of ALL available XP that unlocks free play: 80%, the same bar a

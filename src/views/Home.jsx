@@ -7,7 +7,7 @@ import { isPreviewAccount } from '../utils/previewAccount';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
 import { planForDate, todayISO } from '../utils/studyPlan';
 import { getTrack } from '../data/index';
-import { trackSummary, unitNumberOf, unitShortLabel } from '../utils/trackSections';
+import { trackSummary, unitNumberOf } from '../utils/trackSections';
 import useDarkMode from '../hooks/useDarkMode';
 
 export default function Home() {
@@ -153,7 +153,7 @@ export default function Home() {
           </div>
           <div className="min-w-0 pr-14">
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800 dark:text-white leading-tight">Curriculum</h1>
-            <p className="text-xs font-black tracking-widest uppercase text-slate-400">Choose a track, or jump straight into a unit</p>
+            <p className="text-xs font-black tracking-widest uppercase text-slate-400">Choose a track to keep going</p>
           </div>
         </div>
 
@@ -292,8 +292,6 @@ export default function Home() {
             const pct = sum?.total ? Math.round((sum.xp / (sum.total * 100)) * 100) : 0;
             const allDone = sum?.total > 0 && sum.done === sum.total;
             return (
-              // A card, not one big button: the header opens the track and each
-              // unit chip opens that unit, and buttons cannot nest.
               <div
                 key={t.id}
                 className={`relative w-full flex flex-col border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 transition-colors overflow-hidden animate-in fade-in slide-in-from-bottom-4
@@ -320,11 +318,12 @@ export default function Home() {
                   </div>
                 </button>
 
-                {/* XP for the track, then for every unit in it. The space is
-                    held while progress loads so the cards do not jump. */}
+                {/* XP for the track. Per-unit XP lives on the track page, on
+                    each unit card — a chip per unit here was too busy. The
+                    space is held while progress loads so nothing jumps. */}
                 {!isArcade && (
                   <div className={`${compact ? 'px-5 pb-5' : 'px-6 sm:px-7 pb-6'} ${sum?.total ? '' : 'invisible'}`}>
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-3">
                       <div className="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                         <div className={`h-full rounded-full transition-all duration-700 ${allDone ? 'bg-amber-400' : t.theme.bg}`} style={{ width: `${pct}%` }} />
                       </div>
@@ -335,28 +334,6 @@ export default function Home() {
                         {allDone && <Check className="w-3.5 h-3.5 text-amber-500" strokeWidth={4} />}
                         {sum?.done ?? 0}/{sum?.total ?? 0} done
                       </span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1.5">
-                      {(sum?.units || []).map((u) => (
-                        <button
-                          key={u.id}
-                          onClick={() => navigate(`/${t.id}?unit=${u.id}`)}
-                          title={`${u.title} — ${u.xp} / 100 XP${u.complete ? ' · finished' : ''}`}
-                          className={`flex items-center gap-1.5 pl-2 pr-1.5 py-1 rounded-lg border-2 border-b-[3px] text-[11px] font-black tabular-nums transition-all hover:-translate-y-0.5 active:translate-y-0 active:border-b-2
-                            ${u.complete
-                              ? 'bg-amber-400 border-amber-600 text-amber-950'
-                              : u.xp > 0
-                                ? `bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 ${t.theme.text}`
-                                : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'}`}
-                        >
-                          <span className="opacity-70">{unitShortLabel(u.id)}</span>
-                          <span className={`px-1 rounded ${u.complete ? 'bg-black/10' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                            {u.complete && <Check className="inline w-3 h-3 -mt-0.5 mr-0.5" strokeWidth={4} />}
-                            {u.xp}<span className="opacity-50">/100</span>
-                          </span>
-                        </button>
-                      ))}
                     </div>
                   </div>
                 )}

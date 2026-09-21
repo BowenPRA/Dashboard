@@ -77,7 +77,7 @@ export default function Arcade() {
   };
 
   // Survivor opens on a loadout screen with a Back button, so it is charged when
-  // the run deploys (onStart), not here — backing out must not cost 10 gold.
+  // the run deploys (onStart), not here — backing out must not cost a play.
   // Tower Defense starts straight away, so it is charged on the way in.
   const play = (game) => {
     if (!free.unlocked) {

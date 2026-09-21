@@ -5,32 +5,12 @@ import {
   Microscope, Telescope, Brain, Rocket, Calculator, Dna, FlaskConical,
   Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash,
   Boxes, Layers, ScanEye, History, MonitorPlay, ExternalLink, Variable, Droplets,
-  Thermometer, Sigma, Orbit, SquareRadical, Blend, Wrench, Check
+  Thermometer, Sigma, Orbit, SquareRadical, Blend, Wrench, Check, Play, ChevronRight
 } from 'lucide-react';
 import { resolveUnitTasks, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEYS } from '../utils/progressSchema';
 import { classroomLessonsOf, classroomLessonUrl } from '../utils/classroomLink';
-
-/**
- * True when a task has work saved that it can pick up again: a resume blob
- * with something in it, and the task not yet at full marks. The blob is
- * opaque to the card (each task keeps its own shape), so this is a hint, not
- * a promise — enough to tell the student "you were in the middle of this".
- */
-const canResume = (record, maxXP) => {
-  const blob = record?.answers;
-  if (!blob || typeof blob !== 'object' || !(maxXP > 0)) return false;
-  if ((record.current || 0) >= maxXP) return false;
-  if (Array.isArray(blob)) return blob.length > 0;
-  // Notes keeps { slide, total, checks }: in progress past slide one, or with
-  // a check answered. A finished deck is not "in the middle" — it keeps its
-  // answers (`finished: true`) and gets the "Fix N" pill instead.
-  if ('slide' in blob && 'checks' in blob) {
-    if (blob.finished) return false;
-    return (blob.slide || 0) > 0 || Object.keys(blob.checks || {}).length > 0;
-  }
-  return Object.keys(blob).length > 0;
-};
+import { canResume, suggestNextTask } from '../utils/nextTask';
 
 const IconMap = {
   "Award": Award, "GraduationCap": GraduationCap, "BookOpen": BookOpen,
@@ -105,13 +85,9 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
   // whether the required task (e.g. the assessment) has a progress record yet.
   const allTasks = resolveUnitTasks(unit, unitXP, scores);
 
-  const needsWorkTasks = allTasks.filter(t => {
-    if (t.id === 'GAMES') return false;
-    if (t.locked || t.empty) return false;
-    return (scores[t.dbKey]?.current || 0) < t.maxXP;
-  }).slice(0, 3);
-
-  const showNeedsWork = needsWork && needsWorkTasks.length > 0;
+  // The one thing to do next, and why — shown on the unit the track is nudging
+  // the student towards (`needsWork`: in progress, or next up). See nextTask.js.
+  const suggestion = needsWork && !unitLock ? suggestNextTask(unit, scores, allTasks, unitXP, previewAll) : null;
 
   const renderTaskButton = (task, isLocked = false) => {
     if (!task) return null;
@@ -179,7 +155,7 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
   return (
     <div className={`relative w-full rounded-[2rem] mb-4 transition-all duration-200 z-10 hover:z-50
       ${unitXP === 100 ? 'bg-gradient-to-r from-rose-400 via-amber-300 to-fuchsia-500 p-[3px] pb-[6px] shadow-md shadow-fuchsia-500/20' : ''}
-      ${showNeedsWork && unitXP !== 100 ? 'shadow-[0_0_15px_rgba(244,63,94,0.15)]' : 'shadow-sm'}
+      ${unitXP === 100 ? '' : 'shadow-sm'}
     `}>
       
       <div className={`w-full bg-white dark:bg-slate-900 transition-all duration-300 relative
@@ -248,37 +224,6 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                 </span>
               )}
 
-              {showNeedsWork && (
-                <div className="relative group/badge">
-                  <span className="flex items-center gap-1.5 px-2.5 py-1 bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400 rounded-full text-[10px] uppercase tracking-widest border border-rose-300/50 dark:border-rose-700/50 shadow-sm cursor-help transition-all group-hover/badge:bg-rose-200 dark:group-hover/badge:bg-rose-800/50">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                    </span>
-                    Needs Work
-                  </span>
-
-                  <div className="absolute top-full right-1/2 translate-x-1/2 mt-3 w-[13rem] bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-2 border-slate-200 dark:border-slate-700 p-3 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 scale-95 group-hover/badge:scale-100 pointer-events-none z-[100]">
-                    <div className="absolute -top-[13px] left-1/2 -translate-x-1/2 border-[6px] border-transparent border-b-slate-200 dark:border-b-slate-700">
-                      <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-white dark:border-b-slate-800"></div>
-                    </div>
-                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 px-1 text-center">Tasks to attempt</p>
-                    <div className="space-y-2">
-                      {needsWorkTasks.map(t => {
-                        const Icon = t.icon;
-                        return (
-                          <div key={t.id} className="flex items-center p-2 rounded-xl border-b-2 border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/50">
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${t.color.bg} ${t.color.text} border-b-[3px] ${t.color.border} mr-2.5 shrink-0`}>
-                              <Icon className="w-4 h-4" strokeWidth={2.5} />
-                            </div>
-                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate tracking-wide">{t.label}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className={`hidden sm:flex w-10 h-10 rounded-full items-center justify-center border-2 shadow-sm transition-all duration-200 border-b-[4px]
@@ -294,6 +239,22 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
             </div>
           </div>
         </div>
+
+        {/* Suggested next task: one tap from the closed card straight into it. */}
+        {suggestion && (
+          <button
+            onClick={() => startMode(unit.id, suggestion.task.id)}
+            className="group/next w-full flex items-center gap-3 px-4 sm:px-5 py-2.5 text-left border-t-2 border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+          >
+            <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-slate-400 flex-shrink-0">Next</span>
+            <span className={`flex items-center gap-1.5 pl-2 pr-2.5 py-1 rounded-lg border-b-[3px] text-xs font-black tracking-wide flex-shrink-0 ${suggestion.task.color.bg} ${suggestion.task.color.border} ${suggestion.task.color.text}`}>
+              <Play className="w-3 h-3 fill-current" strokeWidth={2.5} />
+              {suggestion.task.label}
+            </span>
+            <span className="min-w-0 flex-1 text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 truncate">{suggestion.note}</span>
+            <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 flex-shrink-0 transition-transform group-hover/next:translate-x-0.5 group-hover/next:text-slate-500" strokeWidth={3} />
+          </button>
+        )}
 
         {isExpanded && !unitLock && (
           <div className="animate-in fade-in slide-in-from-top-2 duration-200 border-t-2 border-slate-100 dark:border-slate-800 pb-4">
