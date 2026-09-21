@@ -153,6 +153,7 @@ export const notes = [
   // 3 ─ Turning it on (steps + the laptop, labelled) ──────────────────────────
   {
     layout: 'steps',
+    dense: true,
     icon: 'Power',
     accent: SKY,
     eyebrow: 'One press, then wait',
@@ -631,8 +632,6 @@ export const notes = [
     labelIcon: 'Languages',
     text: '**Re**start = start **again**.',
     textVn: '**Re**start = khởi động **lại**.',
-    sub: '**Re-** means **again**. **Shut down** means stop, and stay **off**.',
-    subVn: '**Re-** nghĩa là **lại**. **Shut down** nghĩa là dừng, và **tắt** hẳn.',
     notes: [
       {
         tone: 'write',
@@ -699,6 +698,7 @@ export const notes = [
   // 19 ─ Stopping properly (steps + POWER_MENU) ───────────────────────────────
   {
     layout: 'steps',
+    dense: true,
     icon: 'CheckCircle2',
     accent: GREEN,
     title: 'Stopping Properly',
@@ -810,13 +810,6 @@ export const notes = [
     textVn: '**Bị treo** nghĩa là **không gì phản hồi**.',
     sub: 'Not the pointer, not the keys, not even the clock. That — and **only** that — is when you hold the power button down.',
     subVn: 'Con trỏ không nhúc nhích, phím không có tác dụng, đồng hồ đứng yên. Đó — và **chỉ** lúc đó — mới là lúc em giữ nút nguồn.',
-    notes: [
-      {
-        tone: 'write',
-        text: '**Frozen:** stuck. Nothing on the computer answers — not the mouse and not the keyboard.',
-        textVn: '**Bị treo (frozen):** bị kẹt. Không gì trên máy phản hồi — cả chuột lẫn bàn phím.',
-      },
-    ],
     check: {
       id: 'chk_frozen',
       q: 'Which of these computers is **frozen**?',

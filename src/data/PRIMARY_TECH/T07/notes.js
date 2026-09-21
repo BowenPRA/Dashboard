@@ -376,6 +376,7 @@ export const notes = [
   // 10 ─ Going to a website you were given (steps + the typo reveal) ───────
   {
     layout: 'steps',
+    dense: true,
     icon: 'ArrowRight',
     accent: SKY,
     title: 'Going to a website you were given',
@@ -657,6 +658,7 @@ export const notes = [
   // 18 ─ Back, forward, reload (steps) + PREDICT ────────────────────────────
   {
     layout: 'steps',
+    dense: true,
     icon: 'Repeat',
     accent: GREEN,
     title: 'Back, forward, reload',
@@ -737,8 +739,8 @@ export const notes = [
     titleVn: 'Lưu trang web, không phải ảnh chụp nó',
     text: 'The **star** saves a way back.',
     textVn: '**Ngôi sao** lưu lại đường quay về.',
-    sub: 'Click it (or press **Ctrl+D**) and the page goes on a list, so you can come back tomorrow without the address. A bookmark is a **way back**, not a copy.',
-    subVn: 'Bấm vào nó (hoặc bấm **Ctrl+D**) là trang được đưa vào danh sách, để mai em quay lại mà không cần nhớ địa chỉ. Dấu trang là **đường quay lại**, không phải bản sao.',
+    sub: 'Click it (or press **Ctrl+D**) to come back tomorrow without remembering the address.',
+    subVn: 'Bấm vào nó (hoặc bấm **Ctrl+D**) để mai quay lại mà không cần nhớ địa chỉ.',
     notes: [
       {
         tone: 'write',

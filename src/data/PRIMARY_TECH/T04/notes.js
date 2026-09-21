@@ -186,8 +186,8 @@ export const notes = [
     titleVn: 'Việc lưu bài hỏi em hai câu',
     text: '**What is it called?** **Where should it go?**',
     textVn: '**Nó tên là gì?** **Nó nên nằm ở đâu?**',
-    sub: 'The first time you save anything, the computer asks both. Most people click past without reading — and that is why so many cannot find their work.',
-    subVn: 'Lần đầu em lưu bất cứ thứ gì, máy tính đều hỏi cả hai câu. Phần lớn mọi người bấm bỏ qua mà không đọc — và vì thế rất nhiều người không tìm lại được bài.',
+    sub: 'The first time you save anything, the computer asks both — and most people click past without reading.',
+    subVn: 'Lần đầu em lưu bất cứ thứ gì, máy tính đều hỏi cả hai câu — và phần lớn mọi người bấm bỏ qua mà không đọc.',
     notes: [
       {
         tone: 'plant',
@@ -520,6 +520,7 @@ export const notes = [
   // 16 ─ Where things live + SORT ──────────────────────────────────────────
   {
     layout: 'steps',
+    dense: true,
     icon: 'Boxes',
     accent: PURPLE,
     title: 'Where things live',
