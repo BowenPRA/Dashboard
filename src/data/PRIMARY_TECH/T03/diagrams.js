@@ -728,11 +728,11 @@ const TWO_WAYS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" 
 
 /**
  * The middle of the home row, drawn big: D F G H J K, the four home keys
- * tinted, a bump on F and on J, and the two index fingers coming up to feel
- * for them.
+ * tinted, a bump on F and on J (labelled between the fingers, so no leader
+ * crosses a letter), and the two index fingers coming up to feel for them.
  */
-const BUMPS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" class="w-full h-full drop-shadow-md">
-  <rect x="4" y="4" width="632" height="432" rx="14" fill="${PAPER}" stroke="${LINE}" stroke-width="2"/>
+const BUMPS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 110 640 330" class="w-full h-full drop-shadow-md">
+  <rect x="4" y="114" width="632" height="322" rx="14" fill="${PAPER}" stroke="${LINE}" stroke-width="2"/>
   ${bigKey(22, 150, 92, 92, CYAN_PALE, CYAN)}
   ${bigKey(122, 150, 92, 92, CYAN_PALE, CYAN, true)}
   ${bigKey(222, 150, 92, 92, '#ffffff', CASE)}
@@ -749,9 +749,9 @@ const BUMPS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" cla
   ${finger(468, 284, 486, 452, 58, FINGER_INK.R1)}
   <path d="M 146 262 Q 168 252 190 262 M 446 262 Q 468 252 490 262" fill="none" stroke="${SLATE}" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4 4"/>
 
-  ${lead(236, 84, 176, 228)}
-  ${lead(404, 84, 460, 228)}
-  <text x="320" y="62" font-family="sans-serif" font-size="21" font-weight="bold" fill="${INK}" text-anchor="middle">A bump on F and on J</text>
+  ${lead(270, 280, 178, 230)}
+  ${lead(370, 280, 458, 230)}
+  <text x="320" y="300" font-family="sans-serif" font-size="21" font-weight="bold" fill="${INK}" text-anchor="middle">the bumps</text>
   <text x="212" y="356" font-family="sans-serif" font-size="19" font-weight="bold" fill="#1d4ed8">Left index finger</text>
   <text x="424" y="404" font-family="sans-serif" font-size="19" font-weight="bold" fill="#6d28d9" text-anchor="end">Right index finger</text>
 </svg>`;
@@ -927,7 +927,7 @@ const GYM_RESULT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360
  * flashing red because the student pressed s, and the on-screen keyboard
  * lighting the key they want in its finger's colour. Everything a typist needs
  * to check is on the SCREEN; nothing needs a look at the hands. The letters
- * are placed one per cell (the x list), the way the Gym lays out its line (one cell per letter, as the Gym does).
+ * are placed one per cell (the x list), the way the Gym lays out its line.
  */
 const GYM_SCREEN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" class="w-full h-full drop-shadow-md">
   <rect x="4" y="4" width="752" height="392" rx="14" fill="${PAPER}" stroke="${LINE}" stroke-width="2"/>

@@ -164,7 +164,7 @@ export const notes = [
       type: 'estimate',
       prompt: 'About how many words a minute does a good touch typist type?',
       promptVn: 'Một người gõ mười ngón giỏi gõ được khoảng bao nhiêu từ mỗi phút?',
-      min: 0, max: 100, step: 5, unit: 'wpm', answer: 40, tolerance: 0.35,
+      min: 0, max: 120, step: 5, unit: 'wpm', answer: 40, tolerance: 0.35,
       explain: 'About **40 words a minute** — much faster than anyone writes by hand. Nobody starts there. Your goal in this unit is **8 words a minute, with 9 keys in every 10 right**, and it climbs as you practise. **Right first, fast later.**',
       explainVn: 'Khoảng **40 từ mỗi phút** — nhanh hơn nhiều so với viết tay. Không ai bắt đầu ở mức đó cả. Mục tiêu của em trong bài này là **8 từ mỗi phút, cứ 10 phím thì đúng 9**, và mục tiêu sẽ tăng dần khi em luyện tập. **Gõ đúng trước, gõ nhanh sau.**',
     },
