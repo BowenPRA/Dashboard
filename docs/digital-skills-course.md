@@ -17,7 +17,10 @@ lesson), [ged-unit-shape.md](ged-unit-shape.md) (the three-gate skeleton and the
 gate rule, which this track inherits) and [question-quality.md](question-quality.md)
 (the mark-scheme standard for every open response).
 
-Status: **proposal**. Nothing here is built yet.
+Status (2026-09-21): **T1, T2, T3, T4 and T7 are built and live**, on the `files`,
+`desktop` and `browser` skins, with `POINT_IT`, `SIM`, `TYPE_GYM` and a `MOUSE_GYM`. The
+build order is [primary-tech/BUILD-PLAN.md](primary-tech/BUILD-PLAN.md); the standard every
+unit is held to is [primary-tech/UPGRADE-PLAN.md](primary-tech/UPGRADE-PLAN.md).
 
 ---
 

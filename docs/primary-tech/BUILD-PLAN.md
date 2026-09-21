@@ -12,6 +12,12 @@ authored and playable; and the simulator engine, the `files` skin, the `SIM` tas
 `AppSim` notes widget and the solvability self-check are all in. **T5 · Folders and
 Finding** is what remains of step 4; step 5 is the `mail` skin and `TYPE_GYM`.
 
+**Update 2026-09-21 — [UPGRADE-PLAN.md](UPGRADE-PLAN.md).** T1, T4 and T7 were rebuilt to
+the Year 7 standard, and **T2** and **T3** built to it. That jumped ahead of this list:
+the `desktop` and `browser` skins (step 6's T1 and T7 upgrades) and `TYPE_GYM` (half of
+step 5) are built, plus a `MOUSE_GYM` (`p45`) this plan never had. Still to build: T5,
+T6, the `mail` skin (T9, T10), the `settings` and `doc` skins, and T8, T11–T14.
+
 Two things found while authoring step 2 are worth knowing before writing another deck — a `check` on a `showcase` slide shrinks its picture past
 readable, and `CompareLayout` silently drops `inlineSvg`; both are recorded in
 [../lesson-renderer-gap.md](../lesson-renderer-gap.md) §0.
