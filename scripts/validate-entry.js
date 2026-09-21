@@ -285,6 +285,17 @@ for (const trackId of TRACK_IDS) {
         if (slide.layout === 'stack' && (slide.items || []).length && slide.variant !== 'checklist') {
           err(`${label}: notes slide ${i + 1} ("${slide.title || '?'}") is a stack with \`items\` but no variant: "checklist" — they will not render; use \`notes\` cards or add the variant`);
         }
+        // `ratio` is a split slide's text-column % at lg. SplitLayout clamps to
+        // 30–70 and falls back to 45 for a non-number, so anything else would
+        // quietly render at a width the author did not write.
+        if (slide.ratio !== undefined) {
+          const at = `${label}: notes slide ${i + 1} ("${slide.title || '?'}")`;
+          if (slide.layout !== 'split') {
+            err(`${at} has ratio: ${JSON.stringify(slide.ratio)} but is not a split slide — only split reads it`);
+          } else if (!Number.isInteger(slide.ratio) || slide.ratio < 30 || slide.ratio > 70) {
+            err(`${at} has ratio: ${JSON.stringify(slide.ratio)} — it must be a whole number from 30 to 70 (the text column's % width)`);
+          }
+        }
 
         // -- check questions: what the NOTES task is now scored on. A malformed
         //    one silently costs the student XP they cannot get back, so these

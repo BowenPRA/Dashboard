@@ -4,13 +4,16 @@
 import { Note, Media, HeaderBar, Ic, Reveal } from './primitives.jsx';
 import { renderContent, toHex } from './helpers.jsx';
 
-const RATIOS = {
-  40: ['lg:w-[40%]', 'lg:w-[60%]'],
-  45: ['lg:w-[45%]', 'lg:w-[55%]'],
-  50: ['lg:w-1/2', 'lg:w-1/2'],
-  55: ['lg:w-[55%]', 'lg:w-[45%]'],
-  60: ['lg:w-[60%]', 'lg:w-[40%]'],
-};
+// `ratio` is the text column's % width from lg; the media column takes the
+// rest. Any value in 30–70 is honoured (the validator holds authors to that
+// range). The widths ride on CSS variables so Tailwind needs only one static
+// class per column — a class built from the number would never be generated.
+const DEFAULT_RATIO = 45;
+function textPercent(ratio) {
+  const n = Number(ratio);
+  if (ratio == null || !Number.isFinite(n)) return DEFAULT_RATIO;
+  return Math.min(70, Math.max(30, n));
+}
 
 export default function SplitLayout({ slide: s, ctx }) {
   const { pick, lang, isDisplayMode } = ctx;
@@ -24,7 +27,9 @@ export default function SplitLayout({ slide: s, ctx }) {
   const hasExample = !!example;
   const hasText = !!content || (s.notes?.length > 0);
   const mediaLeft = s.side === 'left';
-  const [textW, mediaW] = RATIOS[s.ratio] || RATIOS[45];
+  const textPct = textPercent(s.ratio);
+  const textW = 'lg:w-[var(--split-text)]';
+  const mediaW = 'lg:w-[var(--split-media)]';
   const twoPane = hasMedia || hasExample;
 
   const TextCol = (
@@ -63,7 +68,10 @@ export default function SplitLayout({ slide: s, ctx }) {
   return (
     <>
       <HeaderBar title={title || 'Concept'} icon={s.icon || 'BookOpen'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />
-      <div className={`flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden ${mediaLeft ? 'lg:flex-row-reverse' : ''}`}>
+      <div
+        className={`flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden ${mediaLeft ? 'lg:flex-row-reverse' : ''}`}
+        style={{ '--split-text': `${textPct}%`, '--split-media': `${100 - textPct}%` }}
+      >
         {hasText || !twoPane ? TextCol : null}
         {MediaCol}
       </div>
