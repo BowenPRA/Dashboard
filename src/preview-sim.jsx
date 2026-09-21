@@ -5,12 +5,14 @@
 //   ?skin=desktop | browser | files   — the Try It task on a few sample jobs
 //   ?demo=desktop | browser | files   — the AppSim notes widget, playing a script
 //   ?type=1                           — the Typing Gym
+//   ?mouse=1                          — the Mouse Gym
 import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import AppSim from './tasks/AppSim.jsx';
 import AppSimDemo from './tasks/appsim/AppSimDemo.jsx';
 import TypeGym from './tasks/TypeGym.jsx';
+import MouseGym from './tasks/MouseGym.jsx';
 
 const PARAMS = new URLSearchParams(window.location.search);
 
@@ -167,6 +169,14 @@ function Bench() {
   const skin = PARAMS.get('skin');
   const demo = PARAMS.get('demo');
   if (PARAMS.get('type')) return <TypeGym pool={TYPE} onComplete={done} onQuit={quit} />;
+  if (PARAMS.get('mouse')) {
+    return (
+      <>
+        <MouseGym pool={{ title: 'Mouse Gym', titleVn: 'Phòng tập chuột', modes: ['click', 'double', 'right', 'drag'], rounds: 8 }} onComplete={done} onQuit={quit} />
+        {log && <pre id="bench-log" className="fixed bottom-0 left-0 right-0 bg-black text-green-300 text-xs p-2">{log}</pre>}
+      </>
+    );
+  }
   if (demo && DEMOS[demo]) {
     return (
       <div className="min-h-screen bg-slate-100 p-6">

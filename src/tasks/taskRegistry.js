@@ -608,6 +608,27 @@ export const TASKS = [
     props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
   {
+    id: 'MOUSE_GYM',
+    nativeMax: 10,
+    // p1–p44 are taken (p5 is a workbook question id); p45 is next.
+    dbKey: 'p45',
+    // "Mouse Gym." Click, double-click, right-click (then choose from the menu)
+    // and drag, on a fresh arrangement every round — tap, double-tap,
+    // press-and-hold and drag on a tablet. A slip is NAMED ("that was one
+    // click") and the round carries on. Rounds are drawn from a seed by
+    // src/utils/mouseGym.js, which the validator also runs. Built for
+    // T2 · Mouse, Keys and Windows (docs/primary-tech/UPGRADE-PLAN.md §8.2).
+    label: 'Mouse Gym',
+    icon: MousePointerClick,
+    color: { bg: 'bg-[#0369a1]', border: 'border-[#0c4a6e]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./MouseGym.jsx')),
+    hasContent: (u) => !!(u.mouseGym && Array.isArray(u.mouseGym.modes) && u.mouseGym.modes.length),
+    buildPool: (u) => u.mouseGym || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
     id: 'INTERVAL',
     nativeMax: 10,
     // p1–p25 are taken (p5 is reserved as a workbook question id), and p26 is

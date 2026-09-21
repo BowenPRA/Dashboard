@@ -22,6 +22,7 @@ import { checkIntervalItems } from '../src/utils/interval.js';
 import { checkAll as checkPointIt } from '../src/utils/pointIt.js';
 import { checkAll as checkSim, checkScript as checkSimDemo } from '../src/utils/appSim.js';
 import { checkTypeGym } from '../src/utils/typeGym.js';
+import { checkMouseGym } from '../src/utils/mouseGym.js';
 import { checkAll as checkLabelIt } from '../src/utils/labelIt.js';
 import { checkConfig as checkLabBench } from '../src/utils/labBench.js';
 import { checkActivity } from '../src/utils/activity.js';
@@ -410,6 +411,7 @@ for (const trackId of TRACK_IDS) {
     //    all there is to check — known modes, a pool behind each, and nothing a
     //    keyboard cannot type (utils/typeGym.js).
     if (unit.typeGym !== undefined) for (const p of checkTypeGym(unit.typeGym, { bilingual })) err(`${label}: typeGym ${p}`);
+    if (unit.mouseGym !== undefined) for (const p of checkMouseGym(unit.mouseGym, { bilingual })) err(`${label}: mouseGym ${p}`);
 
     // -- Number Line items: only the inequality is authored, and the task
     //    derives the endpoints, the shading, the interval notation and the
