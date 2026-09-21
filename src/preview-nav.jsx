@@ -6,6 +6,7 @@
 //   preview-nav.html?view=track&track=Y7_MATH   the student's unit list
 //   preview-nav.html?view=teacher               roster + gradebook + drawer
 //   preview-nav.html?view=home&tracks=Y7_MATH,Y7_SCI   the track menu (omit tracks for all)
+//     &name=…   the signed-in student's name (blank tests the roster fallback)
 //
 // Not part of the production build.
 import { useState } from 'react';
@@ -220,8 +221,10 @@ function TeacherHarness() {
 function stubHome() {
   const enrolled = (params.get('tracks') || TRACK_REGISTRY.map((t) => t.id).join(',')).split(',');
   const progress = Object.fromEntries(enrolled.map((id, i) => [id, synthTrack(id, (i * 2) % 5, 0.5, 4 + i * 30)]));
-  supabase.auth.getSession = async () => ({ data: { session: { user: { id: 'harness', app_metadata: { enrolled_tracks: enrolled }, user_metadata: {} } } } });
-  supabase.from = () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: { progress }, error: null }) }) }) });
+  const name = params.get('name') ?? 'Vi Khoi';
+  supabase.auth.getSession = async () => ({ data: { session: { user: { id: 'harness', email: 'harness@pra.test', app_metadata: { enrolled_tracks: enrolled }, user_metadata: { name } } } } });
+  supabase.auth.signOut = async () => { window.__signedOut = true; return { error: null }; };
+  supabase.from = () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: { progress, display_name: 'Roster Name' }, error: null }) }) }) });
 }
 
 const view = params.get('view') || 'track';

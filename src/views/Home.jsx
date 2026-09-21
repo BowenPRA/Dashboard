@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine, Play, Check, Trophy } from 'lucide-react';
+import { ChevronRight, LayoutDashboard, Sun, Moon, Loader2, CalendarCheck, Coffee, PenLine, Play, Check, Trophy, LogOut } from 'lucide-react';
 import { TRACK_REGISTRY, getTrackConfig, ARCADE_TRACK_ID } from '../components/trackRegistry';
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
@@ -20,6 +20,9 @@ export default function Home() {
   // Fetched AFTER the menu is on screen and never waited for: the tracks are
   // what the page is for, and a slow or failed read just leaves the bars off.
   const [progress, setProgress] = useState(null);
+  // Who is signed in, for the header. The name the teacher gave them, else the
+  // roster's display name (older accounts), else the start of their email.
+  const [studentName, setStudentName] = useState('');
 
   // The banner only needs the plan, not the progress behind it — /today owns
   // the per-goal detail, and Home stays a one-query screen.
@@ -69,10 +72,19 @@ export default function Home() {
       } else {
         setVisibleTracks(withArcade(defaultTracks));
       }
+      const metaName = session.user.user_metadata?.name?.trim();
+      setStudentName(metaName || session.user.email?.split('@')[0] || 'Student');
       setLoading(false);
 
       supabase.from('students').select('progress').eq('id', session.user.id).single()
         .then(({ data }) => setProgress(data?.progress || {}), () => {});
+
+      if (!metaName) {
+        supabase.from('students').select('display_name').eq('id', session.user.id).single()
+          .then(({ data }) => {
+            if (data?.display_name?.trim()) setStudentName(data.display_name.trim());
+          }, () => {});
+      }
     };
 
     fetchUserAndTracks();
@@ -125,6 +137,11 @@ export default function Home() {
   // count: the four-subject GED student keeps the big cards.
   const compact = visibleTracks.filter(t => t.id !== ARCADE_TRACK_ID).length > 4;
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut().catch(() => {});
+    navigate('/login', { replace: true });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
@@ -135,25 +152,46 @@ export default function Home() {
 
   return (
     <div className={`relative min-h-screen flex flex-col items-center p-6 py-12 sm:py-16 overflow-hidden font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300`}>
-      
-      <button 
-        onClick={toggleDarkMode}
-        className="absolute top-6 right-6 p-3 rounded-2xl text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 shadow-sm z-50"
-        title="Toggle Dark Mode"
-        aria-label="Toggle dark mode"
-      >
-        {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
-      </button>
 
       <div className="relative z-10 w-full max-w-5xl">
-        
-        <div className="mb-6 flex items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="flex items-center justify-center w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-800 border-b-[5px] flex-shrink-0">
-            <LayoutDashboard className="w-7 h-7 text-slate-800 dark:text-white" strokeWidth={2.5} />
+
+        {/* Title on the left; who is signed in, log out and the theme toggle on
+            the right. On a phone the controls sit above the title instead. */}
+        <div className="mb-6 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="flex items-center justify-center w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-2 border-slate-200 dark:border-slate-800 border-b-[5px] flex-shrink-0">
+              <LayoutDashboard className="w-7 h-7 text-slate-800 dark:text-white" strokeWidth={2.5} />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800 dark:text-white leading-tight">My Courses</h1>
+              <p className="text-xs font-black tracking-widest uppercase text-slate-400">Choose a course to keep going</p>
+            </div>
           </div>
-          <div className="min-w-0 pr-14">
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800 dark:text-white leading-tight">Curriculum</h1>
-            <p className="text-xs font-black tracking-widest uppercase text-slate-400">Choose a track to keep going</p>
+
+          <div className="flex items-center gap-2 self-end sm:self-auto flex-shrink-0">
+            <div className="flex items-center min-w-0 bg-white dark:bg-slate-900 p-1 rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="px-3 max-w-[9rem] sm:max-w-[14rem] truncate text-sm font-black text-slate-700 dark:text-slate-200" title={studentName}>
+                {studentName}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="h-11 px-3 flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-700 hover:text-rose-500 hover:border-rose-200 dark:hover:border-rose-900 transition-colors active:scale-95"
+                title="Log out"
+                aria-label="Log out"
+              >
+                <LogOut className="w-4 h-4" strokeWidth={3} />
+                <span className="hidden sm:inline text-xs font-black uppercase tracking-widest">Log out</span>
+              </button>
+            </div>
+
+            <button
+              onClick={toggleDarkMode}
+              className="w-14 h-14 flex items-center justify-center rounded-2xl text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors active:scale-95 border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm"
+              title="Toggle Dark Mode"
+              aria-label="Toggle dark mode"
+            >
+              {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
+            </button>
           </div>
         </div>
 
