@@ -80,7 +80,9 @@ export function initial(item) {
   const running = power === 'on' || power === 'sleep';
   const account = i.user || DEFAULT_USER;
   const windows = running
-    ? (i.windows || []).map((w) => ({
+    ? (i.windows || []).map((w, slot) => ({
+      // Where it cascades on screen, fixed for the window's life (see the skin).
+      slot,
       app: APPS[w.app] ? w.app : 'notes',
       title: w.title || APPS[w.app] || 'Notes',
       state: WINDOW_STATES.includes(w.state) ? w.state : 'normal',
@@ -111,6 +113,7 @@ export function initial(item) {
     frozen: running && !!i.frozen,
     menu: false,
     windows,
+    nextSlot: windows.length,
     focus: topTitle(windows),
     dialog: null,
     lost: [],
@@ -216,8 +219,8 @@ function openItem(s, name) {
     return raise(withWin(base, name, back), name);
   }
   const app = APP_FOR_KIND[it.kind] || 'notes';
-  const win = { app, title: name, state: 'normal', was: 'normal', saved: true, ...(it.kind === 'folder' ? { folder: name } : {}) };
-  return { ...base, windows: [...s.windows, win], focus: name };
+  const win = { app, title: name, state: 'normal', was: 'normal', saved: true, slot: s.nextSlot, ...(it.kind === 'folder' ? { folder: name } : {}) };
+  return { ...base, windows: [...s.windows, win], nextSlot: s.nextSlot + 1, focus: name };
 }
 
 function openBin(s) {
@@ -225,7 +228,7 @@ function openBin(s) {
   const existing = findWin(s, title);
   const base = { ...s, context: null, menu: false };
   if (existing) return raise(withWin(base, title, existing.state === 'min' ? { state: existing.was || 'normal' } : {}), title);
-  return { ...base, windows: [...s.windows, { app: 'files', title, state: 'normal', was: 'normal', saved: true, folder: BIN }], focus: title };
+  return { ...base, windows: [...s.windows, { app: 'files', title, state: 'normal', was: 'normal', saved: true, folder: BIN, slot: s.nextSlot }], nextSlot: s.nextSlot + 1, focus: title };
 }
 
 /** Is `target` something a right-click can land on right now? */
@@ -344,7 +347,8 @@ export function apply(s, a) {
       return {
         ...s,
         menu: false,
-        windows: [...s.windows, { app: a.app, title, state: 'normal', was: 'normal', saved: true }],
+        windows: [...s.windows, { app: a.app, title, state: 'normal', was: 'normal', saved: true, slot: s.nextSlot }],
+        nextSlot: s.nextSlot + 1,
         focus: title,
       };
     }

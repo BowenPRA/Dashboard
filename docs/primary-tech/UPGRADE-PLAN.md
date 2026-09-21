@@ -247,7 +247,7 @@ on it. Label It is unchanged ([§2.2](../y7-science/ENGAGEMENT-PLAN.md)).
    spread evenly across A–D over the deck. `check:`/`activity:` is the LAST key of its slide;
    never both on one slide.
 4. **Show → Do in the deck.** At least two `AppSim` demo slides (widget in a `split` slide
-   at `ratio: 62`, narrated script, same engine and window as Try It).
+   at `ratio: 40` — the text column's share; SplitLayout knows 40/45/50/55/60 only, narrated script, same engine and window as Try It).
 5. **Hotspots on the interface pictures** — where the classroom would point, the student
    taps. Decoys: list every plausible control as a target so a wrong tap is *named*.
 6. **No paper.** The "Check your notebook" slide becomes the Y7 closing pair: a `stack`

@@ -85,10 +85,15 @@ function useScale(ref, fit) {
   return scale;
 }
 
-/** Where a window sits: cascaded when normal, the whole screen above the taskbar when maximised. */
-function frameOf(state, i) {
+/**
+ * Where a window sits: cascaded when normal, the whole screen above the taskbar
+ * when maximised. The cascade step is the window's `slot` (given when it opened),
+ * not its place in the stack — so bringing a window to the front raises it
+ * without making it jump across the screen.
+ */
+function frameOf(state, slot) {
   if (state === 'max') return { left: 0, top: 0, width: SCREEN.w, height: SCREEN.h - TASKBAR_H };
-  return { left: 150 + (i % 5) * 34, top: 26 + (i % 5) * 28, width: 400, height: 250 };
+  return { left: 150 + (slot % 5) * 34, top: 26 + (slot % 5) * 28, width: 400, height: 250 };
 }
 
 export default function DesktopSkin({ state, onAction, hint = null, disabled = false, fit = 'viewport' }) {
@@ -291,12 +296,15 @@ function DeskIcon({ id, label, Icon, tint = '#475569', selected, onSelect, onOpe
 }
 
 /** The name box under an icon while it is being renamed (a new folder arrives with one). */
-function RenameBox({ state, act, hint }) {
+function RenameBox({ state, act, hint, disabled = false }) {
   const r = state.renaming;
   return (
     <span className="flex flex-col items-center w-full" onClick={(e) => e.stopPropagation()}>
       <input
-        autoFocus
+        // Not in a demo: a focused box there swallows the deck's arrow keys.
+        autoFocus={!disabled}
+        readOnly={disabled}
+        tabIndex={disabled ? -1 : 0}
         value={r.text}
         aria-label="new name"
         onFocus={(e) => e.target.select()}
@@ -305,7 +313,7 @@ function RenameBox({ state, act, hint }) {
           if (e.key === 'Enter') { e.preventDefault(); act({ type: 'commitName' }); }
           if (e.key === 'Escape') { e.preventDefault(); act({ type: 'cancelName' }); }
         }}
-        onBlur={() => act({ type: 'commitName' })}
+        onBlur={() => { if (!disabled) act({ type: 'commitName' }); }}
         spellCheck={false}
         autoCapitalize="off"
         autoComplete="off"
@@ -400,7 +408,7 @@ function OnScreen({ state, act, hint, selectedIcon, setSelectedIcon, frozenPing,
   const onDesk = state.items.filter((it) => it.in === 'desktop');
 
   return (
-    <div ref={screenRef} className="absolute inset-0" data-drop="desktop"
+    <div ref={screenRef} className={`absolute inset-0 ${hint === 'desktop' ? 'ring-8 ring-inset ring-amber-300 animate-pulse' : ''}`} data-drop="desktop"
       style={{ background: 'linear-gradient(170deg,#dbeafe 0%,#eef6ff 55%,#e0f2fe 100%)' }}
       onClick={background}
       onContextMenu={(e) => { e.preventDefault(); if (!disabled) menuFor('desktop', e); }}>
@@ -426,7 +434,7 @@ function OnScreen({ state, act, hint, selectedIcon, setSelectedIcon, frozenPing,
             onMenu={() => act({ type: 'openContext', target: `item:${it.name}` })}
             drag={drag}
             glowOn={hint === `item:${it.name}`}>
-            {state.renaming?.name === it.name ? <RenameBox state={state} act={act} hint={hint} /> : null}
+            {state.renaming?.name === it.name ? <RenameBox state={state} act={act} hint={hint} disabled={disabled} /> : null}
           </DeskIcon>
         </div>
       ))}
@@ -467,7 +475,7 @@ function OnScreen({ state, act, hint, selectedIcon, setSelectedIcon, frozenPing,
 }
 
 function AppWindow({ w, i, focused, frozen, state, act, hint, frozenPing, drag, disabled, selectedIcon, setSelectedIcon }) {
-  const f = frameOf(w.state, i);
+  const f = frameOf(w.state, w.slot ?? i);
   const Icon = APP_ICON[w.app] || FileText;
   const btn = 'w-7 h-[22px] rounded-md flex items-center justify-center transition-colors';
   const stop = (e) => e.stopPropagation();
@@ -571,7 +579,7 @@ function WindowBody({ w, state, act, hint, drag, disabled, selectedIcon, setSele
               onOpen={() => act({ type: 'openItem', name: it.name })}
               onMenu={() => act({ type: 'openContext', target: `item:${it.name}` })}
               drag={drag} glowOn={hint === `item:${it.name}`}>
-              {state.renaming?.name === it.name ? <RenameBox state={state} act={act} hint={hint} /> : null}
+              {state.renaming?.name === it.name ? <RenameBox state={state} act={act} hint={hint} disabled={disabled} /> : null}
             </DeskIcon>
           ))}
         </div>
