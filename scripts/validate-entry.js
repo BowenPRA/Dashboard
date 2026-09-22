@@ -29,6 +29,9 @@ import { checkActivity } from '../src/utils/activity.js';
 import { checkRearrangeItems } from '../src/utils/formula.js';
 import { checkVennItems } from '../src/utils/sets.js';
 import { checkSurdItems, checkRationaliseItems } from '../src/utils/surds.js';
+import { checkSimEqItems } from '../src/utils/simultaneous.js';
+import { checkTriangleItems } from '../src/utils/triangles.js';
+import { checkInequalityItems } from '../src/utils/inequalities.js';
 import { checkLogItems } from '../src/utils/logs.js';
 import { checkCollectItems, checkExpandItems, checkFlowItems } from '../src/utils/algebra.js';
 import { checkPyramidConfig } from '../src/utils/pyramid.js';
@@ -767,7 +770,17 @@ for (const trackId of TRACK_IDS) {
     //    numbers, notation parses and only names the item's sets, elements fit
     //    their regions, a simplify item has something to simplify, and a
     //    rationalised answer fits the one-surd answer boxes.
-    for (const [key, check] of [['venn', checkVennItems], ['surds', checkSurdItems], ['rationalise', checkRationaliseItems]]) {
+    // -- Simultaneous, Triangle Solver, Inequalities (EXT_MATH EM_07): the
+    //    equations, the triangle (right angle + compass legs + givens) and the
+    //    inequality or region are authored; utils/simultaneous.js,
+    //    utils/triangles.js and utils/inequalities.js derive every stage.
+    //    Checked: whole-number answers and boxes that fit, a method the
+    //    engine can stage, a triangle the givens fix, an exact answer that is
+    //    one surd, a bearing a simple rule gives, a region bounded by its own
+    //    lines with a test point strictly inside, and unlabelled lines that
+    //    can be read off the grid.
+    for (const [key, check] of [['venn', checkVennItems], ['surds', checkSurdItems], ['rationalise', checkRationaliseItems],
+      ['simultaneous', checkSimEqItems], ['triangles', checkTriangleItems], ['inequalities', checkInequalityItems]]) {
       if (!unit[key]) continue;
       const at = `${label}: ${key}`;
       if (!unit[key].title) err(`${at} is missing a title`);

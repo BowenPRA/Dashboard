@@ -44,6 +44,10 @@ import {
   // keyboard and mouse, windows, files, the browser and a download.
   Power, Lock, Moon, Keyboard, Mouse, MousePointer2, AppWindow, Folder, FolderOpen,
   Trash2, Download, Save, Search, Wifi, Monitor, Laptop, Bookmark, Link, Type,
+  // Inequalities, trigonometry and simultaneous equations (EXT_MATH EM_07A, EM_07B):
+  // the right angle, two lines meeting, a region, a bearing, the clock, a
+  // scatter graph, a polygon, a trend and a test point.
+  TriangleRight, Combine, LandPlot, Navigation, Clock, ScatterChart, Hexagon, TrendingUp, Crosshair,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -88,6 +92,7 @@ const ICONS = {
   Blend, SquareRadical, Divide, Dices, CircleSlash, Shapes, MousePointerClick,
   Power, Lock, Moon, Keyboard, Mouse, MousePointer2, AppWindow, Folder, FolderOpen,
   Trash2, Download, Save, Search, Wifi, Monitor, Laptop, Bookmark, Link, Type,
+  TriangleRight, Combine, LandPlot, Navigation, Clock, ScatterChart, Hexagon, TrendingUp, Crosshair,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

@@ -3,7 +3,10 @@
 How an `EXT_MATH` deck is written so that a student alone with a screen *does* the
 mathematics rather than reads about it. The exemplar is
 [`src/data/EXT_MATH/EM_06/notes.js`](../../src/data/EXT_MATH/EM_06/notes.js) — thirty
-slides, twenty-two scored items, three widgets. Read with
+slides, twenty-two scored items, three widgets. The half-assignment decks
+[`EM_07A`](../../src/data/EXT_MATH/EM_07A/notes.js) (26 slides, 20 scored) and
+[`EM_07B`](../../src/data/EXT_MATH/EM_07B/notes.js) (23 slides, 18 scored) show the same
+beats with two widgets each. Read with
 [../lesson-standard.md](../lesson-standard.md) (the bar), [../math-lessons.md](../math-lessons.md)
 (the layouts) and [../add-math/notes-and-activities.md](../add-math/notes-and-activities.md)
 (the activity types this deck shares).
@@ -87,20 +90,43 @@ already a lot of tapping.
 **Where to put it:** on the slide that introduces the idea, never the one after. In EM_06
 the complement is *shaded* on slide 8 and 10, and only counted from slide 13 onwards.
 
+### The other activities EM_07 leans on
+
+EM_07A and EM_07B use no `venn`; their touch-the-idea beats are the shared types from
+[../add-math/notes-and-activities.md](../add-math/notes-and-activities.md):
+
+- **`numberline`** for open and filled circles (EM_07A slide 10, "Two Ends, Two Circles").
+  It renders in the bottom panel, so put it on a `statement` slide, not a `split`.
+- **`hotspot`** for "tap the point on a bearing of 120°", "tap the side adjacent to θ"
+  (EM_07B) and "tap the one point in R" (EM_07A). The figure's `<text>` is stripped for a
+  hotspot so the answer is not printed on it; mark any label that must stay (θ, the
+  compass N, a line's equation) `class="keep"`.
+- **`sort`** for choosing a method (EM_07A slide 23): the card is the equation pair, the
+  bin is the method, and `explain` says *why* — the sentence the paper pays a mark for.
+- **`estimate`** for reading a value off a line of best fit.
+
+A slide that uses numbers from a worked example must not reuse **a task's** numbers —
+the deck's example is taught, the task's item is the student's own to work.
+
 ---
 
 ## 3. The widgets
 
-Three, in `src/data/EXT_MATH/EM_06/widgets.jsx`, each mounted on a `showcase` slide with
-`widget: <Component>`. Every number they show is **derived** from the example's question
-by `utils/sets.js` / `utils/surds.js`, so a widget cannot show a wrong answer. They take
-`lang` and ignore it (English-only track).
+Each unit's are in `src/data/EXT_MATH/<UNIT>/widgets.jsx`, each mounted on a `showcase`
+slide with `widget: <Component>`. Every number they show is **derived** from the example's
+question by the same utils the tasks mark with, so a widget cannot show a wrong answer.
+They take `lang` and ignore it (English-only track). Two per unit is plenty; EM_06 has
+three.
 
-| Widget | What it does that a still slide cannot |
-|---|---|
-| `SetNotationExplorer` | Tap one of eight pieces of notation: the Venn shades it, it is said in words ("say: P intersection B"), the shaded regions are named, and — only when the student presses **Count it** — it is counted and turned into a probability. One diagram, eight questions. |
-| `SurdBreaker` | The factor-tree method one press at a time: split into primes, **ring the pairs**, watch each pair jump out of the root as one number, multiply what came out. It is the picture behind "find a square factor", and it is the tree the student already draws in the margin. |
-| `ConjugateMachine` | Rationalising a two-term denominator as a stepper: the conjugate arrives, the bottom multiplies out in a grid, the two surd cells are struck through as they cancel, then the top, then simplify fully. |
+| Widget | Unit | What it does that a still slide cannot |
+|---|---|---|
+| `SetNotationExplorer` | EM_06 | Tap one of eight pieces of notation: the Venn shades it, it is said in words ("say: P intersection B"), the shaded regions are named, and — only when the student presses **Count it** — it is counted and turned into a probability. One diagram, eight questions. |
+| `SurdBreaker` | EM_06 | The factor-tree method one press at a time: split into primes, **ring the pairs**, watch each pair jump out of the root as one number, multiply what came out. It is the picture behind "find a square factor", and it is the tree the student already draws in the margin. |
+| `ConjugateMachine` | EM_06 | Rationalising a two-term denominator as a stepper: the conjugate arrives, the bottom multiplies out in a grid, the two surd cells are struck through as they cancel, then the top, then simplify fully. |
+| `RegionTester` | EM_07A | Tap any point on the grid: each of the three inequalities is worked out *at that point*, ticked or crossed, and the point is in R only when all three tick. A point on a dashed line fails, one on a solid line passes. The shading waits behind a button. |
+| `EliminationMachine` | EM_07A | Simultaneous equations as a stepper — the method and why, the multiplying, the columns with the cancelled letter struck through, solve, back-substitute, check — ending on both lines crossing at the answer. **Next example** switches to a pair solved by substitution. |
+| `BearingCompass` | EM_07B | Pick a place on the map: the line to it is drawn and, only when asked, the clockwise turn from north appears with its three-figure bearing. **The way back** stands the student at the other end, facing north again. |
+| `RatioLab` | EM_07B | One right-angled triangle, three controls: change the **size** and the three ratios do not move; change the **angle** and they do; mark the **other** angle and opposite and adjacent swap. Each ratio is shown as its sides divided (`O ÷ H = a ÷ b = v`), and the calculator's values wait behind a button. |
 
 House rules for a widget here:
 

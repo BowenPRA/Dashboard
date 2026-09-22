@@ -76,6 +76,32 @@ def speechify(text):
     # paragraph that followed a line break ("The unknown is…" read "unknown is…").
     t = re.sub(r'\\n(?!(?:eq|e|otin|ot|abla|u|ewline)(?![a-zA-Z]))', '. ', t)
     t = t.replace('\n', '. ')
+    # An inequality sign set on its own ("mixes $\le$ and $<$", "open circle —
+    # $<$ or $>$") is a symbol being NAMED, not a comparison: read it as a noun.
+    # Left to the rules below, a lone > was deleted and a lone < read as "<".
+    sign_names = {'<': 'less than', '>': 'greater than',
+                  '\\le': 'less than or equal to', '\\leq': 'less than or equal to',
+                  '\\ge': 'greater than or equal to', '\\geq': 'greater than or equal to'}
+    t = re.sub(r'\$\s*(<|>|\\leq?|\\geq?)\s*\$', lambda m: f' {sign_names[m.group(1)]} ', t)
+    # Flatten what can sit INSIDE a fraction first. The fraction rule below only
+    # matches braces with nothing nested in them, so `\dfrac{\sqrt{3}}{2}` and
+    # `\dfrac{\text{rise}}{\text{run}}` used to be left whole and then stripped
+    # by the catch-all — "the square root of 3 2", "riserun".
+    t = re.sub(r'\\text\s*\{([^{}]*)\}', r'\1', t)
+    t = re.sub(r'\\sqrt\s*\{([^{}]*)\}', r' the square root of \1 ', t)
+    # Right-angled trigonometry (EXT_MATH EM_07B). Unexpanded, the catch-all
+    # deleted `\sin` and `\theta` outright — "sin 41°" narrated as "41" and
+    # "cos θ = 9/15" as "= 9 over 15" — and `^\circ` left a stray caret. The
+    # inverse is read the way it is pressed: "inverse cos".
+    trig = {'sin': 'sine', 'cos': 'cos', 'tan': 'tan'}
+    t = re.sub(r'\\(sin|cos|tan)\s*\^\s*\{\s*-\s*1\s*\}', lambda m: f' inverse {trig[m.group(1)]} ', t)
+    t = re.sub(r'\\(sin|cos|tan)(?![a-zA-Z])', lambda m: f' {trig[m.group(1)]} ', t)
+    t = re.sub(r'\^\s*\{?\s*\\circ\s*\}?', ' degrees ', t)
+    t = t.replace('°', ' degrees ')
+    t = re.sub(r'\\theta(?![a-zA-Z])', ' theta ', t).replace('θ', ' theta ')
+    # Bare inequality symbols (bounds, number lines) and a scale "1 : n".
+    t = t.replace('≤', ' is less than or equal to ').replace('≥', ' is greater than or equal to ')
+    t = re.sub(r'(\d)\s+:\s+(\w)', r'\1 to \2', t)
     # Expand the maths that actually appears in the decks.
     t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
     t = re.sub(r'\\mathbf\s*\{([^{}]*)\}', r'\1', t)

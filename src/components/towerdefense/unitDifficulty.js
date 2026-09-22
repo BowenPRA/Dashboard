@@ -127,6 +127,20 @@ export const TRACK_LEVELS = {
       mapName: 'The Overlap',
       blurb: 'Two roads cross in the middle. Hold the overlap and you hold both — miss it and neither is covered.',
     },
+    // Assignment 07 is two units, and both step up to tier 2. Part A is the
+    // comb: every lane is a strip between two lines — a region — and the
+    // question is always which side you are on. Part B is the spiral: a road
+    // that keeps turning is a run of bearings, navigated at night by compass.
+    EM_07A: {
+      mapId: 'COMB', themeId: 'STANDARD', tier: 2,
+      mapName: 'Between the Lines',
+      blurb: 'Every lane is a region between two lines. Know which side you are on — and whether the line itself counts.',
+    },
+    EM_07B: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 2,
+      mapName: 'The Bearing Run',
+      blurb: 'The road turns, and turns again. Face north, count clockwise, and hold every corner.',
+    },
   },
   // IGCSE Coordinated Science. First unit is a tier-0 introduction — the "lab"
   // ICE theme suits electrolysis. Additive: adding a unit here shifts nothing on

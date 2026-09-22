@@ -314,9 +314,63 @@ function setsAndSurds() {
   return { prompt: `(${p} + √${m})(${p} ${MINUS} √${m}) = ?`, answer: p * p - m };
 }
 
+// EXT_MATH / EM_07A — Bounds, Inequalities & Simultaneous Equations. Three
+// reads a student who has done the unit does in their head: a bound of a
+// value rounded to the nearest 10, the smallest whole number an inequality
+// allows, and one value of a simple pair of simultaneous equations. Every
+// answer is an integer.
+function inequalitiesSimultaneous() {
+  const r = Math.random();
+  if (r < 0.3) {
+    // A whole number rounded to the nearest 10: the bounds are 5 either side.
+    const n = ri(3, 60) * 10;
+    return Math.random() < 0.5
+      ? { prompt: `${n} m to the nearest 10 m. Upper bound = ? m`, answer: n + 5 }
+      : { prompt: `${n} m to the nearest 10 m. Lower bound = ? m`, answer: n - 5 };
+  }
+  if (r < 0.65) {
+    // ax + b > c with c = a·x0 + b, so x > x0 and the smallest whole x is x0 + 1.
+    const a = ri(2, 6);
+    const x0 = ri(-5, 8);
+    const b = nz(-9, 9);
+    const c = a * x0 + b;
+    return { prompt: `${a}x ${b < 0 ? MINUS : '+'} ${Math.abs(b)} > ${lead(c)}. Smallest whole number x = ?`, answer: x0 + 1 };
+  }
+  const x = ri(1, 12);
+  const y = ri(1, 12);
+  const askX = Math.random() < 0.5;
+  return { prompt: `x + y = ${x + y}, x ${MINUS} y = ${lead(x - y)}. ${askX ? 'x' : 'y'} = ?`, answer: askX ? x : y };
+}
+
+// EXT_MATH / EM_07B — Bearings, Trigonometry & Scatter Graphs. Three reads
+// done in the head: a back bearing (either way round), the hypotenuse of a
+// Pythagorean triple, and the sides of a regular polygon from one of its
+// angles. Every answer is an integer — the trigonometry itself needs a
+// calculator, so it stays in the Triangle Solver.
+const PYTHAG_TRIPLES = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [12, 16, 20], [7, 24, 25]];
+const POLYGON_SIDES = [3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20];
+function bearingsTrig() {
+  const r = Math.random();
+  if (r < 0.36) {
+    const b = Math.random() < 0.5 ? ri(10, 170) : ri(190, 350);
+    return { prompt: `Bearing of B from A is ${String(b).padStart(3, '0')}°. Bearing of A from B = ?°`, answer: b < 180 ? b + 180 : b - 180 };
+  }
+  if (r < 0.68) {
+    const [a, b, c] = PYTHAG_TRIPLES[ri(0, PYTHAG_TRIPLES.length - 1)];
+    return { prompt: `Right-angled triangle, shorter sides ${a} and ${b}. Hypotenuse = ?`, answer: c };
+  }
+  const n = POLYGON_SIDES[ri(0, POLYGON_SIDES.length - 1)];
+  const ext = 360 / n;
+  return Math.random() < 0.5
+    ? { prompt: `Regular polygon, exterior angle ${ext}°. Number of sides = ?`, answer: n }
+    : { prompt: `Regular polygon, interior angle ${180 - ext}°. Number of sides = ?`, answer: n };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
   EM_06: setsAndSurds,
+  EM_07A: inequalitiesSimultaneous,
+  EM_07B: bearingsTrig,
   PHY_CIRC: circularMotion,
   AM_3A: factorTheorem,
   AM_4A: modulus,

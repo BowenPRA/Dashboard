@@ -4,7 +4,7 @@ import {
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
-  ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound
+  ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -509,7 +509,9 @@ export const TASKS = [
     component: lazy(() => import('./Workbook.jsx')),
     hasContent: (u) => notEmpty(u.workbookB),
     buildPool: (u) => u.workbookB || [],
-    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Book Problems' }),
+    // `bilingual` as for WORKBOOK: an English-only track has no VN to toggle to.
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Book Problems', bilingual: bilingualOf(track) }),
   },
   {
     id: 'ENERGY_PROFILE',
@@ -970,6 +972,76 @@ export const TASKS = [
     hasContent: (u) => !!(u.particleLab && Array.isArray(u.particleLab.modes) && u.particleLab.modes.length),
     buildPool: (u) => u.particleLab || null,
     props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  // ── IGCSE Extended Mathematics, Assignment 07 (EM_07A, EM_07B) ─────────────
+  // p45 (MOUSE_GYM) was the last key taken; these three are p46–p48. English
+  // only, like the rest of EXT_MATH. Schemas in docs/ext-math/task-engines.md.
+  {
+    id: 'SIM_EQ',
+    nativeMax: 10,
+    dbKey: 'p46',
+    // "Tidy, choose the quickest method, eliminate or substitute, check."
+    // Two equations exactly as the paper prints them — brackets, fractions,
+    // a chain like 7x − 2y = 4x + y = 10 — solved in the moves the mark scheme
+    // pays for, with the method CHOSEN and justified (Assignment 07 asks why
+    // the method was the most efficient). utils/simultaneous.js derives the
+    // tidy forms, the method, the multipliers, add-or-subtract, both values
+    // and the check; `checkSimEqItems` refuses an item without whole-number
+    // answers. The finished item draws both lines crossing at the answer.
+    label: 'Simultaneous',
+    icon: Combine,
+    color: { bg: 'bg-[#047857]', border: 'border-[#065f46]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./Simultaneous.jsx')),
+    hasContent: (u) => !!u.simultaneous?.items?.length,
+    buildPool: (u) => u.simultaneous,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'TRIANGLE',
+    nativeMax: 10,
+    dbKey: 'p47',
+    // "Label from the angle, choose the ratio, then the calculator." Right-
+    // angled triangles: Pythagoras (to 3 s.f. or in exact form), SOH CAH TOA
+    // for a side or an angle, 30°/45°/60° exactly, two triangles sharing a
+    // side, and the bearing an angle gives. The triangle is authored as a
+    // right-angle corner and the compass direction of each leg; utils/triangles.js
+    // derives every side, angle, H/O/A label, ratio, answer, exact surd and
+    // bearing, and names a calculator slip (radians, dividing for multiplying,
+    // the other acute angle). `checkTriangleItems` gates the data.
+    label: 'Triangle Solver',
+    icon: TriangleRight,
+    color: { bg: 'bg-[#0369a1]', border: 'border-[#075985]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./TriangleSolver.jsx')),
+    hasContent: (u) => !!u.triangles?.items?.length,
+    buildPool: (u) => u.triangles,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'INEQUALITY',
+    nativeMax: 10,
+    dbKey: 'p48',
+    // "Solve it like an equation — but watch the sign." Linear inequalities
+    // (collected any correct way, then divided — a negative turns the sign
+    // round), drawn on a number line; double inequalities split in two or
+    // worked on all three parts, and the whole numbers that fit; a number line
+    // read back into an inequality; and regions: each boundary line's
+    // equation read off the grid, solid or dashed, and which side — found by
+    // tapping a test point. IGCSE notation throughout (not interval
+    // notation, which the Number Line task uses). utils/inequalities.js
+    // derives every answer; `checkInequalityItems` gates the data.
+    label: 'Inequalities',
+    icon: LandPlot,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./Inequalities.jsx')),
+    hasContent: (u) => !!u.inequalities?.items?.length,
+    buildPool: (u) => u.inequalities,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
 ];
 
