@@ -1,0 +1,1 @@
+var e=new Set([`qb@science.local`,`vikhoi@science.local`]);function t(t){if(!t)return!1;if(t.app_metadata?.study_plan===!0)return!0;let n=(t.email||``).toLowerCase();return e.has(n)}export{t};
