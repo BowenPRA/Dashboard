@@ -84,24 +84,6 @@ export default function YearDashboard({ track }) {
     0
   );
   const maxTrackXP = META_DATA.length * 100;
-
-  const getGlobalTrophyStyles = (total, max) => {
-    if (max === 0) return { container: "bg-slate-100 dark:bg-slate-800 text-slate-400 border-b-[4px] border-slate-200 dark:border-slate-700", icon: "text-slate-400" };
-    const pct = (total / max) * 100;
-
-    if (pct === 100) return {
-      container: "bg-amber-400 text-amber-950 border-b-[4px] border-amber-600",
-      icon: "text-amber-950",
-      aura: "absolute -inset-[3px] bg-gradient-to-r from-rose-400 via-amber-300 to-fuchsia-500 rounded-xl opacity-80 blur-[6px] animate-pulse"
-    };
-    if (pct >= 90) return { container: "bg-amber-400 text-amber-950 border-b-[4px] border-amber-600", icon: "text-amber-950" };
-    if (pct >= 75) return { container: "bg-slate-300 text-slate-800 border-b-[4px] border-slate-400", icon: "text-slate-700" };
-    if (pct >= 60) return { container: "bg-orange-700 text-white border-b-[4px] border-orange-900", icon: "text-orange-200" };
-
-    return { container: "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-b-[4px] border-slate-200 dark:border-slate-700", icon: "text-slate-400 dark:text-slate-500" };
-  };
-
-  const globalTrophy = getGlobalTrophyStyles(totalTrackXP, maxTrackXP);
   const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
 
   /** Launch a task. The registry decides what data it needs. */
@@ -179,64 +161,68 @@ export default function YearDashboard({ track }) {
       {!activeTask && (
         <div className="animate-in fade-in duration-200 pb-20 relative z-10">
 
-          <div className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b-2 border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 h-20 flex items-center justify-between">
+          {/* Back and the course's name on the left; the course XP and three
+              quiet icon buttons (help, theme, log out) on the right. The name
+              of who is signed in lives on Home — here it only crowded the bar. */}
+          <div className="sticky top-0 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b-2 border-slate-200 dark:border-slate-800 transition-colors">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 h-16 sm:h-20 flex items-center gap-3">
+              <button
+                onClick={() => navigate('/home')}
+                aria-label="Back to My Courses"
+                title="My Courses"
+                className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-2 active:translate-y-[2px] text-slate-500 dark:text-slate-400"
+              >
+                <ChevronLeft className="w-6 h-6" strokeWidth={3} />
+              </button>
 
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => navigate('/home')}
-                  aria-label="Back to all tracks"
-                  className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-2 active:translate-y-[2px] text-slate-500 dark:text-slate-400"
-                >
-                  <ChevronLeft className="w-7 h-7" strokeWidth={3} />
-                </button>
-                <h1 className={`text-2xl md:text-3xl font-black tracking-tight drop-shadow-sm ${currentTheme.text}`}>
+              <div className="min-w-0 flex-1">
+                <h1 className={`text-lg sm:text-2xl font-black tracking-tight leading-tight truncate ${currentTheme.text}`}>
                   {trackTitle}
                 </h1>
+                {trackConfig?.desc && (
+                  <p className="hidden sm:block text-[11px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 truncate">{trackConfig.desc}</p>
+                )}
               </div>
 
-              <div className="flex items-center space-x-3">
-                {maxTrackXP > 0 && (
-                  <div className="relative items-center justify-center hidden sm:flex">
-                    {globalTrophy.aura && <div className={globalTrophy.aura}></div>}
-                    <div className={`relative z-10 flex items-center px-4 py-2 rounded-xl shadow-sm ${globalTrophy.container}`}>
-                      <Trophy className={`w-5 h-5 mr-2 ${globalTrophy.icon}`} strokeWidth={2.5} />
-                      <span className="text-xs font-black tracking-widest mt-0.5">{totalTrackXP} / {maxTrackXP} XP</span>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={toggleDarkMode}
-                  className="w-12 h-12 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 border-2 border-transparent hover:border-slate-200 dark:hover:border-slate-700 bg-white/50 dark:bg-slate-900/50"
-                  title="Toggle Dark Mode"
-                  aria-label="Toggle dark mode"
+              {maxTrackXP > 0 && (
+                <div
+                  className="hidden sm:flex items-center gap-2 h-11 px-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 flex-shrink-0"
+                  title="XP earned in this course, out of everything on offer"
                 >
-                  {isDark ? <Sun className="w-6 h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-6 h-6" strokeWidth={2.5} />}
-                </button>
+                  <Trophy className="w-4 h-4" strokeWidth={2.5} />
+                  <span className="text-sm font-black tabular-nums whitespace-nowrap">
+                    {totalTrackXP.toLocaleString()}
+                    <span className="font-bold opacity-60"> / {maxTrackXP.toLocaleString()} XP</span>
+                  </span>
+                </div>
+              )}
 
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                 <button
                   onClick={() => setShowHowItWorks(true)}
                   aria-label="How it works"
                   title="How it works"
-                  className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-2 active:translate-y-[2px] text-slate-500 dark:text-slate-400"
+                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95"
                 >
-                  <Info className="w-6 h-6" strokeWidth={2.5} />
+                  <Info className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
                 </button>
-
-                <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl border-2 border-slate-200 dark:border-slate-700">
-                  <span className="px-3 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 hidden md:block">{userName}</span>
-                  <button
-                    onClick={handleLogout}
-                    className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-900 rounded-xl hover:text-rose-500 transition-colors shadow-sm border-2 border-slate-200 dark:border-slate-700 active:scale-95"
-                    title="Logout"
-                    aria-label="Log out"
-                  >
-                    <LogOut className="w-4 h-4" strokeWidth={3} />
-                  </button>
-                </div>
+                <button
+                  onClick={toggleDarkMode}
+                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95"
+                  title="Toggle Dark Mode"
+                  aria-label="Toggle dark mode"
+                >
+                  {isDark ? <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" strokeWidth={2.5} /> : <Moon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />}
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors active:scale-95"
+                  title={`Log out ${userName}`}
+                  aria-label="Log out"
+                >
+                  <LogOut className="w-5 h-5" strokeWidth={2.5} />
+                </button>
               </div>
-
             </div>
           </div>
 
@@ -271,27 +257,26 @@ export default function YearDashboard({ track }) {
                 </button>
              </div>
 
-             <p className="text-base text-slate-500 dark:text-slate-400 font-bold mb-8 leading-relaxed">
-               Welcome to <strong className="text-slate-800 dark:text-white font-black">{trackTitle}</strong>! 🚀 Open a unit, start with the lesson, then work through the tasks. Every task earns XP, and XP unlocks the next set of tasks — and the next unit.
+             <p className="text-base text-slate-500 dark:text-slate-400 font-bold mb-6 leading-relaxed">
+               Welcome to <strong className="text-slate-800 dark:text-white font-black">{trackTitle}</strong>! 🚀 Tap <strong className="text-slate-700 dark:text-slate-200">Continue</strong> at the top to pick up where you left off, or open any unit and work down its steps.
              </p>
 
-             <div className="space-y-4 mb-8">
-               <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm flex items-start">
-                 <div className="w-10 h-10 rounded-xl bg-[#1cb0f6] text-white flex items-center justify-center mr-4 flex-shrink-0 mt-0.5 border-b-[4px] border-[#1899d6]"><span className="font-black text-sm">1</span></div>
-                 <div>
-                   <h3 className="font-black text-slate-800 dark:text-white text-lg mb-1">Quick Practice</h3>
-                   <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-bold">Fun, bite-sized games and spelling drills designed to boost your memory and speed.</p>
-                 </div>
-               </div>
-
-               <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm flex items-start">
-                 <div className="w-10 h-10 rounded-xl bg-[#58cc02] text-white flex items-center justify-center mr-4 flex-shrink-0 mt-0.5 border-b-[4px] border-[#58a700]"><span className="font-black text-sm">2</span></div>
-                 <div>
-                   <h3 className="font-black text-slate-800 dark:text-white text-lg mb-1">Smart Feedback</h3>
-                   <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-bold">Write essays and answer questions, and our smart AI will give you helpful tips instantly to improve your writing!</p>
-                 </div>
-               </div>
-             </div>
+             {/* The same three steps a unit card shows, in the same words. */}
+             <ol className="space-y-3 mb-8">
+               {[
+                 ['Start with the lesson', 'Read the notes and learn the key words first. Everything after builds on them.'],
+                 ['Practise to earn XP', 'Every task gives you XP. Some are checked by AI, which gives you tips straight away. More XP opens the next step.'],
+                 ['Take the quiz', 'A unit is done when you have 80 XP and have taken the quiz. Get all 100 XP to earn a gold star.'],
+               ].map(([heading, body], i) => (
+                 <li key={heading} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 flex items-start">
+                   <span className={`w-9 h-9 rounded-full text-white flex items-center justify-center mr-4 flex-shrink-0 font-black text-sm ${currentTheme.bg || 'bg-[#1cb0f6]'}`}>{i + 1}</span>
+                   <div>
+                     <h3 className="font-black text-slate-800 dark:text-white text-base mb-0.5">{heading}</h3>
+                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-bold">{body}</p>
+                   </div>
+                 </li>
+               ))}
+             </ol>
 
              <div className="bg-rose-50 dark:bg-rose-900/20 border-2 border-rose-200 dark:border-rose-800 p-5 rounded-2xl mb-8 flex items-start shadow-sm">
                <AlertTriangle className="w-6 h-6 text-rose-400 dark:text-rose-500 mr-3 flex-shrink-0 mt-0.5" strokeWidth={2.5} />

@@ -4,6 +4,7 @@
 // progress to show — so this synthesises some and drives the REAL components:
 //
 //   preview-nav.html?view=track&track=Y7_MATH   the student's unit list
+//   preview-nav.html?view=page&track=Y7_MATH&done=7   the real track page, header and all
 //   preview-nav.html?view=teacher               roster + gradebook + drawer
 //   preview-nav.html?view=home&tracks=Y7_MATH,Y7_SCI   the track menu (omit tracks for all)
 //     &name=…   the signed-in student's name (blank tests the roster fallback)
@@ -14,6 +15,7 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import './index.css';
 import Home from './views/Home';
+import YearDashboard from './views/YearDashboard';
 import TrackUnits from './components/TrackUnits';
 import useTrackNav from './hooks/useTrackNav';
 import TeacherViews from './components/teacher/TeacherViews';
@@ -227,8 +229,29 @@ function stubHome() {
   supabase.from = () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: { progress, display_name: 'Roster Name' }, error: null }) }) }) });
 }
 
+// The real track page reads the same two things: the session and the row.
+function stubPage() {
+  const track = params.get('track') || 'Y7_MATH';
+  const progress = { [track]: synthTrack(track, Number(params.get('done') ?? 7)) };
+  supabase.auth.getSession = async () => ({ data: { session: { user: { id: 'harness', email: 'harness@pra.test', app_metadata: { enrolled_tracks: [track] }, user_metadata: { name: params.get('name') ?? 'Vi Khoi' } } } } });
+  supabase.auth.signOut = async () => { window.__signedOut = true; return { error: null }; };
+  supabase.from = () => ({
+    select: () => ({ eq: () => ({ single: async () => ({ data: { progress }, error: null }) }) }),
+    update: () => ({ eq: async () => ({ error: null }) }),
+  });
+}
+
 const view = params.get('view') || 'track';
 if (view === 'home') stubHome();
 if (view === 'teacher') stubAdminApi();
-const VIEWS = { teacher: <TeacherHarness />, home: <HashRouter><Home /></HashRouter>, track: <TrackHarness /> };
-createRoot(document.getElementById('root')).render(VIEWS[view] || VIEWS.track);
+if (view === 'page') stubPage();
+const VIEWS = {
+  teacher: <TeacherHarness />,
+  home: <HashRouter><Home /></HashRouter>,
+  track: <TrackHarness />,
+  page: <HashRouter><YearDashboard track={params.get('track') || 'Y7_MATH'} /></HashRouter>,
+};
+// Cached so a hot reload re-renders instead of stacking a second root.
+const container = document.getElementById('root');
+container.__root ??= createRoot(container);
+container.__root.render(VIEWS[view] || VIEWS.track);
