@@ -161,26 +161,48 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
     const fixCount = task.fixCount ? task.fixCount(unit, scores[task.dbKey], taskMaxXP) : 0;
     const resumable = !isLocked && !fixCount && canResume(scores[task.dbKey], taskMaxXP);
 
+    // Every tile is a solid block in its task's own colour, the same size, so a
+    // step reads as a row of bright, pressable buttons.
+    const tileShape = 'relative flex flex-col items-center justify-between w-full h-32 sm:h-36 p-3 sm:p-4 rounded-[1.5rem]';
+
     if (task.empty) {
       return (
-        <div key={task.id} className="flex items-center gap-3 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 min-h-[6.5rem]">
-          <TaskIcon className="w-6 h-6 opacity-50 flex-shrink-0" strokeWidth={2} />
-          <span className="font-bold text-xs tracking-widest uppercase">No {task.label}</span>
+        <div key={task.id} className={`${tileShape} justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 dark:bg-slate-800/30 text-slate-400 opacity-70`}>
+          <TaskIcon className="w-8 h-8 mb-2 opacity-40" strokeWidth={2} />
+          <span className="font-bold text-xs tracking-widest uppercase text-center">No {task.label}</span>
         </div>
       );
     }
 
-    // A locked task is a solid tile in its own colour — a bright preview of
-    // what is coming, seen through the step's frosted-glass pane (which says
-    // what opens it). Not a button: nothing behind the glass can be pressed.
+    // The strip along the bottom: XP won so far, filling as it is earned. A
+    // task worth no XP is a reward, not a grade — the arcade's prize is its
+    // high score, so it shows that rather than a meaningless "0 / 0 XP". Behind
+    // a locked step's glass it says what the task is worth.
+    const xpLabel = taskMaxXP === 0
+      ? (arcadeBest > 0 ? `Best ${arcadeBest.toLocaleString()}` : 'Bonus')
+      : isLocked ? `${taskMaxXP} XP` : `${taskScore} / ${taskMaxXP} XP`;
+    const body = (
+      <>
+        <span className="flex flex-col items-center mt-1">
+          <TaskIcon className="w-7 h-7 sm:w-8 sm:h-8 mb-1.5 drop-shadow-sm" strokeWidth={2.5} />
+          <span className="font-black text-base sm:text-lg tracking-wide leading-tight text-center drop-shadow-sm">{task.label}</span>
+        </span>
+        <span className="relative w-full mt-auto rounded-xl py-1.5 bg-black/15 overflow-hidden flex items-center justify-center">
+          {!isLocked && taskMaxXP > 0 && (
+            <span className="absolute inset-y-0 left-0 bg-white/20 transition-all duration-500" style={{ width: `${(taskScore / taskMaxXP) * 100}%` }} />
+          )}
+          <span className="relative text-[10px] font-black uppercase tracking-[0.15em] text-white/90 tabular-nums">{xpLabel}</span>
+        </span>
+      </>
+    );
+
+    // Locked: the same bright tile, seen through the step's frosted-glass pane
+    // (which says what opens it). Not a button — nothing behind the glass can
+    // be pressed.
     if (isLocked) {
       return (
-        <div key={task.id} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl border-b-[6px] min-h-[6.5rem] ${config.bg} ${config.border} ${config.text}`}>
-          <TaskIcon className="w-7 h-7 drop-shadow-sm" strokeWidth={2.5} />
-          <span className="font-black text-sm sm:text-base tracking-wide text-center leading-tight drop-shadow-sm">{task.label}</span>
-          {taskMaxXP > 0 && (
-            <span className="px-2 py-0.5 rounded-lg bg-black/15 text-[10px] font-black uppercase tracking-widest">{taskMaxXP} XP</span>
-          )}
+        <div key={task.id} className={`${tileShape} border-b-[6px] ${config.bg} ${config.border} ${config.text}`}>
+          {body}
         </div>
       );
     }
@@ -190,58 +212,28 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
         key={task.id}
         onClick={() => start(task.id)}
         title={task.label}
-        className="group/task relative flex flex-col text-left p-3 sm:p-4 rounded-2xl border-2 border-b-4 min-h-[6.5rem] transition-all duration-150 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-0.5 active:translate-y-0 active:border-b-2 cursor-pointer"
+        className={`${tileShape} border-b-[6px] ${config.bg} ${config.border} ${config.text} transition-all duration-150 hover:brightness-110 active:border-b-0 active:translate-y-[6px] cursor-pointer`}
       >
-        <span className="flex items-start justify-between gap-2">
-          <span className={`w-10 h-10 rounded-xl flex items-center justify-center border-b-[3px] flex-shrink-0 transition-transform group-hover/task:scale-105 ${config.bg} ${config.border} ${config.text}`}>
-            <TaskIcon className="w-5 h-5" strokeWidth={2.5} />
+        {/* A finished task with mistakes it lets the student put right (Notes):
+            it reopens on its results, one tap from redoing just those. */}
+        {fixCount > 0 && (
+          <span className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-300 text-amber-950 text-[9px] font-black uppercase tracking-widest shadow-sm">
+            <Wrench className="w-3 h-3" strokeWidth={3} /> Fix {fixCount}
           </span>
-
-          {/* A finished task with mistakes it lets the student put right (Notes):
-              it reopens on its results, one tap from redoing just those. */}
-          {!isLocked && fixCount > 0 && (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-[10px] font-black uppercase tracking-wider whitespace-nowrap">
-              <Wrench className="w-3 h-3" strokeWidth={3} /> Fix {fixCount}
-            </span>
-          )}
-          {/* Saved work waiting: the task reopens where it was left. */}
-          {resumable && (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 text-[10px] font-black uppercase tracking-wider whitespace-nowrap">
-              <History className="w-3 h-3" strokeWidth={3} /> Continue
-            </span>
-          )}
-          {!isLocked && taskDone && !fixCount && (
-            <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center flex-shrink-0" title="Full marks">
-              <Check className="w-3.5 h-3.5" strokeWidth={4} />
-            </span>
-          )}
-        </span>
-
-        <span className="mt-2.5 font-black text-sm sm:text-base leading-tight text-slate-800 dark:text-slate-100">
-          {task.label}
-        </span>
-
-        <span className="mt-auto pt-2.5 flex items-center gap-2 w-full">
-          {/* A task worth no XP is a reward, not a grade — the arcade's prize is
-              its high score, so show that rather than a meaningless "0 / 0 XP". */}
-          {taskMaxXP === 0 ? (
-            <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">
-              {arcadeBest > 0 ? `Best ${arcadeBest.toLocaleString()}` : 'Bonus'}
-            </span>
-          ) : (
-            <>
-              <span className="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                <span
-                  className={`block h-full rounded-full transition-all duration-500 ${taskDone ? 'bg-emerald-500' : config.bg}`}
-                  style={{ width: `${(taskScore / taskMaxXP) * 100}%` }}
-                />
-              </span>
-              <span className="text-[11px] font-black tabular-nums text-slate-400 dark:text-slate-500 whitespace-nowrap">
-                {taskScore}/{taskMaxXP} XP
-              </span>
-            </>
-          )}
-        </span>
+        )}
+        {/* Saved work waiting: the task reopens where it was left. */}
+        {resumable && (
+          <span className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 text-slate-700 text-[9px] font-black uppercase tracking-widest shadow-sm">
+            <History className="w-3 h-3" strokeWidth={3} /> Continue
+          </span>
+        )}
+        {/* Full marks. */}
+        {taskDone && !fixCount && (
+          <span className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white/90 text-emerald-600 flex items-center justify-center shadow-sm" title="Full marks">
+            <Check className="w-3.5 h-3.5" strokeWidth={4} />
+          </span>
+        )}
+        {body}
       </button>
     );
   };
