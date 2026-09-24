@@ -170,25 +170,31 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
       );
     }
 
+    // A locked task is a solid tile in its own colour — a bright preview of
+    // what is coming, seen through the step's frosted-glass pane (which says
+    // what opens it). Not a button: nothing behind the glass can be pressed.
+    if (isLocked) {
+      return (
+        <div key={task.id} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl border-b-[6px] min-h-[6.5rem] ${config.bg} ${config.border} ${config.text}`}>
+          <TaskIcon className="w-7 h-7 drop-shadow-sm" strokeWidth={2.5} />
+          <span className="font-black text-sm sm:text-base tracking-wide text-center leading-tight drop-shadow-sm">{task.label}</span>
+          {taskMaxXP > 0 && (
+            <span className="px-2 py-0.5 rounded-lg bg-black/15 text-[10px] font-black uppercase tracking-widest">{taskMaxXP} XP</span>
+          )}
+        </div>
+      );
+    }
+
     return (
       <button
         key={task.id}
-        disabled={isLocked}
         onClick={() => start(task.id)}
-        title={isLocked ? `${task.label} is locked` : task.label}
-        className={`group/task relative flex flex-col text-left p-3 sm:p-4 rounded-2xl border-2 border-b-4 min-h-[6.5rem] transition-all duration-150
-          ${isLocked
-            ? 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 cursor-not-allowed'
-            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-0.5 active:translate-y-0 active:border-b-2 cursor-pointer'}`}
+        title={task.label}
+        className="group/task relative flex flex-col text-left p-3 sm:p-4 rounded-2xl border-2 border-b-4 min-h-[6.5rem] transition-all duration-150 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-0.5 active:translate-y-0 active:border-b-2 cursor-pointer"
       >
         <span className="flex items-start justify-between gap-2">
-          <span className={`w-10 h-10 rounded-xl flex items-center justify-center border-b-[3px] flex-shrink-0 transition-transform
-            ${isLocked
-              ? 'bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-500'
-              : `${config.bg} ${config.border} ${config.text} group-hover/task:scale-105`}`}>
-            {isLocked
-              ? <Lock className="w-5 h-5" strokeWidth={2.5} />
-              : <TaskIcon className="w-5 h-5" strokeWidth={2.5} />}
+          <span className={`w-10 h-10 rounded-xl flex items-center justify-center border-b-[3px] flex-shrink-0 transition-transform group-hover/task:scale-105 ${config.bg} ${config.border} ${config.text}`}>
+            <TaskIcon className="w-5 h-5" strokeWidth={2.5} />
           </span>
 
           {/* A finished task with mistakes it lets the student put right (Notes):
@@ -211,7 +217,7 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
           )}
         </span>
 
-        <span className={`mt-2.5 font-black text-sm sm:text-base leading-tight ${isLocked ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100'}`}>
+        <span className="mt-2.5 font-black text-sm sm:text-base leading-tight text-slate-800 dark:text-slate-100">
           {task.label}
         </span>
 
@@ -401,8 +407,8 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
               const phaseDone = phaseMax > 0 && phaseXP >= phaseMax;
               const toGo = (phase.threshold || 0) - unitXP;
               const lockNote = toGo > 0
-                ? `Unlocks at ${phase.threshold} XP · ${toGo} to go`
-                : `Unlocks after the ${resolveTask({ id: phase.requires })?.label || 'task before it'}`;
+                ? `Earn ${phase.threshold} XP to unlock`
+                : `Do the ${resolveTask({ id: phase.requires })?.label || 'task before it'} to unlock`;
               const isLast = i === shownPhases.length - 1;
 
               return (
@@ -423,17 +429,38 @@ export default function UnitCard({ unit, scores = {}, currentTheme = {}, startMo
                       {phaseName(phase.title)}
                     </h3>
                     <span className="flex-1" />
-                    {isPhaseLocked ? (
-                      <span className="text-right text-[11px] sm:text-xs font-black text-slate-500 dark:text-slate-400">{lockNote}</span>
-                    ) : phaseMax > 0 && (
+                    {/* A locked step's note is on its glass pane, not repeated here. */}
+                    {!isPhaseLocked && phaseMax > 0 && (
                       <span className={`text-[11px] sm:text-xs font-black tabular-nums whitespace-nowrap ${phaseDone ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}>
                         {phaseXP} / {phaseMax} XP
                       </span>
                     )}
                   </div>
 
-                  <div className="sm:pl-11 grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
-                    {phaseTasks.map((task) => renderTaskButton(task, isPhaseLocked))}
+                  <div className="sm:pl-11">
+                    <div className="group/locked relative">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3" aria-hidden={isPhaseLocked || undefined}>
+                        {phaseTasks.map((task) => renderTaskButton(task, isPhaseLocked))}
+                      </div>
+
+                      {/* Frosted glass over a locked step: the colourful tiles
+                          show through, and the pane says what opens them. */}
+                      {isPhaseLocked && (
+                        <div className="absolute -inset-1.5 z-10 flex items-center justify-center p-2 rounded-[1.35rem] bg-white/35 dark:bg-slate-900/45 backdrop-blur-[3px] border-2 border-white/80 dark:border-slate-700/70 ring-1 ring-slate-200/70 dark:ring-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-none">
+                          <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/95 dark:bg-slate-800/95 border-2 border-b-4 border-slate-200 dark:border-slate-700 shadow-lg transition-transform duration-200 group-hover/locked:scale-105">
+                            <span className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+                              <Lock className="w-4 h-4 text-slate-500 dark:text-slate-300" strokeWidth={3} />
+                            </span>
+                            <span className="leading-tight">
+                              <span className="block text-sm font-black text-slate-700 dark:text-slate-100">{lockNote}</span>
+                              {toGo > 0 && (
+                                <span className="block text-[11px] font-bold text-slate-400 dark:text-slate-400">{toGo} more XP to go</span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </li>
               );
