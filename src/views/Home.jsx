@@ -8,6 +8,8 @@ import { hasStudyPlan } from '../utils/studyPlanAccess';
 import { planForDate, todayISO } from '../utils/studyPlan';
 import { getTrack } from '../data/index';
 import { trackSummary, unitNumberOf } from '../utils/trackSections';
+import { availableUnits, goldBalance, freePlayState, PLAY_COST } from '../arcade/economy';
+import ArcadeBanner from '../components/arcade/ArcadeBanner';
 import useDarkMode from '../hooks/useDarkMode';
 
 export default function Home() {
@@ -131,6 +133,17 @@ export default function Home() {
     };
   }, [summaries]);
   const overallPct = overall.maxXp ? Math.round((overall.xp / overall.maxXp) * 100) : 0;
+
+  // The Arcade is not a course, so it leaves the course grid for its own tile
+  // underneath — drawn with the purse, from the same sums the hub uses
+  // (arcade/economy.js), so the two never disagree about the gold.
+  const courses = useMemo(() => visibleTracks.filter(t => t.id !== ARCADE_TRACK_ID), [visibleTracks]);
+  const hasArcade = visibleTracks.some(t => t.id === ARCADE_TRACK_ID);
+  const arcade = useMemo(() => {
+    if (!progress) return null;
+    const units = availableUnits(courses.map(t => t.id));
+    return { balance: goldBalance(progress, units), freePlay: freePlayState(progress, units).unlocked };
+  }, [progress, courses]);
 
   // Past four subjects the big two-up cards turn the menu into a long scroll,
   // so the same cards are drawn smaller and three across. The Arcade does not
@@ -323,10 +336,9 @@ export default function Home() {
         )}
 
         <div className={compact ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start' : 'grid grid-cols-1 md:grid-cols-2 gap-6 items-start'}>
-          {visibleTracks.map((t, index) => {
+          {courses.map((t, index) => {
             const Icon = t.icon;
             const sum = summaries[t.id];
-            const isArcade = t.id === ARCADE_TRACK_ID;
             const pct = sum?.total ? Math.round((sum.xp / (sum.total * 100)) * 100) : 0;
             const allDone = sum?.total > 0 && sum.done === sum.total;
             return (
@@ -338,7 +350,7 @@ export default function Home() {
               >
                 <button
                   onClick={() => navigate(`/${t.id}`)}
-                  className={`group w-full text-left flex items-center gap-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40 active:bg-slate-100 dark:active:bg-slate-800 ${compact ? 'p-5' : 'p-6 sm:p-7'} ${isArcade ? '' : 'pb-3 sm:pb-3'}`}
+                  className={`group w-full text-left flex items-center gap-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40 active:bg-slate-100 dark:active:bg-slate-800 ${compact ? 'p-5' : 'p-6 sm:p-7'} pb-3 sm:pb-3`}
                 >
                   <div className={`${t.theme.bg} rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] ${t.theme.border} flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300 ${compact ? 'w-12 h-12' : 'w-14 h-14 sm:w-16 sm:h-16'}`}>
                     <Icon className={`${compact ? 'w-6 h-6' : 'w-7 h-7 sm:w-8 sm:h-8'} ${t.id === 'ESL' ? 'text-amber-950' : 'text-white'} drop-shadow-sm`} strokeWidth={2.5} />
@@ -359,26 +371,37 @@ export default function Home() {
                 {/* XP for the track. Per-unit XP lives on the track page, on
                     each unit card — a chip per unit here was too busy. The
                     space is held while progress loads so nothing jumps. */}
-                {!isArcade && (
-                  <div className={`${compact ? 'px-5 pb-5' : 'px-6 sm:px-7 pb-6'} ${sum?.total ? '' : 'invisible'}`}>
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                        <div className={`h-full rounded-full transition-all duration-700 ${allDone ? 'bg-amber-400' : t.theme.bg}`} style={{ width: `${pct}%` }} />
-                      </div>
-                      <span className="text-[11px] font-black tabular-nums text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                        {(sum?.xp ?? 0).toLocaleString()}<span className="text-slate-400"> / {((sum?.total ?? 0) * 100).toLocaleString()} XP</span>
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] font-black tabular-nums text-slate-400 whitespace-nowrap">
-                        {allDone && <Check className="w-3.5 h-3.5 text-amber-500" strokeWidth={4} />}
-                        {sum?.done ?? 0}/{sum?.total ?? 0} done
-                      </span>
+                <div className={`${compact ? 'px-5 pb-5' : 'px-6 sm:px-7 pb-6'} ${sum?.total ? '' : 'invisible'}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-700 ${allDone ? 'bg-amber-400' : t.theme.bg}`} style={{ width: `${pct}%` }} />
                     </div>
+                    <span className="text-[11px] font-black tabular-nums text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                      {(sum?.xp ?? 0).toLocaleString()}<span className="text-slate-400"> / {((sum?.total ?? 0) * 100).toLocaleString()} XP</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-[11px] font-black tabular-nums text-slate-400 whitespace-nowrap">
+                      {allDone && <Check className="w-3.5 h-3.5 text-amber-500" strokeWidth={4} />}
+                      {sum?.done ?? 0}/{sum?.total ?? 0} done
+                    </span>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
         </div>
+
+        {/* The Arcade — a play zone, not a course, so it gets its own marquee
+            below the courses rather than a card among them. */}
+        {hasArcade && (
+          <div className="mt-8" style={{ animationDelay: `${Math.min(courses.length, 8) * 40}ms` }}>
+            <ArcadeBanner
+              balance={arcade?.balance ?? null}
+              freePlay={arcade?.freePlay ?? false}
+              playCost={PLAY_COST}
+              onOpen={() => navigate(`/${ARCADE_TRACK_ID}`)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
