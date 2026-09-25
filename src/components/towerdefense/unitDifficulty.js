@@ -82,6 +82,13 @@ export const TRACK_LEVELS = {
       mapName: 'The Orbit',
       blurb: 'Everything here goes round and round, and it is falling toward the centre the whole time. Hold the inside of the curve.',
     },
+    // Collisions: two roads that meet head-on, on ice (Anna and Paul). One
+    // tier up from the orbit.
+    PHY_MOM: {
+      mapId: 'JUNCTION', themeId: 'ICE', tier: 2,
+      mapName: 'The Crash Junction',
+      blurb: 'Two roads meet head-on at the junction, and whatever arrives there shares its momentum. Hold the meeting point.',
+    },
   },
   // IGCSE Additional Mathematics. AM_3A is the first unit, so it opens on the
   // gentlest board with the full armoury; later chapters climb from here.

@@ -1,14 +1,15 @@
 import { useState, useMemo } from 'react';
 import {
   Variable, RotateCcw, Undo2, Lightbulb, ArrowRight, Construction, PartyPopper, Pencil, Check,
-  Ruler, Calculator, Target, AlertTriangle, CheckCircle2,
+  Ruler, Calculator, Target, AlertTriangle, CheckCircle2, Quote, Wand2,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import { parseInlineText } from '../components/notes/layouts/helpers.jsx';
 import {
   workItem, applyMove, suggestMove, isIsolated, chipsOf, termLatex, sideLatex, moveLatex,
-  reasonFor, symbolLatex, fmtNumber, fmtPlain, parseNumber, closeTo, conversionRule,
+  reasonFor, symbolLatex, fmtNumber, fmtPlain, fmtGiven, sigFigs, parseNumber, closeTo, conversionRule,
+  isRewrite, factorLatex, symbolsOf, symbolName,
 } from '../utils/formula';
 
 /* ------------------------------------------------------------------ *
@@ -32,14 +33,29 @@ import {
  *                 answer — and, when the question asks for km or hours, the
  *                 conversion back.
  *
+ * An item with a `setup` (every collision item) gets a stage BEFORE Isolate:
+ *
+ *   0. SET UP     the item starts from the one general equation, and the
+ *                 story's conditions are applied to it by the student — tap
+ *                 the velocity "at rest" makes 0, tap the two velocities that
+ *                 "stick together" makes one. Each lands in the working on
+ *                 its own line with the reason, so the notebook shows the
+ *                 special-case equation being DERIVED, not remembered.
+ *
+ * Isolate also offers FACTOR when a letter sits in two terms of one side
+ * (m₁v_f + m₂v_f → (m₁ + m₂)v_f) — a rewrite, printed on one line, not a
+ * both-sides move.
+ *
  * Everything is derived from the authored formula by src/utils/formula.js:
  * the chips, the hint, the target step count, the substituted line, the
  * answer, and the wrong numbers a common slip produces (so a wrong answer is
- * named — "you used 6.78 km/s as if it were m/s" — rather than marked red).
+ * named — "you used 6.78 km/s as if it were m/s", "−41.0 lost its minus
+ * sign" — rather than marked red).
  *
- * SCORING. Each item is worth two marks: one for isolating the target without
- * Show me, one for the numbers (every box right within two tries, nothing
- * revealed). XP = the share of marks, out of 10 (nativeMax).
+ * SCORING. Each item is worth two marks: one for the equation (the setup
+ * picked without a reveal, and the target isolated without Show me), one for
+ * the numbers (every box right within two tries, nothing revealed). XP = the
+ * share of marks, out of 10 (nativeMax).
  * ------------------------------------------------------------------ */
 
 const ACCENT = '#4f46e5';
@@ -51,16 +67,28 @@ const OPS = [
   { kind: 'sub', sym: '−', en: 'Subtract', vn: 'Trừ' },
   { kind: 'square', sym: '( )²', en: 'Square', vn: 'Bình phương' },
   { kind: 'sqrt', sym: '√', en: 'Square root', vn: 'Căn bậc hai' },
+  { kind: 'factor', sym: 'a( + )', en: 'Factor out', vn: 'Đặt nhân tử chung', small: true },
 ];
+
+// Tailwind only ships class names it can see, so the grid widths are spelled out.
+const OP_GRID = {
+  4: 'grid-cols-4',
+  5: 'grid-cols-5',
+  6: 'grid-cols-3 sm:grid-cols-6',
+  7: 'grid-cols-4 sm:grid-cols-7',
+};
 
 const EN = {
   title: 'Isolate It',
-  stage1: 'Step 1 · Isolate',
-  stage2: 'Step 2 · Units',
-  stage3: 'Step 3 · Calculate',
+  step: 'Step',
+  stSetup: 'Set up',
+  stIsolate: 'Isolate',
+  stUnits: 'Units',
+  stCalc: 'Calculate',
   target: 'Make this the subject',
   pick: 'Pick a move, then what to do it with',
   doBoth: 'Do it to both sides',
+  doFactor: 'Factor it',
   undo: 'Undo',
   reset: 'Reset',
   hint: 'Show me',
@@ -72,6 +100,22 @@ const EN = {
   copyBody: 'Write out ALL of the working — every line, the move under both sides, and the reason. This is the part the answer box never shows you.',
   toUnits: 'I have written it down',
   alreadySubject: 'is already the subject. Nothing to move — go straight to the numbers.',
+  deadEnd: (x) => `Dead end: $${x}$ is stuck inside a bracket, or on both sides. Undo the last move and try another.`,
+  // Set up
+  setupTitle: 'Fit the equation to the story',
+  setupBody: 'Every collision starts from this one equation. The question tells you what to change.',
+  clue: 'The question says',
+  pickZero: (n) => (n === 1 ? 'That makes one velocity 0. Tap it.' : 'That makes two velocities 0. Tap both.'),
+  pickSame: (to) => `Two velocities become one, $${to}$. Tap the two.`,
+  applyIt: 'Apply it',
+  setupWrong: (sym, name) => `$${sym}$ is the ${name}.`,
+  setupNudge: 'Read the clue again: which object is it about — and is it BEFORE the collision, or AFTER?',
+  setupPickN: (n) => `Tap ${n === 1 ? 'one' : n === 2 ? 'two' : n}.`,
+  setupShown: 'Shown',
+  setupDone: 'Set up for this story',
+  setupDoneBody: 'This is the momentum equation for THIS question — derived, not remembered. Copy the lines into your notebook, then isolate the unknown.',
+  toIsolate: 'Now isolate',
+  // numbers
   piecesTitle: 'The pieces',
   piecesBody: 'A formula only works in SI units. Anything quoted in km, hours or km/s has to be converted BEFORE it goes in.',
   constant: 'constant',
@@ -84,6 +128,7 @@ const EN = {
   answerIs: 'Answer',
   answerSI: 'Answer in SI',
   answerAsked: 'The question wants',
+  signNote: 'Velocities have a direction: + is right or east, − is left or west. If the answer points backwards, type the minus sign.',
   check: 'Check',
   next: 'Next problem',
   finish: 'Finish',
@@ -91,6 +136,9 @@ const EN = {
   notYet: 'Not quite',
   needNumber: 'Type a number. For big numbers write 6.24e18 or 6.24×10^18.',
   rawUnit: (v, u, si) => `You used ${v} ${u} as if it were ${si}. Convert it to ${si} first.`,
+  rawAll: (u, si) => `You used the ${u} numbers as if they were ${si}. Convert every one before it goes in.`,
+  noSign: (sym, v, u) => `Check $${sym}$: it is ${v} ${u}. The minus sign is its direction — keep it, and put it in brackets.`,
+  flip: 'Right size, wrong direction. Check the sign of every number you put in.',
   noRoot: 'You forgot the square root at the end.',
   noSquare: 'Something that should be squared was not squared. Look for the little 2.',
   unconverted: (si, u) => `That is the answer in ${si}. The question wants ${u} — convert it.`,
@@ -100,18 +148,22 @@ const EN = {
   revealed: 'Revealed',
   tries: 'tries left',
   cannot: 'That move does not work here — divide out the number first, or choose another move.',
+  nothingToFactor: 'Nothing to factor: that letter is not in two terms of the same side.',
   sqrtNeg: 'You cannot take the square root of a negative quantity.',
   lang: 'VN',
 };
 
 const VN = {
   title: 'Cô Lập Biến',
-  stage1: 'Bước 1 · Cô lập',
-  stage2: 'Bước 2 · Đơn vị',
-  stage3: 'Bước 3 · Tính toán',
+  step: 'Bước',
+  stSetup: 'Thiết lập',
+  stIsolate: 'Cô lập',
+  stUnits: 'Đơn vị',
+  stCalc: 'Tính toán',
   target: 'Đưa đại lượng này về một vế',
   pick: 'Chọn phép biến đổi, rồi chọn thứ để áp dụng',
   doBoth: 'Làm với cả hai vế',
+  doFactor: 'Đặt nhân tử chung',
   undo: 'Hoàn tác',
   reset: 'Làm lại',
   hint: 'Cho tôi xem',
@@ -123,6 +175,20 @@ const VN = {
   copyBody: 'Chép lại TOÀN BỘ bài giải — từng dòng, phép biến đổi dưới hai vế, và lý do. Đây là phần mà ô đáp án không bao giờ cho em thấy.',
   toUnits: 'Em đã chép xong',
   alreadySubject: 'đã là chủ thể của công thức. Không cần biến đổi — chuyển thẳng sang các con số.',
+  deadEnd: (x) => `Ngõ cụt: $${x}$ đang bị kẹt trong ngoặc, hoặc nằm ở cả hai vế. Hãy hoàn tác bước vừa rồi và thử cách khác.`,
+  setupTitle: 'Điều chỉnh phương trình theo đề bài',
+  setupBody: 'Mọi va chạm đều bắt đầu từ phương trình này. Đề bài cho em biết cần thay đổi gì.',
+  clue: 'Đề bài nói',
+  pickZero: (n) => (n === 1 ? 'Điều đó làm một vận tốc bằng 0. Hãy chạm vào nó.' : 'Điều đó làm hai vận tốc bằng 0. Hãy chạm vào cả hai.'),
+  pickSame: (to) => `Hai vận tốc trở thành một, $${to}$. Hãy chạm vào hai vận tốc đó.`,
+  applyIt: 'Áp dụng',
+  setupWrong: (sym, name) => `$${sym}$ là ${name}.`,
+  setupNudge: 'Đọc lại manh mối: nó nói về vật nào — và là TRƯỚC va chạm, hay SAU?',
+  setupPickN: (n) => `Chọn ${n}.`,
+  setupShown: 'Đã hiện',
+  setupDone: 'Đã thiết lập cho đề bài này',
+  setupDoneBody: 'Đây là phương trình động lượng cho CHÍNH câu hỏi này — được suy ra, không phải học thuộc. Chép các dòng vào vở, rồi cô lập ẩn số.',
+  toIsolate: 'Bây giờ cô lập',
   piecesTitle: 'Các đại lượng',
   piecesBody: 'Công thức chỉ đúng với đơn vị SI. Bất kỳ số nào tính bằng km, giờ hay km/s đều phải đổi TRƯỚC KHI thay vào.',
   constant: 'hằng số',
@@ -135,6 +201,7 @@ const VN = {
   answerIs: 'Đáp án',
   answerSI: 'Đáp án theo SI',
   answerAsked: 'Đề bài yêu cầu',
+  signNote: 'Vận tốc có hướng: + là phải hoặc đông, − là trái hoặc tây. Nếu đáp án hướng ngược lại, hãy gõ dấu trừ.',
   check: 'Kiểm tra',
   next: 'Bài tiếp theo',
   finish: 'Hoàn thành',
@@ -142,6 +209,9 @@ const VN = {
   notYet: 'Chưa đúng',
   needNumber: 'Hãy gõ một con số. Với số lớn, viết 6.24e18 hoặc 6.24×10^18.',
   rawUnit: (v, u, si) => `Em đã dùng ${v} ${u} như thể nó là ${si}. Hãy đổi sang ${si} trước.`,
+  rawAll: (u, si) => `Em đã dùng các số tính bằng ${u} như thể chúng là ${si}. Hãy đổi từng số trước khi thay vào.`,
+  noSign: (sym, v, u) => `Kiểm tra $${sym}$: nó bằng ${v} ${u}. Dấu trừ chính là hướng của nó — giữ lại, và đặt trong ngoặc.`,
+  flip: 'Độ lớn đúng, nhưng sai hướng. Hãy kiểm tra dấu của từng số em thay vào.',
   noRoot: 'Em quên lấy căn bậc hai ở bước cuối.',
   noSquare: 'Có một đại lượng cần bình phương mà chưa được bình phương. Hãy tìm số 2 nhỏ.',
   unconverted: (si, u) => `Đó là đáp án theo ${si}. Đề bài yêu cầu ${u} — hãy đổi đơn vị.`,
@@ -151,11 +221,59 @@ const VN = {
   revealed: 'Đã hiện đáp án',
   tries: 'lần thử còn lại',
   cannot: 'Phép biến đổi này không dùng được ở đây — hãy chia số ra trước, hoặc chọn phép khác.',
+  nothingToFactor: 'Không có gì để đặt nhân tử chung: chữ đó không nằm trong hai số hạng của cùng một vế.',
   sqrtNeg: 'Không thể lấy căn bậc hai của một đại lượng âm.',
   lang: 'EN',
 };
 
 const MAX_TRIES = 2;
+
+/** A given as it is printed and substituted: the question's figures, or its `show`. */
+const shownValue = (p) => p.show || fmtGiven(p.value);
+const siShown = (p) => (p.show && !p.needsConversion ? p.show : fmtNumber(p.siValue, Math.max(3, sigFigs(p.value))));
+
+/**
+ * Roughly how many characters a line of KaTeX shows: commands, braces and
+ * spacing dropped, a fraction counted as its wider half. Good enough to pick
+ * a font size so the working never wraps or spills into the other side.
+ */
+const glyphs = (latex) => {
+  const s = String(latex).replace(/\\left|\\right/g, '');
+  // The {…} group starting at s[i], and the index just past it.
+  const group = (i) => {
+    let depth = 0;
+    for (let j = i; j < s.length; j++) {
+      if (s[j] === '{') depth++;
+      else if (s[j] === '}' && --depth === 0) return [s.slice(i + 1, j), j + 1];
+    }
+    return ['', s.length];
+  };
+  let n = 0;
+  for (let i = 0; i < s.length;) {
+    if (s.startsWith('\\dfrac{', i)) {
+      const [top, afterTop] = group(i + 6);
+      const [bottom, after] = group(afterTop);
+      n += Math.max(glyphs(top), glyphs(bottom));
+      i = after;
+    } else if (s[i] === '\\') {
+      const m = /^\\([a-zA-Z]+|.)/.exec(s.slice(i));
+      if (/^[a-zA-Z]{2,}$/.test(m[1]) && !['text', 'sqrt'].includes(m[1])) n += 1;   // \times, \Delta, \pi …
+      i += m[0].length;
+    } else {
+      if (!/[{}_^\s]/.test(s[i])) n += 1;
+      i += 1;
+    }
+  }
+  return n;
+};
+
+/** The font size for one line of working, from the WIDER of its two sides. */
+const sizeFor = (L, R, last) => {
+  const n = Math.max(glyphs(L), glyphs(R));
+  if (n <= 8) return last ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl';
+  if (n <= 14) return last ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl';
+  return last ? 'text-base sm:text-xl' : 'text-base sm:text-lg';
+};
 
 /** A KaTeX chip button. */
 function Chip({ latex, active, onClick, tone = 'factor' }) {
@@ -177,10 +295,11 @@ function Chip({ latex, active, onClick, tone = 'factor' }) {
   );
 }
 
-/** The three stages as a rail, the live one lit. */
-function StageRail({ stage, t }) {
-  const stages = [['isolate', t.stage1, Variable], ['units', t.stage2, Ruler], ['calc', t.stage3, Calculator]];
-  const order = ['isolate', 'units', 'calc', 'done'];
+/** The stages as a rail, the live one lit. `withSetup` adds Set up in front. */
+function StageRail({ stage, t, withSetup }) {
+  const all = [['setup', t.stSetup, Wand2], ['isolate', t.stIsolate, Variable], ['units', t.stUnits, Ruler], ['calc', t.stCalc, Calculator]];
+  const stages = withSetup ? all : all.slice(1);
+  const order = [...stages.map((s) => s[0]), 'done'];
   const at = order.indexOf(stage);
   return (
     <div className="flex flex-wrap gap-2">
@@ -191,7 +310,7 @@ function StageRail({ stage, t }) {
           <span key={id} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest border-2
             ${live ? 'bg-[#4f46e5] border-[#3730a3] text-white' : done ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-400'}`}>
             {done ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
-            {label}
+            {t.step} {i + 1} · {label}
           </span>
         );
       })}
@@ -199,26 +318,41 @@ function StageRail({ stage, t }) {
   );
 }
 
-/** The accumulating written working: every line, the move under both sides, the reason. */
-function Working({ history, lang, t }) {
+/**
+ * The accumulating written working: every line, and between lines either the
+ * move under both sides (a both-sides move) or one centred line (a rewrite —
+ * a setup condition or a factorisation), with the reason beneath.
+ */
+function Working({ history, lang, t, isolating = true }) {
   return (
     <div>
       {history.map((row, i) => {
         const last = i === history.length - 1;
+        const L = sideLatex(row.eq.left);
+        const R = sideLatex(row.eq.right);
+        const size = sizeFor(L, R, last);
         return (
           <div key={i} className="animate-in fade-in slide-in-from-top-1 duration-300">
             <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5 ${last ? 'text-slate-900 dark:text-slate-50' : 'text-slate-700 dark:text-slate-200'}`}>
-              <div className={`flex justify-end ${last ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'}`}><SafeInlineMath math={sideLatex(row.eq.left)} /></div>
-              <div className={`font-black text-slate-400 ${last ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'}`}>=</div>
-              <div className={`flex justify-start ${last ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'}`}><SafeInlineMath math={sideLatex(row.eq.right)} /></div>
+              <div className={`flex justify-end min-w-0 overflow-x-auto overflow-y-hidden [&_.katex]:whitespace-nowrap ${size}`}><SafeInlineMath math={L} /></div>
+              <div className={`font-black text-slate-400 ${size}`}>=</div>
+              <div className={`flex justify-start min-w-0 overflow-x-auto overflow-y-hidden [&_.katex]:whitespace-nowrap ${size}`}><SafeInlineMath math={R} /></div>
             </div>
             {row.move && (
               <>
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5 mt-1.5 text-lg sm:text-xl text-[#4f46e5] dark:text-indigo-300">
-                  <div className="flex justify-end"><SafeInlineMath math={moveLatex(row.move)} /></div>
-                  <div className="w-3" />
-                  <div className="flex justify-start"><SafeInlineMath math={moveLatex(row.move)} /></div>
-                </div>
+                {isRewrite(row.move) ? (
+                  <div className="flex justify-center mt-2 text-base sm:text-lg text-[#4f46e5] dark:text-indigo-300 overflow-x-auto overflow-y-hidden pb-1 [&_.katex]:inline-block [&_.katex]:align-middle">
+                    <span className="px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-100 dark:border-indigo-900">
+                      <SafeInlineMath math={row.move.latex || moveLatex(row.move)} />
+                    </span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-5 mt-1.5 text-lg sm:text-xl text-[#4f46e5] dark:text-indigo-300">
+                    <div className="flex justify-end"><SafeInlineMath math={moveLatex(row.move)} /></div>
+                    <div className="w-3" />
+                    <div className="flex justify-start"><SafeInlineMath math={moveLatex(row.move)} /></div>
+                  </div>
+                )}
                 {row.reason && (
                   <p className="text-center text-[11px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 mt-1 px-2">
                     {parseInlineText(lang === 'vn' ? row.reason.vn : row.reason.en)}
@@ -234,21 +368,21 @@ function Working({ history, lang, t }) {
           </div>
         );
       })}
-      {history.length === 1 && (
+      {history.length === 1 && isolating && (
         <p className="text-center text-[11px] font-bold text-slate-300 dark:text-slate-600 mt-2">{t.pick}</p>
       )}
     </div>
   );
 }
 
-/** One right-or-wrong feedback line. */
+/** One right-or-wrong feedback line. May carry $…$ maths. */
 function Feedback({ msg }) {
   if (!msg) return null;
   return (
     <div className={`mt-3 rounded-xl border-2 p-3 text-sm font-bold animate-in fade-in ${msg.ok ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-[#ffdfe0] border-[#ea2b2b] text-[#a32d23]'}`}>
       <span className="inline-flex items-start gap-2">
         {msg.ok ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={3} /> : <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={3} />}
-        <span>{msg.text}</span>
+        <span>{parseInlineText(msg.text)}</span>
       </span>
     </div>
   );
@@ -323,6 +457,80 @@ function NumberBox({ label, unit, want, tol = 0.015, t, onResult, diagnose, lock
   );
 }
 
+/* ------------------------------------------------------------------ set up */
+
+/**
+ * One setup condition: the clue from the question, and the velocities to tap.
+ * Two wrong tries (or Show me) apply it anyway and cost the equation mark.
+ */
+function SetupPanel({ w, item, config, index, lang, t, current, onApply }) {
+  const { cond } = w.setup[index];
+  const need = cond.syms.length;
+  const [picked, setPicked] = useState([]);
+  const [tries, setTries] = useState(0);
+  const [msg, setMsg] = useState(null);
+
+  // Offer every letter of the same kind (every v) in the equation as it stands.
+  const kind = cond.syms[0].split('_')[0];
+  const chips = [...symbolsOf(current.left), ...symbolsOf(current.right)]
+    .filter((s, i, all) => all.indexOf(s) === i && s.split('_')[0] === kind);
+
+  const toggle = (s) => {
+    setMsg(null);
+    setPicked((p) => (p.includes(s) ? p.filter((x) => x !== s) : p.length >= need ? [...p.slice(1), s] : [...p, s]));
+  };
+
+  const apply = () => {
+    if (picked.length !== need) { setMsg({ ok: false, text: t.setupPickN(need) }); return; }
+    const right = picked.every((s) => cond.syms.includes(s));
+    if (right) { onApply(true); return; }
+    const wrong = picked.filter((s) => !cond.syms.includes(s));
+    const text = `${wrong.map((s) => t.setupWrong(symbolLatex(s), symbolName(s, item, config, lang))).join(' ')} ${t.setupNudge}`;
+    const next = tries + 1;
+    setTries(next);
+    setMsg({ ok: false, text });
+    if (next >= MAX_TRIES) onApply(false);
+  };
+
+  const clue = lang === 'vn' ? cond.clueVn : cond.clue;
+  const ask = cond.kind === 'zero' ? t.pickZero(need) : t.pickSame(symbolLatex(cond.to));
+
+  return (
+    <div className="animate-in fade-in duration-300">
+      <div className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 mb-2">{t.setupTitle}</div>
+      {index === 0 && <p className="text-sm font-bold text-slate-600 dark:text-slate-300 mb-3 leading-relaxed">{t.setupBody}</p>}
+      <div className="rounded-2xl border-2 border-indigo-200 dark:border-indigo-900 bg-indigo-50/60 dark:bg-indigo-950/30 p-4 mb-4">
+        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1.5">
+          <Quote className="w-3.5 h-3.5" strokeWidth={3} /> {t.clue} · {index + 1}/{w.setup.length}
+        </div>
+        <p className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 leading-snug">“{parseInlineText(clue)}”</p>
+      </div>
+      <p className="text-sm font-bold text-slate-600 dark:text-slate-300 mb-3">{parseInlineText(ask)}</p>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {chips.map((s) => (
+          <Chip key={s} latex={symbolLatex(s)} active={picked.includes(s)} onClick={() => toggle(s)} />
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={apply}
+        disabled={picked.length !== need}
+        className="w-full py-4 rounded-2xl font-black text-base sm:text-lg uppercase tracking-widest bg-[#58cc02] border-b-[6px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[6px] transition-all disabled:opacity-40 disabled:pointer-events-none"
+      >
+        {t.applyIt}
+      </button>
+      <div className="flex items-center justify-center gap-2 mt-3">
+        {tries > 0 && <span className="text-[10px] font-bold text-slate-400">{MAX_TRIES - tries} {t.tries}</span>}
+        <button type="button" onClick={() => onApply(false)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
+          <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.hint}
+        </button>
+      </div>
+      <Feedback msg={msg} />
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ the item */
 
 /**
@@ -333,23 +541,44 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
   const w = useMemo(() => workItem(item, config), [item, config]);
   const target = item.target;
   const tLatex = symbolLatex(target);
+  const withSetup = w.setup.length > 0;
 
   const [history, setHistory] = useState(() => [{ eq: w.start, move: null, reason: null }]);
   const [opKind, setOpKind] = useState('mul');
   const [chip, setChip] = useState(null);       // a term, or null
   const [error, setError] = useState('');
   const [hinted, setHinted] = useState(false);
-  const [stage, setStage] = useState('isolate');
+  const [stage, setStage] = useState(withSetup ? 'setup' : 'isolate');
+  const [setupClean, setSetupClean] = useState(true);
   // Numeric stage bookkeeping: boxKey -> { ok, clean }
   const [boxes, setBoxes] = useState({});
 
+  // The rows the setup wrote are not the student's to undo from Isolate.
+  const floor = w.setup.length;
+  const setupAt = Math.min(history.length - 1, floor);   // conditions applied so far
   const current = history[history.length - 1].eq;
-  const done = isIsolated(current, target);
-  const moves = history.length - 1;
+  const done = stage !== 'setup' && isIsolated(current, target);
+  const moves = history.length - 1 - floor;
   const chips = useMemo(() => chipsOf(current), [current]);
-  const needsChip = opKind === 'mul' || opKind === 'div' || opKind === 'add' || opKind === 'sub';
-  const chipRow = opKind === 'add' || opKind === 'sub' ? chips.terms : [...chips.factors, ...chips.numbers];
+  const needsChip = ['mul', 'div', 'add', 'sub', 'factor'].includes(opKind);
+  const chipRow = opKind === 'add' || opKind === 'sub' ? chips.terms
+    : opKind === 'factor' ? chips.common : [...chips.factors, ...chips.numbers];
   const showAddSub = chips.terms.length > 0;
+  const showFactor = chips.common.length > 0 || opKind === 'factor';
+  const ops = OPS.filter((o) => (o.kind === 'add' || o.kind === 'sub' ? showAddSub : o.kind === 'factor' ? showFactor : true));
+  // No taught move from here, and not solved: the student has walked into a
+  // bracket (factored the wrong letter) or put the target on both sides.
+  const stuck = stage === 'isolate' && !done && !suggestMove(current, target);
+
+  const applySetupStep = (clean) => {
+    const s = w.setup[setupAt];
+    if (!clean) setSetupClean(false);
+    setHistory((h) => [
+      ...h.slice(0, -1),
+      { ...h[h.length - 1], move: { kind: s.cond.kind, latex: s.latex }, reason: { en: s.cond.because, vn: s.cond.becauseVn } },
+      { eq: s.after, move: null, reason: null },
+    ]);
+  };
 
   const apply = () => {
     if (done) return;
@@ -358,9 +587,10 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
     let next;
     try { next = applyMove(current, move); }
     catch (e) {
-      setError(/negative/.test(e.message) ? t.sqrtNeg : t.cannot);
+      setError(/negative/.test(e.message) ? t.sqrtNeg : /factor/.test(e.message) ? t.nothingToFactor : t.cannot);
       return;
     }
+    if (move.kind === 'factor') move.latex = factorLatex(current, chip);
     setError('');
     setChip(null);
     const reason = reasonFor(move, current, target);
@@ -368,16 +598,20 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
   };
 
   const undo = () => {
-    if (history.length < 2) return;
+    if (history.length - 1 <= floor) return;
     setHistory((h) => [...h.slice(0, -2), { ...h[h.length - 2], move: null, reason: null }]);
     setError('');
   };
-  const reset = () => { setHistory([{ eq: w.start, move: null, reason: null }]); setError(''); setChip(null); };
+  const reset = () => {
+    setHistory((h) => [...h.slice(0, floor), { ...h[floor], move: null, reason: null }]);
+    setError('');
+    setChip(null);
+  };
 
   const showHint = () => {
     if (done) return;
     const m = suggestMove(current, target);
-    if (!m) return;
+    if (!m) { setError(t.deadEnd(tLatex)); return; }
     setHinted(true);
     setOpKind(m.kind);
     setChip(m.term || null);
@@ -400,16 +634,29 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
   const diagnoseSI = (n) => {
     for (const tr of w.traps) {
       if (!closeTo(n, tr.value, 0.02)) continue;
-      if (tr.key.startsWith('raw:')) return t.rawUnit(fmtPlain(w.pieces.find((p) => p.sym === tr.sym)?.value), tr.unit, tr.si);
+      if (tr.key === 'raw:all') return t.rawAll(tr.unit, tr.si);
+      if (tr.key.startsWith('raw:')) {
+        const p = w.pieces.find((x) => x.sym === tr.sym);
+        return t.rawUnit(p ? shownValue(p) : '', tr.unit, tr.si);
+      }
+      if (tr.key.startsWith('nosign:')) {
+        const p = w.pieces.find((x) => x.sym === tr.sym);
+        return t.noSign(symbolLatex(tr.sym), p ? shownValue(p) : fmtGiven(tr.given), tr.unit);
+      }
+      if (tr.key === 'flip') return t.flip;
       if (tr.key === 'noroot') return t.noRoot;
       if (tr.key === 'nosquare') return t.noSquare;
     }
     return null;
   };
-  const diagnoseAsked = (n) => (closeTo(n, w.answer, 0.02) ? t.unconverted(w.siUnit, w.askUnit) : null);
+  const diagnoseAsked = (n) => {
+    if (closeTo(n, w.answer, 0.02)) return t.unconverted(w.siUnit, w.askUnit);
+    if (w.signed && closeTo(n, -w.answerAsked, 0.02)) return t.flip;
+    return null;
+  };
 
   const finishIsolate = () => {
-    onMarks({ isolate: !hinted });
+    onMarks({ isolate: !hinted && setupClean });
     setStage(conversions.length ? 'units' : 'calc');
   };
   const finishUnits = () => setStage('calc');
@@ -421,12 +668,14 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
 
   const subLatex = useMemo(() => {
     if (!w.expr) return '';
-    const sub = Object.fromEntries(w.pieces.map((p) => [p.sym, p.show && !p.needsConversion ? p.show : fmtNumber(p.siValue)]));
+    const sub = Object.fromEntries(w.pieces.map((p) => [p.sym, siShown(p)]));
     return `${tLatex} = ${sideLatex(w.expr, { sub })}`;
   }, [w, tLatex]);
 
   const promptText = lang === 'vn' ? (item.promptVn || item.prompt) : item.prompt;
   const hintText = lang === 'vn' ? (item.hintVn || item.hint) : item.hint;
+  const setupFinished = withSetup && setupAt >= floor;
+  const previewMove = needsChip ? { kind: opKind, term: chip } : { kind: opKind };
 
   return (
     <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-5">
@@ -439,20 +688,26 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
               <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{t.target}</div>
               <div className="text-2xl font-black"><SafeInlineMath math={tLatex} /></div>
             </div>
-            <div className="text-2xl sm:text-3xl text-white/95 shrink-0 max-w-[55%] overflow-x-auto overflow-y-hidden pb-2 [&_.katex]:inline-block [&_.katex]:align-middle"><SafeInlineMath math={sideLatex(w.start.left) + ' = ' + sideLatex(w.start.right)} /></div>
+            <div className={`${withSetup ? 'text-lg sm:text-xl max-w-[70%]' : 'text-2xl sm:text-3xl max-w-[55%]'} text-white/95 shrink-0 overflow-x-auto overflow-y-hidden pb-2 [&_.katex]:inline-block [&_.katex]:align-middle`}><SafeInlineMath math={sideLatex(w.start.left) + ' = ' + sideLatex(w.start.right)} /></div>
           </div>
           <div className="p-4 sm:p-5">
             <p className="font-bold text-slate-700 dark:text-slate-200 leading-relaxed">{parseInlineText(promptText)}</p>
-            {hintText && <p className="mt-2 text-sm font-bold text-slate-400 dark:text-slate-500">{parseInlineText(hintText)}</p>}
+            {hintText && stage !== 'setup' && <p className="mt-2 text-sm font-bold text-slate-400 dark:text-slate-500">{parseInlineText(hintText)}</p>}
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-7">
-          <Working history={history} lang={lang} t={t} />
+          <Working history={history} lang={lang} t={t} isolating={stage === 'isolate'} />
+
+          {stuck && (
+            <div className="mt-4 rounded-xl border-2 border-amber-300 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-700 p-3 text-sm font-bold text-amber-800 dark:text-amber-300 animate-in fade-in">
+              {parseInlineText(t.deadEnd(tLatex))}
+            </div>
+          )}
 
           {done && stage === 'isolate' && (
             <div className="mt-5 pt-5 border-t-2 border-dashed border-slate-200 dark:border-slate-700 animate-in fade-in zoom-in-95 duration-300">
-              {moves === 0 ? (
+              {moves === 0 && !withSetup ? (
                 <p className="font-bold text-slate-600 dark:text-slate-300 mb-4"><SafeInlineMath math={tLatex} /> {t.alreadySubject}</p>
               ) : (
                 <div className="bg-[#ffc800]/10 dark:bg-amber-900/15 border-l-[6px] border-[#ffc800] rounded-r-2xl p-4 sm:p-5 mb-5">
@@ -471,14 +726,14 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
                   <div>
                     <div className="font-black text-lg text-[#3e7500] dark:text-[#7bd42f]">{t.isolated}</div>
                     <div className="text-xs font-bold text-slate-400">
-                      {moves} {t.moves} · {t.par} {w.par ?? '?'}{hinted ? ` · ${t.hintUsed}` : ''}
+                      {moves} {t.moves} · {t.par} {w.par ?? '?'}{hinted || !setupClean ? ` · ${t.hintUsed}` : ''}
                     </div>
                   </div>
                 </div>
                 <button onClick={finishIsolate}
                   className="w-full sm:w-auto flex items-center justify-center px-6 py-4 rounded-2xl font-black text-sm sm:text-base uppercase tracking-widest bg-[#58cc02] border-b-[5px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[5px] transition-all">
                   <Check className="w-5 h-5 mr-2 shrink-0" strokeWidth={3} />
-                  {moves === 0 ? t.toCalc : t.toUnits}
+                  {moves === 0 && !withSetup ? t.toCalc : t.toUnits}
                   <ArrowRight className="w-5 h-5 ml-2 shrink-0" strokeWidth={3} />
                 </button>
               </div>
@@ -489,19 +744,49 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
 
       {/* ---- right: the stage panel ---- */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-6 lg:sticky lg:top-4">
-        <div className="mb-4"><StageRail stage={stage} t={t} /></div>
+        <div className="mb-4"><StageRail stage={stage} t={t} withSetup={withSetup} /></div>
+
+        {stage === 'setup' && !setupFinished && (
+          <SetupPanel
+            key={setupAt}
+            w={w}
+            item={item}
+            config={config}
+            index={setupAt}
+            lang={lang}
+            t={t}
+            current={current}
+            onApply={applySetupStep}
+          />
+        )}
+
+        {stage === 'setup' && setupFinished && (
+          <div className="animate-in fade-in zoom-in-95 duration-300">
+            <div className="flex items-center gap-2 text-[#3e7500] dark:text-[#7bd42f] font-black text-lg mb-2">
+              <CheckCircle2 className="w-5 h-5" strokeWidth={3} /> {t.setupDone}
+            </div>
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border-2 border-slate-200 dark:border-slate-700 p-3 mb-3 text-lg sm:text-xl text-slate-800 dark:text-slate-100 overflow-x-auto overflow-y-hidden [&_.katex]:inline-block [&_.katex]:align-middle text-center">
+              <SafeInlineMath math={`${sideLatex(w.posed.left)} = ${sideLatex(w.posed.right)}`} />
+            </div>
+            <p className="text-sm font-bold text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">{t.setupDoneBody}</p>
+            <button type="button" onClick={() => setStage('isolate')}
+              className="w-full py-4 rounded-2xl font-black text-sm sm:text-base uppercase tracking-widest bg-[#58cc02] border-b-[5px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[5px] transition-all">
+              {t.toIsolate} <span className="normal-case"><SafeInlineMath math={tLatex} /></span> <ArrowRight className="inline w-5 h-5 ml-1" strokeWidth={3} />
+            </button>
+          </div>
+        )}
 
         {stage === 'isolate' && !done && (
           <>
             <div className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 mb-3">{t.pick}</div>
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
-              {OPS.filter((o) => showAddSub || (o.kind !== 'add' && o.kind !== 'sub')).map((o) => (
+            <div className={`grid ${OP_GRID[ops.length] || 'grid-cols-4'} gap-2 mb-3`}>
+              {ops.map((o) => (
                 <button
                   key={o.kind}
                   type="button"
                   title={lang === 'vn' ? o.vn : o.en}
                   onClick={() => { setOpKind(o.kind); setChip(null); setError(''); }}
-                  className={`py-3 rounded-2xl font-black text-xl border-2 border-b-[5px] transition-all active:border-b-2 active:translate-y-[3px]
+                  className={`py-3 rounded-2xl font-black ${o.small ? 'text-sm' : 'text-xl'} border-2 border-b-[5px] transition-all active:border-b-2 active:translate-y-[3px]
                     ${opKind === o.kind
                       ? 'bg-[#4f46e5] border-[#3730a3] text-white'
                       : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[#4f46e5]'}`}
@@ -526,14 +811,16 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
               </div>
             )}
 
-            {/* The preview says out loud what is about to happen to BOTH sides. */}
+            {/* The preview says out loud what is about to happen — to BOTH sides, or to the one being factored. */}
             <div className="min-h-9 flex items-center justify-center text-center text-slate-400 dark:text-slate-500 text-base mb-2 overflow-x-auto overflow-y-hidden pb-2 [&_.katex]:inline-block [&_.katex]:align-middle">
               {(!needsChip || chip) && (
-                <SafeInlineMath math={`${sideLatex(current.left)}\\; ${moveLatex(needsChip ? { kind: opKind, term: chip } : { kind: opKind })} \\;=\\; ${sideLatex(current.right)}\\; ${moveLatex(needsChip ? { kind: opKind, term: chip } : { kind: opKind })}`} />
+                opKind === 'factor'
+                  ? <SafeInlineMath math={factorLatex(current, chip) || moveLatex(previewMove)} />
+                  : <SafeInlineMath math={`${sideLatex(current.left)}\\; ${moveLatex(previewMove)} \\;=\\; ${sideLatex(current.right)}\\; ${moveLatex(previewMove)}`} />
               )}
             </div>
 
-            {error && <div className="text-center text-sm font-bold text-rose-500 mb-3">{error}</div>}
+            {error && <div className="text-center text-sm font-bold text-rose-500 mb-3">{parseInlineText(error)}</div>}
 
             <button
               type="button"
@@ -541,15 +828,15 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
               disabled={needsChip && !chip}
               className="w-full py-4 rounded-2xl font-black text-base sm:text-lg uppercase tracking-widest bg-[#58cc02] border-b-[6px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[6px] transition-all disabled:opacity-40 disabled:pointer-events-none"
             >
-              {t.doBoth}
+              {opKind === 'factor' ? t.doFactor : t.doBoth}
             </button>
 
             <div className="flex items-center justify-center gap-2 mt-3">
-              <button type="button" onClick={undo} disabled={history.length < 2}
+              <button type="button" onClick={undo} disabled={moves < 1}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none">
                 <Undo2 className="w-4 h-4" strokeWidth={2.5} /> {t.undo}
               </button>
-              <button type="button" onClick={reset} disabled={history.length < 2}
+              <button type="button" onClick={reset} disabled={moves < 1}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none">
                 <RotateCcw className="w-4 h-4" strokeWidth={2.5} /> {t.reset}
               </button>
@@ -577,18 +864,17 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
               {w.pieces.map((p) => {
                 const key = `conv:${p.sym}`;
                 const b = boxes[key];
-                const shown = p.show || fmtNumber(p.value);
                 return (
                   <div key={p.sym} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2.5 border-b-2 last:border-b-0 border-slate-100 dark:border-slate-800">
-                    <span className="w-9 text-xl font-black text-slate-800 dark:text-slate-100"><SafeInlineMath math={symbolLatex(p.sym)} /></span>
+                    <span className="min-w-9 text-xl font-black text-slate-800 dark:text-slate-100"><SafeInlineMath math={symbolLatex(p.sym)} /></span>
                     <span className="flex-1 min-w-[5rem] text-xs font-bold text-slate-500 dark:text-slate-400">
                       {lang === 'vn' ? p.nameVn : p.name}
                       {p.constant && <span className="ml-1.5 px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[9px] uppercase tracking-widest">{t.constant}</span>}
                     </span>
-                    <span className="font-black text-slate-800 dark:text-slate-100"><SafeInlineMath math={`${shown}\\ \\text{${p.unit}}`} /></span>
+                    <span className="font-black text-slate-800 dark:text-slate-100"><SafeInlineMath math={`${shownValue(p)}\\ \\text{${p.unit}}`} /></span>
                     {p.needsConversion ? (
                       b || stage !== 'units' ? (
-                        <span className={`text-sm font-black ${b?.ok ? 'text-[#3e7500] dark:text-[#7bd42f]' : 'text-amber-600'}`}>→ {fmtPlain(p.siValue)} {p.si}</span>
+                        <span className={`text-sm font-black ${b?.ok ? 'text-[#3e7500] dark:text-[#7bd42f]' : 'text-amber-600'}`}>→ {fmtPlain(p.siValue, Math.max(3, sigFigs(p.value)))} {p.si}</span>
                       ) : (
                         <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">{t.convert} {p.si}</span>
                       )
@@ -608,7 +894,7 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
               <NumberBox
                 key={p.sym}
                 autoFocus={i === 0}
-                label={`${p.sym} · ${fmtPlain(p.value)} ${p.unit} → ${p.si}`}
+                label={`${shownValue(p)} ${p.unit} → ${p.si}`}
                 unit={p.si}
                 want={p.siValue}
                 tol={0.005}
@@ -632,6 +918,9 @@ function Item({ item, config, lang, t, onMarks, onDone }) {
               <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{t.substituted}</div>
               <div className="text-lg sm:text-xl text-slate-800 dark:text-slate-100 overflow-x-auto"><SafeBlockMath math={subLatex} /></div>
             </div>
+            {w.signed && (
+              <p className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed">{t.signNote}</p>
+            )}
             <NumberBox
               autoFocus
               label={askDiffers ? `${t.answerSI} (${w.siUnit})` : t.answerIs}

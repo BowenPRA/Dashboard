@@ -276,6 +276,38 @@ function circularMotion() {
   return { prompt: `g = 10 m/s², r = ${10 * k * k} m.  Slowest speed over the top, v = √(gr) = ? m/s`, answer: 10 * k };
 }
 
+// PHYSICS / PHY_MOM — Momentum & Collisions. Four shapes, every answer a whole
+// number WITH its sign, because the sign is the mark this unit loses: p = mv
+// with a velocity that may point backwards, Δv across zero (minus a minus),
+// two carts that stick together (one at rest), and a recoil from rest.
+function momentum() {
+  const r = Math.random();
+  if (r < 0.3) {
+    const m = ri(2, 12);
+    const v = nz(-9, 9);
+    return { prompt: `m = ${m} kg, v = ${lead(v)} m/s.  p = mv = ? kg·m/s`, answer: m * v };
+  }
+  if (r < 0.55) {
+    // The ball turns round: one velocity each side of zero.
+    const a = ri(2, 12), b = ri(2, 12);
+    const [vi, vf] = Math.random() < 0.5 ? [-a, b] : [a, -b];
+    return { prompt: `v_i = ${lead(vi)} m/s, v_f = ${lead(vf)} m/s.  Δv = v_f ${MINUS} v_i = ?`, answer: vf - vi };
+  }
+  if (r < 0.8) {
+    // v_f = m₁v₁ / (m₁ + m₂), built backwards so it is whole: v₁ = k(m₁ + m₂).
+    const m1 = ri(1, 5), m2 = ri(1, 5), k = ri(1, 4);
+    const v1 = k * (m1 + m2);
+    return { prompt: `${m1} kg at ${v1} m/s hits ${m2} kg at rest. They stick.  v_f = ? m/s`, answer: k * m1 };
+  }
+  // Recoil: m₁v₁ = −m₂v₂. Pick the pushed-off ball's momentum, then a cart mass that divides it.
+  const m2 = ri(1, 4), v2 = ri(3, 12);
+  const p = m2 * v2;
+  const masses = [];
+  for (let d = 2; d <= 12; d++) if (p % d === 0 && d !== m2) masses.push(d);
+  const m1 = masses.length ? masses[ri(0, masses.length - 1)] : p;
+  return { prompt: `From rest, a ${m1} kg cart pushes off a ${m2} kg ball. Ball: +${v2} m/s.  Cart v = ? m/s`, answer: -p / m1 };
+}
+
 // EXT_MATH / EM_06 — Sets, Surds and Rationalising. Four reads a student who
 // has done the unit does in their head: the number that comes OUT of a root,
 // a region of a Venn diagram whose counts are given in the prompt, the number
@@ -372,6 +404,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   EM_07A: inequalitiesSimultaneous,
   EM_07B: bearingsTrig,
   PHY_CIRC: circularMotion,
+  PHY_MOM: momentum,
   AM_3A: factorTheorem,
   AM_4A: modulus,
   AM_4B: cubicSketch,

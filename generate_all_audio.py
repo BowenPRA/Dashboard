@@ -102,6 +102,15 @@ def speechify(text):
     # Bare inequality symbols (bounds, number lines) and a scale "1 : n".
     t = t.replace('≤', ' is less than or equal to ').replace('≥', ' is greater than or equal to ')
     t = re.sub(r'(\d)\s+:\s+(\w)', r'\1 to \2', t)
+    # Momentum (PHYSICS PHY_MOM). A braced subscript inside a fraction —
+    # \dfrac{m_1 v_{1i} + …}{m_1 + m_2} — nests braces, so the fraction rule
+    # below never matched and "over" was lost: the formula for v_f narrated as
+    # one long run of letters. Flatten subscripts first. Δ is "delta" (the
+    # catch-all deleted it, so F Δt read "F t"), and a cancelled term says so.
+    # (Not a log's base: `\log_{2}` is read "log base 2" further down.)
+    t = re.sub(r'(?<!\\log)(?<!\\log )_\s*\{([^{}]*)\}', r' sub \1 ', t)
+    t = re.sub(r'\\Delta(?![a-zA-Z])', ' delta ', t).replace('Δ', ' delta ')
+    t = re.sub(r'\\cancel\s*\{([^{}]*)\}', r' \1, crossed out, ', t)
     # Expand the maths that actually appears in the decks.
     t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
     t = re.sub(r'\\mathbf\s*\{([^{}]*)\}', r'\1', t)

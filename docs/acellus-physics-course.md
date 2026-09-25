@@ -8,6 +8,16 @@ built around a single formula page, a rearrangement task that shows every move a
 reason, and a workbook that reruns the student's own Acellus items through one method.
 When in doubt, copy its structure.
 
+**`src/data/PHYSICS/PHY_MOM`** (Momentum & Collisions) is the second unit, and the
+exemplar for a module whose formulas are really **one equation with conditions put in**.
+Its deck derives every collision formula from the conservation equation, and its Isolate
+It items use the **Set up** stage, the **Factor** move and **signed** answers (§4.4).
+
+| Unit | Acellus module | Items from |
+|---|---|---|
+| `PHY_CIRC` | Circular Motion & Gravity | ten screenshots, 2026-09-11 |
+| `PHY_MOM` | Momentum: momentum, impulse, conservation, collisions, inelastic collisions, recoil | `physics (1).pdf`, 2026-09-25 — its elastic and 2-D items are the next unit's |
+
 The two documents for this track:
 
 | Read | For |
@@ -180,6 +190,58 @@ file's header. `PHY_CIRC` runs: two moves · three (the root arrives) · a mass 
 a bracketed sum · multiply a square up · root only, 10ⁿ answer · square first · the km/s
 trap · root last · √ with 4π² and hours out.
 
+### 4.4 Set up, Factor and signs (added for `PHY_MOM`)
+
+Three optional features, all off unless an item or unit asks for them — `PHY_CIRC` is
+untouched by them.
+
+**`setup` — derive the special case, don't remember it.** An item may start from a
+GENERAL equation and list the story's conditions:
+
+```js
+{
+  formula: 'm_1 v_1i + m_2 v_2i = m_1 v_1f + m_2 v_2f',   // the one collision equation
+  target: 'v_f',
+  setup: [
+    { kind: 'zero', syms: ['v_2i'], clue: 'Car 2 is at rest.', clueVn: '…',
+      because: 'Its velocity before is 0, so its term vanishes.', becauseVn: '…' },
+    { kind: 'same', syms: ['v_1f', 'v_2f'], to: 'v_f', clue: 'They stick together.', clueVn: '…',
+      because: 'Stuck together, they share one velocity.', becauseVn: '…' },
+  ],
+  …
+}
+```
+
+The task then opens on a **Set up** stage: the clue is quoted, and the student taps the
+velocity it makes 0 (`zero`, one or more `syms`) or the two it makes one (`same`). Each
+applied condition lands in the working on its own line (`v_{2i} = 0 ⇒ m_2 v_{2i} = 0`)
+with the `because` beneath it, so the notebook shows the special-case equation being
+derived. Two wrong picks, or Show me, apply it anyway and cost the equation mark. The
+chips are every symbol in the equation with the same letter as the condition's (every
+`v`), so the choice is always "which one", never "what kind". `npm run validate` checks
+each condition names letters the equation has at that point, and proves the setup: the
+ORIGINAL formula must balance with the zeroed letters at 0 and the merged letters equal.
+
+**Factor.** When a letter sits in two terms of one side, Isolate It offers a Factor move
+(`m₁v_f + m₂v_f → (m₁ + m₂)v_f`), printed as one centred line. The strategy factors when
+EVERY term left on the target's side carries the target; after that, dividing by the
+bracket chip `(m₁ + m₂)` finishes the job. Factoring a letter that is not the target can
+bury the target in a bracket — the task says "dead end, undo" rather than letting Show me
+go silent.
+
+**`signed: true`** (on the unit's `rearrange`, or an item). Answers may be negative,
+givens are typed with their sign (`value: -41, show: '-41.0'`), and the substituted line
+brackets every negative number: `37.0 − (−41.0)`. Two more traps are derived: a negative
+given typed as positive ("check $v_i$: it is −41.0 m/s") and the right size with the wrong
+sign. The calculate stage carries a one-line reminder that the sign is the direction.
+
+**`objects`** names objects 1 and 2 for one item (`['the car', 'the truck']`, with an
+`objectsVn` twin), and the symbol table's "object 1 / vật 1" is replaced in the pieces
+table and in the setup's wrong-pick feedback.
+
+Units `kg·m/s` and `N·s` (the same SI unit) are in the table; `Delta_t` renders as Δt.
+Givens print with the figures the question gave (12.46 stays 12.46, not 12.5).
+
 ---
 
 ## 5. The notes deck
@@ -207,6 +269,12 @@ is specific to a formula-heavy physics deck:
   the count ("8 formulas, the undo pairs, the units table").
 - **The worked examples are the student's own Acellus items**, with the same numbers the
   Isolate It task derives ($g = 9.8$, $G = 6.67 × 10⁻¹¹$).
+- **When a module's formulas are one equation with conditions** (momentum: at rest,
+  stick together, recoil), teach ONE equation as copy-down and derive the rest on `stack`
+  slides — the derivation in display maths in `content`, the result in a write card — then
+  a `sort` activity on the question phrases that trigger each case. `PHY_MOM` slides 13–23.
+  A `steps` slide renders no `notes`, so a derivation that ends in a copy-down line belongs
+  on a `stack`.
 - The usual rules: `$$…$$` only in `content`, callout bodies and `reveal.answer`; layout
   `title` and hero `objective` are plain text; `check`/`activity` last on its slide;
   activity strings use `name`/`explain`.
@@ -253,6 +321,8 @@ as "x squared", `\sqrt{…}` as "the square root of", and `\times` as "times".
 - [ ] A units slide with a `sort` activity; every unit trap worked with a reveal
 - [ ] Isolate It items ordered by algebraic shape, order justified in the header;
       `npm run validate` green (it re-derives every item and proves each rearrangement)
+- [ ] Directions in the module? `signed: true`, givens typed with their sign, and every
+      "at rest / stick together" item as a `setup` on the general equation (§4.4)
 - [ ] Workbook: rearrangements as MCQ, calculations typed with rounding variants
 - [ ] Quiz key spread across A/B/C/D
 - [ ] `npm run audit:svg PHYSICS` clean; `npm run lint` clean

@@ -39,9 +39,12 @@ const GREEK = new Set([
   'tau', 'phi', 'omega', 'Delta', 'Omega',
 ]);
 
-/** How a symbol is written in KaTeX: `F_c` → F_{c}, `theta` → \theta. */
+/** How a symbol is written in KaTeX: `F_c` → F_{c}, `theta` → \theta, `Delta_t` → \Delta t. */
 export function symbolLatex(name) {
   const [base, sub] = String(name).split('_');
+  // Δ is "the change in" the letter after it, not a letter with a subscript,
+  // so the contact time `Delta_t` is written Δt.
+  if (base === 'Delta' && sub) return `\\Delta ${symbolLatex(sub)}`;
   const b = GREEK.has(base) ? `\\${base}` : base.length === 1 ? base : `\\text{${base}}`;
   return sub ? `${b}_{${sub}}` : b;
 }
@@ -178,11 +181,17 @@ export function powSide(side, e) {
 /**
  * Tidy a side: a bracket that holds a single term is opened out, and a
  * bracket raised to a whole power around a single term is multiplied through.
+ * A term that is NOTHING but a bracket — `(m₁ + m₂)` left alone once v_f has
+ * been divided away — is opened out too: a bare sum is just its terms.
  * Applied after every move so `(m g)` never appears on screen.
  */
 function tidySide(side) {
   const out = [];
   for (const t of side) {
+    if (isOne(t.coef) && t.pi === 0 && t.factors.length === 1 && t.factors[0].base.group !== undefined && isOne(t.factors[0].exp)) {
+      for (const inner of tidySide(t.factors[0].base.group)) out.push(inner);
+      continue;
+    }
     let cur = term(t.coef, t.pi, []);
     for (const f of t.factors) {
       if (f.base.group !== undefined) {
@@ -350,6 +359,18 @@ export function fmtNumber(v, sig = 3) {
   return String(Number(v.toPrecision(sig)));
 }
 
+/** Significant figures in a number as it was authored: 12.46 → 4, 0.088 → 2, 2350 → 3. */
+export function sigFigs(v) {
+  if (!Number.isFinite(v) || v === 0) return 1;
+  return Math.abs(v).toExponential().split('e')[0].replace('.', '').replace(/0+$/, '').length || 1;
+}
+
+/**
+ * A given, printed with every figure the question gave it (and never fewer
+ * than three): 12.46 km/s must not turn into 12.5 on the way to the working.
+ */
+export const fmtGiven = (v) => fmtNumber(v, Math.max(3, sigFigs(v)));
+
 /** "6.77" or "6.67e-11" — plain text for inputs and prose. */
 export function fmtPlain(v, sig = 3) {
   if (!Number.isFinite(v)) return '?';
@@ -370,7 +391,11 @@ const expLatex = (e) => (isOne(e) ? '' : e.d === 1 ? `^{${e.n}}` : `^{${e.n}/${e
 function baseLatex(base, opts) {
   if (base.sym !== undefined) {
     const s = opts.sub?.[base.sym];
-    return s !== undefined ? s : symbolLatex(base.sym);
+    // A negative number goes in brackets, always: 37.0 − (−41.0), never
+    // 37.0 − −41.0 — which is also exactly how it has to be typed into a
+    // calculator.
+    if (s !== undefined) return /^-/.test(s) ? `\\left(${s}\\right)` : s;
+    return symbolLatex(base.sym);
   }
   return `\\left(${sideLatex(base.group, opts)}\\right)`;
 }
@@ -468,8 +493,124 @@ export function applyMove(eq, move) {
     }
     case 'square': return { left: tidySide(powSide(eq.left, fr(2))), right: tidySide(powSide(eq.right, fr(2))) };
     case 'sqrt': return { left: tidySide(powSide(eq.left, fr(1, 2))), right: tidySide(powSide(eq.right, fr(1, 2))) };
+    case 'factor': {
+      // Not a both-sides move: a side is REWRITTEN, m₁v + m₂v → (m₁ + m₂)v,
+      // and means exactly what it meant before.
+      const left = factorSide(eq.left, move.term);
+      const right = factorSide(eq.right, move.term);
+      if (left === eq.left && right === eq.right) throw new Error('nothing to factor');
+      return { left: tidySide(left), right: tidySide(right) };
+    }
     default: throw new Error(`unknown move ${move.kind}`);
   }
+}
+
+// ------------------------------------------------------------------ factoring
+
+/** The terms of a side that have `chip` (one bare factor) as a whole-number factor. */
+function carriersOf(side, chip) {
+  const f0 = chip.factors[0];
+  return side.filter((t) => t.factors.some((f) => sameBase(f.base, f0.base) && f.exp.d === 1 && f.exp.n > 0 && f.exp.n >= f0.exp.n));
+}
+
+/**
+ * Take a common factor out of every term that has it: m₁v + m₂v → (m₁ + m₂)v.
+ * The bracket goes where the first of those terms stood, so the side still
+ * reads in the order it was written. Returns the SAME array when fewer than two
+ * terms have the factor — there is nothing to take out.
+ */
+export function factorSide(side, chip) {
+  const carriers = carriersOf(side, chip);
+  if (carriers.length < 2) return side;
+  const inv = invTerm(chip);
+  const inner = carriers.map((t) => mulTerm(t, inv));
+  const grouped = mulTerm(term(fr(1), 0, [factor(groupBase(inner))]), chip);
+  const out = [];
+  for (const t of side) {
+    if (!carriers.includes(t)) out.push(t);
+    else if (t === carriers[0]) out.push(grouped);
+  }
+  return out;
+}
+
+/** The factoring written out for the working: `m_1 v_f + m_2 v_f = (m_1 + m_2) v_f`. */
+export function factorLatex(eq, chip) {
+  for (const side of [eq.left, eq.right]) {
+    const carriers = carriersOf(side, chip);
+    if (carriers.length < 2) continue;
+    const grouped = tidySide(factorSide(carriers, chip));
+    return `${sideLatex(carriers)} = ${sideLatex(grouped)}`;
+  }
+  return '';
+}
+
+// ------------------------------------------------------------------ setting up
+//
+// A family of formulas is often ONE equation with a condition applied. Every
+// collision obeys m₁v₁ᵢ + m₂v₂ᵢ = m₁v₁f + m₂v₂f; "the truck is at rest" is
+// that equation with v₂ᵢ = 0, and "they stick together" is it with v₁f and v₂f
+// both replaced by one v_f. Those rewrites are not both-sides moves — a letter
+// is replaced, nothing is done to the equation — so they live here, apart from
+// applyMove, and the working prints each one on a single line with its reason.
+//
+//   { kind: 'zero', syms: ['v_2i'] }                     every term with v₂ᵢ vanishes
+//   { kind: 'same', syms: ['v_1f', 'v_2f'], to: 'v_f' }  both letters become v_f
+
+/** Replace letters throughout a side: `map[sym]` is 0 (its terms vanish) or another letter. */
+function substituteSide(side, map) {
+  const out = [];
+  for (const t of side) {
+    let cur = term(t.coef, t.pi, []);
+    let vanished = false;
+    for (const f of t.factors) {
+      if (f.base.sym !== undefined && Object.prototype.hasOwnProperty.call(map, f.base.sym)) {
+        const to = map[f.base.sym];
+        if (to === 0) {
+          if (f.exp.n < 0) throw new Error(`${f.base.sym} = 0 would divide by zero`);
+          vanished = true;
+          break;
+        }
+        cur = mulTerm(cur, term(fr(1), 0, [factor(symBase(to), f.exp)]));
+      } else if (f.base.group !== undefined) {
+        const inner = substituteSide(f.base.group, map);
+        if (!inner.length) {
+          if (f.exp.n < 0) throw new Error('a bracket that becomes 0 would divide by zero');
+          vanished = true;
+          break;
+        }
+        cur = mulTerm(cur, term(fr(1), 0, [factor(groupBase(inner), f.exp)]));
+      } else {
+        cur = mulTerm(cur, term(fr(1), 0, [{ ...f }]));
+      }
+    }
+    if (!vanished) out.push(cur);
+  }
+  return tidySide(out);
+}
+
+/** A setup condition as a substitution map. */
+export function setupMap(cond) {
+  const map = {};
+  for (const s of cond.syms || []) map[s] = cond.kind === 'zero' ? 0 : cond.to;
+  return map;
+}
+
+/** The equation once a setup condition is applied. */
+export function applySetup(eq, cond) {
+  const map = setupMap(cond);
+  return { left: substituteSide(eq.left, map), right: substituteSide(eq.right, map) };
+}
+
+/**
+ * The condition as the working prints it. A zero names the terms that go:
+ *   v_{2i} = 0 ⇒ m_2 v_{2i} = 0         v_{1f} = v_{2f} = v_f
+ */
+export function setupLatex(cond, eq) {
+  const names = (cond.syms || []).map(symbolLatex).join(' = ');
+  if (cond.kind === 'same') return `${names} = ${symbolLatex(cond.to)}`;
+  const gone = [...eq.left, ...eq.right].filter((t) => t.factors.some((f) => f.base.sym !== undefined && cond.syms.includes(f.base.sym)));
+  const terms = gone.map((t) => termLatex(t, { abs: true })).join(' = ');
+  return terms ? `${names} = 0 \\;\\Rightarrow\\; ${terms} = 0` : `${names} = 0`;
 }
 
 /** The move as it is written under each side of the working: "× r", "÷ v²", "− m g". */
@@ -481,9 +622,13 @@ export function moveLatex(move) {
     case 'sub': return `-\\, ${termLatex(move.term)}`;
     case 'square': return '(\\;\\;)^{2}';
     case 'sqrt': return '\\sqrt{\\;\\;\\;}';
+    case 'factor': return `\\text{factor out } ${termLatex(move.term)}`;
     default: return '';
   }
 }
+
+/** Moves that rewrite one side rather than doing something to both. */
+export const isRewrite = (move) => !!move && (move.kind === 'factor' || move.kind === 'zero' || move.kind === 'same');
 
 /** Solved when one side is the bare target and the other side does not mention it. */
 export function isIsolated(eq, target) {
@@ -536,7 +681,19 @@ export function chipsOf(eq) {
       if (!terms.some((c) => termKey(c) + frText(c.coef) === key)) terms.push(chip);
     }
   }
-  return { factors, numbers, terms };
+  // Letters that sit in two or more terms of the same side — the only things
+  // it makes sense to factor out. Usually empty, and then Factor is not offered.
+  const common = [];
+  for (const side of [eq.left, eq.right]) {
+    if (side.length < 2) continue;
+    for (const t of side) for (const f of t.factors) {
+      if (f.base.sym === undefined || f.exp.d !== 1 || f.exp.n < 1) continue;
+      const chip = term(fr(1), 0, [factor(f.base)]);
+      if (carriersOf(side, chip).length < 2) continue;
+      if (!common.some((c) => termKey(c) === termKey(chip))) common.push(chip);
+    }
+  }
+  return { factors, numbers, terms, common };
 }
 
 // ------------------------------------------------------------------ strategy
@@ -544,7 +701,9 @@ export function chipsOf(eq) {
 /**
  * The taught strategy, one move at a time — the hint and the target count
  * both read it from here:
- *   1. anything ADDED to the target's term: take it away
+ *   1. anything ADDED to the target's term: take it away — and when every
+ *      term left on that side has the target in it, factor it out so it
+ *      appears once, times a bracket
  *   2. the target under a root: square both sides
  *   3. the target in a denominator: multiply it up
  *   4. every other factor beside it: divide (or multiply) it away
@@ -562,15 +721,33 @@ export function suggestMove(eq, target) {
 
   // 1. other terms on the target's side
   if (S.length > 1) {
-    const carriers = S.filter((t) => contains([t], target));
-    if (carriers.length !== 1) return null;
     const other = S.find((t) => !contains([t], target));
-    const mag = term({ n: Math.abs(other.coef.n), d: other.coef.d }, other.pi, other.factors);
-    return { kind: other.coef.n < 0 ? 'add' : 'sub', term: mag };
+    if (other) {
+      const mag = term({ n: Math.abs(other.coef.n), d: other.coef.d }, other.pi, other.factors);
+      return { kind: other.coef.n < 0 ? 'add' : 'sub', term: mag };
+    }
+    // Every term carries the target (m₁v_f + m₂v_f): factor it out. Only when
+    // it is a plain factor of each — inside a bracket or a root it cannot be.
+    const chip = term(fr(1), 0, [factor(symBase(target))]);
+    if (carriersOf(S, chip).length === S.length) return { kind: 'factor', term: chip };
+    return null;
   }
   const T = S[0];
   const tf = T.factors.find((f) => f.base.sym === target);
-  if (!tf) return null;                                   // inside a bracket
+  if (!tf) {
+    // The target is inside a bracket, (m₁ + m₂)v_f with m₂ wanted. Free the
+    // bracket: take away whatever it is multiplied or divided by, and once it
+    // stands alone it opens out into its terms.
+    const gf = T.factors.find((f) => f.base.group !== undefined && contains(f.base.group, target));
+    if (!gf || !isOne(gf.exp)) return null;
+    const rest = T.factors.filter((f) => f !== gf);
+    const under = rest.find((f) => f.exp.n < 0);
+    if (under) return { kind: 'mul', term: term(fr(1), 0, [factor(under.base, neg(under.exp))]) };
+    const by = rest.find((f) => f.exp.n > 0);
+    if (by) return { kind: 'div', term: term(fr(1), 0, [factor(by.base, by.exp)]) };
+    if (!isOne(T.coef) || T.pi !== 0) return { kind: 'div', term: term(T.coef, T.pi, []) };
+    return null;
+  }
   if (isIsolated(eq, target)) return null;
 
   // 2. a fractional exponent on the target: square first
@@ -618,6 +795,17 @@ export function parMoves(eq, target, limit = 12) {
  */
 export function reasonFor(move, eq, target) {
   const chip = move.term ? termLatex(move.term) : '';
+  // The target sitting inside a bracket, (m₁ + m₂)v_f with m₂ wanted: the
+  // move frees the bracket, and the reason says so.
+  const side = contains(eq.left, target) ? eq.left : eq.right;
+  const inBracket = side.length === 1 && !side[0].factors.some((f) => f.base.sym === target);
+  if (inBracket && (move.kind === 'div' || move.kind === 'mul')) {
+    const verb = move.kind === 'div' ? { en: 'multiplying', vn: 'đang nhân với', do: 'Divide', doVn: 'Chia cả hai vế cho' } : { en: 'dividing', vn: 'đang chia', do: 'Multiply', doVn: 'Nhân cả hai vế với' };
+    return {
+      en: `$${symbolLatex(target)}$ is inside the bracket, and $${chip}$ is ${verb.en} the bracket. ${verb.do} both sides by $${chip}$: the bracket is left alone and opens out.`,
+      vn: `$${symbolLatex(target)}$ nằm trong ngoặc, và $${chip}$ ${verb.vn} cả ngoặc. ${verb.doVn} $${chip}$: ngoặc đứng một mình và được mở ra.`,
+    };
+  }
   switch (move.kind) {
     case 'sub': return { en: `$${chip}$ is added to the $${symbolLatex(target)}$ term. Take it away from both sides.`, vn: `$${chip}$ đang được cộng vào số hạng chứa $${symbolLatex(target)}$. Trừ nó ở cả hai vế.` };
     case 'add': return { en: `$${chip}$ is taken away on the $${symbolLatex(target)}$ side. Add it to both sides.`, vn: `$${chip}$ đang bị trừ ở vế chứa $${symbolLatex(target)}$. Cộng nó vào cả hai vế.` };
@@ -629,6 +817,10 @@ export function reasonFor(move, eq, target) {
       return { en: `$${chip}$ is dividing the $${symbolLatex(target)}$ term. Multiply both sides by $${chip}$ to undo it.`, vn: `$${chip}$ đang chia số hạng chứa $${symbolLatex(target)}$. Nhân cả hai vế với $${chip}$ để khử nó.` };
     }
     case 'div': return { en: `$${chip}$ is multiplying $${symbolLatex(target)}$. Divide both sides by $${chip}$ to undo it.`, vn: `$${chip}$ đang nhân với $${symbolLatex(target)}$. Chia cả hai vế cho $${chip}$ để khử nó.` };
+    case 'factor': {
+      if (move.term.factors[0]?.base.sym === target) return { en: `$${chip}$ is in more than one term. Take it out as a common factor, so it appears only ONCE — multiplied by a bracket.`, vn: `$${chip}$ nằm trong nhiều hơn một số hạng. Đặt nó ra làm nhân tử chung, để nó chỉ xuất hiện MỘT lần — nhân với một dấu ngoặc.` };
+      return { en: `$${chip}$ is in more than one term, so it can be taken out as a common factor. Expanding the bracket gives back what you started with.`, vn: `$${chip}$ nằm trong nhiều hơn một số hạng, nên có thể đặt nó ra làm nhân tử chung. Nhân phá ngoặc sẽ trả lại đúng biểu thức ban đầu.` };
+    }
     default: return { en: '', vn: '' };
   }
 }
@@ -669,6 +861,10 @@ export const UNITS = {
   N: { si: 'N', factor: 1 }, kN: { si: 'N', factor: 1000 },
   'N m²/kg²': { si: 'N m²/kg²', factor: 1 }, 'N m^2/kg^2': { si: 'N m²/kg²', factor: 1 },
   rad: { si: 'rad', factor: 1 }, 'rad/s': { si: 'rad/s', factor: 1 }, J: { si: 'J', factor: 1 }, W: { si: 'W', factor: 1 },
+  // Momentum and impulse. A newton-second IS a kilogram metre per second, so
+  // both measure the same thing.
+  'kg·m/s': { si: 'kg·m/s', factor: 1 }, 'kg m/s': { si: 'kg·m/s', factor: 1 },
+  'N·s': { si: 'kg·m/s', factor: 1 }, 'N s': { si: 'kg·m/s', factor: 1 },
 };
 
 export const unitInfo = (u) => UNITS[String(u).trim()] || null;
@@ -740,9 +936,31 @@ export const closeTo = (got, want, tol = 0.015) =>
 // ------------------------------------------------------------------ an item, worked
 
 /**
+ * A symbol's name with the item's own objects in it: "velocity of object 2
+ * before" reads "velocity of the truck before" when the item says
+ * `objects: ['the car', 'the truck']`. The Vietnamese names say "vật 1/2".
+ */
+function namedFor(text, objects) {
+  if (!text || !objects?.length) return text;
+  return text.replace(/\b(?:object|vật) ([12])\b/g, (m, k) => objects[Number(k) - 1] || m);
+}
+
+/** A symbol's name for this item, in 'en' or 'vn'. */
+export function symbolName(sym, item, config = {}, lang = 'en') {
+  const s = config.symbols?.[sym];
+  if (!s) return sym;
+  return lang === 'vn'
+    ? namedFor(s.nameVn || s.name || sym, item?.objectsVn || item?.objects)
+    : namedFor(s.name || sym, item?.objects);
+}
+
+/**
  * Everything the task and the validator need about one item, derived from the
  * item, the unit's symbol table and its constants:
- *   start        the parsed formula
+ *   start        the parsed formula, exactly as the item writes it
+ *   setup        the story's conditions applied to it, in order:
+ *                [{ cond, before, after, latex }] — empty for most items
+ *   posed        the equation the rearranging starts from (start after setup)
  *   par          the taught strategy's move count (null: cannot be solved)
  *   solved       the formula with the target isolated, by that strategy
  *   expr         the side that gives the target
@@ -751,15 +969,25 @@ export const closeTo = (got, want, tol = 0.015) =>
  *   answer       the target's value in SI
  *   siUnit       the SI unit of the answer, and `askUnit` the unit the item wants it in
  *   answerAsked  the answer converted into askUnit
- *   traps        [{ key, value, en, vn }] wrong numbers a common slip produces
+ *   signed       answers carry a direction (+/−), so a lost minus sign is a trap
+ *   traps        [{ key, value, … }] wrong numbers a common slip produces
  */
 export function workItem(item, config = {}) {
   const symbols = config.symbols || {};
   const constants = config.constants || {};
   const start = parseFormula(item.formula);
   const target = item.target;
+  const signed = !!(config.signed || item.signed);
 
-  let cur = start, n = 0;
+  const setup = [];
+  let posed = start;
+  for (const cond of item.setup || []) {
+    const after = applySetup(posed, cond);
+    setup.push({ cond, before: posed, after, latex: setupLatex(cond, posed) });
+    posed = after;
+  }
+
+  let cur = posed, n = 0;
   const limit = 12;
   while (!isIsolated(cur, target) && n < limit) {
     const m = suggestMove(cur, target);
@@ -770,7 +998,7 @@ export function workItem(item, config = {}) {
   const solvable = isIsolated(cur, target);
   const expr = solvable ? solvedSide(cur, target) : null;
 
-  const needed = expr ? symbolsOf(expr) : symbolsOf(start.left).concat(symbolsOf(start.right)).filter((s) => s !== target);
+  const needed = expr ? symbolsOf(expr) : symbolsOf(posed.left).concat(symbolsOf(posed.right)).filter((s) => s !== target);
   const pieces = [];
   const siValues = {};
   for (const sym of needed) {
@@ -790,8 +1018,8 @@ export function workItem(item, config = {}) {
       needsConversion: !!info && info.factor !== 1,
       constant: !g && !!c,
       show: src.show || null,
-      name: symbols[sym]?.name || sym,
-      nameVn: symbols[sym]?.nameVn || symbols[sym]?.name || sym,
+      name: namedFor(symbols[sym]?.name || sym, item.objects),
+      nameVn: namedFor(symbols[sym]?.nameVn || symbols[sym]?.name || sym, item.objectsVn || item.objects),
     });
   }
 
@@ -808,11 +1036,18 @@ export function workItem(item, config = {}) {
   // produces, so a wrong answer can be named rather than just marked wrong.
   const traps = [];
   if (expr && Number.isFinite(answer)) {
-    for (const p of pieces) {
-      if (!p.needsConversion) continue;
+    const raw = pieces.filter((p) => p.needsConversion);
+    for (const p of raw) {
       try {
         const v = evalSide(expr, { ...siValues, [p.sym]: p.value });
         traps.push({ key: `raw:${p.sym}`, value: v, sym: p.sym, unit: p.unit, si: p.si });
+      } catch { /* ignore */ }
+    }
+    // Two givens in km/s and neither converted: a trap of its own.
+    if (raw.length > 1) {
+      try {
+        const v = evalSide(expr, { ...siValues, ...Object.fromEntries(raw.map((p) => [p.sym, p.value])) });
+        traps.push({ key: 'raw:all', value: v, unit: raw[0].unit, si: raw[0].si });
       } catch { /* ignore */ }
     }
     const noRoot = expr.map((t) => term(t.coef, t.pi, t.factors.map((f) => ({ ...f, exp: f.exp.d === 2 ? fr(f.exp.n) : f.exp }))));
@@ -822,18 +1057,52 @@ export function workItem(item, config = {}) {
     try { if (hasRoot) traps.push({ key: 'noroot', value: evalSide(noRoot, siValues) }); } catch { /* ignore */ }
     try { if (hasSquare) traps.push({ key: 'nosquare', value: evalSide(noSquare, siValues) }); } catch { /* ignore */ }
     if (askInfo && askInfo.factor !== 1) traps.push({ key: 'unconverted-answer', value: answer, unit: askUnit, si: siUnit });
+    if (signed) {
+      // A velocity typed as a speed — the minus sign of "moving left" dropped.
+      for (const p of pieces) {
+        if (!(p.siValue < 0)) continue;
+        try {
+          const v = evalSide(expr, { ...siValues, [p.sym]: -p.siValue });
+          if (!closeTo(v, answer, 0.02)) traps.push({ key: `nosign:${p.sym}`, value: v, sym: p.sym, given: p.value, unit: p.unit });
+        } catch { /* ignore */ }
+      }
+      // The right size pointing the wrong way.
+      if (answer !== 0) traps.push({ key: 'flip', value: -answer });
+    }
   }
 
-  return { start, target, par: solvable ? n : null, solved: solvable ? cur : null, expr, pieces, siValues, answer, siUnit, askUnit, answerAsked, traps };
+  return {
+    start, setup, posed, target, par: solvable ? n : null, solved: solvable ? cur : null, expr,
+    pieces, siValues, answer, siUnit, askUnit, answerAsked, signed, traps,
+  };
+}
+
+const SETUP_KINDS = ['zero', 'same'];
+
+/** Two sides agree — relatively, with a floor, so a side that is exactly 0 (recoil) can balance. */
+const balances = (L, R) => Math.abs(L - R) <= 1e-9 * Math.max(1, Math.abs(L), Math.abs(R));
+
+/**
+ * A spread of made-up values for the numerical proofs. Hashed from the WHOLE
+ * name — hashing the first letter gave m₁ and m₂ (and every v) the same value,
+ * and a proof where every mass is equal proves very little.
+ */
+function probeValue(sym) {
+  let h = 0;
+  for (const ch of String(sym)) h = (h * 31 + ch.charCodeAt(0)) % 9973;
+  return 1 + ((h * 7919) % 97) / 13;
 }
 
 /**
  * Problems with a unit's `rearrange` block, as strings — empty when it is
  * sound. Run by npm run validate. Re-derives every item exactly as the task
  * does and also checks the derivation numerically: random values for the
- * givens, the target computed from the rearranged formula, and the ORIGINAL
- * formula must then balance. A rearrangement that is merely "solvable" but
- * silently wrong would fail there.
+ * givens, the target computed from the rearranged formula, and the formula it
+ * came from must then balance. A rearrangement that is merely "solvable" but
+ * silently wrong would fail there. An item with a `setup` is proved twice: the
+ * rearrangement against the set-up equation, and the set-up equation against
+ * the ORIGINAL formula with the zeroed letters at 0 and the merged letters
+ * sharing one value.
  */
 export function checkRearrangeItems(config) {
   const out = [];
@@ -849,9 +1118,36 @@ export function checkRearrangeItems(config) {
     seen.add(item.id);
     if (!item.prompt || !item.promptVn) out.push(`${at} is missing a bilingual prompt`);
     if (!item.target) { out.push(`${at} has no target`); continue; }
+    if (item.objects && (!item.objectsVn || item.objectsVn.length !== item.objects.length)) out.push(`${at}: objects needs an objectsVn twin of the same length`);
+
+    // The setup conditions: each must name letters the equation has AT THAT
+    // POINT, change the equation, and carry a bilingual clue and reason.
+    let bad = false;
+    if (item.setup !== undefined) {
+      if (!Array.isArray(item.setup) || !item.setup.length) { out.push(`${at}: setup must be a non-empty list`); bad = true; }
+      else {
+        let eq;
+        try { eq = parseFormula(item.formula); } catch { eq = null; }
+        item.setup.forEach((cond, i) => {
+          const where = `${at} setup ${i + 1}`;
+          if (!SETUP_KINDS.includes(cond?.kind)) { out.push(`${where}: kind must be one of ${SETUP_KINDS.join('/')}`); bad = true; return; }
+          if (!Array.isArray(cond.syms) || !cond.syms.length) { out.push(`${where}: needs syms`); bad = true; return; }
+          if (cond.kind === 'same' && (cond.syms.length < 2 || !cond.to)) { out.push(`${where}: "same" needs two or more syms and a "to" letter`); bad = true; }
+          if (!cond.clue || !cond.clueVn) out.push(`${where}: needs a bilingual clue (the words from the question)`);
+          if (!cond.because || !cond.becauseVn) out.push(`${where}: needs a bilingual because (why it follows)`);
+          if (!eq) return;
+          const has = [...symbolsOf(eq.left), ...symbolsOf(eq.right)];
+          for (const s of cond.syms) if (!has.includes(s)) { out.push(`${where}: ${s} is not in the equation at this point`); bad = true; }
+          if (cond.kind === 'zero' && cond.syms.includes(item.target)) { out.push(`${where}: sets the target ${item.target} to zero`); bad = true; }
+          try { eq = applySetup(eq, cond); } catch (e) { out.push(`${where}: ${e.message}`); bad = true; eq = null; }
+        });
+      }
+    }
+    if (bad) continue;
+
     let w;
     try { w = workItem(item, config); } catch (e) { out.push(`${at}: cannot parse "${item.formula}" — ${e.message}`); continue; }
-    if (!contains(w.start.left, item.target) && !contains(w.start.right, item.target)) { out.push(`${at}: "${item.formula}" has no ${item.target}`); continue; }
+    if (!contains(w.posed.left, item.target) && !contains(w.posed.right, item.target)) { out.push(`${at}: "${item.formula}" has no ${item.target}${w.setup.length ? ' once it is set up' : ''}`); continue; }
     if (w.par === null) { out.push(`${at}: "${item.formula}" cannot be solved for ${item.target} by the taught strategy`); continue; }
     for (const p of w.pieces) {
       if (p.missing) out.push(`${at}: ${p.sym} is neither given nor a constant`);
@@ -860,15 +1156,26 @@ export function checkRearrangeItems(config) {
     if (!item.ask?.unit) out.push(`${at} needs ask.unit`);
     else if (!unitInfo(item.ask.unit)) out.push(`${at}: ask.unit "${item.ask.unit}" is not in the units table`);
     else if (w.siUnit && unitInfo(item.ask.unit).si !== w.siUnit) out.push(`${at}: ask.unit "${item.ask.unit}" does not measure ${item.target} (${w.siUnit})`);
-    if (!Number.isFinite(w.answer) || w.answer <= 0) out.push(`${at}: the answer evaluates to ${w.answer}`);
-    // Numerical proof of the rearrangement.
+    // A signed unit (velocities with a direction) may have a negative answer;
+    // anything else must come out positive.
+    if (!Number.isFinite(w.answer) || (w.signed ? w.answer === 0 : w.answer <= 0)) out.push(`${at}: the answer evaluates to ${w.answer}`);
+    // A given typed with a sign must be in a signed unit.
+    if (!w.signed) for (const p of w.pieces) if (p.value < 0) out.push(`${at}: ${p.sym} is negative — set signed: true on the unit or the item`);
+
+    // Numerical proof of the rearrangement, and of the setup.
     const vals = {};
-    for (const sym of new Set([...symbolsOf(w.start.left), ...symbolsOf(w.start.right)])) vals[sym] = 1 + ((sym.charCodeAt(0) * 7919) % 97) / 13;
+    for (const sym of new Set([...symbolsOf(w.start.left), ...symbolsOf(w.start.right), ...symbolsOf(w.posed.left), ...symbolsOf(w.posed.right)])) vals[sym] = probeValue(sym);
     try {
       const t = evalSide(w.expr, vals);
       const probe = { ...vals, [item.target]: t };
-      const L = evalSide(w.start.left, probe), R = evalSide(w.start.right, probe);
-      if (!closeTo(L, R, 1e-9)) out.push(`${at}: rearranging "${item.formula}" for ${item.target} changed its meaning (${L} vs ${R})`);
+      const L = evalSide(w.posed.left, probe), R = evalSide(w.posed.right, probe);
+      if (!balances(L, R)) out.push(`${at}: rearranging "${item.formula}" for ${item.target} changed its meaning (${L} vs ${R})`);
+      if (w.setup.length) {
+        const full = { ...probe };
+        for (const { cond } of w.setup) for (const s of cond.syms) full[s] = cond.kind === 'zero' ? 0 : full[cond.to];
+        const L0 = evalSide(w.start.left, full), R0 = evalSide(w.start.right, full);
+        if (!balances(L0, R0)) out.push(`${at}: the setup of "${item.formula}" does not follow from it (${L0} vs ${R0})`);
+      }
     } catch (e) {
       out.push(`${at}: could not check the rearrangement numerically — ${e.message}`);
     }

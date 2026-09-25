@@ -1,7 +1,12 @@
-// Dev-only harness for PHYSICS/PHY_CIRC — Acellus Physics, Circular Motion &
-// Gravity. The new screen worth opening directly is Isolate It (REARRANGE):
-// change the subject of a formula move by move, convert the givens to SI,
-// then substitute. Cases below open it at the items whose SHAPE is new.
+// Dev-only harness for the PHYSICS track — Acellus Physics. The screen worth
+// opening directly is Isolate It (REARRANGE): change the subject of a formula
+// move by move, convert the givens to SI, then substitute — and, for the
+// momentum unit, the Set up stage that fits the one collision equation to the
+// story first. Cases below open it at the items whose SHAPE is new.
+//
+// `?unit=PHY_MOM` picks the unit (PHY_CIRC by default); `&open=N` opens case N
+// straight away, so a screenshot needs no clicking, and `&from=K` starts it at
+// slide or item K instead.
 //
 // The real screens sit behind Supabase auth, so this mounts them from unit
 // data — the same pattern as preview-inequality.jsx. Entry point:
@@ -15,29 +20,69 @@ import Workbook from './tasks/Workbook';
 import Assessment from './tasks/Assessment';
 import { getTrack } from './data/index';
 import { getTask } from './tasks/taskRegistry';
-import { DIAGRAMS } from './data/PHYSICS/PHY_CIRC/diagrams.js';
+import { DIAGRAMS as CIRC_DIAGRAMS } from './data/PHYSICS/PHY_CIRC/diagrams.js';
+import { DIAGRAMS as MOM_DIAGRAMS } from './data/PHYSICS/PHY_MOM/diagrams.js';
 
 const TRACK = 'PHYSICS';
-const UNIT = 'PHY_CIRC';
 
-const CASES = [
-  ['REARRANGE', 'Isolate It · from the top (F = mv²/r for m: two moves)'],
-  ['REARRANGE', 'Isolate It · from c3, the mass that cancels', 2],
-  ['REARRANGE', 'Isolate It · from c4, a bracket (T + mg)', 3],
-  ['REARRANGE', 'Isolate It · from g1, the asteroid (10ⁿ answer)', 4],
-  ['REARRANGE', 'Isolate It · from g3, square first', 6],
-  ['REARRANGE', 'Isolate It · from g4, km/s in and km out', 7],
-  ['REARRANGE', 'Isolate It · from g6, √ with 4π², hours out', 9],
-  ['NOTES', 'Deck · Circular Motion & Gravity (24 slides)'],
-  ['NOTES', 'Deck · from slide 4, the formula and its units card', 3],
-  ['NOTES', 'Deck · from slide 6, units and the sort activity', 5],
-  ['NOTES', 'Deck · from slide 10, the decision table and the order activity', 9],
-  ['NOTES', 'Deck · from slide 13, the bucket at the top', 12],
-  ['NOTES', 'Deck · from slide 22, the formula page', 21],
-  ['WORKBOOK', 'Practice · 19 questions in 3 tiers'],
-  ['ASSESSMENT', 'Quiz · 10 items, 20 minutes'],
-  ['DIAGRAMS', 'Diagrams · every SVG on one page'],
-];
+const UNITS = {
+  PHY_CIRC: {
+    label: 'Circular Motion & Gravity',
+    diagrams: CIRC_DIAGRAMS,
+    cases: [
+      ['REARRANGE', 'Isolate It · from the top (F = mv²/r for m: two moves)'],
+      ['REARRANGE', 'Isolate It · from c3, the mass that cancels', 2],
+      ['REARRANGE', 'Isolate It · from c4, a bracket (T + mg)', 3],
+      ['REARRANGE', 'Isolate It · from g1, the asteroid (10ⁿ answer)', 4],
+      ['REARRANGE', 'Isolate It · from g3, square first', 6],
+      ['REARRANGE', 'Isolate It · from g4, km/s in and km out', 7],
+      ['REARRANGE', 'Isolate It · from g6, √ with 4π², hours out', 9],
+      ['NOTES', 'Deck · Circular Motion & Gravity (24 slides)'],
+      ['NOTES', 'Deck · from slide 4, the formula and its units card', 3],
+      ['NOTES', 'Deck · from slide 6, units and the sort activity', 5],
+      ['NOTES', 'Deck · from slide 10, the decision table and the order activity', 9],
+      ['NOTES', 'Deck · from slide 13, the bucket at the top', 12],
+      ['NOTES', 'Deck · from slide 22, the formula page', 21],
+      ['WORKBOOK', 'Practice · 19 questions in 3 tiers'],
+      ['ASSESSMENT', 'Quiz · 10 items, 20 minutes'],
+      ['DIAGRAMS', 'Diagrams · every SVG on one page'],
+    ],
+  },
+  PHY_MOM: {
+    label: 'Momentum & Collisions',
+    diagrams: MOM_DIAGRAMS,
+    cases: [
+      ['REARRANGE', 'Isolate It · from the top (m₁v₁ = m₂v₂: one move)'],
+      ['REARRANGE', 'Isolate It · from p2, no moves — only the sign', 1],
+      ['REARRANGE', 'Isolate It · from j1, the bat (minus a minus)', 2],
+      ['REARRANGE', 'Isolate It · from c1, subtract a term', 4],
+      ['REARRANGE', 'Isolate It · from k1, Set up: at rest', 5],
+      ['REARRANGE', 'Isolate It · from k2, Set up: a negative answer', 6],
+      ['REARRANGE', 'Isolate It · from s1, Set up: stick together + FACTOR, km/s', 7],
+      ['REARRANGE', 'Isolate It · from s2, two setups, a mass (no factoring needed)', 8],
+      ['REARRANGE', 'Isolate It · from s3, Anna and Paul', 9],
+      ['REARRANGE', 'Isolate It · from r1, recoil', 11],
+      ['NOTES', 'Deck · Momentum & Collisions (26 slides)'],
+      ['NOTES', 'Deck · from slide 4, direction is a sign', 3],
+      ['NOTES', 'Deck · from slide 9, predict Δv, then the bat', 8],
+      ['NOTES', 'Deck · from slide 13, the one equation', 12],
+      ['NOTES', 'Deck · from slide 15, one equation, three stories (sort)', 14],
+      ['NOTES', 'Deck · from slide 18, stick together and factoring', 17],
+      ['NOTES', 'Deck · from slide 23, recoil', 22],
+      ['NOTES', 'Deck · from slide 24, the formula page', 23],
+      ['WORKBOOK', 'Practice · 3 tiers'],
+      ['ASSESSMENT', 'Quiz · 10 items, 20 minutes'],
+      ['DIAGRAMS', 'Diagrams · every SVG on one page'],
+    ],
+  },
+};
+
+const params = new URLSearchParams(window.location.search);
+const UNIT = UNITS[params.get('unit')] ? params.get('unit') : 'PHY_CIRC';
+const { label, diagrams: DIAGRAMS, cases: CASES } = UNITS[UNIT];
+const OPEN = params.get('open');
+// `&from=N` overrides where the opened case starts (a slide or item index).
+const FROM = params.get('from');
 
 const SCREENS = { NOTES: Notes, REARRANGE: Rearrange, WORKBOOK: Workbook, ASSESSMENT: Assessment };
 
@@ -58,10 +103,11 @@ function Gallery({ onBack }) {
 }
 
 function Harness() {
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(() => (OPEN !== null && CASES[Number(OPEN)]) || null);
 
   if (open) {
-    const [taskId, , from = 0] = open;
+    const [taskId, , caseFrom = 0] = open;
+    const from = FROM !== null ? Number(FROM) : caseFrom;
     if (taskId === 'DIAGRAMS') return <Gallery onBack={() => setOpen(null)} />;
     const unit = getTrack(TRACK).data[UNIT];
     const def = getTask(taskId);
@@ -87,7 +133,12 @@ function Harness() {
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 p-8">
       <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-1">Acellus Physics harness</h1>
-      <p className="text-slate-500 font-bold mb-6">PHYSICS · PHY_CIRC, mounted without auth.</p>
+      <p className="text-slate-500 font-bold mb-2">PHYSICS · {UNIT} · {label}, mounted without auth.</p>
+      <p className="text-sm font-bold mb-6">
+        {Object.keys(UNITS).map((u) => (
+          <a key={u} href={`?unit=${u}`} className={`mr-3 ${u === UNIT ? 'text-slate-800 dark:text-slate-100' : 'text-indigo-500 underline'}`}>{u}</a>
+        ))}
+      </p>
 
       <div className="grid gap-3 sm:grid-cols-2 max-w-3xl">
         {CASES.map((c) => (
