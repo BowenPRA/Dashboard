@@ -43,6 +43,7 @@ import { checkEssayPrompts } from '../src/utils/essayPrompts.js';
 import { checkBondItems } from '../src/utils/bondEnergy.js';
 import { checkRateItems } from '../src/utils/rateCurve.js';
 import { checkIonicItems } from '../src/utils/ionicEquation.js';
+import { checkTitrationItems } from '../src/utils/titration.js';
 import { checkItem as checkSymbolEq } from '../src/utils/chemFormula.js';
 
 const ROOT = process.cwd();
@@ -816,7 +817,7 @@ for (const trackId of TRACK_IDS) {
     //    is a plotted result with a rate that comes out to two places; the
     //    ionic equation balances for atoms AND charge and is a kind of
     //    reaction the task can name.
-    for (const [key, check] of [['bondEnergy', checkBondItems], ['rateGraph', checkRateItems], ['ionicEq', checkIonicItems]]) {
+    for (const [key, check] of [['bondEnergy', checkBondItems], ['rateGraph', checkRateItems], ['ionicEq', checkIonicItems], ['titration', checkTitrationItems]]) {
       if (!unit[key]) continue;
       const at = `${label}: ${key}`;
       if (!unit[key].title) err(`${at} is missing a title`);

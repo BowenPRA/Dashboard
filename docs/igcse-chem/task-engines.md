@@ -1,6 +1,6 @@
 # IGCSE Chemistry — the task engines
 
-The three production tasks built for the `IGCSE_CHEM` track, what each is for, and the
+The four production tasks built for the `IGCSE_CHEM` track, what each is for, and the
 data each reads. All three follow the rule every engine in the app follows:
 
 > **The item states the chemistry. The engine derives the answer.**
@@ -20,14 +20,15 @@ changes a coefficient is told what else changed.
 | Bond Ledger | `BOND_ENERGY` · p49 | `src/tasks/BondLedger.jsx` | `src/utils/bondEnergy.js` | `bondEnergy` |
 | Rate Reader | `RATE_GRAPH` · p50 | `src/tasks/RateReader.jsx` | `src/utils/rateCurve.js` | `rateGraph` |
 | Spectator Strike | `IONIC_EQ` · p51 | `src/tasks/SpectatorStrike.jsx` | `src/utils/ionicEquation.js` | `ionicEq` |
+| Titration Bench | `TITRATION` · p52 | `src/tasks/TitrationBench.jsx` | `src/utils/titration.js` | `titration` |
 
-Each unit field is `{ title, items: [...] }`. **p52 is the next free dbKey.**
+Each unit field is `{ title, items: [...] }`. **p53 is the next free dbKey.**
 
 The track also uses three engines that already existed: Equations (`SYMBOL_EQ`, p19),
 Formulae (`FORMULA_WRITE`, p20) and Energy Diagrams (`ENERGY_PROFILE`, p23). For this
 track only, the validator now also runs `chemFormula.checkItem` over `symbolEq`.
 
-### What the three share
+### What they share
 
 - **Two tries, then the answer is filled in.** A wrong answer gets a sentence that names
   the slip, not a red cross. A second wrong answer fills the step in so the student can go
@@ -282,3 +283,77 @@ these is a validator error; add the kind to `kindOf` and `REACTION_KINDS` first.
   alkalis — that is the point of the whole spread.
 - Include at least one item where step 3 has something to divide out.
 - **Avoid nitric acid with a metal**: it does not give hydrogen.
+
+---
+
+## 4. Titration Bench (`TITRATION`)
+
+**For:** finding a concentration by titration (coursebook 11.8, Extended).
+
+**The method — the book's four steps, with the two before them written in:**
+
+| Line | The student | The slip it is built around |
+|---|---|---|
+| Read the burette | final reading − initial reading | giving the final reading; adding the two |
+| cm³ to dm³ | divides each volume by 1000 | leaving it in cm³; multiplying |
+| Step 1 | moles of the solution they **know** = concentration × volume | using the volume in cm³ |
+| Step 2 | reads the **ratio** off the equation | the two numbers the wrong way round |
+| Step 3 | moles of the **other** solution | using the ratio upside down; ignoring it |
+| Step 4 | its concentration = moles ÷ volume in dm³ | multiplying; dividing by the wrong volume |
+
+The working builds up line by line, as it is set out on paper, so by step 4 the student
+is looking at a complete written answer that they made. Beside it is the rig: the burette
+with both readings marked, the flask in the indicator's starting colour, and each
+solution's name, volume and concentration — the unknown shown as "concentration ?".
+
+### Item
+
+```js
+{
+  id: 'ti_h2so4_koh',
+  name: 'Sulfuric acid against potassium hydroxide',
+  context: 'What was pipetted, what was run in from the burette.',
+  equation: {
+    reactants: [{ formula: 'H2SO4' }, { formula: 'KOH', coeff: 2 }],
+    products:  [{ formula: 'K2SO4' }, { formula: 'H2O', coeff: 2 }],
+  },
+  flask:   { formula: 'KOH', name: 'potassium hydroxide', volume: 25, conc: 0.2 },
+  burette: { formula: 'H2SO4', name: 'sulfuric acid', initial: 2.3, final: 14.8 },
+  indicator: { name: 'methyl orange', from: 'yellow', to: 'red' },
+  answer: 0.2,             // optional CHECK
+  note: 'shown when the item is finished',
+}
+```
+
+Volumes and readings are in cm³, concentrations in mol/dm³.
+
+| To ask for | Give |
+|---|---|
+| the concentration of the **burette** solution | `flask.conc`, burette readings, no `burette.conc` |
+| the concentration of the **flask** solution | `burette.conc`, burette readings, no `flask.conc` |
+| the **volume** needed | both concentrations, and no burette readings |
+
+The "known" solution — the one step 1 starts from — is whichever has both its
+concentration and its volume.
+
+### Marking
+
+A typed number is right to 1%. The indicator colours known to the rig are blue,
+colourless, yellow, red, pink, orange, purple and green.
+
+### What is checked
+
+The equation balances · both solutions are reactants in it · the readings lie on a 50 cm³
+burette and the final is the greater · exactly one thing is left to find · the moles come
+out to five decimal places and the answer to three · a volume to find fits one fill of the
+burette · a stated `answer` agrees.
+
+### Authoring notes
+
+- The book's two worked examples (HCl against Na₂CO₃, and vinegar against NaOH) belong to
+  the **deck**. The first does not come out clean (1.7986…) and could not be an item
+  anyway.
+- **Choose the titre for the answer.** 25 cm³ of 0.1 mol/dm³ is 0.0025 mol; a titre of
+  20 or 12.5 cm³ then divides cleanly.
+- Climb: 1 : 1 → 2 : 1 → the known solution in the burette → a carbonate → a volume to
+  find.

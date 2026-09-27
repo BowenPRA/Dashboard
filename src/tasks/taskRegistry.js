@@ -5,7 +5,7 @@ import {
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
-  Unlink, ChartSpline, Strikethrough
+  Unlink, ChartSpline, Strikethrough, Pipette
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -1048,7 +1048,8 @@ export const TASKS = [
     id: 'BOND_ENERGY',
     nativeMax: 10,
     // p1–p48 are taken (p5 is a workbook question id); p49–p51 belong to the
-    // IGCSE Chemistry track (BOND_ENERGY, RATE_GRAPH, IONIC_EQ); p52 is next.
+    // IGCSE Chemistry track (BOND_ENERGY, RATE_GRAPH, IONIC_EQ), and so does
+    // p52 (TITRATION); p53 is next.
     dbKey: 'p49',
     // "Energy in, energy out, subtract." The equation is drawn with every
     // bond showing; the student counts the bonds broken (the coefficient
@@ -1112,6 +1113,29 @@ export const TASKS = [
     component: lazy(() => import('./SpectatorStrike.jsx')),
     hasContent: (u) => !!u.ionicEq?.items?.length,
     buildPool: (u) => u.ionicEq,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'TITRATION',
+    nativeMax: 10,
+    dbKey: 'p52',
+    // "Start from the solution you know." Finding a concentration by
+    // titration in the coursebook's four steps, with the two before them
+    // written in: read the burette, change cm³ to dm³, moles of the known
+    // solution, the ratio from the equation, moles of the other, its
+    // concentration — or the volume needed, when both concentrations are
+    // given. The working builds up line by line as it is set out on paper.
+    // utils/titration.js derives every line; `checkTitrationItems` refuses an
+    // equation that does not balance or an answer that does not come out to
+    // three places. Item shape in src/tasks/TitrationBench.jsx.
+    label: 'Titration Bench',
+    icon: Pipette,
+    color: { bg: 'bg-[#0e7490]', border: 'border-[#155e75]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./TitrationBench.jsx')),
+    hasContent: (u) => !!u.titration?.items?.length,
+    buildPool: (u) => u.titration,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
 ];

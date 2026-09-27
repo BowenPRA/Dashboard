@@ -23,7 +23,8 @@ The documents for this track:
 | Read | For |
 |---|---|
 | this file | the module map, the unit shape, the checklist |
-| [igcse-chem/task-engines.md](igcse-chem/task-engines.md) | Bond Ledger, Rate Reader, Spectator Strike: what each is for and the data it reads |
+| [igcse-chem/task-engines.md](igcse-chem/task-engines.md) | Bond Ledger, Rate Reader, Spectator Strike, Titration Bench: what each is for and the data it reads |
+| [igcse-chem/AUTHORING-BRIEF.md](igcse-chem/AUTHORING-BRIEF.md) | the standing brief for whoever writes a unit's content |
 | [igcse-chem/plans/](igcse-chem/plans/) | one page per built unit |
 
 Plus the general standards: [lesson-standard.md](lesson-standard.md),
@@ -82,21 +83,21 @@ when the real list arrives; the ids can stay.
 | `M05_4` | Changing the Rate | 9.3, 9.4 | Rate Reader, two curves on one grid |
 | `M05_5` | Collision Theory & Catalysts | 9.5, 9.6, enzymes | Energy Diagrams (the catalysed pathway) |
 | `M05_6` | Reversible Reactions & Equilibrium | 10.1, 10.2 | *to design:* shift the equilibrium |
-| `M05_7` | The Haber & Contact Processes | 10.3, 10.4 | Rate Reader (yield curves) + Equations |
+| `M05_7` | The Haber & Contact Processes | 10.3, 10.4 | Equations; *to design:* reading yield curves |
 
 ### Module 6 — Acids, Bases, Salts & the Periodic Table
 
 | Unit | Wolsey topic | Book | Production task |
 |---|---|---|---|
-| `M06_1` | 6.1 Acids, Bases and Alkalis | 11.1, 11.2 | Formulae (`FORMULA_WRITE`, exists) |
+| `M06_1` ★ | 6.1 Acids, Bases and Alkalis | 11.1, 11.2 | Formulae (`FORMULA_WRITE`) |
 | `M06_2` ★ | 6.2 Reactions of Acids and Bases | 11.3, 11.4 | Equations + **Spectator Strike** (`IONIC_EQ`) |
-| `M06_3` | 6.3 Oxides | 11.5 | Equations |
-| `M06_4A` | 6.4 Making Salts — the methods | 11.6, 11.7 | Spectator Strike (precipitation), Order It |
-| `M06_4B` | 6.4 Making Salts — titration | 11.8 | *to design:* the four-step titration calculation |
-| `M06_5` | 6.5 Periodic Table | 12.1, 12.4, the history pages | the `periodic` deck activity |
-| `M06_6` | 6.6 Group 1, Alkali Metals | 12.2 | Rate Reader (a trend down a group) |
-| `M06_7` | 6.7 Group 7, Halogens | 12.3 | Spectator Strike (displacement) |
-| `M06_8` | 6.8 Transition Elements | 12.5 | Formulae (variable oxidation numbers) |
+| `M06_3` ★ | 6.3 Oxides | 11.5 | Equations (`SYMBOL_EQ`) |
+| `M06_4A` ★ | 6.4 Making Salts — the methods | 11.6, 11.7 | Order It (`SEQUENCE`) + Spectator Strike (precipitation) |
+| `M06_4B` ★ | 6.4 Making Salts — titration calculations | 11.8 | **Titration Bench** (`TITRATION`) |
+| `M06_5` ★ | 6.5 Periodic Table | 12.1, 12.4, the history pages | Element Hunt (`ELEMENT_HUNT`) and the `periodic` deck activity |
+| `M06_6` ★ | 6.6 Group 1, Alkali Metals | 12.2 | Equations |
+| `M06_7` ★ | 6.7 Group 7, Halogens | 12.3 | Equations + Spectator Strike (displacement) |
+| `M06_8` ★ | 6.8 Transition Elements | 12.5 | Formulae (variable oxidation numbers) |
 
 6.4 is split because the book gives it three spreads, and the third is a calculation that
 wants its own engine. Split at the topic boundary, as `EXT_MATH` does.

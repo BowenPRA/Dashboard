@@ -53,7 +53,7 @@ function IonCard({ role, ion, chosenMag, graded, correct, onPick }) {
     <div className={`flex-1 rounded-2xl border-2 p-4 bg-white dark:bg-slate-900
       ${graded ? (correct ? 'border-[#58a700]' : 'border-[#ff4b4b]') : 'border-slate-200 dark:border-slate-700'}`}>
       <div className="text-[10px] font-black uppercase tracking-[0.18em] mb-2" style={{ color: accent }}>
-        {role === 'cation' ? 'Metal ion (＋)' : 'Non-metal ion (－)'}
+        {role === 'cation' ? 'Positive ion (＋)' : 'Negative ion (－)'}
       </div>
       <div className="flex items-center justify-center h-14 mb-3">
         <span className="text-4xl">

@@ -205,7 +205,13 @@ export default function SpectatorStrike({ pool, onComplete, onQuit, savedData = 
         }
       }
     }
-    if (!bad) { settle(true, `The spectator ions are out: ${d.spectators.map((k) => entryText({ ...d.full.left.find((e) => e.key === k), coeff: 1 }, false)).join(' and ')}. They were there at the start and they are still there at the end.`, '', m); return; }
+    if (!bad) {
+      const names = d.spectators.map((k) => entryText({ ...d.full.left.find((e) => e.key === k), coeff: 1 }, false));
+      settle(true, names.length === 1
+        ? `The spectator ion is out: ${names[0]}. It was there at the start and it is still there at the end.`
+        : `The spectator ions are out: ${names.join(' and ')}. They were there at the start and they are still there at the end.`, '', m);
+      return;
+    }
     settle(false, '', bad, m);
   };
 

@@ -21,7 +21,9 @@ import { CHEM } from './chemPalette';
  * derive-don't-store rule the Number Gym / Graph It / Vectors tasks follow.
  *
  * Reads a unit's `symbolEq` array:
- *   { id, wordEquation, reactants:[{formula,coeff}], products:[…], bank:[…], note }
+ *   { id, wordEquation, reactants:[{formula,coeff}], products:[…], bank:[…], hint, note }
+ *   `hint` is shown WHILE the student works, so it must not contain the answer;
+ *   `note` is the explanation, shown once the item has been marked.
  *
  * SCORING. An item is worth 1 when the built equation uses exactly the right
  * formulae on each side AND balances (forces the right coefficients). XP = share
@@ -226,11 +228,11 @@ export default function SymbolEquation({ pool, onComplete, onQuit }) {
           )}
         </div>
 
-        {/* hint */}
-        {item.note && !graded && (
+        {/* hint — shown while working. The note names formulae and coefficients, so it waits for the verdict. */}
+        {item.hint && !graded && (
           <div className="flex items-start gap-2 rounded-xl border-2 p-2.5" style={{ borderColor: CHEM.teal, backgroundColor: `${CHEM.teal}12` }}>
             <Lightbulb className="w-5 h-5 shrink-0 mt-0.5" style={{ color: CHEM.tealDark }} strokeWidth={2.5} />
-            <div className="text-sm font-bold text-slate-600 dark:text-slate-300 leading-snug">{item.note}</div>
+            <div className="text-sm font-bold text-slate-600 dark:text-slate-300 leading-snug">{item.hint}</div>
           </div>
         )}
 
@@ -243,6 +245,7 @@ export default function SymbolEquation({ pool, onComplete, onQuit }) {
               : <XCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: CHEM.red }} strokeWidth={2.5} />}
             <div className="text-sm font-black text-slate-800 dark:text-slate-100 leading-snug">
               {itemCorrect ? 'Correct — right formulae and it balances.' : 'Not yet.'}
+              {item.note && <div className="mt-1 text-xs font-bold text-slate-600 dark:text-slate-300">{item.note}</div>}
               {!itemCorrect && (
                 <div className="mt-1 text-xs font-bold text-slate-600 dark:text-slate-300">
                   {report && !report.balanced

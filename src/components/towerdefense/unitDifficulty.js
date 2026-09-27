@@ -192,6 +192,46 @@ export const TRACK_LEVELS = {
       mapName: 'The Neutral Point',
       blurb: 'Acid down one road, alkali down the other. Where they meet, only the spectators walk away.',
     },
+    M06_1: {
+      mapId: 'CIRCUIT', themeId: 'ICE', tier: 2,
+      mapName: 'The Indicator Line',
+      blurb: 'Red on one side, blue on the other. Read the colour before you place a tower.',
+    },
+    M06_3: {
+      mapId: 'COMB', themeId: 'DESERT', tier: 2,
+      mapName: 'The Oxide Fields',
+      blurb: 'Metals on the left, non-metals on the right — and one lane in the middle that answers to both.',
+    },
+    M06_4A: {
+      mapId: 'SPIRAL', themeId: 'STANDARD', tier: 2,
+      mapName: 'The Crystallising Dish',
+      blurb: 'Filter, evaporate, cool. The road winds in until only the crystals are left.',
+    },
+    M06_4B: {
+      mapId: 'GAUNTLET', themeId: 'ICE', tier: 2,
+      mapName: 'The End-Point',
+      blurb: 'One drop too many and it is over. Add slowly, swirl, and stop on the colour change.',
+    },
+    M06_5: {
+      mapId: 'COMB', themeId: 'STANDARD', tier: 2,
+      mapName: 'Groups and Periods',
+      blurb: 'Eight columns, and every lane behaves like the others in its group.',
+    },
+    M06_6: {
+      mapId: 'WAVE', themeId: 'DESERT', tier: 3,
+      mapName: 'Down Group One',
+      blurb: 'Each wave reacts harder than the last. By the bottom of the group, nothing is calm.',
+    },
+    M06_7: {
+      mapId: 'JUNCTION', themeId: 'NIGHT', tier: 3,
+      mapName: 'The Displacement',
+      blurb: 'The more reactive one takes the road, and pushes the other out.',
+    },
+    M06_8: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 3,
+      mapName: 'The Coloured Core',
+      blurb: 'Hard, dense and slow to react. Hold the middle of the table.',
+    },
   },
   // The standalone Arcade track (see src/views/Arcade.jsx). Its "units" are not
   // lessons — they are the game's own campaign, a designed six-level ladder both

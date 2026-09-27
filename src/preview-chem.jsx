@@ -42,8 +42,8 @@ const WIDGETS = Object.entries(WIDGET_MODULES[`./data/IGCSE_CHEM/${UNIT}/widgets
 // A unit whose data.js is missing or broken still has its engine pools on disk.
 // They are mounted from the pool files directly, so an engine can be worked on
 // before (or while) the rest of the unit is written.
-const POOL_MODULES = import.meta.glob('./data/IGCSE_CHEM/*/{bondEnergy,rateGraph,ionicEq}.js', { eager: true });
-const ENGINE_POOLS = { BOND_ENERGY: 'bondEnergy', RATE_GRAPH: 'rateGraph', IONIC_EQ: 'ionicEq' };
+const POOL_MODULES = import.meta.glob('./data/IGCSE_CHEM/*/{bondEnergy,rateGraph,ionicEq,titration}.js', { eager: true });
+const ENGINE_POOLS = { BOND_ENERGY: 'bondEnergy', RATE_GRAPH: 'rateGraph', IONIC_EQ: 'ionicEq', TITRATION: 'titration' };
 function engineOnlyUnit() {
   const found = Object.entries(ENGINE_POOLS)
     .map(([id, key]) => [id, key, POOL_MODULES[`./data/IGCSE_CHEM/${UNIT}/${key}.js`]?.[key]])
