@@ -167,6 +167,32 @@ export const TRACK_LEVELS = {
       blurb: 'A long open corridor with nowhere to hide from the heat. Everything you release has to go somewhere.',
     },
   },
+  // IGCSE Chemistry (Wolsey Hall modules). Hand-authored like every science
+  // track: `tierForUnit` cannot parse `M05_2`. Module 5 sits at tier 1 and
+  // Module 6 at tier 2, so the campaign climbs with the course.
+  IGCSE_CHEM: {
+    // Bond energies: every bond broken is paid for before any bond made pays
+    // back — a gauntlet where you spend first and earn later.
+    M05_2: {
+      mapId: 'GAUNTLET', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Bond Breaker',
+      blurb: 'Energy in first, energy out after. Pay to break the line, then collect when the new one forms.',
+    },
+    // Rate of reaction: the curve is steepest at the start and flattens to
+    // nothing — so does the wave that runs this road.
+    M05_3: {
+      mapId: 'WAVE', themeId: 'STANDARD', tier: 1,
+      mapName: 'The Steepest Minute',
+      blurb: 'They come fastest at the start and thin out as the reactants run down. Hold the first minute.',
+    },
+    // Acids and bases: two roads meet in the middle, and what is left when
+    // they cancel is water.
+    M06_2: {
+      mapId: 'JUNCTION', themeId: 'ICE', tier: 2,
+      mapName: 'The Neutral Point',
+      blurb: 'Acid down one road, alkali down the other. Where they meet, only the spectators walk away.',
+    },
+  },
   // The standalone Arcade track (see src/views/Arcade.jsx). Its "units" are not
   // lessons — they are the game's own campaign, a designed six-level ladder both
   // cabinets share. Level ids are `ARC_*`, deliberately unlike any lesson unit

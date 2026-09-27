@@ -40,6 +40,10 @@ import { checkLabConfig } from '../src/utils/particles.js';
 import { checkProofreadItems } from '../src/utils/proofread.js';
 import { checkSequenceItems } from '../src/utils/sequence.js';
 import { checkEssayPrompts } from '../src/utils/essayPrompts.js';
+import { checkBondItems } from '../src/utils/bondEnergy.js';
+import { checkRateItems } from '../src/utils/rateCurve.js';
+import { checkIonicItems } from '../src/utils/ionicEquation.js';
+import { checkItem as checkSymbolEq } from '../src/utils/chemFormula.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -801,6 +805,29 @@ for (const trackId of TRACK_IDS) {
         if (it.level !== undefined && !unit.logSimplify.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
       }
       for (const p of checkLogItems(unit.logSimplify.items || [])) err(`${at} ${p}`);
+    }
+
+    // -- Bond Ledger, Rate Reader, Spectator Strike (IGCSE_CHEM): the
+    //    reaction, the plotted results or the balanced equation is authored;
+    //    utils/bondEnergy.js, utils/rateCurve.js and utils/ionicEquation.js
+    //    derive every count, total, reading and ion. Checked: the reaction
+    //    balances and every bond has an energy; the curve starts at the
+    //    origin, only slows and is shown finishing, and every asked-for value
+    //    is a plotted result with a rate that comes out to two places; the
+    //    ionic equation balances for atoms AND charge and is a kind of
+    //    reaction the task can name.
+    for (const [key, check] of [['bondEnergy', checkBondItems], ['rateGraph', checkRateItems], ['ionicEq', checkIonicItems]]) {
+      if (!unit[key]) continue;
+      const at = `${label}: ${key}`;
+      if (!unit[key].title) err(`${at} is missing a title`);
+      if (!(unit[key].items || []).length) err(`${at} has no items`);
+      for (const p of check(unit[key].items || [])) err(`${at} ${p}`);
+    }
+    // -- Equations: every formula parses and is in the bank, and the target
+    //    equation balances. Held to IGCSE_CHEM only — the check is newer than
+    //    the COORD_SCI units, which verify their pools by a Node self-check.
+    if (trackId === 'IGCSE_CHEM' && Array.isArray(unit.symbolEq)) {
+      for (const it of unit.symbolEq) for (const p of checkSymbolEq(it)) err(`${label}: symbolEq ${p}`);
     }
 
     // -- diagram references resolve

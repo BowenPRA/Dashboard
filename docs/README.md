@@ -43,6 +43,17 @@ status* section so it can be closed deliberately.
   reducing a taught deck into a self-study unit, how to keep the two sequences in step,
   and the per-section build loop that ends with both repos deployed.
 
+### IGCSE Chemistry (new)
+
+- [igcse-chem-course.md](igcse-chem-course.md) — **start here.** The `IGCSE_CHEM` track for
+  the Wolsey Hall student: one Wolsey topic is one unit, one module is one section. The
+  full Module 5 and Module 6 map, the unit shape, the design rules, and what the two
+  scanned sources really contain. Three exemplar units are built (`M05_2`, `M05_3`,
+  `M06_2`), with a one-page plan each under `igcse-chem/plans/`.
+- [igcse-chem/task-engines.md](igcse-chem/task-engines.md) — Bond Ledger, Rate Reader and
+  Spectator Strike: the method each one stages, the item schema, how it is marked, and
+  what the validator checks.
+
 ### Year 7 Cambridge Math (new)
 
 - [y7-math-course.md](y7-math-course.md) — **start here.** The course spine: how a

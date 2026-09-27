@@ -49,5 +49,38 @@ export function Species({ coeff, formula, className = '' }) {
   );
 }
 
+/**
+ * Render one side of an equation, e.g. "CH4(g) + 2O2(g)".
+ *
+ * The two digits in "2O2" mean opposite things and must not look alike: the
+ * LEADING one is a coefficient (full size, how many molecules) and the trailing
+ * one is a subscript (part of the formula). `Formula` subscripts every digit it
+ * meets, so each species is split first — peel off the coefficient, hand the
+ * rest to `Formula`, and keep the state symbol upright at full size.
+ * Shared by Energy Diagrams and Rate Reader.
+ */
+export function EquationSide({ text, className = '' }) {
+  const species = String(text).split(/\s*\+\s*/).filter(Boolean);
+  return (
+    <span className={`inline-flex items-baseline flex-wrap justify-center gap-x-1 ${className}`}>
+      {species.map((sp, i) => {
+        const [, coeff, rest] = /^(\d*)([\s\S]*)$/.exec(sp.trim());
+        const parts = rest.split(/(\([slgaq]+\))/g).filter((p) => p !== '');
+        return (
+          <span key={i} className="inline-flex items-baseline">
+            {i > 0 && <span className="font-black text-slate-400 mr-1">+</span>}
+            {coeff && <span className="font-mono font-black">{coeff}</span>}
+            {parts.map((p, j) =>
+              /^\([slgaq]+\)$/.test(p)
+                ? <span key={j} className="font-mono font-bold opacity-70">{p}</span>
+                : <Formula key={j} text={p} />
+            )}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
 // The shared teal palette moved to ./chemPalette — this module exports only
 // components, which is what lets fast refresh hot-swap it.

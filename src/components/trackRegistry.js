@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical, TestTubes } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -219,6 +219,34 @@ export const TRACK_REGISTRY = [
       text: 'text-teal-600 dark:text-teal-400',
       ambient1: 'bg-teal-400', ambient2: 'bg-cyan-500',
       glow: 'hover:border-teal-400 dark:hover:border-teal-600',
+    },
+  },
+  {
+    // Cambridge IGCSE Chemistry for the student taking it through Wolsey Hall
+    // Oxford. Wolsey's course is cut into MODULES, each a run of numbered
+    // topics (6.1 Acids, Bases and Alkalis …), so a unit here is one Wolsey
+    // topic and a section is one module. The textbook behind it is Complete
+    // Chemistry for Cambridge IGCSE; docs/igcse-chem-course.md maps every
+    // topic to its pages.
+    id: 'IGCSE_CHEM',
+    title: 'IGCSE Chemistry',
+    desc: 'Cambridge IGCSE 0620 · Wolsey Hall modules',
+    icon: TestTubes,
+    group: 'Cambridge',
+    // English-only, like COORD_SCI: the paper is sat in English and
+    // "enthalpy change", "spectator ion", "rate" are the marks.
+    bilingual: false,
+    // One section per Wolsey module, matched by unit-id prefix (M05_2 is
+    // Module 5, topic 2). A new module needs a row, or it falls into "More".
+    sections: [
+      { prefix: 'M05_', label: 'Module 5', title: 'Energy Changes, Rates & Reversible Reactions' },
+      { prefix: 'M06_', label: 'Module 6', title: 'Acids, Bases, Salts & the Periodic Table' },
+    ],
+    theme: {
+      bg: 'bg-lime-500', border: 'border-lime-700', hover: 'hover:bg-lime-400',
+      text: 'text-lime-600 dark:text-lime-400',
+      ambient1: 'bg-lime-400', ambient2: 'bg-green-500',
+      glow: 'hover:border-lime-400 dark:hover:border-lime-600',
     },
   },
   {

@@ -4,7 +4,8 @@ import {
   Image as ImageIcon, ClipboardCheck, Gamepad2, FileBox, HelpCircle, Pencil, PenLine, Scale, LineChart,
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
-  ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot
+  ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
+  Unlink, ChartSpline, Strikethrough
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -1041,6 +1042,76 @@ export const TASKS = [
     component: lazy(() => import('./Inequalities.jsx')),
     hasContent: (u) => !!u.inequalities?.items?.length,
     buildPool: (u) => u.inequalities,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'BOND_ENERGY',
+    nativeMax: 10,
+    // p1–p48 are taken (p5 is a workbook question id); p49–p51 belong to the
+    // IGCSE Chemistry track (BOND_ENERGY, RATE_GRAPH, IONIC_EQ); p52 is next.
+    dbKey: 'p49',
+    // "Energy in, energy out, subtract." The equation is drawn with every
+    // bond showing; the student counts the bonds broken (the coefficient
+    // counts), totals the energy in, does the same for the bonds made, and
+    // finds ΔH with its sign. A wrong count lights up the bonds it missed.
+    // An item only NAMES the molecules — utils/bondEnergy.js reads the bonds
+    // off each molecule's drawn structure and derives every count, total and
+    // ΔH; `checkBondItems` refuses an item that does not balance. Item shape
+    // in src/tasks/BondLedger.jsx.
+    label: 'Bond Ledger',
+    icon: Unlink,
+    color: { bg: 'bg-[#4338ca]', border: 'border-[#312e81]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./BondLedger.jsx')),
+    hasContent: (u) => !!u.bondEnergy?.items?.length,
+    buildPool: (u) => u.bondEnergy,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'RATE_GRAPH',
+    nativeMax: 10,
+    dbKey: 'p50',
+    // "Up from the time, across to the volume." A graph of results with a
+    // ruler on it: the ruler draws the two dashed lines and never prints the
+    // number, because reading the scale is the skill. Readings, the rate in
+    // one interval, where the curve goes flat, the average rate and its unit,
+    // and two curves compared. An item is the experiment's plotted points;
+    // utils/rateCurve.js derives every answer, marks a reading to half a small
+    // square and a rate against the student's own readings, and
+    // `checkRateItems` refuses a curve that speeds up or never finishes. Item
+    // shape in src/tasks/RateReader.jsx.
+    label: 'Rate Reader',
+    icon: ChartSpline,
+    color: { bg: 'bg-[#0f766e]', border: 'border-[#115e59]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./RateReader.jsx')),
+    hasContent: (u) => !!u.rateGraph?.items?.length,
+    buildPool: (u) => u.rateGraph,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'IONIC_EQ',
+    nativeMax: 10,
+    dbKey: 'p51',
+    // "Write every ion, strike out the spectators." The coursebook's three
+    // steps for an ionic equation, plus naming the reaction it turned out to
+    // be: decide which substances split into ions (the state symbol is the
+    // evidence), strike out the ions unchanged on both sides, write what is
+    // left in its simplest whole numbers. An item is the ordinary balanced
+    // equation with state symbols; utils/ionicEquation.js finds the ions, the
+    // spectators and the ionic equation, and `checkIonicItems` refuses an
+    // item that does not balance for atoms and charge. Item shape in
+    // src/tasks/SpectatorStrike.jsx.
+    label: 'Spectator Strike',
+    icon: Strikethrough,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./SpectatorStrike.jsx')),
+    hasContent: (u) => !!u.ionicEq?.items?.length,
+    buildPool: (u) => u.ionicEq,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
 ];
