@@ -1,0 +1,3 @@
+var e=e=>String(e||``).trim().split(/\s+/).filter(Boolean).length,t=t=>(t?.sources||[]).reduce((t,n)=>t+e(n?.text),0),n=e=>t(e)>=500,r=(e=[])=>(e||[]).map(e=>({title:[e?.title,e?.type?`(${e.type})`:``].filter(Boolean).join(` `),text:[e?.byline,e?.text].filter(Boolean).join(`
+
+`)}));function i(e){return(Array.isArray(e)?e:e?[e]:[]).filter(e=>e&&typeof e==`object`).map((e,t)=>({...e,key:e.id==null?String(t):String(e.id),title:e.title||(e.sources?.[0]?.title?`${e.sources[0].title} / ${e.sources[1]?.title||``}`.replace(/ \/ $/,``):`Prompt ${t+1}`)}))}export{t as i,r as n,n as r,i as t};
