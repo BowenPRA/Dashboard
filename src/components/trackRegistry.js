@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical, TestTubes } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical, TestTubes, Trophy } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -133,6 +133,28 @@ export const TRACK_REGISTRY = [
       text: 'text-fuchsia-600 dark:text-fuchsia-400',
       ambient1: 'bg-fuchsia-400', ambient2: 'bg-purple-500',
       glow: 'hover:border-fuchsia-400 dark:hover:border-fuchsia-600',
+    },
+  },
+  {
+    // Preparation for the MAA AMC 8: 25 multiple-choice questions in 40
+    // minutes, no calculator, one point per correct answer and nothing taken
+    // off for a wrong one. A unit is ONE PRACTICE TEST (PT_01, PT_02, …): a
+    // short toolkit deck and the contest's vocabulary, a warm-up, then the
+    // test sat under contest conditions, then a review that opens only once
+    // the test has been handed in. See docs/amc8-course.md.
+    id: 'AMC8',
+    title: 'AMC 8 Prep',
+    desc: 'Timed practice tests, reviewed step by step',
+    icon: Trophy,
+    group: 'Problem Solving',
+    // English only: the contest words ("distinct", "ones digit", "least
+    // possible") are what the vocabulary task teaches.
+    bilingual: false,
+    theme: {
+      bg: 'bg-red-500', border: 'border-red-700', hover: 'hover:bg-red-400',
+      text: 'text-red-600 dark:text-red-400',
+      ambient1: 'bg-red-400', ambient2: 'bg-orange-500',
+      glow: 'hover:border-red-400 dark:hover:border-red-600',
     },
   },
   {

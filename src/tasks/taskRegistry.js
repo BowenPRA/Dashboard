@@ -5,11 +5,12 @@ import {
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
-  Unlink, ChartSpline, Strikethrough, Pipette
+  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
 import { notesToFix } from '../utils/notesReview';
+import { isTestSubmitted } from '../utils/amcTest';
 
 /**
  * Does this track carry Vietnamese twins? A track that declares
@@ -38,6 +39,10 @@ const bilingualOf = (track) => getTrackConfig(track)?.bilingual !== false;
  *   props        (ctx) => props object for the component
  *   fixCount     optional (unit, record, maxXP) => number of mistakes a
  *                finished task still offers to fix (the unit card's "Fix N")
+ *   isSat        optional (record) => boolean — when a phase that
+ *                `requires` this task may open. Without it, any progress
+ *                record counts; a task that checkpoints mid-way (the timed
+ *                Practice Test) says here what "done" means
  *
  * ctx = { unit, unitId, track, pool, scores, savedData, strikes, maxXP,
  *         onComplete, onQuit, onAddStrike }
@@ -56,6 +61,9 @@ const vocabPool = (unit, { track, unitId }) =>
   }));
 
 const notEmpty = (v) => Array.isArray(v) && v.length > 0;
+
+/** The Practice Test's progress key — the Review reads that record too. */
+const AMC_TEST_KEY = 'p53';
 
 export const TASKS = [
   {
@@ -429,7 +437,8 @@ export const TASKS = [
     component: lazy(() => import('./FactorBlitz.jsx')),
     hasContent: (u) => !!u.factorBlitz?.rounds?.length,
     buildPool: (u) => u.factorBlitz,
-    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+    // `bilingual: false` (an English-only track) drops the EN/VN toggle.
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
   {
     id: 'FORMULA_WRITE',
@@ -1138,6 +1147,58 @@ export const TASKS = [
     buildPool: (u) => u.titration,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
   },
+  // ── AMC 8 Prep ─────────────────────────────────────────────────────────────
+  // p52 (TITRATION) was the last key taken; these two are p53 and p54, and p55
+  // is next. Both read a unit's `amcTest`. See docs/amc8-course.md.
+  {
+    id: 'AMC_TEST',
+    // The score IS the number of correct answers, out of the contest's 25.
+    nativeMax: 25,
+    dbKey: AMC_TEST_KEY,
+    // "Contest conditions." An AMC 8 paper: 25 questions, five choices each,
+    // 40 minutes, no calculator, one point for a correct answer and nothing
+    // taken off for a wrong one. A cover page with the rules, then one problem
+    // at a time beside a bubble sheet. The clock is a DEADLINE stamped into
+    // the resume blob, so closing the tab does not stop it, and nothing is
+    // marked until the paper is handed in. The results show which questions
+    // were missed but not their answers — those belong to the Review.
+    // Marking, blob shape and `checkAmcTest` are in utils/amcTest.js.
+    label: 'Practice Test',
+    icon: Timer,
+    color: { bg: 'bg-[#1e3a8a]', border: 'border-[#172554]', text: 'text-white' },
+    defaultMaxXP: 40,
+    phase: 'practice',
+    component: lazy(() => import('./AmcTest.jsx')),
+    hasContent: (u) => !!u.amcTest?.problems?.length,
+    buildPool: (u) => u.amcTest,
+    // Every answer is checkpointed, so a progress record exists from the
+    // first bubble filled in. The Review must wait for the paper to be
+    // handed in, not for that.
+    isSat: isTestSubmitted,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'AMC_REVIEW',
+    nativeMax: 10,
+    dbKey: 'p54',
+    // "A second try, then the solution." The handed-in paper, problem by
+    // problem. A missed problem is tried again first — the choice made in
+    // the test crossed out, a hint on offer — and only then opens its
+    // solution: the key idea, numbered steps, a figure, the answer, the
+    // trap. The XP is for dealing with the missed problems (1 for one put
+    // right, ½ for a solution worked through). Lives in a phase that
+    // `requires: 'AMC_TEST'`, and reads that sitting from `scores`.
+    label: 'Review',
+    icon: ListChecks,
+    color: { bg: 'bg-[#f97316]', border: 'border-[#c2410c]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'mastery',
+    component: lazy(() => import('./AmcReview.jsx')),
+    hasContent: (u) => !!u.amcTest?.problems?.length && u.amcTest.problems.every((p) => p.solution?.length),
+    buildPool: (u) => u.amcTest,
+    props: ({ pool, scores, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, sitting: scores?.[AMC_TEST_KEY]?.answers, savedData, onComplete, onProgress, onQuit }),
+  },
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));
@@ -1174,8 +1235,12 @@ export function resolveUnitTasks(unit, unitXP = 0, scores = {}) {
     // writes one, even for a score of zero. The arcade uses it: the game unlocks
     // the moment the assessment is sat, pass or fail (§6.4). With no `scores`
     // (validator, teacher view) the gate reads as not-yet-attempted, i.e. locked.
-    const gateKey = phase.requires ? resolveTask({ id: phase.requires })?.dbKey : null;
-    const gateUnmet = gateKey ? !scores?.[gateKey] : false;
+    // A task may say for itself what "attempted" means (`isSat`): the timed
+    // Practice Test has a record from its first checkpoint, but only a paper
+    // that has been handed in opens its Review.
+    const gate = phase.requires ? resolveTask({ id: phase.requires }) : null;
+    const gateRecord = gate ? scores?.[gate.dbKey] : null;
+    const gateUnmet = gate ? !(gate.isSat ? gate.isSat(gateRecord) : gateRecord) : false;
     return (phase.tasks || [])
       .filter((t) => t.id !== 'GAMES')
       .map((t) => {

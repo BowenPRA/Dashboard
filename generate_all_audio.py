@@ -104,6 +104,11 @@ def speechify(text):
     t = re.sub(r'\^\s*\{?\s*\\circ\s*\}?', ' degrees ', t)
     t = t.replace('°', ' degrees ')
     t = re.sub(r'\\theta(?![a-zA-Z])', ' theta ', t).replace('θ', ' theta ')
+    # Circles and counting (AMC8 PT_01). The catch-all deleted `\pi` and
+    # `\gcd`, so "area = pi R squared" was narrated "area = R squared" and
+    # "a + b - gcd(a, b)" as "a + b - (a, b)".
+    t = re.sub(r'\\pi(?![a-zA-Z])', ' pi ', t).replace('π', ' pi ')
+    t = re.sub(r'\\gcd(?![a-zA-Z])', ' the greatest common divisor of ', t)
     # Bare inequality symbols (bounds, number lines) and a scale "1 : n".
     t = t.replace('≤', ' is less than or equal to ').replace('≥', ' is greater than or equal to ')
     t = re.sub(r'(\d)\s+:\s+(\w)', r'\1 to \2', t)

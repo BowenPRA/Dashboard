@@ -43,6 +43,13 @@ status* section so it can be closed deliberately.
   reducing a taught deck into a self-study unit, how to keep the two sequences in step,
   and the per-section build loop that ends with both repos deployed.
 
+### AMC 8 Prep (new)
+
+- [amc8-course.md](amc8-course.md) — **start here** for the `AMC8` track: one unit is one
+  practice paper. The unit shape, the rule that nothing before the test works a problem of
+  the test, the timed **Practice Test** and the **Review** that opens once the paper is
+  handed in, and the per-unit checklist. The **`PT_01` unit is the reference exemplar.**
+
 ### IGCSE Chemistry (new)
 
 - [igcse-chem-course.md](igcse-chem-course.md) — **start here.** The `IGCSE_CHEM` track for

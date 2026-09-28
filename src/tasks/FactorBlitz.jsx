@@ -80,7 +80,7 @@ const VN = {
 
 const DEFAULT_CANDIDATES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export default function FactorBlitz({ pool, onComplete, onQuit }) {
+export default function FactorBlitz({ pool, onComplete, onQuit, bilingual = true }) {
   const rounds = useMemo(() => (pool?.rounds || []).filter((n) => Number.isInteger(n) && n > 1), [pool]);
   const candidates = useMemo(
     () => (pool?.candidates?.length ? pool.candidates : DEFAULT_CANDIDATES),
@@ -175,7 +175,7 @@ export default function FactorBlitz({ pool, onComplete, onQuit }) {
       <TopBar onQuit={onQuit} quitLabel="Exit"
         modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
         current={roundIdx + 1} total={rounds.length} lang={lang}
-        onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
 
       <div className="flex-1 w-full max-w-2xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">

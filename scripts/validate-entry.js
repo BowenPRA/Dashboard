@@ -45,6 +45,7 @@ import { checkRateItems } from '../src/utils/rateCurve.js';
 import { checkIonicItems } from '../src/utils/ionicEquation.js';
 import { checkTitrationItems } from '../src/utils/titration.js';
 import { checkItem as checkSymbolEq } from '../src/utils/chemFormula.js';
+import { checkAmcTest } from '../src/utils/amcTest.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -698,7 +699,7 @@ for (const trackId of TRACK_IDS) {
     if (unit.factorBlitz) {
       const at = `${label}: factorBlitz`;
       const fb = unit.factorBlitz;
-      if (!fb.title || !fb.titleVn) err(`${at} is missing a bilingual title`);
+      if (!fb.title || (bilingual && !fb.titleVn)) err(`${at} is missing a ${bilingual ? 'bilingual ' : ''}title`);
       if (fb.seconds !== undefined && !(fb.seconds > 0)) err(`${at}: seconds must be a positive number`);
       const cand = fb.candidates?.length ? fb.candidates : [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
       for (const c of cand) {
@@ -830,6 +831,11 @@ for (const trackId of TRACK_IDS) {
     if (trackId === 'IGCSE_CHEM' && Array.isArray(unit.symbolEq)) {
       for (const it of unit.symbolEq) for (const p of checkSymbolEq(it)) err(`${label}: symbolEq ${p}`);
     }
+
+    // -- Practice Test and Review (AMC8): 25 problems, five choices, a key of
+    //    A–E, and a hint, a key idea and a worked solution for every problem —
+    //    the Review has nothing to show for a problem without them.
+    if (unit.amcTest !== undefined) for (const p of checkAmcTest(unit.amcTest)) err(`${label}: ${p}`);
 
     // -- diagram references resolve
     if (fs.existsSync(dir)) {

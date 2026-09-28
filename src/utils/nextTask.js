@@ -22,6 +22,8 @@ export const canResume = (record, maxXP) => {
     if (blob.finished) return false;
     return (blob.slide || 0) > 0 || Object.keys(blob.checks || {}).length > 0;
   }
+  // A timed paper that has been handed in is finished, whatever it scored.
+  if (blob.submitted === true) return false;
   return Object.keys(blob).length > 0;
 };
 
