@@ -305,7 +305,7 @@ function momentum() {
   const masses = [];
   for (let d = 2; d <= 12; d++) if (p % d === 0 && d !== m2) masses.push(d);
   const m1 = masses.length ? masses[ri(0, masses.length - 1)] : p;
-  return { prompt: `From rest, a ${m1} kg cart pushes off a ${m2} kg ball. Ball: +${v2} m/s.  Cart v = ? m/s`, answer: -p / m1 };
+  return { prompt: `From rest, a cart (${m1} kg) pushes off a ${m2} kg ball. Ball: +${v2} m/s.  Cart v = ? m/s`, answer: -p / m1 };
 }
 
 // EXT_MATH / EM_06 — Sets, Surds and Rationalising. Four reads a student who

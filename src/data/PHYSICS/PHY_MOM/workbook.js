@@ -145,12 +145,14 @@ export const workbook = [
           'A newton is kg·m/s², so N·s = kg·m/s² × s = kg·m/s — the unit of momentum.',
           'That is why $F \\Delta t = m(v_f - v_i)$ works: impulse IS the change in momentum.',
           'A divides by the time instead of multiplying; B is the unit of a force; C is the unit of energy.',
+          'Careful: the letter J in $J = F \\Delta t$ is impulse\'s NAME, not its unit. The unit J (joule) belongs to energy.',
         ],
         solutionVn: [
           'Nhân các đơn vị giống như công thức nhân các chữ: N × s = N·s.',
           'Một niutơn là kg·m/s², nên N·s = kg·m/s² × s = kg·m/s — đơn vị của động lượng.',
           'Đó là lý do $F \\Delta t = m(v_f - v_i)$ đúng: xung lượng CHÍNH LÀ độ biến thiên động lượng.',
           'A chia cho thời gian thay vì nhân; B là đơn vị của lực; C là đơn vị của năng lượng.',
+          'Cẩn thận: chữ J trong $J = F \\Delta t$ là TÊN của xung lượng, không phải đơn vị. Đơn vị J (jun) là của năng lượng.',
         ],
         answer: 'N·s — which is the same as kg·m/s',
         answerVn: 'N·s — cũng chính là kg·m/s',
@@ -585,7 +587,7 @@ export const workbook = [
         promptVn: 'Một khẩu súng trường 4.50 kg bắn một viên đạn 0.0100 kg với vận tốc +385 m/s. Vận tốc giật lùi của khẩu súng là bao nhiêu m/s? Ghi cả dấu (+ hoặc −).',
         solution: [
           'Pieces: bullet $m_1 = 0.0100$ kg, $v_{1f} = +385$ m/s; rifle $m_2 = 4.50$ kg, $v_{2f} = ?$. Before firing, both are at rest: $v_{1i} = v_{2i} = 0$.',
-          'Formula: both start at rest, so the whole left side of the standard equation is 0: $0 = m_1 v_{1f} + m_2 v_{2f}$ (the recoil line on your formula page, $m_1 v_{1f} = -m_2 v_{2f}$).',
+          'Formula: both start at rest, so the whole left side of the standard equation is 0: $0 = m_1 v_{1f} + m_2 v_{2f}$ — the recoil line (line 8) on your formula page.',
           'Rearrange: $m_1 v_{1f}$ is added to the target\'s term → subtract it from both sides: $-m_1 v_{1f} = m_2 v_{2f}$. The minus sign appears on its own.',
           '$m_2$ is multiplying $v_{2f}$ → divide both sides by $m_2$: $v_{2f} = \\dfrac{-m_1 v_{1f}}{m_2}$.',
           'Substitute: $v_{2f} = \\dfrac{-0.0100 \\times 385}{4.50} = \\dfrac{-3.85}{4.50}$.',
@@ -593,7 +595,7 @@ export const workbook = [
         ],
         solutionVn: [
           'Các đại lượng: viên đạn $m_1 = 0.0100$ kg, $v_{1f} = +385$ m/s; khẩu súng $m_2 = 4.50$ kg, $v_{2f} = ?$. Trước khi bắn, cả hai đều đứng yên: $v_{1i} = v_{2i} = 0$.',
-          'Công thức: cả hai bắt đầu đứng yên, nên cả vế trái của phương trình chuẩn bằng 0: $0 = m_1 v_{1f} + m_2 v_{2f}$ (dòng giật lùi trong trang công thức của em, $m_1 v_{1f} = -m_2 v_{2f}$).',
+          'Công thức: cả hai bắt đầu đứng yên, nên cả vế trái của phương trình chuẩn bằng 0: $0 = m_1 v_{1f} + m_2 v_{2f}$ — dòng giật lùi (dòng 8) trong trang công thức của em.',
           'Biến đổi: $m_1 v_{1f}$ đang được cộng vào số hạng chứa ẩn → trừ nó ở cả hai vế: $-m_1 v_{1f} = m_2 v_{2f}$. Dấu trừ tự xuất hiện.',
           '$m_2$ đang nhân với $v_{2f}$ → chia cả hai vế cho $m_2$: $v_{2f} = \\dfrac{-m_1 v_{1f}}{m_2}$.',
           'Thay số: $v_{2f} = \\dfrac{-0.0100 \\times 385}{4.50} = \\dfrac{-3.85}{4.50}$.',

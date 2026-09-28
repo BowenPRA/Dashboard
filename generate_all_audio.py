@@ -89,6 +89,11 @@ def speechify(text):
     # by the catch-all — "the square root of 3 2", "riserun".
     t = re.sub(r'\\text\s*\{([^{}]*)\}', r'\1', t)
     t = re.sub(r'\\sqrt\s*\{([^{}]*)\}', r' the square root of \1 ', t)
+    # A thousands comma written the KaTeX way, `12{,}460`, nests a brace pair in
+    # the number, so a fraction holding one never matched the rule below and its
+    # braces were stripped instead: `\dfrac{1{,}089{,}660}{97.5}` narrated as
+    # "1,089,66097.5". Unwrap the comma first.
+    t = t.replace('{,}', ',')
     # Right-angled trigonometry (EXT_MATH EM_07B). Unexpanded, the catch-all
     # deleted `\sin` and `\theta` outright — "sin 41°" narrated as "41" and
     # "cos θ = 9/15" as "= 9 over 15" — and `^\circ` left a stray caret. The

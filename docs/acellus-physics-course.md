@@ -256,8 +256,17 @@ is specific to a formula-heavy physics deck:
   card underneath listing every symbol *with its unit*. That card is the formula page
   entry. Nothing else on the deck is copy-down except the undo pairs and the units table.
 - **The method slide (`steps`) comes before the first worked example** and every later
-  worked example follows its five lines in the same order: pieces with units · formula ·
-  rearrange with letters · substitute · answer with a unit.
+  worked example follows its five lines in the same order, with the same bold labels:
+  **Pieces** (with units, and signs) · **Formula** · **Rearrange** · **Substitute** ·
+  **Answer** (with a unit). Keep all five even when one is "nothing to do — $p$ is
+  already alone": the labels are what she copies, so they must never change shape.
+- **A `steps` slide never carries both a diagram and a check.** From `lg` the check is
+  a side column, so the slide becomes three columns and at 1280×720 the working is a
+  strip beside a picture too small to read. Keep the diagram and drop the check, or
+  move the diagram to the derivation slide before it (a `split` with no check).
+  A `split` that keeps its check stays at `ratio: 40` so the picture gets the room.
+- **Write plain, short English.** One idea per sentence; "so" and "then" rather than
+  semicolons; name the slide ("the sticky ball, coming up"), never its number.
 - **Rearranging gets three slides**: undo what is done to the target; one formula worked
   move by move; the decision table ("look at what is touching the target") as write cards
   with an `order` activity that drills the moves on a fresh formula.
@@ -272,7 +281,7 @@ is specific to a formula-heavy physics deck:
 - **When a module's formulas are one equation with conditions** (momentum: at rest,
   stick together, recoil), teach ONE equation as copy-down and derive the rest on `stack`
   slides — the derivation in display maths in `content`, the result in a write card — then
-  a `sort` activity on the question phrases that trigger each case. `PHY_MOM` slides 13–23.
+  a `sort` activity on the question phrases that trigger each case. `PHY_MOM` slides 13–24.
   A `steps` slide renders no `notes`, so a derivation that ends in a copy-down line belongs
   on a `stack`.
 - The usual rules: `$$…$$` only in `content`, callout bodies and `reveal.answer`; layout

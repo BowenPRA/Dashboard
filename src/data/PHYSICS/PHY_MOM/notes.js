@@ -7,21 +7,24 @@
 // the collision formulas look like four different equations to memorise.
 // So the deck is built on four rules.
 //   · There is ONE collision equation. Slide 13 writes it down; slides
-//     15–23 DERIVE every special case from it — at rest, stuck together,
+//     15–24 DERIVE every special case from it — at rest, stuck together,
 //     recoil — by putting the story into it. The inelastic equation is
 //     never handed over; she watches $v_{1f} = v_{2f} = v_f$ go in and the
 //     $v_f$ get factored out. The Isolate It task makes her do the same.
-//   · Signs are taught as direction (slide 4) and drilled on every worked
+//   · Signs are taught as direction (slide 5) and drilled on every worked
 //     example: a negative number always goes in brackets, and minus a minus
 //     is a plus (slide 9, a predict activity before any explanation).
 //   · FACTORING is the one new algebra move (slide 19) — and slide 21 is the
 //     item where it is not needed, because the unknown is a mass in one term.
-//   · The five-line method from PHY_CIRC, with "and signs" added to line 1,
-//     on every worked example. The worked examples ARE her Acellus items.
+//   · The five-line method from PHY_CIRC (slide 4, before any other worked
+//     example), with signs added to line 1. EVERY worked example after it
+//     uses the same five labels — Pieces · Formula · Rearrange · Substitute ·
+//     Answer — even when a line is "nothing to do". The worked examples ARE
+//     her Acellus items.
 //
 // THE SPINE:
 //   1–2    hook: a baseball and a walking dog are about equally hard to stop.
-//   3–6    p = mv; direction is a sign; total momentum; the method (the dog).
+//   3–6    p = mv; the method (the dog); direction is a sign; total momentum.
 //   7–11   impulse: J = FΔt; derived from F = ma; minus a minus (predict);
 //          the bat; the basketball's contact time.
 //   12–14  conservation: shared not lost; THE equation; blocks A and B.
@@ -29,8 +32,17 @@
 //   16–17  story 1, at rest: the term vanishes; car 1 and car 2 (+ the truck).
 //   18–22  story 2, stick together: derive, FACTOR, the meteors, the sticky
 //          ball (a mass needs no factoring), Anna and Paul.
-//   23     story 3, recoil: the minus sign appears by itself.
-//   24–26  the formula page, the four mistakes, the recap.
+//   23–24  story 3, recoil: derived (the minus sign appears by itself); the rifle.
+//   25–27  the formula page, the four mistakes, the recap.
+//
+// Every formula-page line is on an orange "Write this down" card somewhere in
+// the deck (steps slides render no `notes`, so derivations that end in a
+// copy-down line are stack/split slides). No steps slide carries a diagram AND
+// a check: at 1280×720 the check's side column squeezes the working into a
+// strip beside an unreadable picture — so the bat keeps its diagram and loses
+// its check, and the meteor and rifle diagrams sit on the two derivation
+// slides (18, 23), which carry no check for the same reason. A split slide
+// that keeps a check (5, 12) stays at ratio 40 so its picture gets the room.
 //
 // House notes:
 //  · BILINGUAL. PHYSICS declares `bilingual: true`; every learner-facing string
@@ -41,6 +53,7 @@
 //  · `check` / `activity` is always the LAST key on its slide (narration stops
 //    there). Activity strings use `name`/`explain`, never `text`.
 //  · Numbers agree with the Isolate It task, which derives them.
+//  · Never refer to a slide by number in learner text — say its title.
 import { DIAGRAMS } from './diagrams.js';
 
 const INDIGO = '#4f46e5';
@@ -57,14 +70,14 @@ export const notes = [
     icon: 'Zap',
     brand: 'Acellus Physics',
     brandVn: 'Acellus Vật lý',
-    eyebrow: 'Momentum, impulse, collisions, inelastic collisions and recoil',
-    eyebrowVn: 'Động lượng, xung lượng, va chạm, va chạm mềm và giật lùi',
+    eyebrow: 'Momentum · impulse · collisions · recoil',
+    eyebrowVn: 'Động lượng · xung lượng · va chạm · giật lùi',
     title: 'Momentum & Collisions',
     titleVn: 'Động Lượng & Va Chạm',
-    objective: 'I can give momentum a sign for its direction, use impulse, and fit the ONE collision equation to any story — at rest, stuck together or recoil — then rearrange it before any number goes in.',
-    objectiveVn: 'Em có thể ghi dấu cho động lượng theo hướng của nó, dùng xung lượng, và điều chỉnh MỘT phương trình va chạm cho mọi đề bài — đứng yên, dính vào nhau hay giật lùi — rồi biến đổi nó trước khi thay số.',
-    warmUp: 'A shopping trolley and a truck both roll toward you at walking speed. Which would you rather stop with your hands, and why? Write one sentence.',
-    warmUpVn: 'Một chiếc xe đẩy siêu thị và một chiếc xe tải cùng lăn về phía em với tốc độ đi bộ. Em muốn dùng tay chặn cái nào hơn, và vì sao? Viết một câu.',
+    objective: 'I can find momentum and impulse, use + and − to show direction, and solve any collision with ONE equation — rearranged before the numbers go in.',
+    objectiveVn: 'Em có thể tính động lượng và xung lượng, dùng + và − để chỉ hướng, và giải mọi bài va chạm bằng MỘT phương trình — biến đổi xong rồi mới thay số.',
+    warmUp: 'A shopping trolley and a truck both roll toward you at walking speed. Which one would you rather stop with your hands? Why? Write one sentence.',
+    warmUpVn: 'Một chiếc xe đẩy siêu thị và một chiếc xe tải cùng lăn về phía em với tốc độ đi bộ. Em muốn dùng tay chặn cái nào hơn? Vì sao? Viết một câu.',
   },
 
   {
@@ -87,8 +100,8 @@ export const notes = [
       labelVn: 'Xem đáp án',
       prompt: 'Multiply each mass by its speed.',
       promptVn: 'Nhân khối lượng của mỗi vật với tốc độ của nó.',
-      answer: 'Almost a **tie**. Baseball: $0.145 \\times 42.0 = 6.09$. Dog: $12.0 \\times 0.500 = 6.00$. What makes a moving thing hard to stop is its mass AND its speed **together** — a light, fast ball and a heavy, slow dog can carry the same amount. Mass times velocity has a name: **momentum**.',
-      answerVn: 'Gần như **bằng nhau**. Bóng chày: $0.145 \\times 42.0 = 6.09$. Con chó: $12.0 \\times 0.500 = 6.00$. Điều làm một vật đang chuyển động khó dừng là khối lượng VÀ tốc độ của nó **cùng lúc** — một quả bóng nhẹ mà nhanh và một con chó nặng mà chậm có thể mang cùng một lượng. Khối lượng nhân vận tốc có một cái tên: **động lượng**.',
+      answer: 'Almost a **tie**. Baseball: $0.145 \\times 42.0 = 6.09$. Dog: $12.0 \\times 0.500 = 6.00$. How hard a moving thing is to stop depends on its mass AND its speed **together**. Mass × velocity has a name: **momentum**.',
+      answerVn: 'Gần như **bằng nhau**. Bóng chày: $0.145 \\times 42.0 = 6.09$. Con chó: $12.0 \\times 0.500 = 6.00$. Một vật đang chuyển động khó dừng đến mức nào phụ thuộc vào khối lượng VÀ tốc độ của nó **cùng lúc**. Khối lượng × vận tốc có một cái tên: **động lượng**.',
     },
   },
 
@@ -105,8 +118,8 @@ export const notes = [
     labelIcon: 'Pencil',
     text: '$p = m v$',
     textVn: '$p = m v$',
-    sub: 'Momentum is mass times velocity. It is what makes a moving thing hard to stop.',
-    subVn: 'Động lượng là khối lượng nhân vận tốc. Đó là thứ làm một vật đang chuyển động khó dừng lại.',
+    sub: 'Momentum = mass × velocity. The more momentum something has, the harder it is to stop.',
+    subVn: 'Động lượng = khối lượng × vận tốc. Vật có động lượng càng lớn thì càng khó dừng.',
     notes: [
       {
         tone: 'write',
@@ -115,8 +128,8 @@ export const notes = [
       },
       {
         tone: 'info',
-        text: 'The unit is just the two units multiplied: kg × m/s = **kg·m/s**. Acellus writes it kg · m/s. The letter is $p$, not $m$ — $m$ is already taken by mass.',
-        textVn: 'Đơn vị chỉ là hai đơn vị nhân với nhau: kg × m/s = **kg·m/s**. Acellus viết là kg · m/s. Chữ cái là $p$, không phải $m$ — $m$ đã dùng cho khối lượng rồi.',
+        text: 'The unit is the two units multiplied: kg × m/s = **kg·m/s**. The letter for momentum is $p$, not $m$ — because $m$ already means mass.',
+        textVn: 'Đơn vị là hai đơn vị nhân với nhau: kg × m/s = **kg·m/s**. Chữ cái của động lượng là $p$, không phải $m$ — vì $m$ đã có nghĩa là khối lượng.',
       },
     ],
     check: {
@@ -130,8 +143,57 @@ export const notes = [
         { val: 'D', text: '$0.0125$ kg·m/s', textVn: '$0.0125$ kg·m/s' },
       ],
       correct: 'C',
-      expEn: '$p = m v = 1200 \\times 15.0 = 18{,}000$ kg·m/s. Option A divided the mass by the speed, option B added them, and option D divided the speed by the mass. Momentum is always a MULTIPLICATION.',
-      expVn: '$p = m v = 1200 \\times 15.0 = 18{,}000$ kg·m/s. Phương án A chia khối lượng cho tốc độ, phương án B cộng chúng, và phương án D chia tốc độ cho khối lượng. Động lượng luôn là một phép NHÂN.',
+      expEn: '$p = m v = 1200 \\times 15.0 = 18{,}000$ kg·m/s. A divided the mass by the speed. B added them. D divided the speed by the mass. Momentum is always a MULTIPLICATION.',
+      expVn: '$p = m v = 1200 \\times 15.0 = 18{,}000$ kg·m/s. A chia khối lượng cho tốc độ. B cộng chúng. D chia tốc độ cho khối lượng. Động lượng luôn là một phép NHÂN.',
+    },
+  },
+
+  {
+    layout: 'steps',
+    accent: INDIGO,
+    icon: 'ListChecks',
+    dense: true,
+    eyebrow: 'From your Acellus screen · use these five lines on every question',
+    eyebrowVn: 'Từ màn hình Acellus của em · dùng năm dòng này cho mọi câu hỏi',
+    title: 'The Method: Five Lines',
+    titleVn: 'Phương Pháp: Năm Dòng',
+    content: '**A baseball has a mass of 0.145 kg. A pitcher\'s fastball travels at 42.0 m/s. Suppose a dog has a mass of 12.0 kg. What speed must the dog be walking in order to have the same momentum as the fastball?**\n\nThe same five lines as the last module. Use them on EVERY question in this lesson.',
+    contentVn: '**Một quả bóng chày có khối lượng 0.145 kg. Cú ném nhanh bay với tốc độ 42.0 m/s. Giả sử một con chó có khối lượng 12.0 kg. Con chó phải đi với tốc độ bao nhiêu để có cùng động lượng với quả bóng?**\n\nVẫn năm dòng như bài trước. Dùng chúng cho MỌI câu hỏi trong bài này.',
+    steps: [
+      {
+        text: '**Pieces.** List every number with its unit. Ball: $m_1 = 0.145$ kg, $v_1 = 42.0$ m/s. Dog: $m_2 = 12.0$ kg, $v_2 = ?$',
+        textVn: '**Các đại lượng.** Liệt kê mọi con số kèm đơn vị. Bóng: $m_1 = 0.145$ kg, $v_1 = 42.0$ m/s. Chó: $m_2 = 12.0$ kg, $v_2 = ?$',
+      },
+      {
+        text: '**Formula.** "The same momentum" means $p_1 = p_2$, so $m_1 v_1 = m_2 v_2$.',
+        textVn: '**Công thức.** "Cùng động lượng" nghĩa là $p_1 = p_2$, nên $m_1 v_1 = m_2 v_2$.',
+      },
+      {
+        text: '**Rearrange — letters only.** $v_2$ is multiplied by $m_2$, so divide both sides by $m_2$: $v_2 = \\dfrac{m_1 v_1}{m_2}$',
+        textVn: '**Biến đổi — chỉ dùng chữ.** $v_2$ đang nhân với $m_2$, nên chia cả hai vế cho $m_2$: $v_2 = \\dfrac{m_1 v_1}{m_2}$',
+      },
+      {
+        text: '**Substitute.** $v_2 = \\dfrac{0.145 \\times 42.0}{12.0}$',
+        textVn: '**Thay số.** $v_2 = \\dfrac{0.145 \\times 42.0}{12.0}$',
+      },
+      {
+        text: '**Answer, with a unit.** $v_2 = 0.508$ m/s — a slow walk. The dog is about 83 times heavier than the ball, so it can move about 83 times more slowly.',
+        textVn: '**Đáp án, kèm đơn vị.** $v_2 = 0.508$ m/s — một bước đi chậm. Con chó nặng hơn quả bóng khoảng 83 lần, nên nó chỉ cần đi chậm hơn khoảng 83 lần.',
+      },
+    ],
+    check: {
+      id: 'chk_meteor_mass',
+      q: 'A 0.635 kg basketball travels at 31.5 m/s. A meteor moves at 4.10 m/s with the same momentum. Which line 3 finds the meteor\'s MASS?',
+      qVn: 'Một quả bóng rổ 0.635 kg bay với tốc độ 31.5 m/s. Một thiên thạch chuyển động 4.10 m/s với cùng động lượng. Dòng 3 nào tìm KHỐI LƯỢNG của thiên thạch?',
+      options: [
+        { val: 'A', text: '$m_2 = \\dfrac{m_1 v_1}{v_2}$', textVn: '$m_2 = \\dfrac{m_1 v_1}{v_2}$' },
+        { val: 'B', text: '$m_2 = \\dfrac{v_2}{m_1 v_1}$', textVn: '$m_2 = \\dfrac{v_2}{m_1 v_1}$' },
+        { val: 'C', text: '$m_2 = m_1 v_1 v_2$', textVn: '$m_2 = m_1 v_1 v_2$' },
+        { val: 'D', text: '$m_2 = m_1 v_1 - v_2$', textVn: '$m_2 = m_1 v_1 - v_2$' },
+      ],
+      correct: 'A',
+      expEn: 'In $m_1 v_1 = m_2 v_2$, the target $m_2$ is multiplied by $v_2$. So divide both sides by $v_2$: $m_2 = \\dfrac{m_1 v_1}{v_2} = \\dfrac{0.635 \\times 31.5}{4.10} = 4.88$ kg. B is upside down. C multiplies instead of dividing. D subtracts — but nothing was added.',
+      expVn: 'Trong $m_1 v_1 = m_2 v_2$, ẩn $m_2$ đang nhân với $v_2$. Nên chia cả hai vế cho $v_2$: $m_2 = \\dfrac{m_1 v_1}{v_2} = \\dfrac{0.635 \\times 31.5}{4.10} = 4.88$ kg. B bị lộn ngược. C nhân thay vì chia. D trừ — nhưng có gì được cộng đâu.',
     },
   },
 
@@ -140,13 +202,13 @@ export const notes = [
     accent: AMBER,
     icon: 'ArrowLeftRight',
     ratio: 40,
-    eyebrow: 'The part the answer box always asks about',
-    eyebrowVn: 'Phần mà ô đáp án luôn hỏi đến',
+    eyebrow: 'The part Acellus always checks',
+    eyebrowVn: 'Phần mà Acellus luôn kiểm tra',
     title: 'Direction Is a Sign',
     titleVn: 'Hướng Là Một Dấu',
     inlineSvg: DIAGRAMS.SIGN_LINE,
-    content: 'Momentum has a direction, and on a straight line there are only two: this way or that way. Physics writes the direction as a **sign**.\n\nOne direction is positive — the question usually tells you ("right is +, left is −") — and anything moving the other way gets a **minus** sign. The minus does not mean "less". It means "the other way".',
-    contentVn: 'Động lượng có hướng, và trên một đường thẳng chỉ có hai hướng: chiều này hoặc chiều kia. Vật lý viết hướng bằng một **dấu**.\n\nMột hướng là dương — đề bài thường cho sẵn ("phải là +, trái là −") — và bất cứ thứ gì chuyển động theo hướng kia đều mang dấu **trừ**. Dấu trừ không có nghĩa là "ít hơn". Nó có nghĩa là "hướng ngược lại".',
+    content: 'On a straight line, a thing can move only two ways: this way or that way. Physics shows the direction with a **sign**.\n\nThe question tells you which way is **+** (for example, "right is +, left is −"). Anything moving the other way gets a **minus** sign.\n\nThe minus does NOT mean "less". It means "the other way".',
+    contentVn: 'Trên một đường thẳng, vật chỉ có thể đi theo hai hướng: chiều này hoặc chiều kia. Vật lý thể hiện hướng bằng một **dấu**.\n\nĐề bài cho biết hướng nào là **+** (ví dụ: "phải là +, trái là −"). Vật nào đi theo hướng kia thì mang dấu **trừ**.\n\nDấu trừ KHÔNG có nghĩa là "ít hơn". Nó có nghĩa là "hướng ngược lại".',
     notes: [
       {
         tone: 'write',
@@ -165,8 +227,8 @@ export const notes = [
         { val: 'D', text: '$-12.1$ kg·m/s', textVn: '$-12.1$ kg·m/s' },
       ],
       correct: 'B',
-      expEn: '$p = m v = 2.27 \\times (-9.80) = -22.2$ kg·m/s. The size comes from the multiplication; the minus comes from "left". Option A lost the direction. Option C divided $9.80 \\div 2.27$. Option D added the two numbers.',
-      expVn: '$p = m v = 2.27 \\times (-9.80) = -22.2$ kg·m/s. Độ lớn đến từ phép nhân; dấu trừ đến từ "trái". Phương án A làm mất hướng. Phương án C chia $9.80 \\div 2.27$. Phương án D cộng hai số lại.',
+      expEn: '$p = m v = 2.27 \\times (-9.80) = -22.2$ kg·m/s. The size comes from the multiplication. The minus comes from "left". A lost the direction. C divided $9.80 \\div 2.27$. D added the two numbers.',
+      expVn: '$p = m v = 2.27 \\times (-9.80) = -22.2$ kg·m/s. Độ lớn đến từ phép nhân. Dấu trừ đến từ "trái". A làm mất hướng. C chia $9.80 \\div 2.27$. D cộng hai số lại.',
     },
   },
 
@@ -174,32 +236,33 @@ export const notes = [
     layout: 'steps',
     accent: AMBER,
     icon: 'Sigma',
-    eyebrow: 'From your Acellus screen',
-    eyebrowVn: 'Từ màn hình Acellus của em',
+    dense: true,
+    eyebrow: 'From your Acellus screen · signs in action',
+    eyebrowVn: 'Từ màn hình Acellus của em · dùng dấu trong bài',
     title: 'The Total Momentum of Two Balls',
     titleVn: 'Tổng Động Lượng Của Hai Quả Bóng',
-    content: '**A 0.907 kg ball moving at 23.4 m/s to the right strikes a 2.27 kg ball moving 9.80 m/s to the left. What is the total momentum of the two balls?**\n\nMomenta add — signs included. That is the whole question.',
-    contentVn: '**Một quả bóng 0.907 kg chuyển động với tốc độ 23.4 m/s sang phải va vào một quả bóng 2.27 kg đang chuyển động 9.80 m/s sang trái. Tổng động lượng của hai quả bóng là bao nhiêu?**\n\nCác động lượng cộng lại — kèm cả dấu. Cả câu hỏi chỉ có vậy.',
+    content: '**A 0.907 kg ball moving at 23.4 m/s to the right strikes a 2.27 kg ball moving 9.80 m/s to the left. What is the total momentum of the two balls?**\n\nTo find a total, add the two momenta — signs included.',
+    contentVn: '**Một quả bóng 0.907 kg chuyển động với tốc độ 23.4 m/s sang phải va vào một quả bóng 2.27 kg đang chuyển động 9.80 m/s sang trái. Tổng động lượng của hai quả bóng là bao nhiêu?**\n\nĐể tìm tổng, cộng hai động lượng lại — kèm cả dấu.',
     steps: [
       {
-        text: '**Pieces, with units and signs.** $m_1 = 0.907$ kg, $v_1 = +23.4$ m/s (right). $m_2 = 2.27$ kg, $v_2 = -9.80$ m/s (left).',
-        textVn: '**Các đại lượng, kèm đơn vị và dấu.** $m_1 = 0.907$ kg, $v_1 = +23.4$ m/s (phải). $m_2 = 2.27$ kg, $v_2 = -9.80$ m/s (trái).',
+        text: '**Pieces, with signs.** Ball 1: $m_1 = 0.907$ kg, $v_1 = +23.4$ m/s (right). Ball 2: $m_2 = 2.27$ kg, $v_2 = -9.80$ m/s (left).',
+        textVn: '**Các đại lượng, kèm dấu.** Bóng 1: $m_1 = 0.907$ kg, $v_1 = +23.4$ m/s (phải). Bóng 2: $m_2 = 2.27$ kg, $v_2 = -9.80$ m/s (trái).',
       },
       {
-        text: '**Formula.** Total momentum is the two momenta added: $p = m_1 v_1 + m_2 v_2$. $p$ is already the subject.',
-        textVn: '**Công thức.** Tổng động lượng là hai động lượng cộng lại: $p = m_1 v_1 + m_2 v_2$. $p$ đã là chủ thể.',
+        text: '**Formula.** Total momentum = the two momenta added: $p = m_1 v_1 + m_2 v_2$',
+        textVn: '**Công thức.** Tổng động lượng = hai động lượng cộng lại: $p = m_1 v_1 + m_2 v_2$',
       },
       {
-        text: '**Substitute — a negative number goes in brackets:** $p = 0.907 \\times 23.4 + 2.27 \\times (-9.80)$.',
-        textVn: '**Thay số — số âm đặt trong ngoặc:** $p = 0.907 \\times 23.4 + 2.27 \\times (-9.80)$.',
+        text: '**Rearrange.** Nothing to do — $p$ is already alone on one side.',
+        textVn: '**Biến đổi.** Không cần làm gì — $p$ đã đứng một mình ở một vế.',
       },
       {
-        text: '**Calculate:** $p = 21.22 + (-22.25) = -1.02$ kg·m/s.',
-        textVn: '**Tính:** $p = 21.22 + (-22.25) = -1.02$ kg·m/s.',
+        text: '**Substitute — a negative number goes in brackets.** $p = 0.907 \\times 23.4 + 2.27 \\times (-9.80)$',
+        textVn: '**Thay số — số âm đặt trong ngoặc.** $p = 0.907 \\times 23.4 + 2.27 \\times (-9.80)$',
       },
       {
-        text: '**Say what the sign means.** The total is small and **negative**: the heavier ball, going left, carries slightly more momentum, so the pair together points LEFT.',
-        textVn: '**Nói dấu có nghĩa gì.** Tổng nhỏ và **âm**: quả bóng nặng hơn, đi sang trái, mang động lượng lớn hơn một chút, nên cả cặp hướng sang TRÁI.',
+        text: '**Answer.** $p = 21.22 + (-22.25) = -1.02$ kg·m/s. Negative: ball 2 carries a little more momentum, so the total points LEFT.',
+        textVn: '**Đáp án.** $p = 21.22 + (-22.25) = -1.02$ kg·m/s. Âm: bóng 2 mang động lượng lớn hơn một chút, nên tổng hướng sang TRÁI.',
       },
     ],
     check: {
@@ -213,56 +276,8 @@ export const notes = [
         { val: 'D', text: 'Used $+9.80$ for the ball moving left', textVn: 'Dùng $+9.80$ cho quả bóng đi sang trái' },
       ],
       correct: 'D',
-      expEn: '$0.907 \\times 23.4 + 2.27 \\times 9.80 = 21.2 + 22.2 = 43.5$. That treats both balls as going right, so the two momenta add up instead of nearly cancelling. The ball moving left must go in as $-9.80$.',
-      expVn: '$0.907 \\times 23.4 + 2.27 \\times 9.80 = 21.2 + 22.2 = 43.5$. Như vậy là coi cả hai quả bóng đều đi sang phải, nên hai động lượng cộng dồn thay vì gần như triệt tiêu. Quả bóng đi sang trái phải được thay bằng $-9.80$.',
-    },
-  },
-
-  {
-    layout: 'steps',
-    accent: INDIGO,
-    icon: 'ListChecks',
-    eyebrow: 'From your Acellus screen · the method, used on every question from now on',
-    eyebrowVn: 'Từ màn hình Acellus của em · phương pháp dùng cho mọi câu từ giờ trở đi',
-    title: 'The Method: Five Lines, With Signs',
-    titleVn: 'Phương Pháp: Năm Dòng, Kèm Dấu',
-    content: '**A baseball has a mass of 0.145 kg. A pitcher\'s fastball travels at 42.0 m/s. Suppose a dog has a mass of 12.0 kg. What speed must the dog be walking in order to have the same momentum as the fastball?**\n\nThe same five lines as last module — with one addition to line 1.',
-    contentVn: '**Một quả bóng chày có khối lượng 0.145 kg. Cú ném nhanh bay với tốc độ 42.0 m/s. Giả sử một con chó có khối lượng 12.0 kg. Con chó phải đi với tốc độ bao nhiêu để có cùng động lượng với quả bóng?**\n\nVẫn năm dòng như bài trước — thêm một điều ở dòng 1.',
-    steps: [
-      {
-        text: '**List the pieces, with units AND signs.** Ball: $m_1 = 0.145$ kg, $v_1 = 42.0$ m/s. Dog: $m_2 = 12.0$ kg, $v_2 = ?$',
-        textVn: '**Liệt kê các đại lượng, kèm đơn vị VÀ dấu.** Bóng: $m_1 = 0.145$ kg, $v_1 = 42.0$ m/s. Chó: $m_2 = 12.0$ kg, $v_2 = ?$',
-      },
-      {
-        text: '**Write the formula.** "The same momentum" means $p_1 = p_2$: $m_1 v_1 = m_2 v_2$.',
-        textVn: '**Viết công thức.** "Cùng động lượng" nghĩa là $p_1 = p_2$: $m_1 v_1 = m_2 v_2$.',
-      },
-      {
-        text: '**Rearrange with letters.** $v_2$ is multiplied by $m_2$ → divide both sides by $m_2$: $v_2 = \\dfrac{m_1 v_1}{m_2}$.',
-        textVn: '**Biến đổi bằng chữ.** $v_2$ đang nhân với $m_2$ → chia cả hai vế cho $m_2$: $v_2 = \\dfrac{m_1 v_1}{m_2}$.',
-      },
-      {
-        text: '**Substitute:** $v_2 = \\dfrac{0.145 \\times 42.0}{12.0}$.',
-        textVn: '**Thay số:** $v_2 = \\dfrac{0.145 \\times 42.0}{12.0}$.',
-      },
-      {
-        text: '**Answer with a unit:** $v_2 = 0.508$ m/s. A slow walk — the dog is 83 times heavier, so it needs 83 times less speed.',
-        textVn: '**Trả lời kèm đơn vị:** $v_2 = 0.508$ m/s. Một bước đi chậm — con chó nặng gấp 83 lần, nên nó cần tốc độ nhỏ hơn 83 lần.',
-      },
-    ],
-    check: {
-      id: 'chk_meteor_mass',
-      q: 'A 0.635 kg basketball travels at 31.5 m/s. A meteor moves at 4.10 m/s with the same momentum. Which line 3 finds the meteor\'s MASS?',
-      qVn: 'Một quả bóng rổ 0.635 kg bay với tốc độ 31.5 m/s. Một thiên thạch chuyển động 4.10 m/s với cùng động lượng. Dòng 3 nào tìm KHỐI LƯỢNG của thiên thạch?',
-      options: [
-        { val: 'A', text: '$m_2 = \\dfrac{m_1 v_1}{v_2}$', textVn: '$m_2 = \\dfrac{m_1 v_1}{v_2}$' },
-        { val: 'B', text: '$m_2 = \\dfrac{v_2}{m_1 v_1}$', textVn: '$m_2 = \\dfrac{v_2}{m_1 v_1}$' },
-        { val: 'C', text: '$m_2 = m_1 v_1 v_2$', textVn: '$m_2 = m_1 v_1 v_2$' },
-        { val: 'D', text: '$m_2 = m_1 v_1 - v_2$', textVn: '$m_2 = m_1 v_1 - v_2$' },
-      ],
-      correct: 'A',
-      expEn: 'In $m_1 v_1 = m_2 v_2$ the target $m_2$ is multiplied by $v_2$, so divide both sides by $v_2$: $m_2 = \\dfrac{m_1 v_1}{v_2} = \\dfrac{0.635 \\times 31.5}{4.10} = 4.88$ kg. Option B is upside down; C multiplied instead of dividing; D subtracted — but nothing was added.',
-      expVn: 'Trong $m_1 v_1 = m_2 v_2$, ẩn $m_2$ đang nhân với $v_2$, nên chia cả hai vế cho $v_2$: $m_2 = \\dfrac{m_1 v_1}{v_2} = \\dfrac{0.635 \\times 31.5}{4.10} = 4.88$ kg. Phương án B bị lộn ngược; C nhân thay vì chia; D trừ — nhưng có gì được cộng đâu.',
+      expEn: '$0.907 \\times 23.4 + 2.27 \\times 9.80 = 21.2 + 22.2 = 43.5$. That treats both balls as moving right, so the two momenta add up instead of almost cancelling. The ball moving left must go in as $-9.80$.',
+      expVn: '$0.907 \\times 23.4 + 2.27 \\times 9.80 = 21.2 + 22.2 = 43.5$. Như vậy là coi cả hai quả bóng đều đi sang phải, nên hai động lượng cộng dồn thay vì gần như triệt tiêu nhau. Quả bóng đi sang trái phải được thay bằng $-9.80$.',
     },
   },
 
@@ -279,8 +294,8 @@ export const notes = [
     labelIcon: 'Pencil',
     text: '$J = F \\Delta t$',
     textVn: '$J = F \\Delta t$',
-    sub: 'A force F pushing for a time Δt gives an impulse J. A bigger push, or a longer one, gives more.',
-    subVn: 'Một lực F đẩy trong thời gian Δt tạo ra một xung lượng J. Đẩy mạnh hơn, hoặc lâu hơn, thì xung lượng lớn hơn.',
+    sub: 'A force F pushing for a time Δt gives an impulse J. Push harder, or push for longer, and the impulse is bigger.',
+    subVn: 'Một lực F đẩy trong thời gian Δt tạo ra một xung lượng J. Đẩy mạnh hơn, hoặc đẩy lâu hơn, thì xung lượng lớn hơn.',
     notes: [
       {
         tone: 'write',
@@ -289,8 +304,8 @@ export const notes = [
       },
       {
         tone: 'info',
-        text: '$\\Delta$ (delta) means **"change in"**. $\\Delta t$ is a length of time — the 0.0880 s the bat touches the ball — not a moment.',
-        textVn: '$\\Delta$ (delta) nghĩa là **"độ thay đổi của"**. $\\Delta t$ là một khoảng thời gian — 0.0880 s cây gậy chạm vào bóng — không phải một thời điểm.',
+        text: '$\\Delta$ (delta) means **"change in"**. $\\Delta t$ is a length of time: how long the push lasts. For a bat hitting a ball, it is about 0.0880 s.',
+        textVn: '$\\Delta$ (delta) nghĩa là **"độ thay đổi của"**. $\\Delta t$ là một khoảng thời gian: cú đẩy kéo dài bao lâu. Khi cây gậy đánh quả bóng, nó khoảng 0.0880 s.',
       },
     ],
     check: {
@@ -304,41 +319,32 @@ export const notes = [
         { val: 'D', text: 'They are all the same', textVn: 'Tất cả bằng nhau' },
       ],
       correct: 'B',
-      expEn: 'Multiply force by time: A gives $400 \\times 0.10 = 40$ N·s, B gives $100 \\times 0.50 = 50$ N·s, C gives $20 \\times 1.5 = 30$ N·s. The biggest force (A) is not the biggest impulse — time counts just as much.',
-      expVn: 'Nhân lực với thời gian: A cho $400 \\times 0.10 = 40$ N·s, B cho $100 \\times 0.50 = 50$ N·s, C cho $20 \\times 1.5 = 30$ N·s. Lực lớn nhất (A) không phải xung lượng lớn nhất — thời gian quan trọng không kém.',
+      expEn: 'Multiply force by time. A: $400 \\times 0.10 = 40$ N·s. B: $100 \\times 0.50 = 50$ N·s. C: $20 \\times 1.5 = 30$ N·s. The biggest force (A) is not the biggest impulse — the time counts just as much.',
+      expVn: 'Nhân lực với thời gian. A: $400 \\times 0.10 = 40$ N·s. B: $100 \\times 0.50 = 50$ N·s. C: $20 \\times 1.5 = 30$ N·s. Lực lớn nhất (A) không tạo ra xung lượng lớn nhất — thời gian cũng quan trọng không kém.',
     },
   },
 
   {
-    layout: 'steps',
+    layout: 'stack',
     accent: GREEN,
     icon: 'Variable',
+    columns: 1,
     eyebrow: 'Derived, not memorised',
     eyebrowVn: 'Suy ra, không học thuộc',
-    title: 'Impulse Is the Change in Momentum',
-    titleVn: 'Xung Lượng Là Độ Thay Đổi Động Lượng',
-    content: 'You already know $F = m a$. Four moves turn it into the impulse equation — and every move is one you have used before.',
-    contentVn: 'Em đã biết $F = m a$. Bốn bước biến nó thành phương trình xung lượng — và bước nào em cũng đã dùng rồi.',
-    steps: [
+    title: 'Impulse = Change in Momentum',
+    titleVn: 'Xung Lượng = Độ Thay Đổi Động Lượng',
+    content: 'Start from Newton\'s second law, $F = m a$. Acceleration is the change in velocity divided by the time — final minus initial:\n$$a = \\dfrac{v_f - v_i}{\\Delta t}$$\nPut that in place of $a$:\n$$F = \\dfrac{m (v_f - v_i)}{\\Delta t}$$\n$\\Delta t$ is dividing, so multiply both sides by $\\Delta t$:\n$$F \\Delta t = m (v_f - v_i)$$\nThe left side is the **impulse**. The right side is $m v_f - m v_i$: the momentum after minus the momentum before — the **change in momentum**.',
+    contentVn: 'Bắt đầu từ định luật II Newton, $F = m a$. Gia tốc là độ thay đổi vận tốc chia cho thời gian — cuối trừ đầu:\n$$a = \\dfrac{v_f - v_i}{\\Delta t}$$\nThay nó vào chỗ $a$:\n$$F = \\dfrac{m (v_f - v_i)}{\\Delta t}$$\n$\\Delta t$ đang chia, nên nhân cả hai vế với $\\Delta t$:\n$$F \\Delta t = m (v_f - v_i)$$\nVế trái là **xung lượng**. Vế phải là $m v_f - m v_i$: động lượng sau trừ động lượng trước — **độ thay đổi động lượng**.',
+    notes: [
       {
-        text: '**Start** with Newton\'s second law: $F = m a$.',
-        textVn: '**Bắt đầu** với định luật II Newton: $F = m a$.',
+        tone: 'write',
+        text: '**Impulse = change in momentum:** $F \\Delta t = m (v_f - v_i)$\n$\\Delta v = v_f - v_i$ — always **final minus initial**.',
+        textVn: '**Xung lượng = độ thay đổi động lượng:** $F \\Delta t = m (v_f - v_i)$\n$\\Delta v = v_f - v_i$ — luôn là **cuối trừ đầu**.',
       },
       {
-        text: 'Acceleration is the change in velocity per second: $a = \\dfrac{v_f - v_i}{\\Delta t}$ — final minus initial, over the time.',
-        textVn: 'Gia tốc là độ thay đổi vận tốc mỗi giây: $a = \\dfrac{v_f - v_i}{\\Delta t}$ — cuối trừ đầu, chia cho thời gian.',
-      },
-      {
-        text: '**Substitute** it for $a$: $F = \\dfrac{m (v_f - v_i)}{\\Delta t}$.',
-        textVn: '**Thay** nó vào chỗ $a$: $F = \\dfrac{m (v_f - v_i)}{\\Delta t}$.',
-      },
-      {
-        text: '$\\Delta t$ is dividing → **multiply both sides by $\\Delta t$**: $F \\Delta t = m (v_f - v_i)$.',
-        textVn: '$\\Delta t$ đang chia → **nhân cả hai vế với $\\Delta t$**: $F \\Delta t = m (v_f - v_i)$.',
-      },
-      {
-        text: '**Read it.** Left: $F \\Delta t$ is the impulse. Right: $m v_f - m v_i$ is the momentum after minus the momentum before. **Impulse = change in momentum.** This is the line to copy onto your formula page.',
-        textVn: '**Đọc nó.** Vế trái: $F \\Delta t$ là xung lượng. Vế phải: $m v_f - m v_i$ là động lượng sau trừ động lượng trước. **Xung lượng = độ thay đổi động lượng.** Đây là dòng cần chép vào trang công thức.',
+        tone: 'plant',
+        text: 'Use this line when ONE object is pushed for a short time and its velocity changes — a bat hitting a ball, a ball bouncing off the floor.',
+        textVn: 'Dùng dòng này khi MỘT vật bị đẩy trong thời gian ngắn và vận tốc của nó thay đổi — cây gậy đánh quả bóng, quả bóng nảy lên khỏi sàn.',
       },
     ],
     check: {
@@ -352,8 +358,8 @@ export const notes = [
         { val: 'D', text: '$F = m (v_f - v_i) - \\Delta t$', textVn: '$F = m (v_f - v_i) - \\Delta t$' },
       ],
       correct: 'C',
-      expEn: '$F$ is multiplied by $\\Delta t$, so divide both sides by $\\Delta t$. The bracket $(v_f - v_i)$ travels as one piece — never split it. Option A multiplied instead of dividing; B is upside down; D subtracted a multiplier.',
-      expVn: '$F$ đang nhân với $\\Delta t$, nên chia cả hai vế cho $\\Delta t$. Ngoặc $(v_f - v_i)$ đi cùng nhau như một khối — đừng bao giờ tách nó. Phương án A nhân thay vì chia; B bị lộn ngược; D trừ đi một thừa số.',
+      expEn: '$F$ is multiplied by $\\Delta t$, so divide both sides by $\\Delta t$. The bracket $(v_f - v_i)$ moves as one piece — never split it. A multiplies instead of dividing. B is upside down. D subtracts something that was multiplying.',
+      expVn: '$F$ đang nhân với $\\Delta t$, nên chia cả hai vế cho $\\Delta t$. Ngoặc $(v_f - v_i)$ đi cùng nhau như một khối — đừng bao giờ tách nó. A nhân thay vì chia. B bị lộn ngược. D trừ đi một thứ đang nhân.',
     },
   },
 
@@ -379,8 +385,8 @@ export const notes = [
         { val: 'minus78', name: '$-78.0$ m/s', nameVn: '$-78.0$ m/s' },
       ],
       correct: 'plus78',
-      explain: '$\\Delta v = 37.0 - (-41.0)$. Subtracting a negative is ADDING: $37.0 + 41.0 = 78.0$ m/s. On a number line the ball\'s velocity goes from $-41$ all the way across zero to $+37$ — a change of 78, not 4. The answer $-4.0$ comes from dropping the minus sign of $v_i$: it is the most common mistake in this whole module. Put a negative number in brackets, on paper and on the calculator.',
-      explainVn: '$\\Delta v = 37.0 - (-41.0)$. Trừ một số âm là CỘNG: $37.0 + 41.0 = 78.0$ m/s. Trên trục số, vận tốc của quả bóng đi từ $-41$ vượt qua số 0 tới $+37$ — thay đổi 78, không phải 4. Đáp án $-4.0$ là do bỏ mất dấu trừ của $v_i$: đó là lỗi phổ biến nhất của cả bài này. Hãy đặt số âm trong ngoặc, trên giấy và trên máy tính.',
+      explain: '$\\Delta v = 37.0 - (-41.0)$. Taking away a negative is the same as ADDING: $37.0 + 41.0 = 78.0$ m/s. Picture a number line: the velocity goes from $-41$, across zero, up to $+37$ — a jump of 78, not 4. The answer $-4.0$ comes from losing the minus sign of $v_i$. It is the most common mistake in this lesson. Always put a negative number in brackets — on paper AND in the calculator.',
+      explainVn: '$\\Delta v = 37.0 - (-41.0)$. Trừ đi một số âm cũng giống như CỘNG: $37.0 + 41.0 = 78.0$ m/s. Hãy hình dung trục số: vận tốc đi từ $-41$, qua số 0, lên tới $+37$ — một bước nhảy 78, không phải 4. Đáp án $-4.0$ là do làm mất dấu trừ của $v_i$. Đó là lỗi phổ biến nhất của bài này. Luôn đặt số âm trong ngoặc — trên giấy VÀ trên máy tính.',
     },
   },
 
@@ -388,6 +394,7 @@ export const notes = [
     layout: 'steps',
     accent: RED,
     icon: 'Zap',
+    dense: true,
     eyebrow: 'From your Acellus screen · "Remember to indicate the direction (+ or −)"',
     eyebrowVn: 'Từ màn hình Acellus của em · "Nhớ ghi hướng (+ hoặc −)"',
     title: 'The Force of a Bat',
@@ -397,43 +404,33 @@ export const notes = [
     contentVn: '**Một cây gậy đánh vào quả bóng chày 0.150 kg trong 0.0880 s. Vận tốc của quả bóng thay đổi từ −41.0 m/s thành +37.0 m/s. Lực tác dụng lên quả bóng là bao nhiêu?**',
     steps: [
       {
-        text: '**Pieces:** $m = 0.150$ kg, $\\Delta t = 0.0880$ s, $v_i = -41.0$ m/s, $v_f = +37.0$ m/s, $F = ?$',
-        textVn: '**Các đại lượng:** $m = 0.150$ kg, $\\Delta t = 0.0880$ s, $v_i = -41.0$ m/s, $v_f = +37.0$ m/s, $F = ?$',
+        text: '**Pieces, with signs.** $m = 0.150$ kg, $\\Delta t = 0.0880$ s, $v_i = -41.0$ m/s, $v_f = +37.0$ m/s, $F = ?$',
+        textVn: '**Các đại lượng, kèm dấu.** $m = 0.150$ kg, $\\Delta t = 0.0880$ s, $v_i = -41.0$ m/s, $v_f = +37.0$ m/s, $F = ?$',
       },
       {
-        text: '**Formula:** $F \\Delta t = m (v_f - v_i)$. **Rearrange:** $\\Delta t$ is multiplying $F$ → divide both sides by $\\Delta t$: $F = \\dfrac{m (v_f - v_i)}{\\Delta t}$.',
-        textVn: '**Công thức:** $F \\Delta t = m (v_f - v_i)$. **Biến đổi:** $\\Delta t$ đang nhân với $F$ → chia cả hai vế cho $\\Delta t$: $F = \\dfrac{m (v_f - v_i)}{\\Delta t}$.',
+        text: '**Formula.** $F \\Delta t = m (v_f - v_i)$',
+        textVn: '**Công thức.** $F \\Delta t = m (v_f - v_i)$',
       },
       {
-        text: '**Substitute, negative in brackets:** $F = \\dfrac{0.150 \\times (37.0 - (-41.0))}{0.0880} = \\dfrac{0.150 \\times 78.0}{0.0880}$.',
-        textVn: '**Thay số, số âm trong ngoặc:** $F = \\dfrac{0.150 \\times (37.0 - (-41.0))}{0.0880} = \\dfrac{0.150 \\times 78.0}{0.0880}$.',
+        text: '**Rearrange.** $F$ is multiplied by $\\Delta t$, so divide both sides by $\\Delta t$: $F = \\dfrac{m (v_f - v_i)}{\\Delta t}$',
+        textVn: '**Biến đổi.** $F$ đang nhân với $\\Delta t$, nên chia cả hai vế cho $\\Delta t$: $F = \\dfrac{m (v_f - v_i)}{\\Delta t}$',
       },
       {
-        text: '**Answer with a unit and a sign:** $F = +133$ N. Positive: the bat pushes the ball to the right, the way it leaves.',
-        textVn: '**Trả lời kèm đơn vị và dấu:** $F = +133$ N. Dương: cây gậy đẩy quả bóng sang phải, theo hướng nó bay đi.',
+        text: '**Substitute — negative in brackets.** $F = \\dfrac{0.150 \\times (37.0 - (-41.0))}{0.0880} = \\dfrac{0.150 \\times 78.0}{0.0880}$',
+        textVn: '**Thay số — số âm trong ngoặc.** $F = \\dfrac{0.150 \\times (37.0 - (-41.0))}{0.0880} = \\dfrac{0.150 \\times 78.0}{0.0880}$',
+      },
+      {
+        text: '**Answer, with a unit and a sign.** $F = +133$ N. Positive: the bat pushes the ball to the RIGHT, the way it flies off.',
+        textVn: '**Đáp án, kèm đơn vị và dấu.** $F = +133$ N. Dương: cây gậy đẩy quả bóng sang PHẢI, theo hướng nó bay đi.',
       },
     ],
     reveal: {
-      label: 'What if you drop the minus sign?',
-      labelVn: 'Nếu bỏ mất dấu trừ thì sao?',
+      label: 'What if you lose the minus sign?',
+      labelVn: 'Nếu làm mất dấu trừ thì sao?',
       prompt: 'Use 41.0 instead of −41.0 for $v_i$. What force comes out?',
       promptVn: 'Dùng 41.0 thay cho −41.0 cho $v_i$. Lực tính ra bằng bao nhiêu?',
-      answer: '$37.0 - 41.0 = -4.0$, so $F = \\dfrac{0.150 \\times (-4.0)}{0.0880} = -6.82$ N — about **twenty times too small**, and pointing the **wrong way**. One lost minus sign, two wrong answers in one.',
-      answerVn: '$37.0 - 41.0 = -4.0$, nên $F = \\dfrac{0.150 \\times (-4.0)}{0.0880} = -6.82$ N — nhỏ hơn khoảng **hai mươi lần**, và hướng **ngược lại**. Mất một dấu trừ, sai hai thứ cùng lúc.',
-    },
-    check: {
-      id: 'chk_dv_basketball',
-      q: 'A basketball\'s velocity changes from −4.23 m/s to +3.85 m/s when it bounces. What is $\\Delta v$?',
-      qVn: 'Vận tốc của một quả bóng rổ thay đổi từ −4.23 m/s thành +3.85 m/s khi nảy lên. $\\Delta v$ bằng bao nhiêu?',
-      options: [
-        { val: 'A', text: '$-0.38$ m/s', textVn: '$-0.38$ m/s' },
-        { val: 'B', text: '$+8.08$ m/s', textVn: '$+8.08$ m/s' },
-        { val: 'C', text: '$-8.08$ m/s', textVn: '$-8.08$ m/s' },
-        { val: 'D', text: '$+0.38$ m/s', textVn: '$+0.38$ m/s' },
-      ],
-      correct: 'B',
-      expEn: '$\\Delta v = v_f - v_i = 3.85 - (-4.23) = 3.85 + 4.23 = +8.08$ m/s. Options A and D dropped the minus sign of $v_i$; option C did initial minus final — the order is always final minus initial.',
-      expVn: '$\\Delta v = v_f - v_i = 3.85 - (-4.23) = 3.85 + 4.23 = +8.08$ m/s. Phương án A và D bỏ mất dấu trừ của $v_i$; phương án C lấy đầu trừ cuối — thứ tự luôn là cuối trừ đầu.',
+      answer: '$37.0 - 41.0 = -4.0$, so $F = \\dfrac{0.150 \\times (-4.0)}{0.0880} = -6.82$ N. That is about **20 times too small**, and it points the **wrong way**. One lost minus sign gives two mistakes.',
+      answerVn: '$37.0 - 41.0 = -4.0$, nên $F = \\dfrac{0.150 \\times (-4.0)}{0.0880} = -6.82$ N. Như vậy nhỏ hơn khoảng **20 lần**, và hướng **ngược lại**. Mất một dấu trừ, sai hai thứ cùng lúc.',
     },
   },
 
@@ -441,28 +438,33 @@ export const notes = [
     layout: 'steps',
     accent: RED,
     icon: 'Timer',
-    eyebrow: 'From your Acellus screen · same formula, new target',
+    dense: true,
+    eyebrow: 'From your Acellus screen · same formula, new unknown',
     eyebrowVn: 'Từ màn hình Acellus của em · cùng công thức, ẩn số mới',
     title: 'How Long Was the Ball on the Floor?',
     titleVn: 'Quả Bóng Chạm Sàn Trong Bao Lâu?',
-    content: '**When a 0.622 kg basketball hits the floor, its velocity changes from −4.23 m/s to +3.85 m/s. If the average force was 72.9 N, how much time was it in contact with the floor?**\n\nThe target is $\\Delta t$ this time. Nothing else changes.',
-    contentVn: '**Khi một quả bóng rổ 0.622 kg chạm sàn, vận tốc của nó thay đổi từ −4.23 m/s thành +3.85 m/s. Nếu lực trung bình là 72.9 N, quả bóng tiếp xúc với sàn trong bao lâu?**\n\nLần này ẩn số là $\\Delta t$. Ngoài ra không có gì thay đổi.',
+    content: '**When a 0.622 kg basketball hits the floor, its velocity changes from −4.23 m/s to +3.85 m/s. If the average force was 72.9 N, how much time was it in contact with the floor?**\n\nThe same formula as the bat. This time the unknown is $\\Delta t$.',
+    contentVn: '**Khi một quả bóng rổ 0.622 kg chạm sàn, vận tốc của nó thay đổi từ −4.23 m/s thành +3.85 m/s. Nếu lực trung bình là 72.9 N, quả bóng tiếp xúc với sàn trong bao lâu?**\n\nCùng công thức với bài cây gậy. Lần này ẩn số là $\\Delta t$.',
     steps: [
       {
-        text: '**Pieces:** $m = 0.622$ kg, $v_i = -4.23$ m/s, $v_f = +3.85$ m/s, $F = 72.9$ N, $\\Delta t = ?$',
-        textVn: '**Các đại lượng:** $m = 0.622$ kg, $v_i = -4.23$ m/s, $v_f = +3.85$ m/s, $F = 72.9$ N, $\\Delta t = ?$',
+        text: '**Pieces, with signs.** $m = 0.622$ kg, $v_i = -4.23$ m/s, $v_f = +3.85$ m/s, $F = 72.9$ N, $\\Delta t = ?$',
+        textVn: '**Các đại lượng, kèm dấu.** $m = 0.622$ kg, $v_i = -4.23$ m/s, $v_f = +3.85$ m/s, $F = 72.9$ N, $\\Delta t = ?$',
       },
       {
-        text: '**Formula:** $F \\Delta t = m (v_f - v_i)$. **Rearrange:** $F$ is multiplying $\\Delta t$ → divide both sides by $F$: $\\Delta t = \\dfrac{m (v_f - v_i)}{F}$.',
-        textVn: '**Công thức:** $F \\Delta t = m (v_f - v_i)$. **Biến đổi:** $F$ đang nhân với $\\Delta t$ → chia cả hai vế cho $F$: $\\Delta t = \\dfrac{m (v_f - v_i)}{F}$.',
+        text: '**Formula.** $F \\Delta t = m (v_f - v_i)$',
+        textVn: '**Công thức.** $F \\Delta t = m (v_f - v_i)$',
       },
       {
-        text: '**Substitute:** $\\Delta t = \\dfrac{0.622 \\times (3.85 - (-4.23))}{72.9} = \\dfrac{0.622 \\times 8.08}{72.9}$.',
-        textVn: '**Thay số:** $\\Delta t = \\dfrac{0.622 \\times (3.85 - (-4.23))}{72.9} = \\dfrac{0.622 \\times 8.08}{72.9}$.',
+        text: '**Rearrange.** $\\Delta t$ is multiplied by $F$, so divide both sides by $F$: $\\Delta t = \\dfrac{m (v_f - v_i)}{F}$',
+        textVn: '**Biến đổi.** $\\Delta t$ đang nhân với $F$, nên chia cả hai vế cho $F$: $\\Delta t = \\dfrac{m (v_f - v_i)}{F}$',
       },
       {
-        text: '**Answer:** $\\Delta t = 0.0689$ s — about seven hundredths of a second. A bounce is quick.',
-        textVn: '**Đáp án:** $\\Delta t = 0.0689$ s — khoảng bảy phần trăm giây. Một cú nảy rất nhanh.',
+        text: '**Substitute — negative in brackets.** $\\Delta t = \\dfrac{0.622 \\times (3.85 - (-4.23))}{72.9} = \\dfrac{0.622 \\times 8.08}{72.9}$',
+        textVn: '**Thay số — số âm trong ngoặc.** $\\Delta t = \\dfrac{0.622 \\times (3.85 - (-4.23))}{72.9} = \\dfrac{0.622 \\times 8.08}{72.9}$',
+      },
+      {
+        text: '**Answer.** $\\Delta t = 0.0689$ s — about seven hundredths of a second. A bounce is quick.',
+        textVn: '**Đáp án.** $\\Delta t = 0.0689$ s — khoảng bảy phần trăm giây. Một cú nảy rất nhanh.',
       },
     ],
     check: {
@@ -476,8 +478,8 @@ export const notes = [
         { val: 'D', text: '$189$ N', textVn: '$189$ N' },
       ],
       correct: 'D',
-      expEn: '$F = \\dfrac{m (v_f - v_i)}{\\Delta t} = \\dfrac{0.622 \\times 8.08}{0.0266} = 189$ N. Option A is the impulse $m \\Delta v$ — the division by $\\Delta t$ was forgotten. B dropped the minus sign of $v_i$. C multiplied by $\\Delta t$ instead of dividing.',
-      expVn: '$F = \\dfrac{m (v_f - v_i)}{\\Delta t} = \\dfrac{0.622 \\times 8.08}{0.0266} = 189$ N. Phương án A là xung lượng $m \\Delta v$ — quên chia cho $\\Delta t$. B bỏ mất dấu trừ của $v_i$. C nhân với $\\Delta t$ thay vì chia.',
+      expEn: '$F = \\dfrac{m (v_f - v_i)}{\\Delta t} = \\dfrac{0.622 \\times 8.08}{0.0266} = 189$ N. A is the impulse $m \\Delta v$ — it forgot to divide by $\\Delta t$. B lost the minus sign of $v_i$. C multiplied by $\\Delta t$ instead of dividing.',
+      expVn: '$F = \\dfrac{m (v_f - v_i)}{\\Delta t} = \\dfrac{0.622 \\times 8.08}{0.0266} = 189$ N. A là xung lượng $m \\Delta v$ — quên chia cho $\\Delta t$. B làm mất dấu trừ của $v_i$. C nhân với $\\Delta t$ thay vì chia.',
     },
   },
 
@@ -491,8 +493,8 @@ export const notes = [
     title: 'In a Collision, Momentum Is Shared — Not Lost',
     titleVn: 'Trong Va Chạm, Động Lượng Được Chia Sẻ — Không Mất Đi',
     inlineSvg: DIAGRAMS.COLLISION_BEFORE_AFTER,
-    content: 'During the crash, cart 1 pushes cart 2 and cart 2 pushes cart 1 back — **equal and opposite forces** (Newton\'s third law), for exactly the **same time**. So their impulses are equal and opposite too.\n\nWhatever momentum one cart gains, the other loses. The **total** does not change.',
-    contentVn: 'Trong lúc va chạm, xe 1 đẩy xe 2 và xe 2 đẩy ngược lại xe 1 — **hai lực bằng nhau và ngược chiều** (định luật III Newton), trong **cùng một khoảng thời gian**. Nên xung lượng của chúng cũng bằng nhau và ngược chiều.\n\nXe này nhận thêm bao nhiêu động lượng thì xe kia mất đi bấy nhiêu. **Tổng** không thay đổi.',
+    content: 'When two carts crash, cart 1 pushes cart 2, and cart 2 pushes cart 1 back. The two pushes are **equal and opposite** (Newton\'s third law), and they last the **same time**.\n\nSo the momentum cart 2 gains is exactly the momentum cart 1 loses. The **total** stays the same.',
+    contentVn: 'Khi hai xe va chạm, xe 1 đẩy xe 2, và xe 2 đẩy ngược lại xe 1. Hai lực đẩy **bằng nhau và ngược chiều** (định luật III Newton), và kéo dài **cùng một khoảng thời gian**.\n\nNên động lượng xe 2 nhận thêm đúng bằng động lượng xe 1 mất đi. **Tổng** vẫn giữ nguyên.',
     notes: [
       {
         tone: 'write',
@@ -511,8 +513,8 @@ export const notes = [
         { val: 'D', text: 'Impossible to know without the masses', textVn: 'Không thể biết nếu không có khối lượng' },
       ],
       correct: 'B',
-      expEn: 'The total after equals the total before: $15.0 + (-35.0) = -20.0$ kg·m/s. You do not need the masses — you already have the momenta. Option A ignored B\'s minus sign. Momentum is never "used up" (C): it is only passed from one object to the other.',
-      expVn: 'Tổng sau bằng tổng trước: $15.0 + (-35.0) = -20.0$ kg·m/s. Không cần khối lượng — em đã có sẵn động lượng. Phương án A bỏ qua dấu trừ của B. Động lượng không bao giờ bị "tiêu hao" (C): nó chỉ được chuyển từ vật này sang vật kia.',
+      expEn: 'The total after equals the total before: $15.0 + (-35.0) = -20.0$ kg·m/s. You do not need the masses — you already have the momenta. A ignored B\'s minus sign. Momentum is never "used up" (C). It only passes from one object to the other.',
+      expVn: 'Tổng sau bằng tổng trước: $15.0 + (-35.0) = -20.0$ kg·m/s. Không cần khối lượng — em đã có sẵn động lượng. A bỏ qua dấu trừ của B. Động lượng không bao giờ bị "tiêu hao" (C). Nó chỉ được chuyển từ vật này sang vật kia.',
     },
   },
 
@@ -520,8 +522,8 @@ export const notes = [
     layout: 'statement',
     accent: RED,
     icon: 'Star',
-    eyebrow: 'The one collision equation — every other one comes from this',
-    eyebrowVn: 'Phương trình va chạm duy nhất — mọi phương trình khác đều từ đây',
+    eyebrow: 'The one collision equation — every other one comes from it',
+    eyebrowVn: 'Phương trình va chạm duy nhất — mọi phương trình khác đều từ nó mà ra',
     title: 'Conservation of Momentum',
     titleVn: 'Bảo Toàn Động Lượng',
     label: 'Write this down',
@@ -534,13 +536,13 @@ export const notes = [
     notes: [
       {
         tone: 'write',
-        text: 'Subscript **1** or **2** = which object.\nSubscript **i** = initial, BEFORE the collision. Subscript **f** = final, AFTER.\nSo $m_1 v_{1i}$ is the momentum of object 1 before, and $m_2 v_{2f}$ is the momentum of object 2 after.',
-        textVn: 'Chỉ số **1** hoặc **2** = vật nào.\nChỉ số **i** = ban đầu, TRƯỚC va chạm. Chỉ số **f** = cuối, SAU va chạm.\nVậy $m_1 v_{1i}$ là động lượng của vật 1 trước, và $m_2 v_{2f}$ là động lượng của vật 2 sau.',
+        text: 'Subscript **1** or **2** = which object.\nSubscript **i** = initial, BEFORE the collision. Subscript **f** = final, AFTER.\nSo $m_1 v_{1i}$ is object 1\'s momentum before, and $m_2 v_{2f}$ is object 2\'s momentum after.',
+        textVn: 'Chỉ số **1** hoặc **2** = vật nào.\nChỉ số **i** = ban đầu, TRƯỚC va chạm. Chỉ số **f** = cuối, SAU va chạm.\nVậy $m_1 v_{1i}$ là động lượng của vật 1 lúc trước, và $m_2 v_{2f}$ là động lượng của vật 2 lúc sau.',
       },
       {
-        tone: 'homework',
-        text: 'This is the ONLY collision equation to remember. The rest of this lesson is this equation with the story put into it.',
-        textVn: 'Đây là phương trình va chạm DUY NHẤT cần nhớ. Phần còn lại của bài chỉ là phương trình này với đề bài được đưa vào.',
+        tone: 'plant',
+        text: 'This is the ONLY collision equation you need to remember. Everything after this slide is this equation with the story put in.',
+        textVn: 'Đây là phương trình va chạm DUY NHẤT em cần nhớ. Mọi thứ sau trang này chỉ là phương trình này với đề bài được đưa vào.',
       },
     ],
     check: {
@@ -554,8 +556,8 @@ export const notes = [
         { val: 'D', text: '$m_1$', textVn: '$m_1$' },
       ],
       correct: 'C',
-      expEn: 'It is car **1**, and "afterwards" means AFTER the collision — final, $f$. So it is $v_{1f}$. Option A is car 1 before; option B is car 2 after. Reading the subscripts is half of every collision question.',
-      expVn: 'Đó là xe **1**, và "sau đó" nghĩa là SAU va chạm — cuối, $f$. Vậy đó là $v_{1f}$. Phương án A là xe 1 trước; phương án B là xe 2 sau. Đọc đúng chỉ số là một nửa của mọi câu hỏi va chạm.',
+      expEn: 'It is car **1**, and "afterwards" means AFTER the collision — final, $f$. So it is $v_{1f}$. A is car 1 BEFORE. B is car 2 after. Reading the subscripts right is half of every collision question.',
+      expVn: 'Đó là xe **1**, và "sau đó" nghĩa là SAU va chạm — cuối, $f$. Vậy đó là $v_{1f}$. A là xe 1 TRƯỚC va chạm. B là xe 2 sau va chạm. Đọc đúng chỉ số là một nửa của mọi câu hỏi va chạm.',
     },
   },
 
@@ -563,32 +565,33 @@ export const notes = [
     layout: 'steps',
     accent: PURPLE,
     icon: 'Boxes',
+    dense: true,
     eyebrow: 'From your Acellus screen',
     eyebrowVn: 'Từ màn hình Acellus của em',
     title: 'Block A and Block B',
     titleVn: 'Khối A và Khối B',
-    content: '**Before colliding, the momentum of Block A is +15.0 kg·m/s, and Block B is −35.0 kg·m/s. After, Block A has a momentum −12.0 kg·m/s. What is the momentum of Block B after the collision?**\n\nThe momenta are given, so write the equation with $p$ for each $m v$.',
-    contentVn: '**Trước va chạm, động lượng của khối A là +15.0 kg·m/s, và của khối B là −35.0 kg·m/s. Sau đó, khối A có động lượng −12.0 kg·m/s. Động lượng của khối B sau va chạm là bao nhiêu?**\n\nĐề cho sẵn động lượng, nên viết phương trình với $p$ thay cho mỗi $m v$.',
+    content: '**Before colliding, the momentum of Block A is +15.0 kg·m/s, and Block B is −35.0 kg·m/s. After, Block A has a momentum −12.0 kg·m/s. What is the momentum of Block B after the collision?**\n\nThe question gives momenta, not masses. So write the equation with one $p$ for each $m v$.',
+    contentVn: '**Trước va chạm, động lượng của khối A là +15.0 kg·m/s, và của khối B là −35.0 kg·m/s. Sau đó, khối A có động lượng −12.0 kg·m/s. Động lượng của khối B sau va chạm là bao nhiêu?**\n\nĐề bài cho động lượng, không cho khối lượng. Nên viết phương trình với một chữ $p$ thay cho mỗi $m v$.',
     steps: [
       {
-        text: '**Pieces:** $p_{1i} = +15.0$, $p_{2i} = -35.0$, $p_{1f} = -12.0$ (all kg·m/s), $p_{2f} = ?$',
-        textVn: '**Các đại lượng:** $p_{1i} = +15.0$, $p_{2i} = -35.0$, $p_{1f} = -12.0$ (đều là kg·m/s), $p_{2f} = ?$',
+        text: '**Pieces, with signs.** $p_{1i} = +15.0$, $p_{2i} = -35.0$, $p_{1f} = -12.0$ (all in kg·m/s), $p_{2f} = ?$',
+        textVn: '**Các đại lượng, kèm dấu.** $p_{1i} = +15.0$, $p_{2i} = -35.0$, $p_{1f} = -12.0$ (đều là kg·m/s), $p_{2f} = ?$',
       },
       {
-        text: '**Formula:** $p_{1i} + p_{2i} = p_{1f} + p_{2f}$.',
-        textVn: '**Công thức:** $p_{1i} + p_{2i} = p_{1f} + p_{2f}$.',
+        text: '**Formula.** $p_{1i} + p_{2i} = p_{1f} + p_{2f}$',
+        textVn: '**Công thức.** $p_{1i} + p_{2i} = p_{1f} + p_{2f}$',
       },
       {
-        text: '**Rearrange:** $p_{1f}$ is ADDED to the target → subtract it from both sides: $p_{2f} = p_{1i} + p_{2i} - p_{1f}$.',
-        textVn: '**Biến đổi:** $p_{1f}$ đang được CỘNG vào ẩn số → trừ nó ở cả hai vế: $p_{2f} = p_{1i} + p_{2i} - p_{1f}$.',
+        text: '**Rearrange.** $p_{1f}$ is ADDED to the target, so subtract it from both sides: $p_{2f} = p_{1i} + p_{2i} - p_{1f}$',
+        textVn: '**Biến đổi.** $p_{1f}$ đang được CỘNG vào ẩn số, nên trừ nó ở cả hai vế: $p_{2f} = p_{1i} + p_{2i} - p_{1f}$',
       },
       {
-        text: '**Substitute, every negative in brackets:** $p_{2f} = 15.0 + (-35.0) - (-12.0) = 15.0 - 35.0 + 12.0$.',
-        textVn: '**Thay số, mọi số âm trong ngoặc:** $p_{2f} = 15.0 + (-35.0) - (-12.0) = 15.0 - 35.0 + 12.0$.',
+        text: '**Substitute — every negative in brackets.** $p_{2f} = 15.0 + (-35.0) - (-12.0) = 15.0 - 35.0 + 12.0$',
+        textVn: '**Thay số — mọi số âm trong ngoặc.** $p_{2f} = 15.0 + (-35.0) - (-12.0) = 15.0 - 35.0 + 12.0$',
       },
       {
-        text: '**Answer:** $p_{2f} = -8.00$ kg·m/s. Check: before, $15.0 - 35.0 = -20.0$; after, $-12.0 + (-8.00) = -20.0$. Same total.',
-        textVn: '**Đáp án:** $p_{2f} = -8.00$ kg·m/s. Kiểm tra: trước, $15.0 - 35.0 = -20.0$; sau, $-12.0 + (-8.00) = -20.0$. Cùng tổng.',
+        text: '**Answer.** $p_{2f} = -8.00$ kg·m/s. Check it: before, $15.0 - 35.0 = -20.0$. After, $-12.0 + (-8.00) = -20.0$. Same total.',
+        textVn: '**Đáp án.** $p_{2f} = -8.00$ kg·m/s. Kiểm tra: trước, $15.0 - 35.0 = -20.0$. Sau, $-12.0 + (-8.00) = -20.0$. Cùng tổng.',
       },
     ],
     check: {
@@ -602,8 +605,8 @@ export const notes = [
         { val: 'D', text: 'There is no mistake', textVn: 'Không có lỗi nào' },
       ],
       correct: 'A',
-      expEn: 'The formula says $- p_{1f}$ and $p_{1f} = -12.0$, so it is $-(-12.0) = +12.0$. Writing the bracket, $-(-12.0)$, is what stops the second minus from vanishing. The $-35.0$ is right: Block B really was moving the negative way.',
-      expVn: 'Công thức ghi $- p_{1f}$ và $p_{1f} = -12.0$, nên đó là $-(-12.0) = +12.0$. Viết ngoặc, $-(-12.0)$, là điều giữ cho dấu trừ thứ hai không biến mất. $-35.0$ là đúng: khối B thật sự đang đi theo hướng âm.',
+      expEn: 'The formula says $- p_{1f}$, and $p_{1f} = -12.0$. So it is $-(-12.0) = +12.0$. Writing the bracket, $-(-12.0)$, stops the second minus from disappearing. The $-35.0$ is right: Block B really was moving the negative way.',
+      expVn: 'Công thức ghi $- p_{1f}$, và $p_{1f} = -12.0$. Nên đó là $-(-12.0) = +12.0$. Viết ngoặc, $-(-12.0)$, giúp dấu trừ thứ hai không bị mất. $-35.0$ là đúng: khối B thật sự đang đi theo hướng âm.',
     },
   },
 
@@ -616,15 +619,15 @@ export const notes = [
     title: 'One Equation, Three Stories',
     titleVn: 'Một Phương Trình, Ba Câu Chuyện',
     inlineSvg: DIAGRAMS.ONE_EQUATION,
-    caption: 'Acellus calls them collisions, inelastic collisions and recoil, but it is ONE equation, and three phrases in the question change it: **"at rest"** → that velocity is 0 and its term vanishes · **"stick together"** → the two final velocities are one $v_f$ · **"recoil" from rest** → the whole left side is 0.',
-    captionVn: 'Acellus gọi chúng là va chạm, va chạm mềm và giật lùi, nhưng đó là MỘT phương trình, và ba cụm từ trong đề bài thay đổi nó: **"đứng yên"** → vận tốc đó bằng 0 và số hạng của nó biến mất · **"dính vào nhau"** → hai vận tốc sau là một $v_f$ · **"giật lùi" từ trạng thái đứng yên** → cả vế trái bằng 0.',
+    caption: 'Acellus has three kinds of question — collisions, inelastic collisions and recoil — but they all use ONE equation. Three phrases change it: **"at rest"** → that velocity is 0, so its term vanishes · **"stick together"** → both objects share one final velocity $v_f$ · **"recoil"** (everything starts at rest) → the whole left side is 0.',
+    captionVn: 'Acellus có ba loại câu hỏi — va chạm, va chạm mềm và giật lùi — nhưng tất cả đều dùng MỘT phương trình. Ba cụm từ làm nó thay đổi: **"đứng yên"** → vận tốc đó bằng 0, nên số hạng của nó biến mất · **"dính vào nhau"** → hai vật có chung một vận tốc sau $v_f$ · **"giật lùi"** (mọi thứ bắt đầu đứng yên) → cả vế trái bằng 0.',
     activity: {
       type: 'sort',
       id: 'act_story_sort',
       prompt: 'Sort each line from an Acellus question: which story is it?',
       promptVn: 'Phân loại từng câu trong đề Acellus: đó là câu chuyện nào?',
-      explain: '"At rest", "stationary" and "sitting" zero ONE velocity before. "Stick together", "leaps into the hands of" and "move off together" make the two final velocities one. A rifle firing or skaters pushing off from standing start with EVERYTHING at rest — that is recoil.',
-      explainVn: '"Đứng yên", "không chuyển động" và "đang đậu" làm MỘT vận tốc trước bằng 0. "Dính vào nhau", "nhảy vào vòng tay" và "cùng chuyển động" làm hai vận tốc sau thành một. Súng bắn hay hai người trượt băng đẩy nhau ra từ tư thế đứng yên thì MỌI THỨ bắt đầu đứng yên — đó là giật lùi.',
+      explain: '"At rest", "stationary" and "sitting" make ONE velocity 0 before the crash. "Stick together", "leaps into the hands of" and "move off together" give the two objects one final velocity. A rifle firing, or skaters pushing off from standing still: EVERYTHING starts at rest — that is recoil.',
+      explainVn: '"Đứng yên", "không chuyển động" và "đang đậu" làm MỘT vận tốc bằng 0 trước va chạm. "Dính vào nhau", "nhảy vào vòng tay" và "cùng chuyển động" cho hai vật một vận tốc sau chung. Súng bắn, hay hai người trượt băng đẩy nhau ra từ tư thế đứng yên: MỌI THỨ bắt đầu đứng yên — đó là giật lùi.',
       bins: [
         { id: 'rest', name: 'One starts at rest', nameVn: 'Một vật đứng yên' },
         { id: 'stick', name: 'They stick together', nameVn: 'Chúng dính vào nhau' },
@@ -651,8 +654,8 @@ export const notes = [
     eyebrowVn: 'Câu chuyện 1 · suy ra chỉ bằng một bước',
     title: 'One Object Starts at Rest',
     titleVn: 'Một Vật Ban Đầu Đứng Yên',
-    content: 'Start from the one equation:\n\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$$\n\n"Car 2 is at rest" means $v_{2i} = 0$. Then $m_2 v_{2i} = m_2 \\times 0 = 0$ — car 2 brings **no momentum** into the crash, so its term simply vanishes:\n\n$$m_1 v_{1i} + \\cancel{m_2 v_{2i}} = m_1 v_{1f} + m_2 v_{2f}$$',
-    contentVn: 'Bắt đầu từ phương trình duy nhất:\n\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$$\n\n"Xe 2 đứng yên" nghĩa là $v_{2i} = 0$. Khi đó $m_2 v_{2i} = m_2 \\times 0 = 0$ — xe 2 **không mang động lượng nào** vào vụ va chạm, nên số hạng của nó biến mất:\n\n$$m_1 v_{1i} + \\cancel{m_2 v_{2i}} = m_1 v_{1f} + m_2 v_{2f}$$',
+    content: 'Start from the one equation:\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$$\n"Car 2 is at rest" means $v_{2i} = 0$. So $m_2 v_{2i} = m_2 \\times 0 = 0$. Car 2 brings **no momentum** into the crash, and its term vanishes:\n$$m_1 v_{1i} + \\cancel{m_2 v_{2i}} = m_1 v_{1f} + m_2 v_{2f}$$',
+    contentVn: 'Bắt đầu từ phương trình duy nhất:\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$$\n"Xe 2 đứng yên" nghĩa là $v_{2i} = 0$. Nên $m_2 v_{2i} = m_2 \\times 0 = 0$. Xe 2 **không mang động lượng nào** vào vụ va chạm, và số hạng của nó biến mất:\n$$m_1 v_{1i} + \\cancel{m_2 v_{2i}} = m_1 v_{1f} + m_2 v_{2f}$$',
     notes: [
       {
         tone: 'write',
@@ -661,8 +664,8 @@ export const notes = [
       },
       {
         tone: 'info',
-        text: 'Only a VELOCITY can be 0 here. The mass $m_2$ does not disappear from the problem — car 2 still has 208 kg, and it is still in the "after" side.',
-        textVn: 'Ở đây chỉ VẬN TỐC mới có thể bằng 0. Khối lượng $m_2$ không biến mất khỏi bài toán — xe 2 vẫn nặng 208 kg, và nó vẫn còn ở vế "sau".',
+        text: 'Only the VELOCITY is 0. Car 2 still has its mass (208 kg), and it is still on the "after" side — it moves once it is hit.',
+        textVn: 'Chỉ VẬN TỐC bằng 0. Xe 2 vẫn có khối lượng của nó (208 kg), và nó vẫn còn ở vế "sau" — nó chuyển động khi bị đâm.',
       },
     ],
     check: {
@@ -676,8 +679,8 @@ export const notes = [
         { val: 'D', text: '$m_2 v_{2i}$', textVn: '$m_2 v_{2i}$' },
       ],
       correct: 'D',
-      expEn: 'The truck is object 2, and "sitting at rest" is BEFORE the crash: $v_{2i} = 0$, so $m_2 v_{2i}$ vanishes. Option A would say the truck is still stopped AFTER being hit — but the truck moves off at 2.30 m/s.',
-      expVn: 'Xe tải là vật 2, và "đang đứng yên" là TRƯỚC va chạm: $v_{2i} = 0$, nên $m_2 v_{2i}$ biến mất. Phương án A nghĩa là xe tải vẫn đứng yên SAU khi bị đâm — nhưng xe tải chạy đi với tốc độ 2.30 m/s.',
+      expEn: 'The truck is object 2, and "sitting at rest" describes it BEFORE the crash: $v_{2i} = 0$, so $m_2 v_{2i}$ vanishes. A would mean the truck is still not moving AFTER it is hit — but a truck that gets hit moves off.',
+      expVn: 'Xe tải là vật 2, và "đang đứng yên" mô tả nó TRƯỚC va chạm: $v_{2i} = 0$, nên $m_2 v_{2i}$ biến mất. A nghĩa là xe tải vẫn đứng yên SAU khi bị đâm — nhưng xe tải bị đâm thì sẽ chạy đi.',
     },
   },
 
@@ -685,6 +688,7 @@ export const notes = [
     layout: 'steps',
     accent: BLUE,
     icon: 'MoveHorizontal',
+    dense: true,
     eyebrow: 'From your Acellus screen · "Remember to indicate east (+) or west (−)"',
     eyebrowVn: 'Từ màn hình Acellus của em · "Nhớ ghi đông (+) hay tây (−)"',
     title: 'Car 1 Hits Car 2',
@@ -693,33 +697,33 @@ export const notes = [
     contentVn: '**Xe 1 (331 kg) đang chạy về hướng đông với tốc độ 3.87 m/s. Xe 2 (208 kg) đang đứng yên. Xe 1 va chạm với xe 2. Sau đó, xe 1 chạy về hướng đông với tốc độ 0.888 m/s. Vận tốc sau va chạm của xe 2 là bao nhiêu?**',
     steps: [
       {
-        text: '**Pieces:** $m_1 = 331$ kg, $v_{1i} = +3.87$ m/s, $m_2 = 208$ kg, $v_{2i} = 0$ (at rest), $v_{1f} = +0.888$ m/s, $v_{2f} = ?$',
-        textVn: '**Các đại lượng:** $m_1 = 331$ kg, $v_{1i} = +3.87$ m/s, $m_2 = 208$ kg, $v_{2i} = 0$ (đứng yên), $v_{1f} = +0.888$ m/s, $v_{2f} = ?$',
+        text: '**Pieces, with signs.** $m_1 = 331$ kg, $v_{1i} = +3.87$ m/s, $m_2 = 208$ kg, $v_{2i} = 0$ (at rest), $v_{1f} = +0.888$ m/s, $v_{2f} = ?$',
+        textVn: '**Các đại lượng, kèm dấu.** $m_1 = 331$ kg, $v_{1i} = +3.87$ m/s, $m_2 = 208$ kg, $v_{2i} = 0$ (đứng yên), $v_{1f} = +0.888$ m/s, $v_{2f} = ?$',
       },
       {
-        text: '**Formula, set up for the story:** car 2 at rest, so $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$.',
-        textVn: '**Công thức, thiết lập theo đề:** xe 2 đứng yên, nên $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$.',
+        text: '**Formula, with the story put in.** Car 2 is at rest, so its term vanishes: $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$',
+        textVn: '**Công thức, đã đưa đề bài vào.** Xe 2 đứng yên, nên số hạng của nó biến mất: $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$',
       },
       {
-        text: '**Rearrange:** $m_1 v_{1f}$ is ADDED to the target\'s term → subtract it from both sides: $m_1 v_{1i} - m_1 v_{1f} = m_2 v_{2f}$. Then $m_2$ is multiplying → divide by $m_2$: $v_{2f} = \\dfrac{m_1 v_{1i} - m_1 v_{1f}}{m_2}$.',
-        textVn: '**Biến đổi:** $m_1 v_{1f}$ đang được CỘNG vào số hạng chứa ẩn → trừ nó ở cả hai vế: $m_1 v_{1i} - m_1 v_{1f} = m_2 v_{2f}$. Rồi $m_2$ đang nhân → chia cho $m_2$: $v_{2f} = \\dfrac{m_1 v_{1i} - m_1 v_{1f}}{m_2}$.',
+        text: '**Rearrange.** $m_1 v_{1f}$ is ADDED to the target\'s term, so subtract it: $m_1 v_{1i} - m_1 v_{1f} = m_2 v_{2f}$. Then $m_2$ multiplies the target, so divide by $m_2$: $v_{2f} = \\dfrac{m_1 v_{1i} - m_1 v_{1f}}{m_2}$',
+        textVn: '**Biến đổi.** $m_1 v_{1f}$ đang được CỘNG vào số hạng chứa ẩn, nên trừ nó đi: $m_1 v_{1i} - m_1 v_{1f} = m_2 v_{2f}$. Rồi $m_2$ đang nhân với ẩn, nên chia cho $m_2$: $v_{2f} = \\dfrac{m_1 v_{1i} - m_1 v_{1f}}{m_2}$',
       },
       {
-        text: '**Substitute:** $v_{2f} = \\dfrac{331 \\times 3.87 - 331 \\times 0.888}{208}$.',
-        textVn: '**Thay số:** $v_{2f} = \\dfrac{331 \\times 3.87 - 331 \\times 0.888}{208}$.',
+        text: '**Substitute.** $v_{2f} = \\dfrac{331 \\times 3.87 - 331 \\times 0.888}{208}$',
+        textVn: '**Thay số.** $v_{2f} = \\dfrac{331 \\times 3.87 - 331 \\times 0.888}{208}$',
       },
       {
-        text: '**Answer:** $v_{2f} = +4.75$ m/s — positive, so car 2 moves EAST, the way it was pushed.',
-        textVn: '**Đáp án:** $v_{2f} = +4.75$ m/s — dương, nên xe 2 chạy về hướng ĐÔNG, theo hướng nó bị đẩy.',
+        text: '**Answer.** $v_{2f} = +4.75$ m/s. Positive: car 2 moves EAST, the way it was pushed.',
+        textVn: '**Đáp án.** $v_{2f} = +4.75$ m/s. Dương: xe 2 chạy về hướng ĐÔNG, theo hướng nó bị đẩy.',
       },
     ],
     reveal: {
-      label: 'A car that comes out negative',
-      labelVn: 'Một chiếc xe có đáp án âm',
+      label: 'When the answer comes out negative',
+      labelVn: 'Khi đáp án ra số âm',
       prompt: 'A car (1250 kg) at 7.39 m/s hits a truck (5380 kg) sitting at rest. Afterwards the truck moves forward at 2.30 m/s. The same method gives the car\'s final velocity as $-2.51$ m/s. What happened?',
       promptVn: 'Một xe con (1250 kg) chạy 7.39 m/s đâm vào một xe tải (5380 kg) đang đứng yên. Sau đó xe tải chạy về phía trước với tốc độ 2.30 m/s. Cùng phương pháp đó cho vận tốc sau của xe con là $-2.51$ m/s. Chuyện gì đã xảy ra?',
-      answer: '$v_{1f} = \\dfrac{m_1 v_{1i} - m_2 v_{2f}}{m_1} = \\dfrac{1250 \\times 7.39 - 5380 \\times 2.30}{1250} = -2.51$ m/s. The minus sign is not a mistake — it is the physics. The truck is over four times heavier, so the car **bounced backwards** at 2.51 m/s. Type the minus sign: $+2.51$ would say it kept going forward.',
-      answerVn: '$v_{1f} = \\dfrac{m_1 v_{1i} - m_2 v_{2f}}{m_1} = \\dfrac{1250 \\times 7.39 - 5380 \\times 2.30}{1250} = -2.51$ m/s. Dấu trừ không phải lỗi — đó là vật lý. Xe tải nặng hơn bốn lần, nên xe con **bật ngược lại** với tốc độ 2.51 m/s. Hãy gõ dấu trừ: $+2.51$ nghĩa là nó vẫn tiếp tục chạy về phía trước.',
+      answer: '$v_{1f} = \\dfrac{m_1 v_{1i} - m_2 v_{2f}}{m_1} = \\dfrac{1250 \\times 7.39 - 5380 \\times 2.30}{1250} = -2.51$ m/s. The minus sign is not a mistake — it is the physics. The truck is over four times heavier than the car, so the car **bounced backwards** at 2.51 m/s. Type the minus sign: $+2.51$ would mean the car kept going forward.',
+      answerVn: '$v_{1f} = \\dfrac{m_1 v_{1i} - m_2 v_{2f}}{m_1} = \\dfrac{1250 \\times 7.39 - 5380 \\times 2.30}{1250} = -2.51$ m/s. Dấu trừ không phải lỗi — đó là vật lý. Xe tải nặng hơn xe con hơn bốn lần, nên xe con **bật ngược lại** với tốc độ 2.51 m/s. Hãy gõ dấu trừ: $+2.51$ nghĩa là xe con vẫn tiếp tục chạy về phía trước.',
     },
     check: {
       id: 'chk_rearrange_car',
@@ -732,48 +736,35 @@ export const notes = [
         { val: 'D', text: 'Substitute the numbers', textVn: 'Thay số' },
       ],
       correct: 'B',
-      expEn: 'Something is ADDED to the target\'s term, so take it away first — only then is $m_2 v_{2f}$ alone and ready to be divided by $m_2$. Dividing by $m_2$ first (A) is legal but leaves a messy $\\dfrac{m_1 v_{1f}}{m_2}$ term behind. $m_1$ (C) is not even touching $v_{2f}$.',
-      expVn: 'Có thứ đang được CỘNG vào số hạng chứa ẩn, nên bỏ nó đi trước — chỉ khi đó $m_2 v_{2f}$ mới đứng một mình và sẵn sàng để chia cho $m_2$. Chia cho $m_2$ trước (A) vẫn hợp lệ nhưng để lại số hạng $\\dfrac{m_1 v_{1f}}{m_2}$ rất rối. $m_1$ (C) thậm chí không dính gì tới $v_{2f}$.',
+      expEn: 'Something is ADDED to the target\'s term, so take it away first. Then $m_2 v_{2f}$ is alone, ready to be divided by $m_2$. Dividing by $m_2$ first (A) is allowed, but it leaves a messy $\\dfrac{m_1 v_{1f}}{m_2}$ term behind. $m_1$ (C) is not even touching $v_{2f}$. Numbers (D) go in last.',
+      expVn: 'Có thứ đang được CỘNG vào số hạng chứa ẩn, nên bỏ nó đi trước. Khi đó $m_2 v_{2f}$ đứng một mình, sẵn sàng để chia cho $m_2$. Chia cho $m_2$ trước (A) vẫn được, nhưng để lại số hạng $\\dfrac{m_1 v_{1f}}{m_2}$ rất rối. $m_1$ (C) thậm chí không dính gì tới $v_{2f}$. Số (D) luôn thay vào sau cùng.',
     },
   },
 
   {
-    layout: 'stack',
+    layout: 'split',
     accent: GREEN,
     icon: 'GitMerge',
-    columns: 1,
+    ratio: 55,
     eyebrow: 'Story 2 · the inelastic collision, derived',
     eyebrowVn: 'Câu chuyện 2 · va chạm mềm, được suy ra',
     title: 'They Stick Together',
     titleVn: 'Chúng Dính Vào Nhau',
-    content: 'Start from the one equation again. If the two objects **stick together**, they leave as one lump — so after the collision they have the **same** velocity. Call it $v_f$:\n\n$$v_{1f} = v_{2f} = v_f$$\n\nPut that in:\n\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$$\n\nNow $v_f$ is in **both** terms on the right. Take it out as a common factor:\n\n$$m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$$',
-    contentVn: 'Lại bắt đầu từ phương trình duy nhất. Nếu hai vật **dính vào nhau**, chúng rời đi như một khối — nên sau va chạm chúng có **cùng** vận tốc. Gọi nó là $v_f$:\n\n$$v_{1f} = v_{2f} = v_f$$\n\nThay vào:\n\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$$\n\nGiờ $v_f$ nằm trong **cả hai** số hạng ở vế phải. Đặt nó ra làm nhân tử chung:\n\n$$m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$$',
+    inlineSvg: DIAGRAMS.STICK_TOGETHER,
+    content: 'When two objects **stick together**, they move off as one lump. So after the crash they have the **same** velocity. Call it $v_f$: $v_{1f} = v_{2f} = v_f$.\n\nPut $v_f$ into the one equation for both:\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$$\nNow $v_f$ is in **both** terms on the right. Take it out as a common factor (the next slide shows how):\n$$m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$$',
+    contentVn: 'Khi hai vật **dính vào nhau**, chúng chuyển động như một khối. Nên sau va chạm chúng có **cùng** vận tốc. Gọi nó là $v_f$: $v_{1f} = v_{2f} = v_f$.\n\nThay $v_f$ vào phương trình duy nhất cho cả hai:\n$$m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$$\nGiờ $v_f$ nằm trong **cả hai** số hạng ở vế phải. Đặt nó ra làm nhân tử chung (trang sau chỉ cách làm):\n$$m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$$',
     notes: [
       {
         tone: 'write',
         text: '**Stick together** (perfectly inelastic, $v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$',
-        textVn: '**Dính vào nhau** (va chạm mềm hoàn toàn, $v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$',
+        textVn: '**Dính vào nhau** (va chạm mềm, $v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$',
       },
       {
         tone: 'info',
-        text: 'Read the right side as a sentence: the combined mass $(m_1 + m_2)$, moving at one velocity $v_f$. Stuck together, two objects really ARE one object.',
-        textVn: 'Đọc vế phải như một câu: khối lượng gộp $(m_1 + m_2)$, chuyển động với một vận tốc $v_f$. Khi dính vào nhau, hai vật thực sự LÀ một vật.',
+        text: 'Read the right side as a sentence: the total mass $(m_1 + m_2)$, moving at one velocity $v_f$. Stuck together, the two objects really ARE one object.',
+        textVn: 'Đọc vế phải như một câu: tổng khối lượng $(m_1 + m_2)$, chuyển động với một vận tốc $v_f$. Khi dính vào nhau, hai vật thực sự LÀ một vật.',
       },
     ],
-    check: {
-      id: 'chk_stick_meaning',
-      q: 'Why does the stick-together equation have $(m_1 + m_2)$ in it?',
-      qVn: 'Vì sao phương trình dính vào nhau có $(m_1 + m_2)$?',
-      options: [
-        { val: 'A', text: 'Because the masses change in the crash', textVn: 'Vì khối lượng thay đổi khi va chạm' },
-        { val: 'B', text: 'Because stuck together they move as ONE object with the combined mass', textVn: 'Vì khi dính vào nhau chúng chuyển động như MỘT vật với khối lượng gộp' },
-        { val: 'C', text: 'Because momentum is not conserved when things stick', textVn: 'Vì động lượng không được bảo toàn khi các vật dính nhau' },
-        { val: 'D', text: 'It is a separate formula you have to memorise', textVn: 'Đó là một công thức riêng phải học thuộc' },
-      ],
-      correct: 'B',
-      expEn: 'After sticking, both have the same $v_f$, so $m_1 v_f + m_2 v_f$ factors into $(m_1 + m_2)\\,v_f$: the combined mass times the one velocity. Nothing was memorised (D) — it came straight out of the one equation. Momentum IS still conserved (C); that is where the equation came from.',
-      expVn: 'Sau khi dính, cả hai có cùng $v_f$, nên $m_1 v_f + m_2 v_f$ được đặt nhân tử chung thành $(m_1 + m_2)\\,v_f$: khối lượng gộp nhân với một vận tốc. Không cần học thuộc gì (D) — nó được suy ra thẳng từ phương trình duy nhất. Động lượng VẪN được bảo toàn (C); đó chính là nơi phương trình này xuất phát.',
-    },
   },
 
   {
@@ -781,12 +772,12 @@ export const notes = [
     accent: GREEN,
     icon: 'Brackets',
     columns: 2,
-    eyebrow: 'The one new algebra move in this module',
+    eyebrow: 'The one new algebra move in this lesson',
     eyebrowVn: 'Phép biến đổi đại số mới duy nhất của bài này',
     title: 'Factoring: Take the Common Letter Out',
     titleVn: 'Đặt Nhân Tử Chung: Đưa Chữ Chung Ra Ngoài',
-    content: 'Factoring is **expanding backwards**. Expand $(m_1 + m_2)\\,v_f$ and you get $m_1 v_f + m_2 v_f$ — so the two are always equal, and swapping one for the other changes nothing.\n\nWhy bother? In $m_1 v_f + m_2 v_f$ the target $v_f$ appears **twice**, and no single move frees it. Factored, it appears **once**, multiplied by a bracket — and a multiplier is undone by dividing.',
-    contentVn: 'Đặt nhân tử chung là **nhân phá ngoặc theo chiều ngược lại**. Nhân phá $(m_1 + m_2)\\,v_f$ thì được $m_1 v_f + m_2 v_f$ — nên hai biểu thức luôn bằng nhau, và đổi cái này thành cái kia không thay đổi gì.\n\nĐể làm gì? Trong $m_1 v_f + m_2 v_f$, ẩn $v_f$ xuất hiện **hai lần**, và không một bước nào giải phóng được nó. Khi đặt nhân tử chung, nó chỉ xuất hiện **một lần**, nhân với một ngoặc — và phép nhân được hoàn tác bằng phép chia.',
+    content: 'Factoring is **expanding backwards**. Expand $(m_1 + m_2)\\,v_f$ and you get $m_1 v_f + m_2 v_f$. The two are always equal, so you can swap one for the other.\n\nWhy do it? In $m_1 v_f + m_2 v_f$ the unknown $v_f$ appears **twice**, and no single move can free it. After factoring, it appears **once**, multiplied by a bracket — and multiplying is undone by dividing.',
+    contentVn: 'Đặt nhân tử chung là **nhân phá ngoặc theo chiều ngược lại**. Nhân phá $(m_1 + m_2)\\,v_f$ thì được $m_1 v_f + m_2 v_f$. Hai biểu thức luôn bằng nhau, nên em có thể đổi cái này thành cái kia.\n\nĐể làm gì? Trong $m_1 v_f + m_2 v_f$, ẩn $v_f$ xuất hiện **hai lần**, và không một bước nào giải phóng được nó. Sau khi đặt nhân tử chung, nó chỉ xuất hiện **một lần**, nhân với một ngoặc — và phép nhân được hoàn tác bằng phép chia.',
     notes: [
       {
         tone: 'write',
@@ -795,18 +786,18 @@ export const notes = [
       },
       {
         tone: 'write',
-        text: 'Then divide by the **WHOLE** bracket: $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$',
-        textVn: 'Rồi chia cho **CẢ** ngoặc: $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$',
+        text: 'Then divide both sides by the **WHOLE** bracket: $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$',
+        textVn: 'Rồi chia cả hai vế cho **CẢ** ngoặc: $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$',
       },
       {
         tone: 'homework',
-        text: 'Dividing by $m_1$ alone does NOT work: $m_1$ only touches one of the two terms. Whatever you divide by must multiply EVERYTHING on that side.',
-        textVn: 'Chỉ chia cho $m_1$ là KHÔNG được: $m_1$ chỉ dính vào một trong hai số hạng. Thứ em chia phải nhân với TẤT CẢ ở vế đó.',
+        text: 'Dividing by $m_1$ alone does NOT work: $m_1$ is in only one of the two terms. What you divide by must multiply EVERYTHING on that side.',
+        textVn: 'Chỉ chia cho $m_1$ là KHÔNG được: $m_1$ chỉ nằm trong một trong hai số hạng. Thứ em chia phải nhân với TẤT CẢ ở vế đó.',
       },
       {
         tone: 'plant',
-        text: 'Factor when the **unknown** is the letter in both terms. If the unknown is a mass, it sits in one term only, and there is nothing to factor for — slide 21.',
-        textVn: 'Đặt nhân tử chung khi **ẩn số** là chữ nằm trong cả hai số hạng. Nếu ẩn là một khối lượng, nó chỉ nằm trong một số hạng, và không cần đặt nhân tử chung — trang 21.',
+        text: 'Factor only when the **unknown** is in both terms. If the unknown is a mass, it is in one term only — no factoring needed. (The sticky ball, coming up, is one of these.)',
+        textVn: 'Chỉ đặt nhân tử chung khi **ẩn số** nằm trong cả hai số hạng. Nếu ẩn là một khối lượng, nó chỉ nằm trong một số hạng — không cần đặt nhân tử chung. (Bài quả bóng dính, sắp tới, là một bài như vậy.)',
       },
     ],
     activity: {
@@ -814,8 +805,8 @@ export const notes = [
       id: 'act_stick_order',
       prompt: 'Two objects stick together. Put the moves in order to find $v_f$, starting from the one equation.',
       promptVn: 'Hai vật dính vào nhau. Sắp xếp các bước theo thứ tự để tìm $v_f$, bắt đầu từ phương trình duy nhất.',
-      explain: 'The story goes in first (both final velocities become $v_f$), then the factoring (so $v_f$ appears once), then the divide by the WHOLE bracket. The numbers come last, as always — letters first.',
-      explainVn: 'Đề bài được đưa vào trước (cả hai vận tốc sau thành $v_f$), rồi đặt nhân tử chung (để $v_f$ chỉ xuất hiện một lần), rồi chia cho CẢ ngoặc. Các con số luôn đến cuối cùng — chữ trước.',
+      explain: 'First put the story in: both final velocities become $v_f$. Then factor, so $v_f$ appears once. Then divide by the WHOLE bracket. The numbers go in last — letters first, always.',
+      explainVn: 'Đầu tiên đưa đề bài vào: cả hai vận tốc sau thành $v_f$. Rồi đặt nhân tử chung, để $v_f$ chỉ xuất hiện một lần. Rồi chia cho CẢ ngoặc. Các con số thay vào sau cùng — luôn luôn chữ trước.',
       steps: [
         { id: 's1', name: 'Replace $v_{1f}$ and $v_{2f}$ with one $v_f$', nameVn: 'Thay $v_{1f}$ và $v_{2f}$ bằng một $v_f$' },
         { id: 's2', name: 'Factor $v_f$ out of the right side', nameVn: 'Đặt $v_f$ làm nhân tử chung ở vế phải' },
@@ -829,43 +820,35 @@ export const notes = [
     layout: 'steps',
     accent: GREEN,
     icon: 'Rocket',
+    dense: true,
     eyebrow: 'From your Acellus screen',
     eyebrowVn: 'Từ màn hình Acellus của em',
     title: 'Two Meteors Stick Together',
     titleVn: 'Hai Thiên Thạch Dính Vào Nhau',
-    inlineSvg: DIAGRAMS.STICK_TOGETHER,
-    content: '**An incoming meteor with mass 65.4 kg and velocity +12.46 km/s overtakes another meteor with mass 32.1 kg and velocity +8.56 km/s. The two meteors stick together. What is their velocity?**',
-    contentVn: '**Một thiên thạch khối lượng 65.4 kg với vận tốc +12.46 km/s đuổi kịp một thiên thạch khác khối lượng 32.1 kg với vận tốc +8.56 km/s. Hai thiên thạch dính vào nhau. Vận tốc của chúng là bao nhiêu?**',
+    content: '**An incoming meteor with mass 65.4 kg and velocity +12.46 km/s overtakes another meteor with mass 32.1 kg and velocity +8.56 km/s. The two meteors stick together. What is their velocity?**\n\nThe speeds are in km/s. Change them to m/s first (× 1000).',
+    contentVn: '**Một thiên thạch khối lượng 65.4 kg với vận tốc +12.46 km/s đuổi kịp một thiên thạch khác khối lượng 32.1 kg với vận tốc +8.56 km/s. Hai thiên thạch dính vào nhau. Vận tốc của chúng là bao nhiêu?**\n\nTốc độ đang tính bằng km/s. Đổi sang m/s trước (× 1000).',
     steps: [
       {
-        text: '**Pieces, converted:** $m_1 = 65.4$ kg, $v_{1i} = 12.46$ km/s $= 12{,}460$ m/s, $m_2 = 32.1$ kg, $v_{2i} = 8.56$ km/s $= 8560$ m/s, $v_f = ?$',
-        textVn: '**Các đại lượng, đã đổi đơn vị:** $m_1 = 65.4$ kg, $v_{1i} = 12.46$ km/s $= 12{,}460$ m/s, $m_2 = 32.1$ kg, $v_{2i} = 8.56$ km/s $= 8560$ m/s, $v_f = ?$',
+        text: '**Pieces, in m/s.** $m_1 = 65.4$ kg, $v_{1i} = 12.46$ km/s $= 12{,}460$ m/s, $m_2 = 32.1$ kg, $v_{2i} = 8.56$ km/s $= 8560$ m/s, $v_f = ?$',
+        textVn: '**Các đại lượng, đổi sang m/s.** $m_1 = 65.4$ kg, $v_{1i} = 12.46$ km/s $= 12{,}460$ m/s, $m_2 = 32.1$ kg, $v_{2i} = 8.56$ km/s $= 8560$ m/s, $v_f = ?$',
       },
       {
-        text: '**Formula, set up:** stick together → $m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$.',
-        textVn: '**Công thức, đã thiết lập:** dính vào nhau → $m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$.',
+        text: '**Formula, with the story put in.** They stick together: $m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$',
+        textVn: '**Công thức, đã đưa đề bài vào.** Chúng dính vào nhau: $m_1 v_{1i} + m_2 v_{2i} = m_1 v_f + m_2 v_f$',
       },
       {
-        text: '**Rearrange:** factor → $(m_1 + m_2)\\,v_f$; divide by the whole bracket → $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$.',
-        textVn: '**Biến đổi:** đặt nhân tử chung → $(m_1 + m_2)\\,v_f$; chia cho cả ngoặc → $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$.',
+        text: '**Rearrange.** Factor: $(m_1 + m_2)\\,v_f$. Then divide by the whole bracket: $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$',
+        textVn: '**Biến đổi.** Đặt nhân tử chung: $(m_1 + m_2)\\,v_f$. Rồi chia cho cả ngoặc: $v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2}$',
       },
       {
-        text: '**Substitute:** $v_f = \\dfrac{65.4 \\times 12460 + 32.1 \\times 8560}{65.4 + 32.1} = \\dfrac{1{,}089{,}660}{97.5}$.',
-        textVn: '**Thay số:** $v_f = \\dfrac{65.4 \\times 12460 + 32.1 \\times 8560}{65.4 + 32.1} = \\dfrac{1{,}089{,}660}{97.5}$.',
+        text: '**Substitute.** $v_f = \\dfrac{65.4 \\times 12460 + 32.1 \\times 8560}{65.4 + 32.1} = \\dfrac{1{,}089{,}660}{97.5}$',
+        textVn: '**Thay số.** $v_f = \\dfrac{65.4 \\times 12460 + 32.1 \\times 8560}{65.4 + 32.1} = \\dfrac{1{,}089{,}660}{97.5}$',
       },
       {
-        text: '**Answer:** $v_f = 11{,}200$ m/s $= 11.2$ km/s. Between the two starting speeds, and nearer the heavier meteor\'s — a good sense check.',
-        textVn: '**Đáp án:** $v_f = 11{,}200$ m/s $= 11.2$ km/s. Nằm giữa hai tốc độ ban đầu, và gần tốc độ của thiên thạch nặng hơn — một cách kiểm tra hợp lý.',
+        text: '**Answer.** $v_f = 11{,}200$ m/s $= 11.2$ km/s (÷ 1000 to go back to km/s). Sense check: it is between the two starting speeds, and closer to the heavier meteor\'s.',
+        textVn: '**Đáp án.** $v_f = 11{,}200$ m/s $= 11.2$ km/s (÷ 1000 để đổi lại km/s). Kiểm tra: nó nằm giữa hai tốc độ ban đầu, và gần tốc độ của thiên thạch nặng hơn.',
       },
     ],
-    reveal: {
-      label: 'Could you have stayed in km/s?',
-      labelVn: 'Có thể giữ nguyên km/s không?',
-      prompt: 'Put 12.46 and 8.56 straight in. What comes out?',
-      promptVn: 'Đưa thẳng 12.46 và 8.56 vào. Kết quả là gì?',
-      answer: '$11.2$ — in km/s, the right answer. It works HERE because every term has exactly one velocity in it, so km/s in gives km/s out. It breaks the moment a formula has $v^2$ in it, or a force in newtons. Converting is never wrong; skipping it sometimes is — so the Isolate It task always converts.',
-      answerVn: '$11.2$ — theo km/s, đáp án đúng. Nó đúng Ở ĐÂY vì mỗi số hạng có đúng một vận tốc, nên km/s vào thì km/s ra. Nó sai ngay khi công thức có $v^2$, hoặc có lực tính bằng niutơn. Đổi đơn vị không bao giờ sai; bỏ qua thì có lúc sai — nên bài Cô Lập Biến luôn đổi đơn vị.',
-    },
     check: {
       id: 'chk_stick_numbers',
       q: 'A 3.0 kg cart moving at +4.0 m/s hits a 1.0 kg cart at rest, and they stick together. What is $v_f$?',
@@ -877,8 +860,8 @@ export const notes = [
         { val: 'D', text: '$+3.0$ m/s', textVn: '$+3.0$ m/s' },
       ],
       correct: 'D',
-      expEn: '$v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2} = \\dfrac{3.0 \\times 4.0 + 1.0 \\times 0}{3.0 + 1.0} = \\dfrac{12}{4.0} = 3.0$ m/s. Option C forgot to divide by the bracket; B averaged the two velocities; A says nothing slowed down — but now 4.0 kg is carrying the momentum that 3.0 kg had.',
-      expVn: '$v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2} = \\dfrac{3.0 \\times 4.0 + 1.0 \\times 0}{3.0 + 1.0} = \\dfrac{12}{4.0} = 3.0$ m/s. Phương án C quên chia cho ngoặc; B lấy trung bình hai vận tốc; A nghĩa là không có gì chậm lại — nhưng giờ 4.0 kg phải mang lượng động lượng mà trước đó 3.0 kg mang.',
+      expEn: '$v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2} = \\dfrac{3.0 \\times 4.0 + 1.0 \\times 0}{3.0 + 1.0} = \\dfrac{12}{4.0} = 3.0$ m/s. C forgot to divide by the bracket. B took the average of the two velocities. A says nothing slowed down — but now 4.0 kg is carrying the momentum that 3.0 kg had.',
+      expVn: '$v_f = \\dfrac{m_1 v_{1i} + m_2 v_{2i}}{m_1 + m_2} = \\dfrac{3.0 \\times 4.0 + 1.0 \\times 0}{3.0 + 1.0} = \\dfrac{12}{4.0} = 3.0$ m/s. C quên chia cho ngoặc. B lấy trung bình của hai vận tốc. A nghĩa là không có gì chậm lại — nhưng giờ 4.0 kg phải mang lượng động lượng mà trước đó 3.0 kg mang.',
     },
   },
 
@@ -886,32 +869,33 @@ export const notes = [
     layout: 'steps',
     accent: AMBER,
     icon: 'AlertTriangle',
+    dense: true,
     eyebrow: 'From your Acellus screen · when factoring is not needed',
     eyebrowVn: 'Từ màn hình Acellus của em · khi nào không cần đặt nhân tử chung',
     title: 'The Mass of the Sticky Ball',
     titleVn: 'Khối Lượng Của Quả Bóng Dính',
-    content: '**A 0.982 kg bouncy ball moving +0.246 m/s makes a head-on inelastic collision with a stationary sticky ball. After, they move +0.151 m/s. What is the mass of the sticky ball?**\n\nTwo phrases this time — "stationary" AND "they move" together — and the unknown is a **mass**.',
-    contentVn: '**Một quả bóng nảy 0.982 kg chuyển động +0.246 m/s va chạm mềm trực diện với một quả bóng dính đang đứng yên. Sau đó, chúng chuyển động +0.151 m/s. Khối lượng của quả bóng dính là bao nhiêu?**\n\nLần này có hai cụm từ — "đứng yên" VÀ "chúng chuyển động" cùng nhau — và ẩn số là một **khối lượng**.',
+    content: '**A 0.982 kg bouncy ball moving +0.246 m/s makes a head-on inelastic collision with a stationary sticky ball. After, they move +0.151 m/s. What is the mass of the sticky ball?**\n\nTwo clues this time: "stationary" (it starts at rest) and "they move" (one final velocity). And the unknown is a **mass**.',
+    contentVn: '**Một quả bóng nảy 0.982 kg chuyển động +0.246 m/s va chạm mềm trực diện với một quả bóng dính đang đứng yên. Sau đó, chúng chuyển động +0.151 m/s. Khối lượng của quả bóng dính là bao nhiêu?**\n\nLần này có hai manh mối: "đứng yên" (nó bắt đầu đứng yên) và "chúng chuyển động" (một vận tốc sau chung). Và ẩn số là một **khối lượng**.',
     steps: [
       {
-        text: '**Pieces:** $m_1 = 0.982$ kg, $v_{1i} = +0.246$ m/s, $v_{2i} = 0$, $v_f = +0.151$ m/s, $m_2 = ?$',
-        textVn: '**Các đại lượng:** $m_1 = 0.982$ kg, $v_{1i} = +0.246$ m/s, $v_{2i} = 0$, $v_f = +0.151$ m/s, $m_2 = ?$',
+        text: '**Pieces.** $m_1 = 0.982$ kg, $v_{1i} = +0.246$ m/s, $v_{2i} = 0$ (stationary), $v_f = +0.151$ m/s, $m_2 = ?$',
+        textVn: '**Các đại lượng.** $m_1 = 0.982$ kg, $v_{1i} = +0.246$ m/s, $v_{2i} = 0$ (đứng yên), $v_f = +0.151$ m/s, $m_2 = ?$',
       },
       {
-        text: '**Set up both stories:** $v_{2i} = 0$ removes a term; $v_{1f} = v_{2f} = v_f$ gives $m_1 v_{1i} = m_1 v_f + m_2 v_f$.',
-        textVn: '**Thiết lập cả hai câu chuyện:** $v_{2i} = 0$ làm mất một số hạng; $v_{1f} = v_{2f} = v_f$ cho $m_1 v_{1i} = m_1 v_f + m_2 v_f$.',
+        text: '**Formula, with BOTH clues put in.** $v_{2i} = 0$ removes a term, and $v_{1f} = v_{2f} = v_f$: $m_1 v_{1i} = m_1 v_f + m_2 v_f$',
+        textVn: '**Công thức, đã đưa CẢ HAI manh mối vào.** $v_{2i} = 0$ làm mất một số hạng, và $v_{1f} = v_{2f} = v_f$: $m_1 v_{1i} = m_1 v_f + m_2 v_f$',
       },
       {
-        text: '**No need to factor.** The target $m_2$ is in only ONE term, so the usual two moves free it. (Factoring still works — divide by $v_f$, then subtract $m_1$ — it is just a longer road.)',
-        textVn: '**Không cần đặt nhân tử chung.** Ẩn $m_2$ chỉ nằm trong MỘT số hạng, nên hai bước quen thuộc là đủ. (Đặt nhân tử chung vẫn làm được — chia cho $v_f$, rồi trừ $m_1$ — chỉ là đường dài hơn.)',
+        text: '**Rearrange — no factoring needed.** The unknown $m_2$ is in only ONE term. Subtract $m_1 v_f$: $m_1 v_{1i} - m_1 v_f = m_2 v_f$. Divide by $v_f$: $m_2 = \\dfrac{m_1 v_{1i} - m_1 v_f}{v_f}$',
+        textVn: '**Biến đổi — không cần đặt nhân tử chung.** Ẩn $m_2$ chỉ nằm trong MỘT số hạng. Trừ $m_1 v_f$: $m_1 v_{1i} - m_1 v_f = m_2 v_f$. Chia cho $v_f$: $m_2 = \\dfrac{m_1 v_{1i} - m_1 v_f}{v_f}$',
       },
       {
-        text: '**Rearrange:** subtract $m_1 v_f$ → $m_1 v_{1i} - m_1 v_f = m_2 v_f$; divide by $v_f$ → $m_2 = \\dfrac{m_1 v_{1i} - m_1 v_f}{v_f}$.',
-        textVn: '**Biến đổi:** trừ $m_1 v_f$ → $m_1 v_{1i} - m_1 v_f = m_2 v_f$; chia cho $v_f$ → $m_2 = \\dfrac{m_1 v_{1i} - m_1 v_f}{v_f}$.',
+        text: '**Substitute.** $m_2 = \\dfrac{0.982 \\times 0.246 - 0.982 \\times 0.151}{0.151}$',
+        textVn: '**Thay số.** $m_2 = \\dfrac{0.982 \\times 0.246 - 0.982 \\times 0.151}{0.151}$',
       },
       {
-        text: '**Substitute and answer:** $m_2 = \\dfrac{0.982 \\times 0.246 - 0.982 \\times 0.151}{0.151} = 0.618$ kg.',
-        textVn: '**Thay số và trả lời:** $m_2 = \\dfrac{0.982 \\times 0.246 - 0.982 \\times 0.151}{0.151} = 0.618$ kg.',
+        text: '**Answer.** $m_2 = 0.618$ kg.',
+        textVn: '**Đáp án.** $m_2 = 0.618$ kg.',
       },
     ],
     check: {
@@ -925,8 +909,8 @@ export const notes = [
         { val: 'D', text: 'Never — it changes the equation', textVn: 'Không bao giờ — nó làm thay đổi phương trình' },
       ],
       correct: 'C',
-      expEn: 'Factor to bring the unknown together into ONE place. Here $v_f$ is in two terms but it is not the unknown, so factoring it (A and B) only tucks $m_2$ inside a bracket and adds a move. Factoring never changes the equation (D) — expanding gives back exactly what you had.',
-      expVn: 'Đặt nhân tử chung để gom ẩn số về MỘT chỗ. Ở đây $v_f$ nằm trong hai số hạng nhưng nó không phải ẩn số, nên đặt nhân tử chung (A và B) chỉ nhét $m_2$ vào trong ngoặc và thêm một bước. Đặt nhân tử chung không bao giờ làm thay đổi phương trình (D) — nhân phá ngoặc sẽ trả lại đúng như cũ.',
+      expEn: 'Factor to bring the unknown together into ONE place. In the sticky-ball question $v_f$ is in two terms, but it is not the unknown — so factoring it (A and B) only hides $m_2$ inside a bracket and adds a move. Factoring never changes the equation (D): expanding gives back exactly what you had.',
+      expVn: 'Đặt nhân tử chung để gom ẩn số về MỘT chỗ. Trong bài quả bóng dính, $v_f$ nằm trong hai số hạng, nhưng nó không phải ẩn số — nên đặt nhân tử chung (A và B) chỉ giấu $m_2$ vào trong ngoặc và thêm một bước. Đặt nhân tử chung không bao giờ làm thay đổi phương trình (D): nhân phá ngoặc sẽ trả lại đúng như cũ.',
     },
   },
 
@@ -934,32 +918,33 @@ export const notes = [
     layout: 'steps',
     accent: PURPLE,
     icon: 'Users',
+    dense: true,
     eyebrow: 'From your Acellus screen · "Remember: right is +, left is −"',
     eyebrowVn: 'Từ màn hình Acellus của em · "Nhớ: phải là +, trái là −"',
     title: 'Anna Leaps Into Paul\'s Hands',
     titleVn: 'Anna Nhảy Vào Vòng Tay Paul',
-    content: '**A 52.3 kg ice skater, Anna, is skating −12.0 m/s and leaps into the hands of a 102 kg skater, Paul. Afterward, they move at −2.33 m/s. What was Paul\'s velocity before the collision?**\n\nThe unknown is BEFORE the collision this time, on the left side.',
-    contentVn: '**Một vận động viên trượt băng 52.3 kg, Anna, đang trượt với vận tốc −12.0 m/s và nhảy vào vòng tay của Paul, nặng 102 kg. Sau đó, họ chuyển động với vận tốc −2.33 m/s. Vận tốc của Paul trước va chạm là bao nhiêu?**\n\nLần này ẩn số nằm TRƯỚC va chạm, ở vế trái.',
+    content: '**A 52.3 kg ice skater, Anna, is skating −12.0 m/s and leaps into the hands of a 102 kg skater, Paul. Afterward, they move at −2.33 m/s. What was Paul\'s velocity before the collision?**\n\nThis time the unknown is BEFORE the collision, on the left side. It is in one term only, so no factoring.',
+    contentVn: '**Một vận động viên trượt băng 52.3 kg, Anna, đang trượt với vận tốc −12.0 m/s và nhảy vào vòng tay của Paul, nặng 102 kg. Sau đó, họ chuyển động với vận tốc −2.33 m/s. Vận tốc của Paul trước va chạm là bao nhiêu?**\n\nLần này ẩn số nằm TRƯỚC va chạm, ở vế trái. Nó chỉ nằm trong một số hạng, nên không cần đặt nhân tử chung.',
     steps: [
       {
-        text: '**Pieces, with signs:** Anna $m_1 = 52.3$ kg, $v_{1i} = -12.0$ m/s. Paul $m_2 = 102$ kg, $v_{2i} = ?$. Together after: $v_f = -2.33$ m/s.',
-        textVn: '**Các đại lượng, kèm dấu:** Anna $m_1 = 52.3$ kg, $v_{1i} = -12.0$ m/s. Paul $m_2 = 102$ kg, $v_{2i} = ?$. Cùng nhau sau va chạm: $v_f = -2.33$ m/s.',
+        text: '**Pieces, with signs.** Anna: $m_1 = 52.3$ kg, $v_{1i} = -12.0$ m/s. Paul: $m_2 = 102$ kg, $v_{2i} = ?$ Together after: $v_f = -2.33$ m/s.',
+        textVn: '**Các đại lượng, kèm dấu.** Anna: $m_1 = 52.3$ kg, $v_{1i} = -12.0$ m/s. Paul: $m_2 = 102$ kg, $v_{2i} = ?$ Cùng nhau sau va chạm: $v_f = -2.33$ m/s.',
       },
       {
-        text: '**Formula, set up:** they hold on, so $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$.',
-        textVn: '**Công thức, đã thiết lập:** họ giữ lấy nhau, nên $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$.',
+        text: '**Formula, with the story put in.** She lands in his hands, so they stick together: $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$',
+        textVn: '**Công thức, đã đưa đề bài vào.** Anna nhảy vào tay Paul, nên họ dính vào nhau: $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$',
       },
       {
-        text: '**Rearrange:** subtract $m_1 v_{1i}$ → $m_2 v_{2i} = (m_1 + m_2)\\,v_f - m_1 v_{1i}$; divide by $m_2$ → $v_{2i} = \\dfrac{(m_1 + m_2)\\,v_f - m_1 v_{1i}}{m_2}$.',
-        textVn: '**Biến đổi:** trừ $m_1 v_{1i}$ → $m_2 v_{2i} = (m_1 + m_2)\\,v_f - m_1 v_{1i}$; chia cho $m_2$ → $v_{2i} = \\dfrac{(m_1 + m_2)\\,v_f - m_1 v_{1i}}{m_2}$.',
+        text: '**Rearrange.** Subtract $m_1 v_{1i}$: $m_2 v_{2i} = (m_1 + m_2)\\,v_f - m_1 v_{1i}$. Divide by $m_2$: $v_{2i} = \\dfrac{(m_1 + m_2)\\,v_f - m_1 v_{1i}}{m_2}$',
+        textVn: '**Biến đổi.** Trừ $m_1 v_{1i}$: $m_2 v_{2i} = (m_1 + m_2)\\,v_f - m_1 v_{1i}$. Chia cho $m_2$: $v_{2i} = \\dfrac{(m_1 + m_2)\\,v_f - m_1 v_{1i}}{m_2}$',
       },
       {
-        text: '**Substitute, negatives in brackets:** $v_{2i} = \\dfrac{154.3 \\times (-2.33) - 52.3 \\times (-12.0)}{102} = \\dfrac{-359.5 + 627.6}{102}$.',
-        textVn: '**Thay số, số âm trong ngoặc:** $v_{2i} = \\dfrac{154.3 \\times (-2.33) - 52.3 \\times (-12.0)}{102} = \\dfrac{-359.5 + 627.6}{102}$.',
+        text: '**Substitute — negatives in brackets.** $v_{2i} = \\dfrac{154.3 \\times (-2.33) - 52.3 \\times (-12.0)}{102} = \\dfrac{-359.5 + 627.6}{102}$',
+        textVn: '**Thay số — số âm trong ngoặc.** $v_{2i} = \\dfrac{154.3 \\times (-2.33) - 52.3 \\times (-12.0)}{102} = \\dfrac{-359.5 + 627.6}{102}$',
       },
       {
-        text: '**Answer:** $v_{2i} = +2.63$ m/s. Positive: Paul was skating RIGHT, toward Anna. She was faster, so together they end up going left.',
-        textVn: '**Đáp án:** $v_{2i} = +2.63$ m/s. Dương: Paul đang trượt sang PHẢI, về phía Anna. Anna nhanh hơn, nên cuối cùng cả hai đi sang trái.',
+        text: '**Answer.** $v_{2i} = +2.63$ m/s. Positive: Paul was skating RIGHT, toward Anna. Anna brought more momentum, so together they end up moving left.',
+        textVn: '**Đáp án.** $v_{2i} = +2.63$ m/s. Dương: Paul đang trượt sang PHẢI, về phía Anna. Anna mang nhiều động lượng hơn, nên cuối cùng cả hai đi sang trái.',
       },
     ],
     check: {
@@ -973,48 +958,65 @@ export const notes = [
         { val: 'D', text: '$-29.8$ m/s', textVn: '$-29.8$ m/s' },
       ],
       correct: 'A',
-      expEn: '$v_{1i} = \\dfrac{(m_1 + m_2)\\,v_f - m_2 v_{2i}}{m_1} = \\dfrac{3.089 \\times (-1.92) - 2.89 \\times (-0.523)}{0.199} = -22.2$ m/s — west, as the question said. B lost the direction. C used $+0.523$ for the box, which was also going west. D forgot the box\'s momentum altogether.',
-      expVn: '$v_{1i} = \\dfrac{(m_1 + m_2)\\,v_f - m_2 v_{2i}}{m_1} = \\dfrac{3.089 \\times (-1.92) - 2.89 \\times (-0.523)}{0.199} = -22.2$ m/s — hướng tây, đúng như đề bài nói. B làm mất hướng. C dùng $+0.523$ cho cái hộp, dù nó cũng đang đi về hướng tây. D quên hẳn động lượng của cái hộp.',
+      expEn: 'The same moves as Anna and Paul, with the snowball as object 1: $v_{1i} = \\dfrac{(m_1 + m_2)\\,v_f - m_2 v_{2i}}{m_1} = \\dfrac{3.089 \\times (-1.92) - 2.89 \\times (-0.523)}{0.199} = -22.2$ m/s — west, as the question said. B lost the direction. C used $+0.523$ for the box, which was also going west. D left out the box\'s momentum.',
+      expVn: 'Cùng các bước như bài Anna và Paul, với quả cầu tuyết là vật 1: $v_{1i} = \\dfrac{(m_1 + m_2)\\,v_f - m_2 v_{2i}}{m_1} = \\dfrac{3.089 \\times (-1.92) - 2.89 \\times (-0.523)}{0.199} = -22.2$ m/s — hướng tây, đúng như đề bài nói. B làm mất hướng. C dùng $+0.523$ cho cái hộp, dù nó cũng đang đi về hướng tây. D bỏ quên động lượng của cái hộp.',
     },
+  },
+
+  {
+    layout: 'split',
+    accent: RED,
+    icon: 'Crosshair',
+    ratio: 55,
+    eyebrow: 'Story 3 · recoil, derived — the minus sign appears by itself',
+    eyebrowVn: 'Câu chuyện 3 · giật lùi, được suy ra — dấu trừ tự xuất hiện',
+    title: 'Recoil: Everything Starts at Rest',
+    titleVn: 'Giật Lùi: Mọi Thứ Bắt Đầu Đứng Yên',
+    inlineSvg: DIAGRAMS.RECOIL,
+    content: 'A rifle fires a bullet. Before it fires, **nothing is moving**: $v_{1i} = v_{2i} = 0$. Both terms on the left vanish, so the whole left side is 0:\n$$0 = m_1 v_{1f} + m_2 v_{2f}$$\nSubtract $m_1 v_{1f}$ from both sides:\n$$-m_1 v_{1f} = m_2 v_{2f}$$\nA minus sign has appeared **on its own**. The two momenta are the same size but **opposite**: the bullet goes forward, and the rifle kicks back.',
+    contentVn: 'Một khẩu súng trường bắn một viên đạn. Trước khi bắn, **không có gì chuyển động**: $v_{1i} = v_{2i} = 0$. Cả hai số hạng ở vế trái biến mất, nên cả vế trái bằng 0:\n$$0 = m_1 v_{1f} + m_2 v_{2f}$$\nTrừ $m_1 v_{1f}$ ở cả hai vế:\n$$-m_1 v_{1f} = m_2 v_{2f}$$\nMột dấu trừ đã **tự xuất hiện**. Hai động lượng có cùng độ lớn nhưng **ngược chiều**: viên đạn bay về phía trước, còn khẩu súng giật lùi.',
+    notes: [
+      {
+        tone: 'write',
+        text: '**Recoil** (everything at rest before, $v_{1i} = v_{2i} = 0$): $0 = m_1 v_{1f} + m_2 v_{2f}$',
+        textVn: '**Giật lùi** (mọi thứ đứng yên lúc đầu, $v_{1i} = v_{2i} = 0$): $0 = m_1 v_{1f} + m_2 v_{2f}$',
+      },
+    ],
   },
 
   {
     layout: 'steps',
     accent: RED,
-    icon: 'Crosshair',
-    inlineSvg: DIAGRAMS.RECOIL,
-    eyebrow: 'Story 3 · recoil, derived — and the minus sign that appears by itself',
-    eyebrowVn: 'Câu chuyện 3 · giật lùi, được suy ra — và dấu trừ tự xuất hiện',
-    title: 'Recoil: Everything Starts at Rest',
-    titleVn: 'Giật Lùi: Mọi Thứ Bắt Đầu Đứng Yên',
-    content: '**A 4.50 kg rifle fires a 0.0100 kg bullet at +385 m/s. What is the recoil velocity of the rifle?**\n\nBefore it fires, nothing is moving. Bullet = 1, rifle = 2.',
-    contentVn: '**Một khẩu súng trường 4.50 kg bắn một viên đạn 0.0100 kg với vận tốc +385 m/s. Vận tốc giật lùi của khẩu súng là bao nhiêu?**\n\nTrước khi bắn, không có gì chuyển động. Viên đạn = 1, khẩu súng = 2.',
+    icon: 'Target',
+    dense: true,
+    eyebrow: 'From your Acellus screen',
+    eyebrowVn: 'Từ màn hình Acellus của em',
+    title: 'The Rifle Kicks Back',
+    titleVn: 'Khẩu Súng Giật Lùi',
+    content: '**A 4.50 kg rifle fires a 0.0100 kg bullet at +385 m/s. What is the recoil velocity of the rifle?**\n\nBullet = object 1, rifle = object 2.',
+    contentVn: '**Một khẩu súng trường 4.50 kg bắn một viên đạn 0.0100 kg với vận tốc +385 m/s. Vận tốc giật lùi của khẩu súng là bao nhiêu?**\n\nViên đạn = vật 1, khẩu súng = vật 2.',
     steps: [
       {
-        text: '**Set up:** both at rest, $v_{1i} = v_{2i} = 0$, so the WHOLE left side is 0: $0 = m_1 v_{1f} + m_2 v_{2f}$. Copy this line: it is the recoil equation.',
-        textVn: '**Thiết lập:** cả hai đứng yên, $v_{1i} = v_{2i} = 0$, nên CẢ vế trái bằng 0: $0 = m_1 v_{1f} + m_2 v_{2f}$. Chép dòng này: đó là phương trình giật lùi.',
+        text: '**Pieces, with signs.** Bullet: $m_1 = 0.0100$ kg, $v_{1f} = +385$ m/s. Rifle: $m_2 = 4.50$ kg, $v_{2f} = ?$ Both at rest before the shot.',
+        textVn: '**Các đại lượng, kèm dấu.** Viên đạn: $m_1 = 0.0100$ kg, $v_{1f} = +385$ m/s. Khẩu súng: $m_2 = 4.50$ kg, $v_{2f} = ?$ Cả hai đứng yên trước khi bắn.',
       },
       {
-        text: '**Subtract $m_1 v_{1f}$ from both sides:** $-m_1 v_{1f} = m_2 v_{2f}$. A minus sign has appeared on its own — the two momenta must be **opposite**.',
-        textVn: '**Trừ $m_1 v_{1f}$ ở cả hai vế:** $-m_1 v_{1f} = m_2 v_{2f}$. Một dấu trừ đã tự xuất hiện — hai động lượng phải **ngược chiều**.',
+        text: '**Formula, with the story put in.** Recoil: $0 = m_1 v_{1f} + m_2 v_{2f}$',
+        textVn: '**Công thức, đã đưa đề bài vào.** Giật lùi: $0 = m_1 v_{1f} + m_2 v_{2f}$',
       },
       {
-        text: '**Divide by $m_2$:** $v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2}$.',
-        textVn: '**Chia cho $m_2$:** $v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2}$.',
+        text: '**Rearrange.** Subtract $m_1 v_{1f}$: $-m_1 v_{1f} = m_2 v_{2f}$. Divide by $m_2$: $v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2}$',
+        textVn: '**Biến đổi.** Trừ $m_1 v_{1f}$: $-m_1 v_{1f} = m_2 v_{2f}$. Chia cho $m_2$: $v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2}$',
       },
       {
-        text: '**Substitute and answer:** $v_{2f} = -\\dfrac{0.0100 \\times 385}{4.50} = -0.856$ m/s. The rifle kicks BACK, slowly — it is 450 times heavier than the bullet.',
-        textVn: '**Thay số và trả lời:** $v_{2f} = -\\dfrac{0.0100 \\times 385}{4.50} = -0.856$ m/s. Khẩu súng giật NGƯỢC lại, chậm — nó nặng gấp 450 lần viên đạn.',
+        text: '**Substitute.** $v_{2f} = -\\dfrac{0.0100 \\times 385}{4.50}$',
+        textVn: '**Thay số.** $v_{2f} = -\\dfrac{0.0100 \\times 385}{4.50}$',
+      },
+      {
+        text: '**Answer.** $v_{2f} = -0.856$ m/s. Negative: the rifle kicks BACK. It is 450 times heavier than the bullet, so it moves 450 times more slowly.',
+        textVn: '**Đáp án.** $v_{2f} = -0.856$ m/s. Âm: khẩu súng giật NGƯỢC lại. Nó nặng gấp 450 lần viên đạn, nên nó chuyển động chậm hơn 450 lần.',
       },
     ],
-    reveal: {
-      label: 'What if it was moving before it split?',
-      labelVn: 'Nếu nó đang chuyển động trước khi tách ra thì sao?',
-      prompt: 'A comet moving at 15.0 m/s breaks into two chunks. What does the one equation become?',
-      promptVn: 'Một sao chổi đang chuyển động 15.0 m/s vỡ thành hai mảnh. Phương trình duy nhất trở thành gì?',
-      answer: 'Before, the chunks are stuck together, so they share ONE starting velocity: $v_{1i} = v_{2i} = v_i$. Factor it out of the left side: $$(m_1 + m_2)\\,v_i = m_1 v_{1f} + m_2 v_{2f}$$ It is the stick-together equation **backwards** — stuck before instead of after. Same equation, same moves.',
-      answerVn: 'Trước đó, các mảnh dính liền nhau, nên chúng có chung MỘT vận tốc ban đầu: $v_{1i} = v_{2i} = v_i$. Đặt nó ra làm nhân tử chung ở vế trái: $$(m_1 + m_2)\\,v_i = m_1 v_{1f} + m_2 v_{2f}$$ Đó là phương trình dính vào nhau **theo chiều ngược lại** — dính trước thay vì sau. Cùng phương trình, cùng các bước.',
-    },
     check: {
       id: 'chk_skaters',
       q: 'A 60.0 kg skater and a 45.0 kg skater stand still, then push off each other. The 45.0 kg skater moves at +2.40 m/s. What is the 60.0 kg skater\'s velocity?',
@@ -1026,8 +1028,8 @@ export const notes = [
         { val: 'D', text: '$0$ — the total momentum is zero, so nobody moves', textVn: '$0$ — tổng động lượng bằng không, nên không ai chuyển động' },
       ],
       correct: 'C',
-      expEn: '$v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2} = -\\dfrac{45.0 \\times 2.40}{60.0} = -1.80$ m/s: the heavier skater goes the other way, more slowly. A lost the minus sign — both skaters cannot go the same way from rest. B has the masses the wrong way up. D: the TOTAL is zero, but $+108$ and $-108$ add to zero with both skaters moving.',
-      expVn: '$v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2} = -\\dfrac{45.0 \\times 2.40}{60.0} = -1.80$ m/s: người nặng hơn đi theo hướng ngược lại, chậm hơn. A mất dấu trừ — từ trạng thái đứng yên, hai người không thể đi cùng một hướng. B đặt khối lượng lộn ngược. D: TỔNG bằng không, nhưng $+108$ và $-108$ cộng lại bằng không trong khi cả hai đều chuyển động.',
+      expEn: 'The 45.0 kg skater is object 1: $v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2} = -\\dfrac{45.0 \\times 2.40}{60.0} = -1.80$ m/s. The heavier skater goes the other way, more slowly. A lost the minus sign — from rest, the two cannot go the same way. B has the masses the wrong way up. D: the TOTAL is zero, but $+108$ and $-108$ add up to zero with both skaters moving.',
+      expVn: 'Người 45.0 kg là vật 1: $v_{2f} = -\\dfrac{m_1 v_{1f}}{m_2} = -\\dfrac{45.0 \\times 2.40}{60.0} = -1.80$ m/s. Người nặng hơn đi theo hướng ngược lại, chậm hơn. A mất dấu trừ — từ trạng thái đứng yên, hai người không thể đi cùng một hướng. B đặt khối lượng lộn ngược. D: TỔNG bằng không, nhưng $+108$ và $-108$ cộng lại bằng không trong khi cả hai đều chuyển động.',
     },
   },
 
@@ -1038,19 +1040,19 @@ export const notes = [
     columns: 2,
     eyebrow: 'Your formula page — check your notebook against this',
     eyebrowVn: 'Trang công thức của em — đối chiếu vở với trang này',
-    title: 'The Whole Module on One Page',
+    title: 'The Whole Lesson on One Page',
     titleVn: 'Cả Bài Trên Một Trang',
-    content: 'Eight lines, and only line 5 is a collision equation to remember — lines 6 to 8 are line 5 with a story put in. Beside each, write **when** it is the right one.',
-    contentVn: 'Tám dòng, và chỉ dòng 5 là phương trình va chạm cần nhớ — dòng 6 đến 8 là dòng 5 với một câu chuyện được đưa vào. Bên cạnh mỗi dòng, ghi **khi nào** dùng nó.',
+    content: 'Eight lines. Only line 5 is a collision equation to remember — lines 6, 7 and 8 are line 5 with a story put in. Next to each line, write **when** to use it.',
+    contentVn: 'Tám dòng. Chỉ dòng 5 là phương trình va chạm cần nhớ — dòng 6, 7 và 8 là dòng 5 với đề bài được đưa vào. Bên cạnh mỗi dòng, ghi **khi nào** dùng nó.',
     notes: [
-      { tone: 'write', text: '**1.** $p = m v$ — the momentum of one object.', textVn: '**1.** $p = m v$ — động lượng của một vật.' },
+      { tone: 'write', text: '**1.** $p = m v$ — the momentum of ONE object.', textVn: '**1.** $p = m v$ — động lượng của MỘT vật.' },
       { tone: 'write', text: '**2.** Signs: right / east = $+$, left / west = $-$. A velocity is a number WITH its sign.', textVn: '**2.** Dấu: phải / đông = $+$, trái / tây = $-$. Vận tốc là con số KÈM dấu.' },
       { tone: 'write', text: '**3.** $J = F \\Delta t$ — a force acting for a time.', textVn: '**3.** $J = F \\Delta t$ — một lực tác dụng trong một khoảng thời gian.' },
-      { tone: 'write', text: '**4.** $F \\Delta t = m (v_f - v_i)$ — impulse = change in momentum. $\\Delta v$ is final MINUS initial.', textVn: '**4.** $F \\Delta t = m (v_f - v_i)$ — xung lượng = độ thay đổi động lượng. $\\Delta v$ là cuối TRỪ đầu.' },
+      { tone: 'write', text: '**4.** $F \\Delta t = m (v_f - v_i)$ — a push changes ONE object\'s velocity (a bat, a bounce). $\\Delta v$ is final MINUS initial.', textVn: '**4.** $F \\Delta t = m (v_f - v_i)$ — một cú đẩy làm thay đổi vận tốc của MỘT vật (cây gậy, cú nảy). $\\Delta v$ là cuối TRỪ đầu.' },
       { tone: 'write', text: '**5.** $m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$ — EVERY collision.', textVn: '**5.** $m_1 v_{1i} + m_2 v_{2i} = m_1 v_{1f} + m_2 v_{2f}$ — MỌI va chạm.' },
-      { tone: 'write', text: '**6.** One at rest ($v_{2i} = 0$): $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$', textVn: '**6.** Một vật đứng yên ($v_{2i} = 0$): $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$' },
-      { tone: 'write', text: '**7.** Stick together ($v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$', textVn: '**7.** Dính vào nhau ($v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$' },
-      { tone: 'write', text: '**8.** Recoil, all at rest before: $0 = m_1 v_{1f} + m_2 v_{2f}$', textVn: '**8.** Giật lùi, tất cả đứng yên lúc đầu: $0 = m_1 v_{1f} + m_2 v_{2f}$' },
+      { tone: 'write', text: '**6.** "At rest" ($v_{2i} = 0$): $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$', textVn: '**6.** "Đứng yên" ($v_{2i} = 0$): $m_1 v_{1i} = m_1 v_{1f} + m_2 v_{2f}$' },
+      { tone: 'write', text: '**7.** "Stick together" ($v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$', textVn: '**7.** "Dính vào nhau" ($v_{1f} = v_{2f} = v_f$): $m_1 v_{1i} + m_2 v_{2i} = (m_1 + m_2)\\,v_f$' },
+      { tone: 'write', text: '**8.** "Recoil" — everything at rest before: $0 = m_1 v_{1f} + m_2 v_{2f}$', textVn: '**8.** "Giật lùi" — mọi thứ đứng yên lúc đầu: $0 = m_1 v_{1f} + m_2 v_{2f}$' },
       { tone: 'info', text: '**Units:** $p$ in kg·m/s · $J$ in N·s (the same thing) · $F$ in N · $\\Delta t$ in s · km/s × 1000 → m/s', textVn: '**Đơn vị:** $p$ tính bằng kg·m/s · $J$ bằng N·s (cùng một thứ) · $F$ bằng N · $\\Delta t$ bằng s · km/s × 1000 → m/s' },
       { tone: 'info', text: '**Algebra:** a negative number goes in brackets · minus a minus is a plus · factor only when the UNKNOWN is in two terms, then divide by the WHOLE bracket', textVn: '**Đại số:** số âm đặt trong ngoặc · trừ một số âm là cộng · chỉ đặt nhân tử chung khi ẨN SỐ nằm trong hai số hạng, rồi chia cho CẢ ngoặc' },
     ],
@@ -1060,17 +1062,17 @@ export const notes = [
     layout: 'callout',
     accent: RED,
     icon: 'AlertTriangle',
-    eyebrow: 'The four marks this module gives away',
-    eyebrowVn: 'Bốn lỗi mất điểm của bài này',
+    eyebrow: 'The four mistakes that lose marks in this lesson',
+    eyebrowVn: 'Bốn lỗi làm mất điểm trong bài này',
     title: 'Watch Out',
     titleVn: 'Cẩn Thận',
     content: 'Before you type an answer into the green box, check all four.',
     contentVn: 'Trước khi gõ đáp án vào ô xanh, hãy kiểm tra đủ bốn điều.',
     notes: [
-      { tone: 'homework', text: '**1. A lost sign.** Anything moving left or west went in as positive — or the answer\'s minus sign was left off the box. "Remember to indicate the direction" means: type the minus.', textVn: '**1. Mất dấu.** Một vật đi sang trái hay sang tây lại được thay bằng số dương — hoặc dấu trừ của đáp án bị bỏ khỏi ô. "Nhớ ghi hướng" nghĩa là: gõ dấu trừ.' },
-      { tone: 'homework', text: '**2. Minus a minus.** $37.0 - (-41.0)$ is $78.0$, not $-4.0$. Write the brackets, and type them into the calculator.', textVn: '**2. Trừ một số âm.** $37.0 - (-41.0)$ là $78.0$, không phải $-4.0$. Viết ngoặc, và gõ ngoặc vào máy tính.' },
-      { tone: 'homework', text: '**3. The wrong divide.** In the stick-together equation, divide by the WHOLE bracket $(m_1 + m_2)$ — never by $m_1$ alone. Factor only when the unknown is the letter in both terms.', textVn: '**3. Chia sai.** Trong phương trình dính vào nhau, chia cho CẢ ngoặc $(m_1 + m_2)$ — không bao giờ chỉ chia cho $m_1$. Chỉ đặt nhân tử chung khi ẩn số là chữ nằm trong cả hai số hạng.' },
-      { tone: 'homework', text: '**4. Before and after mixed up.** "At rest" is BEFORE ($v_{2i} = 0$), not after. Read which object and which time before you write a subscript.', textVn: '**4. Nhầm trước và sau.** "Đứng yên" là TRƯỚC va chạm ($v_{2i} = 0$), không phải sau. Đọc rõ vật nào và thời điểm nào trước khi viết chỉ số.' },
+      { tone: 'homework', text: '**1. A lost sign.** Something moving left or west went in as positive — or the answer\'s minus sign was left out of the box. "Remember to indicate the direction" means: type the minus.', textVn: '**1. Mất dấu.** Một vật đi sang trái hay sang tây lại được thay bằng số dương — hoặc dấu trừ của đáp án bị bỏ khỏi ô. "Nhớ ghi hướng" nghĩa là: gõ dấu trừ.' },
+      { tone: 'homework', text: '**2. Minus a minus.** $37.0 - (-41.0)$ is $78.0$, not $-4.0$. Write the brackets, and type them into the calculator too.', textVn: '**2. Trừ một số âm.** $37.0 - (-41.0)$ là $78.0$, không phải $-4.0$. Viết ngoặc, và gõ cả ngoặc vào máy tính.' },
+      { tone: 'homework', text: '**3. The wrong divide.** In the stick-together equation, divide by the WHOLE bracket $(m_1 + m_2)$ — never by $m_1$ alone. And factor only when the unknown is in both terms.', textVn: '**3. Chia sai.** Trong phương trình dính vào nhau, chia cho CẢ ngoặc $(m_1 + m_2)$ — không bao giờ chỉ chia cho $m_1$. Và chỉ đặt nhân tử chung khi ẩn số nằm trong cả hai số hạng.' },
+      { tone: 'homework', text: '**4. Before and after mixed up.** "At rest" describes BEFORE the crash ($v_{2i} = 0$), not after. Before you write a subscript, ask: which object (1 or 2)? Which time (i or f)?', textVn: '**4. Nhầm trước và sau.** "Đứng yên" mô tả TRƯỚC va chạm ($v_{2i} = 0$), không phải sau. Trước khi viết chỉ số, hãy hỏi: vật nào (1 hay 2)? Thời điểm nào (i hay f)?' },
     ],
   },
 
@@ -1092,9 +1094,9 @@ export const notes = [
       { text: 'Put every negative number in brackets, and turn minus a minus into a plus', textVn: 'Đặt mọi số âm trong ngoặc, và biến trừ một số âm thành cộng' },
       { text: 'Read which object (1 or 2) and which time (i or f) a number belongs to', textVn: 'Đọc được một con số thuộc vật nào (1 hay 2) và thời điểm nào (i hay f)' },
       { text: 'Cross out the term of anything at rest', textVn: 'Gạch bỏ số hạng của vật đang đứng yên' },
-      { text: 'Turn "stick together" into one v_f, factor it out, and divide by (m₁ + m₂)', textVn: 'Biến "dính vào nhau" thành một v_f, đặt nhân tử chung, rồi chia cho (m₁ + m₂)' },
-      { text: 'Isolate an unknown mass by subtracting then dividing — no factoring needed', textVn: 'Cô lập một khối lượng chưa biết bằng cách trừ rồi chia — không cần đặt nhân tử chung' },
-      { text: 'Explain the minus sign in a recoil: the two move in opposite directions', textVn: 'Giải thích dấu trừ trong giật lùi: hai vật chuyển động ngược chiều nhau' },
+      { text: 'Turn "stick together" into one $v_f$, factor it out, and divide by $(m_1 + m_2)$', textVn: 'Biến "dính vào nhau" thành một $v_f$, đặt nhân tử chung, rồi chia cho $(m_1 + m_2)$' },
+      { text: 'Find an unknown mass by subtracting then dividing — no factoring needed', textVn: 'Tìm một khối lượng chưa biết bằng cách trừ rồi chia — không cần đặt nhân tử chung' },
+      { text: 'Explain the minus sign in a recoil: the two objects move in opposite directions', textVn: 'Giải thích dấu trừ trong giật lùi: hai vật chuyển động ngược chiều nhau' },
     ],
   },
 ];
