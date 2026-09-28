@@ -28,17 +28,18 @@ correct answer and 0 for a blank or a wrong one.**
 
 | Step | Gate | Tasks | XP |
 |---|---|---|---|
-| `concept` — **Get Ready** | 0 | `NOTES` 10 · `WORD_REC` 10 · `WORKBOOK` 15 · `FACTOR_BLITZ` 10 | 45 |
-| `practice` — **Practice Test** | 10 XP | `AMC_TEST` 40 | 40 |
-| `mastery` — **Review** | 10 XP **and** the test handed in (`requires: 'AMC_TEST'`) | `AMC_REVIEW` 25 | 25 |
+| `practice` — **Practice Test** | open | `AMC_TEST` 75 | 75 |
+| `mastery` — **Review** | the test handed in (`requires: 'AMC_TEST'`) | `AMC_REVIEW` 25 | 25 |
 
-110 XP for a 100 XP unit. There is no Quiz — the paper is the assessment — so the unit
-finishes at 80 XP (`taskRegistry.isUnitComplete`).
+There is no Quiz — the paper is the assessment — so the unit finishes at 80 XP
+(`taskRegistry.isUnitComplete`).
 
-**The one rule: nothing before the test works a problem of the test.** The deck, the vocab
-and the warm-up teach the *ideas* the paper leans on, with fresh numbers and fresh
-contexts. The paper's own problems are met twice only: in the test, and in the Review.
-Give a content author the list of the paper's problems so they know what to stay away from.
+**Only these two tasks are shown for now.** PT_01 also carries a toolkit deck (`notes.js`),
+the contest vocabulary (`realWords`), a warm-up (`workbook.js`) and Factor Blitz, with
+their audio generated, but none is declared in `phases`, so nothing draws them. To bring
+them back, add a first phase holding `NOTES` / `WORD_REC` / `WORKBOOK` / `FACTOR_BLITZ` and
+re-balance the XP. If they do come back, the rule is: **nothing before the test works a
+problem of the test** — fresh numbers and fresh contexts only.
 
 ---
 
@@ -54,28 +55,25 @@ are in `src/utils/amcTest.js`; the shared problem text, figure and choice row ar
 - **Running**: one problem at a time beside a bubble sheet (either can be used to answer).
   Flag a question, erase an answer, jump by number; keys `A`–`E`, arrows, `F`. Nothing is
   marked while the test runs.
-- **The clock is a deadline.** *Begin* stamps `deadline` into the resume blob and every
-  answer is checkpointed, so closing the tab does not stop the clock and does not lose the
-  paper. A paper whose time ran out while it was closed is handed in as it stood.
+- **Sat once.** There is no second attempt: a handed-in paper only ever reopens on its
+  results, and its score is what is saved.
+- **The clock stops when the test is closed.** The seconds left are kept in the resume blob
+  (`remaining`) and written with every answer, every 15 seconds, and on the way out.
+  Leaving keeps the time that was on the clock; coming back carries on from it.
 - **Results**: the score out of 25, right / wrong / blank per question, the score by topic,
   and the award line reached. It does **not** show the answers — that is the Review's job.
 - The score is the number of correct answers (`nativeMax: 25`), scaled to the task's XP.
-- *Sit the test again* gives a blank paper; the best score is kept and the Review restarts
-  from the new paper.
 
 ### Review — `AMC_REVIEW`, dbKey `p54`, `src/tasks/AmcReview.jsx`
 
 - Locked until the paper is **handed in**. A phase's `requires` normally opens as soon as a
   progress record exists; the test has one from its first checkpoint, so its registry entry
   carries `isSat` (= `submitted` in the blob) and `resolveUnitTasks` asks that instead.
-- A problem answered correctly is marked, with its solution one tap away.
-- A **missed** problem (wrong or blank) gets a **second try first**: the choice made in the
-  test is crossed out, a hint is on offer, two tries. Put right, or out of tries, the
-  solution opens.
+- Every problem is shown with what was answered, the correct answer and the solution. No
+  second tries. The list opens on the missed problems; the whole paper is one tap away.
 - The solution is set out as: **Key idea** → numbered steps → figure → **Answer** →
   **Watch out** (the trap behind a tempting choice) or **Quick tip**.
-- XP is for dealing with the missed problems: 1 for one put right on a second try, ½ for
-  one whose solution was worked through and ticked, as a share of the problems missed.
+- XP is for opening the solutions of the missed problems, as a share of the problems missed.
 
 ---
 
@@ -84,9 +82,9 @@ are in `src/utils/amcTest.js`; the shared problem text, figure and choice row ar
 | File | Holds |
 |---|---|
 | `data.js` | meta, phases, `realWords` (the contest's vocabulary), the imports |
-| `notes.js` + `diagrams.js` | the "toolkit" deck: test strategy, then one tool per idea |
-| `workbook.js` | the warm-up: 12 fresh problems, three tiers, mostly five-choice |
-| `factorBlitz.js` | mental-arithmetic speed (no calculator in the contest) |
+| `notes.js` + `diagrams.js` | the "toolkit" deck — *hidden for now* |
+| `workbook.js` | the warm-up — *hidden for now* |
+| `factorBlitz.js` | mental-arithmetic speed — *hidden for now* |
 | `test.js` | the 25 problems, each with `hint`, `idea`, `solution`, `trap`/`tip` |
 | `figures.js` | the test's figures and the solutions' figures |
 
@@ -115,5 +113,5 @@ them, so **look at them** in the harness (`?open=FIGURES`).
 - [ ] Every figure looked at in the harness, light and dark
 - [ ] `npm run lint`, `npm run audit:svg AMC8`, `npm run validate` (runs `checkAmcTest`)
 - [ ] Dry-run the narration, then generate audio, then validate again
-- [ ] Walked the test (begin → answer → hand in → results) and the Review (second try,
-      hint, solution) in `preview-amc8.html` at 1280 × 720 and at 390 px wide
+- [ ] Walked the test (begin → answer → leave and come back → hand in → results) and the
+      Review in `preview-amc8.html` at 1280 × 720 and at 390 px wide

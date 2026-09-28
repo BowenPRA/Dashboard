@@ -5,14 +5,15 @@
 // there are no `vn*` twins.
 //
 // THE EXEMPLAR for an AMC8 unit (docs/amc8-course.md):
-//   Step 1 (Get Ready)      — Notes + Vocab + Practice + Factor Blitz   45 XP
-//   Step 2 (Practice Test)  — the timed paper, 25 questions, 40 minutes  40 XP
-//   Step 3 (Review)         — opens when the paper is handed in          25 XP
+//   Step 1 (Practice Test)  — the timed paper, 25 questions, 40 minutes  75 XP
+//   Step 2 (Review)         — opens when the paper is handed in          25 XP
 //
-// Nothing in Step 1 works a problem of the test: the deck, the warm-up and the
-// vocabulary teach the IDEAS the paper leans on, with fresh numbers, so the
-// test is still a test when the student reaches it. The test's own problems
-// are met twice only — in the test, and in the Review.
+// ONLY THOSE TWO TASKS ARE SHOWN FOR NOW. The toolkit deck (notes.js), the
+// vocabulary (realWords), the warm-up (workbook.js) and Factor Blitz are
+// written and kept in this unit's data, and their audio is generated, but
+// they are not declared in `phases`, so nothing draws them. To bring them
+// back, add a first phase holding NOTES / WORD_REC / WORKBOOK / FACTOR_BLITZ
+// and re-balance the XP (the unit must offer at least 100).
 //
 // There is no Quiz: the Practice Test is the assessment. A unit with no quiz
 // finishes at 80 XP (taskRegistry.isUnitComplete).
@@ -27,41 +28,26 @@ export const PT_01_DATA = {
   meta: {
     id: 'PT_01',
     title: 'Practice Test 1',
-    desc: 'A full AMC 8 paper: get ready, sit 25 questions in 40 minutes, then review every problem you missed.',
+    desc: 'A full AMC 8 paper: sit 25 questions in 40 minutes, then review every problem with its solution.',
     track: 'AMC8',
     icon: 'Award',
   },
 
   phases: [
     {
-      id: 'concept',
-      title: 'Step 1: Get Ready',
+      id: 'practice',
+      title: 'Step 1: Practice Test',
       threshold: 0,
       tasks: [
-        { id: 'NOTES', dbKey: 'p10', maxXP: 10 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 10 },
-        { id: 'WORKBOOK', dbKey: 'p11', maxXP: 15 },
-        { id: 'FACTOR_BLITZ', dbKey: 'p18', maxXP: 10 },
-      ],
-    },
-    {
-      // Opens at 10 XP — the deck or the vocabulary done. A low gate on
-      // purpose: the test is the point of the unit, and a student who is
-      // ready should not have to grind to reach it.
-      id: 'practice',
-      title: 'Step 2: Practice Test',
-      threshold: 10,
-      tasks: [
-        { id: 'AMC_TEST', dbKey: 'p53', maxXP: 40 },
+        { id: 'AMC_TEST', dbKey: 'p53', maxXP: 75 },
       ],
     },
     {
       // Held shut until the paper is HANDED IN (`requires`, read through the
-      // test's `isSat`), whatever the XP: a solution seen before the test is a
-      // test wasted.
+      // test's `isSat`): a solution seen before the test is a test wasted.
       id: 'mastery',
-      title: 'Step 3: Review',
-      threshold: 10,
+      title: 'Step 2: Review',
+      threshold: 0,
       requires: 'AMC_TEST',
       tasks: [
         { id: 'AMC_REVIEW', dbKey: 'p54', maxXP: 25 },

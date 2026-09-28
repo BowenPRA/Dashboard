@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   X as XIcon, Clock, Flag, ChevronLeft, ChevronRight, Eraser, Send, Trophy, Timer,
-  PencilLine, CalculatorIcon, Ruler, CircleSlash, RotateCcw, Check, Minus, ArrowRight, Award, Sun, Moon,
+  PencilLine, CalculatorIcon, Ruler, CircleSlash, Check, Minus, ArrowRight, Award, Sun, Moon,
 } from 'lucide-react';
 import useDarkMode from '../hooks/useDarkMode';
 import { Prose, Figure, Choices } from '../components/amc/AmcParts';
 import {
-  LETTERS, TOPICS, TOPIC_LABEL, problemsOf, secondsAllowed, isTestBlob, newSitting,
+  LETTERS, TOPICS, TOPIC_LABEL, problemsOf, secondsAllowed, isTestBlob, newPaper,
   scoreTest, itemsOf, markOf, awardFor, formatClock,
 } from '../utils/amcTest';
 
@@ -19,14 +19,15 @@ import {
  *   cover    the front of the booklet: the rules, and Begin
  *   running  one problem at a time beside a bubble sheet, under a clock
  *   results  the score — and which questions were missed, but NOT their
- *            answers: those belong to the Review task, where each missed
- *            problem is tried again before its solution is shown
+ *            answers: those belong to the Review task
  *
- * THE CLOCK IS A DEADLINE. Begin stamps `deadline` into the resume blob and
- * every answer is checkpointed (`onProgress`), so closing the tab neither
- * stops the clock nor loses the paper: reopening carries on with whatever
- * time is left, and a paper whose time ran out while it was closed is handed
- * in as it stood.
+ * SAT ONCE. There is no second attempt: a paper that has been handed in only
+ * ever reopens on its results, and its score is what is saved.
+ *
+ * THE CLOCK STOPS WHEN THE TEST IS CLOSED. The seconds left are kept in the
+ * resume blob (`remaining`) and written with every answer, every quarter of
+ * a minute, and on the way out — so leaving the test keeps the time that was
+ * on the clock, and coming back carries on from it.
  *
  * Nothing is marked while the test runs. The score is reported only when the
  * paper is handed in, as the number of correct answers out of 25
@@ -38,14 +39,9 @@ import {
 const NAVY = 'bg-[#1e3a8a]';
 
 /** What the task opens on, worked out once from the saved blob. */
-function openingState(test, savedData, now) {
-  if (!isTestBlob(savedData)) return { stage: 'cover', blob: null, lapsed: false };
-  if (savedData.submitted) return { stage: 'results', blob: savedData, lapsed: false };
-  if (now >= savedData.deadline) {
-    // Time ran out while the test was closed: it is handed in as it stood.
-    return { stage: 'results', blob: { ...savedData, submitted: true, usedSeconds: secondsAllowed(test), timedOut: true }, lapsed: true };
-  }
-  return { stage: 'running', blob: savedData, lapsed: false };
+function openingState(savedData) {
+  if (!isTestBlob(savedData)) return { stage: 'cover', blob: null };
+  return { stage: savedData.submitted ? 'results' : 'running', blob: savedData };
 }
 
 const firstUnanswered = (problems, picks) => {
@@ -79,11 +75,12 @@ const mainButton = 'px-5 py-3 rounded-xl border-b-4 border-[#172554] bg-[#1e3a8a
 const goButton = 'px-5 py-3 rounded-xl border-b-4 border-[#c2410c] bg-[#f97316] text-sm font-black uppercase tracking-widest text-white hover:bg-[#fb923c] active:translate-y-[4px] active:border-b-0 transition-all';
 
 // ── Cover ───────────────────────────────────────────────────────────────────
-function Cover({ test, count, resit, onBegin, onQuit }) {
+function Cover({ test, count, onBegin, onQuit }) {
   const minutes = Math.round(secondsAllowed(test) / 60);
   const rules = [
     <>This is a <strong>{count}-question multiple-choice test</strong>. Each question has five choices, and exactly one of them is correct.</>,
-    <>You have <strong>{minutes} minutes</strong>. The clock starts when you press Begin and it <strong>does not stop</strong> — not even if you close the test.</>,
+    <>You have <strong>{minutes} minutes</strong>. The clock starts when you press Begin. If you have to leave, your answers and your time are saved, and the clock carries on when you come back.</>,
+    <>You sit this test <strong>one time only</strong>. Your score is saved when you hand in.</>,
     <>You score <strong>1 point</strong> for each correct answer, <strong>0</strong> for a blank and <strong>0</strong> for a wrong answer. Nothing is taken off for a wrong answer, so answer every question.</>,
     <>You may use blank scratch paper, a ruler and an eraser. <strong>No calculator</strong>, and no phone, smartwatch, compass, protractor or graph paper. No question needs a calculator.</>,
     <>Figures are not necessarily drawn to scale.</>,
@@ -127,12 +124,6 @@ function Cover({ test, count, resit, onBegin, onQuit }) {
                 <li className="flex items-center gap-2"><Clock className="h-4 w-4 flex-shrink-0" strokeWidth={2.5} /> {minutes} minutes with no breaks</li>
               </ul>
             </div>
-
-            {resit && (
-              <p className="mt-5 text-sm font-bold text-slate-500 dark:text-slate-400">
-                This is a second sitting. Your best score is kept, and the Review will start again from the new paper.
-              </p>
-            )}
 
             <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button type="button" onClick={onQuit} className={quietButton}>Not now</button>
@@ -188,7 +179,7 @@ function AnswerSheet({ problems, picks, flags, current, onGo, onPick }) {
 }
 
 // ── Results ─────────────────────────────────────────────────────────────────
-function Results({ test, blob, onDone, onResit }) {
+function Results({ test, blob, onDone }) {
   const problems = problemsOf(test);
   const score = scoreTest(test, blob.picks);
   const award = awardFor(test, score.right);
@@ -277,15 +268,12 @@ function Results({ test, blob, onDone, onResit }) {
               </h3>
               <p className="mt-1 text-sm font-bold leading-relaxed text-orange-800 dark:text-orange-200">
                 {missed > 0
-                  ? 'The answers are not shown here on purpose. Open Review on the unit card: you get a second try at each missed question, then the solution step by step.'
+                  ? 'Open Review on the unit card to see the answer and the solution, step by step, for every question.'
                   : 'Open Review on the unit card to compare your methods with the worked solutions.'}
               </p>
             </div>
 
-            <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <button type="button" onClick={onResit} className={`${quietButton} flex items-center justify-center gap-2`}>
-                <RotateCcw className="h-4 w-4" strokeWidth={3} /> Sit the test again
-              </button>
+            <div className="mt-7 flex justify-end">
               <button type="button" onClick={onDone} className={`${mainButton} px-8 py-4 text-base`}>Done</button>
             </div>
           </div>
@@ -300,34 +288,37 @@ export default function AmcTest({ pool, savedData, onComplete, onProgress, onQui
   const test = pool;
   const problems = problemsOf(test);
 
-  const [opening] = useState(() => openingState(test, savedData, Date.now()));
+  const [opening] = useState(() => openingState(savedData));
   const [stage, setStage] = useState(opening.stage);
   const [blob, setBlob] = useState(opening.blob);
   const [idx, setIdx] = useState(() => (opening.stage === 'running' ? firstUnanswered(problemsOf(test), opening.blob.picks) : 0));
   const [now, setNow] = useState(() => Date.now());
-  const [dialog, setDialog] = useState(null); // 'handin' | 'leave' | 'resit'
+  // Where the clock runs out in THIS session: now, plus the time that was
+  // left when the test was last saved.
+  const [endsAt, setEndsAt] = useState(() => (opening.stage === 'running' ? Date.now() + opening.blob.remaining * 1000 : 0));
+  const [dialog, setDialog] = useState(null); // 'handin' | 'leave'
   const [isDark, toggleDark] = useDarkMode();
 
-  // The interval and the key handler are bound once; they read the live paper
-  // through this ref rather than being re-bound on every answer.
-  const live = useRef({ blob, stage, handIn: null });
+  // The interval is bound once; it reads the live paper through this ref
+  // rather than being re-bound on every answer.
+  const live = useRef({ blob, stage, endsAt, handIn: null, keep: null });
 
-  // A paper that timed out while closed is handed in the moment it is opened.
-  useEffect(() => {
-    if (opening.lapsed) onProgress?.(scoreTest(test, opening.blob.picks).right, opening.blob);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- once, on open
+  const secondsLeft = (until = endsAt) => Math.max(0, Math.round((until - Date.now()) / 1000));
 
-  const checkpoint = (next) => {
-    setBlob(next);
-    onProgress?.(0, next);
+  /** Save the paper as it stands, with the time now on the clock. */
+  const checkpoint = (next, until = endsAt) => {
+    const stamped = { ...next, remaining: secondsLeft(until) };
+    setBlob(stamped);
+    onProgress?.(0, stamped);
+    return stamped;
   };
 
   const handIn = (timedOut = false) => {
-    const { blob: paper, stage: at } = live.current;
+    const { blob: paper, stage: at, endsAt: until } = live.current;
     if (at !== 'running' || !paper || paper.submitted) return;
     const allowed = secondsAllowed(test);
-    const used = timedOut ? allowed : Math.min(allowed, Math.round((Date.now() - paper.startedAt) / 1000));
-    const done = { ...paper, submitted: true, usedSeconds: used, ...(timedOut ? { timedOut: true } : null) };
+    const remaining = timedOut ? 0 : secondsLeft(until);
+    const done = { ...paper, submitted: true, remaining, usedSeconds: allowed - remaining, ...(timedOut ? { timedOut: true } : null) };
     live.current = { ...live.current, blob: done, stage: 'results' };
     setBlob(done);
     setStage('results');
@@ -335,25 +326,32 @@ export default function AmcTest({ pool, savedData, onComplete, onProgress, onQui
     // Banked at once, so closing the tab on the results screen loses nothing.
     onProgress?.(scoreTest(test, done.picks).right, done);
   };
-  useEffect(() => { live.current = { blob, stage, handIn }; });
+  const keep = () => { if (live.current.stage === 'running') checkpoint(live.current.blob, live.current.endsAt); };
+  useEffect(() => { live.current = { blob, stage, endsAt, handIn, keep }; });
 
   useEffect(() => {
     if (stage !== 'running') return undefined;
+    let ticks = 0;
     const id = setInterval(() => {
       const t = Date.now();
       setNow(t);
-      if (t >= live.current.blob.deadline) live.current.handIn?.(true);
+      if (t >= live.current.endsAt) { live.current.handIn?.(true); return; }
+      // Every 15 seconds the time is saved, so a closed tab or a flat battery
+      // costs a few seconds of clock and never the paper.
+      ticks += 1;
+      if (ticks % 60 === 0) live.current.keep?.();
     }, 250);
     return () => clearInterval(id);
   }, [stage]);
 
   const begin = () => {
     const t = Date.now();
-    const fresh = newSitting(test, t, blob);
+    const until = t + secondsAllowed(test) * 1000;
     setNow(t);
+    setEndsAt(until);
     setIdx(0);
     setStage('running');
-    checkpoint(fresh);
+    checkpoint(newPaper(test, t), until);
   };
 
   const pick = (n, letter) => {
@@ -392,37 +390,24 @@ export default function AmcTest({ pool, savedData, onComplete, onProgress, onQui
 
   // ── cover ────────────────────────────────────────────────────────────────
   if (stage === 'cover') {
-    return <Cover test={test} count={problems.length} resit={!!blob?.submitted} onBegin={begin} onQuit={onQuit} />;
+    return <Cover test={test} count={problems.length} onBegin={begin} onQuit={onQuit} />;
   }
 
   // ── results ──────────────────────────────────────────────────────────────
   if (stage === 'results') {
     const done = () => {
-      // The attempt is logged once per sitting; reopening the results later
-      // only looks at them.
+      // The attempt is logged once; reopening the results later only looks
+      // at them.
       if (blob.logged) { onQuit?.(); return; }
       const finished = { ...blob, logged: true };
       onComplete?.(scoreTest(test, finished.picks).right, finished, { items: itemsOf(test, finished.picks) });
     };
-    return (
-      <>
-        <Results test={test} blob={blob} onDone={done} onResit={() => setDialog('resit')} />
-        {dialog === 'resit' && (
-          <Dialog title="Sit the test again?" actions={<>
-            <button type="button" className={quietButton} onClick={() => setDialog(null)}>Cancel</button>
-            <button type="button" className={mainButton} onClick={() => { setDialog(null); setStage('cover'); }}>Yes, new paper</button>
-          </>}>
-            <p>You will get a blank paper and a new {Math.round(secondsAllowed(test) / 60)} minutes. Your best score is kept.</p>
-            <p>The Review locks again until the new paper is handed in, and then starts from that paper.</p>
-          </Dialog>
-        )}
-      </>
-    );
+    return <Results test={test} blob={blob} onDone={done} />;
   }
 
   // ── running ──────────────────────────────────────────────────────────────
   const problem = problems[idx];
-  const left = Math.max(0, (blob.deadline - now) / 1000);
+  const left = Math.max(0, (endsAt - now) / 1000);
   const answered = problems.filter((p) => blob.picks[p.id]).length;
   const blanks = problems.map((p, i) => (blob.picks[p.id] ? null : i + 1)).filter(Boolean);
   const flagged = blob.flags.includes(problem.id);
@@ -543,10 +528,10 @@ export default function AmcTest({ pool, savedData, onComplete, onProgress, onQui
       {dialog === 'leave' && (
         <Dialog title="Leave the test?" actions={<>
           <button type="button" className={quietButton} onClick={() => setDialog(null)}>Stay</button>
-          <button type="button" className={mainButton} onClick={() => { onProgress?.(0, blob); onQuit?.(); }}>Leave</button>
+          <button type="button" className={mainButton} onClick={() => { checkpoint(blob); onQuit?.(); }}>Save and leave</button>
         </>}>
-          <p>Your answers are saved, but <strong className="text-slate-900 dark:text-white">the clock keeps running</strong>. You can come back while there is time left.</p>
-          <p className="text-sm">If the time runs out while you are away, the paper is handed in as it is.</p>
+          <p>Your answers are saved, and so is your time: you have <strong className="text-slate-900 dark:text-white">{formatClock(left)}</strong> left.</p>
+          <p className="text-sm">The clock stops while you are away and carries on when you come back.</p>
         </Dialog>
       )}
     </div>

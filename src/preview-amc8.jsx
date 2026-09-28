@@ -44,10 +44,10 @@ function seedScores(unit) {
         : paper.toUpperCase().split('');
     const picks = {};
     problems.forEach((p, i) => { if (/[A-E]/.test(letters[i] || '')) picks[p.id] = letters[i]; });
-    return { p53: { current: 0, answers: { v: 1, startedAt: now - 2000000, deadline: now + 400000, picks, flags: [], submitted: true, usedSeconds: 2000, sitting: 1 } } };
+    return { p53: { current: 0, answers: { v: 1, startedAt: now - 2000000, remaining: 400, picks, flags: [], submitted: true, usedSeconds: 2000 } } };
   }
   if (left > 0) {
-    return { p53: { current: 0, answers: { v: 1, startedAt: now - (allowed - left) * 1000, deadline: now + left * 1000, picks: {}, flags: [], submitted: false, sitting: 1 } } };
+    return { p53: { current: 0, answers: { v: 1, startedAt: now - (allowed - left) * 1000, remaining: left, picks: {}, flags: [], submitted: false } } };
   }
   return {};
 }

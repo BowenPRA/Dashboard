@@ -6,23 +6,18 @@
 //   {
 //     v: 1,
 //     startedAt,   // ms — when "Begin" was pressed
-//     deadline,    // ms — startedAt + the test's minutes. The clock is a
-//                  //      DEADLINE, not a countdown: closing the tab does not
-//                  //      stop it, which is what "contest conditions" means.
+//     remaining,   // seconds left on the clock at the last save. The clock
+//                  // runs only while the test is open: leaving saves what is
+//                  // left, and coming back carries on from there.
 //     picks,       // { q1: 'B', q7: 'E' } — a blank is simply absent
 //     flags,       // ['q12'] — "come back to this one"
 //     submitted,   // true once handed in (by the student or by the clock)
-//     usedSeconds, // how long the sitting took
-//     sitting,     // 1, 2, 3 … — which attempt this is
+//     usedSeconds, // how much of the time was used
 //   }
+// The test is sat ONCE: a handed-in paper only ever reopens on its results.
 //
 // ── The review's blob: progress[track][unit].p54.answers ────────────────────
-//   {
-//     v: 1,
-//     sitting,     // the test sitting this review belongs to; a re-sit starts
-//                  // the review again
-//     work: { q7: { tries: ['A', 'E'], fixed: true, gaveUp: true, read: true } },
-//   }
+//   { v: 1, seen: ['q7', 'q12'] }   // the problems whose solution was opened
 //
 // The Review opens only once the test is HANDED IN. A checkpoint written in
 // the middle of the test already makes a progress record, so "a record
@@ -39,9 +34,6 @@ export const TOPIC_LABEL = {
 };
 export const DEFAULT_MINUTES = 40;
 
-/** How many second tries the Review allows before it shows the solution. */
-export const MAX_RETRIES = 2;
-
 export const problemsOf = (test) => (Array.isArray(test?.problems) ? test.problems : []);
 export const secondsAllowed = (test) => Math.round((Number(test?.minutes) || DEFAULT_MINUTES) * 60);
 
@@ -50,18 +42,11 @@ export const isTestSubmitted = (record) => record?.answers?.submitted === true;
 
 /** A blob that is this test, part-way through or finished — never a stray object. */
 export const isTestBlob = (blob) =>
-  !!blob && typeof blob === 'object' && blob.v === 1 && Number.isFinite(blob.startedAt) && Number.isFinite(blob.deadline);
+  !!blob && typeof blob === 'object' && blob.v === 1 && !!blob.picks && typeof blob.picks === 'object'
+  && (blob.submitted === true || Number.isFinite(blob.remaining));
 
-export function newSitting(test, now, previous = null) {
-  return {
-    v: 1,
-    startedAt: now,
-    deadline: now + secondsAllowed(test) * 1000,
-    picks: {},
-    flags: [],
-    submitted: false,
-    sitting: (Number(previous?.sitting) || 0) + 1,
-  };
+export function newPaper(test, now) {
+  return { v: 1, startedAt: now, remaining: secondsAllowed(test), picks: {}, flags: [], submitted: false };
 }
 
 export const markOf = (problem, pick) => (!pick ? 'blank' : pick === problem.correct ? 'right' : 'wrong');
@@ -102,45 +87,19 @@ export const formatClock = (seconds) => {
 /** The problems the sitting got wrong or left blank, in paper order. */
 export const missedOf = (test, picks = {}) => problemsOf(test).filter((p) => picks[p.id] !== p.correct);
 
-/** A review blob that belongs to this sitting, or a fresh one. */
-export function reviewFor(blob, sitting) {
-  if (blob && typeof blob === 'object' && blob.v === 1 && blob.sitting === sitting && blob.work && typeof blob.work === 'object') {
-    return blob;
-  }
-  return { v: 1, sitting, work: {} };
-}
+/** The solutions opened so far, from the review's blob. */
+export const seenOf = (blob) => (blob && typeof blob === 'object' && Array.isArray(blob.seen) ? blob.seen : []);
 
 /**
- * What one missed problem has earned in the Review:
- *   1    put right on a second try
- *   0.5  not put right, but the solution was worked through and ticked
- *   0    not dealt with yet
+ * The Review's score out of 10: the share of the missed problems whose
+ * solution has been opened. A perfect paper has nothing to go back to and
+ * earns the 10 for opening the review.
  */
-export function creditOf(entry) {
-  if (entry?.fixed) return 1;
-  if (entry?.read) return 0.5;
-  return 0;
-}
-
-/** True when a missed problem needs nothing more from the student. */
-export const isSettled = (entry) => !!(entry?.fixed || entry?.read);
-
-/** True when the second tries are over: found, used up, or given up. */
-export const triesSpent = (entry) => !!entry?.fixed || !!entry?.gaveUp || (entry?.tries?.length || 0) >= MAX_RETRIES;
-
-/**
- * The Review's score out of 10: the share of the missed problems dealt with.
- * A perfect paper has nothing to put right and earns the 10 for reading.
- */
-export function reviewScore(test, picks, work = {}) {
+export function reviewScore(test, picks, seen = []) {
   const missed = missedOf(test, picks);
   if (!missed.length) return 10;
-  const earned = missed.reduce((sum, p) => sum + creditOf(work[p.id]), 0);
-  return Math.round((earned / missed.length) * 10);
+  return Math.round((missed.filter((p) => seen.includes(p.id)).length / missed.length) * 10);
 }
-
-export const reviewItemsOf = (test, picks, work = {}) =>
-  missedOf(test, picks).map((p) => ({ itemId: p.id, correct: !!work[p.id]?.fixed, retried: true }));
 
 // ── Validation ──────────────────────────────────────────────────────────────
 

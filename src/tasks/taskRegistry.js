@@ -1158,15 +1158,16 @@ export const TASKS = [
     // "Contest conditions." An AMC 8 paper: 25 questions, five choices each,
     // 40 minutes, no calculator, one point for a correct answer and nothing
     // taken off for a wrong one. A cover page with the rules, then one problem
-    // at a time beside a bubble sheet. The clock is a DEADLINE stamped into
-    // the resume blob, so closing the tab does not stop it, and nothing is
-    // marked until the paper is handed in. The results show which questions
-    // were missed but not their answers — those belong to the Review.
+    // at a time beside a bubble sheet. It is sat ONCE — a handed-in paper only
+    // reopens on its results. The clock runs only while the test is open: the
+    // time left is kept in the resume blob, so leaving keeps it. Nothing is
+    // marked until the paper is handed in, and the results show which
+    // questions were missed but not their answers — those are the Review's.
     // Marking, blob shape and `checkAmcTest` are in utils/amcTest.js.
     label: 'Practice Test',
     icon: Timer,
     color: { bg: 'bg-[#1e3a8a]', border: 'border-[#172554]', text: 'text-white' },
-    defaultMaxXP: 40,
+    defaultMaxXP: 75,
     phase: 'practice',
     component: lazy(() => import('./AmcTest.jsx')),
     hasContent: (u) => !!u.amcTest?.problems?.length,
@@ -1181,13 +1182,12 @@ export const TASKS = [
     id: 'AMC_REVIEW',
     nativeMax: 10,
     dbKey: 'p54',
-    // "A second try, then the solution." The handed-in paper, problem by
-    // problem. A missed problem is tried again first — the choice made in
-    // the test crossed out, a hint on offer — and only then opens its
-    // solution: the key idea, numbered steps, a figure, the answer, the
-    // trap. The XP is for dealing with the missed problems (1 for one put
-    // right, ½ for a solution worked through). Lives in a phase that
-    // `requires: 'AMC_TEST'`, and reads that sitting from `scores`.
+    // "Every problem, with its solution." The handed-in paper, problem by
+    // problem: what was answered, the correct answer, and the solution set
+    // out as the key idea, numbered steps, a figure, the answer and the
+    // trap. No second tries. The XP is for opening the solutions of the
+    // problems that were missed. Lives in a phase that
+    // `requires: 'AMC_TEST'`, and reads that paper from `scores`.
     label: 'Review',
     icon: ListChecks,
     color: { bg: 'bg-[#f97316]', border: 'border-[#c2410c]', text: 'text-white' },
@@ -1197,7 +1197,7 @@ export const TASKS = [
     hasContent: (u) => !!u.amcTest?.problems?.length && u.amcTest.problems.every((p) => p.solution?.length),
     buildPool: (u) => u.amcTest,
     props: ({ pool, scores, savedData, onComplete, onProgress, onQuit }) =>
-      ({ pool, sitting: scores?.[AMC_TEST_KEY]?.answers, savedData, onComplete, onProgress, onQuit }),
+      ({ pool, paper: scores?.[AMC_TEST_KEY]?.answers, savedData, onComplete, onProgress, onQuit }),
   },
 ];
 
