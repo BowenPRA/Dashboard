@@ -150,6 +150,13 @@ export const TRACK_REGISTRY = [
     // English only: the contest words ("distinct", "ones digit", "least
     // possible") are what the vocabulary task teaches.
     bilingual: false,
+    // A unit is FINISHED at 60 XP here, not the usual 80 (isUnitComplete).
+    // The test is scored like the contest, where 15/25 is a strong paper: at
+    // 80, the toolkit and the review done plus 15/25 (76 XP) read "not done".
+    // 60 asks for the toolkit and the review plus a real attempt at the paper
+    // — 9/25 or better, above what guessing gets. The backend's roster
+    // (progressStats.js, TRACK_DONE_XP) holds the same number.
+    completeMinXP: 60,
     theme: {
       bg: 'bg-red-500', border: 'border-red-700', hover: 'hover:bg-red-400',
       text: 'text-red-600 dark:text-red-400',

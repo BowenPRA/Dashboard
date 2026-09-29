@@ -2,7 +2,7 @@
 // card. Replaces the old "Needs Work" badge, which named a problem ("this unit
 // needs work") without naming the move.
 
-import { COMPLETE_MIN_XP } from '../tasks/taskRegistry';
+import { completeMinXPOf } from '../tasks/taskRegistry';
 
 /**
  * True when a task has work saved that it can pick up again: a resume blob
@@ -54,7 +54,7 @@ export function suggestNextTask(unit, scores = {}, tasks = [], unitXP = 0, ignor
   if (todo.length === 0) return null;
 
   const quiz = open.find((t) => t.id === 'ASSESSMENT');
-  if (quiz && unitXP >= COMPLETE_MIN_XP && !sat(scores[quiz.dbKey])) {
+  if (quiz && unitXP >= completeMinXPOf(unit) && !sat(scores[quiz.dbKey])) {
     return { task: quiz, note: 'Do the quiz to finish the unit' };
   }
 
@@ -76,7 +76,7 @@ export function suggestNextTask(unit, scores = {}, tasks = [], unitXP = 0, ignor
 
   // Everything open has been tried: go back to where the most XP is left.
   const richest = [...todo].sort((a, b) => gapOf(b) - gapOf(a))[0];
-  const toFinish = COMPLETE_MIN_XP - unitXP;
+  const toFinish = completeMinXPOf(unit) - unitXP;
   return {
     task: richest,
     note: unlockNote

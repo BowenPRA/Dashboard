@@ -1296,6 +1296,13 @@ export function unitXPOf(unit, scores = {}) {
 export const COMPLETE_MIN_XP = 80;
 
 /**
+ * The XP bar for THIS unit: its track's `completeMinXP` if it sets one (AMC 8
+ * Prep, whose test is scored like the contest), otherwise COMPLETE_MIN_XP.
+ */
+export const completeMinXPOf = (unit) =>
+  getTrackConfig(unit?.meta?.track)?.completeMinXP ?? COMPLETE_MIN_XP;
+
+/**
  * Whether a unit counts as FINISHED — the one rule behind every "units done"
  * count, the Continue button, and the arcade's free play:
  *
@@ -1308,13 +1315,17 @@ export const COMPLETE_MIN_XP = 80;
  * mark itself does not matter, the 80 already says the work was done. A unit
  * with no quiz (the GED Extended Response) finishes on the 80 alone.
  *
+ * A track may lower the 80 (`completeMinXP` in trackRegistry): AMC 8 Prep
+ * finishes at 60, because its paper is scored like the contest.
+ *
  * The backend mirrors this for the teacher's roster (progressStats.js) without
- * the unit content, so it cannot see "no quiz" and asks those units for 100.
+ * the unit content, so it cannot see "no quiz" and asks those units for 100 —
+ * except a track with its own bar, which it knows by track id.
  */
 export function isUnitComplete(unit, scores = {}) {
   const xp = unitXPOf(unit, scores);
   if (xp >= 100) return true;
-  if (xp < COMPLETE_MIN_XP) return false;
+  if (xp < completeMinXPOf(unit)) return false;
   const quiz = (unit?.phases || [])
     .flatMap((p) => p.tasks || [])
     .map(resolveTask)

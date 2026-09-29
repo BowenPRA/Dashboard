@@ -32,8 +32,13 @@ correct answer and 0 for a blank or a wrong one.**
 | `practice` — **Practice Test** | open | `AMC_TEST` 60 | 60 |
 | `mastery` — **Review** | the test handed in (`requires: 'AMC_TEST'`) | `AMC_REVIEW` 20 | 20 |
 
-There is no Quiz — the paper is the assessment — so the unit finishes at 80 XP
-(`taskRegistry.isUnitComplete`). There are no XP gates: the deck comes first on the card,
+There is no Quiz — the paper is the assessment. **An AMC8 unit finishes at 60 XP, not
+the usual 80** (`completeMinXP: 60` on the track in `trackRegistry.js`, read by
+`taskRegistry.isUnitComplete`; the backend roster holds the same number in
+`progressStats.js` `TRACK_DONE_XP`). The paper is scored like the contest, where 15/25 is
+strong: at 80, the toolkit and review done plus 15/25 (76 XP) read "not done". 60 is the
+toolkit and review plus 9/25 or better — above what guessing scores. Keep the two numbers
+in step if the XP split changes. There are no XP gates: the deck comes first on the card,
 but the test is open from the start.
 
 PT_01 also carries the contest vocabulary (`realWords`), a warm-up (`workbook.js`) and

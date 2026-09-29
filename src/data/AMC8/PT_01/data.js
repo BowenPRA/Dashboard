@@ -17,8 +17,9 @@
 // are not declared in `phases`, so nothing draws them. To bring one back, add
 // it to Step 1 and re-balance the XP (the unit must offer at least 100).
 //
-// There is no Quiz: the Practice Test is the assessment. A unit with no quiz
-// finishes at 80 XP (taskRegistry.isUnitComplete).
+// There is no Quiz: the Practice Test is the assessment. An AMC8 unit
+// finishes at 60 XP (the track's `completeMinXP`; taskRegistry.isUnitComplete):
+// the toolkit and the review done plus 9/25 or better on the paper.
 // Module properties are written out in full (`notes: notes,`) so the audio
 // generator never over-reads the realWords array.
 import { notes } from './notes.js';
