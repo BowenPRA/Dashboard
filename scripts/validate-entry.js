@@ -46,6 +46,7 @@ import { checkIonicItems } from '../src/utils/ionicEquation.js';
 import { checkTitrationItems } from '../src/utils/titration.js';
 import { checkItem as checkSymbolEq } from '../src/utils/chemFormula.js';
 import { checkAmcTest } from '../src/utils/amcTest.js';
+import { checkLineLabItems } from '../src/utils/lineLab.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -830,6 +831,19 @@ for (const trackId of TRACK_IDS) {
     //    the COORD_SCI units, which verify their pools by a Node self-check.
     if (trackId === 'IGCSE_CHEM' && Array.isArray(unit.symbolEq)) {
       for (const it of unit.symbolEq) for (const p of checkSymbolEq(it)) err(`${label}: symbolEq ${p}`);
+    }
+
+    // -- Line Lab (AOPS lines units): the points and the lines are authored the
+    //    way the book writes them; utils/lineLab.js derives every target and
+    //    answer. Checked: every line parses, every click target is a whole-
+    //    number point on the grid, a "place points on the line" step has the
+    //    lattice points to place (and a spare), two lines meet on the grid or
+    //    not at all, and an equation step accepts its own answer in both forms.
+    if (unit.lineLab !== undefined) {
+      const at = `${label}: lineLab`;
+      if (!unit.lineLab.title || (bilingual && !unit.lineLab.titleVn)) err(`${at} needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(unit.lineLab.items || []).length) err(`${at} has no items`);
+      for (const p of checkLineLabItems(unit.lineLab.items || [], { bilingual })) err(`${at} ${p}`);
     }
 
     // -- Practice Test and Review (AMC8): 25 problems, five choices, a key of

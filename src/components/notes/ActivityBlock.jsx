@@ -12,6 +12,7 @@ import NumberLineSVG from '../math/NumberLineSVG.jsx';
 import { regionsOf } from '../../utils/numberLine';
 import CubicFigure from '../math/CubicFigure.jsx';
 import VennFigure from '../math/VennFigure.jsx';
+import LineActivity from './LineActivity.jsx';
 import { regionsOf as vennRegionsOf, sameRegions } from '../../utils/sets';
 import { SafeInlineMath } from './SafeMath.jsx';
 import {
@@ -712,6 +713,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'numberline': body = <NumberLineActivity {...common} />; break;
     case 'reflect': body = <ReflectActivity {...common} />; break;
     case 'venn': body = <VennActivity {...common} />; break;
+    case 'line': body = <LineActivity {...common} />; break;
     // Year 7 maths and science (Y7Activities.jsx)
     case 'terms': body = <TermsActivity {...common} />; break;
     case 'algebra': body = <AlgebraActivity {...common} />; break;

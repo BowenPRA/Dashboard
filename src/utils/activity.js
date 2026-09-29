@@ -10,6 +10,7 @@ import { parseSet, lettersOf, regionsOf, regionKeys } from './sets.js';
 import { collectModel, expandModel, equationModel, diagnoseSimplify, diagnoseExpand } from './algebra.js';
 import { querySymbols } from './elements.js';
 import { SUBSTANCES, classifyBox, countsOf } from './particles.js';
+import { checkLineActivity } from './lineLab.js';
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -26,8 +27,11 @@ import { SUBSTANCES, classifyBox, countsOf } from './particles.js';
 // in a formula, or write the formula of a drawn particle). Every answer is
 // derived by utils/algebra.js, utils/elements.js or utils/particles.js.
 // Schemas in docs/y7-math/algebra-engines.md and docs/y7-science/particle-engines.md.
+// `line` (AOPS lines units) is one click step of the Line Lab on a slide —
+// plot points, place points on a line, walk a slope, an intercept, a midpoint,
+// where two lines meet. Schema at the top of utils/lineLab.js.
 export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn',
-  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula'];
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line'];
 
 export const PARTICLE_ASKS = ['kind', 'pure', 'magnet', 'find'];
 export const PARTICLE_FIND = ['element', 'compound', 'mixture', 'pure'];
@@ -249,6 +253,10 @@ export function checkActivity(a, { bilingual = true } = {}) {
     }
   }
 
+  if (a.type === 'line') {
+    for (const p of checkLineActivity(a, { bilingual })) out.push(`line ${p}`);
+  }
+
   if (a.type === 'formula') {
     const ask = a.ask || 'count';
     if (!['count', 'write'].includes(ask)) out.push('formula ask must be count or write');
@@ -279,5 +287,5 @@ export function keepWhere(map, keep) {
 export function retryKeepsParts(activity) {
   if (!activity) return false;
   if (activity.type === 'formula') return activity.ask !== 'write';
-  return ['sort', 'order', 'plot', 'reflect', 'venn', 'terms', 'grid', 'flow', 'particles'].includes(activity.type);
+  return ['sort', 'order', 'plot', 'reflect', 'venn', 'terms', 'grid', 'flow', 'particles', 'line'].includes(activity.type);
 }

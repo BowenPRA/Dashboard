@@ -5,7 +5,7 @@ import {
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
-  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks
+  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -1200,6 +1200,32 @@ export const TASKS = [
     buildPool: (u) => u.amcTest,
     props: ({ pool, scores, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, paper: scores?.[AMC_TEST_KEY]?.answers, savedData, onComplete, onProgress, onQuit }),
+  },
+  // ── AOPS Problem Solving, the lines units (LINE_1A–1C) ─────────────────────
+  // p53/p54 are the AMC 8 Prep track's; this is p55, and p56 is next. Bilingual, like the rest
+  // of AOPS.
+  {
+    id: 'LINE_LAB',
+    nativeMax: 10,
+    dbKey: 'p55',
+    // "Work it on the grid." Short runs of steps on a coordinate plane: plot
+    // points, place three points on a line, walk a slope from a point, click
+    // an intercept, a midpoint, the corner of the distance triangle or where
+    // two lines meet — then type the run, the rise, the slope, the exact
+    // distance, the coordinates or the equation in the form the item asks
+    // for. utils/lineLab.js derives every answer from the points and the
+    // lines as the book writes them; `checkLineLabItems` refuses a target a
+    // student could not click. Production, not recognition — the Graph It
+    // rule. Item shape at the top of utils/lineLab.js.
+    label: 'Line Lab',
+    icon: TrendingUp,
+    color: { bg: 'bg-[#0891b2]', border: 'border-[#0e7490]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'mastery',
+    component: lazy(() => import('./LineLab.jsx')),
+    hasContent: (u) => !!u.lineLab?.items?.length,
+    buildPool: (u) => u.lineLab,
+    props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
   },
 ];
 

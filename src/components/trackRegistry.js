@@ -125,9 +125,17 @@ export const TRACK_REGISTRY = [
   {
     id: 'AOPS',
     title: 'Problem Solving',
-    desc: 'Proportion, Rates & Multi-Step Reasoning',
+    desc: 'Proportion, Lines & Quadratics',
     icon: Puzzle,
     group: 'Problem Solving',
+    // The book's chapters, in the book's order. Without these the units list
+    // alphabetically, which puts the lines chapter (LINE_) ahead of the
+    // proportion chapter it builds on (PROP_). A new chapter needs a row.
+    sections: [
+      { prefix: 'PROP_', label: 'Proportion', title: 'Direct Proportion' },
+      { prefix: 'LINE_', label: 'Lines', title: 'Graphing Lines' },
+      { prefix: 'QUAD_', label: 'Quadratics', title: 'Parabolas' },
+    ],
     theme: {
       bg: 'bg-fuchsia-500', border: 'border-fuchsia-700', hover: 'hover:bg-fuchsia-400',
       text: 'text-fuchsia-600 dark:text-fuchsia-400',

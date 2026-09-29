@@ -115,6 +115,7 @@ the rest are proposed (build on demand, register per §4).
 |---|---|---|---|
 | `MathGraph` ✅ | Trace `f(x)` on an auto-scaled grid | `equation`, `xRange`, `yRange` | 9.4 functions, sequences |
 | `ParabolaLab` ✅ | One parabola, one live number: `y = a(x − h)² + k` with `y = x²` ghosted behind it, the vertex dotted and labelled, and an optional live zero count | `show` (`"k"`/`"a"`/`"h"`/`"ahk"`), `aStart`, `hStart`, `kStart`, `zeros` | AOPS QUAD_1A, QUAD_1B |
+| `SlopeLab` ✅ | One line, `y = mx + b`, with `y = x` ghosted behind it: the slope steps through a list of small fractions, the rise/run triangle is drawn from `(0, b)`, and the steepness is said in words | `show` (`"m"`/`"b"`/`"mb"`), `mStart` (a string such as `"1/2"`, `"-2"`), `bStart`, `triangle` | AOPS LINE_1B, LINE_1C |
 | `NumberLine` | Draggable marker on a number line; shows jumps for +/− | `min`, `max`, `step`, `marks[]` | 1.1 integers, 4.1 decimals |
 | `IntegerChips` | +/− counter chips that cancel in pairs | `positives`, `negatives` | 1.1–1.2 integers |
 | `FractionBar` | Bar split into parts; shade/compare two bars | `parts`, `shaded`, `compareTo` | 7.1–7.4 fractions, 10.1 |
