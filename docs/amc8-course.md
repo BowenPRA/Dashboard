@@ -6,6 +6,11 @@ conditions and then reviewed problem by problem.
 **The exemplar is `src/data/AMC8/PT_01`** (Practice Test 1, the problems of the 2024
 AMC 8). When in doubt, copy its structure.
 
+| Unit | Paper | Deck | Notes |
+|---|---|---|---|
+| `PT_01` | 2024 AMC 8 | 14 slides (plan ×3, 9 tools) | also holds hidden vocab / warm-up / Factor Blitz |
+| `PT_02` | 2025 AMC 8 | 12 slides (plan ×1, 9 tools) | only the three live tasks' data; problem 13's choices are histograms (see §4) |
+
 ---
 
 ## 1. Track facts
@@ -49,12 +54,16 @@ before the test works a problem of the test** — fresh numbers and fresh contex
 
 ### The toolkit deck
 
-14 slides, streamlined from a first version of 20 that taught fourteen one-problem tricks
-(Bowen found it "all over the place"). Keep this shape for PT_02:
+PT_01's deck is 14 slides, streamlined from a first version of 20 that taught fourteen
+one-problem tricks (Bowen found it "all over the place"). Every deck keeps this shape:
 
-- **Hero, then the plan** (how it is scored, two passes, use the choices), **then the
-  tools, two or three per topic** in the results screen's four topics, **then a
-  checklist**. One colour per part (`PLAN`, `NUMBER`, `RATIO`, `GEOMETRY`, `COUNTING`).
+- **Hero, then the plan, then the tools, two or three per topic** in the results screen's
+  four topics, **then a checklist**. One colour per part (`PLAN`, `NUMBER`, `RATIO`,
+  `GEOMETRY`, `COUNTING`). PT_01 teaches the plan in three slides (how it is scored, two
+  passes, use the choices); from PT_02 on it is **one recap slide** (three Write cards
+  and a check), because the student has met it — the slides go on new tools instead.
+- **New tools for each paper.** PT_02 does not repeat PT_01's nine; read the earlier
+  decks before choosing, and pick the ideas the new paper leans on.
 - **Every tool slide has the same shape**: eyebrow `"<Topic> · <tool>"`, the idea in a
   sentence or two with one example (or a diagram), **one** orange Write card, **one**
   check with fresh numbers. No reveals, no activities.
@@ -130,7 +139,17 @@ them, so **look at them** in the harness (`?open=FIGURES`).
 - `text` takes `**bold**`, `_italic_`, `$inline$`, `$$block$$`, blank-line paragraphs and
   `• ` bullets. Degrees inside maths are `^\circ`.
 - Every solution step is one move. The `trap` names the mistake behind a wrong choice.
-- `awards` are that year's cutoffs — check them; they move from year to year.
+- `awards` are that year's cutoffs — check them; they move from year to year. 2025
+  (PT_02): Honor Roll 19, Distinguished 23. 2024 (PT_01): 18 / 22. Both checked
+  2026-09-29 against published results (AoPS historical results, Areteem, Think Academy).
+- **Picture choices.** A choice button holds text, not an SVG. When a contest problem's
+  choices are pictures (PT_02 problem 13: five histograms), draw all five in the figure,
+  labelled A–E, and make the choices name them (`'Histogram A'` …).
+- **The source PDF** (from Downloads, English + Vietnamese + key): the English pages are
+  scanned images, so render them to PNG with PyMuPDF (`page.get_pixmap(dpi=110)`) and
+  read them; copy the file to an ASCII name first (the `Đ` in its name breaks the reader).
+  The key is the last page, as text. Compare the finished `test.js` key with it letter by
+  letter.
 
 ---
 
