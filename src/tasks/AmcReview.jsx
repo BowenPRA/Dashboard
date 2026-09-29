@@ -6,7 +6,7 @@ import {
 import useDarkMode from '../hooks/useDarkMode';
 import { Prose, Inline, Figure, Choices } from '../components/amc/AmcParts';
 import {
-  LETTERS, TOPIC_LABEL, problemsOf, isTestBlob, markOf, missedOf, scoreTest, seenOf, reviewScore,
+  LETTERS, TOPIC_LABEL, problemsOf, isTestBlob, markOf, missedOf, scoreTest, seenOf, reviewScore, extraOf,
 } from '../utils/amcTest';
 
 /* ------------------------------------------------------------------ *
@@ -147,6 +147,8 @@ export default function AmcReview({ pool, paper, savedData, onComplete, onProgre
   const number = problems.indexOf(problem) + 1;
   const status = markOf(problem, picks[problem.id]);
   const testPick = picks[problem.id] || null;
+  // An answer given in extra time, after the clock: shown, never scored.
+  const latePick = status === 'blank' ? extraOf(paper)[problem.id] || null : null;
   const read = missed.filter((p) => seen.includes(p.id)).length;
   const score = scoreTest(test, picks);
 
@@ -162,6 +164,7 @@ export default function AmcReview({ pool, paper, savedData, onComplete, onProgre
 
   const marks = { [problem.correct]: 'right' };
   if (status === 'wrong') marks[testPick] = 'wrong';
+  if (latePick && latePick !== problem.correct) marks[latePick] = 'wrong';
   const Status = STATUS[status];
 
   return (
@@ -210,7 +213,9 @@ export default function AmcReview({ pool, paper, savedData, onComplete, onProgre
               <p className="mt-6 mb-3 text-sm font-black text-slate-500 dark:text-slate-400">
                 {status === 'right' && <>You answered ({testPick}). That is correct.</>}
                 {status === 'wrong' && <>You answered ({testPick}). The correct answer is ({problem.correct}).</>}
-                {status === 'blank' && <>You left this one blank. The correct answer is ({problem.correct}).</>}
+                {status === 'blank' && !latePick && <>You left this one blank. The correct answer is ({problem.correct}).</>}
+                {latePick === problem.correct && <>You left this one blank in the time. In extra time you answered ({latePick}), which is correct.</>}
+                {latePick && latePick !== problem.correct && <>You left this one blank in the time. In extra time you answered ({latePick}). The correct answer is ({problem.correct}).</>}
               </p>
 
               <Choices choices={problem.choices} marks={marks} />

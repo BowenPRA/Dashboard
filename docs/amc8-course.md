@@ -17,7 +17,7 @@ AMC 8). When in doubt, copy its structure.
 | Unit id | `PT_<two digits>` — `PT_01` is Practice Test 1. One unit is one paper. |
 | Folder | `src/data/AMC8/<UNIT>/` and `public/audio/AMC8/<UNIT>/` |
 | Visibility | Not in the `GED` group: the student's `app_metadata.enrolled_tracks` must include `"AMC8"` (teacher admin), or they must be on the preview/QA account. |
-| Harness | `preview-amc8.html?unit=PT_01` mounts every task without auth. `?open=AMC_TEST`, `?paper=mixed` (a handed-in paper, for the Review), `?paper=BCEEB-…` (a paper you choose), `?left=90` (a paper with 90 seconds left), `?slide=12`; the FIGURES and DIAGRAMS cases lay every SVG on one page. |
+| Harness | `preview-amc8.html?unit=PT_01` mounts every task without auth. `?open=AMC_TEST`, `?paper=mixed` (a handed-in paper, for the Review), `?paper=BCEEB-…` (a paper you choose), `?paper=mixed&over=1` (time ran out and the blanks were answered in extra time; `over=open` is still in extra time), `?left=5` (a paper with 5 seconds left — watch the time run out), `?open=NOTES&slide=12`; the FIGURES and DIAGRAMS cases lay every SVG on one page. |
 
 The contest: **25 questions, five choices each, 40 minutes, no calculator, 1 point for a
 correct answer and 0 for a blank or a wrong one.**
@@ -28,18 +28,35 @@ correct answer and 0 for a blank or a wrong one.**
 
 | Step | Gate | Tasks | XP |
 |---|---|---|---|
-| `practice` — **Practice Test** | open | `AMC_TEST` 75 | 75 |
-| `mastery` — **Review** | the test handed in (`requires: 'AMC_TEST'`) | `AMC_REVIEW` 25 | 25 |
+| `concept` — **Toolkit** | open | `NOTES` 20 | 20 |
+| `practice` — **Practice Test** | open | `AMC_TEST` 60 | 60 |
+| `mastery` — **Review** | the test handed in (`requires: 'AMC_TEST'`) | `AMC_REVIEW` 20 | 20 |
 
 There is no Quiz — the paper is the assessment — so the unit finishes at 80 XP
-(`taskRegistry.isUnitComplete`).
+(`taskRegistry.isUnitComplete`). There are no XP gates: the deck comes first on the card,
+but the test is open from the start.
 
-**Only these two tasks are shown for now.** PT_01 also carries a toolkit deck (`notes.js`),
-the contest vocabulary (`realWords`), a warm-up (`workbook.js`) and Factor Blitz, with
-their audio generated, but none is declared in `phases`, so nothing draws them. To bring
-them back, add a first phase holding `NOTES` / `WORD_REC` / `WORKBOOK` / `FACTOR_BLITZ` and
-re-balance the XP. If they do come back, the rule is: **nothing before the test works a
-problem of the test** — fresh numbers and fresh contexts only.
+PT_01 also carries the contest vocabulary (`realWords`), a warm-up (`workbook.js`) and
+Factor Blitz, with their audio generated, but none is declared in `phases`, so nothing
+draws them. Bowen asked for the plain thing — the deck, the test, its solutions — so ask
+before adding a task around the test. If one does come back, the rule is: **nothing
+before the test works a problem of the test** — fresh numbers and fresh contexts only.
+
+### The toolkit deck
+
+14 slides, streamlined from a first version of 20 that taught fourteen one-problem tricks
+(Bowen found it "all over the place"). Keep this shape for PT_02:
+
+- **Hero, then the plan** (how it is scored, two passes, use the choices), **then the
+  tools, two or three per topic** in the results screen's four topics, **then a
+  checklist**. One colour per part (`PLAN`, `NUMBER`, `RATIO`, `GEOMETRY`, `COUNTING`).
+- **Every tool slide has the same shape**: eyebrow `"<Topic> · <tool>"`, the idea in a
+  sentence or two with one example (or a diagram), **one** orange Write card, **one**
+  check with fresh numbers. No reveals, no activities.
+- A tool earns a slide when **more than one** kind of contest question uses it. A trick
+  for a single problem belongs in that problem's Review solution.
+- **Every slide fits a 1280 × 720 laptop without scrolling.** Display maths (`$$…$$`)
+  costs ~180 px in a callout — prefer inline `$\dfrac{…}{…}$`; `\tfrac` in Write cards.
 
 ---
 
@@ -60,6 +77,13 @@ are in `src/utils/amcTest.js`; the shared problem text, figure and choice row ar
 - **The clock stops when the test is closed.** The seconds left are kept in the resume blob
   (`remaining`) and written with every answer, every 15 seconds, and on the way out.
   Leaving keeps the time that was on the clock; coming back carries on from it.
+- **Extra time.** When the clock runs out with questions blank, the answers given are
+  **locked in** and banked as the score (`timeUp: true`), and a *Time's up* dialog offers
+  *Keep going* or *Finish now*. In extra time the clock counts up (violet), locked answers
+  cannot change, Back/Next step through the blanks only, and new answers go in `extra`
+  (bubbled violet). The results screen shows them as "After the time: N more correct"
+  and the score it would have been; the Review says "In extra time you answered (C)".
+  Nothing that scores reads `extra`. A paper with nothing blank is simply handed in.
 - **Results**: the score out of 25, right / wrong / blank per question, the score by topic,
   and the award line reached. It does **not** show the answers — that is the Review's job.
 - The score is the number of correct answers (`nativeMax: 25`), scaled to the task's XP.
@@ -82,7 +106,7 @@ are in `src/utils/amcTest.js`; the shared problem text, figure and choice row ar
 | File | Holds |
 |---|---|
 | `data.js` | meta, phases, `realWords` (the contest's vocabulary), the imports |
-| `notes.js` + `diagrams.js` | the "toolkit" deck — *hidden for now* |
+| `notes.js` + `diagrams.js` | the toolkit deck (Step 1) |
 | `workbook.js` | the warm-up — *hidden for now* |
 | `factorBlitz.js` | mental-arithmetic speed — *hidden for now* |
 | `test.js` | the 25 problems, each with `hint`, `idea`, `solution`, `trap`/`tip` |
@@ -113,5 +137,7 @@ them, so **look at them** in the harness (`?open=FIGURES`).
 - [ ] Every figure looked at in the harness, light and dark
 - [ ] `npm run lint`, `npm run audit:svg AMC8`, `npm run validate` (runs `checkAmcTest`)
 - [ ] Dry-run the narration, then generate audio, then validate again
-- [ ] Walked the test (begin → answer → leave and come back → hand in → results) and the
-      Review in `preview-amc8.html` at 1280 × 720 and at 390 px wide
+- [ ] Walked the test (begin → answer → leave and come back → hand in → results), the
+      time running out (`?left=5` → extra time → finish), and the Review in
+      `preview-amc8.html` at 1280 × 720 and at 390 px wide
+- [ ] Every deck slide fits 1280 × 720 without scrolling

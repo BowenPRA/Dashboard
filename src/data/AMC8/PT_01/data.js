@@ -5,15 +5,17 @@
 // there are no `vn*` twins.
 //
 // THE EXEMPLAR for an AMC8 unit (docs/amc8-course.md):
-//   Step 1 (Practice Test)  — the timed paper, 25 questions, 40 minutes  75 XP
-//   Step 2 (Review)         — opens when the paper is handed in          25 XP
+//   Step 1 (Toolkit)        — the notes deck, 14 slides                  20 XP
+//   Step 2 (Practice Test)  — the timed paper, 25 questions, 40 minutes  60 XP
+//   Step 3 (Review)         — opens when the paper is handed in          20 XP
 //
-// ONLY THOSE TWO TASKS ARE SHOWN FOR NOW. The toolkit deck (notes.js), the
-// vocabulary (realWords), the warm-up (workbook.js) and Factor Blitz are
-// written and kept in this unit's data, and their audio is generated, but
-// they are not declared in `phases`, so nothing draws them. To bring them
-// back, add a first phase holding NOTES / WORD_REC / WORKBOOK / FACTOR_BLITZ
-// and re-balance the XP (the unit must offer at least 100).
+// No XP gates: the deck comes first on the card, but the test is open from
+// the start. Only the Review waits, for the paper to be handed in.
+//
+// The vocabulary (realWords), the warm-up (workbook.js) and Factor Blitz are
+// written and kept in this unit's data, with their audio generated, but they
+// are not declared in `phases`, so nothing draws them. To bring one back, add
+// it to Step 1 and re-balance the XP (the unit must offer at least 100).
 //
 // There is no Quiz: the Practice Test is the assessment. A unit with no quiz
 // finishes at 80 XP (taskRegistry.isUnitComplete).
@@ -28,29 +30,37 @@ export const PT_01_DATA = {
   meta: {
     id: 'PT_01',
     title: 'Practice Test 1',
-    desc: 'A full AMC 8 paper: sit 25 questions in 40 minutes, then review every problem with its solution.',
+    desc: 'A full AMC 8 paper: read the toolkit, sit 25 questions in 40 minutes, then review every problem with its solution.',
     track: 'AMC8',
     icon: 'Award',
   },
 
   phases: [
     {
-      id: 'practice',
-      title: 'Step 1: Practice Test',
+      id: 'concept',
+      title: 'Step 1: Toolkit',
       threshold: 0,
       tasks: [
-        { id: 'AMC_TEST', dbKey: 'p53', maxXP: 75 },
+        { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
+      ],
+    },
+    {
+      id: 'practice',
+      title: 'Step 2: Practice Test',
+      threshold: 0,
+      tasks: [
+        { id: 'AMC_TEST', dbKey: 'p53', maxXP: 60 },
       ],
     },
     {
       // Held shut until the paper is HANDED IN (`requires`, read through the
       // test's `isSat`): a solution seen before the test is a test wasted.
       id: 'mastery',
-      title: 'Step 2: Review',
+      title: 'Step 3: Review',
       threshold: 0,
       requires: 'AMC_TEST',
       tasks: [
-        { id: 'AMC_REVIEW', dbKey: 'p54', maxXP: 25 },
+        { id: 'AMC_REVIEW', dbKey: 'p54', maxXP: 20 },
       ],
     },
   ],

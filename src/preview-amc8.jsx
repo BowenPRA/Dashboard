@@ -10,6 +10,9 @@
 //                         Practice Test shows as results. `?paper=key` is a
 //                         perfect paper, `?paper=mixed` a typical one.
 //   ?left=90              a paper in progress with that many seconds left
+//   ?paper=mixed&over=1   the time ran out on that paper and its blanks were
+//                         answered in extra time (half right) — then handed
+//                         in; `over=open` leaves it still in extra time
 //
 // The harness keeps its own progress in memory, so handing in the test and
 // then opening the Review works the way it does in the app.
@@ -44,6 +47,17 @@ function seedScores(unit) {
         : paper.toUpperCase().split('');
     const picks = {};
     problems.forEach((p, i) => { if (/[A-E]/.test(letters[i] || '')) picks[p.id] = letters[i]; });
+    const over = params.get('over');
+    if (over) {
+      const extra = {};
+      problems.filter((p) => !picks[p.id]).forEach((p, i) => {
+        extra[p.id] = i % 2 === 0 ? p.correct : (p.correct === 'A' ? 'B' : 'A');
+      });
+      return { p53: { current: 0, answers: {
+        v: 1, startedAt: now - 3000000, remaining: 0, picks, flags: [], usedSeconds: allowed,
+        timeUp: true, extra, extraSeconds: 312, submitted: over !== 'open',
+      } } };
+    }
     return { p53: { current: 0, answers: { v: 1, startedAt: now - 2000000, remaining: 400, picks, flags: [], submitted: true, usedSeconds: 2000 } } };
   }
   if (left > 0) {

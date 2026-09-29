@@ -89,8 +89,9 @@ const choicesAreLong =(choices = []) => choices.some((c) => plainLength(c) > 7);
  *   onPick    omit to freeze the row
  *   marks     { A: 'right' | 'wrong' | 'ruled' } — how each choice is shown
  *             once something is known about it ('ruled' = already tried)
+ *   late      the pick was made in extra time, after the clock: shown violet
  */
-export function Choices({ choices = [], pick = null, onPick, marks = {}, size = 'md' }) {
+export function Choices({ choices = [], pick = null, onPick, marks = {}, size = 'md', late = false }) {
   const long = choicesAreLong(choices);
   const frozen = !onPick;
   return (
@@ -112,6 +113,9 @@ export function Choices({ choices = [], pick = null, onPick, marks = {}, size = 
         } else if (mark === 'ruled') {
           box = 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600';
           bubble = 'border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-600';
+        } else if (chosen && late) {
+          box = 'bg-violet-50 dark:bg-violet-900/30 border-violet-600 dark:border-violet-400 text-slate-900 dark:text-white';
+          bubble = 'border-violet-600 bg-violet-600 text-white';
         } else if (chosen) {
           box = 'bg-blue-50 dark:bg-blue-900/30 border-blue-600 dark:border-blue-400 text-slate-900 dark:text-white';
           bubble = 'border-blue-700 bg-blue-700 text-white dark:border-blue-400 dark:bg-blue-500';

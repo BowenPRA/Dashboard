@@ -13,8 +13,17 @@
 //     flags,       // ['q12'] — "come back to this one"
 //     submitted,   // true once handed in (by the student or by the clock)
 //     usedSeconds, // how much of the time was used
+//     — once the clock runs out with questions still blank —
+//     timeUp,      // true: `picks` are LOCKED IN, and they are the score
+//     extra,       // { q21: 'C' } — answers given after the time, to the
+//                  // questions left blank. Marked, never scored.
+//     extraSeconds,// how long the extra time has run
 //   }
 // The test is sat ONCE: a handed-in paper only ever reopens on its results.
+// Time running out does not end it: the answers given in the time are locked
+// in and scored, and the student may keep going on the blanks, untimed, until
+// he hands in. Everything that scores reads `picks` alone, so `extra` can
+// never move the score.
 //
 // ── The review's blob: progress[track][unit].p54.answers ────────────────────
 //   { v: 1, seen: ['q7', 'q12'] }   // the problems whose solution was opened
@@ -64,6 +73,27 @@ export function scoreTest(test, picks = {}) {
     const t = (out.byTopic[p.topic] ||= { right: 0, total: 0 });
     t.total += 1;
     if (mark === 'right') t.right += 1;
+  }
+  return out;
+}
+
+/** The answers given after the time ran out, from the test's blob. */
+export const extraOf = (blob) => (blob && blob.extra && typeof blob.extra === 'object' ? blob.extra : {});
+
+/**
+ * The extra time, marked: of the questions left blank when the time ran out
+ * (`open`), how many were answered afterwards and how many of those are right.
+ */
+export function scoreExtra(test, blob) {
+  const picks = blob?.picks || {};
+  const extra = extraOf(blob);
+  const out = { open: 0, answered: 0, right: 0 };
+  for (const p of problemsOf(test)) {
+    if (picks[p.id]) continue;
+    out.open += 1;
+    if (!extra[p.id]) continue;
+    out.answered += 1;
+    if (extra[p.id] === p.correct) out.right += 1;
   }
   return out;
 }

@@ -1160,14 +1160,16 @@ export const TASKS = [
     // taken off for a wrong one. A cover page with the rules, then one problem
     // at a time beside a bubble sheet. It is sat ONCE — a handed-in paper only
     // reopens on its results. The clock runs only while the test is open: the
-    // time left is kept in the resume blob, so leaving keeps it. Nothing is
-    // marked until the paper is handed in, and the results show which
-    // questions were missed but not their answers — those are the Review's.
+    // time left is kept in the resume blob, so leaving keeps it. When it runs
+    // out, the answers are locked in as the score and the blanks stay open,
+    // untimed, as extra time that is marked but never scored. Nothing is
+    // marked until then, and the results show which questions were missed
+    // but not their answers — those are the Review's.
     // Marking, blob shape and `checkAmcTest` are in utils/amcTest.js.
     label: 'Practice Test',
     icon: Timer,
     color: { bg: 'bg-[#1e3a8a]', border: 'border-[#172554]', text: 'text-white' },
-    defaultMaxXP: 75,
+    defaultMaxXP: 60,
     phase: 'practice',
     component: lazy(() => import('./AmcTest.jsx')),
     hasContent: (u) => !!u.amcTest?.problems?.length,
@@ -1191,7 +1193,7 @@ export const TASKS = [
     label: 'Review',
     icon: ListChecks,
     color: { bg: 'bg-[#f97316]', border: 'border-[#c2410c]', text: 'text-white' },
-    defaultMaxXP: 25,
+    defaultMaxXP: 20,
     phase: 'mastery',
     component: lazy(() => import('./AmcReview.jsx')),
     hasContent: (u) => !!u.amcTest?.problems?.length && u.amcTest.problems.every((p) => p.solution?.length),
