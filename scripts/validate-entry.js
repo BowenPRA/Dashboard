@@ -50,6 +50,7 @@ import { checkLineLabItems } from '../src/utils/lineLab.js';
 import { checkShortDivItems } from '../src/utils/shortDivision.js';
 import { checkShiftItems } from '../src/utils/placeShift.js';
 import { checkQuickFireConfig } from '../src/utils/quickFire.js';
+import { checkIneqItems } from '../src/utils/ineqLine.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -160,11 +161,11 @@ for (const trackId of TRACK_IDS) {
       for (const p of check(unit[key])) err(`${label}: ${p}`);
     }
 
-    // -- Year 7 number engines, Unit 3 (docs/y7-math/number-engines.md): Bus
-    //    Stop and Slide the Digits derive every column, carry, zero, move and
-    //    answer from the question; Quick Fire deals cards from five seeds and
+    // -- Year 7 number engines, 2.6 and Unit 3 (docs/y7-math/number-engines.md):
+    //    Bus Stop, Slide the Digits and Show It derive every column, carry,
+    //    zero, move, circle, arrow and answer from the question; Quick Fire deals cards from five seeds and
     //    proves each one accepts its own answer.
-    for (const [key, check] of [['shortDiv', checkShortDivItems], ['placeShift', checkShiftItems]]) {
+    for (const [key, check] of [['shortDiv', checkShortDivItems], ['placeShift', checkShiftItems], ['ineqLine', checkIneqItems]]) {
       if (unit[key] === undefined) continue;
       const at = `${label}: ${key}`;
       const cfg = unit[key];

@@ -136,7 +136,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
 // Activities that read fine in a column beside the slide. A number line needs
 // the full width to be tappable, so it keeps the footer under the slide.
 const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
-  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop']);
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq']);
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
 const FIX_T = {

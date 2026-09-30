@@ -12,7 +12,8 @@ import { makeQuickFire } from '../utils/quickFire';
  * attempt is new practice, and every answer is derived from the numbers on
  * the card.
  *
- * One box per card. A wrong answer is answered with the NAME of its slip and
+ * One box per card (or two buttons, for a < / > or Yes / No card, answered
+ * once). A wrong answer is answered with the NAME of its slip and
  * one more try: right first time pays 1, right second time pays half, and a
  * second wrong answer shows the answer and pays nothing. Score: cards out of
  * 10. Quitting part-way finishes with the cards that are done.
@@ -59,6 +60,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
   const [lang, setLang] = useState('en');
   const [idx, setIdx] = useState(0);
   const [typed, setTyped] = useState('');
+  const [picked, setPicked] = useState(null);     // a choice card's button
   const [tries, setTries] = useState(0);
   const [state, setState] = useState(null);       // null | 'bad' | 'good' | 'shown'
   const [msg, setMsg] = useState(null);
@@ -118,12 +120,29 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
     setState('bad');
     setMsg({ tone: 'bad', en: d.en, vn: d.vn });
   };
+  // A choice card (two buttons) is answered once: there is nothing to retry.
+  const choose = (val) => {
+    if (settled) return;
+    const d = card.mark(val);
+    setPicked(val);
+    if (d.ok) {
+      setState('good');
+      setMsg(null);
+      setResults((r) => ({ ...r, [idx]: { score: 1, tries: 1 } }));
+      setStreak(streak + 1);
+      return;
+    }
+    setStreak(0);
+    setState('shown');
+    setMsg({ tone: 'shown', en: d.en, vn: d.vn });
+    setResults((r) => ({ ...r, [idx]: { score: 0, tries: 1, shown: true } }));
+  };
   const next = () => {
     if (idx + 1 >= session.length) { setSummaryOpen(true); return; }
-    setIdx(idx + 1); setTyped(''); setTries(0); setState(null); setMsg(null);
+    setIdx(idx + 1); setTyped(''); setPicked(null); setTries(0); setState(null); setMsg(null);
   };
   const newCards = () => {
-    setSeed(Date.now()); setIdx(0); setTyped(''); setTries(0); setState(null); setMsg(null);
+    setSeed(Date.now()); setIdx(0); setTyped(''); setPicked(null); setTries(0); setState(null); setMsg(null);
     setResults({}); setStreak(0); setSummaryOpen(false); setEnded(false);
   };
 
@@ -157,8 +176,8 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
                   return (
                     <div key={c.id} className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-slate-800 dark:text-slate-100">
                       <span className="w-5 text-[11px] font-black text-slate-400">{i + 1}</span>
-                      <span className="flex-1 min-w-0 overflow-x-auto text-base"><SafeInlineMath math={c.latex} /> {c.mode === 'round' && <span className="ml-2 text-xs font-bold text-slate-400">{L(c.ask.en, c.ask.vn)}</span>}</span>
-                      <span className="font-mono font-black">{c.answer}{c.unit ? ` ${c.unit}` : ''}</span>
+                      <span className="flex-1 min-w-0 overflow-x-auto text-base"><SafeInlineMath math={c.latex} /> {['round', 'couldbe', 'integer'].includes(c.mode) && <span className="ml-2 text-xs font-bold text-slate-400">{L(c.ask.en, c.ask.vn)}</span>}</span>
+                      <span className="font-mono font-black">{L(c.answer, c.answerVn)}{c.unit ? ` ${c.unit}` : ''}</span>
                       <span className={`w-16 text-right text-[10px] font-black uppercase tracking-widest ${tone}`}>{!r ? '—' : r.shown ? t.shown : r.tries === 1 ? t.firstTry : t.secondTry}</span>
                     </div>
                   );
@@ -206,19 +225,38 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
           </div>
           <p className="mt-2 text-center text-base font-bold text-slate-500 dark:text-slate-400">{L(card.ask.en, card.ask.vn)}</p>
 
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            {card.power && <span className="text-sm font-black uppercase tracking-widest text-slate-400">{t.power} =</span>}
-            <input
-              ref={inputRef}
-              value={state === 'shown' ? card.answer : typed}
-              readOnly={settled}
-              onChange={(e) => { setTyped(e.target.value); if (state === 'bad') setState(null); }}
-              onKeyDown={(e) => { if (e.key === 'Enter') (settled ? next() : check()); }}
-              inputMode="decimal" autoComplete="off" spellCheck={false} aria-label={L(card.ask.en, card.ask.vn)} placeholder="?"
-              className={`${card.power ? 'w-24' : 'w-52'} px-3 py-2 rounded-xl border-2 border-b-[4px] font-mono font-black text-3xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-orange-500 ${inputTone}`}
-            />
-            {card.unit && <span className="text-2xl font-black text-slate-700 dark:text-slate-200">{card.unit}</span>}
-          </div>
+          {card.choices ? (
+            <div className="mt-5 grid grid-cols-2 gap-3 max-w-md mx-auto">
+              {card.choices.map((c) => {
+                const right = settled && card.mark(c.val).ok;
+                const wrongPick = settled && picked === c.val && !right;
+                return (
+                  <button key={c.val} type="button" disabled={settled} onClick={() => choose(c.val)}
+                    className={`px-3 py-4 rounded-xl border-2 border-b-[4px] font-black text-xl transition-all active:border-b-2 active:translate-y-[2px] disabled:cursor-default
+                      ${right ? 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200'
+                        : wrongPick ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300'
+                          : settled ? 'border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-600'
+                            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:border-orange-400'}`}>
+                    {L(c.en, c.vn)}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              {card.power && <span className="text-sm font-black uppercase tracking-widest text-slate-400">{t.power} =</span>}
+              <input
+                ref={inputRef}
+                value={state === 'shown' ? card.answer : typed}
+                readOnly={settled}
+                onChange={(e) => { setTyped(e.target.value); if (state === 'bad') setState(null); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') (settled ? next() : check()); }}
+                inputMode="decimal" autoComplete="off" spellCheck={false} aria-label={L(card.ask.en, card.ask.vn)} placeholder="?"
+                className={`${card.power ? 'w-24' : 'w-52'} px-3 py-2 rounded-xl border-2 border-b-[4px] font-mono font-black text-3xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-orange-500 ${inputTone}`}
+              />
+              {card.unit && <span className="text-2xl font-black text-slate-700 dark:text-slate-200">{card.unit}</span>}
+            </div>
+          )}
 
           {state === 'good' && (
             <div className="mt-4 flex items-center justify-center gap-2 font-black text-[#3e7500] dark:text-lime-300 animate-in fade-in">
@@ -232,17 +270,17 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
               <span>
                 {msg.tone === 'bad' && <span className="mr-1 uppercase text-[10px] tracking-widest">{t.tryAgain} ·</span>}
                 {L(msg.en, msg.vn)}
-                {msg.tone === 'shown' && <span className="ml-1">{t.answerWas} <span className="font-mono">{card.answer}{card.unit ? ` ${card.unit}` : ''}</span>.</span>}
+                {msg.tone === 'shown' && !card.choices && <span className="ml-1">{t.answerWas} <span className="font-mono">{card.answer}{card.unit ? ` ${card.unit}` : ''}</span>.</span>}
               </span>
             </div>
           )}
 
           <div className="mt-5 flex justify-end">
             {settled ? (
-              <button onClick={next} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: state === 'shown' ? AMBER : INK, borderColor: state === 'shown' ? '#b45309' : INK_DARK }}>
+              <button onClick={next} autoFocus={!!card.choices} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: state === 'shown' ? AMBER : INK, borderColor: state === 'shown' ? '#b45309' : INK_DARK }}>
                 {idx + 1 >= session.length ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />
               </button>
-            ) : (
+            ) : !card.choices && (
               <button onClick={check} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>
             )}
           </div>

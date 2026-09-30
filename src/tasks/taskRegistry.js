@@ -5,7 +5,7 @@ import {
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
-  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame
+  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame, CircleArrowRight
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -1277,17 +1277,42 @@ export const TASKS = [
     nativeMax: 10,
     dbKey: 'p58',
     // Quick Fire: short cards dealt fresh every attempt (utils/quickFire.js) —
-    // × and ÷ by 10ⁿ, a missing power, mass conversions, rounding. The unit
+    // × and ÷ by 10ⁿ, a missing power, mass conversions, rounding, and for
+    // inequalities < or >, "could it be?" and the smallest integer. The unit
     // declares only its modes and a card count.
     label: 'Quick Fire',
     icon: Flame,
     color: { bg: 'bg-[#ea580c]', border: 'border-[#c2410c]', text: 'text-white' },
-    defaultMaxXP: 15,
+    defaultMaxXP: 10,
     phase: 'practice',
     component: lazy(() => import('./QuickFire.jsx')),
     hasContent: (u) => !!u.quickFire?.modes?.length,
     buildPool: (u) => u.quickFire,
     props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  // ── Year 7 Maths 2.6, inequalities (U02_6) ─────────────────────────────────
+  // p59; p60 is next. Item shapes and stages: docs/y7-math/number-engines.md §2.4.
+  {
+    id: 'INEQ_LINE',
+    nativeMax: 10,
+    dbKey: 'p59',
+    // "The circle first, then the arrow." A strict inequality shown on a number
+    // line the way the book draws it: tap the number for the open circle, pick
+    // the arrow's direction, then give the smallest (or largest) integer that
+    // works. Also reads a drawn line back into an inequality, turns "t is below
+    // 0" into symbols, and finds every integer between two inequalities.
+    // utils/ineqLine.js derives the line, the integers and the slip behind a
+    // wrong answer (the circle's own number, the wrong way with negatives).
+    label: 'Show It',
+    icon: CircleArrowRight,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./InequalityLine.jsx')),
+    hasContent: (u) => !!u.ineqLine?.items?.length,
+    buildPool: (u) => u.ineqLine,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
 ];
 

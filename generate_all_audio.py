@@ -197,9 +197,12 @@ def speechify(text):
     t = re.sub(r'\*+', '', t)
     # A < or > BETWEEN two pieces of maths is a comparison, not a bumper: read
     # it. Left to the bumper strip below, "x > 0" narrated as "x 0". A bumper
-    # follows a full stop or starts the text, so it never matches here.
-    t = re.sub(r'(?<=[\w)])\s*>\s*(?=[-\w(])', ' is greater than ', t)
-    t = re.sub(r'(?<=[\w)])\s*<\s*(?=[-\w(])', ' is less than ', t)
+    # follows a full stop or starts the text, so it never matches here. The
+    # number after the sign may open with a real minus (−, U+2212), as the Year 7
+    # inequality decks write it: without it in the lookahead, "t < −2" kept its
+    # raw "<" and "t > −2" lost the sign altogether.
+    t = re.sub(r'(?<=[\w)])\s*>\s*(?=[-−\w(])', ' is greater than ', t)
+    t = re.sub(r'(?<=[\w)])\s*<\s*(?=[-−\w(])', ' is less than ', t)
     t = re.sub(r'(?m)^\s*>\s*', '', t).replace('>', '')
     # Tidy: collapse whitespace and runs of periods.
     t = re.sub(r'\s+', ' ', t)

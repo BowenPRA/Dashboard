@@ -97,7 +97,12 @@ deck that teaches both (`U03_1_2`, split at its hinge slide). 3.1 has Slide the 
 digits move along a place-value table, the point never does; 3.2 has Bus Stop — short
 division with each remainder written up-left of the next digit, zeros added after the point,
 then rounding; both have Quick Fire (generated cards) and the `shift` / `round` / `busstop`
-deck activities. **2.6 Inequalities has a classroom deck but no Dashboard unit yet.**
+deck activities. **2.6 Inequalities** followed the same day, to the same shape: Show It
+(`INEQ_LINE` — tap the number for the open circle, choose the arrow, give the smallest or
+largest integer; read a line back; words to symbols; the integers between two
+inequalities), Quick Fire's `compare` / `couldbe` / `integer` cards and the `ineq` deck
+activity. All three units were then rebalanced: vocabulary 10 XP, the practice opens at 20,
+Quick Fire 10 (125 XP on offer).
 
 **Progress (2026-09-17):** 2.3 Collecting like terms, 2.4 Expanding brackets and 2.5
 Constructing and solving equations are built to

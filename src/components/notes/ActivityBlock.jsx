@@ -18,7 +18,7 @@ import { SafeInlineMath } from './SafeMath.jsx';
 import {
   TermsActivity, AlgebraActivity, GridActivity, FlowActivity, PeriodicActivity, ParticlesActivity, FormulaActivity,
 } from './Y7Activities.jsx';
-import { ShiftActivity, RoundActivity, BusStopActivity } from './NumberActivities.jsx';
+import { ShiftActivity, RoundActivity, BusStopActivity, IneqActivity } from './NumberActivities.jsx';
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -727,6 +727,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'shift': body = <ShiftActivity {...common} />; break;
     case 'round': body = <RoundActivity {...common} />; break;
     case 'busstop': body = <BusStopActivity {...common} />; break;
+    case 'ineq': body = <IneqActivity {...common} />; break;
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }
   return (

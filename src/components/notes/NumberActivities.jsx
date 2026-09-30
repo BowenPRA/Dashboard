@@ -12,6 +12,10 @@ import {
   shortDivModel, qDigitOk, carryOk, qHint, carryHint, needZeroHint, MAX_ZEROS,
 } from '../../utils/shortDivision';
 import { keepWhere } from '../../utils/activity';
+import IneqLineFigure from '../math/IneqLineFigure.jsx';
+import {
+  ineqModel, diagnoseCircle, diagnoseArrow, diagnoseInteger, diagnoseWrite, diagnoseList, edgeWord, listText, numText,
+} from '../../utils/ineqLine';
 
 /**
  * The Year 7 number activities (Maths 3.1–3.2), rendered by ActivityBlock and
@@ -22,6 +26,8 @@ import { keepWhere } from '../../utils/activity';
  *   round    tap the last digit you keep, then type the rounded number
  *   busstop  a whole short division: quotient digits, the carries up-left of
  *            the next digit, zeros added after the point, (the rounded answer)
+ *   ineq     an inequality on a number line (Maths 2.6): draw it, read it, give
+ *            the smallest or largest integer, or tap every integer between two
  *
  * Every answer is derived (utils/placeShift.js, rounding.js, shortDivision.js)
  * and a wrong one is answered by the name of its slip before the authored
@@ -399,6 +405,172 @@ export function BusStopActivity({ activity, lang, result, onResult, parseText, r
         <Verdict ok={result.correct} lang={lang}>
           {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
           <div className="mb-1 text-lg overflow-x-auto"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={answerTex} /></div>
+          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+        </Verdict>
+      )}
+    </div>
+  );
+}
+
+// ── ineq: an inequality on a number line ────────────────────────────────────
+
+const INEQ_T = {
+  en: {
+    draw: 'Tap the number for the open circle, then choose the arrow.',
+    read: 'Choose the sign, then type the number.',
+    list: 'Tap every integer that works.',
+    left: 'Left', right: 'Right', none: 'No integer works',
+    needCircle: 'Tap a number on the line first: the circle goes there.',
+    needArrow: 'Now choose which way the arrow goes.',
+    integer: (w, L) => `The ${w} integer ${L} could be?`,
+    couldBe: (L, list) => `${L} could be ${list}`,
+    works: (list) => `The integers that work: ${list}.`,
+    noneWorks: 'No integer works.',
+    circleAt: (n, way) => `Open circle on ${n}, arrow ${way}.`,
+  },
+  vn: {
+    draw: 'Chạm vào con số để đặt vòng tròn rỗng, rồi chọn mũi tên.',
+    read: 'Chọn dấu, rồi nhập con số.',
+    list: 'Chạm vào mọi số nguyên thỏa mãn.',
+    left: 'Trái', right: 'Phải', none: 'Không có số nguyên nào',
+    needCircle: 'Hãy chạm vào một số trên trục số trước: vòng tròn đặt ở đó.',
+    needArrow: 'Bây giờ hãy chọn hướng của mũi tên.',
+    integer: (w, L) => `Số nguyên ${w} mà ${L} có thể là?`,
+    couldBe: (L, list) => `${L} có thể là ${list}`,
+    works: (list) => `Các số nguyên thỏa mãn: ${list}.`,
+    noneWorks: 'Không có số nguyên nào thỏa mãn.',
+    circleAt: (n, way) => `Vòng tròn rỗng tại ${n}, mũi tên sang ${way}.`,
+  },
+};
+
+export function IneqActivity({ activity, lang, result, onResult, parseText }) {
+  const t = T[lang] || T.en;
+  const it = INEQ_T[lang] || INEQ_T.en;
+  const ask = activity.ask || 'draw';
+  const model = useMemo(() => (ask === 'list'
+    ? ineqModel({ id: activity.id, kind: 'between', ineqs: activity.ineqs })
+    : ineqModel({ id: activity.id, kind: ask === 'read' ? 'read' : 'draw', ineq: activity.ineq })), [activity, ask]);
+  const p = model.p;
+  const [circle, setCircle] = useState(result?.circle ?? null);
+  const [dir, setDir] = useState(result?.dir ?? null);
+  const [sign, setSign] = useState(result?.sign ?? null);
+  const [typed, setTyped] = useState(result?.typed || '');
+  const [picks, setPicks] = useState(result?.picks || []);
+  const [tries, setTries] = useState(result?.tries || 0);
+  const [msg, setMsg] = useState(null);
+  const checked = !!result?.done;
+  const kept = { circle, dir, sign, typed, picks };
+
+  const settle = (d) => {
+    if (d.soft) { setMsg({ tone: 'nudge', en: d.en, vn: d.vn }); return; }
+    if (d.ok) { onResult({ done: true, correct: true, ...kept, tries: tries + 1 }); return; }
+    const n = tries + 1;
+    setTries(n);
+    if (n >= 2) onResult({ done: true, correct: false, ...kept, tries: n, why: { en: d.en, vn: d.vn } });
+    else setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+  };
+  const check = (none = false) => {
+    if (checked) return;
+    if (ask === 'draw') {
+      if (circle == null) { setMsg({ tone: 'nudge', en: INEQ_T.en.needCircle, vn: INEQ_T.vn.needCircle }); return; }
+      if (!dir) { setMsg({ tone: 'nudge', en: INEQ_T.en.needArrow, vn: INEQ_T.vn.needArrow }); return; }
+      const c = diagnoseCircle(p, circle);
+      settle(c.ok ? diagnoseArrow(p, dir) : c);
+    } else if (ask === 'read') settle(diagnoseWrite(p, sign, typed, { drawn: true }));
+    else if (ask === 'integer') settle(diagnoseInteger(p, typed));
+    else settle(diagnoseList(model, none ? [] : picks, none));
+  };
+  const clear = () => { if (msg?.tone === 'bad') setMsg(null); };
+
+  // what the line shows: the student's drawing while they work, the answer once checked
+  let rays = [];
+  const lit = [];
+  if (ask === 'list') {
+    rays = model.parts.map((q) => ({ n: q.n, dir: q.greater ? 'right' : 'left', tone: q.greater ? 'key' : 'blue' }));
+    if (checked) lit.push(...model.integers);
+  } else if (checked || ask === 'read') {
+    rays = [{ n: p.n, dir: p.greater ? 'right' : 'left' }];
+    if (checked && ask !== 'read') for (let v = model.lo; v <= model.hi; v += 1) if (p.works(v)) lit.push(v);
+  } else if (ask === 'draw' && circle != null) rays = [{ n: circle, dir }];
+  const halves = ask !== 'list' && !Number.isInteger(p.n);
+  const w = p ? edgeWord(p) : null;
+  const way = p ? pickL(lang, p.greater ? 'right' : 'left', p.greater ? 'phải' : 'trái') : '';
+  const answer = ask === 'list'
+    ? (model.integers.length ? it.works(model.integers.map(numText).join(', ')) : it.noneWorks)
+    : ask === 'draw' ? it.circleAt(numText(p.n), way)
+      : ask === 'integer' ? `${it.couldBe(p.letter, listText(p))} → ${numText(p.edge)}`
+        : null;
+
+  return (
+    <div>
+      {ask !== 'read' && (
+        <div className="text-2xl text-slate-800 dark:text-slate-100 mb-2 overflow-x-auto text-center"><SafeInlineMath math={model.latex} /></div>
+      )}
+      <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden bg-white">
+        <IneqLineFigure lo={model.lo} hi={model.hi} rays={rays} halves={halves} lit={lit}
+          onPick={ask === 'draw' && !checked ? (v) => { setCircle(v); clear(); } : undefined}
+          picks={ask === 'list' && !checked ? picks : []}
+          onToggle={ask === 'list' && !checked ? (v) => { setPicks((l) => (l.includes(v) ? l.filter((x) => x !== v) : [...l, v])); clear(); } : undefined} />
+      </div>
+
+      {!checked && ask === 'draw' && (
+        <>
+          <p className="mt-2 text-center text-xs font-bold text-slate-500 dark:text-slate-400">{it.draw}</p>
+          <div className="mt-2 flex items-center justify-center gap-2">
+            {['left', 'right'].map((d) => (
+              <button key={d} type="button" onClick={() => { setDir(d); clear(); }} aria-pressed={dir === d}
+                className={`px-4 h-11 flex items-center gap-1.5 rounded-xl border-2 border-b-[4px] font-black uppercase tracking-widest text-xs transition-all ${dir === d ? 'bg-[#c25e12] border-[#a04a0e] text-white' : IDLE}`}>
+                {d === 'left' && <ArrowLeft className="w-4 h-4" strokeWidth={3} />}{it[d]}{d === 'right' && <ArrowRight className="w-4 h-4" strokeWidth={3} />}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {!checked && ask === 'read' && (
+        <>
+          <p className="mt-2 text-center text-xs font-bold text-slate-500 dark:text-slate-400">{it.read}</p>
+          <div className="mt-2 flex items-center justify-center gap-2 text-2xl text-slate-800 dark:text-slate-100">
+            <SafeInlineMath math={p.letter} />
+            <div className="flex rounded-xl border-2 border-slate-300 dark:border-slate-600 overflow-hidden">
+              {['<', '>'].map((sg) => (
+                <button key={sg} type="button" onClick={() => { setSign(sg); clear(); }} aria-pressed={sign === sg}
+                  className={`w-11 h-11 font-mono font-black text-xl ${sign === sg ? 'bg-[#c25e12] text-white' : 'bg-white dark:bg-slate-800 text-slate-400'}`}>{sg}</button>
+              ))}
+            </div>
+            <input value={typed} onChange={(e) => { setTyped(e.target.value); clear(); }} onKeyDown={(e) => { if (e.key === 'Enter') check(); }}
+              inputMode="text" autoComplete="off" spellCheck={false} aria-label={t.typeHere} placeholder="?"
+              className={`w-20 px-2 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-xl text-center focus:outline-none focus:border-sky-500 ${IDLE}`} />
+          </div>
+        </>
+      )}
+
+      {!checked && ask === 'integer' && (
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{it.integer(pickL(lang, w.en, w.vn), p.letter)}</span>
+          <input value={typed} onChange={(e) => { setTyped(e.target.value); clear(); }} onKeyDown={(e) => { if (e.key === 'Enter') check(); }}
+            inputMode="text" autoComplete="off" spellCheck={false} aria-label={t.typeHere} placeholder="?"
+            className={`w-20 px-2 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-xl text-center focus:outline-none focus:border-sky-500 ${IDLE}`} />
+        </div>
+      )}
+
+      {!checked && ask === 'list' && <p className="mt-2 text-center text-xs font-bold text-slate-500 dark:text-slate-400">{it.list}</p>}
+
+      {!checked && msg && <Hint tone={msg.tone}>{msg.tone === 'bad' && <span className="mr-1 uppercase text-[10px] tracking-widest">{t.tryAgain} ·</span>}{said(lang, msg)}</Hint>}
+      {!checked && (
+        <div className="mt-3 flex items-center justify-end gap-2">
+          {ask === 'list' && (
+            <button type="button" onClick={() => check(true)} className="px-3 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 font-black text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-300 hover:border-sky-400">{it.none}</button>
+          )}
+          <button onClick={() => check(false)} className={primary}>{t.check}</button>
+        </div>
+      )}
+      {checked && (
+        <Verdict ok={result.correct} lang={lang}>
+          {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
+          {ask === 'read'
+            ? <div className="mb-1 text-lg"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={p.latex} /></div>
+            : <div className="mb-1"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span>{answer}</div>}
           {parseText(pickL(lang, activity.explain, activity.explainVn))}
         </Verdict>
       )}

@@ -94,6 +94,31 @@ function roots() {
   return { prompt: `∛${r * r * r} = ?`, answer: r };
 }
 
+// 2.6 — Inequalities. The smallest or largest integer that works (n ± 1 are
+// exactly the slips: the circle's own number, and the wrong side), "could it
+// be?" (Yes/No), or < against > between two numbers, usually negative.
+function inequalities() {
+  const letter = ['x', 'y', 't', 'n', 'p'][ri(0, 4)];
+  const greater = Math.random() < 0.5;
+  const n = ri(-9, 9);
+  const roll = Math.random();
+  if (roll < 0.45) {
+    return {
+      prompt: `${letter} ${greater ? '>' : '<'} ${lead(n)}. The ${greater ? 'smallest' : 'largest'} integer ${letter} could be = ?`,
+      answer: greater ? n + 1 : n - 1,
+    };
+  }
+  if (roll < 0.75) {
+    const v = [n, greater ? n + 1 : n - 1, greater ? n - 1 : n + 1, greater ? n + ri(2, 20) : n - ri(2, 20)][ri(0, 3)];
+    const works = greater ? v > n : v < n;
+    return { prompt: `${letter} ${greater ? '>' : '<'} ${lead(n)}. Could ${letter} be ${lead(v)}?`, answer: works ? 'Yes' : 'No', choices: ['Yes', 'No'] };
+  }
+  const a = -ri(1, 12);
+  let b = Math.random() < 0.6 ? -ri(1, 12) : ri(-9, 9);
+  if (b === a) b += 1;
+  return { prompt: `${lead(a)} □ ${lead(b)}: < or > ?`, answer: a < b ? '<' : '>', choices: ['<', '>'] };
+}
+
 // 3.1 — Multiplying & Dividing by Powers of 10. Either the calculation (always
 // multiple choice: the wrong options are "just added zeros", the wrong way and
 // one place out) or the missing power (a small whole number, typed or chosen).
@@ -465,6 +490,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   U01_4: hcf,
   U01_5: divisibility,
   U01_6: roots,
+  U02_6: inequalities,
   U03_1: powersOfTen,
   U03_2: rounding,
 };
@@ -478,7 +504,7 @@ export const MATH_CHALLENGE_GENERATORS = {
 const GENERATOR_TRACK = {
   U01_1: 'Y7_MATH', U01_2: 'Y7_MATH', U01_3: 'Y7_MATH',
   U01_4: 'Y7_MATH', U01_5: 'Y7_MATH', U01_6: 'Y7_MATH',
-  U03_1: 'Y7_MATH', U03_2: 'Y7_MATH',
+  U02_6: 'Y7_MATH', U03_1: 'Y7_MATH', U03_2: 'Y7_MATH',
 };
 
 /** True when `unitId` in `track` is the unit a generator was written for. */

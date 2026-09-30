@@ -9,6 +9,12 @@
 //   power   6.1 × 10^? = 61000                      (diagnosePower)
 //   mass    4 kg = ? mg                             (diagnoseShift on the conversion)
 //   round   round 34.9892 to 1 decimal place        (rounding.diagnoseRound)
+//   compare −8 □ −5: < or >                          (two buttons)
+//   couldbe t < −5. Could t be −4?                   (Yes / No, with the reason)
+//   integer p > 2.5: the smallest integer p could be (ineqLine.diagnoseInteger)
+//
+// A card with `choices` is answered with a button, once; the others are typed,
+// with one more try after a named slip.
 //
 // Every card's answer is derived from the numbers it was dealt, and every wrong
 // answer is answered by the name of its slip.
@@ -16,8 +22,9 @@
 import { dec, decText, spanOf, roundTo } from './decimal.js';
 import { shiftModel, questionLatex, diagnoseShift, diagnosePower, PLACE_LIMITS, MASS_UNITS } from './placeShift.js';
 import { diagnoseRound, placeName } from './rounding.js';
+import { parseIneq, diagnoseInteger, edgeWord, numText, numLatex } from './ineqLine.js';
 
-export const QF_MODES = ['shift', 'power', 'mass', 'round'];
+export const QF_MODES = ['shift', 'power', 'mass', 'round', 'compare', 'couldbe', 'integer'];
 export const QF_ROUNDS = [6, 20];
 
 /** A small seeded RNG (mulberry32), so a seed replays the same cards. */
@@ -129,7 +136,77 @@ function roundCard(rng, id) {
   return null;
 }
 
-const MAKERS = { shift: shiftCard, power: powerCard, mass: massCard, round: roundCard };
+// ── Inequalities (Year 7 Maths 2.6) ─────────────────────────────────────────
+
+const LETTERS = ['x', 'y', 't', 'n', 'p', 'k', 'm', 'w'];
+// A number for an inequality: mostly negatives and small positives, sometimes a half.
+const ineqNumber = (rng) => (rng() < 0.18 ? intIn(rng, -6, 6) + 0.5 : intIn(rng, -9, 9));
+
+function compareCard(rng, id) {
+  for (let tries = 0; tries < 50; tries += 1) {
+    const shape = rng();
+    const a = shape < 0.45 ? -intIn(rng, 1, 12) : shape < 0.7 ? intIn(rng, -9, 9) : intIn(rng, -6, 6) + 0.5;
+    const b = shape < 0.45 ? -intIn(rng, 1, 12) : intIn(rng, -9, 9);
+    if (a === b) continue;
+    const less = a < b;
+    const [A, B] = [numText(a), numText(b)];
+    const why = less
+      ? { en: `${A} is further LEFT on the number line than ${B}, so ${A} is less than ${B}.`, vn: `${A} nằm xa hơn về bên TRÁI trên trục số so với ${B}, nên ${A} nhỏ hơn ${B}.` }
+      : { en: `${A} is further RIGHT on the number line than ${B}, so ${A} is greater than ${B}.`, vn: `${A} nằm xa hơn về bên PHẢI trên trục số so với ${B}, nên ${A} lớn hơn ${B}.` };
+    return {
+      id, mode: 'compare', latex: `${numLatex(a)} \\;\\square\\; ${numLatex(b)}`, answer: less ? '<' : '>',
+      ask: { en: 'Less than or greater than?', vn: 'Nhỏ hơn hay lớn hơn?' },
+      choices: [
+        { val: '<', en: '<  is less than', vn: '<  nhỏ hơn' },
+        { val: '>', en: '>  is greater than', vn: '>  lớn hơn' },
+      ],
+      mark: (val) => (val === (less ? '<' : '>') ? { ok: true } : { ok: false, ...why }),
+    };
+  }
+  return null;
+}
+
+function couldBeCard(rng, id) {
+  const letter = pickOne(rng, LETTERS);
+  const op = rng() < 0.5 ? '<' : '>';
+  const n = ineqNumber(rng);
+  const p = parseIneq(`${letter} ${op} ${n}`);
+  const roll = rng();
+  // the circle's own number, a near miss on the wrong side, or a number that works
+  const v = roll < 0.3 && Number.isInteger(n) ? n
+    : roll < 0.6 ? (p.greater ? Math.ceil(n) - intIn(rng, 1, 2) : Math.floor(n) + intIn(rng, 1, 2))
+      : (p.greater ? p.edge + intIn(rng, 0, 40) : p.edge - intIn(rng, 0, 40));
+  const yes = p.works(v);
+  const [V, N] = [numText(v), numText(n)];
+  const rel = p.greater ? { en: 'greater', vn: 'lớn hơn' } : { en: 'less', vn: 'nhỏ hơn' };
+  const why = yes
+    ? { en: `Yes: ${V} is ${rel.en} than ${N}.`, vn: `Có: ${V} ${rel.vn} ${N}.` }
+    : v === n
+      ? { en: `No: ${V} is the open circle. ${V} is not ${rel.en} than ${V}.`, vn: `Không: ${V} là vòng tròn rỗng. ${V} không ${rel.vn} ${V}.` }
+      : { en: `No: ${V} is ${p.greater ? 'less' : 'greater'} than ${N} — it is on the other side of the circle.`, vn: `Không: ${V} ${p.greater ? 'nhỏ hơn' : 'lớn hơn'} ${N} — nó nằm ở phía bên kia vòng tròn.` };
+  return {
+    id, mode: 'couldbe', latex: p.latex, answer: yes ? 'Yes' : 'No', answerVn: yes ? 'Có' : 'Không',
+    ask: { en: `Could ${letter} be ${V}?`, vn: `${letter} có thể là ${V} không?` },
+    choices: [{ val: 'yes', en: 'Yes', vn: 'Có' }, { val: 'no', en: 'No', vn: 'Không' }],
+    mark: (val) => ((val === 'yes') === yes ? { ok: true } : { ok: false, ...why }),
+  };
+}
+
+function integerCard(rng, id) {
+  const letter = pickOne(rng, LETTERS);
+  const p = parseIneq(`${letter} ${rng() < 0.5 ? '<' : '>'} ${ineqNumber(rng)}`);
+  const w = edgeWord(p);
+  return {
+    id, mode: 'integer', latex: p.latex, answer: numText(p.edge),
+    ask: { en: `The ${w.en} integer ${letter} could be?`, vn: `Số nguyên ${w.vn} mà ${letter} có thể là?` },
+    mark: (typed) => diagnoseInteger(p, typed),
+  };
+}
+
+const MAKERS = {
+  shift: shiftCard, power: powerCard, mass: massCard, round: roundCard,
+  compare: compareCard, couldbe: couldBeCard, integer: integerCard,
+};
 
 /** A session of cards for a unit's `quickFire` config. */
 export function makeQuickFire(config, seed = Date.now()) {
@@ -159,7 +236,8 @@ export function checkQuickFireConfig(cfg, { bilingual = true } = {}) {
     // every card a few seeds deal must accept its own answer
     for (const seed of [1, 2, 3, 42, 2026]) {
       for (const card of makeQuickFire(cfg, seed)) {
-        if (!card.mark(card.answer).ok) out.push(`seed ${seed}: card ${card.id} (${card.latex}) refuses its own answer ${card.answer}`);
+        const own = card.choices ? card.choices.filter((c) => card.mark(c.val).ok).length === 1 : card.mark(card.answer).ok;
+        if (!own) out.push(`seed ${seed}: card ${card.id} (${card.latex}) refuses its own answer ${card.answer}`);
       }
     }
   }

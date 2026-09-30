@@ -47,6 +47,13 @@ const SAMPLES = [
   base('d1', 'busstop', { dividend: '47', divisor: 4 }),
   base('d2', 'busstop', { dividend: '58', divisor: 7, dp: 3 }),
   base('d3', 'busstop', { dividend: '9.35', divisor: 5 }),
+  // Year 7 inequalities (2.6)
+  base('i1', 'ineq', { ask: 'draw', ineq: 'x > 3' }),
+  base('i2', 'ineq', { ask: 'draw', ineq: 'p > 2.5' }),
+  base('i3', 'ineq', { ask: 'read', ineq: 'x < −1' }),
+  base('i4', 'ineq', { ask: 'integer', ineq: 'q < −4' }),
+  base('i5', 'ineq', { ask: 'list', ineqs: ['s > 20', 's < 24'] }),
+  base('i6', 'ineq', { ask: 'list', ineqs: ['n > 7', 'n < 8'] }),
 ];
 
 function Bench() {

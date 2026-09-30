@@ -14,6 +14,7 @@ import { checkLineActivity } from './lineLab.js';
 import { shiftModel } from './placeShift.js';
 import { roundModel, checkPlaces } from './rounding.js';
 import { shortDivModel } from './shortDivision.js';
+import { ineqModel } from './ineqLine.js';
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -39,8 +40,13 @@ import { shortDivModel } from './shortDivision.js';
 // (a short division — quotient digits, the carries up-left of the next digit,
 // zeros added after the point). Derived by utils/placeShift.js, rounding.js
 // and shortDivision.js. Schemas in docs/y7-math/number-engines.md §3.
+// `ineq` (Maths 2.6) is an inequality on a number line: draw it (the open
+// circle, then the arrow), read a drawn one, give the smallest or largest
+// integer, or tap every integer between two. Derived by utils/ineqLine.js.
 export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn',
-  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop'];
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq'];
+
+export const INEQ_ASKS = ['draw', 'read', 'integer', 'list'];
 
 export const PARTICLE_ASKS = ['kind', 'pure', 'magnet', 'find'];
 export const PARTICLE_FIND = ['element', 'compound', 'mixture', 'pure'];
@@ -282,6 +288,17 @@ export function checkActivity(a, { bilingual = true } = {}) {
       try {
         if (roundModel(String(a.n), a.to).alreadyThere) out.push('round: the number is already written to that accuracy — nothing to round');
       } catch (e) { out.push(`round: ${e.message}`); }
+    }
+  }
+
+  if (a.type === 'ineq') {
+    const ask = a.ask || 'draw';
+    if (!INEQ_ASKS.includes(ask)) out.push(`ineq ask "${ask}" — ${INEQ_ASKS.join('/')}`);
+    else {
+      try {
+        if (ask === 'list') ineqModel({ id: a.id, kind: 'between', ineqs: a.ineqs });
+        else ineqModel({ id: a.id, kind: ask === 'read' ? 'read' : 'draw', ineq: a.ineq });
+      } catch (e) { out.push(`ineq: ${e.message}`); }
     }
   }
 

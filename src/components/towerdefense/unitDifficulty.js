@@ -336,6 +336,13 @@ export const TRACK_LEVELS = {
       blurb: 'Undo every step, last one first. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
     },
+    // 2.6 came after the chapter's finale was built, so it is an epilogue one
+    // step down from it rather than a second boss rush.
+    U02_6: {
+      mapId: 'WAVE', themeId: 'ICE', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Cold Line',
+      blurb: 'Less than means left — and colder. Wave after wave along a frozen number line.',
+    },
     // Unit 3 (Place value and rounding) is a third chapter: low again, then up.
     U03_1: {
       mapId: 'JUNCTION', themeId: 'ICE', tier: 1,

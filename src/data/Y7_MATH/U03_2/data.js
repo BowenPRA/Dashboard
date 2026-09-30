@@ -1,7 +1,7 @@
 // src/data/Y7_MATH/U03_2/data.js
 // 3.2 Rounding — self-study unit, built to the number-engines unit shape
-// (docs/y7-math/number-engines.md §1). 135 XP available, capped at 100 by
-// unitXPOf. Gates: 25 of 35 (71%) and 80 of 115 (70%), both under the 80% rule.
+// (docs/y7-math/number-engines.md §1). 125 XP available, capped at 100 by
+// unitXPOf. Gates: 20 of 30 (67%) and 80 of 105 (76%), both under the 80% rule.
 //
 // The classroom teaches 3.1 and 3.2 as ONE deck (lessons/content/y7-math/
 // U03_1_2); the Dashboard follows the book, so this unit takes the second half
@@ -36,17 +36,17 @@ export const U03_2_DATA = {
       threshold: 0,
       tasks: [
         { id: 'NOTES', dbKey: 'p10', maxXP: 20 },
-        { id: 'WORD_REC', dbKey: 'p1', maxXP: 15 },
+        { id: 'WORD_REC', dbKey: 'p1', maxXP: 10 },
       ],
     },
     {
       id: 'practice',
       title: 'Phase 1: Practice',
-      threshold: 25,
+      threshold: 20,
       tasks: [
         { id: 'WORKBOOK', dbKey: 'p11', maxXP: 20 },
         { id: 'SHORT_DIV', dbKey: 'p56', maxXP: 25 },
-        { id: 'QUICK_FIRE', dbKey: 'p58', maxXP: 15 },
+        { id: 'QUICK_FIRE', dbKey: 'p58', maxXP: 10 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
       ],
     },
