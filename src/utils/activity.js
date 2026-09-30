@@ -11,6 +11,9 @@ import { collectModel, expandModel, equationModel, diagnoseSimplify, diagnoseExp
 import { querySymbols } from './elements.js';
 import { SUBSTANCES, classifyBox, countsOf } from './particles.js';
 import { checkLineActivity } from './lineLab.js';
+import { shiftModel } from './placeShift.js';
+import { roundModel, checkPlaces } from './rounding.js';
+import { shortDivModel } from './shortDivision.js';
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -30,8 +33,14 @@ import { checkLineActivity } from './lineLab.js';
 // `line` (AOPS lines units) is one click step of the Line Lab on a slide —
 // plot points, place points on a line, walk a slope, an intercept, a midpoint,
 // where two lines meet. Schema at the top of utils/lineLab.js.
+// The Year 7 number types (Maths 3.1–3.2): `shift` (slide the digits along a
+// place-value table for × or ÷ 10ⁿ, a missing power or a mass conversion),
+// `round` (tap the last digit kept, then type the rounded number), `busstop`
+// (a short division — quotient digits, the carries up-left of the next digit,
+// zeros added after the point). Derived by utils/placeShift.js, rounding.js
+// and shortDivision.js. Schemas in docs/y7-math/number-engines.md §3.
 export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn',
-  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line'];
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop'];
 
 export const PARTICLE_ASKS = ['kind', 'pure', 'magnet', 'find'];
 export const PARTICLE_FIND = ['element', 'compound', 'mixture', 'pure'];
@@ -257,6 +266,34 @@ export function checkActivity(a, { bilingual = true } = {}) {
     for (const p of checkLineActivity(a, { bilingual })) out.push(`line ${p}`);
   }
 
+  if (a.type === 'shift') {
+    if (a.kind === 'chain') out.push('shift: a chain of moves belongs in the Slide the Digits task, not on a slide');
+    else {
+      try {
+        const m = shiftModel(a);
+        if (m.cols.length > 9) out.push(`shift: the table would be ${m.cols.length} columns wide — at most 9 on a slide`);
+      } catch (e) { out.push(`shift: ${e.message}`); }
+    }
+  }
+
+  if (a.type === 'round') {
+    if (!checkPlaces(a.to)) out.push('round: `to` must be a whole number from -3 (nearest 1000) to 5 (5 d.p.); 0 is the nearest whole number');
+    else {
+      try {
+        if (roundModel(String(a.n), a.to).alreadyThere) out.push('round: the number is already written to that accuracy — nothing to round');
+      } catch (e) { out.push(`round: ${e.message}`); }
+    }
+  }
+
+  if (a.type === 'busstop') {
+    try {
+      const m = shortDivModel(a);
+      if (m.cols.length > 8) out.push(`busstop: ${m.cols.length} columns — at most 8 on a slide`);
+      if (m.zerosNeeded > 4) out.push(`busstop: needs ${m.zerosNeeded} zeros added — at most 4 on a slide`);
+      if (m.dp != null && m.stopsAt != null && m.stopsAt <= m.dp) out.push(`busstop: ${m.dividendText} ÷ ${m.divisor} stops within ${m.dp} places, so there is nothing to round — drop dp`);
+    } catch (e) { out.push(`busstop: ${e.message}`); }
+  }
+
   if (a.type === 'formula') {
     const ask = a.ask || 'count';
     if (!['count', 'write'].includes(ask)) out.push('formula ask must be count or write');
@@ -287,5 +324,5 @@ export function keepWhere(map, keep) {
 export function retryKeepsParts(activity) {
   if (!activity) return false;
   if (activity.type === 'formula') return activity.ask !== 'write';
-  return ['sort', 'order', 'plot', 'reflect', 'venn', 'terms', 'grid', 'flow', 'particles', 'line'].includes(activity.type);
+  return ['sort', 'order', 'plot', 'reflect', 'venn', 'terms', 'grid', 'flow', 'particles', 'line', 'busstop'].includes(activity.type);
 }

@@ -5,7 +5,7 @@ import {
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
-  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp
+  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -1226,6 +1226,68 @@ export const TASKS = [
     hasContent: (u) => !!u.lineLab?.items?.length,
     buildPool: (u) => u.lineLab,
     props: ({ pool, onComplete, onQuit }) => ({ pool, onComplete, onQuit }),
+  },
+  // ── Year 7 Maths Unit 3, place value and rounding (U03_1, U03_2) ──────────
+  // p55 is LINE_LAB's; these three are p56–p58, and p59 is next. Item shapes
+  // and stages: docs/y7-math/number-engines.md.
+  {
+    id: 'SHORT_DIV',
+    nativeMax: 10,
+    dbKey: 'p56',
+    // "Bus stop, the short way." Short division with each remainder written
+    // small, up and to the left of the next digit — no stack of products under
+    // the number. When the digits run out the student writes the point and
+    // adds zeros after it (+0) until the remainder is 0, or to one place past
+    // the accuracy asked for, then rounds. utils/shortDivision.js derives every
+    // column, carry, zero and answer from the two numbers.
+    label: 'Bus Stop',
+    icon: Divide,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ShortDivision.jsx')),
+    hasContent: (u) => !!u.shortDiv?.items?.length,
+    buildPool: (u) => u.shortDiv,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'PLACE_SHIFT',
+    nativeMax: 10,
+    dbKey: 'p57',
+    // "The digits move, the point does not." × and ÷ by powers of 10 done on a
+    // place-value table: slide every digit left or right, one column per
+    // power, then write the ordinary number with its placeholder zeros. Also
+    // finds a missing power, converts mg/g/kg/t, and follows a chain of moves.
+    // utils/placeShift.js derives the moves, the placeholders and the slip
+    // behind a wrong answer ("just added zeros", the wrong way, a lost zero).
+    label: 'Slide the Digits',
+    icon: MoveHorizontal,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./PlaceShift.jsx')),
+    hasContent: (u) => !!u.placeShift?.items?.length,
+    buildPool: (u) => u.placeShift,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'QUICK_FIRE',
+    nativeMax: 10,
+    dbKey: 'p58',
+    // Quick Fire: short cards dealt fresh every attempt (utils/quickFire.js) —
+    // × and ÷ by 10ⁿ, a missing power, mass conversions, rounding. The unit
+    // declares only its modes and a card count.
+    label: 'Quick Fire',
+    icon: Flame,
+    color: { bg: 'bg-[#ea580c]', border: 'border-[#c2410c]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./QuickFire.jsx')),
+    hasContent: (u) => !!u.quickFire?.modes?.length,
+    buildPool: (u) => u.quickFire,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
 ];
 

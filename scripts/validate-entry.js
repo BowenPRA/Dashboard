@@ -47,6 +47,9 @@ import { checkTitrationItems } from '../src/utils/titration.js';
 import { checkItem as checkSymbolEq } from '../src/utils/chemFormula.js';
 import { checkAmcTest } from '../src/utils/amcTest.js';
 import { checkLineLabItems } from '../src/utils/lineLab.js';
+import { checkShortDivItems } from '../src/utils/shortDivision.js';
+import { checkShiftItems } from '../src/utils/placeShift.js';
+import { checkQuickFireConfig } from '../src/utils/quickFire.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -156,6 +159,24 @@ for (const trackId of TRACK_IDS) {
       if (bilingual && !unit[key].titleVn) err(`${label}: ${key} needs titleVn`);
       for (const p of check(unit[key])) err(`${label}: ${p}`);
     }
+
+    // -- Year 7 number engines, Unit 3 (docs/y7-math/number-engines.md): Bus
+    //    Stop and Slide the Digits derive every column, carry, zero, move and
+    //    answer from the question; Quick Fire deals cards from five seeds and
+    //    proves each one accepts its own answer.
+    for (const [key, check] of [['shortDiv', checkShortDivItems], ['placeShift', checkShiftItems]]) {
+      if (unit[key] === undefined) continue;
+      const at = `${label}: ${key}`;
+      const cfg = unit[key];
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${at} needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${at} has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${at} item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of check(cfg.items || [], { bilingual })) err(`${at} ${p}`);
+    }
+    if (unit.quickFire !== undefined) for (const p of checkQuickFireConfig(unit.quickFire, { bilingual })) err(`${label}: quickFire ${p}`);
 
     // -- Find & Fix and Order It: every error must be locatable exactly once in
     //    its passage, every list orderable. An error the screen cannot find is

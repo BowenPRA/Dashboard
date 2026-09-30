@@ -68,11 +68,18 @@ one-way link is how the two sequences drifted apart in the first place (see
 | Science 1.3 | `y7-science/U01_3` | `Y7_SCI/U01_3` |
 | Science 2.1 (taught as two lessons) | `y7-science/U02_1a`, `U02_1b` | `Y7_SCI/U02_1` |
 | Science 2.2 (two lessons + a model) | `U02_2a`, `U02_2b`, `U02_model_states` | `Y7_SCI/U02_2` |
+| Maths 3.1 + 3.2 (taught as ONE deck) | `y7-math/U03_1_2` | `Y7_MATH/U03_1`, `Y7_MATH/U03_2` |
 
 The Dashboard follows the **book**: one section = one unit, zero-padded
 (`U02_1`). The classroom follows the **timetable**: a section that takes two
 periods is two lessons (`U02_1a`, `U02_1b`). When they differ, the Dashboard
 unit lists every classroom lesson it absorbs, in teaching order.
+
+The other way round happens too: Maths 3.1 and 3.2 are one classroom deck over two
+periods, split at a hinge slide. The Dashboard still gets one unit per section, so the
+deck is cut at the hinge; both units list the same lesson in `classroom`, and the
+lesson's single `dashboard` pointer names the **first** unit (the second is the next
+card down).
 
 Non-section classroom content (`U00_1` Day One, `U00_2` the accuracy lab,
 `U00_3` the planters, the Word Wall game) has no Dashboard twin and should not

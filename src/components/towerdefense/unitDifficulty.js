@@ -336,6 +336,17 @@ export const TRACK_LEVELS = {
       blurb: 'Undo every step, last one first. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
     },
+    // Unit 3 (Place value and rounding) is a third chapter: low again, then up.
+    U03_1: {
+      mapId: 'JUNCTION', themeId: 'ICE', tier: 1,
+      mapName: 'The Sliding Lanes',
+      blurb: 'A new chapter. Every digit slides one column at a time — hold the crossing while they move.',
+    },
+    U03_2: {
+      mapId: 'SPIRAL', themeId: 'STANDARD', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Round Tower',
+      blurb: 'A winding climb, and it is crawling. Five or more, and up they come.',
+    },
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.

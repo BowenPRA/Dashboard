@@ -36,6 +36,17 @@ const SAMPLES = [
   base('b4', 'particles', { ask: 'pure', boxes: [['H2O', 'H2O', 'H2O', 'H2O'], ['H2O', 'H2O', 'NaCl', 'NaCl']] }),
   base('m1', 'formula', { ask: 'count', formula: 'CaCO3' }),
   base('m2', 'formula', { ask: 'write', formula: 'CO2' }),
+  // Year 7 number units (3.1, 3.2)
+  base('s1', 'shift', { n: '7.2', op: '×', p: 3 }),
+  base('s2', 'shift', { n: '520', op: '÷', p: 4 }),
+  base('s3', 'shift', { kind: 'power', n: '900', op: '÷', result: '0.09' }),
+  base('s4', 'shift', { kind: 'convert', n: '4', from: 'kg', to: 'mg' }),
+  base('r1', 'round', { n: '34.9892', to: 1 }),
+  base('r2', 'round', { n: '283.4617529', to: -1 }),
+  base('r3', 'round', { n: '1.99952', to: 3 }),
+  base('d1', 'busstop', { dividend: '47', divisor: 4 }),
+  base('d2', 'busstop', { dividend: '58', divisor: 7, dp: 3 }),
+  base('d3', 'busstop', { dividend: '9.35', divisor: 5 }),
 ];
 
 function Bench() {

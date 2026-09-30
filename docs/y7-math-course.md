@@ -91,6 +91,14 @@ From the workbook contents. Build in book order; each row is one unit folder.
 | 9 | **Sequences & functions** | 9.1 `U09_1` Generating sequences 1 · 9.2 `U09_2` Generating sequences 2 · 9.3 `U09_3` Using the nth term · 9.4 `U09_4` Representing simple functions |
 | 10 | **Percentages** | 10.1 `U10_1` Fractions, decimals & percentages · 10.2 `U10_2` Percentages large & small |
 
+**Progress (2026-09-30):** 3.1 Multiplying and dividing by powers of 10 and 3.2 Rounding are
+built to [y7-math/number-engines.md](y7-math/number-engines.md), from the one classroom
+deck that teaches both (`U03_1_2`, split at its hinge slide). 3.1 has Slide the Digits — the
+digits move along a place-value table, the point never does; 3.2 has Bus Stop — short
+division with each remainder written up-left of the next digit, zeros added after the point,
+then rounding; both have Quick Fire (generated cards) and the `shift` / `round` / `busstop`
+deck activities. **2.6 Inequalities has a classroom deck but no Dashboard unit yet.**
+
 **Progress (2026-09-17):** 2.3 Collecting like terms, 2.4 Expanding brackets and 2.5
 Constructing and solving equations are built to
 [y7-math/algebra-engines.md](y7-math/algebra-engines.md): each has its own derive-everything
