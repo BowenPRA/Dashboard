@@ -10,6 +10,10 @@ parts of the exercise the production task does not. When in doubt, copy its stru
 `AM_4A` (Modulus Equations and Inequalities, rebuilt to the same standard) is the second
 reference; `AM_3A` (Polynomials) is the original and still sound.
 
+**`AM_7A` (The Equation of a Circle) is the blueprint for building a unit from a problem
+bank** — one task per question type of the book's exercise. §9 is the method; use it for
+every unit from here on, starting with the rest of chapter 5.
+
 The three documents for this track:
 
 | Read | For |
@@ -37,9 +41,26 @@ Plus the general standards: [lesson-standard.md](lesson-standard.md),
 **A unit is a chapter section or two, not a whole chapter.** `AM_4A` is §4.1–4.2
 because equations and inequalities are one argument; `AM_4B` is §4.3 alone because
 sketching is its own skill and its own exercise; §4.4 (cubic inequalities, read off those
-sketches) is `AM_4C`. Chapter 5 is three units: `AM_5A` logarithms and their laws
-(§5.1–5.3), `AM_5B` exponential equations, e and ln, growth and decay (§5.5, 5.7, 5.8),
-`AM_5C` log equations, change of base and the graphs (§5.4, 5.6, 5.9, 5.10).
+sketches) is `AM_4C`.
+
+**Chapter 5 is four units** (decided 2026-09-30, once the exercise pages and §5.11 had
+been read; the outline is [add-math-ch5-outline.md](add-math-ch5-outline.md)):
+
+| Unit | Sections | Status |
+|---|---|---|
+| `AM_5A` | §5.1–5.3 logarithms and their laws | built |
+| `AM_5B` | §5.5, 5.7, 5.8 exponential equations, e and ln, growth and decay | to build |
+| `AM_5C` | §5.4, 5.6 log equations and change of base | to build |
+| `AM_5D` | §5.9–5.11 graphs and inverses | to build |
+
+**Chapter 7 is three units:** `AM_7A` the equation of a circle (first half of §7.1:
+reading, writing and rearranging it — built), `AM_7B` chords, tangents, right angles and
+the circle through three points (second half of §7.1), `AM_7C` lines and circles (§7.2).
+
+Every section of chapters 5 and 7.1 has a **problem bank** in `docs/`
+(`add-math-5-1-…` to `add-math-5-11-…`, `add-math-7-1-circles.md`): the beats of the
+book's notes, every exercise question mapped to a type, and fresh problems for each type.
+A unit is built from its bank — see §9.
 
 ---
 
@@ -73,7 +94,7 @@ a worked solution the book does not print.
 | Phase | Gate | Tasks | XP |
 |---|---|---|---|
 | `concept` — **Gate 0: Learn** | 0 | `NOTES` 10 · `WORD_REC` 10 | 20 |
-| `practice` — **Gate 1: Apply** | 15 | the topic's production task (`CUBIC_SKETCH` 35, `LOG_SIMPLIFY` 35, or `MOD_SOLVE` 25 + `GRAPH` 20) · `WORKBOOK` 20–30 · `WORKBOOK_B` if there is a second exercise | 65–90 |
+| `practice` — **Gate 1: Apply** | 15 | the topic's production task (`CUBIC_SKETCH` 35, `LOG_SIMPLIFY` 35, or `MOD_SOLVE` 25 + `GRAPH` 20), or **one task per question type** (`AM_7A`: `CIRCLE_PLOT` 20 + `CIRCLE_EQ` 20 + `CIRCLE_SQUARE` 25) · `WORKBOOK` 20–30 · `WORKBOOK_B` if there is a second exercise | 65–90 |
 | `mastery` — **Gate 2: Quiz & Arcade** | 60 | `ASSESSMENT` 20 · `GAMES` 0 | 20 |
 
 `AM_4B` totals 105 against a 100 XP unit; `AM_4A` totals 130 because it carries two
@@ -200,3 +221,82 @@ recompute — before shipping it.
 - [ ] `npm run sync-audio`, then validate again (missing slide audio is an **error**)
 - [ ] Walked every task in `preview-addmath.html?unit=<UNIT>`, light and dark
 - [ ] Arcade entry and Maths Bolt generator
+
+---
+
+## 9. From a problem bank to a unit — the blueprint (`AM_7A`)
+
+The source is the coursebook on Cambridge GO, read in the browser. It is **never
+copied**: no page images, no exercise text. What is kept is a *problem bank*, and the
+unit is built from that.
+
+### 9.1 The problem bank (one `docs/add-math-<section>-<topic>.md` per section)
+
+| Part | What it holds |
+|---|---|
+| 1. The beats of the notes | the section's teaching, in order, in our own words, with page numbers — this becomes the deck's spine |
+| 2. What the exercise asks | **every** exercise question number mapped to a *type*, and how the difficulty climbs inside each type |
+| 3. Fresh problems | a set for every type, in the book's order of difficulty, plus challenge-style ones; every answer checked by script |
+
+The rule Bowen set: **match the book's exact problem types.** Nothing the exercise
+drills may be missing from the bank, and nothing in the bank is the book's own item with
+the numbers changed.
+
+### 9.2 One task per question type
+
+Read the bank's type table and give each type a home. `AM_7A`'s mapping, from
+[add-math-7-1-circles.md](add-math-7-1-circles.md):
+
+| Bank type | Task | Why it has its own screen |
+|---|---|---|
+| A. Read centre and radius | **Plot the Circle** (levels 1–4) | reading is proved by *plotting*: click the centre, then a point on the circle |
+| F. Sketches, touching an axis | **Plot the Circle** (level 5), **Write the Equation** (level 4) | predicted before the circle is drawn |
+| B, D, E. Write the equation | **Write the Equation** (levels 1–3) | the question runs the other way, so the screen does too |
+| C. General form | **Complete the Square** | pure procedure, so it is staged one move at a time |
+| everything else | **Practice** (the Workbook) | the parts no engine stages, each with a worked solution |
+
+Rules that came out of building it:
+
+- **A type that is a different *direction* gets a different task** (read an equation /
+  write one / rearrange one). Types that differ only in what is given share a task as
+  *levels* (centre and radius → centre and a point → a diameter).
+- **Levels are the bank's "how it climbs" column.** Each level is named, the levels only
+  climb, and each item adds one idea — say which in the data file's header.
+- **The numbers change when the screen needs them to.** A circle has to fit the grid, a
+  clicked point has to be a whole-number point. Pick new numbers of the same type; the
+  validator (`checkCircleItems`) says which items break.
+- **Put the diagnosis where the mistake is.** The bank's "trap" items become wrong-answer
+  messages: copying the signs out of the brackets, r for r², the whole coefficient for
+  half of it, the diameter for the radius. A message quotes the *question's own* numbers.
+- **Every item ends on a reveal worth copying**: the working, the drawn result, and a
+  check that substitutes an answer back.
+- **Challenge questions** go to the Workbook's Challenge tier as fresh problems in the
+  same spirit, with full solutions — not into an engine.
+- **The deck follows Part 1 of the bank**, one beat per slide, and its activities use the
+  same picture as the tasks (the `line` activity can sweep a `circle` on after a check).
+
+### 9.3 Build order for a bank-driven unit
+
+1. Write the type → task table in the unit's `data.js` header. If a type has no home,
+   the unit is not designed yet.
+2. The pure derivation in `src/utils/<topic>.js` with `check…Items`, tested in a scratch
+   script against the bank's answers **before** any screen exists.
+3. The pools (`<task>.js`), one per task, with the ladder written out in the header.
+   Run the validator's check on them at once — several bank numbers will need changing.
+4. The screen. One component can serve several tasks through a `mode` prop
+   (`CircleLab.jsx` serves three).
+5. Stub `notes.js` / `workbook.js` / `assessment.js`, mount the tasks in the harness, and
+   walk each one **wrong first, then right** — that is where the messages get fixed.
+6. Diagrams, deck, workbook, quiz; then §8's checklist.
+
+### 9.4 Applying it to chapter 5
+
+| Unit | Bank files | Likely task per type |
+|---|---|---|
+| `AM_5B` | 5.5, 5.7, 5.8 | *Take logs* (5.5 A, 5.7 E–G) · *Hidden quadratic* (5.5 C–E, 5.7 I–J: substitute, solve, **reject**) · *Exact values with e and ln* (5.7 C–D) · growth and decay contexts in the Workbook (5.8) |
+| `AM_5C` | 5.4, 5.6 | *Log equation solver* ending on "check each root" (5.4 A–D) · *Quadratic in a log* (5.4 E, 5.6 J) · *Change of base* (5.6 A–E, H) · simultaneous equations in the Workbook |
+| `AM_5D` | 5.9, 5.10, 5.11 | *Sketch with an asymptote* (5.10 B–C; predict crossings first, as Plot the Circle does) · *Find the inverse* in three stages plus the domain (5.11 A–C) · the 5.9 families as deck slider activities |
+
+The thread to keep across `AM_5B` and `AM_5C` is **rejecting a root** — a negative
+argument, a negative base, a negative power. Make it its own stage, and include items
+where both roots survive and where none does, so that the check is a real check.

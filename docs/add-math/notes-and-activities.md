@@ -125,6 +125,31 @@ tappable; on check the tapped pieces fold up into $|f(x)|$. The below set is der
 `arcsOf` in `utils/cubic.js`. A curve that touches is the best item for this — the
 touch is not reflected, and a student who taps it learns why.
 
+### `line` with a `circle` — click a point, see its circle
+
+The `line` activity (one click step of the Line Lab; schema at the top of
+`src/utils/lineLab.js`) takes an optional `circle`, added for the chapter 7 decks:
+
+```js
+activity: {
+  id: 'act_click_centre', type: 'line',
+  prompt: 'The circle is $(x - 4)^2 + (y + 2)^2 = 9$. Click its centre.',
+  grid: { xMin: -6, xMax: 8, yMin: -6, yMax: 4 },
+  points: { C: [4, -2] },
+  step: { kind: 'plot', points: ['C'], say: 'Click the centre of the circle.' },
+  circle: { centre: [4, -2], r2: 9 },        // swept on after Check; `always: true` draws it from the start
+  explain: '…',
+}
+```
+
+- **Always give a `plot` step a `say`.** Its default wording prints the coordinates it is
+  asking for.
+- Make the grid wide enough to hold the *wrong* answer a student will click — here the
+  sign-flipped $(-4, 2)$.
+- A `midpoint` step with `show: ['A', 'B']` and a `circle` is the diameter question:
+  click the centre, and the circle through both ends appears.
+- The validator refuses a circle that does not fit inside the grid.
+
 ### `hotspot` on a maths figure
 
 `svg` takes a diagram from `diagrams.js`; the printed labels are stripped at runtime so

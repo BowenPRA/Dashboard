@@ -6,7 +6,7 @@ import {
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
   Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame, CircleArrowRight,
-  ClipboardList
+  ClipboardList, CircleDot, Radius, SquareFunction
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -1351,6 +1351,70 @@ export const TASKS = [
     buildPool: (u) => u.hwReview || [],
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Homework Review', solutionLabel: 'How to get it', bilingual: bilingualOf(track) }),
+  },
+  // ── Additional Mathematics 7.1, the equation of a circle (AM_7A) ──────────
+  // p60 is HW_REVIEW's; these three are p61–p63, and p64 is next. One screen
+  // (CircleLab.jsx) in three modes, ONE TASK PER QUESTION TYPE of the book's
+  // exercise — the blueprint in docs/add-math-course.md §9. utils/circle.js
+  // derives every centre, radius, completed square and point on the circle;
+  // `checkCircleItems` refuses a circle that does not fit the grid, a centre
+  // that cannot be clicked, or an equation that is not a circle by accident.
+  {
+    id: 'CIRCLE_PLOT',
+    nativeMax: 10,
+    dbKey: 'p61',
+    // "Read it, then put it on the grid." (x − a)² + (y − b)² = r² is printed.
+    // Click the centre — the sign-flip mistake is named when it is clicked —
+    // then click a point on the circle, or type the exact surd radius when no
+    // whole number will do. Later items ask what the circle does at each axis
+    // before it is drawn. The finished circle is swept on with points marked.
+    label: 'Plot the Circle',
+    icon: CircleDot,
+    color: { bg: 'bg-[#0891b2]', border: 'border-[#0e7490]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./CircleLab.jsx')),
+    hasContent: (u) => !!u.circlePlot?.items?.length,
+    buildPool: (u) => u.circlePlot,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'plot', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'CIRCLE_EQ',
+    nativeMax: 10,
+    dbKey: 'p62',
+    // "Find what is missing, then write it." The equation of a circle from a
+    // centre and a radius, a centre and a point on the circle, the two ends
+    // of a diameter, or a centre and the axis it touches. The missing r² is
+    // found on a right-angled triangle drawn on the grid; the equation is
+    // filled into (x ± ▢)² + (y ± ▢)² = ▢ with the signs the student chooses.
+    label: 'Write the Equation',
+    icon: Radius,
+    color: { bg: 'bg-[#0d9488]', border: 'border-[#0f766e]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./CircleLab.jsx')),
+    hasContent: (u) => !!u.circleEq?.items?.length,
+    buildPool: (u) => u.circleEq,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'eq', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'CIRCLE_SQUARE',
+    nativeMax: 10,
+    dbKey: 'p63',
+    // "Divide, complete both squares, tidy up, read it off." The general form
+    // x² + y² + Dx + Ey + F = 0 taken to completed square form one move at a
+    // time — half the coefficient in the bracket, its square taken away — and
+    // then the centre and the radius. An equation whose right-hand side comes
+    // out zero or negative ends with the question "what is it, then?".
+    label: 'Complete the Square',
+    icon: SquareFunction,
+    color: { bg: 'bg-[#4f46e5]', border: 'border-[#3730a3]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./CircleLab.jsx')),
+    hasContent: (u) => !!u.circleSquare?.items?.length,
+    buildPool: (u) => u.circleSquare,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'square', savedData, onComplete, onProgress, onQuit }),
   },
 ];
 

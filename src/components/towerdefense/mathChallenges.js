@@ -324,6 +324,39 @@ function logLaws() {
   return { prompt: `${name(b)} ${target * m} ${MINUS} ${name(b)} ${m} = ?`, answer: k };
 }
 
+// AM_7A — The equation of a circle. Four reads a student who has done the unit
+// does in their head: a coordinate of the centre (the sign trap — (x + 3)² puts
+// the centre at x = −3), the radius (the square root of the right-hand side),
+// the right-hand side for a given radius (squared, not doubled), and whether a
+// point is on the circle (substitute it). The last is Yes/No, and its circles
+// are built on Pythagorean triples so that "Yes" is reachable with whole numbers.
+function circleEquation() {
+  const br = (v, c) => (c === 0 ? `${v}²` : `(${v} ${c > 0 ? MINUS : '+'} ${Math.abs(c)})²`);
+  const a = ri(-6, 6);
+  const b = ri(-6, 6);
+  const pick = Math.random();
+  if (pick < 0.7) {
+    const r = ri(2, 9);
+    const eq = `${br('x', a)} + ${br('y', b)} = ${r * r}`;
+    if (pick < 0.3) {
+      const wantX = Math.random() < 0.5;
+      return { prompt: `${eq}.  ${wantX ? 'x' : 'y'}-coordinate of the centre = ?`, answer: wantX ? a : b };
+    }
+    if (pick < 0.5) return { prompt: `${eq}.  Radius = ?`, answer: r };
+    return { prompt: `Circle: centre (${lead(a)}, ${lead(b)}), radius ${r}.  Right-hand side of its equation = ?`, answer: r * r };
+  }
+  const [dx, dy, h] = [[3, 4, 5], [4, 3, 5], [6, 8, 10], [5, 12, 13], [0, 5, 5], [7, 0, 7]][ri(0, 5)];
+  const on = Math.random() < 0.5;
+  const px = a + (Math.random() < 0.5 ? dx : -dx);
+  // Off the circle: one step up or down from a point that is on it.
+  const py = b + (Math.random() < 0.5 ? dy : -dy) + (on ? 0 : (Math.random() < 0.5 ? 1 : -1));
+  return {
+    prompt: `${br('x', a)} + ${br('y', b)} = ${h * h}.  Is (${lead(px)}, ${lead(py)}) on the circle?`,
+    answer: (px - a) ** 2 + (py - b) ** 2 === h * h ? 'Yes' : 'No',
+    choices: ['Yes', 'No'],
+  };
+}
+
 // PHYSICS / PHY_CIRC — Circular Motion & Gravity. Three shapes, all answered
 // with a whole number: a unit conversion (the mark this unit loses most), a
 // small centripetal force from F = mv²/r, and the minimum speed over the top
@@ -484,6 +517,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   AM_4A: modulus,
   AM_4B: cubicSketch,
   AM_5A: logLaws,
+  AM_7A: circleEquation,
   U01_1: intAddSub,
   U01_2: intMulDiv,
   U01_3: lcm,

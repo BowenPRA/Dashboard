@@ -13,6 +13,9 @@ and §5 says how to write ones the marking engine can actually mark.
 
 | Engine | Task id · dbKey | Screen | Derivation | Book use |
 |---|---|---|---|---|
+| Plot the Circle | `CIRCLE_PLOT` · p61 | `src/tasks/CircleLab.jsx` (mode `plot`) | `src/utils/circle.js` | reading centre and radius; what a circle does at the axes (7.1) |
+| Write the Equation | `CIRCLE_EQ` · p62 | `src/tasks/CircleLab.jsx` (mode `eq`) | `src/utils/circle.js` | the equation from a radius, a point, a diameter, a tangent axis (7.1) |
+| Complete the Square | `CIRCLE_SQUARE` · p63 | `src/tasks/CircleLab.jsx` (mode `square`) | `src/utils/circle.js` | general form to centre and radius (7.1) |
 | Log Simplifier | `LOG_SIMPLIFY` · p38 | `src/tasks/LogSimplify.jsx` | `src/utils/logs.js` | evaluating logs and the laws of logarithms (5.1–5.3) |
 | Case Solver | `MOD_SOLVE` · p30 | `src/tasks/ModulusSolver.jsx` | `src/utils/modulus.js` | modulus equations and inequalities (4.1, 4.2) |
 | Sketch It | `CUBIC_SKETCH` · p31 | `src/tasks/CubicSketch.jsx` | `src/utils/cubic.js` | cubic sketching and its modulus (4.3) |
@@ -20,7 +23,9 @@ and §5 says how to write ones the marking engine can actually mark.
 | Long Division | `POLY_DIV` · p21 | `src/tasks/PolyDivision.jsx` | `src/utils/polynomial.js` | polynomial division (3.2) |
 | Practice / Book Problems | `WORKBOOK` p11 · `WORKBOOK_B` p22 | `src/tasks/Workbook.jsx` | `src/utils/mathEquivalence.js` | any exercise, with worked solutions |
 
-All four derived engines share one shape of screen and one scoring rule, so a student
+The next free dbKey is **p64**.
+
+All the derived engines share one shape of screen and one scoring rule, so a student
 who has met one has met them all: the question in a coloured strip; a **stage rail**
 under it that ticks off the moves; one stage on screen at a time; **Check** and
 **Show me** on every stage; a wrong answer can be retried, a second wrong answer (or
@@ -167,6 +172,64 @@ export const logSimplify = {
   law that leaves a root inside, an item with nothing to simplify, a denominator above 4
   in the answer, anything too big to type or to draw, and **levels out of order**. Every
   `level` needs a name in `levels`.
+
+Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
+
+## 2b. Circle Lab (`CIRCLE_PLOT`, `CIRCLE_EQ`, `CIRCLE_SQUARE`)
+
+Three tasks on one screen (`CircleLab.jsx`; the registry passes `mode`), **one per
+question type** of Exercise 7.1 — the blueprint in
+[../add-math-course.md](../add-math-course.md) §9. A lattice grid (−10..10 by default)
+sits beside the stage card. Every finished circle is **swept onto the grid with points
+on it marked** — lattice points when it has them, the four compass points with exact
+surd coordinates when not — and one of them is substituted back into the equation.
+
+```js
+// src/data/ADD_MATH/<UNIT>/circlePlot.js   — (x − a)² + (y − b)² = r2
+export const circlePlot = {
+  title: 'Plot the Circle', intro: '…', levels: { 1: 'Centred at the origin' /* … */ },
+  items: [
+    { id: 'o_49', level: 1, centre: [0, 0], r2: 49 },
+    { id: 'o_scale', level: 1, centre: [0, 0], r2: 25, scale: 3 },          // prints 3x² + 3y² = 75
+    { id: 'surd_12', level: 4, centre: [-5, 4], r2: 12 },                   // radius 2√3, typed
+    { id: 'ax_touch', level: 5, centre: [3, -2], r2: 9, axes: true },       // + "what happens at each axis"
+  ],
+};
+
+// circleEq.js — what is given decides the stages
+{ id: 'r', kind: 'radius',   centre: ['3/2', '-1/4'], r2: 4 }                // write it
+{ id: 'p', kind: 'through',  centre: [1, -2], point: [4, 2] }                // r², then write it
+{ id: 'd', kind: 'diameter', A: [-2, -1], B: [6, 5] }                        // centre, r², write it
+{ id: 't', kind: 'touch',    centre: [-4, 5], axis: 'x' }                    // radius, write it
+
+// circleSquare.js — kx² + ky² + Dx + Ey + F = rhs
+{ id: 'two_a', coef: [1, -6, 4, -12] }
+{ id: 'rhs_a', coef: [1, -4, 6, 0], rhs: 12 }                                // constant printed on the right
+{ id: 'div_4', coef: [4, -4, 24, 1] }                                        // divide first; centre at a half
+{ id: 'not_neg', coef: [1, 4, -6, 15], notCircle: true }                     // ends on "what is it, then?"
+```
+
+- **Plot** — *centre* (click it; the sign-flipped point, one flipped sign and swapped
+  coordinates each get their own message) → *rim* (click any lattice point on the
+  circle, when the radius is a whole number) or *radius* (typed as `[k]√[n]`; the right
+  length unsimplified is a nudge, not a miss) → *axes* (crosses twice / touches / misses,
+  asked **before** the circle is drawn, only with `axes: true`).
+- **Write the Equation** — the missing piece first (*centre* clicked at the midpoint of a
+  diameter; *r²* from the dashed right-angled triangle drawn to the point; *radius* from
+  the distance to the tangent axis), then the equation filled into
+  `(x ± ▢)² + (y ± ▢)² = ▢` with sign toggles. A zero coordinate is typed as `0`.
+- **Complete the Square** — *divide* (only when k ≠ 1) → *square in x* → *square in y*
+  (a stage is skipped when that term is absent) → *tidy up* (the right-hand side) →
+  *centre* (clicked, or typed when it is at a half) → *radius*; or, when the right-hand
+  side is zero or negative, → *what is it?*
+- r² is always a whole number; a `square` item's centre may be at halves. Centres that
+  are clicked must be whole-number points.
+- `npm run validate` (`checkCircleItems`) refuses: a circle that does not fit the grid, a
+  clicked centre that is not a lattice point, a sign-flipped centre that is off the grid
+  (the mistake must be clickable), a diameter with a fractional midpoint, a `square`
+  item with nothing to complete, an equation that is not a circle without
+  `notCircle: true` (and one marked so that is), and **levels out of order**.
+- An item may override `grid`. Pick numbers so that |centre| + radius ≤ 10.
 
 Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
 

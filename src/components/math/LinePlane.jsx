@@ -9,6 +9,8 @@ import { PLANE_PAD, LINE_COLORS } from './linePlaneGeom.js';
  *
  *   grid      { xMin, xMax, yMin, yMax } — whole numbers, both axes inside
  *   lines     [{ line: { a, b, c }, color, label?, dashed?, faint? }]   a·x + b·y = c
+ *   circles   [{ centre: [x, y], r, color, dashed?, faint?, fill?, draw? }]   r in grid units;
+ *             `draw` sweeps the circle on as it appears (the Circle Lab reveal)
  *   segments  [{ from: [x, y], to: [x, y], color, dashed?, label?, width? }]
  *   points    [{ at: [x, y], color, name?, flag? }]   flag = the coordinate text
  *   misses    [[x, y]] — wrong clicks, the newest labelled with `missFlag`
@@ -32,7 +34,7 @@ const fmt = (n) => (n < 0 ? `−${-n}` : `${n}`);
 const pair = (x, y) => `(${fmt(x)}, ${fmt(y)})`;
 
 export default function LinePlane({
-  grid, lines = [], segments = [], points = [], misses = [], missFlag = null,
+  grid, lines = [], circles = [], segments = [], points = [], misses = [], missFlag = null,
   aim = null, armed = false, interactive = false, svgRef = null,
   onPointerMove, onPointerUp, onPointerLeave, onKeyDown, onClick,
   style, className = '', unit = 34, tabIndex,
@@ -175,6 +177,24 @@ export default function LinePlane({
       {interactive && xs.map((x) => ys.map((y) => (
         <circle key={`d${x}_${y}`} cx={X(x)} cy={Y(y)} r="2" className="fill-slate-300 dark:fill-slate-700" />
       )))}
+
+      {/* circles under everything else that is drawn on the grid. The svg's own
+          viewport clips one that runs off the plate. */}
+      {circles.map((c, i) => {
+        const color = c.color || LINE_COLORS[i % 4];
+        return (
+          <g key={`c${i}`} pointerEvents="none" opacity={c.faint ? 0.45 : 1}>
+            {c.fill && <circle cx={X(c.centre[0])} cy={Y(c.centre[1])} r={c.r * U} fill={color} fillOpacity="0.07" stroke="none" />}
+            <circle cx={X(c.centre[0])} cy={Y(c.centre[1])} r={c.r * U} fill="none" stroke={color} strokeWidth="3.6"
+              strokeLinecap="round" pathLength={c.draw ? 1 : undefined}
+              strokeDasharray={c.draw ? 1 : c.dashed ? '10 7' : undefined}>
+              {/* No stroke-dashoffset attribute is set, so a browser that does
+                  not run the animation simply shows the whole circle. */}
+              {c.draw && <animate attributeName="stroke-dashoffset" from="1" to="0" dur="0.9s" fill="freeze" />}
+            </circle>
+          </g>
+        );
+      })}
 
       {/* segments under the lines: the triangle legs, a hypotenuse */}
       {segments.map((s, i) => {

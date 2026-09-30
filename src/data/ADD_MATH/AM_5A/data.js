@@ -16,9 +16,10 @@
 // calculator, the unknown in a new place, domains, "in terms of p and q",
 // given values of lg 2 and lg 3, and the challenge parts.
 //
-// The next two units finish the chapter: AM_5B (exponential equations, e and
-// ln, growth and decay — sections 5.5, 5.7, 5.8) and AM_5C (log equations,
-// change of base, and the graphs — 5.4, 5.6, 5.9, 5.10).
+// Three more units finish the chapter (docs/add-math-course.md): AM_5B
+// (exponential equations, e and ln, growth and decay — sections 5.5, 5.7,
+// 5.8), AM_5C (log equations and change of base — 5.4, 5.6) and AM_5D (the
+// graphs and inverses — 5.9, 5.10, 5.11).
 // Module properties are written out in full (`notes: notes,`) so the audio
 // generator never over-reads the realWords array.
 import { notes } from './notes.js';

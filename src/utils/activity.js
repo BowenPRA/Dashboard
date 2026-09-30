@@ -270,6 +270,18 @@ export function checkActivity(a, { bilingual = true } = {}) {
 
   if (a.type === 'line') {
     for (const p of checkLineActivity(a, { bilingual })) out.push(`line ${p}`);
+    // An optional circle drawn on the grid (swept on after the check, or
+    // `always`): a whole-number centre and r², inside the grid.
+    if (a.circle !== undefined) {
+      const c = a.circle || {};
+      const g = a.grid || { xMin: -8, xMax: 8, yMin: -8, yMax: 8 };
+      if (!Array.isArray(c.centre) || c.centre.length !== 2 || !c.centre.every((v) => typeof v === 'number')) out.push('line circle needs centre: [x, y] numbers');
+      else if (!(typeof c.r2 === 'number' && c.r2 > 0)) out.push('line circle needs r2: a positive number');
+      else {
+        const r = Math.sqrt(c.r2);
+        if (c.centre[0] - r < g.xMin || c.centre[0] + r > g.xMax || c.centre[1] - r < g.yMin || c.centre[1] + r > g.yMax) out.push('line circle does not fit inside the grid');
+      }
+    }
   }
 
   if (a.type === 'shift') {

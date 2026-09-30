@@ -33,6 +33,7 @@ import { checkSimEqItems } from '../src/utils/simultaneous.js';
 import { checkTriangleItems } from '../src/utils/triangles.js';
 import { checkInequalityItems } from '../src/utils/inequalities.js';
 import { checkLogItems } from '../src/utils/logs.js';
+import { checkCircleItems } from '../src/utils/circle.js';
 import { checkCollectItems, checkExpandItems, checkFlowItems } from '../src/utils/algebra.js';
 import { checkPyramidConfig } from '../src/utils/pyramid.js';
 import { checkHuntConfig } from '../src/utils/elementHunt.js';
@@ -880,6 +881,24 @@ for (const trackId of TRACK_IDS) {
         if (it.level !== undefined && !unit.logSimplify.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
       }
       for (const p of checkLogItems(unit.logSimplify.items || [])) err(`${at} ${p}`);
+    }
+
+    // -- Circle Lab (ADD_MATH 7.1): three pools read by one screen. Only the
+    //    question is authored; utils/circle.js derives the centre, r², the
+    //    surd radius, both completed squares and the points on the circle.
+    //    Checked: the circle fits the grid, a clicked centre is a whole-number
+    //    point, r² is a whole number, an equation that is not a circle says so
+    //    on purpose, and the levels only climb.
+    for (const [key, mode] of [['circlePlot', 'plot'], ['circleEq', 'eq'], ['circleSquare', 'square']]) {
+      const poolC = unit[key];
+      if (!poolC) continue;
+      const at = `${label}: ${key}`;
+      if (!poolC.title) err(`${at} is missing a title`);
+      if (!(poolC.items || []).length) err(`${at} has no items`);
+      for (const it of poolC.items || []) {
+        if (it.level !== undefined && !poolC.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
+      }
+      for (const p of checkCircleItems(poolC.items || [], mode)) err(`${at} ${p}`);
     }
 
     // -- Bond Ledger, Rate Reader, Spectator Strike (IGCSE_CHEM): the

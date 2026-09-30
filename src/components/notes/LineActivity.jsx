@@ -125,6 +125,14 @@ export default function LineActivity({ activity, lang, result, onResult, parseTe
     points.push({ at: p, color: checked ? (ok ? GREEN : RED) : SKY, flag: checked && ans.on ? null : `(${p[0] < 0 ? `−${-p[0]}` : p[0]}, ${p[1] < 0 ? `−${-p[1]}` : p[1]})` });
   }
 
+  // An optional circle (the ADD_MATH circle decks): `circle: { centre, r2,
+  // always? }`. It is swept on once the answer is checked, so clicking the
+  // centre is followed by seeing the circle it belongs to; `always: true`
+  // draws it from the start, for a question asked about a circle on show.
+  const circles = activity.circle && (checked || activity.circle.always)
+    ? [{ centre: activity.circle.centre, r: Math.sqrt(activity.circle.r2), color: '#0e7490', fill: true, draw: !activity.circle.always }]
+    : [];
+
   const cols = grid.xMax - grid.xMin;
   const rows = grid.yMax - grid.yMin;
   const W = cols * UNIT + 52;
@@ -144,7 +152,7 @@ export default function LineActivity({ activity, lang, result, onResult, parseTe
         )}
       </div>
       <div className="mx-auto rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700" style={{ width: `min(100%, ${((W / H) * 52).toFixed(1)}vh)` }}>
-        <LinePlane grid={grid} unit={UNIT} svgRef={svgRef} lines={lines} segments={segments} points={points}
+        <LinePlane grid={grid} unit={UNIT} svgRef={svgRef} lines={lines} circles={circles} segments={segments} points={points}
           interactive={!checked} aim={checked ? null : aim}
           onPointerMove={(e) => { if (!checked && e.pointerType !== 'touch') setAim(latticeFromEvent(e, svgRef.current, grid, UNIT)); }}
           onPointerLeave={() => setAim(null)}

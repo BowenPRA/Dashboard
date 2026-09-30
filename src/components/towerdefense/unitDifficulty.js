@@ -123,6 +123,14 @@ export const TRACK_LEVELS = {
       mapName: 'The Power Ladder',
       blurb: 'Every rung is the same step up, and every step multiplies the wave. Count the rungs, not the enemies.',
     },
+    // Chapter 7 stays at tier 3. The circuit is the board that is a closed
+    // loop: everything on it is the same distance from the middle, which is
+    // the whole of what a circle is.
+    AM_7A: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 3,
+      mapName: 'The Ring Road',
+      blurb: 'The road runs in a ring, always the same distance from the centre. Hold the middle and everything is one radius away.',
+    },
   },
   // IGCSE Mathematics (Extended). One level per Wolsey Hall assignment. EM_06
   // opens at tier 1: the student has met the arcade on other tracks, and the
