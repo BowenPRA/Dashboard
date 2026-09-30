@@ -479,11 +479,13 @@ export default function CircleLab({ pool, mode = 'plot', onComplete, onQuit, sav
     }
     for (const q of axisPts) drawnPoints.push({ at: q.at, color: AMBER, r: 6, flag: q.text });
     // The radius is drawn to a slanted point when the circle has one, so its
-    // label stays clear of the axis numbers; one that must lie along an axis
-    // is labelled above the line.
-    const spoke = shown.find((p) => p.flag && Math.abs(p.at[0] - centreNum[0]) > 1e-9 && Math.abs(p.at[1] - centreNum[1]) > 1e-9)
-      || shown.find((p) => Math.abs(p.at[1] - centreNum[1]) < 1e-9 && p.at[0] > centreNum[0]) || shown[0];
-    if (spoke) segments.push({ from: centreNum, to: spoke.at, color: GREEN, label: `r = ${radiusText(model.r2)}`, labelSide: 'before' });
+    // label stays clear of the axis numbers. Otherwise it goes straight up,
+    // labelled on the right: a radius drawn due east has its label hidden
+    // behind the centre's own coordinate flag.
+    const slanted = shown.find((p) => p.flag && Math.abs(p.at[0] - centreNum[0]) > 1e-9 && Math.abs(p.at[1] - centreNum[1]) > 1e-9);
+    const north = shown.find((p) => Math.abs(p.at[0] - centreNum[0]) < 1e-9 && p.at[1] > centreNum[1]);
+    const spoke = slanted || north || shown[0];
+    if (spoke) segments.push({ from: centreNum, to: spoke.at, color: GREEN, label: `r = ${radiusText(model.r2)}`, labelSide: slanted ? 'before' : 'after' });
   }
 
   /* ---------------------------------------------------------- stage cards */
