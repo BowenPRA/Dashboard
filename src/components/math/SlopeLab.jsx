@@ -35,24 +35,27 @@ const parseSlope = (s) => {
   return { n: Number(n), d: Number(d) };
 };
 
-const W = 760;
-const H = 560;
-const U = 34;
-const OX = 380;
-const OY = 280;
-const XMIN = -10;
-const XMAX = 10;
-const YMIN = -7;
-const YMAX = 7;
+// Wide and short on purpose: the widget sits in a split slide's media column,
+// which on a 1280 x 720 laptop is about twice as wide as the height left over
+// after the controls. A squarer stage was squeezed to a postage stamp.
+const W = 880;
+const H = 480;
+const U = 40;
+const OX = 440;
+const OY = 240;
+const XMIN = -10.5;
+const XMAX = 10.5;
+const YMIN = -5.5;
+const YMAX = 5.5;
 const X = (x) => OX + x * U;
 const Y = (y) => OY - y * U;
 
 const EN = {
-  reset: 'Reset', ghost: 'y = x (slope 1)', rise: 'rise', run: 'run',
+  reset: 'Reset', ghost: 'y = x', rise: 'rise', run: 'run',
   up: 'uphill', down: 'downhill', flat: 'flat — slope 0', steep: 'steeper than y = x', gentle: 'gentler than y = x', one: 'exactly as steep as y = x',
 };
 const VN = {
-  reset: 'Đặt lại', ghost: 'y = x (hệ số góc 1)', rise: 'dọc', run: 'ngang',
+  reset: 'Đặt lại', ghost: 'y = x', rise: 'dọc', run: 'ngang',
   up: 'đi lên', down: 'đi xuống', flat: 'nằm ngang — hệ số góc 0', steep: 'dốc hơn y = x', gentle: 'thoải hơn y = x', one: 'dốc đúng bằng y = x',
 };
 
@@ -114,58 +117,60 @@ export default function SlopeLab({ show = 'mb', mStart = '1', bStart = 0, triang
 
   return (
     <div className="w-full h-full flex flex-col select-none gap-3">
-      <div className="flex-1 min-h-[220px]">
+      <div className="flex-1 min-h-[180px]">
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full">
           <rect x="0" y="0" width={W} height={H} rx="14" className="fill-white dark:fill-slate-900" />
-          {Array.from({ length: XMAX - XMIN + 1 }, (_, i) => XMIN + i).map((x) => (
+          {Array.from({ length: 21 }, (_, i) => -10 + i).map((x) => (
             <line key={`v${x}`} x1={X(x)} y1={Y(YMAX)} x2={X(x)} y2={Y(YMIN)} strokeWidth="1" className="stroke-slate-200 dark:stroke-slate-800" />
           ))}
-          {Array.from({ length: YMAX - YMIN + 1 }, (_, i) => YMIN + i).map((y) => (
+          {Array.from({ length: 11 }, (_, i) => -5 + i).map((y) => (
             <line key={`h${y}`} x1={X(XMIN)} y1={Y(y)} x2={X(XMAX)} y2={Y(y)} strokeWidth="1" className="stroke-slate-200 dark:stroke-slate-800" />
           ))}
           <line x1={X(XMIN)} y1={Y(0)} x2={X(XMAX)} y2={Y(0)} strokeWidth="2.2" className="stroke-slate-700 dark:stroke-slate-300" />
           <line x1={X(0)} y1={Y(YMAX)} x2={X(0)} y2={Y(YMIN)} strokeWidth="2.2" className="stroke-slate-700 dark:stroke-slate-300" />
           {[-8, -6, -4, -2, 2, 4, 6, 8].map((x) => (
-            <text key={`tx${x}`} x={X(x)} y={Y(0) + 20} textAnchor="middle" fontSize="15" fontFamily="monospace" className="fill-slate-500 dark:fill-slate-400">{fmt(x)}</text>
+            <text key={`tx${x}`} x={X(x)} y={Y(0) + 26} textAnchor="middle" fontSize="22" fontWeight="600" fontFamily="monospace" className="fill-slate-500 dark:fill-slate-400">{fmt(x)}</text>
           ))}
-          {[-6, -4, -2, 2, 4, 6].map((y) => (
-            <text key={`ty${y}`} x={X(0) - 9} y={Y(y) + 5} textAnchor="end" fontSize="15" fontFamily="monospace" className="fill-slate-500 dark:fill-slate-400">{fmt(y)}</text>
+          {[-4, -2, 2, 4].map((y) => (
+            <text key={`ty${y}`} x={X(0) - 10} y={Y(y) + 7} textAnchor="end" fontSize="22" fontWeight="600" fontFamily="monospace" className="fill-slate-500 dark:fill-slate-400">{fmt(y)}</text>
           ))}
 
           {/* y = x, never moving: the slope-1 line to measure "steep" against */}
-          <line x1={X(YMIN)} y1={Y(YMIN)} x2={X(YMAX)} y2={Y(YMAX)} strokeWidth="2.5" strokeDasharray="9 7" className="stroke-slate-300 dark:stroke-slate-600" />
+          <line x1={X(YMIN)} y1={Y(YMIN)} x2={X(YMAX)} y2={Y(YMAX)} strokeWidth="3" strokeDasharray="10 8" className="stroke-slate-300 dark:stroke-slate-600" />
+          <text x={X(YMAX) + 10} y={Y(YMAX) + 22} fontSize="22" fontWeight="700" fontFamily="monospace" className="fill-slate-400 dark:fill-slate-500">{t.ghost}</text>
 
-          {e && <line x1={X(e[0][0])} y1={Y(e[0][1])} x2={X(e[1][0])} y2={Y(e[1][1])} stroke={SKY} strokeWidth="4.5" strokeLinecap="round" />}
+          {e && <line x1={X(e[0][0])} y1={Y(e[0][1])} x2={X(e[1][0])} y2={Y(e[1][1])} stroke={SKY} strokeWidth="5.5" strokeLinecap="round" />}
 
           {triFits && (
             <g>
               <line x1={X(tri.x0)} y1={Y(tri.y0)} x2={X(tri.x1)} y2={Y(tri.y0)} stroke={AMBER} strokeWidth="3.5" strokeDasharray="7 5" />
               <line x1={X(tri.x1)} y1={Y(tri.y0)} x2={X(tri.x1)} y2={Y(tri.y1)} stroke={GREEN} strokeWidth="3.5" strokeDasharray="7 5" />
-              <text x={(X(tri.x0) + X(tri.x1)) / 2} y={Y(tri.y0) + (m.n > 0 ? 24 : -12)} textAnchor="middle" fontSize="18" fontWeight="800"
+              <text x={(X(tri.x0) + X(tri.x1)) / 2} y={Y(tri.y0) + (m.n > 0 ? (b === 0 ? 58 : 30) : -14)} textAnchor="middle" fontSize="26" fontWeight="800"
                 fontFamily="monospace" fill={AMBER} strokeWidth="5" paintOrder="stroke" className="stroke-white dark:stroke-slate-900">{t.run} {m.d}</text>
-              <text x={X(tri.x1) + 10} y={(Y(tri.y0) + Y(tri.y1)) / 2 + 6} fontSize="18" fontWeight="800"
+              <text x={X(tri.x1) + 12} y={(Y(tri.y0) + Y(tri.y1)) / 2 + 9} fontSize="26" fontWeight="800"
                 fontFamily="monospace" fill={GREEN} strokeWidth="5" paintOrder="stroke" className="stroke-white dark:stroke-slate-900">{t.rise} {fmt(m.n)}</text>
             </g>
           )}
 
-          <circle cx={X(0)} cy={Y(b)} r="9" fill={PURPLE} strokeWidth="3" className="stroke-white dark:stroke-slate-900" />
-          <text x={X(0) - 14} y={Y(b) - 12} textAnchor="end" fontSize="19" fontWeight="800" fontFamily="monospace" fill={PURPLE}
+          <circle cx={X(0)} cy={Y(b)} r="11" fill={PURPLE} strokeWidth="3" className="stroke-white dark:stroke-slate-900" />
+          <text x={X(0) - 16} y={Y(b) - 14} textAnchor="end" fontSize="26" fontWeight="800" fontFamily="monospace" fill={PURPLE}
             strokeWidth="5" paintOrder="stroke" className="stroke-white dark:stroke-slate-900">(0, {fmt(b)})</text>
         </svg>
       </div>
 
-      <div className="shrink-0 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm p-3 flex flex-col gap-2">
+      <div className="shrink-0 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm px-3 py-2.5 flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <span className="flex-1 font-black text-xl sm:text-2xl tabular-nums" style={{ color: SKY }}>{equationOf(m, b)}</span>
+          <span className="flex-1 min-w-0">
+            <span className="block font-black text-xl sm:text-2xl tabular-nums leading-tight" style={{ color: SKY }}>{equationOf(m, b)}</span>
+            <span className="block text-[11px] font-black uppercase tracking-widest leading-tight" style={{ color: SKY }}>{feel}</span>
+          </span>
           <button onClick={() => { setMi(start); setB(bStart); }} disabled={!moved}
             className="shrink-0 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest text-white bg-slate-400 dark:bg-slate-600 disabled:opacity-40 active:scale-95 transition-all">
             {t.reset}
           </button>
         </div>
-        <div className="text-xs font-black uppercase tracking-widest" style={{ color: SKY }}>{feel}</div>
         {show.includes('m') && <Slider label="m" tone={SKY} text={slopeText(m)} value={mi} min={0} max={SLOPES.length - 1} onChange={setMi} />}
         {show.includes('b') && <Slider label="b" tone={PURPLE} text={fmt(b)} value={b} min={-5} max={5} onChange={setB} />}
-        <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 text-center">— — — {t.ghost}</p>
       </div>
     </div>
   );

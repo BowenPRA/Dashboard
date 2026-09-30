@@ -251,9 +251,9 @@ export const DIAGRAMS = {
       <text x="228" y="556" fill="${PINK}" text-anchor="end">A(−3, −5)</text>
       <text x="574" y="272" fill="${PINK}">B(5, 1)</text>
       <text x="574" y="552" fill="${PURPLE}">C(5, −5)</text>
-      <text x="400" y="550" fill="${AMBER}" text-anchor="middle">across 8</text>
+      <text x="440" y="552" fill="${AMBER}" text-anchor="middle">across 8</text>
       <text x="574" y="406" fill="${GREEN}">up 6</text>
-      <text x="382" y="396" fill="${CYAN}" text-anchor="end">AB = ?</text>
+      <text x="300" y="424" fill="${CYAN}" text-anchor="end">AB = ?</text>
     </g>
     <g font-family="${MONO}" font-size="23" font-weight="bold" fill="${INK}" stroke="#ffffff" stroke-width="5" paint-order="stroke">
       <text x="56" y="84">AB² = 8² + 6² = 100</text>

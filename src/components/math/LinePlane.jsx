@@ -69,7 +69,17 @@ export default function LinePlane({
   };
 
   /** Label a line a little in from the end that sits higher on the page, written into the grid. */
-  const lineLabel = (ln, color, key) => {
+  /** Does a drawn line (other than `skip`) pass through this px box? */
+  const crossesBox = (box, skip) => lines.some((other, j) => {
+    if (j === skip) return false;
+    const { a, b, c } = other.line;
+    if (b === 0) { const px = X(c / a); return px >= box[0] && px <= box[2]; }
+    const y0 = Y((c - a * ((box[0] - PAD) / U + xMin)) / b);
+    const y1 = Y((c - a * ((box[2] - PAD) / U + xMin)) / b);
+    return Math.max(y0, y1) >= box[1] && Math.min(y0, y1) <= box[3];
+  });
+
+  const lineLabel = (ln, color, key, index) => {
     const ends = lineEnds(win, ln.line);
     if (!ends || !ln.label) return null;
     let x;
@@ -78,15 +88,31 @@ export default function LinePlane({
     if (ln.line.b === 0) { x = X(ln.line.c / ln.line.a) + 8; y = Y(yMax) + 16; anchor = 'start'; }
     else if (ln.line.a === 0) { x = X(xMax) - 6; y = Y(ln.line.c / ln.line.b) - 8; anchor = 'end'; }
     else {
+      // Walk in from the end that sits higher on the page and take the first
+      // spot where the label — written just above the line, into the grid —
+      // clears both axes and their tick numbers and stays on the plate. A
+      // label parked on the x-axis over "4 5 6" was the old failure.
       const [p, q] = ends;
       const [far, near] = Y(p[1]) < Y(q[1]) ? [p, q] : [q, p];
-      const t = ln.labelT ?? 0.12;
-      const lx = far[0] + t * (near[0] - far[0]);
-      const ly = far[1] + t * (near[1] - far[1]);
-      const right = X(lx) > (X(xMin) + X(xMax)) / 2;
-      x = X(lx) + (right ? -12 : 12);
-      y = Y(ly) + 4;
-      anchor = right ? 'end' : 'start';
+      const w = String(ln.label).length * 9.3;
+      const place = (t) => {
+        const lx = far[0] + t * (near[0] - far[0]);
+        const ly = far[1] + t * (near[1] - far[1]);
+        const right = X(lx) > (X(xMin) + X(xMax)) / 2;
+        const bx = right ? X(lx) - 8 : X(lx) + 8;
+        const by = Y(ly) - 10;
+        const x0 = right ? bx - w : bx;
+        const box = [x0, by - 13, x0 + w, by + 3];
+        const hits = (a) => !(box[2] < a[0] || box[0] > a[2] || box[3] < a[1] || box[1] > a[3]);
+        const clear = box[0] >= PAD && box[2] <= W - PAD && box[1] >= PAD - 6 && box[3] <= H - PAD
+          && !hits([PAD, Y(0) - 4, W - PAD, Y(0) + 22])
+          && !hits([X(0) - 30, PAD, X(0) + 6, H - PAD]);
+        return { x: bx, y: by, anchor: right ? 'end' : 'start', clear, crosses: crossesBox(box, index) };
+      };
+      const tries = ln.labelT != null ? [ln.labelT] : [0.08, 0.16, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75];
+      const spots = tries.map(place);
+      const spot = spots.find((s) => s.clear && !s.crosses) || spots.find((s) => s.clear) || spots[0];
+      ({ x, y, anchor } = spot);
     }
     return (
       <text key={key} x={x} y={y} textAnchor={anchor} fontSize="15" fontWeight="800" fontFamily="ui-monospace, monospace"
@@ -200,7 +226,7 @@ export default function LinePlane({
             opacity={ln.faint ? 0.45 : 1} pointerEvents="none" />
         );
       })}
-      {lines.map((ln, i) => lineLabel(ln, ln.color || LINE_COLORS[i % 4], `ll${i}`))}
+      {lines.map((ln, i) => lineLabel(ln, ln.color || LINE_COLORS[i % 4], `ll${i}`, i))}
 
       {misses.map(([x, y], i) => (
         <g key={`m${i}`} opacity={i === misses.length - 1 ? 0.9 : 0.35} pointerEvents="none">
