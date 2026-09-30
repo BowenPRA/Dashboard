@@ -112,3 +112,30 @@ Every real (non-drawn) image used in the app, with its source and license. See
 | `public/images/Y7_MATH/U03_2/stopwatch.jpg` | Casio F-91W watch (2023), front close-up in stopwatch mode, reading 35.36 seconds — timed to two decimal places (downscaled to 1000 px) | Multicherry | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Casio_F-91W_watch_(2023)_(front_closeup_-stopwatch_mode).jpg) | CC BY-SA 4.0 |
 | `public/images/Y7_MATH/U03_1/moon.jpg` | FullMoon2010 — the full Moon photographed from Earth, for the Moon-and-Jupiter distance problem (downscaled to 1000 px) | Gregory H. Revera | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg) | CC BY-SA 3.0 |
 | `public/images/Y7_MATH/U02_6/thermometer.jpg` | Celsius termometer - 2025 — an old mercury thermometer with a Celsius scale from 60 down to below 0, which prints its below-zero numbers without a minus sign; for "colder is less" (downscaled) | Jonn Leffmann | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Celsius_termometer_-_2025.jpg) | CC BY 4.0 |
+
+## Coursebook figures (not open-licensed)
+
+The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Sciences Coursebook** (Cambridge University Press), chapters B10 and B11, from snips the teacher took of his own copy. They are copyrighted, and are used at his direction for the students who study from that book — they are **not** PD or CC, so they sit outside the rule in [imagery-sourcing.md](imagery-sourcing.md) and must not be reused in another track or another project. `*-blank` files are the same figure with labels painted out (Label It); `hw-*` files have letters in place of labels (Homework Review). Build script and the full list: [coord-science/plans/A10_B10_B11.md](coord-science/plans/A10_B10_B11.md).
+
+| Folder | Files | What it shows |
+|---|---|---|
+| `public/images/COORD_SCI/B10_1/` | `motor-neurone`, `motor-neurone-blank` | a motor neurone |
+| | `cns`, `hw-q6-nervous-system` (nerves and letters drawn on) | the human central nervous system |
+| | `reflex-arc` | a reflex arc |
+| | `reflex-schematic`, `reflex-schematic-blank` | schematic diagram of a reflex arc |
+| | `neurone-types` | sensory, motor and relay neurones |
+| | `endocrine` | the main endocrine glands |
+| | `skin`, `skin-blank` | a section through human skin |
+| | `skin-hot-cold` | how skin helps with temperature regulation |
+| `public/images/COORD_SCI/B11_1/` | `potato` | potato tubers |
+| | `flower-labelled`, `flower-blank` | an insect-pollinated flower |
+| | `carpel` | section through a carpel |
+| `public/images/COORD_SCI/B11_2/` | `female`, `female-blank`, `hw-q17-female` | the female reproductive organs |
+| | `male-side`, `hw-q18-male-side`, `male-front`, `male-front-blank`, `hw-q23-male-front` | the male reproductive organs |
+| | `hw-q23-sperm` | a sperm cell |
+| | `sperm-route` | how sperm reach the egg |
+| | `fertilisation` | fertilisation |
+| | `menstrual` | B11.25 the menstrual cycle |
+| | `hiv`, `hw-q24-hiv` | B11.26 the human immunodeficiency virus |
+
+`B10_1/hw-q9-reflex.jpg` and `B11_2/hw-q12-female.jpg` are the two diagrams that survived in the student's copy of Wolsey Hall Assignment 10 (© Wolsey Hall Oxford), shown in the review of that assignment.

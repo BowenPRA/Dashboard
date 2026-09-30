@@ -151,6 +151,32 @@ on one line, or where recognition suits Year 7 better, set a `type`:
 
 ---
 
+### Homework Review (`HW_REVIEW`, `unit.hwReview`)
+
+The same screen and the same array shape, used to go back over a marked
+assignment question by question (first used by COORD_SCI `B10_1`, `B11_1`,
+`B11_2` — see [coord-science/plans/A10_B10_B11.md](coord-science/plans/A10_B10_B11.md)).
+A review question may also carry:
+
+| Field | What it shows |
+|---|---|
+| `source` | a tag above the prompt — `'Assignment 10 · Question 9'` (required) |
+| `marks` | "2 marks" beside it |
+| `image` | a picture (a `public/` path) instead of `inlineSvg` |
+| `wide` | a big figure: it sits **beside** the question from `lg` up |
+| `stack` | keeps a very wide figure (two graphs side by side) above the answer instead |
+| `figureNote` | a caption under the figure ("redrawn — your letters may differ") |
+| `markScheme` | what the examiner credits, listed after the steps |
+| `modelAnswer` | an answer to copy into the notebook |
+| `tip` | one line of exam technique |
+
+A group may set `theme: 'Focus' | 'Practice' | 'Challenge'` when its `tier` is
+a heading of its own ("Multiple choice · Questions 1–10"). Only markable types
+are allowed (`mcq`, `inline`, `fill_blank`, `dnd`, `order`): a written question
+is re-asked as dropdowns or as marking points to sort into *earns a mark* /
+*does not*. Keep dropdown options short (under about 30 characters) — a long
+option makes the `<select>` wider than the card.
+
 ## 3. UX & visual spec (the shipped component)
 
 `Workbook.jsx` is **slide-per-problem** — one question on screen at a time, navigated

@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect, useRef, Component } from 'react';
-import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, ChevronDown, Lightbulb, GripVertical, CornerDownRight, Check, RotateCcw, HelpCircle, MonitorPlay, Minimize2 } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, ChevronDown, Lightbulb, GripVertical, CornerDownRight, Check, RotateCcw, HelpCircle, MonitorPlay, Minimize2, Pencil, ClipboardCheck } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { renderMath } from '../components/notes/renderMath';
 import { splitInlineMath } from '../components/notes/splitInlineMath';
 import { answersEquivalent } from '../utils/mathEquivalence';
+import { assetUrl } from '../utils/assetPaths';
 
 /* ------------------------------------------------------------------ *
  * Slide-per-problem practice. Reads a unit's `workbook` array:
@@ -13,6 +14,21 @@ import { answersEquivalent } from '../utils/mathEquivalence';
  * (a typed box, multiple choice, fill-in boxes, dropdowns, or drag-and-
  * drop), and "Show solution" reveals the worked steps. Marking is local.
  * See docs/workbook-tasks.md.
+ *
+ * The Homework Review task (HW_REVIEW, `unit.hwReview`) is this same screen
+ * going back over a marked assignment, so a question may also carry:
+ *   source      'Assignment 10 · Question 9' — a tag above the prompt
+ *   marks       2 — shown beside it ("2 marks")
+ *   image       a public/ path, for a figure that is a picture, not an SVG
+ *   wide        true — a big figure: beside the question from lg up
+ *   stack       true — keep a very wide figure (two graphs side by side)
+ *               above the answer instead, at the card's full width
+ *   figureNote  a caption under the figure ("Redrawn — your letters may differ")
+ *   markScheme  [...] — what the examiner credits, listed after the steps
+ *   modelAnswer an answer to copy into the notebook
+ *   tip         one line of exam technique
+ * A group may name its colour with `theme: 'Focus' | 'Practice' | 'Challenge'`
+ * when its `tier` is a heading of its own ("Multiple choice").
  * ------------------------------------------------------------------ */
 
 // Same KaTeX boundary as the Notes deck, but the workbook keeps its own tighter
@@ -352,10 +368,10 @@ const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result, big 
 // textbook exercise) without both bars reading "Workbook Practice".
 // `bilingual: false` (an English-only track) drops the EN/VN toggle from the
 // top bar — there is nothing for it to switch to.
-export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice', bilingual = true }) {
+export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice', bilingual = true, solutionLabel = 'Solution' }) {
   const problems = useMemo(() => {
     const groups = Array.isArray(pool) ? pool : [];
-    return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn })));
+    return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn, theme: g.theme })));
   }, [pool]);
 
   const [idx, setIdx] = useState(0);
@@ -482,7 +498,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
     );
   }
 
-  const theme = themeFor(q.tier);
+  const theme = themeFor(q.theme || q.tier);
   const tierLabel = lang === 'vn' ? (q.tierVn || q.tier) : q.tier;
   const prompt = lang === 'vn' ? (q.promptVn || q.prompt) : q.prompt;
   const steps = (lang === 'vn' ? (q.solutionVn || q.solution) : q.solution) || [];
@@ -491,6 +507,144 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
   const hasFillIn = !!q.inlineSvgSolved;
   const isLast = idx === total - 1;
   const checked = !!result; // widget frozen + marked once there is any result
+
+  // A question with a picture (or a `wide` diagram) shows it BESIDE the
+  // question from lg up: between the prompt and the answer, a figure pushes
+  // the options off the bottom of a laptop screen. Below lg, and in projector
+  // mode, the order stays prompt → figure → answer.
+  const sideFigure = !isDisplayMode && !q.stack && !!(q.image || (q.wide && diagram));
+
+  const headEl = (
+    <>
+      {/* Where the question comes from (Homework Review) */}
+      {(q.source || q.marks) && (
+        <div className="flex flex-wrap items-center gap-2">
+          {q.source && (
+            <span className={`inline-flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest px-2.5 py-1 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] sm:text-xs'}`}>
+              <ClipboardCheck className="w-3.5 h-3.5" strokeWidth={3} />{q.source}
+            </span>
+          )}
+          {q.marks > 0 && (
+            <span className={`inline-flex items-center rounded-lg ${theme.soft} ${theme.text} font-black uppercase tracking-widest px-2.5 py-1 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] sm:text-xs'}`}>
+              {q.marks} {q.marks === 1 ? 'mark' : 'marks'}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Prompt */}
+      <div className={`text-slate-800 dark:text-slate-100 font-semibold leading-relaxed ${isDisplayMode ? 'text-[clamp(1.6rem,2.7vw,3rem)]' : 'text-xl sm:text-2xl'}`}>
+        <RichText text={prompt} />
+      </div>
+    </>
+  );
+
+  const figureEl = (
+    <>
+      {/* Diagram (swaps to solved on reveal) */}
+      {(diagram || q.image) && (
+        <div className="flex flex-col items-center">
+          {/* A picture is always shown on white: a figure lifted from a
+              page has the page behind it, and a dark frame shows its edges. */}
+          <div className={`w-full rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm ${q.image ? 'bg-white p-2 sm:p-3' : 'bg-white dark:bg-slate-800 p-4'} ${isDisplayMode ? 'max-w-3xl' : q.stack ? 'max-w-full' : q.wide ? 'max-w-2xl' : 'max-w-sm'}`}>
+            {q.image
+              ? <img src={assetUrl(q.image)} alt={q.imageAlt || ''} className="w-full h-auto max-h-[52vh] lg:max-h-[46vh] object-contain" draggable={false} />
+              : (
+                <WidgetBoundary>
+                  <div key={isRevealed ? 'solved' : 'blank'} className={`w-full flex justify-center text-slate-800 dark:text-slate-100 animate-in fade-in duration-300 ${sideFigure ? 'lg:[&>svg]:max-h-[46vh]' : ''}`} dangerouslySetInnerHTML={{ __html: diagram }} />
+                </WidgetBoundary>
+              )}
+          </div>
+          {q.figureNote && (
+            <p className="mt-2 max-w-2xl text-center text-xs sm:text-sm font-bold text-slate-400"><RichText text={q.figureNote} /></p>
+          )}
+          {hasFillIn && !isRevealed && (
+            <div className="mt-2 flex items-center gap-1.5 text-xs font-bold text-slate-400">
+              <Lightbulb className="w-4 h-4" strokeWidth={2.5} />
+              {lang === 'vn' ? 'Xem lời giải để điền vào bảng' : 'Reveal the solution to fill this in'}
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
+
+  const tailEl = (
+    <>
+      {/* Answer widget — where the student works */}
+      {answerable && (
+        <div className="pt-1">
+          <AnswerWidget q={q} value={result ? result.value : draft} onChange={setDraft} onEnter={check} checked={checked} lang={lang} result={result} big={isDisplayMode} />
+        </div>
+      )}
+
+      {/* Feedback banner after a real Check (skip for a bare "shown" peek) */}
+      {checked && !result.shown && (
+        <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 font-black ${isDisplayMode ? 'text-[clamp(1.05rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}
+          ${result.correct
+            ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3d8b00] dark:text-lime-300'
+            : 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'}`}>
+          {result.correct
+            ? <><CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} />{lang === 'vn' ? 'Chính xác! Làm tốt lắm.' : 'Correct — nice work!'}</>
+            : <><XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />{lang === 'vn' ? 'Chưa đúng — xem các bước bên dưới.' : 'Not quite — follow the steps below.'}</>}
+        </div>
+      )}
+
+      {/* Solution */}
+      {isRevealed && (
+        <div className={`bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-top-2 duration-300 ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2.25rem)]' : 'p-5 sm:p-6'}`}>
+          <div className={`text-[10px] sm:text-xs font-black uppercase tracking-widest mb-3 ${theme.text}`}>
+            {lang === 'vn' ? 'Lời giải' : solutionLabel}
+          </div>
+          <ol className="space-y-3">
+            {steps.map((step, si) => (
+              <li key={si} className={`flex gap-3 text-slate-700 dark:text-slate-300 font-medium leading-relaxed ${isDisplayMode ? 'text-[clamp(1.15rem,1.9vw,1.9rem)]' : 'text-base sm:text-lg'}`}>
+                <span className="flex-shrink-0 w-6 h-6 mt-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-xs font-black flex items-center justify-center">{si + 1}</span>
+                <span className="min-w-0"><RichText text={step} /></span>
+              </li>
+            ))}
+          </ol>
+          {q.markScheme?.length > 0 && (
+            <div className="mt-5">
+              <div className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Mark scheme — what the examiner gives marks for</div>
+              <ul className="space-y-2">
+                {q.markScheme.map((line, mi) => (
+                  <li key={mi} className={`flex gap-2.5 text-slate-700 dark:text-slate-300 font-semibold leading-snug ${isDisplayMode ? 'text-[clamp(1.05rem,1.7vw,1.7rem)]' : 'text-[15px] sm:text-base'}`}>
+                    <Check className="w-5 h-5 mt-0.5 shrink-0 text-[#58a700]" strokeWidth={3.5} />
+                    <span className="min-w-0"><RichText text={line} /></span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {q.modelAnswer && (
+            <div className="mt-5 overflow-hidden rounded-xl border-2 border-[#e8c9a6] dark:border-amber-800/60">
+              <div className="flex items-center gap-2 bg-[#c25e12] text-white font-black uppercase tracking-[0.15em] text-[10px] sm:text-[11px] px-3.5 py-2">
+                <Pencil className="w-3.5 h-3.5" strokeWidth={3} />Model answer — copy it into your notebook
+              </div>
+              <div className={`bg-[#fdf1e3] dark:bg-amber-950/30 text-slate-800 dark:text-amber-50 font-semibold leading-relaxed p-3.5 sm:p-5 ${isDisplayMode ? 'text-[clamp(1.05rem,1.7vw,1.7rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
+                <RichText text={q.modelAnswer} />
+              </div>
+            </div>
+          )}
+          {q.tip && (
+            <div className={`mt-4 flex gap-2.5 rounded-xl border-2 border-[#bcd3ea] dark:border-blue-800/60 bg-[#e9f1fa] dark:bg-blue-950/35 text-slate-800 dark:text-blue-50 font-semibold leading-snug p-3.5 ${isDisplayMode ? 'text-[clamp(1rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}`}>
+              <Lightbulb className="w-5 h-5 mt-0.5 shrink-0 text-[#1a5fa8] dark:text-blue-300" strokeWidth={2.5} />
+              <span className="min-w-0"><RichText text={q.tip} /></span>
+            </div>
+          )}
+          {answer && (
+            <div className="mt-5 flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400">{lang === 'vn' ? 'Đáp án' : 'Answer'}</span>
+              <span className={`inline-flex items-center bg-[#58cc02]/10 border-2 border-[#58cc02]/40 text-[#3d8b00] dark:text-[#7bd42f] font-black rounded-xl px-4 py-1.5 ${isDisplayMode ? 'text-[clamp(1.3rem,2.1vw,2.1rem)]' : 'text-lg sm:text-xl'}`}>
+                <RichText text={answer} />
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div ref={containerRef} className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans overflow-hidden transition-colors duration-300">
@@ -506,7 +660,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
       {/* Problem card */}
       <div className={`flex-1 flex justify-center items-center overflow-hidden min-h-0 ${isDisplayMode ? 'p-2 sm:p-4' : 'p-2.5 sm:p-4 lg:p-5'}`}>
-        <div key={idx} className={`w-full h-full flex flex-col bg-white dark:bg-slate-900 rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-[0.99] duration-300 ${isDisplayMode ? 'max-w-[100rem]' : 'max-w-3xl'}`}>
+        <div key={idx} className={`w-full h-full flex flex-col bg-white dark:bg-slate-900 rounded-3xl lg:rounded-[2rem] shadow-sm border-2 border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-[0.99] duration-300 ${isDisplayMode ? 'max-w-[100rem]' : sideFigure ? 'max-w-3xl lg:max-w-6xl' : 'max-w-3xl'}`}>
 
         {/* Header strip */}
         <div className={`${theme.bg} flex items-center justify-between text-white flex-shrink-0 border-b-4 border-black/10 ${isDisplayMode ? 'px-[clamp(1.5rem,3vw,3rem)] py-[clamp(0.75rem,1.4vw,1.4rem)]' : 'px-5 sm:px-7 py-3 sm:py-4'}`}>
@@ -518,70 +672,13 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
         {/* Body — prompt, answer widget, feedback, then solution */}
         <div className={`flex-1 overflow-y-auto custom-scrollbar ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3.5rem)] space-y-[clamp(1rem,1.8vw,2rem)]' : 'p-4 sm:p-6 space-y-4'}`}>
-          {/* Prompt */}
-          <div className={`text-slate-800 dark:text-slate-100 font-semibold leading-relaxed ${isDisplayMode ? 'text-[clamp(1.6rem,2.7vw,3rem)]' : 'text-xl sm:text-2xl'}`}>
-            <RichText text={prompt} />
-          </div>
-
-          {/* Diagram (swaps to solved on reveal) */}
-          {diagram && (
-            <div className="flex flex-col items-center">
-              <div className={`w-full bg-white dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-4 shadow-sm ${isDisplayMode ? 'max-w-3xl' : 'max-w-sm'}`}>
-                <WidgetBoundary>
-                  <div key={isRevealed ? 'solved' : 'blank'} className="w-full flex justify-center animate-in fade-in duration-300" dangerouslySetInnerHTML={{ __html: diagram }} />
-                </WidgetBoundary>
-              </div>
-              {hasFillIn && !isRevealed && (
-                <div className="mt-2 flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                  <Lightbulb className="w-4 h-4" strokeWidth={2.5} />
-                  {lang === 'vn' ? 'Xem lời giải để điền vào bảng' : 'Reveal the solution to fill this in'}
-                </div>
-              )}
+          {sideFigure ? (
+            <div className="lg:flex lg:gap-6 lg:items-start">
+              <div className="lg:w-1/2 lg:shrink-0 lg:sticky lg:top-0 mb-4 lg:mb-0">{figureEl}</div>
+              <div className="flex-1 min-w-0 space-y-4">{headEl}{tailEl}</div>
             </div>
-          )}
-
-          {/* Answer widget — where the student works */}
-          {answerable && (
-            <div className="pt-1">
-              <AnswerWidget q={q} value={result ? result.value : draft} onChange={setDraft} onEnter={check} checked={checked} lang={lang} result={result} big={isDisplayMode} />
-            </div>
-          )}
-
-          {/* Feedback banner after a real Check (skip for a bare "shown" peek) */}
-          {checked && !result.shown && (
-            <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 font-black ${isDisplayMode ? 'text-[clamp(1.05rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}
-              ${result.correct
-                ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3d8b00] dark:text-lime-300'
-                : 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'}`}>
-              {result.correct
-                ? <><CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} />{lang === 'vn' ? 'Chính xác! Làm tốt lắm.' : 'Correct — nice work!'}</>
-                : <><XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />{lang === 'vn' ? 'Chưa đúng — xem các bước bên dưới.' : 'Not quite — follow the steps below.'}</>}
-            </div>
-          )}
-
-          {/* Solution */}
-          {isRevealed && (
-            <div className={`bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-top-2 duration-300 ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2.25rem)]' : 'p-5 sm:p-6'}`}>
-              <div className={`text-[10px] sm:text-xs font-black uppercase tracking-widest mb-3 ${theme.text}`}>
-                {lang === 'vn' ? 'Lời giải' : 'Solution'}
-              </div>
-              <ol className="space-y-3">
-                {steps.map((step, si) => (
-                  <li key={si} className={`flex gap-3 text-slate-700 dark:text-slate-300 font-medium leading-relaxed ${isDisplayMode ? 'text-[clamp(1.15rem,1.9vw,1.9rem)]' : 'text-base sm:text-lg'}`}>
-                    <span className="flex-shrink-0 w-6 h-6 mt-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-xs font-black flex items-center justify-center">{si + 1}</span>
-                    <span className="min-w-0"><RichText text={step} /></span>
-                  </li>
-                ))}
-              </ol>
-              {answer && (
-                <div className="mt-5 flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400">{lang === 'vn' ? 'Đáp án' : 'Answer'}</span>
-                  <span className={`inline-flex items-center bg-[#58cc02]/10 border-2 border-[#58cc02]/40 text-[#3d8b00] dark:text-[#7bd42f] font-black rounded-xl px-4 py-1.5 ${isDisplayMode ? 'text-[clamp(1.3rem,2.1vw,2.1rem)]' : 'text-lg sm:text-xl'}`}>
-                    <RichText text={answer} />
-                  </span>
-                </div>
-              )}
-            </div>
+          ) : (
+            <>{headEl}{figureEl}{tailEl}</>
           )}
         </div>
 
@@ -629,7 +726,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
       {/* Bottom navigation */}
       <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-200 dark:border-slate-800 px-3 py-2 sm:px-5 sm:py-2.5 flex-shrink-0">
-        <div className={`mx-auto flex items-center justify-between gap-4 ${isDisplayMode ? 'max-w-[100rem]' : 'max-w-3xl'}`}>
+        <div className={`mx-auto flex items-center justify-between gap-4 ${isDisplayMode ? 'max-w-[100rem]' : sideFigure ? 'max-w-3xl lg:max-w-6xl' : 'max-w-3xl'}`}>
           {/* Project to a TV — the same affordance the lesson decks carry, and
               the way out of it once you are in. */}
           <button onClick={toggleDisplayMode}
@@ -650,7 +747,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
               const dotColor = r?.correct ? 'bg-[#58cc02]' : r ? 'bg-slate-300 dark:bg-slate-600' : 'bg-slate-200 dark:bg-slate-700';
               return (
                 <button key={p.id} onClick={() => setIdx(i)} aria-label={`Question ${i + 1}`}
-                  className={`h-2.5 rounded-full transition-all ${i === idx ? `w-6 ${themeFor(p.tier).bg}` : `w-2.5 ${dotColor}`}`} />
+                  className={`h-2.5 rounded-full transition-all ${i === idx ? `w-6 ${themeFor(p.theme || p.tier).bg}` : `w-2.5 ${dotColor}`}`} />
               );
             })}
           </div>

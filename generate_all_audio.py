@@ -103,6 +103,9 @@ def speechify(text):
     t = re.sub(r'\\(sin|cos|tan)(?![a-zA-Z])', lambda m: f' {trig[m.group(1)]} ', t)
     t = re.sub(r'\^\s*\{?\s*\\circ\s*\}?', ' degrees ', t)
     t = t.replace('°', ' degrees ')
+    # A typed arrow in a pathway or a flow ("receptor → sensory neurone →
+    # effector", "testis → urethra") is read as "to"; a bullet is a pause.
+    t = t.replace('→', ' to ').replace('•', ' ')
     t = re.sub(r'\\theta(?![a-zA-Z])', ' theta ', t).replace('θ', ' theta ')
     # Circles and counting (AMC8 PT_01). The catch-all deleted `\pi` and
     # `\gcd`, so "area = pi R squared" was narrated "area = R squared" and

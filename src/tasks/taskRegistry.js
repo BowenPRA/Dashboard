@@ -5,7 +5,8 @@ import {
   Move3d, Grid3x3, Zap, FlaskConical, Divide, Library, AreaChart, MousePointerClick, MonitorSmartphone,
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
-  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame, CircleArrowRight
+  Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame, CircleArrowRight,
+  ClipboardList
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -80,11 +81,19 @@ export const TASKS = [
     // Slide audio is DERIVED from position, not read from the note — see
     // slideAudioUrl. This is the one place that mapping lives, so intro/summary
     // narration is included and concept slides can never drift out of sync.
+    // A picture may also sit one level down — in a compare column or a gallery
+    // card — so those `image` paths are resolved here too. (`columns` is a
+    // NUMBER on a stack slide, hence the array test.) assetUrl is idempotent,
+    // so a deck that mapped its own paths is left as it is.
     buildPool: (u, { track, unitId }) =>
       (u.notes || []).map((note, i) => ({
         ...note,
         audio: slideAudioUrl(track, unitId, i + 1),
         ...(note.image ? { image: assetUrl(note.image) } : null),
+        ...(Array.isArray(note.columns) && note.columns.some((c) => c?.image)
+          ? { columns: note.columns.map((c) => (c?.image ? { ...c, image: assetUrl(c.image) } : c)) } : null),
+        ...(Array.isArray(note.items) && note.items.some((it) => it?.image)
+          ? { items: note.items.map((it) => (it?.image ? { ...it, image: assetUrl(it.image) } : it)) } : null),
       })),
     // Notes scores itself out of 10 from the check questions embedded in the
     // deck (a deck with none still pays on completion — see Notes.jsx), and
@@ -681,8 +690,11 @@ export const TASKS = [
     phase: 'practice',
     component: lazy(() => import('./LabelIt.jsx')),
     hasContent: (u) => notEmpty(u.labelIt),
-    buildPool: (u) => u.labelIt || [],
-    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, savedData, onComplete, onProgress, onQuit }),
+    // An item may be a picture (`image`, a public/ path) instead of an SVG.
+    buildPool: (u) => (u.labelIt || []).map((it) => (it?.image ? { ...it, image: assetUrl(it.image) } : it)),
+    // `bilingual: false` (an English-only track) drops the EN/VN toggle.
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
   {
     id: 'LAB_BENCH',
@@ -1313,6 +1325,32 @@ export const TASKS = [
     buildPool: (u) => u.ineqLine,
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  // ── IGCSE Coordinated Science, the assignment units (B10_1, B11_1, B11_2) ──
+  // p60; p61 is next.
+  {
+    id: 'HW_REVIEW',
+    nativeMax: 10,
+    dbKey: 'p60',
+    // "Your assignment, question by question." The questions of a homework
+    // assignment the student has already sat, asked again one at a time, each
+    // followed by the working, what the examiner gives marks for, a model
+    // answer to copy, and the trap. A written question is re-asked in a form
+    // that can be marked on the spot — choose the words, sort the marking
+    // points into "earns a mark" and "does not" — so the mark scheme is the
+    // thing being practised. It is the Workbook screen (the third slot on it,
+    // after WORKBOOK and WORKBOOK_B) reading `unit.hwReview`; the extra fields
+    // a review question carries are listed at the top of Workbook.jsx.
+    label: 'Homework Review',
+    icon: ClipboardList,
+    color: { bg: 'bg-[#9333ea]', border: 'border-[#6b21a8]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./Workbook.jsx')),
+    hasContent: (u) => notEmpty(u.hwReview),
+    buildPool: (u) => u.hwReview || [],
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, title: 'Homework Review', solutionLabel: 'How to get it', bilingual: bilingualOf(track) }),
   },
 ];
 

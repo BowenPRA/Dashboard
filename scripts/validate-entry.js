@@ -289,6 +289,56 @@ for (const trackId of TRACK_IDS) {
       }
     }
 
+    // -- Homework Review: the Workbook screen going back over an assignment.
+    //    Every question must be one the screen can MARK — a review item that
+    //    cannot be answered pays nothing and says nothing — and must carry the
+    //    working it exists to show. The answer-key checks are the quiz's.
+    if (unit.hwReview !== undefined) {
+      const at0 = `${label}: hwReview`;
+      if (!Array.isArray(unit.hwReview) || !unit.hwReview.length) err(`${at0} must be a non-empty array of { tier, questions }`);
+      const seen = new Set();
+      for (const g of Array.isArray(unit.hwReview) ? unit.hwReview : []) {
+        if (!g.tier) err(`${at0}: a group has no tier (its heading)`);
+        if (g.theme !== undefined && !['Focus', 'Practice', 'Challenge'].includes(g.theme)) err(`${at0}: group "${g.tier}" theme "${g.theme}" is not Focus/Practice/Challenge`);
+        if (!(g.questions || []).length) err(`${at0}: group "${g.tier}" has no questions`);
+        for (const q of g.questions || []) {
+          const at = `${at0} ${q.id || '?'}`;
+          if (!q.id) err(`${at0}: a question has no id`);
+          else if (seen.has(q.id)) err(`${at}: duplicate id`);
+          seen.add(q.id);
+          if (!q.prompt) err(`${at}: no prompt`);
+          if (!q.source) err(`${at}: no source — a review question says which homework question it is`);
+          if (!(q.solution || []).length) err(`${at}: no solution steps`);
+          if (q.type === 'mcq') {
+            if (!(q.options || []).some((o) => o.val === q.correct)) err(`${at}: correct "${q.correct}" is not one of the options`);
+          } else if (q.type === 'inline' || q.type === 'fill_blank') {
+            const nb = Object.keys(q.blanks || {}).length;
+            if (!nb) err(`${at}: no blanks`);
+            if ((q.textParts || []).length !== nb + 1) err(`${at}: ${(q.textParts || []).length} textParts for ${nb} blanks`);
+            for (const [k, b] of Object.entries(q.blanks || {})) {
+              if (b.correct == null || b.correct === '') err(`${at}: blank ${k} has no answer`);
+              if (q.type === 'inline' && !(b.options || []).some((o) => o.val === b.correct)) err(`${at}: blank ${k} answer is not among its options`);
+            }
+          } else if (q.type === 'dnd' || q.type === 'order') {
+            const vals = (q.bank || []).map((b) => b.val);
+            if (new Set(vals).size !== vals.length) err(`${at}: duplicate val in the bank`);
+            if (!Object.keys(q.correctSets || {}).length) err(`${at}: no correctSets`);
+            for (const [tid, set] of Object.entries(q.correctSets || {})) {
+              if (!(q.targets || []).some((t) => t.id === tid)) err(`${at}: correctSet "${tid}" has no matching target`);
+              for (const v of set) if (!vals.includes(v)) err(`${at}: answer "${v}" is not in the bank`);
+            }
+            for (const t of q.targets || []) if (!q.correctSets?.[t.id]) err(`${at}: target "${t.id}" has no correctSet`);
+            // Every chip has a home: the screen enables Check on the COUNT
+            // placed, so a spare chip could stand in for a missing one.
+            const used = Object.values(q.correctSets || {}).flat();
+            for (const v of vals) if (!used.includes(v)) err(`${at}: bank item "${v}" belongs to no target`);
+          } else {
+            err(`${at}: type "${q.type}" — a review question is mcq, inline, fill_blank, dnd or order`);
+          }
+        }
+      }
+    }
+
     // -- slide types Notes.jsx can actually render; anything else shows a blank
     //    slide AND is skipped by generate_all_audio.py, so it fails silently twice.
     {

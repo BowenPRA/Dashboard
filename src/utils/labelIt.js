@@ -9,6 +9,8 @@
  *
  * Item shape (docs/y7-science/ENGAGEMENT-PLAN.md §2.2):
  *   { id, title, titleVn, inlineSvg, viewBox: '0 0 760 430',
+ *     image?: 'images/…/x.jpg',  // instead of inlineSvg: a picture whose labels
+ *                                // are already painted out; viewBox = its size
  *     font?: 16,       // label size in viewBox units (default from the viewBox)
  *     slotW?: 200,     // box width; longer labels wrap (default: the widest label)
  *     pins: [{ id, x, y, answer,
@@ -181,7 +183,8 @@ export function checkItem(item) {
   if (!item || typeof item !== 'object') return ['item is not an object'];
   const at = item.id || '?';
   if (!item.id) out.push('has no id');
-  if (!item.inlineSvg) out.push(`${at}: has no inlineSvg`);
+  if (!item.inlineSvg && !item.image) out.push(`${at}: has no inlineSvg (or image)`);
+  if (item.image && !item.viewBox) out.push(`${at}: an image item needs viewBox: '0 0 <width> <height>' — the picture's own size`);
   const vb = viewBoxOf(item);
   if (!vb) out.push(`${at}: no usable viewBox (set item.viewBox to match the svg)`);
   const bank = item.bank || [];

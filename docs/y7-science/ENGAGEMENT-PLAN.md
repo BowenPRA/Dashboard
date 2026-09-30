@@ -100,6 +100,10 @@ labelIt: [
   lines, their dots, legend swatches — tag them in the diagram, the `lead()`
   helpers already do). Text that is part of the drawing — scale numbers, element
   symbols, the letters on atoms — is tagged `class="keep"` and survives.
+- An item may be a **picture** instead of an SVG: `image: 'images/<TRACK>/<UNIT>/x.jpg'`
+  with `viewBox: '0 0 <width> <height>'` set to the picture's pixel size. Nothing is
+  stripped, so its labels must already be painted out, and each pin sits on the end
+  of a printed leader line (no `to`). Used by COORD_SCI `B10_1`–`B11_2`.
 - Distractors must be absent from the drawing, and ideally a misconception
   ("Read from the top", "Particles get smaller") rather than a random word.
 

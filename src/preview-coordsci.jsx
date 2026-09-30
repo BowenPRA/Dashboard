@@ -8,7 +8,44 @@ import { getTrack } from './data/index';
 import { getTask, resolveTask } from './tasks/taskRegistry';
 
 const TRACK = 'COORD_SCI';
-const UNIT = new URLSearchParams(window.location.search).get('unit') || 'U04_1';
+const PARAMS = new URLSearchParams(window.location.search);
+const UNIT = PARAMS.get('unit') || 'U04_1';
+// `?open=NOTES&slide=N` mounts a task straight away, on slide N (1-based) —
+// a deck can then be swept slide by slide from a script. `?open=LABEL_IT&item=N`
+// and `?open=HW_REVIEW&q=N` do the same for a diagram and a review question.
+const OPEN = PARAMS.get('open');
+const RESUME_SLIDE = Number(PARAMS.get('slide')) || 0;
+const RESUME_ITEM = Number(PARAMS.get('item')) || 0;
+// The Workbook screen (WORKBOOK, HW_REVIEW) has no resume position, so `?q=N`
+// taps its N-th progress dot once it has mounted, and `&reveal=1` then opens
+// that question's solution ("I'm stuck") so the worked answer can be looked at.
+const RESUME_Q = Number(PARAMS.get('q')) || 0;
+const REVEAL = PARAMS.get('reveal') === '1';
+if (OPEN && RESUME_Q > 0) {
+  const tries = { n: 0 };
+  const timer = setInterval(() => {
+    const dot = document.querySelector(`[aria-label="Question ${RESUME_Q}"]`);
+    tries.n += 1;
+    if (!dot && tries.n < 40) return;
+    clearInterval(timer);
+    dot?.click();
+    if (REVEAL) {
+      setTimeout(() => {
+        [...document.querySelectorAll('button')].find((b) => /stuck|show solution/i.test(b.textContent))?.click();
+      }, 150);
+    }
+  }, 100);
+}
+
+const resumeFor = (open, pool) => {
+  if (open === 'NOTES' && RESUME_SLIDE > 0) return { slide: RESUME_SLIDE - 1, total: pool.length, checks: {} };
+  if (open === 'LABEL_IT' && RESUME_ITEM > 1) {
+    const done = {};
+    pool.slice(0, RESUME_ITEM - 1).forEach((it) => { done[it.id] = { placements: {}, perPin: {}, correct: 0, total: (it.pins || []).length }; });
+    return { done };
+  }
+  return {};
+};
 
 /**
  * The task list is DERIVED from whatever unit is loaded, not hardcoded — the
@@ -47,7 +84,7 @@ const countOf = (def, unit) => {
 };
 
 function Harness() {
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(OPEN);
   const unit = getTrack(TRACK).data[UNIT];
 
   if (open) {
@@ -56,7 +93,7 @@ function Harness() {
     const pool = def.buildPool(unit, { track: TRACK, unitId: UNIT });
     const ctx = {
       pool, unit, unitId: UNIT, track: TRACK,
-      scores: {}, savedData: {}, strikes: 0, maxXP: resolved.maxXP,
+      scores: {}, savedData: resumeFor(open, pool), strikes: 0, maxXP: resolved.maxXP,
       onComplete: (score, _b, log) => { console.log(`[harness] ${open} complete`, score, log); setOpen(null); },
       onProgress: (d) => console.log(`[harness] ${open} progress`, d),
       onQuit: () => setOpen(null),

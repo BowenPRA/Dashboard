@@ -166,6 +166,24 @@ export const TRACK_LEVELS = {
       mapName: 'The Furnace Run',
       blurb: 'A long open corridor with nowhere to hide from the heat. Everything you release has to go somewhere.',
     },
+    // Biology, chapters B10 and B11 (Wolsey Hall Assignment 10). A reflex arc is
+    // a circuit with one way round it; pollen is carried on the wind; and the
+    // menstrual cycle is a road that comes back to where it began.
+    B10_1: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Reflex Arc',
+      blurb: 'Receptor, sensory, relay, motor, effector — one way round, and no time to think. Hold every junction.',
+    },
+    B11_1: {
+      mapId: 'WAVE', themeId: 'STANDARD', tier: 1,
+      mapName: 'The Pollen Drift',
+      blurb: 'They come on the wind in their thousands, and most never land. Stop the ones that would.',
+    },
+    B11_2: {
+      mapId: 'SPIRAL', themeId: 'DESERT', tier: 2,
+      mapName: 'The Twenty-Eight Days',
+      blurb: 'The road turns back on itself and starts again. Know what each day of the cycle brings.',
+    },
   },
   // IGCSE Chemistry (Wolsey Hall modules). Hand-authored like every science
   // track: `tierForUnit` cannot parse `M05_2`. Module 5 sits at tier 1 and

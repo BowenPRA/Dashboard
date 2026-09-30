@@ -251,6 +251,15 @@ export const TRACK_REGISTRY = [
     // skipped for tracks that set this. Components fall back to English via
     // `pick(en, vn)` when a vn field is absent.
     bilingual: false,
+    // One section per science, matched by unit-id prefix. The coursebook
+    // numbers its chapters per science (B10, C5, P3), so a biology unit is
+    // `B10_1` and keeps its letter; the two chemistry units shipped first as
+    // `U04_1` / `U05_1` (C4.1, C5.01) and keep those ids — progress is keyed on
+    // them. A physics unit (`P…`) needs a row here, or it falls into "More".
+    sections: [
+      { prefix: 'B', label: 'Biology', title: 'Coordination, Response & Reproduction' },
+      { prefix: 'U', label: 'Chemistry', title: 'Electrolysis & Energy Changes' },
+    ],
     theme: {
       bg: 'bg-teal-500', border: 'border-teal-700', hover: 'hover:bg-teal-400',
       text: 'text-teal-600 dark:text-teal-400',

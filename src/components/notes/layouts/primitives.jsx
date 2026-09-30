@@ -48,6 +48,9 @@ import {
   // the right angle, two lines meeting, a region, a bearing, the clock, a
   // scatter graph, a polygon, a trend and a test point.
   TriangleRight, Combine, LandPlot, Navigation, Clock, ScatterChart, Hexagon, TrendingUp, Crosshair,
+  // Biology (COORD_SCI B10, B11): the nervous system, hormones, flowers,
+  // human reproduction and infection.
+  Brain, Flower2, Baby, HeartPulse, Syringe, CalendarDays, Egg, Wheat, Biohazard, NotebookPen, Copy, Shuffle,
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
@@ -93,6 +96,7 @@ const ICONS = {
   Power, Lock, Moon, Keyboard, Mouse, MousePointer2, AppWindow, Folder, FolderOpen,
   Trash2, Download, Save, Search, Wifi, Monitor, Laptop, Bookmark, Link, Type,
   TriangleRight, Combine, LandPlot, Navigation, Clock, ScatterChart, Hexagon, TrendingUp, Crosshair,
+  Brain, Flower2, Baby, HeartPulse, Syringe, CalendarDays, Egg, Wheat, Biohazard, NotebookPen, Copy, Shuffle,
 };
 
 /** Render a lucide icon by name (falls back to Info). */

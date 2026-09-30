@@ -12,10 +12,16 @@ import { isUnitKey, isTaskKey } from './progressSchema';
  *
  * Only ids shaped like the Cambridge tracks' (`U<unit>_<lesson>`) have one;
  * everything else (`ENG_1A`, `AM_4B`, `T01`) returns '' and shows no number.
+ *
+ * Coordinated Science numbers its chapters per science — B10 is biology,
+ * C5 chemistry — so its biology units keep the letter: `B10_1` → "B10.1".
  */
 export function unitNumberOf(unitId) {
-  const m = /^U(\d+)_(\d+)$/.exec(String(unitId || ''));
-  return m ? `${Number(m[1])}.${Number(m[2])}` : '';
+  const id = String(unitId || '');
+  const m = /^U(\d+)_(\d+)$/.exec(id);
+  if (m) return `${Number(m[1])}.${Number(m[2])}`;
+  const sci = /^([BCP])(\d+)_(\d+)$/.exec(id);
+  return sci ? `${sci[1]}${Number(sci[2])}.${Number(sci[3])}` : '';
 }
 
 /**

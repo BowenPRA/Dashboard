@@ -34,8 +34,8 @@ const scoreFrom = (done, items) => {
   return total ? Math.round((correct / total) * 10) : 0;
 };
 
-export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, savedData = {} }) {
-  const items = useMemo(() => (Array.isArray(pool) ? pool : []).filter((it) => it && it.inlineSvg && (it.pins || []).length), [pool]);
+export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, savedData = {}, bilingual = true }) {
+  const items = useMemo(() => (Array.isArray(pool) ? pool : []).filter((it) => it && (it.inlineSvg || it.image) && (it.pins || []).length), [pool]);
   const [lang, setLang] = useState('en');
   // finished diagrams: { [itemId]: { placements, correct, total } }
   const [done, setDone] = useState(() => (savedData && typeof savedData.done === 'object' ? savedData.done : {}));
@@ -145,7 +145,7 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={quit} modeTitle={t.title} current={idx + 1} total={items.length} lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+      <TopBar onQuit={quit} modeTitle={t.title} current={idx + 1} total={items.length} lang={lang} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
 
       <div className="flex-1 w-full max-w-5xl mx-auto p-3 sm:p-5 pb-8 flex flex-col gap-4">
         <div className="flex items-center gap-3">
@@ -178,7 +178,12 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
           // the Check button off a tablet screen.
           style={{ aspectRatio: `${vb.w} / ${vb.h}`, width: `min(100%, calc(${(vb.w / vb.h).toFixed(3)} * 60vh))` }}
           onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }} onDrop={onDrop}>
-          <div className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full" dangerouslySetInnerHTML={{ __html: bareSvg }} />
+          {/* A picture (a figure with its labels already painted out) fills
+              the same box the viewBox describes, so pins land where they were
+              measured on it. */}
+          {item.image
+            ? <img src={item.image} alt="" className="absolute inset-0 w-full h-full" draggable={false} />
+            : <div className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full" dangerouslySetInnerHTML={{ __html: bareSvg }} />}
           <svg ref={svgRef} viewBox={vb.str} preserveAspectRatio="xMidYMid meet" className="absolute inset-0 w-full h-full touch-manipulation" fontFamily={FONT}>
             {/* leader lines first, so every box sits on top of its own line */}
             {boxes.map((b) => {
