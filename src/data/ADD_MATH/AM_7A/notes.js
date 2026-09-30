@@ -317,7 +317,7 @@ export const notes = [
   {
     layout: 'statement',
     accent: PURPLE,
-    icon: 'SearchCheck',
+    icon: 'ShieldCheck',
     eyebrow: 'Recognising a circle',
     title: 'Two Things to Look For',
     label: 'Try it',
@@ -349,7 +349,7 @@ export const notes = [
   {
     layout: 'steps',
     accent: BLUE,
-    icon: 'SquareFunction',
+    icon: 'Square',
     eyebrow: 'The tool you need',
     title: 'Completing the Square',
     content: 'Rewrite $x^2 - 6x$ as a squared bracket. Three moves, always the same.',

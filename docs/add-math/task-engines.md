@@ -16,6 +16,15 @@ and §5 says how to write ones the marking engine can actually mark.
 | Plot the Circle | `CIRCLE_PLOT` · p61 | `src/tasks/CircleLab.jsx` (mode `plot`) | `src/utils/circle.js` | reading centre and radius; what a circle does at the axes (7.1) |
 | Write the Equation | `CIRCLE_EQ` · p62 | `src/tasks/CircleLab.jsx` (mode `eq`) | `src/utils/circle.js` | the equation from a radius, a point, a diameter, a tangent axis (7.1) |
 | Complete the Square | `CIRCLE_SQUARE` · p63 | `src/tasks/CircleLab.jsx` (mode `square`) | `src/utils/circle.js` | general form to centre and radius (7.1) |
+| Undo It | `E_EXACT` · p66 | `src/tasks/ExpLab.jsx` (mode `exact`) | `src/utils/expEquations.js` | exact values and equations with e and ln (5.7) |
+| Take Logs | `EXP_LOGS` · p64 | `src/tasks/ExpLab.jsx` (mode `logs`) | `src/utils/expEquations.js` | exponential equations by taking logs; ln equations (5.5, 5.7) |
+| Hidden Quadratic | `EXP_QUAD` · p65 | `src/tasks/ExpLab.jsx` (mode `quad`) | `src/utils/expEquations.js` | substitution, keep or reject each value (5.5, 5.7) |
+| Log Equation Solver | `LOG_EQ` · p67 | `src/tasks/LogEqLab.jsx` | `src/utils/logEquations.js` | log equations ending on "check each root" (5.4, 5.6) |
+| Quadratic in a Log | `LOG_QUAD` · p68 | `src/tasks/LogEqLab.jsx` | `src/utils/logEquations.js` | quadratics in log x, reciprocal equations (5.4, 5.6) |
+| Change of Base | `BASE_CHANGE` · p69 | `src/tasks/LogEqLab.jsx` | `src/utils/logEquations.js` | evaluating, rewriting and solving with a change of base (5.6) |
+| Move the Curve | `CURVE_FAMILY` · p72 | `src/tasks/ExpGraphLab.jsx` | `src/utils/expGraphs.js` | what a constant k does to a family of curves (5.9) |
+| Sketch the Curve | `EXP_SKETCH` · p70 | `src/tasks/ExpGraphLab.jsx` | `src/utils/expGraphs.js` | k·e^(nx) + a and k·ln(ax + b): intercepts, asymptote, shape (5.10) |
+| Find the Inverse | `FN_INVERSE` · p71 | `src/tasks/ExpGraphLab.jsx` | `src/utils/expGraphs.js` | inverse of an exponential or log function, and its domain (5.11) |
 | Log Simplifier | `LOG_SIMPLIFY` · p38 | `src/tasks/LogSimplify.jsx` | `src/utils/logs.js` | evaluating logs and the laws of logarithms (5.1–5.3) |
 | Case Solver | `MOD_SOLVE` · p30 | `src/tasks/ModulusSolver.jsx` | `src/utils/modulus.js` | modulus equations and inequalities (4.1, 4.2) |
 | Sketch It | `CUBIC_SKETCH` · p31 | `src/tasks/CubicSketch.jsx` | `src/utils/cubic.js` | cubic sketching and its modulus (4.3) |
@@ -23,7 +32,7 @@ and §5 says how to write ones the marking engine can actually mark.
 | Long Division | `POLY_DIV` · p21 | `src/tasks/PolyDivision.jsx` | `src/utils/polynomial.js` | polynomial division (3.2) |
 | Practice / Book Problems | `WORKBOOK` p11 · `WORKBOOK_B` p22 | `src/tasks/Workbook.jsx` | `src/utils/mathEquivalence.js` | any exercise, with worked solutions |
 
-The next free dbKey is **p64**.
+The next free dbKey is **p73**.
 
 All the derived engines share one shape of screen and one scoring rule, so a student
 who has met one has met them all: the question in a coloured strip; a **stage rail**
@@ -230,6 +239,248 @@ export const circlePlot = {
   item with nothing to complete, an equation that is not a circle without
   `notCircle: true` (and one marked so that is), and **levels out of order**.
 - An item may override `grid`. Pick numbers so that |centre| + radius ≤ 10.
+
+Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
+
+## 2c. Exp Lab (`E_EXACT`, `EXP_LOGS`, `EXP_QUAD`)
+
+Three tasks on one screen (`src/tasks/ExpLab.jsx`; the registry passes `mode`), **one
+per question type** of Exercises 5.5 and 5.7 — the blueprint in
+[../add-math-course.md](../add-math-course.md) §9, applied to `AM_5B`. The maths is
+`src/utils/expEquations.js`, and it does more than in the other engines: it derives
+every **stage** — its options and what is wrong with each, its boxes and how they are
+marked, its lines of working — so the screen only renders three kinds of stage (a
+choice, a row of typed boxes, keep-or-reject rows). Every message quotes the question's
+own numbers. A finished item prints its working, the answer, and a check: the answer
+put back in (to 3 s.f. it comes out *close*, and says why), and for a plain power a
+sense check between two whole powers ($2^5 < 45 < 2^6$).
+
+```js
+// src/data/ADD_MATH/<UNIT>/undoIt.js   (mode 'exact') — e and ln undo each other
+{ id: 'v', kind: 'value', front: 4, terms: [[1, 3]] }             // 4e^(ln 3)
+{ id: 'm', kind: 'value', terms: [[1, 6], [-1, 2]] }              // e^(ln 6 − ln 2)
+{ id: 'w', kind: 'lnpow', power: -2 }                              // ln(1/e²), printed by its shape
+{ id: 's', kind: 'solve', form: 'exp', k: 2, rhs: 49 }            // e^(2 ln x) = 49 → reject −7
+{ id: 't', kind: 'solve', form: 'ln', k: 2, rhs: 9 }              // ln e^(2x) = 9
+
+// takeLogs.js   (mode 'logs')
+{ id: 'a', kind: 'exp', base: 5, power: [3, -1], rhs: 60 }        // 5^(3x − 1) = 60, 3 s.f.
+{ id: 'b', kind: 'exp2', left: { base: 3, power: [1, 1] }, right: { base: 7, power: [1, -1] } }
+{ id: 'c', kind: 'exp', base: 'e', power: [-1, 0], rhs: 1, coef: -2, add: 5, give: 'exact' } // 5 − 2e^(−x) = 1
+{ id: 'd', kind: 'ln', arg: [3, -2], rhs: 2 }                     // ln(3x − 2) = 2
+{ id: 'f', kind: 'ln', arg: [1, 0], rhs: 5, coef: 2 }             // 2 ln x = 5
+
+// hiddenQuad.js   (mode 'quad') — a term is a number, or [c, m, k] for c·base^(mx + k)
+{ id: 'g', base: 3, lhs: [[1, 2, 0], [-4, 1, 1], 27], rhs: [0], given: true }   // 3^(2x) − 4(3^(x+1)) + 27 = 0
+{ id: 'h', base: 2, lhs: [[1, 1, 0, 4], [-5, 1, 0], -24], rhs: [0] }            // 4^x − 5(2^x) − 24 = 0
+{ id: 'i', base: 'e', lhs: [[1, 1, 0], [8, -1, 0]], rhs: [6], give: 'exact' }   // e^x + 8e^(−x) = 6
+{ id: 'j', base: 2, lhs: [[1, 1, 3], [-1, 1, 0]], rhs: [21], linear: true }     // 2^(x+3) − 2^x = 21
+{ id: 'k', base: 2, lhs: [[1, 2, 0], [5, 1, 0], 6], rhs: [0], expectNone: true } // no solutions
+```
+
+- **Undo It** — *one log* (a number in front of ln becomes a power; a minus sign is a
+  power of −1; logs combine) → *undo* (the value). `lnpow` rewrites $\tfrac{1}{e^2}$ or
+  $\sqrt{e}$ as a single power of $e$ first. `solve` picks the simplified left-hand side
+  from four look-alikes ($x^2$ / $2x$ / $x$ / $e^2x$), types the root(s), and an even
+  power ends on **keep or reject** — $\ln(-7)$ does not exist.
+- **Take Logs** — *first move*: the same four named moves on every question (get the
+  power or the log on its own / take lg / take ln / make each side a power of e), and
+  which is right changes with the question — lg and ln are both right for a whole-number
+  base, lg is a nudge (not a miss) for base e, and taking a log of $3e^x - 2$ is wrong.
+  → *isolate* (typed, when there is a coefficient or a constant) → *power down* or *undo
+  the log* (pick the line: the missing bracket, the subtracted log, the lost logs, the
+  wrong base) → *collect x* (two bases: the unexpanded bracket, the sign that did not
+  change) → *work it out*: the working value to at least 4 s.f. and $x$ to 3 s.f., or
+  the exact form picked from four (the sign of $q$, the constant inside the log, divided
+  before subtracting, $e^k$ for $\ln k$). The register — 3 s.f., in terms of ln, exact —
+  is printed on every question.
+- **3 s.f. marking** (`judgeSf`): the right value to more figures is a nudge; a dropped
+  trailing zero ($1.3$ for $1.30$) is accepted with a note; a truncation, a rounding to
+  decimal places, too few figures, a sign slip and every derived wrong value
+  ($\lg \tfrac{45}{2}$ for $\tfrac{\lg 45}{\lg 2}$, upside down, the order of undoing)
+  each get their own message. A working value rounded to 3 figures is a nudge.
+- **Hidden Quadratic** — *substitute* (skipped when `given`; $y = 4^x$ for a disguised
+  base and $y = 2^{2x}$ are wrong, $y = 2^{x+3}$ and $y = e^{-x}$ are nudges) → *clear
+  1/y* (only with $e^{-x}$) → *write in y*: the coefficients of $Ay^2 + By + C = 0$,
+  any non-zero multiple accepted (a one-term item types $By = C$ instead), with the
+  forgotten shift, $4^x$ as $2y$, the unflipped sign and the constant not multiplied by
+  $y$ each named, and each power's rewrite listed after a miss → *solve for y* (either
+  order; the factorised form appears) → **keep or reject**, one try: a fraction and $1$
+  are kept (the traps that look wrong), zero and negatives are rejected → *back to x*:
+  an exact power of the base is typed exactly, anything else to 3 s.f.; base $e$ with
+  `give: 'exact'` picks the full answer ($\ln 3$ or $\ln 4$) from four. After the keep
+  stage the curve $y = a^x$ is drawn (`src/components/math/ExpCurve.jsx`) with each value
+  of $y$ as a line — the kept ones meet it, the rejected ones never can.
+- `npm run validate` (`checkExpItems`, imported as `checkExpLabItems`) refuses: a
+  right-hand side that is an exact power of the base (it needs no logs), two bases that
+  are powers of one number, a quadratic whose roots are irrational or repeated, a single
+  term in $y$ without `linear: true`, no surviving root without `expectNone: true` (and
+  either flag when it is not so), a power that leaves a root inside a log, a stage with
+  a wrong option that is secretly right or two options that read the same, a typed stage
+  that does not accept its own answer, an answer too big or small to type or sitting on
+  a rounding boundary, a shift on a power of $e$, and **levels out of order**. Every
+  level needs a name in `levels`.
+
+Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
+
+## 2d. Log Equation Lab (`LOG_EQ`, `LOG_QUAD`, `BASE_CHANGE`)
+
+Three tasks on one screen (`src/tasks/LogEqLab.jsx`; the registry passes `mode`), one
+per question type of Exercises 5.4 and 5.6, built by the §9 blueprint for `AM_5C`. The
+thread through all three is **rejecting a root**: the Solver's last stage is a check
+the app evaluates and the student decides.
+
+| Task | dbKey | mode | Pool | Bank types |
+|---|---|---|---|---|
+| Log Equation Solver | p67 | `eq` | `unit.logEq` | 5.4 A–D, 5.6 F, two related bases ending in a quadratic |
+| Quadratic in a Log | p68 | `quad` | `unit.logQuad` | 5.4 E, 5.6 I–J |
+| Change of Base | p69 | `base` | `unit.baseChange` | 5.6 A–E, G–H |
+
+**The derivation owns the stages.** `modelOf(mode, item)` in `src/utils/logEquations.js`
+returns the question and a list of stages, each one of three generic kinds the screen
+draws: `pick` (choose a line; distractors derived from the item, each with its own
+message), `fill` (typed boxes and surd chips, with a `judge(typed)` that marks each
+box and names the mistake with the item's own numbers) and `keep` (keep or reject each
+root). Every number is exact (rationals and prime-exponent powers from `logs.js`);
+floating point is used only for the "3 significant figures" answers and for the two
+sides printed beside a kept root. A finished item prints its working as `{ text, tex? }`
+sentences and KaTeX lines under "Copy this into your book".
+
+```js
+// logEq.js — base, and the terms on each side
+{ id: 'c_coef', level: 3, base: 2, L: [[2, 'x'], [-1, 'x + 3']], R: [2] }       // 2 log₂ x − log₂(x + 3) = 2
+{ id: 'b_move', level: 2, base: 3, L: [[1, '7x + 3']], R: [2, [1, 'x - 1']] }    // a log to move across first
+{ id: 'd_move', level: 4, base: 'x', L: [[1, 75]], R: [2, [1, 3]] }             // unknown base
+{ id: 'f_eval', level: 5, base: 2, L: [[1, 3, 9], [1, 'x - 1']], R: [[1, 32, 4]] } // [coef, arg, otherBase]
+{ id: 'c_none', level: 3, base: 3, L: [[1, 'x - 5'], [1, 'x - 2']], R: [[1, '4 - 2x']], expectNone: true }
+
+// logQuad.js — ['sq', a] a(log x)², ['log', c, n] c·log(xⁿ), ['rec', c] c·log_x b
+{ id: 'd_cube', level: 2, base: 2, L: [['sq', 1], ['log', -1, 3]], R: [4] }     // (log₂ x)² − log₂(x³) = 4
+{ id: 'r_frac', level: 4, base: 3, L: [['log', 1], ['rec', 1]], R: ['5/2'] }    // log₃ x + log_x 3 = 5/2
+
+// baseChange.js — kind decides the stages
+{ kind: 'evaluate', base: 5, arg: '0.4' }                                      // estimate → rule → 3 s.f.
+{ kind: 'swap', given: 5, letter: 'u', of: 'x', num: { root: 2, of: 5 } }       // u = log₅ x: log_x √5
+{ kind: 'rebase', given: 9, letter: 'x', of: 'y', target: 3, times: 27 }        // x = log₉ y: log₃(27y)
+{ kind: 'from2', base: 'a', a: ['P', 4], b: ['Q', 10], find: ['Q', 'P'] }       // log_Q P
+{ kind: 'product', logs: [[3, 5], [5, 9]] }                                     // log₃ 5 × log₅ 9
+{ kind: 'related', base: 2, L: [[5, 2], [-2, 4]], R: [12] }                     // 5 log₂ x − 2 log₄ x = 12
+```
+
+- **Solver** (`eq`). A term is a number, `[coef, arg]`, or `[coef, arg, otherBase]`; an
+  `arg` is a number or a linear expression written as a string (`'2x - 7'`,
+  `'4 - 2x'`); `base: 'x'` makes the unknown the base (every arg is then a number).
+  Stages, each skipped when there is nothing to do: *evaluate the numbers* (a log of a
+  number to another base — every exact numerical log is then evaluated) → *change the
+  base* (a log of x to a base that is a power of the item's base; the equation is then
+  multiplied through to clear the fraction) → *collect the logs* (logs on one side and
+  the number on the other: a pick, with "the log kept its sign" and "the numbers were
+  added" as the wrong lines) → *power law* (typed) → *combine* (a pick of the whole
+  equation — insides added, the sign flipped, upside down — or typed when the base is x)
+  → *remove the logs* (equal logs: a pick; a number: exponential form, typed) → *make a
+  quadratic* (three signed boxes, any non-zero multiple accepted) → *solve* (one or two
+  roots, any order) → **check each root**. The check shows what goes inside every log
+  of the ORIGINAL equation at each root (or what the base would be); the student keeps
+  or rejects each, one try; afterwards a strip draws where every log exists and where
+  each root landed.
+- **Quadratic in a Log** (`quad`). *Power down* (typed, when a log has x to a power
+  inside) → *change the base* (a pick: `log_x b` is `1 / log_b x`, against `−log_b x`,
+  `log_b x` and `1 / log_x b`) → *substitute* (the quadratic in u, three boxes) → *solve
+  for u* (the lost root u = 0 from dividing by the log is named) → *back to x* (typed,
+  or a chip row when x is a surd: `√7`, `1/√10`). Nothing is rejected here, and the
+  working says why.
+- **Change of Base** (`base`). Every kind opens on the rule as a pick of the quotient
+  against upside down, a difference and a product. `evaluate`: *estimate* (between which
+  two whole numbers) → *rule* → *value*, typed to 3 s.f. (the right value unrounded, or
+  2 s.f., is a nudge, not a miss). `swap` / `rebase`: *rule* → *the numerical logs*
+  (typed) → *simplify* (a pick, only when there is a fraction to clear). `from2`: *rule*
+  → *value*. `product`: *cancel* (which single log is left) → *value*. `related`:
+  *change the base* (typed log_b B) → *collect* (`[a]u = [k]`, any multiple) → *solve*
+  (u, then x).
+- `npm run validate` (`checkLogEqItems(items, mode)`) refuses: a quadratic that does not
+  factorise into two different rational roots, a cubic, a power of the base that is not
+  rational (`log₂(…) = ½` would need √2), a power law that leaves a root inside, a
+  foreign base that is not a whole-number power of the item's base (make the SMALLER
+  base the item's base), a numerical log to another base that is not exact, an equation
+  with **no surviving root unless it says `expectNone: true`** (and one marked so that
+  has one), more than two roots to check, a pick whose wrong lines collapse into fewer
+  than three options, a fill stage that does not accept its own derived answer, an
+  `evaluate` that is an exact number (that is the Log Simplifier's job), a chain of logs
+  that does not link, unbalanced KaTeX, and **levels out of order**. Every `level` needs
+  a name in `levels`.
+
+Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
+
+## 2e. Exp Graph Lab (`CURVE_FAMILY`, `EXP_SKETCH`, `FN_INVERSE`)
+
+Three tasks on one screen (`src/tasks/ExpGraphLab.jsx`; the registry passes
+`mode`), one per question type of sections 5.9–5.11, built from the problem banks
+by the blueprint in [../add-math-course.md](../add-math-course.md) §9 (`AM_5D`).
+Everything is derived in `src/utils/expGraphs.js`; the picture is
+`src/components/math/ExpCurveFigure.jsx`. Exact crossings are held as
+`{ c, m }` = c·ln m and compared **exactly** (m₁^(p₁q₂) = m₂^(p₂q₁) in BigInt), so
+½ ln 2, ¼ ln 4 and −½ ln ½ are all the same right answer.
+
+| Task · dbKey · pool | Mode | Book type |
+|---|---|---|
+| Move the Curve · p72 · `unit.curveFamily` | `family` | 5.9 A, B |
+| Sketch the Curve · p70 · `unit.expSketch` | `sketch` | 5.10 A, B, C |
+| Find the Inverse · p71 · `unit.fnInverse` | `inverse` | 5.11 A, B, C |
+
+```js
+// curveFamily.js — the curve is drawn at k = from; the question is about k = to
+{ id: 'add_asym', level: 1, family: 'exp_add', from: 1, to: -2, ask: 'asym' }
+//   family: exp_add (eˣ + k) · exp_mult (keˣ) · exp_in (e^(kx))
+//           ln_add (ln(x + k)) · ln_mult (k ln x) · ln_in (ln kx)
+//   ask:    exp → yint | asym | crossX | shape | side;  ln → xint | asym | crossY | shape | side
+
+// expSketch.js — only the function
+{ id: 'e_cross', level: 1, kind: 'exp', k: 3, n: 1, a: -6 }     // y = 3eˣ − 6
+{ id: 'ln_left', level: 6, kind: 'ln', k: 1, a: -3, b: 6 }      // y = ln(6 − 3x)
+
+// fnInverse.js — only the function; numbers may be '1/2'
+{ id: 'n_all', level: 3, kind: 'exp', k: 2, n: 3, a: -1 }       // f(x) = 2e³ˣ − 1
+{ id: 'minus_e', level: 5, kind: 'exp', k: -1, n: 1, a: 3, order: 'const' }  // prints 3 − eˣ
+{ id: 'ln_neg', level: 10, kind: 'ln', k: -2, a: 5, b: -1 }     // f(x) = −2 ln(5x − 1)
+```
+
+- **Move the Curve** — *predict* (a typed number, or one of two choices, BEFORE
+  anything moves) → *move it* (the slider unlocks; Continue appears once it has
+  reached `to`). The grid is fixed (−6..6), the starting curve stays as a dashed
+  ghost, and a read-out beside the slider lists the crossings and asymptote for the
+  current k. Every family has one question whose answer is "it does not move"
+  (the y-intercept of e^(kx), the asymptote of keˣ, the root of k ln x); "that is
+  where it is now" and "in this family that does not move" are named.
+- **Sketch the Curve** — exponential: *y-intercept* (typed) → *x-axis* ("does it
+  cross?" yes/no, then `x = [c] ln [m]` from two boxes; the "no solution" case is a
+  real option, when −a/k ≤ 0) → *asymptote* (`y =` or `x =`, its number, and the
+  side of it the curve is on) → *shape* (rises / falls) → the curve is swept on.
+  A log curve runs *y-axis* (does it exist at x = 0? then `y = [k] ln [b]`) →
+  *x-intercept* (typed fraction, where the inside is 1) → *asymptote* (where the
+  inside is 0, and left or right of it) → *shape*. The figure builds up as the
+  stages are answered, with no scale, exact labels, and the asymptote dashed and
+  labelled. Messages quote the item: the constant given for the y-intercept
+  (e⁰ = 1), forgetting to divide by k or by n, the x-intercept given for the
+  asymptote, the inequality not flipped for a negative a.
+- **Find the Inverse** — *swap* (four look-alike lines: the right one, the
+  reciprocal 1/f, e traded for ln, a sign changed) → *move 1…4* (choose add /
+  subtract / multiply / divide / take ln / write as powers of e, and type its
+  number; add −a and subtract a are the same move, as are ÷k and ×1/k) →
+  *domain* (`x >` / `x <` a number, or every real x). A legal move out of the
+  book's order (dividing by k before the constant is cleared) is turned back
+  without counting as a miss; ln before the power of e stands alone, dividing by n
+  while it is locked in the power, and the opposite tool (ln on a log) are
+  misses. The reveal draws f, the inverse, y = x, both asymptotes and one pair of
+  mirrored points on a square grid, and checks f(0) through the inverse.
+- `npm run validate` (`checkExpItems(items, mode)`) refuses: a sketch with a
+  fraction in it; a = 0 or b = 0 (the asymptote on an axis — that is Move the
+  Curve's job); a curve through the origin; an x-intercept whose ln is too awkward
+  to type; **labels that would collide on the drawn sketch** (asymptote, crossings
+  and axes closer than 28–56 px); an inverse that does not undo its function
+  (composed numerically at five points); an item whose own moves, crossing or
+  domain the judge does not accept; a family value that is not on the slider, or
+  an ask the family does not have; and **levels out of order**. Every `level`
+  needs a name in `levels`.
 
 Scoring: 1 per clean item, ½ once helped, out of the item count → nativeMax 10.
 

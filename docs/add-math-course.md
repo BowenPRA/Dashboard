@@ -49,9 +49,9 @@ been read; the outline is [add-math-ch5-outline.md](add-math-ch5-outline.md)):
 | Unit | Sections | Status |
 |---|---|---|
 | `AM_5A` | §5.1–5.3 logarithms and their laws | built |
-| `AM_5B` | §5.5, 5.7, 5.8 exponential equations, e and ln, growth and decay | to build |
-| `AM_5C` | §5.4, 5.6 log equations and change of base | to build |
-| `AM_5D` | §5.9–5.11 graphs and inverses | to build |
+| `AM_5B` | §5.5, 5.7, 5.8 exponential equations, e and ln, growth and decay | built: Undo It, Take Logs, Hidden Quadratic |
+| `AM_5C` | §5.4, 5.6 log equations and change of base | built: Log Equation Solver, Quadratic in a Log, Change of Base |
+| `AM_5D` | §5.9–5.11 graphs and inverses | built: Move the Curve, Sketch the Curve, Find the Inverse |
 
 **Chapter 7 is three units:** `AM_7A` the equation of a circle (first half of §7.1:
 reading, writing and rearranging it — built), `AM_7B` chords, tangents, right angles and

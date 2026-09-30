@@ -34,6 +34,9 @@ import { checkTriangleItems } from '../src/utils/triangles.js';
 import { checkInequalityItems } from '../src/utils/inequalities.js';
 import { checkLogItems } from '../src/utils/logs.js';
 import { checkCircleItems } from '../src/utils/circle.js';
+import { checkExpItems as checkExpLabItems } from '../src/utils/expEquations.js';
+import { checkLogEqItems } from '../src/utils/logEquations.js';
+import { checkExpItems } from '../src/utils/expGraphs.js';
 import { checkCollectItems, checkExpandItems, checkFlowItems } from '../src/utils/algebra.js';
 import { checkPyramidConfig } from '../src/utils/pyramid.js';
 import { checkHuntConfig } from '../src/utils/elementHunt.js';
@@ -899,6 +902,63 @@ for (const trackId of TRACK_IDS) {
         if (it.level !== undefined && !poolC.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
       }
       for (const p of checkCircleItems(poolC.items || [], mode)) err(`${at} ${p}`);
+    }
+
+    // -- Exp Lab (ADD_MATH 5.5 and 5.7): three pools read by one screen. Only
+    //    the question is authored; utils/expEquations.js derives every stage,
+    //    option, answer and line of working. Checked: an equation that needs
+    //    logs really does (its number is not an exact power of the base), a
+    //    hidden quadratic has two different rational roots, an item with no
+    //    surviving root or a single term in y says so on purpose, no wrong
+    //    option is secretly right, every typed stage accepts its own answer,
+    //    no answer sits on a rounding boundary, and the levels only climb.
+    for (const [key, mode] of [['takeLogs', 'logs'], ['hiddenQuad', 'quad'], ['undoIt', 'exact']]) {
+      const poolX = unit[key];
+      if (!poolX) continue;
+      const at = `${label}: ${key}`;
+      if (!poolX.title) err(`${at} is missing a title`);
+      if (!(poolX.items || []).length) err(`${at} has no items`);
+      for (const it of poolX.items || []) {
+        if (it.level !== undefined && !poolX.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
+      }
+      for (const p of checkExpLabItems(poolX.items || [], mode)) err(`${at} ${p}`);
+    }
+    // -- Log Equation Lab (ADD_MATH 5.4, 5.6): three pools read by one screen.
+    //    Only the question is authored; utils/logEquations.js derives every
+    //    combined log, exponential form, quadratic, root, check and message.
+    //    Checked: every stage accepts its own derived answer, a quadratic
+    //    factorises, a power is rational, a pick has three distinct options,
+    //    an equation with no surviving root says so on purpose, and the
+    //    levels only climb.
+    for (const [key, mode] of [['logEq', 'eq'], ['logQuad', 'quad'], ['baseChange', 'base']]) {
+      const poolL = unit[key];
+      if (!poolL) continue;
+      const at = `${label}: ${key}`;
+      if (!poolL.title) err(`${at} is missing a title`);
+      if (!(poolL.items || []).length) err(`${at} has no items`);
+      for (const it of poolL.items || []) {
+        if (it.level !== undefined && !poolL.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
+      }
+      for (const p of checkLogEqItems(poolL.items || [], mode)) err(`${at} ${p}`);
+    }
+
+    // -- Exp Graph Lab (ADD_MATH 5.9–5.11): three pools read by one screen.
+    //    Only the question is authored; utils/expGraphs.js derives the exact
+    //    crossings, the asymptote and its side, every move of an inverse and
+    //    its domain. Checked: a sketch's labels do not collide when it is
+    //    drawn, an exact crossing is typeable, an inverse composes with its
+    //    function to give x, each item accepts its own answers, a family's
+    //    values are on the slider, and the levels only climb.
+    for (const [key, mode] of [['curveFamily', 'family'], ['expSketch', 'sketch'], ['fnInverse', 'inverse']]) {
+      const poolE = unit[key];
+      if (!poolE) continue;
+      const at = `${label}: ${key}`;
+      if (!poolE.title) err(`${at} is missing a title`);
+      if (!(poolE.items || []).length) err(`${at} has no items`);
+      for (const it of poolE.items || []) {
+        if (it.level !== undefined && !poolE.levels?.[it.level]) err(`${at} item ${it.id}: level ${it.level} has no name in levels`);
+      }
+      for (const p of checkExpItems(poolE.items || [], mode)) err(`${at} ${p}`);
     }
 
     // -- Bond Ledger, Rate Reader, Spectator Strike (IGCSE_CHEM): the

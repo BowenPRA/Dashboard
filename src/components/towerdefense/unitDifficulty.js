@@ -131,6 +131,30 @@ export const TRACK_LEVELS = {
       mapName: 'The Ring Road',
       blurb: 'The road runs in a ring, always the same distance from the centre. Hold the middle and everything is one radius away.',
     },
+    // Exponential equations stay at tier 3. The junction is the board where the
+    // road splits in two, like the two values of y a hidden quadratic gives —
+    // and only one branch is real, because a power is never negative.
+    AM_5B: {
+      mapId: 'JUNCTION', themeId: 'ICE', tier: 3,
+      mapName: 'The Fork in the Road',
+      blurb: 'The road splits in two, like the two answers a hidden quadratic gives. Only one branch is real: a power is never negative. Guard that one.',
+    },
+    // Log equations stay at tier 3. The gauntlet is the board of checkpoints:
+    // every root that comes down the road is stopped and checked, and one that
+    // puts a negative number inside a log does not get through.
+    AM_5C: {
+      mapId: 'GAUNTLET', themeId: 'STANDARD', tier: 3,
+      mapName: 'The Checkpoint',
+      blurb: 'Every root that comes down this road is stopped and checked. A negative inside a log does not get through, so hold the gates.',
+    },
+    // Graphs and inverses stay at tier 3. The wave is the board whose road
+    // swings out and runs back alongside itself — a curve and its mirror
+    // image, each hugging a line it never reaches.
+    AM_5D: {
+      mapId: 'WAVE', themeId: 'DESERT', tier: 3,
+      mapName: 'The Asymptote',
+      blurb: 'The road runs closer and closer to a line it never touches. The enemies bunch up along it: that is where to build.',
+    },
   },
   // IGCSE Mathematics (Extended). One level per Wolsey Hall assignment. EM_06
   // opens at tier 1: the student has met the arcade on other tracks, and the

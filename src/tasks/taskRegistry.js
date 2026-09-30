@@ -1416,6 +1416,191 @@ export const TASKS = [
     buildPool: (u) => u.circleSquare,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'square', savedData, onComplete, onProgress, onQuit }),
   },
+  // ── Additional Mathematics 5.5 and 5.7, exponential equations, e and ln (AM_5B)
+  // p64–p66. One screen (ExpLab.jsx) in three modes, ONE TASK PER QUESTION TYPE
+  // of the book's exercises — the blueprint in docs/add-math-course.md §9.
+  // utils/expEquations.js derives every stage (the options and what is wrong
+  // with each, the boxes and their marking, the working) from the question;
+  // `checkExpItems` refuses an equation that needs no logs, a quadratic with
+  // irrational roots, a wrong option that is secretly right, an answer on a
+  // rounding boundary, and an item with no solutions unless it says so.
+  {
+    id: 'E_EXACT',
+    nativeMax: 10,
+    dbKey: 'p66',
+    // "e and ln undo each other." e^(ln a) = a and ln(e^n) = n, with no
+    // calculator: a number in front of ln goes inside as a power, a minus sign
+    // is a power of −1, and e^(2 ln x) = 49 ends on rejecting x = −7 because
+    // ln(−7) does not exist.
+    label: 'Undo It',
+    icon: Undo2,
+    color: { bg: 'bg-[#d97706]', border: 'border-[#b45309]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./ExpLab.jsx')),
+    hasContent: (u) => !!u.undoIt?.items?.length,
+    buildPool: (u) => u.undoIt,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'exact', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'EXP_LOGS',
+    nativeMax: 10,
+    dbKey: 'p64',
+    // "Get it on its own, take logs, bring the power down." a^(px+q) = b, a
+    // different base on each side, e^(…) = k and ln(…) = k. The first move is
+    // named from the same four every time; the line after the power law is
+    // picked from four derived look-alikes; the answer is typed to 3 s.f. (with
+    // a working value to 4) or chosen in exact form, as the question says.
+    label: 'Take Logs',
+    icon: Superscript,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ExpLab.jsx')),
+    hasContent: (u) => !!u.takeLogs?.items?.length,
+    buildPool: (u) => u.takeLogs,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'logs', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'EXP_QUAD',
+    nativeMax: 10,
+    dbKey: 'p65',
+    // "Substitute, solve, then keep or reject." y = a^x turns the equation into
+    // a quadratic; its coefficients and roots are typed, each value of y is
+    // kept or rejected (a power is never zero or negative), and what is kept
+    // becomes x. The curve y = a^x is drawn with each value as a line.
+    label: 'Hidden Quadratic',
+    icon: Variable,
+    color: { bg: 'bg-[#be185d]', border: 'border-[#9d174d]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ExpLab.jsx')),
+    hasContent: (u) => !!u.hiddenQuad?.items?.length,
+    buildPool: (u) => u.hiddenQuad,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'quad', savedData, onComplete, onProgress, onQuit }),
+  },
+  // ── Additional Mathematics 5.4 and 5.6, log equations and change of base (AM_5C)
+  // p67–p69. One screen (LogEqLab.jsx) in three modes, ONE TASK PER QUESTION
+  // TYPE of the book's exercises — the blueprint in docs/add-math-course.md §9.
+  // utils/logEquations.js derives every stage (options, boxes, marking and the
+  // wrong-answer messages) from the question; `checkLogEqItems` refuses a
+  // quadratic that does not factorise, a power that is not rational, and an
+  // equation with no surviving root unless the item says so.
+  {
+    id: 'LOG_EQ',
+    nativeMax: 10,
+    dbKey: 'p67',
+    // "Combine, remove the logs, solve — then check every root." The app works
+    // out what goes inside each log of the ORIGINAL equation (or what the
+    // base would be) at each root; the student keeps or rejects it. Some
+    // items keep both roots, some one, and some none.
+    label: 'Log Equation Solver',
+    icon: SearchCheck,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./LogEqLab.jsx')),
+    hasContent: (u) => !!u.logEq?.items?.length,
+    buildPool: (u) => u.logEq,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'eq', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'LOG_QUAD',
+    nativeMax: 10,
+    dbKey: 'p68',
+    // "Call the log u." A quadratic in log x — after bringing a power down,
+    // or after turning an upside-down log over — solved for u, then taken
+    // back to x (a fraction for a negative u, a surd for a half). The trap is
+    // dividing by the log and losing u = 0.
+    label: 'Quadratic in a Log',
+    icon: Variable,
+    color: { bg: 'bg-[#9333ea]', border: 'border-[#6b21a8]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./LogEqLab.jsx')),
+    hasContent: (u) => !!u.logQuad?.items?.length,
+    buildPool: (u) => u.logQuad,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'quad', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'BASE_CHANGE',
+    nativeMax: 10,
+    dbKey: 'p69',
+    // "The log of the number, over the log of the old base." Evaluate with lg
+    // (estimated first), swap the base and the number, change to a related
+    // base, find one log from two, cancel a chain of logs, and solve an
+    // equation in two related bases.
+    label: 'Change of Base',
+    icon: Divide,
+    color: { bg: 'bg-[#c026d3]', border: 'border-[#86198f]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./LogEqLab.jsx')),
+    hasContent: (u) => !!u.baseChange?.items?.length,
+    buildPool: (u) => u.baseChange,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'base', savedData, onComplete, onProgress, onQuit }),
+  },
+  // ── Additional Mathematics 5.9–5.11, graphs and inverses (AM_5D) ──────────
+  // p70–p72. One screen (ExpGraphLab.jsx) in three modes, ONE TASK PER
+  // QUESTION TYPE of the book's exercises — the blueprint in
+  // docs/add-math-course.md §9. utils/expGraphs.js derives every crossing
+  // (exactly: ½ ln 2), asymptote, move of the rearrangement and domain;
+  // `checkExpItems` refuses a sketch whose labels would collide and an inverse
+  // that does not undo its function.
+  {
+    id: 'CURVE_FAMILY',
+    nativeMax: 10,
+    dbKey: 'p72',
+    // "Decide, then move it." A family such as y = eˣ + k or y = ln(x + k) is
+    // drawn for one value of k; the student predicts a crossing, the
+    // asymptote or which way it goes for another value BEFORE the slider
+    // unlocks, then moves the curve to see it happen (5.9's investigations).
+    label: 'Move the Curve',
+    icon: TrendingUp,
+    color: { bg: 'bg-[#8b5cf6]', border: 'border-[#6d28d9]', text: 'text-white' },
+    defaultMaxXP: 15,
+    phase: 'practice',
+    component: lazy(() => import('./ExpGraphLab.jsx')),
+    hasContent: (u) => !!u.curveFamily?.items?.length,
+    buildPool: (u) => u.curveFamily,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'family', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'EXP_SKETCH',
+    nativeMax: 10,
+    dbKey: 'p70',
+    // "One decision at a time, then it is drawn." y = k·e^(nx) + a or
+    // y = k·ln(ax + b): each axis crossing ("does it cross?" before "where,
+    // exactly?"), the asymptote and the side of it the curve lives on, rises
+    // or falls — then the curve is swept on with its exact labels.
+    label: 'Sketch the Curve',
+    icon: ChartSpline,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ExpGraphLab.jsx')),
+    hasContent: (u) => !!u.expSketch?.items?.length,
+    buildPool: (u) => u.expSketch,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'sketch', savedData, onComplete, onProgress, onQuit }),
+  },
+  {
+    id: 'FN_INVERSE',
+    nativeMax: 10,
+    dbKey: 'p71',
+    // "Swap, then undo it one move at a time." The inverse of an exponential
+    // or a log function: choose the swapped line, name each move of the
+    // rearrangement and type its number, then state the domain of the
+    // inverse. The reveal draws f and its inverse as mirror images in y = x.
+    label: 'Find the Inverse',
+    icon: Undo2,
+    color: { bg: 'bg-[#c026d3]', border: 'border-[#a21caf]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./ExpGraphLab.jsx')),
+    hasContent: (u) => !!u.fnInverse?.items?.length,
+    buildPool: (u) => u.fnInverse,
+    props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'inverse', savedData, onComplete, onProgress, onQuit }),
+  },
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));

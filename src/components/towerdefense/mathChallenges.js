@@ -357,6 +357,170 @@ function circleEquation() {
   };
 }
 
+// AM_5B — Exponential equations, e and ln. Six reads a student who has done
+// the unit does in their head: ln and e undoing each other (ln e⁴, ln(1/e²),
+// e^(2 ln 3)), the number a shifted power brings with it (2^(x + 3) = 8 × 2ˣ),
+// how many solutions a hidden quadratic REALLY has once each value of y is
+// kept or rejected (the unit's thread — a power is never zero or negative),
+// whether a power can equal a number at all, and the start value of a growth
+// or decay model (e⁰ is 1). Answers are whole numbers or Yes/No; every
+// quadratic is built from its two roots, so the count is always exact.
+function expEquationBolt() {
+  const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const sup = (n) => String(n).split('').map((ch) => SUP[ch]).join('');
+  const pick = (list) => list[ri(0, list.length - 1)];
+  const r = Math.random();
+  if (r < 0.18) {
+    if (Math.random() < 0.65) {
+      const k = pick([-5, -4, -3, -2, -1, 2, 3, 4, 5, 6]);
+      return { prompt: `ln(e${sup(k)}) = ?`, answer: k };
+    }
+    const k = ri(1, 4);
+    return { prompt: `ln(1/e${k === 1 ? '' : sup(k)}) = ?`, answer: -k };
+  }
+  if (r < 0.32) {
+    // e^(k ln n) = n^k, kept small enough to know by heart.
+    const [k, n] = pick([[1, ri(2, 12)], [2, ri(2, 9)], [3, ri(2, 5)]]);
+    return { prompt: `e^(${k === 1 ? '' : `${k} `}ln ${n}) = ?`, answer: n ** k };
+  }
+  if (r < 0.46) {
+    // A shifted power splits: b^(x + s) = b^s × b^x.
+    const [b, s] = pick([[2, 1], [2, 2], [2, 3], [2, 4], [3, 1], [3, 2], [3, 3], [5, 1], [5, 2], [10, 1], [10, 2]]);
+    return { prompt: `${b}^(x + ${s}) = k × ${b}ˣ.  k = ?`, answer: b ** s };
+  }
+  if (r < 0.68) {
+    // A hidden quadratic built from two different roots; only positive roots
+    // give a value of x.
+    const B = pick(['2', '3', 'e']);
+    const roots = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const r1 = pick(roots);
+    let r2 = pick(roots);
+    while (r2 === r1) r2 = pick(roots);
+    const b = -(r1 + r2);
+    const c = r1 * r2;
+    // 5(2ˣ) and 5eˣ, the way the book prints them; a lone 2ˣ or eˣ needs no 1.
+    const term = Math.abs(b) === 1 ? `${B}ˣ` : B === 'e' ? `${Math.abs(b)}eˣ` : `${Math.abs(b)}(${B}ˣ)`;
+    const mid = b === 0 ? '' : ` ${b < 0 ? MINUS : '+'} ${term}`;
+    const tail = ` ${c < 0 ? MINUS : '+'} ${Math.abs(c)}`;
+    const count = [r1, r2].filter((v) => v > 0).length;
+    return { prompt: `${B}²ˣ${mid}${tail} = 0.  How many solutions for x?`, answer: count };
+  }
+  if (r < 0.84) {
+    // Can a power equal this number? Only a positive number, fraction or not.
+    const B = pick(['2', '3', '5', 'e']);
+    const v = pick(['1', '8', '20', '1/4', '1/9', '0', `${MINUS}4`, `${MINUS}1`, `${MINUS}1/2`, '3', '0']);
+    const positive = !v.startsWith(MINUS) && v !== '0';
+    return { prompt: `Does ${B}ˣ = ${v} have a solution?`, answer: positive ? 'Yes' : 'No', choices: ['Yes', 'No'] };
+  }
+  // The start value of a model: put t = 0, and e⁰ = 1.
+  const letter = pick(['N', 'T', 'V', 'P']);
+  const A = pick([40, 60, 80, 120, 150, 200, 250, 500]);
+  const rate = pick(['0.1', '0.2', '0.3', '0.05', '0.04']);
+  const decay = Math.random() < 0.6;
+  const c = Math.random() < 0.4 ? pick([15, 20, 25]) : 0;
+  return {
+    prompt: `${letter} = ${A}e^(${decay ? MINUS : ''}${rate}t)${c ? ` + ${c}` : ''}.  ${letter} when t = 0?`,
+    answer: A + c,
+  };
+}
+
+// AM_5C — Log equations and change of base. Four reads a student who has done
+// the unit does in their head: solve a one-log equation by exponential form,
+// KEEP OR REJECT a root the algebra produced (the unit's thread — a log of a
+// negative number, or a negative base, does not exist), cancel a chain of two
+// logs, and the larger root of a quadratic in a log. Answers are whole
+// numbers or Yes/No; every equation is built from its answer, so the numbers
+// always come out.
+function logEquationBolt() {
+  const SUB = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[Number(d)]).join('');
+  const name = (b) => (b === 10 ? 'lg' : `log${SUB(b)}`);
+  const pick = (list) => list[ri(0, list.length - 1)];
+  const r = Math.random();
+  if (r < 0.25) {
+    // log_b(x ± c) = k, so x ± c = b^k.
+    const [b, k] = pick([[2, ri(2, 5)], [3, ri(2, 3)], [5, 2], [10, ri(1, 2)], [4, 2], [7, 2]]);
+    // Kept below b^k, so x itself is positive too and never looks like a root to reject.
+    const c = ri(1, Math.min(9, b ** k - 1));
+    const plus = Math.random() < 0.5;
+    return { prompt: `${name(b)}(x ${plus ? '+' : MINUS} ${c}) = ${k}.  x = ?`, answer: plus ? b ** k - c : b ** k + c };
+  }
+  if (r < 0.6) {
+    if (Math.random() < 0.3) {
+      // log_x N = 2 gives x = ±√N; a base must be positive.
+      const s = ri(2, 9);
+      const askNeg = Math.random() < 0.6;
+      const roots = Math.random() < 0.5 ? [s, -s] : [-s, s];
+      return {
+        prompt: `logₓ ${s * s} = 2 gives x = ${lead(roots[0])} or x = ${lead(roots[1])}.  Is x = ${lead(askNeg ? -s : s)} a solution?`,
+        answer: askNeg ? 'No' : 'Yes',
+        choices: ['Yes', 'No'],
+      };
+    }
+    // log_b x + log_b(x + d) = k with roots p and −q, where pq = b^k and d = q − p.
+    const [b, k] = pick([[2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [5, 2], [10, 1], [10, 2]]);
+    const N = b ** k;
+    const pairs = [];
+    for (let p = 1; p <= N; p += 1) if (N % p === 0 && p !== N / p) pairs.push([p, N / p]);
+    const [p, q] = pick(pairs);
+    const d = q - p;
+    const second = d === 0 ? ' x' : `(x ${d > 0 ? '+' : MINUS} ${Math.abs(d)})`;
+    const askNeg = Math.random() < 0.5;
+    const roots = Math.random() < 0.5 ? [p, -q] : [-q, p];
+    return {
+      prompt: `${name(b)} x + ${name(b)}${second} = ${k} gives x = ${lead(roots[0])} or x = ${lead(roots[1])}.  Is x = ${lead(askNeg ? -q : p)} a solution?`,
+      answer: askNeg ? 'No' : 'Yes',
+      choices: ['Yes', 'No'],
+    };
+  }
+  if (r < 0.8) {
+    // log_a b × log_b(a^k) = k: the b cancels.
+    const [a, k] = pick([[2, ri(2, 6)], [3, ri(2, 4)], [5, ri(2, 3)], [10, ri(2, 3)]]);
+    const b = pick([3, 5, 6, 7, 11].filter((x) => x !== a));
+    return { prompt: `${name(a)} ${b} × ${name(b)} ${a ** k} = ?`, answer: k };
+  }
+  // (log_b x)² − s log_b x + p = 0 with u = 1, 2 or 3: the larger x.
+  const b = pick([2, 3]);
+  const [u1, u2] = pick([[1, 2], [1, 3], [2, 3]]);
+  return { prompt: `(${name(b)} x)² ${MINUS} ${u1 + u2} ${name(b)} x + ${u1 * u2} = 0.  Larger value of x = ?`, answer: b ** u2 };
+}
+
+// AM_5D — Graphs and inverses of exponential and log functions. Five reads a
+// student who has done the unit does in their head: where y = k·e^(nx) + a
+// crosses the y-axis (k + a — e⁰ is 1, not 0), the number in its asymptote
+// (a), whether it crosses the x-axis at all (only when k and a have opposite
+// signs: a power of e is never negative), and for y = k·ln(ax + b) the
+// vertical asymptote (where the inside is 0) and whether the curve reaches the
+// y-axis (only when the inside is positive at x = 0). Answers are whole
+// numbers or Yes/No; the log's inside is built from its asymptote, so that
+// always comes out whole.
+function expLogGraphs() {
+  const SUP = { '-': '⁻', x: 'ˣ', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  const pick = (list) => list[ri(0, list.length - 1)];
+  const front = (k) => (k === 1 ? '' : k === -1 ? MINUS : lead(k));
+  const tail = (c) => (c === 0 ? '' : ` ${c < 0 ? MINUS : '+'} ${Math.abs(c)}`);
+  const r = Math.random();
+  if (r < 0.6) {
+    const k = nz(-5, 5);
+    const n = pick([1, -1, 2, -2, 3]);
+    const a = nz(-8, 8);
+    const power = (n === 1 ? 'x' : n === -1 ? '-x' : `${n}x`).split('').map((ch) => SUP[ch] ?? ch).join('');
+    const eq = `y = ${front(k)}e${power}${tail(a)}`;
+    if (r < 0.2) return { prompt: `${eq}.  It crosses the y-axis at y = ?`, answer: k + a };
+    if (r < 0.4) return { prompt: `${eq}.  Its asymptote is y = ?`, answer: a };
+    return { prompt: `${eq}.  Does it cross the x-axis?`, answer: k * a < 0 ? 'Yes' : 'No', choices: ['Yes', 'No'] };
+  }
+  // y = k ln(ax + b), with the asymptote x = x0 chosen first and b = −a·x0.
+  const k = pick([1, 2, 3, -1, -2]);
+  const a = pick([1, 2, 3, -1, -2]);
+  const x0 = ri(-5, 5);
+  const b = x0 === 0 ? 0 : -a * x0;
+  const ax = `${a === 1 ? '' : a === -1 ? MINUS : lead(a)}x`;
+  const inside = b === 0 ? ax : a < 0 && b > 0 ? `${b} ${MINUS} ${a === -1 ? '' : -a}x` : `${ax}${tail(b)}`;
+  const eq = `y = ${k === 1 ? '' : k === -1 ? MINUS : `${lead(k)} `}ln(${inside})`;
+  if (r < 0.8) return { prompt: `${eq}.  Its asymptote is x = ?`, answer: x0 };
+  return { prompt: `${eq}.  Does it cross the y-axis?`, answer: b > 0 ? 'Yes' : 'No', choices: ['Yes', 'No'] };
+}
+
 // PHYSICS / PHY_CIRC — Circular Motion & Gravity. Three shapes, all answered
 // with a whole number: a unit conversion (the mark this unit loses most), a
 // small centripetal force from F = mv²/r, and the minimum speed over the top
@@ -518,6 +682,9 @@ export const MATH_CHALLENGE_GENERATORS = {
   AM_4B: cubicSketch,
   AM_5A: logLaws,
   AM_7A: circleEquation,
+  AM_5B: expEquationBolt,
+  AM_5C: logEquationBolt,
+  AM_5D: expLogGraphs,
   U01_1: intAddSub,
   U01_2: intMulDiv,
   U01_3: lcm,

@@ -76,6 +76,23 @@ def speechify(text):
     # paragraph that followed a line break ("The unknown is…" read "unknown is…").
     t = re.sub(r'\\n(?!(?:eq|e|otin|ot|abla|u|ewline)(?![a-zA-Z]))', '. ', t)
     t = t.replace('\n', '. ')
+    # An inverse function (ADD_MATH AM_5D): f^{-1} is "f inverse", not "f to the
+    # power minus 1", which says the opposite of what it means. A Unicode f⁻¹ too.
+    t = re.sub(r'\b([fgh])\s*\^\s*\{\s*-\s*1\s*\}', r' \1 inverse ', t)
+    t = re.sub(r'\b([fgh])⁻¹', r' \1 inverse ', t)
+    t = t.replace('∞', ' infinity ')
+    # Unwrap fractions and braced powers from the inside out BEFORE the
+    # squared / cubed rules below run: those read e^{2x} as "e squared x" (the
+    # ^2 rule does not look at what follows the 2), and a fraction with a power
+    # inside it, \dfrac{e^{\frac{x}{3}} + 1}{2}, came out as "... + 12".
+    # A bare ^{2} or ^{3} is left alone for "squared" and "cubed".
+    for _ in range(4):
+        before = t
+        t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
+        t = re.sub(r'\^\s*\{([^{}]*)\}',
+                   lambda m: m.group(0) if m.group(1).strip() in ('2', '3') else f' to the power {m.group(1).strip()} ', t)
+        if t == before:
+            break
     # An inequality sign set on its own ("mixes $\le$ and $<$", "open circle —
     # $<$ or $>$") is a symbol being NAMED, not a comparison: read it as a noun.
     # Left to the rules below, a lone > was deleted and a lone < read as "<".
