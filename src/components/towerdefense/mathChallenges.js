@@ -580,6 +580,36 @@ function momentum() {
   return { prompt: `From rest, a cart (${m1} kg) pushes off a ${m2} kg ball. Ball: +${v2} m/s.  Cart v = ? m/s`, answer: -p / m1 };
 }
 
+// PHYSICS / PHY_ROT — Rotation & Angular Momentum. Four shapes, every answer
+// a whole number: ω_f = ωᵢ + αt with a slowing α (so the answer may go
+// negative — CW), the edge speed v = rω, a balanced see-saw (built backwards
+// so the distance is whole) and a skater pulling her arms in (Iᵢωᵢ = I_fω_f).
+function rotation() {
+  const r = Math.random();
+  if (r < 0.3) {
+    const wi = ri(2, 12), a = ri(1, 4), t = ri(1, 6);
+    return { prompt: `ω_i = +${wi} rad/s, α = ${MINUS}${a} rad/s², t = ${t} s.  ω_f = ? rad/s`, answer: wi - a * t };
+  }
+  if (r < 0.5) {
+    const rad = ri(2, 9), w = ri(2, 12);
+    return { prompt: `r = ${rad} m, ω = ${w} rad/s.  Edge speed v = rω = ? m/s`, answer: rad * w };
+  }
+  if (r < 0.75) {
+    // m₁d₁ = m₂d₂ built backwards: the heavy one is k times the light one,
+    // so the light one sits k times as far out — always a whole number.
+    const m2 = ri(2, 6) * 10, d1 = ri(1, 4), k = ri(2, 3);
+    const m1 = m2 * k;
+    return { prompt: `See-saw: ${m1} kg sits ${d1} m from the pivot. ${m2} kg balances it at d = ? m`, answer: k * d1 };
+  }
+  // Skater: Iᵢωᵢ = I_fω_f, with I_f a divisor of Iᵢωᵢ.
+  const Ii = ri(2, 8), wi = ri(1, 4);
+  const L = Ii * wi;
+  const divisors = [];
+  for (let d = 1; d < Ii; d++) if (L % d === 0) divisors.push(d);
+  const If = divisors[ri(0, divisors.length - 1)];
+  return { prompt: `Arms in: I goes ${Ii} → ${If} kg·m², ω_i = ${wi} rad/s.  ω_f = ? rad/s`, answer: L / If };
+}
+
 // EXT_MATH / EM_06 — Sets, Surds and Rationalising. Four reads a student who
 // has done the unit does in their head: the number that comes OUT of a root,
 // a region of a Venn diagram whose counts are given in the prompt, the number
@@ -677,6 +707,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   EM_07B: bearingsTrig,
   PHY_CIRC: circularMotion,
   PHY_MOM: momentum,
+  PHY_ROT: rotation,
   AM_3A: factorTheorem,
   AM_4A: modulus,
   AM_4B: cubicSketch,

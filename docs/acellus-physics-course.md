@@ -8,6 +8,11 @@ built around a single formula page, a rearrangement task that shows every move a
 reason, and a workbook that reruns the student's own Acellus items through one method.
 When in doubt, copy its structure.
 
+**`src/data/PHYSICS/PHY_ROT`** (Rotation & Angular Momentum) is the exemplar for a module
+whose formulas are **ones she already knows with the letters swapped** (x → θ, v → ω,
+a → α, m → I, F → τ, p → L): the swap opens and closes the deck, kinematics is chosen by
+the missing letter, and balancing is done by choosing the pivot (§4.5).
+
 **`src/data/PHYSICS/PHY_MOM`** (Momentum & Collisions) is the second unit, and the
 exemplar for a module whose formulas are really **one equation with conditions put in**.
 Its deck derives every collision formula from the conservation equation, and its Isolate
@@ -17,6 +22,7 @@ It items use the **Set up** stage, the **Factor** move and **signed** answers (�
 |---|---|---|
 | `PHY_CIRC` | Circular Motion & Gravity | ten screenshots, 2026-09-11 |
 | `PHY_MOM` | Momentum: momentum, impulse, conservation, collisions, inelastic collisions, recoil | `physics (1).pdf`, 2026-09-25 — its elastic and 2-D items are the next unit's |
+| `PHY_ROT` | Rotation: rotational kinematics, rotational & linear, torque, equilibrium, moment of inertia — and rotational dynamics, rotational KE, angular momentum | `physics.docx` images 46–62, 2026-10-01 (screenshots stop at Moment of Inertia; the last three lessons' items are written in the Acellus style). Elastic and 2-D momentum (images 39–45) are still unbuilt |
 
 The two documents for this track:
 
@@ -241,6 +247,28 @@ table and in the setup's wrong-pick feedback.
 
 Units `kg·m/s` and `N·s` (the same SI unit) are in the table; `Delta_t` renders as Δt.
 Givens print with the figures the question gave (12.46 stays 12.46, not 12.5).
+
+### 4.5 Rotation additions (added for `PHY_ROT`)
+
+- **`× 2` undoes a `÷ 2`.** A target term whose coefficient is a plain unit fraction
+  (`θ = (ωᵢ + ω_f) t / 2`, `KE = I ω^2 / 2`, `τ = M R^2 α / 2`) is finished by multiplying
+  by the denominator, and the chip row offers that `2` instead of `½`. A coefficient with π
+  in it (`r³ = GMT²/(4π²)`) is unchanged, and so is every `PHY_CIRC`/`PHY_MOM` derivation
+  (checked move by move before and after).
+- **Turns.** `rev`, `rotations` and `revolutions` convert to `rad` (× 2π) in the Units stage,
+  with the rule said as taught: "1 revolution = 2π rad, so multiply by 2π". Also in the
+  table: `rad/s²`, `N·m`, `kg·m²`, `kg·m²/s`.
+- **A setup that zeroes a whole side** (`ω_f = ωᵢ + αt` with "it stops") prints as
+  `ω_f = 0`, not `ω_f = 0 ⇒ ω_f = 0`.
+- **What the engine still cannot do**, so these live in the deck and workbook only:
+  `sin θ` (torque at an angle), a square root of a non-square number (`t = √(2θ/α)`), and a
+  two-formula chain (angle, then `s = rθ`).
+- **Angular momentum reuses §4.4.** A kid jumping onto a merry-go-round is the collision
+  equation with `I` for `m` and `ω` for `v` — set up (`ω₂ᵢ = 0`, `ω₁f = ω₂f = ω_f`),
+  factor, divide by the bracket.
+
+Narration: `speechify` now reads ω, α and τ by name, `\tfrac{1}{2}` and ½ as "half",
+`\longrightarrow` as "becomes", and a KaTeX `\begin{array}` table row by row.
 
 ---
 

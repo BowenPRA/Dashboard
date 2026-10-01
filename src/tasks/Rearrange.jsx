@@ -117,7 +117,7 @@ const EN = {
   toIsolate: 'Now isolate',
   // numbers
   piecesTitle: 'The pieces',
-  piecesBody: 'A formula only works in SI units. Anything quoted in km, hours or km/s has to be converted BEFORE it goes in.',
+  piecesBody: 'A formula only works in SI units. Anything quoted in km, cm, hours, km/s or revolutions has to be converted BEFORE it goes in.',
   constant: 'constant',
   convert: 'Convert to',
   inSI: 'SI',
@@ -190,7 +190,7 @@ const VN = {
   setupDoneBody: 'Đây là phương trình động lượng cho CHÍNH câu hỏi này — được suy ra, không phải học thuộc. Chép các dòng vào vở, rồi cô lập ẩn số.',
   toIsolate: 'Bây giờ cô lập',
   piecesTitle: 'Các đại lượng',
-  piecesBody: 'Công thức chỉ đúng với đơn vị SI. Bất kỳ số nào tính bằng km, giờ hay km/s đều phải đổi TRƯỚC KHI thay vào.',
+  piecesBody: 'Công thức chỉ đúng với đơn vị SI. Bất kỳ số nào tính bằng km, cm, giờ, km/s hay số vòng đều phải đổi TRƯỚC KHI thay vào.',
   constant: 'hằng số',
   convert: 'Đổi sang',
   inSI: 'SI',

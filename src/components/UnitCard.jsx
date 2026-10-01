@@ -6,7 +6,7 @@ import {
   Compass, Lightbulb, Activity, Zap, Landmark, Magnet, Move3d, Grid3x3, Hash,
   Boxes, Layers, ScanEye, History, MonitorPlay, ExternalLink, Variable, Droplets,
   Thermometer, Sigma, Orbit, SquareRadical, Blend, Keyboard, MousePointerClick, Wrench, Check, Play, ChevronRight,
-  TriangleRight, Combine, Star, TrendingUp
+  TriangleRight, Combine, Star, TrendingUp, RotateCcw
 } from 'lucide-react';
 import { resolveUnitTasks, resolveTask, unitXPOf } from '../tasks/taskRegistry';
 import { ARCADE_KEYS } from '../utils/progressSchema';
@@ -24,7 +24,7 @@ const IconMap = {
   "Variable": Variable, "Droplets": Droplets, "Thermometer": Thermometer, "Sigma": Sigma,
   "Orbit": Orbit, "SquareRadical": SquareRadical, "Blend": Blend,
   "Keyboard": Keyboard, "MousePointerClick": MousePointerClick, "TriangleRight": TriangleRight, "Combine": Combine,
-  "TrendingUp": TrendingUp
+  "TrendingUp": TrendingUp, "RotateCcw": RotateCcw
 };
 
 // Task labels, icons and colours now live in src/tasks/taskRegistry.js so the card

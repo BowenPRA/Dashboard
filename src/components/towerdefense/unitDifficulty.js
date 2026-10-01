@@ -89,6 +89,13 @@ export const TRACK_LEVELS = {
       mapName: 'The Crash Junction',
       blurb: 'Two roads meet head-on at the junction, and whatever arrives there shares its momentum. Hold the meeting point.',
     },
+    // Rotation: a closed loop that goes round and round, one tier up again.
+    // Desert, because a lazy susan and a merry-go-round are summer-fair things.
+    PHY_ROT: {
+      mapId: 'CIRCUIT', themeId: 'DESERT', tier: 3,
+      mapName: 'The Merry-Go-Round',
+      blurb: 'The road loops back on itself like a wheel — the further out you build, the more ground each tower turns through. Balance both sides of the loop.',
+    },
   },
   // IGCSE Additional Mathematics. AM_3A is the first unit, so it opens on the
   // gentlest board with the full armoury; later chapters climb from here.

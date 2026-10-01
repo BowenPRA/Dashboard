@@ -608,7 +608,10 @@ export function applySetup(eq, cond) {
 export function setupLatex(cond, eq) {
   const names = (cond.syms || []).map(symbolLatex).join(' = ');
   if (cond.kind === 'same') return `${names} = ${symbolLatex(cond.to)}`;
-  const gone = [...eq.left, ...eq.right].filter((t) => t.factors.some((f) => f.base.sym !== undefined && cond.syms.includes(f.base.sym)));
+  // A letter that IS a whole term (ω_f = 0 in ω_f = ωᵢ + αt) is not repeated:
+  // "ω_f = 0 ⇒ ω_f = 0" says nothing.
+  const gone = [...eq.left, ...eq.right].filter((t) => t.factors.some((f) => f.base.sym !== undefined && cond.syms.includes(f.base.sym))
+    && !cond.syms.some((s) => isBareSymbol(t, s)));
   const terms = gone.map((t) => termLatex(t, { abs: true })).join(' = ');
   return terms ? `${names} = 0 \\;\\Rightarrow\\; ${terms} = 0` : `${names} = 0`;
 }
@@ -668,7 +671,10 @@ export function chipsOf(eq) {
   for (const t of [...eq.left, ...eq.right]) {
     if (isOne(t.coef) && t.pi === 0) continue;
     if (t.coef.n === -1 && t.coef.d === 1 && t.pi === 0) continue;
-    const chip = term({ n: Math.abs(t.coef.n), d: t.coef.d }, t.pi, []);
+    // A plain "÷ 2" (coefficient ½) is offered as the 2 that undoes it.
+    const chip = Math.abs(t.coef.n) === 1 && t.coef.d > 1 && t.pi === 0
+      ? term(fr(t.coef.d))
+      : term({ n: Math.abs(t.coef.n), d: t.coef.d }, t.pi, []);
     const key = `${frText(chip.coef)}|${chip.pi}`;
     if (!numbers.some((c) => `${frText(c.coef)}|${c.pi}` === key)) numbers.push(chip);
   }
@@ -765,7 +771,10 @@ export function suggestMove(eq, target) {
   const beside = others.find((f) => f.exp.n > 0);
   if (beside) return { kind: 'div', term: term(fr(1), 0, [factor(beside.base, beside.exp)]) };
 
-  // 5. a number in front
+  // 5. a number in front. A plain "÷ 2" — θ = (ωᵢ + ω_f) t / 2, KE = Iω²/2 —
+  //    is undone by multiplying by 2, which is how it is done on paper;
+  //    "divide both sides by ½" is true but nobody writes it.
+  if (T.pi === 0 && T.coef.n === 1 && T.coef.d > 1) return { kind: 'mul', term: term(fr(T.coef.d)) };
   if (!isOne(T.coef) || T.pi !== 0) return { kind: 'div', term: term(T.coef, T.pi, []) };
 
   // 6. the target squared
@@ -865,6 +874,15 @@ export const UNITS = {
   // both measure the same thing.
   'kg·m/s': { si: 'kg·m/s', factor: 1 }, 'kg m/s': { si: 'kg·m/s', factor: 1 },
   'N·s': { si: 'kg·m/s', factor: 1 }, 'N s': { si: 'kg·m/s', factor: 1 },
+  // Rotation. Every rotation formula wants the angle in RADIANS, and Acellus
+  // quotes turns as "rotations" or "revolutions": one turn is 2π rad. `say`
+  // replaces the generic "multiply by 6.283" with the rule as it is taught.
+  rev: { si: 'rad', factor: 2 * Math.PI, say: true }, rotations: { si: 'rad', factor: 2 * Math.PI, say: true },
+  revolutions: { si: 'rad', factor: 2 * Math.PI, say: true },
+  'rad/s²': { si: 'rad/s²', factor: 1 }, 'rad/s^2': { si: 'rad/s²', factor: 1 },
+  'N·m': { si: 'N·m', factor: 1 }, 'N m': { si: 'N·m', factor: 1 },
+  'kg·m²': { si: 'kg·m²', factor: 1 }, 'kg m^2': { si: 'kg·m²', factor: 1 }, 'kg·m^2': { si: 'kg·m²', factor: 1 },
+  'kg·m²/s': { si: 'kg·m²/s', factor: 1 }, 'kg m^2/s': { si: 'kg·m²/s', factor: 1 },
 };
 
 export const unitInfo = (u) => UNITS[String(u).trim()] || null;
@@ -878,6 +896,7 @@ export const fromSI = (value, unit) => { const i = unitInfo(unit); if (!i) throw
 export function conversionRule(unit) {
   const i = unitInfo(unit);
   if (!i || i.factor === 1) return null;
+  if (i.say && i.si === 'rad') return { en: `1 ${unit === 'rev' ? 'revolution' : unit.replace(/s$/, '')} = 2π rad (about 6.283 rad), so multiply by 2π.`, vn: `1 vòng = 2π rad (khoảng 6.283 rad), nên nhân với 2π.` };
   const f = i.factor;
   if (f >= 1) return { en: `1 ${unit} = ${fmtPlain(f, 4)} ${i.si}, so multiply by ${fmtPlain(f, 4)}.`, vn: `1 ${unit} = ${fmtPlain(f, 4)} ${i.si}, nên nhân với ${fmtPlain(f, 4)}.` };
   const inv = 1 / f;

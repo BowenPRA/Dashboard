@@ -4,7 +4,7 @@
 // momentum unit, the Set up stage that fits the one collision equation to the
 // story first. Cases below open it at the items whose SHAPE is new.
 //
-// `?unit=PHY_MOM` picks the unit (PHY_CIRC by default); `&open=N` opens case N
+// `?unit=PHY_MOM` (or PHY_ROT) picks the unit (PHY_CIRC by default); `&open=N` opens case N
 // straight away, so a screenshot needs no clicking, and `&from=K` starts it at
 // slide or item K instead.
 //
@@ -22,6 +22,7 @@ import { getTrack } from './data/index';
 import { getTask } from './tasks/taskRegistry';
 import { DIAGRAMS as CIRC_DIAGRAMS } from './data/PHYSICS/PHY_CIRC/diagrams.js';
 import { DIAGRAMS as MOM_DIAGRAMS } from './data/PHYSICS/PHY_MOM/diagrams.js';
+import { DIAGRAMS as ROT_DIAGRAMS } from './data/PHYSICS/PHY_ROT/diagrams.js';
 
 const TRACK = 'PHYSICS';
 
@@ -70,6 +71,33 @@ const UNITS = {
       ['NOTES', 'Deck · from slide 18, stick together and factoring', 17],
       ['NOTES', 'Deck · from slide 23, recoil derived, then the rifle', 22],
       ['NOTES', 'Deck · from slide 25, the formula page', 24],
+      ['WORKBOOK', 'Practice · 3 tiers'],
+      ['ASSESSMENT', 'Quiz · 10 items, 20 minutes'],
+      ['DIAGRAMS', 'Diagrams · every SVG on one page'],
+    ],
+  },
+  PHY_ROT: {
+    label: 'Rotation & Angular Momentum',
+    diagrams: ROT_DIAGRAMS,
+    cases: [
+      ['REARRANGE', 'Isolate It · from the top (v = rω: one move)'],
+      ['REARRANGE', 'Isolate It · from b2, the sawhorses (÷ a whole sum)', 3],
+      ['REARRANGE', 'Isolate It · from b4, the teeter-totter (g cancels)', 5],
+      ['REARRANGE', 'Isolate It · from e1, × 2 undoes a ½', 6],
+      ['REARRANGE', 'Isolate It · from d1, the disk (cm, ÷ ÷ × 2)', 7],
+      ['REARRANGE', 'Isolate It · from k1, revolutions → rad', 8],
+      ['REARRANGE', 'Isolate It · from k2, Set up: it stops', 9],
+      ['REARRANGE', 'Isolate It · from k3, negative α', 10],
+      ['REARRANGE', 'Isolate It · from l2, the merry-go-round (set up + FACTOR)', 11],
+      ['NOTES', 'Deck · Rotation & Angular Momentum (35 slides)'],
+      ['NOTES', 'Deck · from slide 3, radians and the swap', 2],
+      ['NOTES', 'Deck · from slide 5, the four equations and the missing letter', 4],
+      ['NOTES', 'Deck · from slide 11, centre to edge and the unit traps', 10],
+      ['NOTES', 'Deck · from slide 15, torque and the door', 14],
+      ['NOTES', 'Deck · from slide 17, balancing', 16],
+      ['NOTES', 'Deck · from slide 24, moment of inertia', 23],
+      ['NOTES', 'Deck · from slide 26, τ = Iα to the skater', 25],
+      ['NOTES', 'Deck · from slide 32, the swap and the formula page', 31],
       ['WORKBOOK', 'Practice · 3 tiers'],
       ['ASSESSMENT', 'Quiz · 10 items, 20 minutes'],
       ['DIAGRAMS', 'Diagrams · every SVG on one page'],

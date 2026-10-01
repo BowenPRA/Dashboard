@@ -81,6 +81,20 @@ def speechify(text):
     t = re.sub(r'\b([fgh])\s*\^\s*\{\s*-\s*1\s*\}', r' \1 inverse ', t)
     t = re.sub(r'\b([fgh])⁻¹', r' \1 inverse ', t)
     t = t.replace('∞', ' infinity ')
+    # Rotation (PHYSICS PHY_ROT). A half is said "half", not "1 over 2" —
+    # "theta = half alpha t squared" — and must be caught before the fraction
+    # unwrapping below. The arrow between a line formula and its rotation twin
+    # is read "becomes".
+    t = re.sub(r'\\[dt]?frac\s*\{\s*1\s*\}\s*\{\s*2\s*\}', ' half ', t).replace('½', ' half ')
+    # A KaTeX table (\begin{array}{rcl} … & … \\ … \end{array}) lines formulas
+    # up side by side. Read each row as a sentence: the column breaks are
+    # spaces, the row breaks are pauses, and the environment names are dropped
+    # — left to the catch-all they narrated as "array rcl".
+    def _array_rows(m):
+        body = re.sub(r'\\\\\s*(\[[^\]]*\])?', '. ', m.group(1))
+        return ' ' + body.replace('&', ' ') + ' '
+    t = re.sub(r'\\begin\s*\{(?:array|aligned)\}\s*(?:\{[^{}]*\})?(.*?)\\end\s*\{(?:array|aligned)\}', _array_rows, t, flags=re.S)
+    t = re.sub(r'\\(?:long)?rightarrow(?![a-zA-Z])', ' becomes ', t)
     # Unwrap fractions and braced powers from the inside out BEFORE the
     # squared / cubed rules below run: those read e^{2x} as "e squared x" (the
     # ^2 rule does not look at what follows the 2), and a fraction with a power
@@ -124,6 +138,10 @@ def speechify(text):
     # effector", "testis → urethra") is read as "to"; a bullet is a pause.
     t = t.replace('→', ' to ').replace('•', ' ')
     t = re.sub(r'\\theta(?![a-zA-Z])', ' theta ', t).replace('θ', ' theta ')
+    # Rotation (PHYSICS PHY_ROT): the catch-all deleted these outright, so
+    # "omega f = omega i + alpha t" narrated as "f = i + t".
+    for name, ch in (('omega', 'ω'), ('alpha', 'α'), ('tau', 'τ')):
+        t = re.sub(r'\\' + name + r'(?![a-zA-Z])', f' {name} ', t).replace(ch, f' {name} ')
     # Circles and counting (AMC8 PT_01). The catch-all deleted `\pi` and
     # `\gcd`, so "area = pi R squared" was narrated "area = R squared" and
     # "a + b - gcd(a, b)" as "a + b - (a, b)".
