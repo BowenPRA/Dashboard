@@ -19,12 +19,14 @@ export const PLAN = {
    */
   startISO: '2026-10-05',
   /** Units to FINISH on a study day. Hitting this is the day's goal. */
-  goal: 2,
+  goal: 3,
   /**
    * Units OFFERED on a study day. The one past the goal is the stretch: there
-   * if the day goes well, and first in line tomorrow if it does not.
+   * if the day goes well, and first in line tomorrow if it does not. It also
+   * gives the day some slack — any `goal` of the list will do, so one stubborn
+   * unit does not sink the day. Set equal to `goal` for no bonus.
    */
-  stretch: 3,
+  stretch: 4,
   /** JS getDay() numbers that carry a goal. Saturday and Sunday are free. */
   studyWeekdays: [1, 2, 3, 4, 5],
 };

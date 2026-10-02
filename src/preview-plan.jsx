@@ -18,6 +18,7 @@ import { resolveTask, unitXPOf, isUnitComplete } from './tasks/taskRegistry';
 import {
   planState, planSummary, picksFor, queueAt, addDays, toDayISO, isStudyDay, dayName,
 } from './utils/studyPlan';
+import { PLAN } from './utils/studyPlanConfig';
 
 const realFiles = import.meta.glob('./preview-plan-real.json.local', {
   eager: true, query: '?raw', import: 'default',
@@ -78,8 +79,8 @@ function doToday(progress, iso, n) {
 }
 
 /**
- * A believable few weeks: four units left half done a while ago, then two
- * finished on each of the last `days` study days, always the ones the plan
+ * A believable few weeks: four units left half done a while ago, then the goal
+ * met on each of the last `days` study days, always with the units the plan
  * would have listed that morning.
  */
 function midway(iso, days = 4) {
@@ -90,7 +91,7 @@ function midway(iso, days = 4) {
 
   const dates = [];
   for (let d = prevStudyDay(iso), i = 0; i < days; i += 1, d = prevStudyDay(d)) dates.unshift(d);
-  for (const d of dates) doToday(progress, d, 2);
+  for (const d of dates) doToday(progress, d, PLAN.goal);
   return progress;
 }
 
@@ -106,8 +107,8 @@ const SCENARIOS = [
   { key: 'fresh', label: 'Nothing done, ever', build: () => ({}) },
   { key: 'midway', label: 'Mid-way, nothing yet today', build: (iso) => midway(iso) },
   { key: 'one', label: '1 finished today', build: (iso) => { const p = midway(iso); doToday(p, iso, 1); return p; } },
-  { key: 'goal', label: 'Goal hit (2)', build: (iso) => { const p = midway(iso); doToday(p, iso, 2); return p; } },
-  { key: 'stretch', label: 'Bonus too (3)', build: (iso) => { const p = midway(iso); doToday(p, iso, 3); return p; } },
+  { key: 'goal', label: `Goal hit (${PLAN.goal})`, build: (iso) => { const p = midway(iso); doToday(p, iso, PLAN.goal); return p; } },
+  { key: 'stretch', label: `Bonus too (${PLAN.stretch})`, build: (iso) => { const p = midway(iso); doToday(p, iso, PLAN.stretch); return p; } },
   { key: 'missed', label: 'Missed yesterday', build: (iso) => midway(prevStudyDay(iso), 3) },
   { key: 'tail', label: '2 left — review fills the list', build: (iso) => nearlyDone(iso, 2) },
   { key: 'done', label: 'All finished, 1 reviewed today', build: (iso) => { const p = nearlyDone(iso, 0); doToday(p, iso, 1); return p; } },

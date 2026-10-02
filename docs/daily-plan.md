@@ -1,7 +1,7 @@
 # The Daily Plan
 
 **What it is:** the app looks at every unit the student has not finished, deals the next
-three each day, and counts how many get finished. The goal is two a day; the third is a
+four each day, and counts how many get finished. The goal is three a day; the fourth is a
 bonus. It replaced the fixed two-a-day review rotation on 2026-10-02.
 
 **Why it changed:** the rotation picked units from the calendar — a date decided the day's
@@ -17,9 +17,9 @@ the work that exists and carries anything unfinished forward.
 | | |
 |---|---|
 | Days | Monday–Friday carry a goal. Weekends are free; work done then still counts |
-| Goal | **2 units finished** a day |
-| List | **3 units offered** a day — the third is the bonus, and first in line tomorrow if it is not done |
-| Week | 10 units (goal × 5), weekends included in the running total |
+| Goal | **3 units finished** a day |
+| List | **4 units offered** a day — any three will do; the one past the goal is the bonus, and what is not done is first in line tomorrow |
+| Week | 15 units (goal × 5), weekends included in the running total |
 | Finished means | 100 XP, or 80 XP with the quiz sat — `taskRegistry.isUnitComplete`, the same rule as everywhere else in the app |
 | Counts toward the day | **Any** unit finished that day, on the list or not |
 
@@ -72,11 +72,11 @@ dev harness checks this on every unit.
 
 | | |
 |---|---|
-| Today | units finished against the goal of 2, and the bonus third |
-| This week | a cell per study day (green = goal hit, amber = short, rose = nothing), and the total out of 10 |
+| Today | units finished against the goal of 3, and the bonus fourth |
+| This week | a cell per study day (green = goal hit, amber = short, rose = nothing), and the total out of 15 |
 | Streak | study days in a row with the goal hit. An unfinished today is "not yet", not a miss |
 | Days on goal | goal hit on *n* of *m* study days since `PLAN.startISO` |
-| Overall | units finished out of all, per subject, and the date the backlog runs out at 2 a day and at 3 |
+| Overall | units finished out of all, per subject, and the date the backlog runs out at the goal pace and at the stretch pace |
 
 `PLAN.startISO` only decides where the streak and the days-on-goal tally begin, so the days
 before the plan existed are not scored as misses. The plan itself is live on any date.
@@ -101,7 +101,7 @@ New units published in the plan's tracks join the backlog automatically.
 
 | Route | Who | What |
 |---|---|---|
-| `/today` | Student | The day's goal, the week, the three units with their XP and next step, what is coming up, and overall progress with the finish date |
+| `/today` | Student | The day's goal, the week, the day's units with their XP and next step, what is coming up, and overall progress with the finish date |
 | `/home` | Student | A "Today's Plan" banner above the track grid: today's count and the subjects still on the list |
 | `/<TRACK>?unit=<ID>` | Student | Deep link: expands and scrolls to that unit. This is what a list card's button does |
 | `/study-plan` | Teacher | The headline numbers, today's list as the student sees it, progress by subject, the last 14 days day by day, and every unfinished unit laid over the coming study days |
@@ -123,6 +123,8 @@ Everything is in **`src/utils/studyPlanConfig.js`**. Edit it and every screen fo
 There is no migration, because nothing is stored.
 
 - **Different pace** — `PLAN.goal` (units to finish) and `PLAN.stretch` (units offered).
+  Keep the stretch one above the goal for a bonus and a little slack; set them equal for
+  neither. The goal was raised from 2 to 3 on 2026-10-02.
 - **Six-day week** — add `6` to `PLAN.studyWeekdays`. The week strip and the weekly target
   size themselves from it.
 - **Other tracks** — `PLAN_TRACKS` and `SUBJECT_LABEL`.
@@ -133,7 +135,7 @@ There is no migration, because nothing is stored.
 
 `preview-plan.html` (→ `src/preview-plan.jsx`) mounts the real student screen, the real
 teacher report and the real engine against a synthesised progress blob: nothing done, mid-way,
-one / two / three finished today, a missed day, the review tail, and everything finished. It
+one finished / goal hit / bonus too, a missed day, the review tail, and everything finished. It
 steps through dates, and prints the morning's queue and whether the replay agrees with the
 live rule. Dev-only; not in the production build.
 

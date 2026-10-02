@@ -186,15 +186,17 @@ export function PlanScreen({ name, plan, onStart, onBack, isDark, onToggleDark }
           ? `${units(PLAN.goal - today.count)} to go`
           : `${allFinished ? 'Review' : 'Finish'} ${units(PLAN.goal)} today`;
 
+  // With the stretch set equal to the goal there is no bonus to talk about.
+  const hasBonus = PLAN.stretch > PLAN.goal;
   const subline = !today.isStudyDay
     ? 'Rest properly. Anything you do finish still counts toward the week.'
     : today.stretchHit
-      ? 'Goal and bonus both done. Anything more today is extra.'
+      ? `${hasBonus ? 'Goal and bonus both done' : 'Goal done'}. Anything more today is extra.`
       : today.goalHit
-        ? `One more today earns the bonus star.`
+        ? 'One more today earns the bonus star.'
         : allFinished
           ? 'Every unit is finished, so today is review: re-sit a quiz to keep it fresh.'
-          : `Any ${units(PLAN.goal)} count. A third earns the bonus star.`;
+          : `Any ${units(PLAN.goal)} count.${hasBonus ? ' One more earns the bonus star.' : ''}`;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
