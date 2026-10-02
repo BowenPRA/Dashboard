@@ -3,7 +3,7 @@
  *
  * `unit.essay` used to be a single object. The GED units now carry a BANK — an
  * array of two-source prompts the student picks from each sitting, so a unit
- * revisited on the study-plan rotation is a fresh essay rather than the same
+ * revisited for review is a fresh essay rather than the same
  * one retyped. Everything that reads prompts goes through `essayPrompts()` so a
  * single object and a bank look identical downstream.
  *

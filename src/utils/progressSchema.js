@@ -154,8 +154,8 @@ export function recordAttempt(prev, score, answers = null, meta = {}) {
   // attempt nor item rows, so saving after every question never floods those
   // logs. Quitting or completing the task saves normally, logging one attempt for
   // the whole session. `current` still climbs on a checkpoint, so partial work
-  // counts toward the unit XP and phase gates immediately; only the study-plan
-  // "today" attempt waits for the session's real save.
+  // counts toward the unit XP and phase gates immediately. The study plan dates
+  // that XP by `updatedAt`, since there is no attempt to read a time from.
   const partial = !!meta.partial;
 
   const attempts = partial

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
-  ChevronLeft, Loader2, Flame, CheckCircle2, Circle, Sun, Moon, Coffee,
-  ClipboardCheck, Dumbbell, CalendarDays, ArrowRight, AlertTriangle, Trophy,
+  ChevronLeft, Loader2, Flame, CheckCircle2, Sun, Moon, Coffee, Star,
+  ClipboardCheck, ArrowRight, Trophy, Flag, RotateCcw, CalendarCheck,
 } from 'lucide-react';
 
 import { useStudentProgress } from '../utils/supabaseClient';
@@ -10,100 +10,102 @@ import { getTrackConfig } from '../components/trackRegistry';
 import { Card, Badge, Button } from '../components/ui';
 import ProgressLoadError from '../components/ProgressLoadError';
 import useDarkMode from '../hooks/useDarkMode';
-import { PROGRAM, BENCHMARK } from '../utils/studyPlanConfig';
+import { PLAN, REVIEW } from '../utils/studyPlanConfig';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
-import {
-  todayISO, dayName, evaluateDay, weekOf, computeStreak, missedThisWeek,
-  totalStudyDays, fromDayISO,
-} from '../utils/studyPlan';
+import { todayISO, dayName, fromDayISO, planSummary } from '../utils/studyPlan';
 
 const prettyDate = (iso) =>
   fromDayISO(iso).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
 
-/** One goal row: a label, a progress bar and a tick. */
-function Goal({ icon: Icon, label, detail, value, target, done, accent }) {
-  const pct = target > 0 ? Math.min(100, (value / target) * 100) : 0;
+const shortDate = (iso) =>
+  fromDayISO(iso).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+
+const units = (n) => `${n} ${n === 1 ? 'unit' : 'units'}`;
+
+/**
+ * The day's count as pips: one per unit of the goal, then the stretch pips
+ * with a star. A pip fills as a unit is finished.
+ */
+function Pips({ count, goal, stretch }) {
   return (
-    <div className="flex items-center gap-4">
-      <div
-        className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 border-b-[3px] transition-colors ${
-          done
-            ? 'bg-[#58cc02] border-[#58a700] text-white'
-            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'
-        }`}
-      >
-        <Icon className="w-5 h-5" strokeWidth={2.5} />
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <div className="flex items-baseline justify-between gap-3 mb-1.5">
-          <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 truncate">
-            {label}
-          </span>
-          <span
-            className={`text-xs font-black tracking-wider whitespace-nowrap ${
-              done ? 'text-[#58cc02]' : 'text-slate-400 dark:text-slate-500'
-            }`}
-          >
-            {detail}
-          </span>
-        </div>
-        <div className="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-300/60 dark:border-slate-700">
+    <div className="flex items-center gap-2">
+      {Array.from({ length: Math.max(stretch, goal) }, (_, i) => {
+        const filled = i < count;
+        const bonus = i >= goal;
+        return (
           <div
-            className={`h-full rounded-full transition-all duration-500 ${done ? 'bg-[#58cc02]' : accent}`}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
-
-      {done
-        ? <CheckCircle2 className="w-6 h-6 text-[#58cc02] flex-shrink-0" strokeWidth={2.5} />
-        : <Circle className="w-6 h-6 text-slate-300 dark:text-slate-700 flex-shrink-0" strokeWidth={2.5} />}
+            key={i}
+            className={`h-12 flex-1 rounded-2xl border-2 border-b-[4px] flex items-center justify-center transition-colors ${
+              filled
+                ? bonus
+                  ? 'bg-amber-400 border-amber-600 text-amber-950'
+                  : 'bg-[#58cc02] border-[#58a700] text-white'
+                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-600'
+            } ${bonus && !filled ? 'border-dashed' : ''}`}
+          >
+            {bonus
+              ? <Star className={`w-5 h-5 ${filled ? 'fill-current' : ''}`} strokeWidth={2.5} />
+              : <CheckCircle2 className="w-5 h-5" strokeWidth={2.5} />}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-/** One of the day's two assigned units. */
-function AssignmentCard({ item, index, onStart }) {
+/** One unit on the day's list. */
+function PickCard({ item, index, bonus, onStart }) {
   const theme = getTrackConfig(item.track)?.theme || {};
+  const review = item.kind === 'review';
+  const done = item.doneToday;
 
-  if (item.missing || item.unavailable) {
-    return (
-      <Card className="p-7 border-dashed">
-        <Badge tone="rose" className="mb-4">
-          <AlertTriangle className="w-3 h-3" strokeWidth={3} /> {item.subject}
-        </Badge>
-        <h3 className="text-xl font-black text-slate-800 dark:text-white mb-2">Nothing to assign yet</h3>
-        <p className="text-sm font-bold text-slate-500 dark:text-slate-400 leading-relaxed">
-          This slot is waiting on a {item.subject} unit being built. Do the other unit today and
-          take the extra time on writing.
-        </p>
-      </Card>
-    );
-  }
+  // What is left, in the student's terms. A unit is finished at 100 XP, or at
+  // its bar (80) once the quiz has been sat — so under the bar the answer is
+  // XP, and over it the answer is the quiz.
+  const toBar = Math.max(0, item.minXP - item.xp);
+  const left = review
+    ? `Quiz today: ${Math.round(item.quizPct * 100)}% · need ${Math.round(REVIEW.quizPct * 100)}%`
+    : done
+      ? `${item.xp} XP`
+      : toBar > 0
+        ? `${item.xp} XP · ${toBar} more to reach ${item.minXP}`
+        : `${item.xp} XP · the quiz finishes it`;
+
+  const barPct = review ? Math.min(100, (item.quizPct / REVIEW.quizPct) * 100) : item.xp;
 
   return (
     <Card
-      className={`p-7 border-b-[6px] transition-all animate-in fade-in slide-in-from-bottom-4 ${
-        item.complete ? 'border-[#58cc02] dark:border-[#58a700]' : ''
+      className={`p-6 sm:p-7 border-b-[6px] transition-all animate-in fade-in slide-in-from-bottom-4 ${
+        done ? 'border-[#58cc02] dark:border-[#58a700]' : ''
       }`}
-      style={{ animationFillMode: 'both', animationDelay: `${index * 120}ms` }}
+      style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
     >
-      <div className="flex items-start justify-between gap-4 mb-5">
+      <div className="flex items-start justify-between gap-4 mb-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
             <span
               className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-white border-b-[3px] ${theme.bg} ${theme.border}`}
             >
               {item.subject}
             </span>
-            {item.complete && (
-              <Badge tone="green">
-                <CheckCircle2 className="w-3 h-3" strokeWidth={3} /> Done today
+            {review && (
+              <Badge tone="purple">
+                <RotateCcw className="w-3 h-3" strokeWidth={3} /> Review
               </Badge>
             )}
+            {bonus && !done && (
+              <Badge tone="amber">
+                <Star className="w-3 h-3" strokeWidth={3} /> Bonus
+              </Badge>
+            )}
+            {done && (
+              <Badge tone="green">
+                <CheckCircle2 className="w-3 h-3" strokeWidth={3} /> {review ? 'Reviewed today' : 'Finished'}
+              </Badge>
+            )}
+            {!review && !done && item.startXP > 0 && <Badge>Started</Badge>}
           </div>
-          <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight leading-tight">
+          <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight leading-tight">
             {item.title}
           </h3>
         </div>
@@ -113,41 +115,49 @@ function AssignmentCard({ item, index, onStart }) {
         </div>
       </div>
 
-      <div className="space-y-5 mb-6">
-        {item.assessment ? (
-          <Goal
-            icon={ClipboardCheck}
-            label="Assessment"
-            detail={`${Math.round(item.assessment.pct * 100)}% · need ${Math.round(BENCHMARK.assessmentPct * 100)}%`}
-            value={item.assessment.pct}
-            target={BENCHMARK.assessmentPct}
-            done={item.assessment.done}
-            accent="bg-[#2563eb]"
+      {/* XP toward the finish, with the bar a unit must clear marked on it. */}
+      <div className="mb-5">
+        <div className="relative w-full h-3.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-300/60 dark:border-slate-700">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${done ? 'bg-[#58cc02]' : theme.bg}`}
+            style={{ width: `${barPct}%` }}
           />
-        ) : (
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-            No assessment in this unit yet — practice only
-          </p>
-        )}
-
-        <Goal
-          icon={Dumbbell}
-          label="Practice today"
-          detail={`${item.practice.xp} / ${item.practice.target} XP`}
-          value={item.practice.xp}
-          target={item.practice.target}
-          done={item.practice.done}
-          accent="bg-[#ff9600]"
-        />
+          {!review && !done && (
+            <div
+              className="absolute top-0 bottom-0 w-0.5 bg-slate-400/70 dark:bg-slate-500"
+              style={{ left: `${item.minXP}%` }}
+              title={`Finish line: ${item.minXP} XP and the quiz`}
+            />
+          )}
+        </div>
+        <p className={`mt-2 text-xs font-black tracking-wider ${done ? 'text-[#58cc02]' : 'text-slate-500 dark:text-slate-400'}`}>
+          {left}
+        </p>
       </div>
+
+      {review && !done && (
+        <p className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 mb-5">
+          <ClipboardCheck className="w-4 h-4 text-slate-400 flex-shrink-0" strokeWidth={2.5} />
+          Sit the quiz again and score {Math.round(REVIEW.quizPct * 100)}% or more.
+        </p>
+      )}
+      {item.next && (
+        <p className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 mb-5">
+          <Flag className="w-4 h-4 text-slate-400 flex-shrink-0" strokeWidth={2.5} />
+          <span>
+            Next: <span className="font-black text-slate-800 dark:text-white">{item.next.label}</span>
+            <span className="text-slate-400"> · {item.next.note}</span>
+          </span>
+        </p>
+      )}
 
       <Button
         onClick={() => onStart(item)}
-        variant={item.complete ? 'secondary' : 'primary'}
+        variant={done ? 'secondary' : 'primary'}
         size="md"
         className="w-full"
       >
-        {item.complete ? 'Open again' : 'Start'}
+        {done ? 'Open again' : review ? 'Review' : item.xp > 0 ? 'Continue' : 'Start'}
         <ArrowRight className="w-4 h-4" strokeWidth={3} />
       </Button>
     </Card>
@@ -155,19 +165,36 @@ function AssignmentCard({ item, index, onStart }) {
 }
 
 /**
- * The screen itself, given everything it needs.
+ * The screen itself, given a `planSummary`.
  *
  * Split from the data wrapper so `preview-plan.jsx` can mount it against a
  * synthetic progress blob — the real route sits behind Supabase auth, which
  * makes the plan's own logic the one thing that cannot be eyeballed in the
  * browser without this seam.
  */
-export function PlanScreen({
-  name, iso, day, streak, missed, week, onStart, onBack, isDark, onToggleDark,
-}) {
-  const weekLabel = day.weekIndex !== null
-    ? `Week ${day.weekIndex + 1} of ${PROGRAM.weeks}`
-    : PROGRAM.title;
+export function PlanScreen({ name, plan, onStart, onBack, isDark, onToggleDark }) {
+  const { iso, today, picks, upNext, week, totals, finishAt } = plan;
+  const allFinished = totals.remaining === 0;
+
+  const headline = !today.isStudyDay
+    ? 'Weekend — no goal today'
+    : today.stretchHit
+      ? `All ${PLAN.stretch} done, ${name}!`
+      : today.goalHit
+        ? `Goal hit — nice work, ${name}`
+        : today.count > 0
+          ? `${units(PLAN.goal - today.count)} to go`
+          : `${allFinished ? 'Review' : 'Finish'} ${units(PLAN.goal)} today`;
+
+  const subline = !today.isStudyDay
+    ? 'Rest properly. Anything you do finish still counts toward the week.'
+    : today.stretchHit
+      ? 'Goal and bonus both done. Anything more today is extra.'
+      : today.goalHit
+        ? `One more today earns the bonus star.`
+        : allFinished
+          ? 'Every unit is finished, so today is review: re-sit a quiz to keep it fresh.'
+          : `Any ${units(PLAN.goal)} count. A third earns the bonus star.`;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
@@ -187,7 +214,7 @@ export function PlanScreen({
                 Today's Plan
               </h1>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 truncate">
-                {weekLabel}
+                {prettyDate(iso)}
               </p>
             </div>
           </div>
@@ -195,14 +222,14 @@ export function PlanScreen({
           <div className="flex items-center gap-3 flex-shrink-0">
             <div
               className={`flex items-center px-4 py-2 rounded-xl border-b-[4px] shadow-sm ${
-                streak > 0
+                plan.streak > 0
                   ? 'bg-[#ff9600] border-[#cc7800] text-white'
                   : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'
               }`}
-              title="Consecutive study days completed"
+              title="Study days in a row with the goal hit"
             >
               <Flame className="w-5 h-5 mr-2" strokeWidth={2.5} />
-              <span className="text-xs font-black tracking-widest mt-0.5">{streak}</span>
+              <span className="text-xs font-black tracking-widest mt-0.5">{plan.streak}</span>
             </div>
 
             <button
@@ -216,122 +243,179 @@ export function PlanScreen({
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
 
-        {/* The week at a glance — five dots, one per study day. */}
-        <div className="flex items-center justify-between gap-2">
-          {week.map((d) => {
-            const isToday = d.iso === iso;
-            const past = d.iso < iso;
-            const tone = d.complete
-              ? 'bg-[#58cc02] border-[#58a700] text-white'
-              : past
-                ? 'bg-rose-100 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800 text-rose-500'
-                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400';
-            return (
-              <div key={d.iso} className="flex-1 flex flex-col items-center gap-2">
-                <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-slate-800 dark:text-white' : 'text-slate-400'}`}>
-                  {dayName(d.iso).slice(0, 3)}
-                </span>
-                <div
-                  className={`w-full h-12 rounded-2xl border-2 border-b-[4px] flex items-center justify-center font-black text-sm transition-all ${tone} ${
-                    isToday ? 'ring-4 ring-[#1cb0f6]/30' : ''
-                  }`}
-                  title={`${prettyDate(d.iso)} — ${d.done}/${d.total} units`}
-                >
-                  {d.total > 0 ? `${d.done}/${d.total}` : '—'}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Today */}
-        {!day.isStudyDay ? (
-          <Card className="p-10 text-center">
-            <div className="w-20 h-20 mx-auto rounded-[1.75rem] bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-200 dark:border-amber-800 flex items-center justify-center mb-6">
-              <Coffee className="w-9 h-9 text-amber-500" strokeWidth={2.5} />
+        {/* Today's goal. */}
+        <Card className="p-6 sm:p-7">
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div className="min-w-0">
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                {headline}
+              </h2>
+              <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                {subline}
+              </p>
             </div>
-            <h2 className="text-3xl font-black text-slate-800 dark:text-white mb-3 tracking-tight">
-              Rest day
-            </h2>
-            <p className="text-base font-bold text-slate-500 dark:text-slate-400 leading-relaxed max-w-md mx-auto">
-              {prettyDate(iso)} has no assigned units. The plan runs Monday to Friday — rest
-              properly, or use the catch-up list below.
+            {today.stretchHit
+              ? <Trophy className="w-9 h-9 text-amber-400 flex-shrink-0" strokeWidth={2.5} />
+              : !today.isStudyDay && <Coffee className="w-9 h-9 text-amber-500 flex-shrink-0" strokeWidth={2.5} />}
+          </div>
+
+          {today.isStudyDay
+            ? <Pips count={today.count} goal={PLAN.goal} stretch={PLAN.stretch} />
+            : today.count > 0 && (
+              <p className="text-sm font-black text-[#58cc02]">{units(today.count)} finished today</p>
+            )}
+        </Card>
+
+        {/* The week: a cell per study day, and the running total. */}
+        <div>
+          <div className="flex items-baseline justify-between mb-3">
+            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">This week</h3>
+            <p className="text-xs font-black tracking-wider text-slate-500 dark:text-slate-400">
+              <span className={plan.weekCount >= plan.weekTarget ? 'text-[#58cc02]' : 'text-slate-800 dark:text-white'}>
+                {plan.weekCount}
+              </span> / {plan.weekTarget} units
             </p>
-          </Card>
-        ) : !day.inProgram ? (
-          <Card className="p-10 text-center">
-            <div className="w-20 h-20 mx-auto rounded-[1.75rem] bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center mb-6">
-              <CalendarDays className="w-9 h-9 text-slate-400" strokeWidth={2.5} />
-            </div>
-            <h2 className="text-3xl font-black text-slate-800 dark:text-white mb-3 tracking-tight">
-              {day.beforeStart ? 'Not started yet' : 'Block finished'}
-            </h2>
-            <p className="text-base font-bold text-slate-500 dark:text-slate-400 leading-relaxed max-w-md mx-auto">
-              {day.beforeStart
-                ? `${PROGRAM.title} begins on ${prettyDate(PROGRAM.startISO)}.`
-                : `The ${PROGRAM.weeks}-week block is over — ${totalStudyDays()} study days. Pick any track and keep reviewing.`}
-            </p>
-          </Card>
-        ) : (
-          <>
-            <div className="flex items-baseline justify-between gap-4">
-              <div>
-                <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-                  {day.complete ? `Nice work, ${name}` : `${dayName(iso)}, two units`}
-                </h2>
-                <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mt-1">
-                  {prettyDate(iso)}
-                </p>
-              </div>
-              {day.complete && <Trophy className="w-9 h-9 text-amber-400 flex-shrink-0" strokeWidth={2.5} />}
-            </div>
-
-            <div className="grid grid-cols-1 gap-6">
-              {day.assignments.map((item, i) => (
-                <AssignmentCard key={`${item.track}-${item.unitId ?? i}`} item={item} index={i} onStart={onStart} />
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Catch-up: past study days this week that were not cleared. */}
-        {missed.length > 0 && (
-          <Card className="p-7">
-            <div className="flex items-center gap-3 mb-5">
-              <AlertTriangle className="w-6 h-6 text-amber-500" strokeWidth={2.5} />
-              <h3 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">
-                Catch up
-              </h3>
-            </div>
-            <div className="space-y-3">
-              {missed.map((d) => (
-                <div key={d.dateISO}>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                    {dayName(d.dateISO)} — {d.done} of {d.total} done
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {d.assignments.filter((a) => !a.complete && a.unitId).map((a) => (
-                      <button
-                        key={a.unitId}
-                        onClick={() => onStart(a)}
-                        className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 border-b-[4px] active:border-b-2 active:translate-y-[2px] text-xs font-black text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
-                      >
-                        {a.subject} · {a.title}
-                      </button>
-                    ))}
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            {week.map((d) => {
+              const isToday = d.iso === iso;
+              const past = d.iso < iso;
+              // Days before the plan began were never asked for a goal, so they
+              // are shown plainly rather than as misses.
+              const scored = d.iso >= PLAN.startISO;
+              const tone = d.goalHit
+                ? 'bg-[#58cc02] border-[#58a700] text-white'
+                : past && scored
+                  ? d.count > 0
+                    ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800 text-amber-600'
+                    : 'bg-rose-100 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800 text-rose-500'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400';
+              return (
+                <div key={d.iso} className="flex-1 flex flex-col items-center gap-2">
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-slate-800 dark:text-white' : 'text-slate-400'}`}>
+                    {dayName(d.iso).slice(0, 3)}
+                  </span>
+                  <div
+                    className={`w-full h-12 rounded-2xl border-2 border-b-[4px] flex items-center justify-center gap-1 font-black text-sm transition-all ${tone} ${
+                      isToday ? 'ring-4 ring-[#1cb0f6]/30' : ''
+                    }`}
+                    title={`${prettyDate(d.iso)} — ${units(d.count)} finished`}
+                  >
+                    {past || isToday ? d.count : '·'}
+                    {d.stretchHit && <Star className="w-3.5 h-3.5 fill-current" strokeWidth={2.5} />}
                   </div>
                 </div>
-              ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* The day's list. */}
+        {picks.length > 0 && (
+          <div className="grid grid-cols-1 gap-6">
+            {picks.map((item, i) => (
+              <PickCard
+                key={`${item.track}-${item.unitId}`}
+                item={item}
+                index={i}
+                bonus={today.isStudyDay && i >= PLAN.goal}
+                onStart={onStart}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* What follows — also where to go when the list is done early. */}
+        {upNext.length > 0 && (
+          <Card className="p-6 sm:p-7">
+            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Coming up next</h3>
+            <div className="space-y-2">
+              {upNext.map((u) => {
+                const theme = getTrackConfig(u.track)?.theme || {};
+                return (
+                  <button
+                    key={`${u.track}-${u.unitId}`}
+                    onClick={() => onStart(u)}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 transition-colors"
+                  >
+                    <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${theme.bg}`} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-black text-slate-800 dark:text-white truncate">{u.title}</span>
+                      <span className="block text-[10px] font-black uppercase tracking-widest text-slate-400">{u.subject}</span>
+                    </span>
+                    <span className="text-xs font-black text-slate-400 tabular-nums flex-shrink-0">
+                      {u.complete ? 'Finished' : `${u.xp} XP`}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </Card>
         )}
 
+        {/* The whole job: how much is finished, and when the rest runs out. */}
+        <Card className="p-6 sm:p-7">
+          <div className="flex items-end justify-between gap-4 mb-3">
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Overall</h3>
+              <p className="text-2xl font-black text-slate-800 dark:text-white tabular-nums leading-none">
+                {totals.done}<span className="text-slate-400 text-lg"> / {totals.total} units finished</span>
+              </p>
+            </div>
+            {plan.onTarget.of > 0 && (
+              <p className="text-xs font-black text-slate-500 dark:text-slate-400 text-right">
+                Goal hit on<br />
+                <span className="text-slate-800 dark:text-white">{plan.onTarget.hit} of {plan.onTarget.of}</span> days
+              </p>
+            )}
+          </div>
+          <div className="h-3.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden mb-5">
+            <div
+              className="h-full rounded-full bg-[#58cc02] transition-all duration-700"
+              style={{ width: `${totals.total ? (totals.done / totals.total) * 100 : 0}%` }}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3 mb-5">
+            {totals.byTrack.map((t) => {
+              const theme = getTrackConfig(t.track)?.theme || {};
+              return (
+                <div key={t.track}>
+                  <div className="flex items-baseline justify-between mb-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 truncate">{t.subject}</span>
+                    <span className="text-[11px] font-black tabular-nums text-slate-500 dark:text-slate-400">{t.done}/{t.total}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div className={`h-full rounded-full ${theme.bg}`} style={{ width: `${t.total ? (t.done / t.total) * 100 : 0}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {allFinished ? (
+            <p className="flex items-center gap-2 text-sm font-black text-[#58cc02]">
+              <Trophy className="w-5 h-5" strokeWidth={2.5} /> Every unit is finished.
+            </p>
+          ) : (
+            <p className="flex items-start gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">
+              <CalendarCheck className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+              <span>
+                {units(totals.remaining)} to go. At {PLAN.goal} a day you finish on{' '}
+                <span className="font-black text-slate-800 dark:text-white">{shortDate(finishAt.goal)}</span>
+                {finishAt.stretch !== finishAt.goal && (
+                  <> — at {PLAN.stretch} a day, <span className="font-black text-slate-800 dark:text-white">{shortDate(finishAt.stretch)}</span></>
+                )}.
+              </span>
+            </p>
+          )}
+        </Card>
+
         <p className="text-center text-xs font-bold text-slate-400 dark:text-slate-600 leading-relaxed px-6">
-          A unit counts for the day when you score {Math.round(BENCHMARK.assessmentPct * 100)}% or more
-          on its Assessment <em>today</em> and log {BENCHMARK.practiceXP} XP of practice
-          <em> today</em>. Yesterday's score does not carry over — that is the point.
+          A unit is finished at 100 XP, or at 80 XP once you have done its quiz. What you
+          do not finish today is first on tomorrow's list.
         </p>
       </div>
     </div>
@@ -349,13 +433,7 @@ export default function Today() {
   const [isDark, toggleDarkMode] = useDarkMode();
   const [iso] = useState(todayISO);
 
-  const day = useMemo(() => evaluateDay(iso, allProgress), [iso, allProgress]);
-  const streak = useMemo(() => computeStreak(allProgress, iso), [iso, allProgress]);
-  const missed = useMemo(() => missedThisWeek(allProgress, iso), [iso, allProgress]);
-  const week = useMemo(
-    () => weekOf(iso).map((d) => ({ iso: d, ...evaluateDay(d, allProgress) })),
-    [iso, allProgress]
-  );
+  const plan = useMemo(() => planSummary(allProgress, iso), [iso, allProgress]);
 
   if (loadError) return <ProgressLoadError />;
 
@@ -368,18 +446,14 @@ export default function Today() {
     );
   }
 
-  // The plan is for the two GED-sprint students only. Anyone else who reaches
-  // /today directly (old link, typed URL) is sent back to their track menu.
+  // The plan is only for the students it has been turned on for. Anyone else
+  // who reaches /today directly (old link, typed URL) goes back to their menu.
   if (!hasStudyPlan(user)) return <Navigate to="/home" replace />;
 
   return (
     <PlanScreen
       name={user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student'}
-      iso={iso}
-      day={day}
-      streak={streak}
-      missed={missed}
-      week={week}
+      plan={plan}
       isDark={isDark}
       onToggleDark={toggleDarkMode}
       onBack={() => navigate('/home')}

@@ -1,14 +1,14 @@
 # The Daily Plan
 
-**What it is:** the app assigns two units a day, Monday to Friday, and decides whether the
-day's bar was cleared. It is the review-block successor to the day-by-day grid in
-[GED-SPRINT.md](GED-SPRINT.md) §6 — that grid was a *shipping* schedule for authoring
-units; this is a *study* schedule over the units that exist.
+**What it is:** the app looks at every unit the student has not finished, deals the next
+three each day, and counts how many get finished. The goal is two a day; the third is a
+bonus. It replaced the fixed two-a-day review rotation on 2026-10-02.
 
-**The situation it was built for:** the student has passed his GED practice mock tests
-across all four subjects. The next month or two is not new learning, it is keeping four
-subjects warm and spaced until the real sittings. So the plan cycles the built units rather
-than marching through them once.
+**Why it changed:** the rotation picked units from the calendar — a date decided the day's
+two units, whatever the student had or had not done. It never looked at what was still
+unfinished, and a missed day simply went by. In practice it was not followed: by the time it
+was replaced, 17 of 31 GED units were started and only 3 finished. The plan now starts from
+the work that exists and carries anything unfinished forward.
 
 ---
 
@@ -16,125 +16,126 @@ than marching through them once.
 
 | | |
 |---|---|
-| Days | Monday–Friday. Saturday and Sunday are rest / catch-up |
-| Load | 2 units a day, 10 slots a week |
-| Mix | **English 4 · Social Studies 3 · Math 2 · Science 1** |
-| Bar | Assessment ≥ 70% **and** 40 XP of practice — **both on the same day** |
-| Block | 8 weeks from the configured start date |
-
-The mix follows the teacher's risk order (English ≫ Social Studies > Math > Science), the
-same order [GED-SPRINT.md](GED-SPRINT.md) §1 records.
-
-Two rules hold in the weekday pattern, and both matter more than they look:
-
-- **No subject appears twice in one day.** Interleaving two subjects is what makes the
-  recall effortful; two English units back to back is one long English session in a costume.
-- **Each day pairs a reading-heavy subject with a lighter one**, so no day is two hours of
-  dense prose for an ESL reader.
+| Days | Monday–Friday carry a goal. Weekends are free; work done then still counts |
+| Goal | **2 units finished** a day |
+| List | **3 units offered** a day — the third is the bonus, and first in line tomorrow if it is not done |
+| Week | 10 units (goal × 5), weekends included in the running total |
+| Finished means | 100 XP, or 80 XP with the quiz sat — `taskRegistry.isUnitComplete`, the same rule as everywhere else in the app |
+| Counts toward the day | **Any** unit finished that day, on the list or not |
 
 ---
 
-## 2. The one idea that makes it work
+## 2. Which units, in what order
 
-**A day's goal is measured from that day's attempts — never from `current`.**
+The **backlog** is every unit in the plan's tracks that is not finished. Each day's list is
+the front of that queue:
 
-`progress[track][unit][dbKey].current` is a lifetime high-water mark. A unit that has been
-reviewed once sits at 100 XP forever, so any goal built on `current` would tick itself green
-every morning and measure nothing. This is the exact trap a review-cycle plan walks into,
-because by design it re-assigns units that are already finished.
-
-`progressSchema.js` stamps every attempt with `at`, and `xpOnDay()` reads that:
-
-- best attempt **logged today**, capped at the task's max XP;
-- records predating the attempt log fall back to `updatedAt` + `last`, so an older account
-  reads sensibly rather than showing a permanent zero;
-- a unit maxed out yesterday reads **0** today. That is the point.
-
-Redoing a task and scoring worse still counts *that* score for the day, not the old best —
-`current` is untouched, so no phase ever re-locks.
+1. **Started units first, nearest to finished first.** A half-done unit is the cheapest
+   unit to finish, and a plan that keeps opening new units over a pile of half-done ones
+   never gets anything counted.
+2. **Then untouched units, in course order.** Ids sort numerically here (`ENG_3` before
+   `ENG_10`), unlike the track page.
+3. **Subjects are mixed in proportion to what each has left** (smooth weighted
+   round-robin, within each of the two groups above). A subject with eight units left
+   against another's four comes up twice as often, and they all run out at about the same
+   time rather than leaving one subject to finish alone.
 
 ---
 
-## 3. How a day's two units are chosen
+## 3. The idea that makes it work
 
-The plan is **derived, never stored**. A date plus `src/utils/studyPlanConfig.js` determines
-the day's units, so there is no assignment table to keep in sync, the student screen and the
-teacher screen cannot disagree, and yesterday's plan still reads the same today.
+**The plan is derived, never stored.** There is no assignment table. Every attempt in
+`students.progress` carries a timestamp (`attempts[].at`), so a unit's history can be
+replayed — `unitTimeline()` in `studyPlan.js` — to answer two questions for any date:
 
-Each track walks its own unit list in order. A rotation cursor counts how many times that
-track has come up since day one; `cursor % units.length` picks the unit. The gap between two
-sightings of the same unit is therefore as wide as the built content allows:
+- **What was its XP at midnight?** That decides the day's list. The list is dealt from
+  where each unit stood at the *start* of the day, so it does not reshuffle while the
+  student works through it, and a unit finished at 10am stays on the list, ticked.
+- **On which day did it cross the finish line?** That is the day it counts for. It is how
+  the week strip, the streak and the teacher's day-by-day record are filled in — including
+  for days before this plan existed.
 
-| Subject | Units built | Slots/week | A unit returns every |
-|---|---|---|---|
-| English | 5 | 4 | ~8.8 days |
-| Social Studies | 3 | 3 | 7 days |
-| Math | 3 | 2 | ~10.5 days |
-| Science | **1** | 1 | **7 days** |
+Two edges, handled on purpose:
 
-### The precession rule
+- **Undated work** — records with no attempts and no `updatedAt` (set by a teacher, or
+  written before attempts were logged) — is treated as having always been there. It counts
+  toward the unit, and toward no particular day.
+- **Checkpoint saves** raise `current` without logging an attempt. That XP is dated by the
+  record's `updatedAt`.
 
-When a track's unit count is a whole multiple of its weekly slots, the cursor advances
-exactly one full cycle per week and every unit welds itself to one weekday forever —
-"Tuesday is always Reading Sources". Social Studies (3 units, 3 slots) hits this exactly.
-The spacing is fine either way; the problem is that the *pairing* never varies, and a plan
-that never surprises stops being read. So in that case the cursor is nudged by the week
-index, which keeps the ~7-day gap while rotating which day and which partner it lands on.
+The replay always ends exactly where the live rule does (`unitXPOf` / `isUnitComplete`); the
+dev harness checks this on every unit.
 
 ---
 
-## 4. The surfaces
+## 4. What is tracked
+
+| | |
+|---|---|
+| Today | units finished against the goal of 2, and the bonus third |
+| This week | a cell per study day (green = goal hit, amber = short, rose = nothing), and the total out of 10 |
+| Streak | study days in a row with the goal hit. An unfinished today is "not yet", not a miss |
+| Days on goal | goal hit on *n* of *m* study days since `PLAN.startISO` |
+| Overall | units finished out of all, per subject, and the date the backlog runs out at 2 a day and at 3 |
+
+`PLAN.startISO` only decides where the streak and the days-on-goal tally begin, so the days
+before the plan existed are not scored as misses. The plan itself is live on any date.
+
+---
+
+## 5. When everything is finished
+
+Once the backlog is shorter than the day's list, the list is topped up with **review**:
+finished units, the one left longest first. A review counts for the day when its quiz is
+re-sat that day at 70% or better (`REVIEW.quizPct`).
+
+Reviews only count on a day the list had room for them, and only as many as there was room
+for. Otherwise re-sitting an easy quiz would be a way to hit the goal without touching the
+work still owed.
+
+New units published in the plan's tracks join the backlog automatically.
+
+---
+
+## 6. The surfaces
 
 | Route | Who | What |
 |---|---|---|
-| `/today` | Student | The day's two units, each with its two goals as progress bars; the Mon–Fri strip; the streak; a weekend catch-up list |
-| `/home` | Student | A "Today's Plan" banner above the track grid — the intended way in |
-| `/<TRACK>?unit=<ID>` | Student | Deep link: expands and scrolls to that unit. This is what a plan card's **Start** does |
-| `/study-plan` | Teacher | Coverage vs. blueprint, rotation load, the ranked build queue, unfinished units, and the next 4 weeks of rotation |
+| `/today` | Student | The day's goal, the week, the three units with their XP and next step, what is coming up, and overall progress with the finish date |
+| `/home` | Student | A "Today's Plan" banner above the track grid: today's count and the subjects still on the list |
+| `/<TRACK>?unit=<ID>` | Student | Deep link: expands and scrolls to that unit. This is what a list card's button does |
+| `/study-plan` | Teacher | The headline numbers, today's list as the student sees it, progress by subject, the last 14 days day by day, and every unfinished unit laid over the coming study days |
 
-`/study-plan` is teacher-gated by the same `TeacherRoute` as the roster.
+`/study-plan` is teacher-gated by the same `TeacherRoute` as the roster. Its schedule is a
+projection at goal pace — the real list is re-dealt each morning from what got done.
 
----
+Who sees the plan: `src/utils/studyPlanAccess.js` (an email allowlist, or
+`app_metadata.study_plan`, which a class can switch on). Everyone else sees no banner, and
+`/today` sends them home.
 
-## 5. What still needs authoring
-
-`/study-plan` answers this live rather than from a list that goes stale: it diffs the
-blueprint in `studyPlanConfig.js` (lifted from [GED-SPRINT.md](GED-SPRINT.md) §6) against
-the units actually on disk, and ranks what is missing by **rotation strain** — how hard the
-plan is being forced to repeat itself — then by the blueprint's own `critical` flag, then by
-how many slots a week the subject takes.
-
-**Science is the pressure point: 1 unit built of 6.** With one slot a week and one unit,
-`SCI_0A` comes back every 7 days and Science stops being a review at all. Social Studies is
-tied on strain (7 days) but carries 3× the weekly slots and holds Civics, which is 50% of
-that test — which is why the queue currently reads
-`HIST_2A → HIST_2B → HIST_3A → HIST_4A → SCI_1A`.
-
-Every unit authored anywhere in the four GED tracks widens the rotation automatically. There
-is no list to update.
+The arcade's questions follow the day's list (`src/arcade/questionSource.js`).
 
 ---
 
-## 6. Changing the plan
+## 7. Changing the plan
 
-Everything is in **`src/utils/studyPlanConfig.js`** — the weekday pattern and subject mix,
-the daily bar, the block start date and length, the blueprint, and the subject labels. Edit
-that file and every screen follows it. There is no migration, because nothing is stored.
+Everything is in **`src/utils/studyPlanConfig.js`**. Edit it and every screen follows.
+There is no migration, because nothing is stored.
 
-Common edits:
+- **Different pace** — `PLAN.goal` (units to finish) and `PLAN.stretch` (units offered).
+- **Six-day week** — add `6` to `PLAN.studyWeekdays`. The week strip and the weekly target
+  size themselves from it.
+- **Other tracks** — `PLAN_TRACKS` and `SUBJECT_LABEL`.
+- **Restart the tally** — move `PLAN.startISO`.
+- **Stricter review** — `REVIEW.quizPct`.
 
-- **Different mix** — change `WEEK_PATTERN`. Keep the no-repeated-subject and
-  heavy+light rules above.
-- **Softer bar** — lower `BENCHMARK.practiceXP`, or drop `assessmentPct` toward 0.6.
-  Setting `practiceXP: 0` makes the assessment the only gate.
-- **Six-day week** — add a Saturday entry to `WEEK_PATTERN`. `weekOf()` and the week strip
-  size themselves from the pattern's length.
-- **New block** — move `PROGRAM.startISO` (must be a Monday) and `PROGRAM.weeks`.
+## 8. Checking it
 
-## 7. Checking it
+`preview-plan.html` (→ `src/preview-plan.jsx`) mounts the real student screen, the real
+teacher report and the real engine against a synthesised progress blob: nothing done, mid-way,
+one / two / three finished today, a missed day, the review tail, and everything finished. It
+steps through dates, and prints the morning's queue and whether the replay agrees with the
+live rule. Dev-only; not in the production build.
 
-`preview-plan.html` (→ `src/preview-plan.jsx`) mounts the real `PlanScreen` and the real
-engine against a synthesised progress blob, so the rotation, the weighting, the repeat
-intervals and each benchmark state can be stepped through without a Supabase session. It
-prints the weekly mix and per-track strain above the screen. Dev-only; not in the
-production build.
+To look at a real student, put their progress in `src/preview-plan-real.json.local` as
+`{ "<name>": <progress> }`. `*.local` is gitignored, so it never reaches the repo.

@@ -5,7 +5,8 @@ import { TRACK_REGISTRY, getTrackConfig, ARCADE_TRACK_ID } from '../components/t
 import { supabase } from '../utils/supabaseClient';
 import { isPreviewAccount } from '../utils/previewAccount';
 import { hasStudyPlan } from '../utils/studyPlanAccess';
-import { planForDate, todayISO } from '../utils/studyPlan';
+import { planSummary, todayISO, dayName } from '../utils/studyPlan';
+import { PLAN } from '../utils/studyPlanConfig';
 import { getTrack } from '../data/index';
 import { trackSummary, unitNumberOf } from '../utils/trackSections';
 import { availableUnits, goldBalance, freePlayState, PLAY_COST } from '../arcade/economy';
@@ -26,9 +27,12 @@ export default function Home() {
   // roster's display name (older accounts), else the start of their email.
   const [studentName, setStudentName] = useState('');
 
-  // The banner only needs the plan, not the progress behind it — /today owns
-  // the per-goal detail, and Home stays a one-query screen.
-  const plan = useMemo(() => planForDate(todayISO()), []);
+  // The day's list is dealt from the student's own progress, so the banner
+  // fills in once that has arrived. /today owns the detail.
+  const plan = useMemo(
+    () => (showPlan && progress ? planSummary(progress, todayISO()) : null),
+    [showPlan, progress]
+  );
 
   useEffect(() => {
     // Students with no explicit enrolment see the full GED programme.
@@ -91,10 +95,6 @@ export default function Home() {
 
     fetchUserAndTracks();
   }, [navigate]);
-
-  // Past the end of the block planForDate still names units, but /today reports
-  // the block as finished — so the card must not advertise a plan then.
-  const hasPlan = plan.inProgram && plan.assignments.length > 0;
 
   const hasWriting = visibleTracks.some(t => t.id === 'GED_ENG');
 
@@ -235,9 +235,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Today's plan — the intended way in for the two GED-sprint students.
-            The tracks below stay available for free study, but the assignment is
-            what the day is measured on. Hidden for every other account. */}
+        {/* Today's plan — the intended way in for a student on the daily plan.
+            The tracks below stay available for free study, but the day is
+            measured on units finished. Hidden for every other account. */}
         {showPlan && (
         <button
           onClick={() => navigate('/today')}
@@ -245,41 +245,49 @@ export default function Home() {
         >
           <div className="flex items-center gap-5">
             <div className="w-16 h-16 bg-[#ff9600] rounded-2xl flex items-center justify-center shadow-sm border-b-[4px] border-[#cc7800] flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
-              {hasPlan
-                ? <CalendarCheck className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />
-                : <Coffee className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />}
+              {plan && !plan.today.isStudyDay
+                ? <Coffee className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />
+                : <CalendarCheck className="w-8 h-8 text-white drop-shadow-sm" strokeWidth={2.5} />}
             </div>
 
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-1">
-                {plan.dayName}
+                {dayName(todayISO())}
               </p>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mb-2">
-                {hasPlan ? "Today's Plan" : 'Rest day'}
+                Today's Plan
               </h2>
 
-              {hasPlan ? (
-                <div className="flex flex-wrap gap-2">
-                  {plan.assignments.map((a, i) => {
-                    const theme = getTrackConfig(a.track)?.theme || {};
-                    return (
-                      <span
-                        key={`${a.track}-${a.unitId ?? i}`}
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-white border-b-[3px] ${theme.bg} ${theme.border}`}
-                      >
-                        {a.subject}
-                      </span>
-                    );
-                  })}
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
-                    {plan.assignments.length} {plan.assignments.length === 1 ? 'unit' : 'units'}
+              {/* The row keeps its height while progress loads, so the card
+                  does not jump when the chips arrive. */}
+              <div className={`flex flex-wrap gap-2 min-h-[1.75rem] ${plan ? '' : 'invisible'}`}>
+                {plan?.today.isStudyDay && (
+                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${
+                    plan.today.goalHit
+                      ? 'text-white bg-[#58cc02] border-[#58a700]'
+                      : 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                  }`}>
+                    {plan.today.goalHit && <Check className="w-3 h-3" strokeWidth={4} />}
+                    {plan.today.count} / {PLAN.goal} done today
                   </span>
-                </div>
-              ) : (
-                <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-wide">
-                  No assigned units — review anything you like.
-                </p>
-              )}
+                )}
+                {plan && !plan.today.isStudyDay && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
+                    Weekend · no goal
+                  </span>
+                )}
+                {(plan?.picks || []).filter((a) => !a.doneToday).map((a) => {
+                  const theme = getTrackConfig(a.track)?.theme || {};
+                  return (
+                    <span
+                      key={`${a.track}-${a.unitId}`}
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-white border-b-[3px] ${theme.bg} ${theme.border}`}
+                    >
+                      {a.subject}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="hidden sm:flex w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 border-b-[4px] shadow-sm group-hover:bg-[#ff9600] group-hover:border-[#cc7800] group-hover:text-white transition-all flex-shrink-0">

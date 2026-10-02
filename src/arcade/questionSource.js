@@ -20,7 +20,7 @@
 import { audioUrl } from '../utils/assetPaths';
 import { unitXPOf } from '../tasks/taskRegistry';
 import { hasMathChallenge } from '../components/towerdefense/mathChallenges';
-import { planForDate, todayISO } from '../utils/studyPlan';
+import { planState, picksFor, todayISO } from '../utils/studyPlan';
 
 /** realWords decorated with the audio URLs the vocab tasks (and games) expect. */
 function decorateWords(track, unitId, unit) {
@@ -40,8 +40,9 @@ function decorateWords(track, unitId, unit) {
  * this narrows it to what they are actively working on.
  */
 function sourceUnits(allProgress, available) {
-  // 1. Today's assignment, kept only where it overlaps what the student can see.
-  const assigned = (planForDate(todayISO()).assignments || [])
+  // 1. Today's list from the daily plan, kept only where it overlaps what the
+  //    student can see.
+  const assigned = picksFor(planState(allProgress), todayISO()).picks
     .map((a) => available.find((u) => u.track === a.track && u.unitId === a.unitId))
     .filter(Boolean);
   if (assigned.length) return assigned;
