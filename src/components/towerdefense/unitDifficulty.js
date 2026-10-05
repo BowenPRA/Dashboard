@@ -464,6 +464,24 @@ export const TRACK_LEVELS = {
       blurb: 'Iron and sulfur, stirred then heated. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
     },
+    // 2.3, 2.4 and 2.8 were built after 2.5–2.7 (they close Unit 2); they sit
+    // in the upper half of the ladder, with 2.8 at the top as the unit's end.
+    U02_3: {
+      mapId: 'SPIRAL', themeId: 'DESERT', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Melting Point',
+      blurb: 'Heat in, forces broken — and wave after wave that never slows down.',
+    },
+    U02_4: {
+      mapId: 'JUNCTION', themeId: 'ICE', tier: 4, waveMod: 'SWARM',
+      mapName: 'The Watershed',
+      blurb: 'Rain from every side runs to one river. Hold the junction.',
+    },
+    U02_8: {
+      mapId: 'GAUNTLET', themeId: 'NIGHT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Acid Lake',
+      blurb: 'Both ends of the scale burn. Queens and broods, the whole way down.',
+      bannedTowers: ['NITRO'],
+    },
   },
 };
 

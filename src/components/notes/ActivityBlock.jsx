@@ -19,6 +19,9 @@ import {
   TermsActivity, AlgebraActivity, GridActivity, FlowActivity, PeriodicActivity, ParticlesActivity, FormulaActivity,
 } from './Y7Activities.jsx';
 import { ShiftActivity, RoundActivity, BusStopActivity, IneqActivity } from './NumberActivities.jsx';
+import { ChainActivity } from './ChainActivity.jsx';
+import { CycleActivity } from './CycleActivity.jsx';
+import { PhActivity } from './PhActivity.jsx';
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -728,6 +731,10 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'round': body = <RoundActivity {...common} />; break;
     case 'busstop': body = <BusStopActivity {...common} />; break;
     case 'ineq': body = <IneqActivity {...common} />; break;
+    // Year 7 science 2.3, 2.4, 2.8 (ChainActivity / CycleActivity / PhActivity.jsx)
+    case 'chain': body = <ChainActivity {...common} />; break;
+    case 'cycle': body = <CycleActivity {...common} />; break;
+    case 'ph': body = <PhActivity {...common} />; break;
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }
   return (

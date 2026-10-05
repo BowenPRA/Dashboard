@@ -6,7 +6,7 @@ import {
   Ruler, Tag, Beaker, Split, Spline, Variable, SearchCheck, ListOrdered, Blend, SquareRadical, Superscript,
   ShoppingBasket, Grid2x2, Undo2, Pyramid, Atom, FlaskRound, Combine, TriangleRight, LandPlot,
   Unlink, ChartSpline, Strikethrough, Pipette, Timer, ListChecks, TrendingUp, MoveHorizontal, Flame, CircleArrowRight,
-  ClipboardList, CircleDot, Radius, SquareFunction
+  ClipboardList, CircleDot, Radius, SquareFunction, Link2, CloudRain, TestTube
 } from 'lucide-react';
 import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
@@ -993,6 +993,64 @@ export const TASKS = [
     component: lazy(() => import('./ParticleLab.jsx')),
     hasContent: (u) => !!(u.particleLab && Array.isArray(u.particleLab.modes) && u.particleLab.modes.length),
     buildPool: (u) => u.particleLab || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  // ── Year 7 Science 2.3, 2.4, 2.8 — the three units that close Unit 2 ──────
+  // p73–p75 (p72 was the last key taken; next free p76). Schemas in
+  // docs/y7-science/unit2-close-engines.md.
+  {
+    id: 'EXPLAIN_IT',
+    nativeMax: 10,
+    dbKey: 'p73',
+    // The particle explanation of a change of state, built link by link from a
+    // fresh everyday scenario: put the chain in order, find the broken link
+    // (the particles get bigger, cold energy goes in), name the change and
+    // which way the heat went, choose the right after-picture
+    // (utils/stateChain.js).
+    label: 'Explain It',
+    icon: Link2,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./ExplainIt.jsx')),
+    hasContent: (u) => !!(u.explainIt && Array.isArray(u.explainIt.modes) && u.explainIt.modes.length),
+    buildPool: (u) => u.explainIt || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'WATER_JOURNEY',
+    nativeMax: 10,
+    dbKey: 'p74',
+    // The water cycle as a map a particle travels: name a lit arrow, tap the
+    // arrow for a process, order a particle's journey (any valid path is
+    // right), say what each process does to the water, and name the process in
+    // an everyday sentence (utils/waterCycle.js).
+    label: 'Water Journey',
+    icon: CloudRain,
+    color: { bg: 'bg-[#1a5fa8]', border: 'border-[#144a84]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./WaterJourney.jsx')),
+    hasContent: (u) => !!(u.waterJourney && Array.isArray(u.waterJourney.modes) && u.waterJourney.modes.length),
+    buildPool: (u) => u.waterJourney || null,
+    props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'PH_LAB',
+    nativeMax: 10,
+    dbKey: 'p75',
+    // Indicators and the pH scale with fresh substances every round: acid,
+    // neutral or alkali; the universal-indicator colour of a pH; what litmus
+    // does; which is strongest; and neutralise a beaker drop by drop, stopping
+    // at green (utils/phLab.js).
+    label: 'pH Lab',
+    icon: TestTube,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#6d28d9]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./PhLab.jsx')),
+    hasContent: (u) => !!(u.phLab && Array.isArray(u.phLab.modes) && u.phLab.modes.length),
+    buildPool: (u) => u.phLab || null,
     props: ({ pool, track, onComplete, onQuit }) => ({ pool, onComplete, onQuit, bilingual: bilingualOf(track) }),
   },
   // ── IGCSE Extended Mathematics, Assignment 07 (EM_07A, EM_07B) ─────────────

@@ -15,6 +15,9 @@ import { shiftModel } from './placeShift.js';
 import { roundModel, checkPlaces } from './rounding.js';
 import { shortDivModel } from './shortDivision.js';
 import { ineqModel } from './ineqLine.js';
+import { checkChainActivity } from './stateChain.js';
+import { checkCycleActivity } from './waterCycle.js';
+import { checkPhActivity } from './phLab.js';
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -43,8 +46,15 @@ import { ineqModel } from './ineqLine.js';
 // `ineq` (Maths 2.6) is an inequality on a number line: draw it (the open
 // circle, then the arrow), read a drawn one, give the smallest or largest
 // integer, or tap every integer between two. Derived by utils/ineqLine.js.
+// The Year 7 science types that close Unit 2: `chain` (2.3 — build or fix the
+// particle explanation of a change of state), `cycle` (2.4 — tap, name or
+// order the arrows of the water cycle), `ph` (2.8 — indicator colours, litmus,
+// a substance on the pH scale, neutralise drop by drop). Each is checked by its
+// engine (utils/stateChain.js, waterCycle.js, phLab.js); schemas in
+// docs/y7-science/unit2-close-engines.md.
 export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn',
-  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq'];
+  'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
+  'chain', 'cycle', 'ph'];
 
 export const INEQ_ASKS = ['draw', 'read', 'integer', 'list'];
 
@@ -330,6 +340,10 @@ export function checkActivity(a, { bilingual = true } = {}) {
       countsOf(a.formula);
       if (ask === 'write' && !SUBSTANCES[a.formula]?.atoms) out.push(`formula write: ${a.formula} has no drawing in utils/particles.js`);
     } catch (e) { out.push(`formula: ${e.message}`); }
+  }
+
+  for (const [type, check] of [['chain', checkChainActivity], ['cycle', checkCycleActivity], ['ph', checkPhActivity]]) {
+    if (a.type === type) for (const p of check(a, { bilingual })) out.push(`${type} ${p}`);
   }
   return out;
 }

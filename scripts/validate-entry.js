@@ -41,6 +41,9 @@ import { checkCollectItems, checkExpandItems, checkFlowItems } from '../src/util
 import { checkPyramidConfig } from '../src/utils/pyramid.js';
 import { checkHuntConfig } from '../src/utils/elementHunt.js';
 import { checkLabConfig } from '../src/utils/particles.js';
+import { checkExplainConfig } from '../src/utils/stateChain.js';
+import { checkJourneyConfig } from '../src/utils/waterCycle.js';
+import { checkPhConfig } from '../src/utils/phLab.js';
 import { checkProofreadItems } from '../src/utils/proofread.js';
 import { checkSequenceItems } from '../src/utils/sequence.js';
 import { checkEssayPrompts } from '../src/utils/essayPrompts.js';
@@ -159,7 +162,8 @@ for (const trackId of TRACK_IDS) {
       if (!(unit[key].items || []).length) err(`${at} has no items`);
       for (const p of check(unit[key].items || [], { levels: unit[key].levels, bilingual })) err(`${at} ${p}`);
     }
-    for (const [key, check] of [['pyramids', checkPyramidConfig], ['elementHunt', checkHuntConfig], ['particleLab', checkLabConfig]]) {
+    for (const [key, check] of [['pyramids', checkPyramidConfig], ['elementHunt', checkHuntConfig], ['particleLab', checkLabConfig],
+      ['explainIt', checkExplainConfig], ['waterJourney', checkJourneyConfig], ['phLab', checkPhConfig]]) {
       if (unit[key] === undefined) continue;
       if (bilingual && !unit[key].titleVn) err(`${label}: ${key} needs titleVn`);
       for (const p of check(unit[key])) err(`${label}: ${p}`);
