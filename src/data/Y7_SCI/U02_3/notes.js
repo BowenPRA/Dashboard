@@ -29,10 +29,10 @@
 //
 // House notes: bilingual everywhere; a slide's `check:` or `activity:` is its
 // LAST key and no slide carries both; activity items use name/explain, never
-// text. A `chain` activity renders in the footer under its slide (Notes.jsx
-// lists the side-panel types), so the slides that carry one are short
-// statements. Photos are openly licensed and credited in
-// docs/y7-science/plans/U02_3.md.
+// text. A `chain` activity sits in the side column from lg (Notes.jsx
+// SIDE_ACTIVITIES), so the slides that carry one are short statements, and the
+// chain cards repeat Explain It's links word for word. Photos are openly
+// licensed and credited in docs/y7-science/plans/U02_3.md.
 import { DIAGRAMS } from './diagrams.js';
 import { ParticleExplainer } from './widgets.jsx';
 import { assetUrl } from '../../../utils/assetPaths';
@@ -191,17 +191,17 @@ export const notes = [
     ratio: 42,
     image: img('expansion.jpg'),
     content:
-      'On a bridge, the steel rails meet at a long slant. On a hot day the steel gets longer, and the rails slide along each other instead of buckling.',
+      'These bridge rails meet at a long slant, so they can slide along each other as the steel grows on hot days.',
     contentVn:
-      'Trên một cây cầu, các thanh ray thép gặp nhau theo một đường xiên dài. Vào ngày nóng thép dài ra, và các thanh ray trượt dọc theo nhau thay vì bị cong vênh.',
+      'Các thanh ray trên cầu này gặp nhau theo một đường xiên dài, để chúng trượt dọc theo nhau khi thép dài ra vào ngày nóng.',
     notes: [
       keyWord(
         '**Expand:** to get bigger.',
         '**Giãn nở (expand):** to ra.',
       ),
       chainCard(
-        '**Why does a solid expand?**\nHeat energy is transferred to the particles.\nThe particles vibrate more.\nThey take up more space, so the solid expands.',
-        '**Vì sao chất rắn giãn nở?**\nNhiệt năng được truyền đến các hạt.\nCác hạt rung động nhiều hơn.\nChúng chiếm nhiều chỗ hơn, nên chất rắn giãn nở.',
+        'Heat energy is transferred to the particles.\nThe particles vibrate more.\nThey take up more space, so the solid expands.',
+        'Nhiệt năng được truyền đến các hạt.\nCác hạt rung động nhiều hơn.\nChúng chiếm nhiều chỗ hơn, nên chất rắn giãn nở.',
       ),
     ],
   },
@@ -225,8 +225,8 @@ export const notes = [
       ask: 'build',
       scenario: 'bridge',
       traps: ['bigger_expand', 'dir_away'],
-      prompt: 'Explain why the bridge is longer: tap the links into the steps, in order.',
-      promptVn: 'Giải thích vì sao cây cầu dài hơn: chạm các mắt xích vào từng bước, theo thứ tự.',
+      prompt: 'Why is the bridge longer? Tap the links in order.',
+      promptVn: 'Vì sao cây cầu dài hơn? Chạm các mắt xích theo thứ tự.',
       explain: 'Heat energy goes **in**, the particles **vibrate more**, and they **take up more space** — so the steel expands. Each particle stays the same size: only the gaps between them grow.',
       explainVn: 'Nhiệt năng đi **vào**, các hạt **rung động nhiều hơn**, và chúng **chiếm nhiều chỗ hơn** — nên thép giãn nở. Mỗi hạt vẫn giữ nguyên kích thước: chỉ khoảng cách giữa chúng tăng lên.',
     },
@@ -277,10 +277,10 @@ export const notes = [
     label: 'Estimate',
     labelVn: 'Ước lượng',
     labelIcon: 'Sparkles',
-    text: 'A steel bridge is **1 km** long. From a cool morning to a hot afternoon, the steel warms up by **30 °C**.',
-    textVn: 'Một cây cầu thép dài **1 km**. Từ buổi sáng mát đến buổi chiều nóng, thép nóng thêm **30 °C**.',
-    sub: 'How much longer does the bridge get? Slide to your guess.',
-    subVn: 'Cây cầu dài thêm bao nhiêu? Kéo thanh trượt đến dự đoán của em.',
+    text: 'A **1 km** steel bridge warms up by **30 °C** in one day.',
+    textVn: 'Một cây cầu thép dài **1 km** nóng thêm **30 °C** trong một ngày.',
+    sub: 'How much longer does it get?',
+    subVn: 'Nó dài thêm bao nhiêu?',
     activity: {
       id: 'act_estimate_bridge',
       type: 'estimate',
@@ -322,13 +322,13 @@ export const notes = [
     title: 'Why Does a Solid Melt?',
     titleVn: 'Vì sao chất rắn nóng chảy?',
     content:
-      'Keep heating the expanding solid. Its particles vibrate **more and more**, until the **attractive forces** cannot hold them in place any more.',
+      'Keep heating, and the particles vibrate **more and more** — until the **attractive forces** cannot hold them in place.',
     contentVn:
-      'Tiếp tục đun nóng chất rắn đang giãn nở. Các hạt của nó rung động **ngày càng nhiều**, cho đến khi **lực hút** không giữ được chúng tại chỗ nữa.',
+      'Tiếp tục đun nóng, các hạt rung động **ngày càng nhiều** — cho đến khi **lực hút** không giữ được chúng tại chỗ.',
     notes: [
       chainCard(
-        '**Why does a solid melt?**\nHeat energy is transferred to the particles.\nThe particles vibrate more and more.\nThe attractive forces can no longer hold them in a fixed pattern.\nThey can slide past each other, so the solid melts.',
-        '**Vì sao chất rắn nóng chảy?**\nNhiệt năng được truyền đến các hạt.\nCác hạt rung động ngày càng nhiều.\nLực hút không còn giữ được chúng trong trật tự cố định.\nChúng có thể trượt qua nhau, nên chất rắn nóng chảy.',
+        'Heat energy is transferred to the particles.\nThe particles vibrate more and more.\nThe attractive forces can no longer hold them in a fixed pattern.\nThey can slide past each other, so the solid melts.',
+        'Nhiệt năng được truyền đến các hạt.\nCác hạt rung động ngày càng nhiều.\nLực hút không còn giữ được chúng trong trật tự cố định.\nChúng có thể trượt qua nhau, nên chất rắn nóng chảy.',
       ),
     ],
     activity: {
@@ -368,7 +368,7 @@ export const notes = [
       ask: 'fix',
       scenario: 'chocolate',
       trap: 'particles_melt',
-      prompt: 'Tap the broken link, then choose what replaces it.',
+      prompt: 'Tap the broken link, then its replacement.',
       promptVn: 'Chạm vào mắt xích bị hỏng, rồi chọn mắt xích thay thế.',
       explain: 'A single particle cannot melt. The **solid** melts: the same particles, vibrating so much that the forces can no longer hold them in a fixed pattern, so they slide past each other.',
       explainVn: 'Một hạt riêng lẻ không thể nóng chảy. **Chất rắn** nóng chảy: vẫn những hạt đó, rung động mạnh đến mức lực hút không còn giữ được chúng trong trật tự cố định, nên chúng trượt qua nhau.',
@@ -425,7 +425,7 @@ export const notes = [
     },
   },
 
-  // 13 ─ Boiling and evaporating, explained (diagram) ────────────────────────
+  // 13 ─ Boiling, explained (diagram); evaporating's chain is slide 12's left column
   {
     layout: 'split',
     accent: TEAL,
@@ -438,12 +438,8 @@ export const notes = [
     inlineSvg: DIAGRAMS.BOILING,
     notes: [
       chainCard(
-        '**Why does a liquid boil?**\nHeat energy is transferred to the particles.\nThe particles move faster and faster.\nAt the boiling point, particles all through the liquid have enough energy to overcome the attractive forces.\nThey form bubbles of gas that escape, so the liquid boils.',
-        '**Vì sao chất lỏng sôi?**\nNhiệt năng được truyền đến các hạt.\nCác hạt chuyển động ngày càng nhanh.\nỞ nhiệt độ sôi, các hạt ở khắp trong lòng chất lỏng có đủ năng lượng để vượt qua lực hút.\nChúng tạo thành các bọt khí rồi thoát ra, nên chất lỏng sôi.',
-      ),
-      chainCard(
-        '**Why does a liquid evaporate?** The same, but only at the surface:\nSome particles at the surface have enough energy to overcome the attractive forces.\nThey escape into the air as a gas, so the liquid evaporates.',
-        '**Vì sao chất lỏng bay hơi?** Cũng vậy, nhưng chỉ ở bề mặt:\nMột số hạt ở bề mặt có đủ năng lượng để vượt qua lực hút.\nChúng thoát vào không khí dưới dạng khí, nên chất lỏng bay hơi.',
+        'Heat energy is transferred to the particles.\nThe particles move faster and faster.\nAt the boiling point, particles all through the liquid have enough energy to overcome the attractive forces.\nThey form bubbles of gas that escape, so the liquid boils.',
+        'Nhiệt năng được truyền đến các hạt.\nCác hạt chuyển động ngày càng nhanh.\nỞ nhiệt độ sôi, các hạt ở khắp trong lòng chất lỏng có đủ năng lượng để vượt qua lực hút.\nChúng tạo thành các bọt khí rồi thoát ra, nên chất lỏng sôi.',
       ),
     ],
   },
@@ -467,8 +463,8 @@ export const notes = [
       ask: 'build',
       scenario: 'pho',
       traps: ['bubbles_air', 'boil_surface'],
-      prompt: 'Explain why the broth boils: tap the links into the steps, in order.',
-      promptVn: 'Giải thích vì sao nước dùng sôi: chạm các mắt xích vào từng bước, theo thứ tự.',
+      prompt: 'Why does the broth boil? Tap the links in order.',
+      promptVn: 'Vì sao nước dùng sôi? Chạm các mắt xích theo thứ tự.',
       explain: 'Heat energy goes **in**, the particles **move faster and faster**, and at the boiling point particles **all through** the broth overcome the forces and escape as bubbles of gas. The bubbles are the broth’s own water as a gas, not air.',
       explainVn: 'Nhiệt năng đi **vào**, các hạt **chuyển động ngày càng nhanh**, và ở nhiệt độ sôi các hạt **ở khắp** trong nồi vượt qua lực hút và thoát ra thành các bọt khí. Các bọt đó là chính nước trong nồi ở dạng khí, không phải không khí.',
     },
@@ -524,8 +520,8 @@ export const notes = [
       'Các hạt khí chuyển động nhanh va vào **bề mặt lạnh**. Chúng mất năng lượng, chậm lại, và lực hút kéo chúng lại với nhau.',
     notes: [
       chainCard(
-        '**Why does a gas condense?**\nHeat energy is transferred away from the particles.\nThe particles slow down.\nThe attractive forces pull them close together.\nThey form drops of liquid, so the gas condenses.',
-        '**Vì sao chất khí ngưng tụ?**\nNhiệt năng được truyền ra khỏi các hạt.\nCác hạt chuyển động chậm lại.\nLực hút kéo chúng lại sát nhau.\nChúng tạo thành các giọt chất lỏng, nên chất khí ngưng tụ.',
+        'Heat energy is transferred away from the particles.\nThe particles slow down.\nThe attractive forces pull them close together.\nThey form drops of liquid, so the gas condenses.',
+        'Nhiệt năng được truyền ra khỏi các hạt.\nCác hạt chuyển động chậm lại.\nLực hút kéo chúng lại sát nhau.\nChúng tạo thành các giọt chất lỏng, nên chất khí ngưng tụ.',
       ),
     ],
   },
@@ -549,7 +545,7 @@ export const notes = [
       ask: 'fix',
       scenario: 'mirror',
       trap: 'cold_in',
-      prompt: 'Tap the broken link, then choose what replaces it.',
+      prompt: 'Tap the broken link, then its replacement.',
       promptVn: 'Chạm vào mắt xích bị hỏng, rồi chọn mắt xích thay thế.',
       explain: 'There is no such thing as cold energy. The mirror is colder than the steam, so heat energy is transferred **away** from the water particles; they slow down and the forces pull them into drops.',
       explainVn: 'Không có thứ gọi là năng lượng lạnh. Gương lạnh hơn hơi nước, nên nhiệt năng được truyền **ra khỏi** các hạt nước; chúng chậm lại và lực hút kéo chúng lại thành giọt.',
@@ -566,13 +562,13 @@ export const notes = [
     title: 'Why Does a Liquid Freeze?',
     titleVn: 'Vì sao chất lỏng đông đặc?',
     content:
-      'Keep taking heat energy away from a liquid. Its particles slow down so much that the attractive forces pull them into a **fixed pattern**. They still move: they **vibrate on the spot**.',
+      'Keep taking heat energy away. The particles slow down until the forces pull them into a **fixed pattern** — but they still **vibrate on the spot**.',
     contentVn:
-      'Tiếp tục lấy nhiệt năng ra khỏi chất lỏng. Các hạt của nó chậm lại đến mức lực hút kéo chúng vào một **trật tự cố định**. Chúng vẫn chuyển động: chúng **rung động tại chỗ**.',
+      'Tiếp tục lấy nhiệt năng đi. Các hạt chậm lại cho đến khi lực hút kéo chúng vào một **trật tự cố định** — nhưng chúng vẫn **rung động tại chỗ**.',
     notes: [
       chainCard(
-        '**Why does a liquid freeze?**\nHeat energy is transferred away from the particles.\nThe particles slow down.\nThe attractive forces pull them into a fixed pattern.\nThey can only vibrate on the spot, so the liquid freezes.',
-        '**Vì sao chất lỏng đông đặc?**\nNhiệt năng được truyền ra khỏi các hạt.\nCác hạt chuyển động chậm lại.\nLực hút kéo chúng vào một trật tự cố định.\nChúng chỉ còn rung động tại chỗ, nên chất lỏng đông đặc.',
+        'Heat energy is transferred away from the particles.\nThe particles slow down.\nThe attractive forces pull them into a fixed pattern.\nThey can only vibrate on the spot, so the liquid freezes.',
+        'Nhiệt năng được truyền ra khỏi các hạt.\nCác hạt chuyển động chậm lại.\nLực hút kéo chúng vào một trật tự cố định.\nChúng chỉ còn rung động tại chỗ, nên chất lỏng đông đặc.',
       ),
     ],
     check: {
@@ -596,13 +592,11 @@ export const notes = [
     layout: 'showcase',
     accent: PURPLE,
     icon: 'Atom',
-    eyebrow: 'Watch the particles while the explanation builds',
-    eyebrowVn: 'Xem các hạt trong khi lời giải thích hiện ra',
+    eyebrow: 'Five changes · press the button, watch the particles, read each link',
+    eyebrowVn: 'Năm sự chuyển thể · bấm nút, xem các hạt, đọc từng mắt xích',
     title: 'Explain It With Particles',
     titleVn: 'Giải thích bằng hạt',
     widget: ParticleExplainer,
-    caption: 'Five changes. Press the button one step at a time and watch what the particles do as each link appears.',
-    captionVn: 'Năm sự chuyển thể. Bấm nút từng bước một và xem các hạt làm gì khi mỗi mắt xích hiện ra.',
   },
 
   // 20 ─ Three things particles never do ────────────────────────────────────
@@ -642,11 +636,9 @@ export const notes = [
     ratio: 55,
     inlineSvg: DIAGRAMS.STATE_BOXES,
     content:
-      'To **compress** something is to squash it into a smaller space.\n\n' +
       '> **2.** Use particle theory to explain why solids and liquids cannot be compressed.\n\n' +
       'Look at the gaps between the particles in each box.',
     contentVn:
-      '**Nén** một vật là ép nó vào một chỗ nhỏ hơn.\n\n' +
       '> **2.** Dùng lý thuyết hạt giải thích vì sao chất rắn và chất lỏng không thể bị nén.\n\n' +
       'Hãy nhìn khoảng trống giữa các hạt trong mỗi hộp.',
     notes: [

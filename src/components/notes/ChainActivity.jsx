@@ -50,13 +50,13 @@ const LOOK = {
 };
 
 /** One link of a chain: a numbered step, a card in the bank, or a replacement option. */
-export function LinkCard({ n, look = 'idle', onClick, disabled, children, note, noteTone }) {
+export function LinkCard({ n, look = 'idle', onClick, disabled, children, note, noteTone, dense = false }) {
   const Tag = onClick && !disabled ? 'button' : 'div';
   return (
     <Tag type={Tag === 'button' ? 'button' : undefined} onClick={onClick}
-      className={`w-full min-w-0 flex items-start gap-2 text-left rounded-xl border-2 border-b-[4px] px-2.5 ${look === 'empty' || look === 'slot' ? 'py-1' : 'py-1.5 sm:py-2'} font-bold text-[13px] sm:text-sm leading-snug transition-all ${Tag === 'button' ? 'active:border-b-2 active:translate-y-[2px] cursor-pointer' : ''} ${LOOK[look] || LOOK.idle}`}>
+      className={`w-full min-w-0 flex items-start gap-2 text-left rounded-xl border-2 border-b-[4px] px-2.5 ${dense && (look === 'empty' || look === 'slot') ? 'py-0.5' : dense || look === 'empty' || look === 'slot' ? 'py-1' : 'py-1.5 sm:py-2'} font-bold text-[13px] sm:text-sm leading-snug transition-all ${Tag === 'button' ? 'active:border-b-2 active:translate-y-[2px] cursor-pointer' : ''} ${LOOK[look] || LOOK.idle}`}>
       {n != null && (
-        <span className="w-5 h-5 mt-px rounded-md bg-black/5 dark:bg-white/10 flex items-center justify-center font-black text-[11px] shrink-0">{n}</span>
+        <span className={`${dense ? 'w-4 h-4 text-[10px]' : 'w-5 h-5 text-[11px]'} mt-px rounded-md bg-black/5 dark:bg-white/10 flex items-center justify-center font-black shrink-0`}>{n}</span>
       )}
       <span className="flex-1 min-w-0">
         {children}
@@ -87,7 +87,7 @@ const Label = ({ children, className = 'flex' }) => (
  * far, in step order (null for an emptied step). Tapping a bank card fills the
  * first empty step; tapping a filled step sends its card back.
  */
-export function BuildBoard({ round, slots, onChange, checked, lang, wide = false, after = null }) {
+export function BuildBoard({ round, slots, onChange, checked, lang, wide = false, after = null, dense = false }) {
   const t = CHAIN_T[lang] || CHAIN_T.en;
   const n = round.chain.length;
   const placed = new Set(slots.filter(Boolean));
@@ -106,13 +106,13 @@ export function BuildBoard({ round, slots, onChange, checked, lang, wide = false
   };
   const steps = (
     <div>
-      <Label>{t.chain}</Label>
-      <ol className="flex flex-col gap-1.5">
+      {!dense && <Label>{t.chain}</Label>}
+      <ol className={`flex flex-col ${dense ? 'gap-1' : 'gap-1.5'}`}>
         {round.chain.map((right, i) => {
           const id = slots[i];
           if (!id) {
             return (
-              <li key={i}><LinkCard n={i + 1} look={i === firstEmpty && !checked ? 'slot' : 'empty'}>
+              <li key={i}><LinkCard n={i + 1} dense={dense} look={i === firstEmpty && !checked ? 'slot' : 'empty'}>
                 <span className="font-black uppercase tracking-widest text-[10px]">{i === firstEmpty ? t.next : t.empty}</span>
               </LinkCard></li>
             );
@@ -120,7 +120,7 @@ export function BuildBoard({ round, slots, onChange, checked, lang, wide = false
           const ok = id === right;
           return (
             <li key={i}>
-              <LinkCard n={i + 1} look={checked ? (ok ? 'good' : 'bad') : 'idle'} onClick={checked ? undefined : () => remove(i)}>
+              <LinkCard n={i + 1} dense={dense} look={checked ? (ok ? 'good' : 'bad') : 'idle'} onClick={checked ? undefined : () => remove(i)}>
                 {checked && !ok ? <Swap wrong={textOf(id, lang)} right={textOf(right, lang)} /> : textOf(id, lang)}
               </LinkCard>
             </li>
@@ -134,28 +134,28 @@ export function BuildBoard({ round, slots, onChange, checked, lang, wide = false
   const bank = checked ? after : (
     <div>
       {/* A phone drops this label: the empty step already says "tap a link below". */}
-      <Label className="hidden sm:flex"><CornerDownRight className="w-3.5 h-3.5" />{t.bank}</Label>
-      <div className="flex flex-col gap-1.5">
+      <Label className={dense ? 'hidden' : 'hidden sm:flex'}><CornerDownRight className="w-3.5 h-3.5" />{t.bank}</Label>
+      <div className={`flex flex-col ${dense ? 'gap-1' : 'gap-1.5'}`}>
         {round.bank.filter((id) => !placed.has(id)).map((id) => (
-          <LinkCard key={id} onClick={() => add(id)}>{textOf(id, lang)}</LinkCard>
+          <LinkCard key={id} dense={dense} onClick={() => add(id)}>{textOf(id, lang)}</LinkCard>
         ))}
       </div>
     </div>
   );
-  return <div className={`grid grid-cols-1 gap-3 [&>*]:min-w-0 ${wide ? 'lg:grid-cols-2 lg:items-start' : ''}`}>{steps}{bank}</div>;
+  return <div className={`grid grid-cols-1 ${dense ? 'gap-2' : 'gap-3'} [&>*]:min-w-0 ${wide ? 'lg:grid-cols-2 lg:items-start' : ''}`}>{steps}{bank}</div>;
 }
 
 /**
  * Fix: the chain as shown (one link broken), then the replacements. `pick` is
  * the step tapped, `replace` the option chosen.
  */
-export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lang, wide = false, after = null }) {
+export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lang, wide = false, after = null, dense = false }) {
   const t = CHAIN_T[lang] || CHAIN_T.en;
   const rightId = round.chain[round.broken];
   const rows = (
     <div>
-      <Label><Wrench className="w-3.5 h-3.5" />{t.tapBroken}</Label>
-      <ol className="flex flex-col gap-1.5">
+      {!dense && <Label><Wrench className="w-3.5 h-3.5" />{t.tapBroken}</Label>}
+      <ol className={`flex flex-col ${dense ? 'gap-1' : 'gap-1.5'}`}>
         {round.shown.map((id, i) => {
           const isBroken = i === round.broken;
           let look = pick === i ? 'picked' : 'idle';
@@ -168,7 +168,7 @@ export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lan
           }
           return (
             <li key={i}>
-              <LinkCard n={i + 1} look={look} onClick={checked ? undefined : () => onPick(i)} note={note} noteTone={tone}>
+              <LinkCard n={i + 1} dense={dense} look={look} onClick={checked ? undefined : () => onPick(i)} note={note} noteTone={tone}>
                 {checked && isBroken ? <Swap wrong={textOf(id, lang)} right={textOf(rightId, lang)} label={t.broken} /> : textOf(id, lang)}
               </LinkCard>
             </li>
@@ -178,17 +178,18 @@ export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lan
     </div>
   );
   // Once checked, the broken row already shows its right link, so a narrow
-  // screen drops the replacement list and keeps only the verdict.
+  // screen (or the deck's side column) drops the replacement list and keeps
+  // only the verdict.
   const options = (
     <div>
-      <div className={checked ? 'hidden lg:block' : ''}>
+      <div className={!checked ? '' : wide ? 'hidden lg:block' : 'hidden'}>
       <Label>{pick == null && !checked ? t.pickFirst : t.replaceWith}</Label>
-      <div className="flex flex-col gap-1.5">
+      <div className={`flex flex-col ${dense ? 'gap-1' : 'gap-1.5'}`}>
         {round.options.map((id) => {
           const look = !checked ? (replace === id ? 'picked' : pick == null ? 'muted' : 'idle')
             : id === rightId ? (replace === id ? 'good' : 'answer') : replace === id ? 'bad' : 'muted';
           return (
-            <LinkCard key={id} look={look} disabled={checked || pick == null} onClick={() => onReplace(id)}>
+            <LinkCard key={id} dense={dense} look={look} disabled={checked || pick == null} onClick={() => onReplace(id)}>
               {textOf(id, lang)}
             </LinkCard>
           );
@@ -198,7 +199,7 @@ export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lan
       {checked && after && <div className="lg:mt-3">{after}</div>}
     </div>
   );
-  return <div className={`grid grid-cols-1 gap-3 [&>*]:min-w-0 ${wide ? 'lg:grid-cols-2 lg:items-start' : ''}`}>{rows}{options}</div>;
+  return <div className={`grid grid-cols-1 ${dense ? 'gap-2' : 'gap-3'} [&>*]:min-w-0 ${wide ? 'lg:grid-cols-2 lg:items-start' : ''}`}>{rows}{options}</div>;
 }
 
 /** The trap-by-name lines of a mark, as paragraphs. */
@@ -236,11 +237,11 @@ export function ChainActivity({ activity, lang, result, onResult, parseText = (x
   return (
     <div>
       {round.mode === 'build'
-        ? <BuildBoard round={round} slots={checked ? (result.slots || []) : slots} onChange={setSlots} checked={checked} lang={lang} wide={wide} />
+        ? <BuildBoard round={round} slots={checked ? (result.slots || []) : slots} onChange={setSlots} checked={checked} lang={lang} wide={wide} dense />
         : <FixBoard round={round} pick={checked ? result.pick : pick} replace={checked ? result.replace : replace}
-          onPick={(i) => setPick(i)} onReplace={(id) => setReplace(id)} checked={checked} lang={lang} wide={wide} />}
+          onPick={(i) => setPick(i)} onReplace={(id) => setReplace(id)} checked={checked} lang={lang} wide={wide} dense />}
       {!checked && (
-        <div className="mt-3 flex justify-end">
+        <div className="mt-2 flex justify-end">
           <button onClick={check} disabled={!ready} className={primary}>{t.check}</button>
         </div>
       )}
@@ -251,7 +252,13 @@ export function ChainActivity({ activity, lang, result, onResult, parseText = (x
             {result.correct ? t.correct : t.notQuite}
           </div>
           <div className={`font-bold leading-relaxed text-sm lg:text-base ${result.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
-            {!result.correct && mark && <MarkLines mark={mark} lang={lang} />}
+            {/* The authored explain already teaches the swapped-in trap, so a
+                fix slide keeps only what the student got wrong besides it. */}
+            {!result.correct && mark && (
+              <MarkLines lang={lang} mark={round.mode === 'fix'
+                ? { ...mark, explain: mark.explain.filter((l) => !l.en.startsWith(`Link ${round.broken + 1}:`)) }
+                : mark} />
+            )}
             <p className={!result.correct ? 'mt-1' : ''}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</p>
           </div>
         </div>

@@ -392,12 +392,14 @@ export function ParticleExplainer({ lang = 'en', isDisplayMode = false }) {
   return (
     <div className="w-full h-full flex flex-col bg-slate-50 dark:bg-slate-950 overflow-hidden select-none">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+      <div className={`flex items-center justify-between gap-3 px-4 sm:px-6 ${big ? 'py-3' : 'py-1.5'} border-b-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0`}>
         <div className="flex items-center gap-3 min-w-0">
           <div className={`p-2 rounded-xl text-white shadow-inner border border-black/10 shrink-0 ${accentBg}`}>
             <IconComp className={big ? 'w-7 h-7' : 'w-5 h-5'} strokeWidth={2.5} />
           </div>
-          <div className="min-w-0">
+          {/* On a deck slide the slide's own header carries the title; the
+              projector (display mode) keeps it. */}
+          <div className={`min-w-0 ${big ? '' : 'hidden'}`}>
             <div className={`font-black tracking-tight text-slate-800 dark:text-slate-100 leading-none ${big ? 'text-2xl' : 'text-lg sm:text-xl'}`}>{t(lang, 'title')}</div>
             <div className={`font-bold text-slate-400 dark:text-slate-500 truncate ${big ? 'text-sm' : 'text-[11px] sm:text-xs'}`}>{t(lang, 'subtitle')}</div>
           </div>
@@ -443,7 +445,7 @@ export function ParticleExplainer({ lang = 'en', isDisplayMode = false }) {
             <div className={`px-4 py-2 font-black uppercase tracking-widest text-white ${accentBg} ${big ? 'text-sm' : 'text-[10px] sm:text-xs'}`}>
               {pick(lang, sc.title[0], sc.title[1])}
             </div>
-            <div className={`px-4 py-3 font-bold text-slate-700 dark:text-slate-200 leading-relaxed ${big ? 'text-lg' : 'text-sm sm:text-base'}`}>
+            <div className={`px-4 font-bold text-slate-700 dark:text-slate-200 ${big ? 'py-3 leading-relaxed text-lg' : 'py-2 leading-snug text-sm'}`}>
               {pick(lang, sc.scene[0], sc.scene[1])}
             </div>
           </div>
@@ -453,7 +455,7 @@ export function ParticleExplainer({ lang = 'en', isDisplayMode = false }) {
             <div className={`px-4 py-2 font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800 ${big ? 'text-sm' : 'text-[10px] sm:text-xs'}`}>
               {t(lang, 'explanation')}
             </div>
-            <div className="flex-1 min-h-0 overflow-y-auto p-3 flex flex-col gap-2.5">
+            <div className={`flex-1 min-h-0 overflow-y-auto flex flex-col ${big ? 'p-3 gap-2.5' : 'p-2 gap-1.5'}`}>
               {stepIdx < 0 && (
                 <div className={`text-center text-slate-400 dark:text-slate-600 font-bold py-4 ${big ? 'text-base' : 'text-xs sm:text-sm'}`}>
                   {t(lang, 'watch')}
@@ -462,7 +464,7 @@ export function ParticleExplainer({ lang = 'en', isDisplayMode = false }) {
               {sc.steps.map((s, i) => i <= stepIdx && (
                 <div
                   key={i}
-                  className={`flex items-start gap-2.5 rounded-xl border-2 px-3 py-2.5 transition-all
+                  className={`flex items-start gap-2.5 rounded-xl border-2 transition-all ${big ? 'px-3 py-2.5' : 'px-2.5 py-1.5'}
                     ${allStepsShown ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950/30' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800'}
                     ${big ? 'text-base' : 'text-xs sm:text-sm'}`}
                 >
