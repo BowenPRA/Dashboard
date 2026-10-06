@@ -81,6 +81,9 @@ def speechify(text):
     t = re.sub(r'\b([fgh])\s*\^\s*\{\s*-\s*1\s*\}', r' \1 inverse ', t)
     t = re.sub(r'\b([fgh])⁻¹', r' \1 inverse ', t)
     t = t.replace('∞', ' infinity ')
+    # Acids and bases (Y7_SCI U02_8): "pH" is said letter by letter, "P H" —
+    # left alone a voice may read it as one syllable.
+    t = re.sub(r'\bpH\b', 'P H', t)
     # Rotation (PHYSICS PHY_ROT). A half is said "half", not "1 over 2" —
     # "theta = half alpha t squared" — and must be caught before the fraction
     # unwrapping below. The arrow between a line formula and its rotation twin
@@ -297,7 +300,19 @@ def build_layout_narration(slide):
         r'\b(title|subtitle|objective|sub|heading|content|text|prompt|caption)\b\s*:\s*(["\'`])((?:\\.|[^\\])*?)\2',
         s, re.DOTALL,
     ):
-        val = m.group(3).strip()
+        # A long field is often written as concatenated literals
+        # (`content: 'First line.\n' + 'Second line.'`). Read every literal in
+        # the chain, not just the first — before this, everything after the
+        # first `+` on a slide was silently never narrated.
+        val = m.group(3)
+        pos = m.end()
+        while True:
+            more = re.match(r'\s*\+\s*(["\'`])((?:\\.|[^\\])*?)\1', s[pos:], re.DOTALL)
+            if not more:
+                break
+            val += more.group(2)
+            pos += more.end()
+        val = val.strip()
         if val:
             pieces.append(val)
     return speechify(". ".join(pieces))
