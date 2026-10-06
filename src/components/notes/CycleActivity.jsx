@@ -157,10 +157,11 @@ export function CycleActivity({ activity, lang = 'en', result, onResult, parseTe
 
   // Beside the slide (`side`) the diagram takes the column's width. In the
   // footer under a slide it sits beside the controls and stays short, so the
-  // slide above keeps room to be read.
+  // slide above keeps room to be read. A journey is read from its A / B lines
+  // and chips more than from the picture, so on a phone its diagram is smaller.
   const figure = (
     <CycleFigure svg={svg} label={t.diagram}
-      maxH={side ? '34vh' : '22vh'}
+      maxH={side ? (round.mode === 'journey' ? '27vh' : '34vh') : round.mode === 'journey' ? 'min(22vh, 34vw)' : '22vh'}
       picked={round.mode === 'tap' ? picked : null}
       onTap={round.mode === 'tap' && !checked ? (id) => setPicked(id) : undefined} />
   );
@@ -226,26 +227,27 @@ function JourneyControls({ round, lang, t, order, setOrder, checked, ok, onCheck
   const takeBack = (i) => { if (!checked) setOrder(order.filter((_, k) => k !== i)); };
   const bank = round.bank.filter((pid) => !order.includes(pid));
   const place = (id, letter, colour) => (
-    <div className="flex items-baseline gap-1.5 text-sm font-bold text-slate-600 dark:text-slate-300">
-      <span className="shrink-0 px-1.5 rounded-md text-white text-xs font-black" style={{ backgroundColor: colour }}>{letter}</span>
+    <div className="flex items-baseline gap-1.5 text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300">
+      <span className="shrink-0 px-1.5 rounded-md text-white text-[11px] font-black" style={{ backgroundColor: colour }}>{letter}</span>
       <span>{pickL(lang, PLACES[id].at.en, PLACES[id].at.vn)}</span>
     </div>
   );
+  // Compact: under a slide this shares the card with it, so every row counts.
+  const chip = 'rounded-lg border-2 border-b-[3px] px-2 py-1 font-bold text-xs sm:text-sm';
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1.5">
       <div className="flex flex-col gap-0.5">
         {place(round.from, `A · ${t.start}`, '#0087a8')}
         {place(round.to, `B · ${t.end}`, '#c25e12')}
       </div>
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-1">
         {round.steps.map((_, i) => {
           const pid = order[i];
           const style = checked ? (ok ? GOOD : BAD) : pid ? IDLE : 'border-dashed bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 text-slate-400';
           return (
             <Fragment key={i}>
-              {i > 0 && <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" strokeWidth={3} />}
-              <button disabled={checked || !pid} onClick={() => takeBack(i)}
-                className={`rounded-xl border-2 border-b-[4px] px-2.5 py-1.5 font-bold text-sm min-w-[3.5rem] ${style}`}>
+              {i > 0 && <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" strokeWidth={3} />}
+              <button disabled={checked || !pid} onClick={() => takeBack(i)} className={`${chip} min-w-[3rem] ${style}`}>
                 <span className="opacity-60 mr-1">{i + 1}.</span>{pid ? processName(pid, lang) : '…'}
               </button>
             </Fragment>
@@ -255,14 +257,16 @@ function JourneyControls({ round, lang, t, order, setOrder, checked, ok, onCheck
       {!checked && (
         <>
           <p className="text-[11px] font-bold text-slate-400">{t.tapSteps}</p>
-          <div className="flex flex-wrap gap-1.5 min-h-[2.5rem] p-1.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40">
-            {bank.map((pid) => (
-              <button key={pid} onClick={() => add(pid)} className={`rounded-xl border-2 border-b-[4px] px-2.5 py-1.5 font-bold text-sm hover:-translate-y-0.5 transition-all ${IDLE}`}>
-                {processName(pid, lang)}
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex-1 min-w-[10rem] flex flex-wrap gap-1 min-h-[2.25rem] p-1 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40">
+              {bank.map((pid) => (
+                <button key={pid} onClick={() => add(pid)} className={`${chip} hover:-translate-y-0.5 transition-all ${IDLE}`}>
+                  {processName(pid, lang)}
+                </button>
+              ))}
+            </div>
+            <button onClick={onCheck} disabled={!ready} className={`${primary} ml-auto`}>{t.check}</button>
           </div>
-          <div className="flex justify-end"><button onClick={onCheck} disabled={!ready} className={primary}>{t.check}</button></div>
         </>
       )}
     </div>

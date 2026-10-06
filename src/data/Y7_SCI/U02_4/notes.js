@@ -5,8 +5,9 @@
 // activities of five types (predict · cycle · order · estimate · sort), four of
 // them the new `cycle` activity on the Water Journey diagram. Each `cycle`
 // activity sits on a short callout of its own (slides 8, 18, 23) or a short
-// split (slide 11): under a slide it takes over half the card, so the teaching
-// and the Key word cards stay on the slide before it.
+// split (slide 11), with the teaching and the Key word cards on the slide
+// before: from lg the activity is a column beside the slide, but on a phone it
+// is a footer under it that takes up to half the card.
 //
 // THE SPINE IS THE CLASSROOM'S. Nothing here is new physics: 2.2 named the
 // changes of state and 2.3 explained them with particles. 2.4 is the same
@@ -90,10 +91,10 @@ export const notes = [
     label: 'Predict',
     labelVn: 'Dự đoán',
     labelIcon: 'Sparkles',
-    text: 'On a summer afternoon in Hà Nội, a heavy shower can drop thousands of tonnes of water out of the sky.',
-    textVn: 'Vào một buổi chiều hè ở Hà Nội, một cơn mưa lớn có thể trút xuống hàng nghìn tấn nước từ trên trời.',
-    sub: 'Where was that water **before** it was in the cloud?',
-    subVn: 'Nước đó đã ở đâu **trước khi** nó ở trong đám mây?',
+    text: 'One summer shower drops thousands of tonnes of water on Hà Nội.',
+    textVn: 'Một cơn mưa mùa hè trút hàng nghìn tấn nước xuống Hà Nội.',
+    sub: 'Where was it **before** the cloud?',
+    subVn: 'Trước khi ở trong mây, nó đã ở đâu?',
     activity: {
       id: 'act_rain_from',
       type: 'predict',
@@ -122,12 +123,8 @@ export const notes = [
     titleVn: 'Trái Đất không tạo ra nước mới',
     ratio: 45,
     image: img('clouds.jpg'),
-    content:
-      'Think of a glass of water you drink today. Where was that water **2000 years ago**?\n\n' +
-      'The Earth uses the **same water** again and again, for four billion years. The Romans drank this water. So did the dinosaurs.',
-    contentVn:
-      'Hãy nghĩ đến ly nước em uống hôm nay. Nước đó đã ở đâu **2000 năm trước**?\n\n' +
-      'Trái Đất dùng **cùng một lượng nước** lặp đi lặp lại, suốt bốn tỉ năm. Người La Mã đã uống nước này. Khủng long cũng vậy.',
+    content: 'Where was the water in your glass **2000 years ago**? The Earth uses the **same water** again and again, for four billion years. The Romans drank it. So did the dinosaurs.',
+    contentVn: 'Nước trong ly của em đã ở đâu **2000 năm trước**? Trái Đất dùng **cùng một lượng nước** lặp đi lặp lại, suốt bốn tỉ năm. Người La Mã đã uống nó. Khủng long cũng vậy.',
     notes: [
       keyWord(
         '**Water cycle:** water moving round and round between the land, the sea and the sky.\n**Atmosphere:** the air around the Earth.',
@@ -213,10 +210,8 @@ export const notes = [
     eyebrowVn: 'Đường đi lên · 2 · qua lá cây',
     title: 'Water Leaves the Plants',
     titleVn: 'Nước rời khỏi cây',
-    text: 'Plants take in water through their roots. It leaves through their **leaves**, as water vapour.',
-    textVn: 'Cây hút nước qua rễ. Nước rời khỏi cây qua **lá**, ở dạng hơi nước.',
-    sub: 'A rice field loses water this way. So does a forest on a hot day.',
-    subVn: 'Ruộng lúa mất nước theo cách này. Một khu rừng vào ngày nóng cũng vậy.',
+    text: 'The roots take water in. It leaves through the **leaves**, as water vapour.',
+    textVn: 'Rễ hút nước vào. Nước rời khỏi cây qua **lá**, ở dạng hơi nước.',
     notes: [
       keyWord(
         '**Transpiration:** water leaving a plant through its leaves.',
@@ -226,9 +221,9 @@ export const notes = [
   },
 
   // 8 ─ CYCLE (tap): find transpiration on the diagram ──────────────────────
-  // A `cycle` activity sits on a short callout: under the slide (phone, and
-  // laptop while Notes.jsx keeps `cycle` out of SIDE_ACTIVITIES) it takes over
-  // half the card, so the teaching stays on the slide before.
+  // A `cycle` activity sits on a short callout: on a phone it is a footer under
+  // the slide that takes up to half the card, so the teaching stays on the
+  // slide before.
   {
     layout: 'callout',
     accent: GREEN,
@@ -323,10 +318,10 @@ export const notes = [
     ratio: 45,
     image: img('window.jpg'),
     content:
-      'The vapour rises and **cools**. Heat energy is transferred away from it: the particles slow down and pull together into tiny drops — a **cloud**.\n\n' +
+      'The vapour rises and **cools**: its particles slow down and pull together into tiny drops — a **cloud**.\n\n' +
       'The same change as the drops on this cold window, five kilometres higher: **condensation**.',
     contentVn:
-      'Hơi nước bay lên và **lạnh đi**. Nhiệt năng được truyền ra khỏi nó: các hạt chậm lại và hút nhau thành những giọt nhỏ — một **đám mây**.\n\n' +
+      'Hơi nước bay lên và **lạnh đi**: các hạt chậm lại và hút nhau thành những giọt nhỏ — một **đám mây**.\n\n' +
       'Cùng một sự thay đổi với những giọt nước trên ô cửa sổ lạnh này, chỉ là cao hơn năm ki-lô-mét: **sự ngưng tụ (condensation)**.',
     activity: {
       id: 'act_arrow_condensation',
@@ -496,11 +491,11 @@ export const notes = [
     ratio: 45,
     image: img('paddy.jpg'),
     content:
-      'Rain that lands on soil does one of two things. If it cannot soak in, it **flows over the ground** into streams and rivers — and carries soil away with it.\n\n' +
-      'These terraces in Sơn La hold the water back, so it soaks in instead of running away.',
+      'Rain on soil does one of two things. If it cannot soak in, it **flows over the ground** into streams and rivers.\n\n' +
+      'These terraces in Sơn La hold it back, so it soaks in instead.',
     contentVn:
-      'Mưa rơi xuống đất sẽ đi theo một trong hai đường. Nếu không thấm xuống được, nó **chảy trên mặt đất** vào suối và sông — và cuốn đất đi theo.\n\n' +
-      'Những thửa ruộng bậc thang ở Sơn La này giữ nước lại, để nước thấm xuống thay vì chảy đi mất.',
+      'Mưa rơi xuống đất sẽ đi theo một trong hai đường. Nếu không thấm xuống được, nó **chảy trên mặt đất** vào suối và sông.\n\n' +
+      'Ruộng bậc thang ở Sơn La giữ nước lại, để nước thấm xuống.',
     notes: [
       keyWord(
         '**Surface run-off:** water flowing across the ground into rivers. It carries the soil away.',
@@ -636,13 +631,11 @@ export const notes = [
     content:
       '> **1.** What are the different types of precipitation?\n' +
       '> **2.** How does rain form?\n' +
-      '> **3.** Use **particle theory** to explain how a pool of water on the road disappears.\n\n' +
-      'Question 3 is scored. Answer 1 and 2 in your head, then check them.',
+      '> **3.** Use **particle theory** to explain how a pool of water on the road disappears.',
     contentVn:
       '> **1.** Có những loại giáng thủy nào?\n' +
       '> **2.** Mưa hình thành như thế nào?\n' +
-      '> **3.** Dùng **lý thuyết hạt** để giải thích vì sao vũng nước trên đường biến mất.\n\n' +
-      'Câu 3 được tính điểm. Trả lời câu 1 và 2 trong đầu, rồi kiểm tra.',
+      '> **3.** Dùng **lý thuyết hạt** để giải thích vì sao vũng nước trên đường biến mất.',
     reveal: {
       label: 'Check 1 and 2',
       labelVn: 'Kiểm tra 1 và 2',
@@ -744,14 +737,14 @@ export const notes = [
         { id: 'precipitation', name: 'Precipitation', nameVn: 'Giáng thủy (precipitation)' },
       ],
       cards: [
-        { id: 'puddle', name: 'A puddle on the road disappears', nameVn: 'Một vũng nước trên đường biến mất', bin: 'evaporation' },
-        { id: 'sea', name: 'The warm sea puts water into the air', nameVn: 'Biển ấm đưa nước vào không khí', bin: 'evaporation' },
+        { id: 'puddle', name: 'A puddle dries up', nameVn: 'Một vũng nước khô đi', bin: 'evaporation' },
+        { id: 'sea', name: 'Water rises off a warm sea', nameVn: 'Nước bay lên từ biển ấm', bin: 'evaporation' },
         { id: 'rice', name: 'A rice field loses water through its plants', nameVn: 'Ruộng lúa mất nước qua cây lúa', bin: 'transpiration' },
-        { id: 'forest', name: 'A forest gives off water vapour', nameVn: 'Một khu rừng thải ra hơi nước', bin: 'transpiration' },
-        { id: 'glass', name: 'Drops form on a glass of iced coffee', nameVn: 'Giọt nước đọng trên ly cà phê đá', bin: 'condensation' },
-        { id: 'mist', name: 'Mist sits on a lake at sunrise', nameVn: 'Sương mù phủ mặt hồ lúc bình minh', bin: 'condensation' },
+        { id: 'forest', name: 'A forest gives off vapour', nameVn: 'Khu rừng thải ra hơi nước', bin: 'transpiration' },
+        { id: 'glass', name: 'Drops on a glass of iced coffee', nameVn: 'Giọt nước trên ly cà phê đá', bin: 'condensation' },
+        { id: 'mist', name: 'Mist on a lake at sunrise', nameVn: 'Sương mù trên hồ lúc bình minh', bin: 'condensation' },
         { id: 'hail', name: 'Hail bounces off the road', nameVn: 'Mưa đá nảy trên mặt đường', bin: 'precipitation' },
-        { id: 'snow', name: 'Snow lands on a mountain in Sa Pa', nameVn: 'Tuyết rơi trên núi ở Sa Pa', bin: 'precipitation' },
+        { id: 'snow', name: 'Snow falls on Sa Pa', nameVn: 'Tuyết rơi ở Sa Pa', bin: 'precipitation' },
       ],
       explain: '**Evaporation:** the puddle and the warm sea — liquid to gas. **Transpiration:** the rice field and the forest — the water leaves through plants, not off the ground. **Condensation:** the iced-coffee glass and the mist — you can see them, so they are already liquid. **Precipitation:** hail and snow — frozen, but they still fell from clouds.',
       explainVn: '**Sự bay hơi:** vũng nước và biển ấm — lỏng thành khí. **Sự thoát hơi nước:** ruộng lúa và khu rừng — nước đi ra qua cây, không phải từ mặt đất. **Sự ngưng tụ:** ly cà phê đá và sương mù — em nhìn thấy được, nên chúng đã là chất lỏng. **Giáng thủy:** mưa đá và tuyết — đông đặc, nhưng vẫn rơi từ mây.',
