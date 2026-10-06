@@ -134,19 +134,27 @@ cell). Every explanation says why each distractor is wrong.
 | 1.4 Cells, tissues and organs | `U01_4` | built | `U01_4` |
 | 2.1 Solids, liquids and gases | `U02_1` | built | `U02_1a`, `U02_1b` |
 | 2.2 Changes of state | `U02_2` | built | `U02_2a`, `U02_2b`, `U02_model_states` (as the StateModel widget) |
-| 2.3 Explaining changes of state | `U02_3` | skipped for now (Bowen, 2026-09-17) | `U02_3` |
+| 2.3 Explaining changes of state | `U02_3` | built — Explain It | `U02_3` |
+| 2.4 The water cycle | `U02_4` | built — Water Journey | `U02_4` |
 | 2.5 Atoms, elements and the Periodic Table | `U02_5` | built — Element Hunt | `U02_5` |
 | 2.6 Compounds and formulae | `U02_6` | built — Particle Lab | `U02_6` |
 | 2.7 Compounds and mixtures | `U02_7` | built — Particle Lab (mixtures) | `U02_7` |
-| 2.8 → | `U02_8` … | next, once taught | — |
+| 2.8 Acids and bases | `U02_8` | built — pH Lab | `U02_8` |
+| 3.1 → | `U03_1` … | next, once taught | — |
 
 From 2.5 the units follow [y7-science/particle-engines.md](y7-science/particle-engines.md):
 a denser deck (15–18 scored items, with the new `periodic` / `particles` / `formula`
 activities), and a generative task in place of Diagrams — Element Hunt (a tappable
 first-20 Periodic Table) or Particle Lab (count, write, build and sort particles).
+2.3, 2.4 and 2.8 (built last, closing Unit 2) follow the same shape with their own
+engines and deck activities — Explain It / `chain`, Water Journey / `cycle`, pH Lab /
+`ph` — in [y7-science/unit2-close-engines.md](y7-science/unit2-close-engines.md).
 
 Not adapted, by design: `U00_1` (Day One), `U00_2` (the accuracy lab),
-`U00_3` (the planters) — they only exist with a room.
+`U00_3` (the planters) — they only exist with a room. Nor are the classroom's
+supplementary decks `U02_model_states` (absorbed into 2.2 as the StateModel widget)
+and `U02_first20` (The First 20 Elements, one slide each — reference for 2.5,
+whose Element Hunt already drills the first 20).
 
 ## 5. Verify
 
