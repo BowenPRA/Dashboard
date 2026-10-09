@@ -185,7 +185,7 @@ same idea for column arithmetic.
 |---|---|---|
 | `column-add-sub` | Column sum with a carry/borrow row | 1.1 |
 | `long-mult` | Partial-product rows, then the final column add | 1.2, 1.6 |
-| `long-div` | Bus-stop: quotient digit, product, subtraction, bring-down | 1.4, 1.5 |
+| `short-div` | Bus stop, the short way (the 3.2 Bus Stop screen): quotient digit on top, each remainder small and up-left of the next digit, the last one after an r. Replaced the long-form `long-div` (product, subtraction, bring-down) on 2026-10-09 at the teacher's request | 1.4, 1.5 |
 | `times-sprint` | A timed grid of single facts — the remediation floor | 1.3 |
 
 ### 5.4 Data shape — operands only
@@ -231,8 +231,8 @@ unit leans on.
 | 1.1 Add & subtract integers | `column-add-sub` | Regrouping is the skill the number line hides |
 | 1.2 Multiply & divide integers | `long-mult` | The sign rules are useless without the multiplication |
 | 1.3 LCM | `times-sprint` | Multiples *are* times tables; listing them is the method |
-| 1.4 HCF | `long-div` (exact) | "Does it divide exactly?" is the factor test |
-| 1.5 Divisibility | `long-div` (remainders) | The test predicts; the division proves it |
+| 1.4 HCF | `short-div` (exact) | "Does it divide exactly?" is the factor test |
+| 1.5 Divisibility | `short-div` (remainders) | The test predicts; the division proves it |
 | 1.6 Square & cube roots | `long-mult` (squaring) | 25², 32² by hand — the roots list stops being magic |
 
 ---
@@ -432,7 +432,7 @@ repo, in document order.
   the deck and it works better self-paced than projected.
 - **Checks:** factor vs multiple · common factors of 12 and 18 · why highest · HCF is
   never "none" (distractor: 0) · the ribbons.
-- **Drill:** `long-div`, exact division.
+- **Drill:** `short-div`, exact division.
 
 ### 1.5 Tests for Divisibility — 20 → 13
 
@@ -447,7 +447,7 @@ repo, in document order.
   s10 "One Number Is Missing" (there is no easy test for 7 — an honest slide, rare).
 - **Checks:** last-digit test · digit-sum for 9 · the 6 test needs *both* · why 7 has no
   test · the missing digit.
-- **Drill:** `long-div` with remainders.
+- **Drill:** `short-div` with remainders.
 
 ### 1.6 Square Roots & Cube Roots — 23 → 14
 
@@ -469,7 +469,8 @@ repo, in document order.
 **Phase 0 — code, once (nothing content-shaped until this lands)**
 
 1. `NumberDrill.jsx` + the `NUM_DRILL` registry entry (§5). Build `long-mult` first,
-   then `long-div`; `column-add-sub` and `times-sprint` are simplifications of those.
+   then `long-div` (since replaced by `short-div`, the 3.2 Bus Stop screen);
+   `column-add-sub` and `times-sprint` are simplifications of those.
 
 2. **Allow over-provisioned units** ([validate-entry.js:93](../../scripts/validate-entry.js#L93)).
    Today: `if (total !== 100) err(…)`. A six-task unit at 20 XP each totals 120 and is

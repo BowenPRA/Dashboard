@@ -54,7 +54,7 @@ import { checkTitrationItems } from '../src/utils/titration.js';
 import { checkItem as checkSymbolEq } from '../src/utils/chemFormula.js';
 import { checkAmcTest } from '../src/utils/amcTest.js';
 import { checkLineLabItems } from '../src/utils/lineLab.js';
-import { checkShortDivItems } from '../src/utils/shortDivision.js';
+import { checkShortDivItems, drillToShortDiv } from '../src/utils/shortDivision.js';
 import { checkShiftItems } from '../src/utils/placeShift.js';
 import { checkQuickFireConfig } from '../src/utils/quickFire.js';
 import { checkIneqItems } from '../src/utils/ineqLine.js';
@@ -721,7 +721,7 @@ for (const trackId of TRACK_IDS) {
     //    NumberDrill.jsx grows to support them.
     if (unit.drill) {
       const at = `${label}: drill`;
-      const DRILL_MODES = ['long-mult', 'column-add-sub', 'times-sprint', 'long-div'];
+      const DRILL_MODES = ['long-mult', 'column-add-sub', 'times-sprint', 'short-div'];
       const d = unit.drill;
       if (!DRILL_MODES.includes(d.mode)) {
         err(`${at}: mode "${d.mode}" — NumberDrill.jsx implements ${DRILL_MODES.join('/')}`);
@@ -748,10 +748,10 @@ for (const trackId of TRACK_IDS) {
             // [a, b] single times-table fact — small operands, timed for recall.
             if (it.length !== 2) { err(`${iat}: times-sprint items are [a, b] fact pairs`); return; }
             for (const n of it) if (!Number.isInteger(n) || n < 2 || n > 12) err(`${iat}: fact operand ${n} must be a whole number from 2 to 12`);
-          } else if (d.mode === 'long-div') {
+          } else if (d.mode === 'short-div') {
             // [D, d] dividend and divisor. D multi-digit; divisor 2..99. The
             // bus-stop view assumes D >= d so there is real work to show.
-            if (it.length !== 2) { err(`${iat}: long-div items are [dividend, divisor] pairs`); return; }
+            if (it.length !== 2) { err(`${iat}: short-div items are [dividend, divisor] pairs`); return; }
             const [D, dv] = it;
             if (!Number.isInteger(D) || D < 10 || D > 99999) err(`${iat}: dividend ${D} must be a whole number from 10 to 99999`);
             if (!Number.isInteger(dv) || dv < 2 || dv > 99) err(`${iat}: divisor ${dv} must be a whole number from 2 to 99`);
@@ -770,6 +770,11 @@ for (const trackId of TRACK_IDS) {
           }
         });
       });
+      // short-div runs on the Bus Stop screen: build its items and check them
+      // with the same model the screen grades with.
+      if (d.mode === 'short-div') {
+        for (const p of checkShortDivItems(drillToShortDiv(d).items, { bilingual })) err(`${at} ${p}`);
+      }
     }
 
     // -- Factor Blitz: only the target numbers are authored; FactorBlitz.jsx

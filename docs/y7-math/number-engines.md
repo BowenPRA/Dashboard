@@ -119,6 +119,15 @@ Without `dp` the division **must stop** within 5 added zeros (the validator refu
 With `dp` it must **not** stop within `dp` places (otherwise "correct to" rounds nothing —
 make it exact). At most 10 columns.
 
+**Remainder items** — `{ id, level, dividend: '85', divisor: 4, remainder: true }` — divide
+whole numbers only (no `dp`, no point) and stop at the units digit: there is no +0 button,
+and what is left at the last digit goes in an **r box** after the answer (`21 r 1`; blank
+counts as 0). The divisor may go up to 99 (carries are then two-digit boxes). The finished
+screen says whether the divisor divides exactly. These are the Number Gym `short-div`
+drills of 1.4 and 1.5, which mount this screen: `drillToShortDiv(drill)` turns their
+`[dividend, divisor]` ladder into remainder items, keeping the ids the old long-division
+view saved progress under (`L<rung>-<D>d<d>-<i>`).
+
 **The method, as the student writes it:**
 
 ```

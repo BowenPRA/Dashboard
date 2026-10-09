@@ -7,7 +7,8 @@ import { SafeInlineMath } from '../components/notes/SafeMath.jsx';
 import ShortDivBoard from '../components/math/ShortDivBoard.jsx';
 import { focusBox } from '../components/math/shortDivBoardHelpers';
 import {
-  shortDivModel, qDigitOk, carryOk, qHint, carryHint, needZeroHint, extraZeroNote, questionText, MAX_ZEROS, MAX_COLS,
+  shortDivModel, qDigitOk, carryOk, qHint, carryHint, remHint, remainderVerdict, needZeroHint, extraZeroNote, questionText,
+  MAX_ZEROS, MAX_COLS,
 } from '../utils/shortDivision';
 import { diagnoseRound, placeName } from '../utils/rounding';
 
@@ -19,8 +20,11 @@ import { diagnoseRound, placeName } from '../utils/rounding';
  *       { id, level, dividend: '936', divisor: 4 },            exact
  *       { id, level, dividend: '47', divisor: 4 },             exact, once zeros are added
  *       { id, level, dividend: '58', divisor: 7, dp: 3 },      correct to 3 d.p.
+ *       { id, level, dividend: '85', divisor: 4, remainder: true },  whole: 21 r 1
  *       (+ context / contextVn)
  *   ] }
+ * Number Gym (NumberDrill.jsx) also mounts this screen for the short-div
+ * drills of 1.4 and 1.5, every item a remainder item.
  * utils/shortDivision.js derives every column from the two numbers.
  *
  * The stages:
@@ -28,6 +32,8 @@ import { diagnoseRound, placeName } from '../utils/rounding';
  *           the remainder in the small box up-left of the NEXT digit. When
  *           the digits run out and it is not finished, +0 adds a zero after
  *           the point (pressing Check there instead is the named slip).
+ *           A remainder item has no zeros: at the last digit, what is left
+ *           over goes in the r box after the answer.
  *   ROUND   (dp items) type the answer rounded to the accuracy asked for.
  *
  * A wrong box can be tried again; a second wrong answer at the same step (or
@@ -55,14 +61,16 @@ const T = {
     askCol: (d, cur) => `How many ${d}s in ${cur}?`,
     readCarry: (k, dg, cur) => `The small ${k} rides on the ${dg} — read them together: ${cur}.`,
     boxes: 'Digit on top. Remainder in the small box, up and to the left of the next digit.',
+    remLast: 'Last digit: what is left over is the remainder — write it after the r.',
     typeTop: 'Type the digit that goes on top first.',
     fillCarry: 'There is a remainder. Write it in the small box — up and to the left of the next digit.',
+    fillRem: 'Something is left over. Write the remainder after the r.',
     filled: 'It is filled in for you.',
     shown: 'Here it is. Read it, then carry on.',
     pointNote: 'The point goes in the answer too — straight above the one in the number.',
     maxZeros: 'That is as many zeros as the page holds.',
     addZero: 'Add a zero after the point', removeZero: 'Take the last zero away',
-    top: 'digit on top, column', carry: 'remainder carried onto digit',
+    top: 'digit on top, column', carry: 'remainder carried onto digit', remainder: 'remainder',
     roundTitle: (q, name) => `Now round ${q} to ${name}.`,
     roundSub: 'The last digit you worked out is the one that decides.',
     roundRight: 'Right — rounded once, from the digit after.',
@@ -83,14 +91,16 @@ const T = {
     askCol: (d, cur) => `${cur} chứa bao nhiêu lần ${d}?`,
     readCarry: (k, dg, cur) => `Số ${k} nhỏ đi cùng số ${dg} — đọc chung thành ${cur}.`,
     boxes: 'Chữ số ở trên. Số dư viết vào ô nhỏ, phía trên bên trái của chữ số tiếp theo.',
+    remLast: 'Chữ số cuối: phần còn dư chính là số dư — viết nó sau chữ r.',
     typeTop: 'Hãy nhập chữ số ở phía trên trước.',
     fillCarry: 'Có số dư. Hãy viết nó vào ô nhỏ — phía trên bên trái của chữ số tiếp theo.',
+    fillRem: 'Vẫn còn dư. Hãy viết số dư sau chữ r.',
     filled: 'Đã điền sẵn cho em.',
     shown: 'Đây là đáp án. Đọc kỹ rồi làm tiếp.',
     pointNote: 'Dấu thập phân cũng có ở đáp án — ngay phía trên dấu thập phân của số bị chia.',
     maxZeros: 'Trang giấy chỉ đủ chỗ cho chừng đó số 0.',
     addZero: 'Thêm một số 0 sau dấu thập phân', removeZero: 'Bỏ số 0 cuối cùng',
-    top: 'chữ số ở trên, cột', carry: 'số dư nhớ sang chữ số',
+    top: 'chữ số ở trên, cột', carry: 'số dư nhớ sang chữ số', remainder: 'số dư',
     roundTitle: (q, name) => `Bây giờ làm tròn ${q} đến ${name}.`,
     roundSub: 'Chữ số cuối cùng em vừa tính chính là chữ số quyết định.',
     roundRight: 'Đúng — làm tròn một lần, dựa vào chữ số đứng sau.',
@@ -194,6 +204,11 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   const column = model.cols[Math.min(col, need - 1)];
   const dividing = stage === 'divide' && !itemDone;
   const hasRound = model.dp != null;
+  const rem = model.remainderMode;
+  // The box this column's remainder goes in: the small box on the next digit,
+  // or — at the last digit of a remainder item — the r box after the answer.
+  const carryIdOf = (c, availNow = avail) => (rem && c === need - 1 ? 'r' : c + 1 < availNow ? `k${c + 1}` : null);
+  const lastRem = rem && col === need - 1;
   const stages = hasRound ? ['divide', 'round'] : ['divide'];
 
   /* ---------------------------------------------------------- saving */
@@ -233,7 +248,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     if (marks[id] === 'good' && id.startsWith('q') && !String(entries[id] ?? '').trim()) return 'idle';
     if (marks[id] === 'good' || marks[id] === 'shown') return marks[id];
     if (!dividing) return 'idle';
-    if (id === `q${col}` || (id === `k${col + 1}` && col + 1 < avail)) return marks[id] === 'bad' ? 'bad' : 'live';
+    if (id === `q${col}` || id === carryIdOf(col)) return marks[id] === 'bad' ? 'bad' : 'live';
     return 'idle';
   };
   const edit = (id, text) => {
@@ -280,11 +295,11 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   /** Fill this column in (after two wrong tries, or Show me). */
   const revealStep = (why) => {
     const qId = `q${col}`;
-    const kId = `k${col + 1}`;
     const last = col === need - 1;
     let zerosNow = zeros;
     if (!last && col + 1 >= avail) { zerosNow = zeros + 1; setZeros(zerosNow); }
-    const showCarry = col + 1 < model.givenCols + zerosNow;
+    const kId = carryIdOf(col, model.givenCols + zerosNow);
+    const showCarry = kId != null;
     setEntries((e) => ({ ...e, [qId]: String(column.q), ...(showCarry ? { [kId]: String(column.carryOut) } : {}) }));
     setMarks((m) => ({
       ...m,
@@ -300,24 +315,27 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
 
   const checkDivide = () => {
     const qId = `q${col}`;
-    const kId = `k${col + 1}`;
+    const kId = carryIdOf(col);
     const hasNext = col + 1 < avail;
+    const hasBox = kId != null;
     const last = col === need - 1;
     const qText = String(entries[qId] ?? '').trim();
     if (!qText && !column.leading) { setMsg({ tone: 'info', ...both('typeTop') }); focusBox(UID, qId); return; }
     const qOk = qDigitOk(column, qText);
     const kText = String(entries[kId] ?? '').trim();
-    if (qOk && hasNext && !kText && column.carryOut !== 0) {
+    if (qOk && hasBox && !kText && column.carryOut !== 0) {
       setMarks((m) => ({ ...m, [qId]: 'good' }));
-      setMsg({ tone: 'info', ...both('fillCarry') });
+      setMsg({ tone: 'info', ...both(lastRem ? 'fillRem' : 'fillCarry') });
       focusBox(UID, kId);
       return;
     }
-    const kOk = !hasNext || carryOk(column.carryOut, kText);
+    const kOk = !hasBox || carryOk(column.carryOut, kText);
     const needZero = !hasNext && !last;
 
     if (qOk && kOk && !needZero) {
-      setMarks((m) => ({ ...m, [qId]: 'good', ...(hasNext ? { [kId]: 'good' } : {}) }));
+      setMarks((m) => ({ ...m, [qId]: 'good', ...(hasBox ? { [kId]: 'good' } : {}) }));
+      // r 0 is written out, so the finished sum shows it divides exactly
+      if (lastRem && !kText) setEntries((e) => ({ ...e, r: '0' }));
       setMsg(null);
       stepOn(zeros, helped);
       return;
@@ -329,11 +347,11 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
       setMsg({ tone: 'bad', ...needZeroHint(model, column) });
       return;
     }
-    const why = !qOk ? qHint(model, column) : carryHint(model, column);
+    const why = !qOk ? qHint(model, column) : lastRem ? remHint(model, column) : carryHint(model, column);
     setSlipped(true);
     if (wrongs + 1 >= 2) { revealStep(why); return; }
     setWrongs(wrongs + 1);
-    setMarks((m) => ({ ...m, [qId]: qOk ? 'good' : 'bad', ...(hasNext && qOk ? { [kId]: 'bad' } : {}) }));
+    setMarks((m) => ({ ...m, [qId]: qOk ? 'good' : 'bad', ...(hasBox && qOk ? { [kId]: 'bad' } : {}) }));
     setMsg({ tone: 'bad', ...why });
     focusBox(UID, qOk ? kId : qId);
   };
@@ -378,12 +396,13 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   const sum = `${model.dividendText} \\div ${model.divisor}`;
   const answerLatex = hasRound
     ? `${sum} = ${model.quotientText}${model.exact ? '' : '\\ldots'} \\approx ${model.answerText}\\;\\text{(${model.dp} ${t.dp})}`
-    : `${sum} = ${model.answerText}`;
+    : `${sum} = ${model.answerText}${rem && model.finalRemainder ? `\\text{ r }${model.finalRemainder}` : ''}`;
+  const verdict = rem ? remainderVerdict(model) : null;
   const roundTone = roundMark === 'good' ? 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200'
     : roundMark === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200'
       : roundMark === 'bad' ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300'
         : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100';
-  const labels = { addZero: t.addZero, removeZero: t.removeZero, top: t.top, carry: t.carry };
+  const labels = { addZero: t.addZero, removeZero: t.removeZero, top: t.top, carry: t.carry, remainder: t.remainder };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
@@ -427,7 +446,8 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                 <div className="mb-3">
                   <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{t.askCol(model.divisor, column.current)}</div>
                   <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                    {column.carryIn > 0 ? t.readCarry(column.carryIn, column.digit, column.current) : t.boxes}
+                    {column.carryIn > 0 ? t.readCarry(column.carryIn, column.digit, column.current) : lastRem ? '' : t.boxes}
+                    {lastRem && <span className="text-orange-600 dark:text-orange-300">{column.carryIn > 0 ? ' ' : ''}{t.remLast}</span>}
                   </p>
                 </div>
               )}
@@ -440,7 +460,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
 
               <ShortDivBoard model={model} zeros={zeros} entries={entries} stateOf={stateOf} onEdit={edit}
                 onEnter={dividing ? checkDivide : undefined}
-                onAddZero={dividing ? addZero : null} onRemoveZero={canRemove ? removeZero : null}
+                onAddZero={dividing && !rem ? addZero : null} onRemoveZero={canRemove ? removeZero : null}
                 activeCol={dividing ? col : null} uid={UID} ink={INK} labels={labels} />
 
               {note && (
@@ -493,6 +513,9 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.answer}</div>
                   <div className="text-xl text-slate-900 dark:text-slate-100 overflow-x-auto"><SafeInlineMath math={answerLatex} /></div>
                 </div>
+                {verdict && (
+                  <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{pick(verdict.en, verdict.vn)}</p>
+                )}
                 <div className="mt-4 flex justify-end">
                   <button onClick={isLast ? finish : goNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: INK_DARK }}>
                     {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />

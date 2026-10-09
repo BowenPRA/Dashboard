@@ -14,10 +14,18 @@
 // An item states the question only:
 //   { id, level, dividend: '58', divisor: 7 }            exact — add zeros until the remainder is 0
 //   { id, level, dividend: '58', divisor: 7, dp: 3 }     correct to 3 d.p. — work to 4 places, then round
+//   { id, level, dividend: '85', divisor: 4, remainder: true }
+//                                                        whole numbers — stop at the units digit and
+//                                                        write what is left after an r: 21 r 1
 //   (+ context / contextVn, a story told above the sum)
 // Every column — the digit, the carry into it, the number it makes, the
 // quotient digit, the carry out — the zeros needed and the answer are derived
 // here, and the validator runs the same model (checkShortDivItems).
+//
+// Remainder items are the Number Gym drills of 1.4 and 1.5 (factors and
+// divisibility): there the question is "does it divide exactly?", so the
+// division stops at the last digit and the remainder is the answer that
+// matters. No point, no added zeros.
 
 import { dec, decText, canon, roundTo } from './decimal.js';
 import { roundModel, placeName } from './rounding.js';
@@ -25,6 +33,7 @@ import { roundModel, placeName } from './rounding.js';
 export const MAX_ZEROS = 5;     // zeros a student can add after the point
 export const MAX_COLS = 10;     // columns under the bus stop
 export const DIVISOR_RANGE = [2, 25];
+export const REMAINDER_DIVISOR_MAX = 99;   // whole-number items may divide by two-digit numbers up to 99
 export const DP_RANGE = [1, 4];
 
 /**
@@ -43,11 +52,15 @@ export const DP_RANGE = [1, 4];
  *   pointAdded        the dividend is whole, so the student's first zero brings a point with it
  *   quotient          the worked quotient as a value (to workDp places)
  *   answer            the rounded answer (dp items) or the exact quotient
+ *   remainderMode     a whole-number item: the last column's carry out is the
+ *                     remainder, written after an r (finalRemainder)
  */
 export function shortDivModel(item) {
+  const remainderMode = item.remainder === true;
+  const dMax = remainderMode ? REMAINDER_DIVISOR_MAX : DIVISOR_RANGE[1];
   const d = Number(item.divisor);
-  if (!Number.isInteger(d) || d < DIVISOR_RANGE[0] || d > DIVISOR_RANGE[1]) {
-    throw new Error(`divisor ${item.divisor} must be a whole number from ${DIVISOR_RANGE[0]} to ${DIVISOR_RANGE[1]}`);
+  if (!Number.isInteger(d) || d < DIVISOR_RANGE[0] || d > dMax) {
+    throw new Error(`divisor ${item.divisor} must be a whole number from ${DIVISOR_RANGE[0]} to ${dMax}`);
   }
   const D = dec(String(item.dividend));
   if (D.n === 0n) throw new Error('the dividend is 0');
@@ -59,6 +72,9 @@ export function shortDivModel(item) {
   if (dp != null && (!Number.isInteger(dp) || dp < DP_RANGE[0] || dp > DP_RANGE[1])) {
     throw new Error(`dp ${dp} must be ${DP_RANGE[0]}–${DP_RANGE[1]}`);
   }
+  if (remainderMode && (given.length || dp != null)) {
+    throw new Error(`a remainder item divides whole numbers — ${text}${dp != null ? ` with dp ${dp}` : ''} is not one`);
+  }
 
   // How many decimal places to work to.
   const remAt = (k) => (D.n * 10n ** BigInt(k - D.dp)) % BigInt(d);  // remainder after k places (k ≥ D.dp)
@@ -67,7 +83,9 @@ export function shortDivModel(item) {
     if (remAt(k) === 0n) { stopsAt = k; break; }
   }
   let workDp;
-  if (dp == null) {
+  if (remainderMode) {
+    workDp = 0;
+  } else if (dp == null) {
     if (stopsAt == null || stopsAt - given.length > MAX_ZEROS) {
       throw new Error(`${text} ÷ ${d} does not stop within ${MAX_ZEROS} added zeros — give the item a dp`);
     }
@@ -99,13 +117,33 @@ export function shortDivModel(item) {
   const answer = dp != null ? roundTo(quotient, dp) : canon(quotient);
 
   return {
-    item, dividend: D, dividendText: text, divisor: d, dp,
+    item, dividend: D, dividendText: text, divisor: d, dp, remainderMode,
     intLen, givenCols, cols, workDp, stopsAt,
     zerosNeeded: Math.max(0, workDp - given.length),
     pointAdded: given.length === 0 && workDp > 0,
     quotient, quotientText: decText(quotient), exact, finalRemainder: carry,
     answer, answerText: decText(answer),
     round: dp != null ? roundModel(quotient, dp) : null,
+  };
+}
+
+/**
+ * A Number Gym `short-div` drill (1.4, 1.5) as Bus Stop items. The drill
+ * authors a ladder of [dividend, divisor] pairs; each becomes a remainder item,
+ * one level per rung. The ids are the ones the old long-division view saved
+ * progress under, so a student's cleared items still count.
+ */
+export function drillToShortDiv(drill) {
+  const levels = {};
+  const items = [];
+  (drill?.ladder || []).forEach((rung, ri) => {
+    levels[ri + 1] = { en: rung.level, vn: rung.levelVn || rung.level };
+    (rung.items || []).forEach(([D, d], ii) => {
+      items.push({ id: `L${ri}-${D}d${d}-${ii}`, level: ri + 1, dividend: String(D), divisor: d, remainder: true });
+    });
+  });
+  return {
+    title: drill?.title, titleVn: drill?.titleVn, intro: drill?.intro, introVn: drill?.introVn, levels, items,
   };
 }
 
@@ -147,6 +185,30 @@ export function carryHint(model, col) {
   };
 }
 
+/** The hint for a wrong final remainder (remainder items): no next digit to carry onto. */
+export function remHint(model, col) {
+  const d = model.divisor;
+  return {
+    en: `What is left over? ${col.current} − ${d} × ${col.q} = ? There is no next digit to carry it onto, so it is the remainder — write it after the r.`,
+    vn: `Còn dư bao nhiêu? ${col.current} − ${d} × ${col.q} = ? Không còn chữ số nào để nhớ sang, nên đó là số dư — viết nó sau chữ r.`,
+  };
+}
+
+/** What the remainder says (remainder items): divides exactly, or not. */
+export function remainderVerdict(model) {
+  const { divisor: d, dividendText: D, finalRemainder: r } = model;
+  if (r === 0) {
+    return {
+      en: `Remainder 0, so ${d} divides ${D} exactly — ${d} is a factor of ${D}.`,
+      vn: `Số dư bằng 0, nên ${D} chia hết cho ${d} — ${d} là ước của ${D}.`,
+    };
+  }
+  return {
+    en: `Remainder ${r}, not 0, so ${d} does not divide ${D} exactly — ${d} is not a factor of ${D}.`,
+    vn: `Số dư là ${r}, khác 0, nên ${D} không chia hết cho ${d} — ${d} không phải là ước của ${D}.`,
+  };
+}
+
 /** Out of digits, but not finished: why a zero is needed. */
 export function needZeroHint(model, col) {
   if (model.dp == null) {
@@ -179,6 +241,7 @@ export function extraZeroNote(model) {
 /** The question as a sentence. */
 export function questionText(model) {
   const s = `${model.dividendText} ÷ ${model.divisor}`;
+  if (model.remainderMode) return { en: `Work out ${s}. Is there a remainder?`, vn: `Tính ${s}. Có số dư không?` };
   if (model.dp == null) return { en: `Work out ${s}.`, vn: `Tính ${s}.` };
   const want = placeName(model.dp);
   return { en: `Work out ${s}, correct to ${want.en}.`, vn: `Tính ${s}, chính xác đến ${want.vn}.` };

@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import NumberDrill from './tasks/NumberDrill';
 
-// Two ladders so both drill modes can be smoke-tested. Pick with ?mode=addsub.
+// A ladder per drill mode. Pick with ?mode=addsub, ?mode=sprint or ?mode=div.
 const MULT = {
   mode: 'long-mult',
   title: 'Two-Digit Multiplication', titleVn: 'Nhân số có hai chữ số',
@@ -39,8 +39,8 @@ const SPRINT = {
 };
 
 const DIV = {
-  mode: 'long-div',
-  title: 'Long Division', titleVn: 'Chia dài',
+  mode: 'short-div',
+  title: 'Short Division', titleVn: 'Chia ngắn',
   ladder: [
     { level: 'Warm-up', levelVn: 'Khởi động', items: [[84, 4], [96, 6], [72, 3]] },
     { level: 'Carries', levelVn: 'Có nhớ', items: [[912, 24], [645, 15], [704, 8]] },

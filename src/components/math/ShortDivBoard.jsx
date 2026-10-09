@@ -14,7 +14,12 @@ import { boxOrder, boxDomId as domId, focusBox } from './shortDivBoardHelpers';
  * entries and says what state each box is in.
  *
  * Box ids: `q<c>` the quotient digit above column c; `k<c>` the carry written
- * on column c (the remainder carried INTO it), c ≥ 1.
+ * on column c (the remainder carried INTO it), c ≥ 1; `r` the remainder after
+ * the answer, on a whole-number item (model.remainderMode):
+ *
+ *         1  6  r 1
+ *       ┌──────
+ *     6 │ 9 ³7
  *
  * Props
  *   model      shortDivModel(item)
@@ -29,7 +34,7 @@ import { boxOrder, boxDomId as domId, focusBox } from './shortDivBoardHelpers';
  *   ink        accent colour
  *   compact    narrower columns, and the zero buttons under the number — for
  *              the column beside a slide
- *   labels     { addZero, removeZero, top, carry } — aria / button text
+ *   labels     { addZero, removeZero, top, carry, remainder } — aria / button text
  * ------------------------------------------------------------------ */
 
 const TONE = {
@@ -44,11 +49,13 @@ const SIZES = {
     col: 'w-11 sm:w-[3.25rem]', top: 'h-12 sm:h-[3.75rem]', bottom: 'h-14 sm:h-[4.25rem]', point: 'w-3 sm:w-4',
     q: 'w-9 h-11 sm:w-11 sm:h-[3.25rem] text-2xl sm:text-3xl', digit: 'text-3xl sm:text-[2.6rem]',
     carry: 'h-6 sm:h-7 text-sm sm:text-lg', carryW: ['w-5 sm:w-6', 'w-7 sm:w-9'],
+    rem: 'h-11 sm:h-[3.25rem] text-2xl sm:text-3xl', remW: ['w-9 sm:w-11', 'w-12 sm:w-16'], r: 'text-2xl sm:text-3xl',
   },
   compact: {
     col: 'w-9 sm:w-10', top: 'h-11', bottom: 'h-14', point: 'w-2.5 sm:w-3',
     q: 'w-8 h-10 sm:w-9 text-xl', digit: 'text-3xl',
     carry: 'h-6 text-sm', carryW: ['w-5', 'w-7'],
+    rem: 'h-10 text-xl', remW: ['w-8 sm:w-9', 'w-11 sm:w-12'], r: 'text-xl',
   },
 };
 
@@ -58,7 +65,7 @@ export default function ShortDivBoard({
 }) {
   const S = compact ? SIZES.compact : SIZES.roomy;
   const avail = model.givenCols + zeros;
-  const order = boxOrder(avail);
+  const order = boxOrder(avail, model.remainderMode);
   const twoDigitCarry = model.divisor > 10;
   const hasPoint = avail > model.intLen;
   const digitOf = (c) => (c < model.cols.length ? model.cols[c].digit : 0);
@@ -126,6 +133,27 @@ export default function ShortDivBoard({
     );
   };
 
+  // The remainder, written after an r at the end of the answer (remainder items).
+  const remBox = () => {
+    const id = 'r';
+    const st = stateOf(id);
+    const editable = st === 'live' || st === 'bad';
+    return (
+      <input
+        id={domId(uid, id)}
+        value={entries[id] ?? ''}
+        onChange={(e) => type(id, e.target.value, twoDigitCarry ? 2 : 1)}
+        onKeyDown={onKey}
+        readOnly={!editable}
+        disabled={st === 'idle'}
+        inputMode="numeric" autoComplete="off" aria-label={labels.remainder || 'remainder'}
+        className={`${S.rem} ${S.remW[twoDigitCarry ? 1 : 0]} rounded-lg border-2 text-center font-mono font-black tabular-nums outline-none transition-colors
+          ${TONE[st] || 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-4 focus:ring-violet-200 dark:focus:ring-violet-900'}`}
+        style={st === 'live' ? { borderColor: ink } : undefined}
+      />
+    );
+  };
+
   const point = (key, height) => (
     <div key={key} className={`${S.point} ${height} shrink-0 flex items-end justify-center pb-2 font-mono font-black text-3xl leading-none text-slate-800 dark:text-slate-100`}>.</div>
   );
@@ -147,6 +175,14 @@ export default function ShortDivBoard({
         className={`relative ${S.col} ${S.bottom} shrink-0 flex items-end justify-center pb-1 rounded-lg transition-colors ${active ? 'bg-violet-100/80 dark:bg-violet-900/30' : ''}`}>
         {c >= 1 && carryBox(c)}
         <span className={`font-mono font-black ${S.digit} tabular-nums leading-none ${added ? 'text-[#0087a8] dark:text-cyan-300' : 'text-slate-800 dark:text-slate-100'}`}>{digitOf(c)}</span>
+      </div>,
+    );
+  }
+  if (model.remainderMode) {
+    top.push(
+      <div key="rem" className={`${S.top} shrink-0 flex items-center gap-1.5 pl-1.5`}>
+        <span className={`font-mono font-black ${S.r} leading-none text-slate-500 dark:text-slate-400`}>r</span>
+        {remBox()}
       </div>,
     );
   }

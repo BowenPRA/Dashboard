@@ -1,13 +1,15 @@
 // Helpers shared by ShortDivBoard and the screens that drive it. Kept out of
 // the component file so fast refresh sees a component-only module.
 
-/** The order boxes are filled in: q0, k1, q1, k2 … */
-export function boxOrder(avail) {
+/** The order boxes are filled in: q0, k1, q1, k2 … then r, the remainder,
+ *  when the item stops at a whole number with what is left over. */
+export function boxOrder(avail, remainder = false) {
   const out = [];
   for (let c = 0; c < avail; c += 1) {
     out.push(`q${c}`);
     if (c + 1 < avail) out.push(`k${c + 1}`);
   }
+  if (remainder) out.push('r');
   return out;
 }
 
