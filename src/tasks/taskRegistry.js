@@ -12,6 +12,7 @@ import { assetUrl, audioUrl, slideAudioUrl } from '../utils/assetPaths';
 import { getTrackConfig } from '../components/trackRegistry';
 import { notesToFix } from '../utils/notesReview';
 import { isTestSubmitted } from '../utils/amcTest';
+import { langsFor } from '../utils/lang';
 
 /**
  * Does this track carry Vietnamese twins? A track that declares
@@ -19,6 +20,14 @@ import { isTestSubmitted } from '../utils/amcTest';
  * switch to, so the screens that offer one are told to leave it out.
  */
 const bilingualOf = (track) => getTrackConfig(track)?.bilingual !== false;
+
+/**
+ * The languages a track's task screens offer, in toggle order: `['en']`,
+ * `['en', 'vn']`, or `['en', 'vn', 'fr']` on a `french: true` track. The host
+ * passes it to EVERY task as `langs` (YearDashboard, the preview harnesses), so
+ * no entry below has to — a screen reads it through hooks/useLang.
+ */
+export const langsOf = (track) => langsFor(getTrackConfig(track));
 
 /**
  * The one place a task type is defined.

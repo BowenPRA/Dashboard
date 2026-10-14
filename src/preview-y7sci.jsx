@@ -18,7 +18,7 @@ import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getTrack } from './data/index';
-import { getTask, resolveTask, normalizeScore } from './tasks/taskRegistry';
+import { getTask, resolveTask, normalizeScore, langsOf } from './tasks/taskRegistry';
 import { recordAttempt } from './utils/progressSchema';
 import UnitCard from './components/UnitCard';
 
@@ -127,7 +127,7 @@ function Harness() {
     const Comp = def.component;
     return (
       <Suspense fallback={<div className="p-8 font-black">Loading {open}…</div>}>
-        <Comp {...def.props(ctx)} />
+        <Comp langs={langsOf(ctx.track)} {...def.props(ctx)} />
       </Suspense>
     );
   }

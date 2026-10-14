@@ -58,6 +58,7 @@ import { checkShortDivItems, drillToShortDiv } from '../src/utils/shortDivision.
 import { checkShiftItems } from '../src/utils/placeShift.js';
 import { checkQuickFireConfig } from '../src/utils/quickFire.js';
 import { checkIneqItems } from '../src/utils/ineqLine.js';
+import { frenchProblems, frenchSourceProblems } from '../src/utils/langCheck.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -124,6 +125,21 @@ for (const trackId of TRACK_IDS) {
     // registry) — e.g. an English-only IGCSE track. English fields stay
     // required; the Vietnamese `vn*` twins are skipped for such tracks.
     const bilingual = TRACK_REGISTRY.find((t) => t.id === trackId)?.bilingual !== false;
+
+    // -- French (`french: true` in the track registry): every Vietnamese twin
+    //    anywhere in the unit needs its French one beside it, carrying the same
+    //    maths, and the unit's own code may not test for 'vn' alone — that
+    //    branch could never show French. See src/utils/lang.js, docs/french.md.
+    if (bilingual && TRACK_REGISTRY.find((t) => t.id === trackId)?.french === true) {
+      const fr = frenchProblems(unit);
+      fr.slice(0, 6).forEach((p) => err(`${label}: French ${p}`));
+      if (fr.length > 6) err(`${label}: …and ${fr.length - 6} more French twin problems (node scripts/french/extract.mjs ${trackId}/${m.id})`);
+      if (fs.existsSync(dir)) {
+        for (const f of fs.readdirSync(dir).filter((n) => /\.jsx?$/.test(n))) {
+          frenchSourceProblems(fs.readFileSync(path.join(dir, f), 'utf8'), f).forEach((p) => err(`${label}: ${p}`));
+        }
+      }
+    }
 
     // -- meta
     for (const k of ['id', 'title', 'desc', 'track']) if (!unit.meta?.[k]) err(`${label}: meta.${k} is missing`);

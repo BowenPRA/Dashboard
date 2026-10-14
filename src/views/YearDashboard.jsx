@@ -8,7 +8,7 @@ import useTrackNav from '../hooks/useTrackNav';
 import ProgressLoadError from '../components/ProgressLoadError';
 import { getTrackConfig } from '../components/trackRegistry';
 import { getTrack } from '../data/index';
-import { getTask, normalizeScore, unitXPOf } from '../tasks/taskRegistry';
+import { getTask, normalizeScore, unitXPOf, langsOf } from '../tasks/taskRegistry';
 import { isPreviewAccount } from '../utils/previewAccount';
 import { essaysOf } from '../utils/essayArchive';
 import useDarkMode from '../hooks/useDarkMode';
@@ -146,7 +146,9 @@ export default function YearDashboard({ track }) {
         onProgress: (score, answers, meta) => handleTaskProgress(activeTask.id, score, answers, meta),
         onQuit: closeTask,
       });
-      taskElement = <TaskComponent {...taskProps} />;
+      // Every task hears which languages the track offers (EN, EN/VN or
+      // EN/VN/FR) — see hooks/useLang.
+      taskElement = <TaskComponent langs={langsOf(track)} {...taskProps} />;
     }
   }
 

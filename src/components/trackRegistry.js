@@ -202,6 +202,11 @@ export const TRACK_REGISTRY = [
     desc: 'Cambridge Lower Secondary',
     icon: Calculator,
     group: 'Cambridge',
+    // EN / VN / FR. Every `…Vn` twin in a unit has a `…Fr` beside it, the
+    // validator refuses one that is missing, and each task screen's language
+    // toggle cycles through all three — see src/utils/lang.js. Matches the
+    // classroom decks, which offer FR on every Year 7 lesson.
+    french: true,
     // The coursebook's units. A track page groups its unit cards under these
     // (collapsible, with a jump bar) instead of one ever-longer list. A unit
     // belongs to the section whose `prefix` starts its id — so 2.6 lands in
@@ -228,6 +233,8 @@ export const TRACK_REGISTRY = [
     icon: Microscope,
     group: 'Cambridge',
     bilingual: true,
+    // EN / VN / FR, as Y7_MATH.
+    french: true,
     // See Y7_MATH: the coursebook's units, matched by id prefix.
     sections: [
       { prefix: 'U01_', label: 'Unit 1', title: 'Cells' },

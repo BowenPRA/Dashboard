@@ -12,7 +12,7 @@ import { useState, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getTrack } from './data/index';
-import { getTask, resolveTask } from './tasks/taskRegistry';
+import { getTask, resolveTask, langsOf } from './tasks/taskRegistry';
 
 const params = new URLSearchParams(window.location.search);
 const TRACK = 'Y7_MATH';
@@ -103,7 +103,7 @@ function Harness() {
     const Comp = def.component;
     return (
       <Suspense fallback={<div className="p-8 font-black">Loading {open}…</div>}>
-        <Comp {...def.props(ctx)} />
+        <Comp langs={langsOf(ctx.track)} {...def.props(ctx)} />
       </Suspense>
     );
   }
