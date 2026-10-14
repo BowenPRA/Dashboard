@@ -23,6 +23,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The **atmosphere** is the air around the Earth — water vapour is one of the gases in it. The water under the ground is groundwater (A); the sea, lakes and rivers are open water (B); and the clouds are only one part of the atmosphere (D).',
       expVn: '**Khí quyển** là lớp không khí bao quanh Trái Đất — hơi nước là một trong các chất khí trong đó. Nước dưới lòng đất là nước ngầm (A); biển, hồ và sông là mặt nước hở (B); còn mây chỉ là một phần của khí quyển (D).',
+      expFr: 'L’**atmosphère**, c’est l’air autour de la Terre — la vapeur d’eau est l’un des gaz qu’elle contient. L’eau sous le sol, c’est l’eau souterraine (A) ; la mer, les lacs et les rivières sont les eaux de surface (B) ; et les nuages ne sont qu’une partie de l’atmosphère (D).',
     },
     {
       id: 'a2_car_window',
@@ -37,6 +38,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'The air holds invisible **water vapour**. When it touches the cold glass it cools and **condenses** into drops — gas to liquid. The drops are on the inside, so they are not rain (A); no new water is ever made (C); and evaporation is liquid to gas, the opposite change (D).',
       expVn: 'Không khí chứa **hơi nước** vô hình. Khi chạm vào kính lạnh, nó lạnh đi và **ngưng tụ** thành giọt — từ khí thành lỏng. Các giọt ở bên trong, nên không phải nước mưa (A); không bao giờ có nước mới được tạo ra (C); và bay hơi là lỏng thành khí, sự thay đổi ngược lại (D).',
+      expFr: 'L’air contient de la **vapeur d’eau** invisible. Quand elle touche la vitre froide, elle refroidit et **se condense** en gouttes — de gaz à liquide. Les gouttes sont à l’intérieur, donc ce n’est pas de la pluie (A) ; aucune eau nouvelle n’est jamais fabriquée (C) ; et l’évaporation va de liquide à gaz, le changement inverse (D).',
     },
     {
       id: 'a3_well',
@@ -51,6 +53,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Rain that soaks down into the soil and rocks is **groundwater**, and a well or a pump brings it back up. Open water (A) is a river, lake or sea you can see; surface run-off (B) flows over the ground, not under it; and water vapour (C) is a gas in the air.',
       expVn: 'Nước mưa thấm xuống đất và đá là **nước ngầm**, và giếng hoặc máy bơm đưa nó lên lại. Mặt nước hở (A) là sông, hồ hay biển nhìn thấy được; dòng chảy bề mặt (B) chảy trên mặt đất, không phải dưới lòng đất; còn hơi nước (C) là chất khí trong không khí.',
+      expFr: 'La pluie qui s’infiltre dans le sol et les roches devient de l’**eau souterraine**, et un puits ou une pompe la fait remonter. Les eaux de surface (A), ce sont une rivière, un lac ou une mer que tu vois ; le ruissellement (B) coule sur le sol, pas dessous ; et la vapeur d’eau (C) est un gaz dans l’air.',
     },
     {
       id: 'a4_sleet',
@@ -65,6 +68,7 @@ export const assessment = {
       correct: 'A',
       expEn: '**Sleet** is rain and snow falling together — one of the four kinds of precipitation. Mist (B) does not fall from a cloud: it is drops that condensed near the ground. Melted hail on the road (C) is just water on the ground, and water vapour (D) is an invisible gas.',
       expVn: '**Mưa tuyết (sleet)** là mưa và tuyết rơi cùng lúc — một trong bốn loại giáng thủy. Sương mù (B) không rơi từ mây: đó là những giọt ngưng tụ ở sát mặt đất. Mưa đá tan trên đường (C) chỉ là nước trên mặt đất, còn hơi nước (D) là chất khí vô hình.',
+      expFr: 'Le **grésil (sleet)**, c’est de la pluie et de la neige qui tombent ensemble — l’une des quatre sortes de précipitations. La brume (B) ne tombe pas d’un nuage : ce sont des gouttes qui se sont condensées près du sol. De la grêle fondue sur la route (C), c’est juste de l’eau sur le sol, et la vapeur d’eau (D) est un gaz invisible.',
     },
     {
       id: 'a5_terraces',
@@ -79,6 +83,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'On a bare slope, rain rushes over the ground as **surface run-off** and carries the soil away. Terraces hold the water back, so it has time to **soak in**. They cannot change how much rain falls (A), they do not stop plants transpiring (B), and holding water on the field does not make it evaporate faster (C).',
       expVn: 'Trên sườn dốc trọc, mưa chảy xiết trên mặt đất thành **dòng chảy bề mặt** và cuốn đất đi. Ruộng bậc thang giữ nước lại, để nước có thời gian **thấm xuống**. Chúng không thay đổi lượng mưa rơi (A), không ngăn cây thoát hơi nước (B), và giữ nước trên ruộng không làm nước bay hơi nhanh hơn (C).',
+      expFr: 'Sur une pente nue, la pluie dévale le sol en **ruissellement** et emporte la terre. Les terrasses retiennent l’eau, pour qu’elle ait le temps de **s’infiltrer**. Elles ne peuvent pas changer la quantité de pluie qui tombe (A), elles n’empêchent pas les plantes de transpirer (B), et retenir l’eau sur le champ ne la fait pas s’évaporer plus vite (C).',
     },
     {
       id: 'a6_cloud_particles',
@@ -93,6 +98,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'That is **condensation**: heat energy is transferred away from the particles, they slow down, and the attractive forces pull them together into liquid drops. Particles never change size (A); gaining energy and moving faster (C) is what happens in evaporation; and particles in a liquid still move (D).',
       expVn: 'Đó là **sự ngưng tụ**: nhiệt năng được truyền ra khỏi các hạt, chúng chậm lại, và lực hút kéo chúng lại với nhau thành những giọt lỏng. Các hạt không bao giờ thay đổi kích thước (A); nhận năng lượng và chuyển động nhanh hơn (C) là điều xảy ra khi bay hơi; và các hạt trong chất lỏng vẫn chuyển động (D).',
+      expFr: 'C’est la **condensation** : l’énergie thermique est transférée hors des particules, elles ralentissent, et les forces d’attraction les rassemblent en gouttes de liquide. Les particules ne changent jamais de taille (A) ; gagner de l’énergie et bouger plus vite (C), c’est ce qui se passe dans l’évaporation ; et les particules d’un liquide bougent toujours (D).',
     },
     {
       id: 'a7_real_path',
@@ -107,6 +113,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Water **evaporates** from the sea into the air as vapour, then **condenses** into a cloud. Condensation starts with vapour in the air, not with the sea (A); precipitation falls from clouds, not from plants (B); and transpiration is water leaving a plant through its leaves, not leaving groundwater (D).',
       expVn: 'Nước **bay hơi** từ biển vào không khí thành hơi nước, rồi **ngưng tụ** thành mây. Sự ngưng tụ bắt đầu từ hơi nước trong không khí, không phải từ biển (A); giáng thủy rơi từ mây, không phải từ cây (B); và sự thoát hơi nước là nước rời khỏi cây qua lá, không phải rời khỏi nước ngầm (D).',
+      expFr: 'L’eau **s’évapore** de la mer dans l’air sous forme de vapeur, puis **se condense** en nuage. La condensation commence avec la vapeur dans l’air, pas avec la mer (A) ; les précipitations tombent des nuages, pas des plantes (B) ; et la transpiration, c’est l’eau qui quitte une plante par ses feuilles, pas l’eau qui quitte l’eau souterraine (D).',
     },
     {
       id: 'a8_plant_bag',
@@ -121,6 +128,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Water left the leaves as vapour — **transpiration** — and then the vapour touched the cooler plastic and **condensed** into drops. B has them the wrong way round; the soil is outside the bag, and nothing falls from a cloud inside it (C); and precipitation needs a cloud (D).',
       expVn: 'Nước rời khỏi lá ở dạng hơi — **sự thoát hơi nước** — rồi hơi nước chạm vào lớp nhựa mát hơn và **ngưng tụ** thành giọt. B đảo ngược thứ tự; đất nằm ngoài túi, và không có gì rơi từ mây bên trong túi (C); còn giáng thủy cần có mây (D).',
+      expFr: 'L’eau a quitté les feuilles sous forme de vapeur — la **transpiration** — puis la vapeur a touché le plastique plus frais et s’est **condensée** en gouttes. B les met dans le mauvais ordre ; le sol est à l’extérieur du sac, et rien ne tombe d’un nuage à l’intérieur (C) ; et les précipitations ont besoin d’un nuage (D).',
     },
   ],
 };

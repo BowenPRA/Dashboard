@@ -7,6 +7,7 @@ import {
   makePhSession, PH_MODES, markRound, answerOf, SUBSTANCES, KINDS, KIND_WORDS, tubeSvg, phColour, inkOn,
   caseOf, ADDS, WAYS, WAY_CHOICES, cap, NEUTRAL, afterDrops, dropsToNeutral,
 } from '../utils/phLab';
+import useLang from '../hooks/useLang';
 
 /**
  * pH Lab — Science 2.8's generative task. Rounds are drawn fresh from a seed
@@ -68,12 +69,34 @@ const T = {
     beakerOf: (k) => `Một cốc ${k}`, anAcid: 'axit', anAlkali: 'kiềm',
     add: 'Em sẽ thêm gì?', way: 'pH thay đổi theo hướng nào?', clear: 'Làm lại', tube: 'Một ống nghiệm có chất chỉ thị vạn năng',
   },
+  fr: {
+    title: 'Labo pH', check: 'Vérifier', next: 'Suivant', results: 'Voir les résultats', finish: 'Terminer', again: 'Nouvelles questions',
+    empty: "Cette unité n'a pas de mode Labo pH.", back: 'Retour', correct: 'Correct', wrong: 'Pas tout à fait', done: 'Labo terminé', right: 'justes',
+    ask: {
+      classify: 'Acide, neutre ou basique ?',
+      toColour: "Quelle couleur prend l'indicateur universel ?",
+      toPH: "L'indicateur universel a pris cette couleur. Quel est le pH ?",
+      litmus: 'Que fait chaque papier tournesol ?',
+      acid: "Touche l'acide le plus fort.",
+      alkali: 'Touche la base la plus forte.',
+      order: "Touche-les dans l'ordre : le plus acide d'abord.",
+      dropsAcid: "Ajoute de la base goutte à goutte. Arrête-toi quand c'est neutre.",
+      dropsAlkali: "Ajoute de l'acide goutte à goutte. Arrête-toi quand c'est neutre.",
+      everyday: 'Que faut-il ajouter — et dans quel sens va le pH ?',
+    },
+    modes: { classify: 'Acide, neutre ou basique', colour: "Couleurs de l'indicateur", litmus: 'Papier tournesol', strength: 'Plus fort ou plus faible', neutralise: 'Neutraliser' },
+    acid: 'Acide', neutral: 'Neutre', alkali: 'Basique', withIndicator: "avec de l'indicateur universel",
+    beakerOf: (k) => `Un bécher ${k}`, anAcid: "d'acide", anAlkali: 'de base',
+    add: 'Que faut-il ajouter ?', way: 'Dans quel sens va le pH ?', clear: 'Recommencer', tube: "Un tube à essai d'indicateur universel",
+  },
 };
 
 const EMPTY = { choice: null, litmus: {}, order: [], drops: 0, add: null, way: null };
 
-const say = (o, L) => (o ? (L === 'vn' && o.vn ? o.vn : o.en) : '');
+const say = (o, L) => (o ? o[L] || o.en : '');
 const subName = (id, L) => cap(say(SUBSTANCES[id], L));
+// Show the other language's name too — not when the French is the English word (cola).
+const showsTwin = (s, L) => L === 'vn' || (L === 'fr' && !!s.fr && s.fr !== s.en);
 
 function askOf(round, t) {
   if (round.mode === 'colour') return t.ask[round.dir];
@@ -86,13 +109,13 @@ const Card = ({ children, className = '' }) => (
   <div className={`rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 shadow-sm ${className}`}>{children}</div>
 );
 
-/** A liquid's name (both languages in VN mode) and, if given, its pH chip. */
+/** A liquid's name (English, and the translation under it in VN / FR mode) and, if given, its pH chip. */
 function NameBlock({ id, pH, kind, L, big = true }) {
   const s = SUBSTANCES[id];
   return (
     <div className="text-center min-w-0">
       <div className={`font-black text-slate-800 dark:text-slate-100 break-words ${big ? 'text-2xl sm:text-3xl' : 'text-lg'}`}>{cap(s.en)}</div>
-      {L === 'vn' && <div className="font-bold text-sm text-slate-400">({s.vn})</div>}
+      {showsTwin(s, L) && <div className="font-bold text-sm text-slate-400">({s[L]})</div>}
       {pH != null && (
         // a plain chip: drawn in the pH's own colour it would answer the colour round
         <span className="inline-block mt-2 px-3 py-1 rounded-full font-black text-lg tabular-nums border-2 bg-white text-slate-800 border-slate-300">pH {pH}</span>
@@ -184,7 +207,7 @@ function StrengthCards({ round, draft, checked, L, t, answerNow, set }) {
               <span className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center font-black text-base tabular-nums border-2 border-white shadow-sm" style={{ backgroundColor: phColour(pH), color: inkOn(pH) }}>{pH}</span>
               <span className="min-w-0 flex-1 leading-tight">
                 <span className="block">{subName(id, L)}</span>
-                {L === 'vn' && <span className="block text-xs font-bold opacity-70">({SUBSTANCES[id].en})</span>}
+                {showsTwin(SUBSTANCES[id], L) && <span className="block text-xs font-bold opacity-70">({SUBSTANCES[id].en})</span>}
               </span>
               {order && (at >= 0 || checked) && (
                 <span className="w-7 h-7 shrink-0 rounded-full bg-slate-900/10 dark:bg-white/10 flex items-center justify-center font-black text-sm">{checked ? want.indexOf(id) + 1 : at + 1}</span>
@@ -286,16 +309,16 @@ function summaryLabel(round, t, L) {
   else if (round.mode === 'strength') detail = round.subs.map((id) => subName(id, L)).join(', ');
   else if (round.ask === 'drops') detail = `pH ${round.start} → 7`;
   else if (round.case) detail = cap(say(ADDS[caseOf(round.case).fix], L));
-  return `${t.modes[round.mode]}${detail ? `: ${detail}` : ''}`;
+  return `${t.modes[round.mode]}${detail ? `${L === 'fr' ? ' : ' : ': '}${detail}` : ''}`;
 }
 
 // ------------------------------------------------------------------ the task
 
-export default function PhLab({ pool, onComplete, onQuit, bilingual = true }) {
+export default function PhLab({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(() => ((config.modes || []).some((m) => PH_MODES.includes(m)) ? makePhSession(config, seed) : []), [config, seed]);
-  const [lang, setLang] = useState('en');
+  const { lang: L, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [draft, setDraft] = useState(EMPTY);
   const [result, setResult] = useState(null);   // this round's mark
@@ -304,8 +327,7 @@ export default function PhLab({ pool, onComplete, onQuit, bilingual = true }) {
   const [banked, setBanked] = useState(null);   // the best finished run before "New rounds"
   const round = session[idx];
 
-  const L = bilingual ? lang : 'en';
-  const t = T[L];
+  const t = T[L] || T.en;
 
   const runOf = (res) => {
     const items = session.map((r, i) => ({ itemId: `${r.mode}-${i + 1}`, correct: !!res[i] }));
@@ -322,9 +344,9 @@ export default function PhLab({ pool, onComplete, onQuit, bilingual = true }) {
   if (!session.length) return <EmptyScreen text={t.empty} back={t.back} onQuit={onQuit} />;
 
   const topBar = (
-    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn }, L) || t.title}
+    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn, fr: config.titleFr }, L) || t.title}
       current={ended ? session.length : idx + 1} total={session.length}
-      lang={bilingual ? lang : undefined} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      lang={L} onLangToggle={toggleLang} />
   );
 
   const reset = () => { setDraft(EMPTY); setResult(null); };

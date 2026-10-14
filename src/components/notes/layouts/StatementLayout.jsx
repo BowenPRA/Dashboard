@@ -7,11 +7,11 @@ import { parseInlineText, renderContent, toHex } from './helpers.jsx';
 export default function StatementLayout({ slide: s, ctx }) {
   const { pick, lang, isDisplayMode } = ctx;
   const accent = toHex(s.accent || s.color, '#3b82f6');
-  const eyebrow = pick(s.eyebrow, s.eyebrowVn);
-  const title = pick(s.title, s.titleVn);
-  const text = pick(s.text ?? s.content, s.textVn ?? s.contentVn);
-  const sub = pick(s.sub, s.subVn);
-  const label = pick(s.label, s.labelVn);
+  const eyebrow = pick(s.eyebrow, s.eyebrowVn, s.eyebrowFr);
+  const title = pick(s.title, s.titleVn, s.titleFr);
+  const text = pick(s.text ?? s.content, s.textVn ?? s.contentVn, s.textFr ?? s.contentFr);
+  const sub = pick(s.sub, s.subVn, s.subFr);
+  const label = pick(s.label, s.labelVn, s.labelFr);
 
   return (
     // Centred via the child's `my-auto`, so a statement taller than the card
@@ -55,7 +55,7 @@ export default function StatementLayout({ slide: s, ctx }) {
         </div>
 
         {s.content && s.text && (
-          <div className="w-full text-left max-w-3xl">{renderContent(pick(s.content, s.contentVn), { isDisplayMode })}</div>
+          <div className="w-full text-left max-w-3xl">{renderContent(pick(s.content, s.contentVn, s.contentFr), { isDisplayMode })}</div>
         )}
 
         {s.reveal && <div className="w-full max-w-3xl"><Reveal reveal={s.reveal} lang={lang} accent={accent} isDisplayMode={isDisplayMode} /></div>}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bot, CheckCircle2, XCircle, Award, ImageIcon, Type, FileEdit, ArrowRight, ListChecks } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import { TranslationChoice } from '../components/Feedback';
 
 import { gradeDiagram } from '../utils/aiGrader';
 import { assetUrl, unitImageUrl } from '../utils/assetPaths';
@@ -48,7 +49,7 @@ const checkRequiredWordGroup = (wordGroup, text) => {
 /** Points an item is worth: an MCQ its `marks`, a written item content + English. */
 const maxPointsOf = (q) => (q?.type === 'mcq' ? (q.marks || 1) : (q?.scienceMaxMarks || 0) + 3);
 
-export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
+export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle, langs }) {
   const questions = pool?.diagrams || [];
   const [localAnswers, setLocalAnswers] = useState(savedData);
 
@@ -57,6 +58,9 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [picked, setPicked] = useState(null); // MCQ: the chosen option's val
+  // The explanation's translation: Vietnamese, or French when the item has it
+  // too (Year 7) and the student picks FR — kept across items.
+  const [trChoice, setTrChoice] = useState('vn');
 
   const [cumulativePoints, setCumulativePoints] = useState(0);
   const [maxPossiblePoints, setMaxPossiblePoints] = useState(0);
@@ -64,6 +68,8 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
   const currentQ = questions[currentIndex];
   // Written is the default so every item authored before mixed types keeps working.
   const isMcq = currentQ?.type === 'mcq';
+  const hasFrExp = (!Array.isArray(langs) || langs.includes('fr')) && !!currentQ?.expFr;
+  const showFrExp = hasFrExp && trChoice === 'fr';
 
   // Feedback is stamped with the item it belongs to and only rendered for that
   // item. Advancing sets currentIndex immediately while the reset effect runs
@@ -458,8 +464,15 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                           <p className="text-[15px] font-medium leading-relaxed text-slate-700 dark:text-slate-300">{currentQ.expEn}</p>
                         </div>
                         <div>
-                          <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>Giải thích</span>
-                          <p className="text-[15px] font-medium italic leading-relaxed text-slate-700 dark:text-slate-300">{currentQ.expVn}</p>
+                          {hasFrExp ? (
+                            <span className={`text-xs font-black uppercase tracking-widest flex flex-wrap items-center gap-2 mb-1.5 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>
+                              <span className="opacity-80">{showFrExp ? 'Explication' : 'Giải thích'}</span>
+                              <TranslationChoice value={trChoice} onChange={setTrChoice} />
+                            </span>
+                          ) : (
+                            <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>Giải thích</span>
+                          )}
+                          <p className="text-[15px] font-medium italic leading-relaxed text-slate-700 dark:text-slate-300">{showFrExp ? currentQ.expFr : currentQ.expVn}</p>
                         </div>
                       </div>
                     </div>

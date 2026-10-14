@@ -21,6 +21,7 @@ export const assessment = {
       correct: 'B',
       expEn: '$$5$$ divides into 20 exactly ($$20 ÷ 5 = 4$$), so it is a factor. $$40$$ and $$60$$ are **multiples** of 20; $$3$$ does not divide 20 exactly.',
       expVn: '$$5$$ chia hết 20 ($$20 ÷ 5 = 4$$), nên là ước số. $$40$$ và $$60$$ là **bội số** của 20; $$3$$ không chia hết 20.',
+      expFr: '$$5$$ divise 20 exactement ($$20 ÷ 5 = 4$$), donc c’est un diviseur. $$40$$ et $$60$$ sont des **multiples** de 20 ; $$3$$ ne divise pas 20 exactement.',
     },
     {
       id: 'a2_common',
@@ -35,6 +36,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'A factor divides **in**, so a common factor divides into **both** numbers. A multiple is what you land on (bigger), and $$8 × 12$$ is the sort of thing an LCM uses, not an HCF.',
       expVn: 'Ước số **chia vào**, nên ước số chung chia hết **cả hai** số. Bội số là số em đáp xuống (lớn hơn), và $$8 × 12$$ là kiểu của BCNN, không phải ƯCLN.',
+      expFr: 'Un diviseur entre **dans** le nombre, donc un diviseur commun divise **les deux** nombres. Un multiple, c’est le nombre où tu arrives (plus grand), et $$8 × 12$$ ressemble à ce qu’on utilise pour un PPCM, pas pour un PGCD.',
     },
     {
       id: 'a3_hcf',
@@ -49,6 +51,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The common factors of 12 and 18 are 1, 2, 3 and 6; the highest is 6. Answering 36 uses a multiple; 2 is a common factor but not the highest.',
       expVn: 'Ước số chung của 12 và 18 là 1, 2, 3 và 6; lớn nhất là 6. Trả lời 36 là dùng bội số; 2 là ước số chung nhưng không phải lớn nhất.',
+      expFr: 'Les diviseurs communs de 12 et 18 sont 1, 2, 3 et 6 ; le plus grand est 6. Répondre 36, c’est prendre un multiple ; 2 est un diviseur commun, mais pas le plus grand.',
     },
     {
       id: 'a4_never_none',
@@ -63,6 +66,7 @@ export const assessment = {
       correct: 'B',
       expEn: '1 is a factor of every number, so the HCF of 9 and 10 is **1**, never “none”. Answering 90 multiplies them (that is the LCM); 19 adds them.',
       expVn: '1 là ước số của mọi số, nên ƯCLN của 9 và 10 là **1**, không bao giờ “không có”. Trả lời 90 là nhân (đó là BCNN); 19 là cộng.',
+      expFr: '1 est un diviseur de tous les nombres, donc le PGCD de 9 et 10 est **1**, jamais « aucun ». Répondre 90, c’est les multiplier (c’est le PPCM) ; 19, c’est les additionner.',
     },
     {
       id: 'a5_simplify',
@@ -77,6 +81,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'The HCF of 24 and 36 is 12. Divide top and bottom by 12: $$\\tfrac{24}{36} = \\tfrac{2}{3}$$. Dividing by only 2 gives $$\\tfrac{12}{18}$$, which is not yet simplest.',
       expVn: 'ƯCLN của 24 và 36 là 12. Chia cả tử và mẫu cho 12: $$\\tfrac{24}{36} = \\tfrac{2}{3}$$. Chỉ chia cho 2 thì được $$\\tfrac{12}{18}$$, chưa tối giản.',
+      expFr: 'Le PGCD de 24 et 36 est 12. Divise le haut et le bas par 12 : $$\\tfrac{24}{36} = \\tfrac{2}{3}$$. Diviser seulement par 2 donne $$\\tfrac{12}{18}$$, qui n’est pas encore sous sa forme la plus simple.',
     },
     {
       id: 'a6_word',
@@ -91,6 +96,7 @@ export const assessment = {
       correct: 'A',
       expEn: '“As long as possible, none left over” means the HCF of 30 and 42, which is 6 cm. $$72$$ adds the two lengths; $$2$$ is a common factor but not the highest.',
       expVn: '“Dài nhất có thể, không thừa” nghĩa là ƯCLN của 30 và 42, bằng 6 cm. $$72$$ là cộng hai độ dài; $$2$$ là ước số chung nhưng không phải lớn nhất.',
+      expFr: '« Le plus long possible, sans reste », c’est le PGCD de 30 et 42, qui est 6 cm. $$72$$ additionne les deux longueurs ; $$2$$ est un diviseur commun, mais pas le plus grand.',
     },
   ],
 };

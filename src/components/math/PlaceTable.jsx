@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { columnName } from '../../utils/rounding';
+import { tr } from '../../utils/lang';
 
 /* ------------------------------------------------------------------ *
  * A place-value table whose digits slide (utils/placeShift.js).
@@ -71,7 +72,7 @@ export default function PlaceTable({
       {cols.map((k) => {
         const name = columnName(k);
         return (
-          <div key={k} title={lang === 'vn' ? name.vn : name.en}
+          <div key={k} title={tr(lang, name.en, name.vn, name.fr)}
             className={`absolute top-0 h-full flex flex-col items-center justify-center border-x border-slate-200 dark:border-slate-700 ${k >= 0 ? 'bg-sky-50 dark:bg-sky-900/20' : 'bg-amber-50 dark:bg-amber-900/10'}`}
             style={{ left: left(k), width: cw }}>
             <span className="font-black text-slate-700 dark:text-slate-200 leading-none" style={{ fontSize: Math.max(9, Math.min(14, Math.round(cw * 0.32))) }}>{ABBR[k]}</span>

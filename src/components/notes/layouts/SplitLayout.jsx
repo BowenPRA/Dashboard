@@ -18,10 +18,11 @@ function textPercent(ratio) {
 export default function SplitLayout({ slide: s, ctx }) {
   const { pick, lang, isDisplayMode } = ctx;
   const accent = toHex(s.accent || s.color, '#1cb0f6');
-  const title = pick(s.title, s.titleVn);
-  const content = pick(s.content, s.contentVn);
-  const example = pick(s.example, s.exampleVn);
-  const exampleLabel = pick(s.exampleLabel || 'Example', s.exampleLabelVn);
+  const title = pick(s.title, s.titleVn, s.titleFr);
+  const content = pick(s.content, s.contentVn, s.contentFr);
+  const example = pick(s.example, s.exampleVn, s.exampleFr);
+  // With no label authored, French gets its own word rather than "Example".
+  const exampleLabel = pick(s.exampleLabel || 'Example', s.exampleLabelVn, s.exampleLabelFr ?? (s.exampleLabel ? undefined : 'Exemple'));
 
   const hasMedia = !!s.widget || !!s.inlineSvg || !!s.image;
   const hasExample = !!example;
@@ -67,7 +68,7 @@ export default function SplitLayout({ slide: s, ctx }) {
 
   return (
     <>
-      <HeaderBar title={title || 'Concept'} icon={s.icon || 'BookOpen'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />
+      <HeaderBar title={title || 'Concept'} icon={s.icon || 'BookOpen'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn, s.eyebrowFr)} isDisplayMode={isDisplayMode} />
       <div
         className={`flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden ${mediaLeft ? 'lg:flex-row-reverse' : ''}`}
         style={{ '--split-text': `${textPct}%`, '--split-media': `${100 - textPct}%` }}

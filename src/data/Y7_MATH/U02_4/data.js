@@ -64,51 +64,63 @@ export const U02_4_DATA = {
   // three from 2.3 that "expand and simplify" leans on.
   realWords: [
     {
-      word: 'Brackets', vn: 'Dấu ngoặc',
+      word: 'Brackets', vn: 'Dấu ngoặc', fr: 'Parenthèses',
       def: 'The marks ( ). A number written right next to a bracket means multiply: 4(10 + 6) means 4 times (10 + 6).',
       vnDef: 'Các dấu ( ). Một con số viết sát dấu ngoặc nghĩa là nhân: 4(10 + 6) nghĩa là 4 nhân (10 + 6).',
+      frDef: 'Les signes ( ). Un nombre écrit juste à côté d’une parenthèse veut dire multiplier : 4(10 + 6) veut dire 4 fois (10 + 6).',
       sent: 'In 5(a + 3), the brackets hold two terms, a and 3.',
       vnSent: 'Trong 5(a + 3), dấu ngoặc chứa hai hạng tử, a và 3.',
+      frSent: 'Dans 5(a + 3), les parenthèses contiennent deux termes, a et 3.',
       isReal: true,
     },
     {
-      word: 'Expand', vn: 'Khai triển',
+      word: 'Expand', vn: 'Khai triển', fr: 'Développer',
       def: 'To multiply every term inside the brackets by the number outside. The value does not get bigger; only the writing gets longer.',
       vnDef: 'Nhân mọi hạng tử bên trong ngoặc với số bên ngoài. Giá trị không lớn hơn; chỉ có cách viết dài ra.',
+      frDef: 'Multiplier chaque terme dans les parenthèses par le nombre à l’extérieur. La valeur ne devient pas plus grande ; seule l’écriture devient plus longue.',
       sent: 'Expand 5(a + 3) and you get 5a plus 15.',
       vnSent: 'Khai triển 5(a + 3) thì được 5a cộng 15.',
+      frSent: 'Développe 5(a + 3) et tu obtiens 5a plus 15.',
       isReal: true,
     },
     {
-      word: 'Multiply out', vn: 'Nhân phá ngoặc',
+      word: 'Multiply out', vn: 'Nhân phá ngoặc', fr: 'Distribuer',
       def: 'The same instruction as expand, in different words: multiply each term inside the brackets by the number outside.',
       vnDef: 'Cùng một yêu cầu như khai triển, nói bằng từ khác: nhân mỗi hạng tử bên trong ngoặc với số bên ngoài.',
+      frDef: 'La même consigne que développer, avec d’autres mots : multiplier chaque terme dans les parenthèses par le nombre à l’extérieur.',
       sent: 'Multiply out 4(3 minus c) to get 12 minus 4c.',
       vnSent: 'Nhân phá ngoặc 4(3 trừ c) thì được 12 trừ 4c.',
+      frSent: 'Distribue 4(3 moins c) pour obtenir 12 moins 4c.',
       isReal: true,
     },
     {
-      word: 'Term', vn: 'Hạng tử',
+      word: 'Term', vn: 'Hạng tử', fr: 'Terme',
       def: 'One part of an expression. The plus and minus signs separate the terms, and each term keeps the sign in front of it.',
       vnDef: 'Một phần của biểu thức. Các dấu cộng và trừ ngăn cách các hạng tử, và mỗi hạng tử giữ dấu đứng trước nó.',
+      frDef: 'Une partie d’une expression. Les signes plus et moins séparent les termes, et chaque terme garde le signe qui est devant lui.',
       sent: 'In x minus 2, the second term is minus 2.',
       vnSent: 'Trong x trừ 2, hạng tử thứ hai là trừ 2.',
+      frSent: 'Dans x moins 2, le deuxième terme est moins 2.',
       isReal: true,
     },
     {
-      word: 'Like terms', vn: 'Hạng tử đồng dạng',
+      word: 'Like terms', vn: 'Hạng tử đồng dạng', fr: 'Termes semblables',
       def: 'Terms with exactly the same letters, such as 3x and 4x. A number and a letter term are not like terms.',
       vnDef: 'Các hạng tử có chữ cái giống hệt nhau, như 3x và 4x. Một con số và một hạng tử chứa chữ cái không phải hạng tử đồng dạng.',
+      frDef: 'Des termes qui ont exactement les mêmes lettres, comme 3x et 4x. Un nombre et un terme avec une lettre ne sont pas des termes semblables.',
       sent: '12 and 4c are not like terms, so 12 minus 4c is already finished.',
       vnSent: '12 và 4c không phải hạng tử đồng dạng, nên 12 trừ 4c đã xong rồi.',
+      frSent: '12 et 4c ne sont pas des termes semblables, donc 12 moins 4c est déjà fini.',
       isReal: true,
     },
     {
-      word: 'Simplify', vn: 'Rút gọn',
+      word: 'Simplify', vn: 'Rút gọn', fr: 'Simplifier',
       def: 'To write an expression in a shorter way by collecting the like terms. Expand and simplify means expand first, then collect.',
       vnDef: 'Viết một biểu thức gọn hơn bằng cách gộp các hạng tử đồng dạng. Khai triển rồi rút gọn nghĩa là khai triển trước, rồi gộp.',
+      frDef: 'Écrire une expression plus courte en réduisant les termes semblables. « Développer et réduire » veut dire développer d’abord, puis réduire.',
       sent: 'Expand and simplify 3(x + 2) + 4x to get 7x plus 6.',
       vnSent: 'Khai triển rồi rút gọn 3(x + 2) + 4x thì được 7x cộng 6.',
+      frSent: 'Développe et réduis 3(x + 2) + 4x pour obtenir 7x plus 6.',
       isReal: true,
     },
   ],
@@ -121,17 +133,19 @@ export const U02_4_DATA = {
   expandGrid: {
     title: 'Expand It',
     titleVn: 'Khai triển',
+    titleFr: 'Développe',
     intro: 'One box, one multiplication: the number outside times each term inside, sign included. Then write the expansion.',
     introVn: 'Một ô, một phép nhân: số bên ngoài nhân với mỗi hạng tử bên trong, tính cả dấu. Rồi viết kết quả khai triển.',
+    introFr: 'Une case, une multiplication : le nombre à l’extérieur fois chaque terme à l’intérieur, signe compris. Puis écris le développement.',
     levels: {
-      1: { en: 'Every term', vn: 'Mọi hạng tử' },
-      2: { en: 'The number first', vn: 'Số đứng trước' },
-      3: { en: 'A minus inside', vn: 'Dấu trừ bên trong' },
-      4: { en: 'A number times a letter', vn: 'Số nhân với hạng tử có chữ' },
-      5: { en: 'Three terms', vn: 'Ba hạng tử' },
-      6: { en: 'Expand and simplify', vn: 'Khai triển rồi rút gọn' },
-      7: { en: 'Two brackets', vn: 'Hai dấu ngoặc' },
-      8: { en: 'Work backwards', vn: 'Làm ngược lại' },
+      1: { en: 'Every term', vn: 'Mọi hạng tử', fr: 'Chaque terme' },
+      2: { en: 'The number first', vn: 'Số đứng trước', fr: 'Le nombre d’abord' },
+      3: { en: 'A minus inside', vn: 'Dấu trừ bên trong', fr: 'Un moins à l’intérieur' },
+      4: { en: 'A number times a letter', vn: 'Số nhân với hạng tử có chữ', fr: 'Un nombre fois une lettre' },
+      5: { en: 'Three terms', vn: 'Ba hạng tử', fr: 'Trois termes' },
+      6: { en: 'Expand and simplify', vn: 'Khai triển rồi rút gọn', fr: 'Développer et réduire' },
+      7: { en: 'Two brackets', vn: 'Hai dấu ngoặc', fr: 'Deux parenthèses' },
+      8: { en: 'Work backwards', vn: 'Làm ngược lại', fr: 'À l’envers' },
     },
     items: [
       { id: 'e1', level: 1, expr: '4(a + 6)' },
@@ -156,7 +170,7 @@ export const U02_4_DATA = {
 
   // Algebra Pyramids, generated fresh every attempt (utils/pyramid.js): the
   // bottom blocks hold brackets to expand, then a plain build-up round.
-  pyramids: { title: 'Algebra Pyramids', titleVn: 'Kim tự tháp đại số', modes: ['brackets', 'up'], rounds: 6 },
+  pyramids: { title: 'Algebra Pyramids', titleVn: 'Kim tự tháp đại số', titleFr: 'Pyramides algébriques', modes: ['brackets', 'up'], rounds: 6 },
 
   // Short Answers: four reasoning questions on the deck's four walls, one mark
   // per scheme line. Prompts plain text; Vietnamese in `vnTranslation`.
@@ -165,6 +179,7 @@ export const U02_4_DATA = {
       id: 'sq1',
       question: 'Nam says that 5(a + 3) = 5a + 3. Explain his mistake and give the correct expansion.',
       vnTranslation: 'Nam nói rằng 5(a + 3) = 5a + 3. Hãy giải thích lỗi của bạn ấy và cho kết quả khai triển đúng.',
+      frTranslation: 'Nam dit que 5(a + 3) = 5a + 3. Explique son erreur et donne le bon développement.',
       suggestedWords: [['every', 'each'], ['multiply', 'multiplied'], ['15']],
       scienceMaxMarks: 2,
       markScheme: [
@@ -177,6 +192,7 @@ export const U02_4_DATA = {
       id: 'sq2',
       question: 'Explain why 4(3 − c) = 12 − 4c is already finished, and why writing 12 − 4c = 8c is wrong.',
       vnTranslation: 'Hãy giải thích vì sao 4(3 − c) = 12 − 4c đã là đáp án cuối cùng, và vì sao viết 12 − 4c = 8c là sai.',
+      frTranslation: 'Explique pourquoi 4(3 − c) = 12 − 4c est déjà fini, et pourquoi écrire 12 − 4c = 8c est faux.',
       suggestedWords: [['like terms', 'not like terms'], ['number', 'letter'], ['collect', 'combine']],
       scienceMaxMarks: 2,
       markScheme: [
@@ -189,6 +205,7 @@ export const U02_4_DATA = {
       id: 'sq3',
       question: 'What happens to the minus sign when you expand 3(x − 2)? Explain, and give the expansion.',
       vnTranslation: 'Điều gì xảy ra với dấu trừ khi em khai triển 3(x − 2)? Hãy giải thích, và cho kết quả khai triển.',
+      frTranslation: 'Que devient le signe moins quand tu développes 3(x − 2) ? Explique, et donne le développement.',
       suggestedWords: [['sign', 'minus'], ['box', 'term'], ['−6', '-6']],
       scienceMaxMarks: 2,
       markScheme: [
@@ -201,6 +218,7 @@ export const U02_4_DATA = {
       id: 'sq4',
       question: 'Explain how 5 × 2p becomes 10p. Why is 7p a wrong answer?',
       vnTranslation: 'Hãy giải thích vì sao 5 × 2p thành 10p. Vì sao 7p là đáp án sai?',
+      frTranslation: 'Explique comment 5 × 2p devient 10p. Pourquoi 7p est-il une mauvaise réponse ?',
       suggestedWords: [['multiply', 'multiplied', 'times'], ['letter', 'p'], ['add', 'added']],
       scienceMaxMarks: 2,
       markScheme: [

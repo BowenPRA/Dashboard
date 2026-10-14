@@ -10,12 +10,13 @@
 
 export const drill = {
   mode: 'column-add-sub',
-  title: 'Column Add & Subtract', titleVn: 'Cộng & Trừ theo cột',
+  title: 'Column Add & Subtract', titleVn: 'Cộng & Trừ theo cột', titleFr: 'Addition et soustraction posées',
   intro: 'Fill in one box at a time. The grid checks each digit, and the small box is the carry (for +) or the borrow (for −).',
   introVn: 'Điền từng ô một. Lưới kiểm tra từng chữ số, và ô nhỏ là số nhớ (với +) hoặc số mượn (với −).',
+  introFr: 'Remplis une case à la fois. La grille vérifie chaque chiffre, et la petite case est la retenue (pour +) ou l’emprunt (pour −).',
   ladder: [
-    { level: 'Warm-up', levelVn: 'Khởi động', items: [[24, 13, '+'], [46, 32, '-'], [35, 24, '+']] },
-    { level: 'Regroup', levelVn: 'Có nhớ / mượn', items: [[47, 28, '+'], [63, 45, '-'], [72, 59, '-']] },
-    { level: 'Stretch', levelVn: 'Nâng cao', items: [[268, 47, '+'], [402, 158, '-']] },
+    { level: 'Warm-up', levelVn: 'Khởi động', levelFr: 'Échauffement', items: [[24, 13, '+'], [46, 32, '-'], [35, 24, '+']] },
+    { level: 'Regroup', levelVn: 'Có nhớ / mượn', levelFr: 'Retenues', items: [[47, 28, '+'], [63, 45, '-'], [72, 59, '-']] },
+    { level: 'Stretch', levelVn: 'Nâng cao', levelFr: 'Défi', items: [[268, 47, '+'], [402, 158, '-']] },
   ],
 };

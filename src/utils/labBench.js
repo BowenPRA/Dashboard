@@ -49,9 +49,11 @@ function makeCylinder(rng) {
     unit: 'cm³',
     ask: 'What volume of liquid is in the measuring cylinder? Read the bottom of the meniscus.',
     askVn: 'Thể tích chất lỏng trong ống đong là bao nhiêu? Đọc ở đáy mặt khum.',
+    askFr: "Quel volume de liquide y a-t-il dans l'éprouvette graduée ? Lis le bas du ménisque.",
     tolerance: 0,
     why: `The bottom of the meniscus sits on the ${volume} line. Each small line is ${scale.minor} cm³.`,
     whyVn: `Đáy mặt khum nằm ở vạch ${volume}. Mỗi vạch nhỏ là ${scale.minor} cm³.`,
+    whyFr: `Le bas du ménisque est sur le trait ${volume}. Chaque petit trait vaut ${scale.minor} cm³.`,
   };
 }
 
@@ -103,9 +105,11 @@ function makeThermometer(rng) {
     unit: '°C',
     ask: 'What temperature does the thermometer show? Read the top of the liquid.',
     askVn: 'Nhiệt kế chỉ bao nhiêu độ? Đọc ở đỉnh cột chất lỏng.',
+    askFr: 'Quelle température indique le thermomètre ? Lis le haut du liquide.',
     tolerance: 0,
     why: `The top of the liquid is level with the ${temp} line. Each small line is ${scale.minor} °C.`,
     whyVn: `Đỉnh cột chất lỏng ngang với vạch ${temp}. Mỗi vạch nhỏ là ${scale.minor} °C.`,
+    whyFr: `Le haut du liquide est au niveau du trait ${temp}. Chaque petit trait vaut ${scale.minor} °C.`,
   };
 }
 
@@ -144,24 +148,28 @@ function makeCurve(rng) {
   const boilAt = Math.ceil((100 - start) / rate); // first whole minute at 100
   const total = boilAt + between(rng, 3, 5, 1);
   const kind = rng() < 0.55 ? 'at' : 'boil';
-  let ask; let askVn; let answer; let why; let whyVn; let unit;
+  let ask; let askVn; let askFr; let answer; let why; let whyVn; let whyFr; let unit;
   if (kind === 'at') {
     const n = between(rng, 1, boilAt - 1, 1);
     answer = Math.min(100, start + rate * n);
     unit = '°C';
     ask = `What was the temperature after ${n} minutes?`;
     askVn = `Nhiệt độ sau ${n} phút là bao nhiêu?`;
+    askFr = `Quelle était la température après ${n} minute${n === 1 ? '' : 's'} ?`;
     why = `Go up from ${n} minutes on the horizontal axis to the line, then across to the vertical axis: ${answer} °C. The water started at ${start} °C and rose ${rate} °C every minute.`;
     whyVn = `Từ ${n} phút trên trục ngang đi lên đến đường đồ thị, rồi sang trục dọc: ${answer} °C. Nước bắt đầu ở ${start} °C và tăng ${rate} °C mỗi phút.`;
+    whyFr = `Pars de ${n} minute${n === 1 ? '' : 's'} sur l'axe horizontal, monte jusqu'à la courbe, puis va jusqu'à l'axe vertical : ${answer} °C. L'eau était à ${start} °C au départ et a gagné ${rate} °C chaque minute.`;
   } else {
     answer = boilAt;
     unit = 'min';
     ask = 'After how many minutes did the water reach its boiling point and stop getting hotter?';
     askVn = 'Sau bao nhiêu phút nước đạt nhiệt độ sôi và ngừng nóng thêm?';
+    askFr = "Au bout de combien de minutes l'eau a-t-elle atteint sa température d'ébullition et cessé de chauffer ?";
     why = `The line goes flat at 100 °C — the boiling point — from ${boilAt} minutes on. The heat is turning water into steam instead of raising the temperature.`;
     whyVn = `Đường đồ thị nằm ngang ở 100 °C — nhiệt độ sôi — từ phút ${boilAt} trở đi. Nhiệt đang biến nước thành hơi thay vì làm tăng nhiệt độ.`;
+    whyFr = `La courbe devient plate à 100 °C — la température d'ébullition — à partir de ${boilAt} minutes. L'énergie thermique transforme l'eau en vapeur au lieu de faire monter la température.`;
   }
-  return { mode: 'curve', start, rate, boilAt, total, kind, answer, unit, ask, askVn, tolerance: kind === 'at' ? 2 : 0, why, whyVn };
+  return { mode: 'curve', start, rate, boilAt, total, kind, answer, unit, ask, askVn, askFr, tolerance: kind === 'at' ? 2 : 0, why, whyVn, whyFr };
 }
 
 function drawCurve(r) {

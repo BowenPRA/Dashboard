@@ -125,12 +125,14 @@ export function sortMistake(term, basketKey) {
     return {
       en: `${t} is a number, not ${article(bm)} ${bm} term. It has no letter.`,
       vn: `${t} là một số, không phải hạng tử ${bm}. Nó không có chữ cái.`,
+      fr: `${t} est un nombre, pas un terme en ${bm}. Il n'a pas de lettre.`,
     };
   }
   if (basketKey === '1') {
     return {
       en: `${t} has a letter, so it is not a number. It is ${article(tm)} ${tm} term.`,
       vn: `${t} có chữ cái nên không phải là số. Nó là hạng tử ${tm}.`,
+      fr: `${t} a une lettre, donc ce n'est pas un nombre. C'est un terme en ${tm}.`,
     };
   }
   const tl = Object.keys(monoOf(tk)).sort().join('');
@@ -139,16 +141,19 @@ export function sortMistake(term, basketKey) {
   const bMean = kindMeaning(basketKey);
   const meanings = [tMean !== tm ? `${tm} means ${tMean}` : null, bMean !== bm ? `${bm} means ${bMean}` : null].filter(Boolean);
   const meaningsVn = [tMean !== tm ? `${tm} nghĩa là ${tMean}` : null, bMean !== bm ? `${bm} nghĩa là ${bMean}` : null].filter(Boolean);
+  const meaningsFr = [tMean !== tm ? `${tm} veut dire ${tMean}` : null, bMean !== bm ? `${bm} veut dire ${bMean}` : null].filter(Boolean);
   const shares = [...tl].some((l) => bl.includes(l));
   if (tl === bl || (shares && meanings.length)) {
     return {
       en: `${tm} is not ${bm}: ${meanings.join(', and ')}. ${t} is ${article(tm)} ${tm} term.`,
       vn: `${tm} khác ${bm}: ${meaningsVn.join(', còn ')}. ${t} là hạng tử ${tm}.`,
+      fr: `${tm} n'est pas ${bm} : ${meaningsFr.join(', et ')}. ${t} est un terme en ${tm}.`,
     };
   }
   return {
     en: `${t} is ${article(tm)} ${tm} term, not ${article(bm)} ${bm} term: the letters are different.`,
     vn: `${t} là hạng tử ${tm}, không phải hạng tử ${bm}: chữ cái khác nhau.`,
+    fr: `${t} est un terme en ${tm}, pas un terme en ${bm} : les lettres sont différentes.`,
   };
 }
 
@@ -169,11 +174,13 @@ export function missingKinds(model, typed) {
   const missing = wantKeys.filter((k) => !got[k]);
   const en = missing.map((k) => (k === '1' ? 'the numbers' : `the ${monoText(k)} terms`)).join(' and ');
   const vn = missing.map((k) => (k === '1' ? 'các số' : `các hạng tử ${monoText(k)}`)).join(' và ');
+  const fr = missing.map((k) => (k === '1' ? 'les nombres' : `les termes en ${monoText(k)}`)).join(' et ');
   return {
     ok: false,
     code: 'missing-kind',
     en: `Not finished — ${en} are missing. Every basket goes into the answer.`,
     vn: `Chưa xong — còn thiếu ${vn}. Tổng của mọi rổ đều phải có trong đáp án.`,
+    fr: `Pas fini — il manque ${fr}. Chaque panier va dans la réponse.`,
   };
 }
 
@@ -229,5 +236,5 @@ export function solveFeedback(round, typed) {
     const d = diagnoseSolve(round.equation, typed);
     if (!d.ok) return d;
   }
-  return { ok: false, code: 'wrong', en: 'Not quite — undo the operations one at a time.', vn: 'Chưa đúng — hãy làm ngược từng phép toán một.' };
+  return { ok: false, code: 'wrong', en: 'Not quite — undo the operations one at a time.', vn: 'Chưa đúng — hãy làm ngược từng phép toán một.', fr: 'Pas tout à fait — défais les opérations une par une.' };
 }

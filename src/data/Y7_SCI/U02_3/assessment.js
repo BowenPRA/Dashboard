@@ -22,6 +22,7 @@ export const assessment = {
       correct: 'B',
       expEn: '**Transferred** means moved from one place to another: heat energy is transferred to or away from the particles. Expanded (A) means got bigger; vibrated (C) means moved backwards and forwards on the spot; compressed (D) means squashed into a smaller space.',
       expVn: '**Transferred** (được truyền) nghĩa là được di chuyển từ nơi này sang nơi khác: nhiệt năng được truyền đến hay ra khỏi các hạt. Expanded (A) nghĩa là to ra; vibrated (C) nghĩa là chuyển động qua lại tại chỗ; compressed (D) nghĩa là bị ép vào một chỗ nhỏ hơn.',
+      expFr: '**Transferred** (transférée) veut dire déplacée d’un endroit à un autre : l’énergie thermique est transférée vers les particules ou hors des particules. Expanded (A) veut dire devenu plus grand ; vibrated (C) veut dire bougé d’avant en arrière sur place ; compressed (D) veut dire écrasé dans un espace plus petit.',
     },
     {
       id: 'a2_jar_lid',
@@ -36,6 +37,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The metal lid **expands**: its particles vibrate more and take up more space, so the lid gets a little wider and loosens. Particles never get bigger (B); hot tap water is nowhere near the melting point of glass (C); and heating does not make the forces stronger — it helps the particles move against them (D).',
       expVn: 'Nắp kim loại **giãn nở**: các hạt của nó rung động nhiều hơn và chiếm nhiều chỗ hơn, nên nắp rộng ra một chút và lỏng ra. Các hạt không bao giờ to ra (B); nước nóng từ vòi còn rất xa nhiệt độ nóng chảy của thủy tinh (C); và đun nóng không làm lực hút mạnh hơn — nó giúp các hạt chuyển động chống lại lực hút (D).',
+      expFr: 'Le couvercle en métal se **dilate** : ses particules vibrent plus et prennent plus de place, donc le couvercle s’élargit un peu et se desserre. Les particules ne grossissent jamais (B) ; l’eau chaude du robinet est très loin du point de fusion du verre (C) ; et chauffer ne rend pas les forces plus fortes — cela aide les particules à bouger contre elles (D).',
     },
     {
       id: 'a3_butter',
@@ -50,6 +52,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Heat energy is transferred to the particles; they vibrate **more and more** until the **attractive forces** can no longer hold them in a fixed pattern, and they slide past each other. A single particle cannot melt (A); there is no cold energy (B); and particles never get bigger (D).',
       expVn: 'Nhiệt năng được truyền đến các hạt; chúng rung động **ngày càng nhiều** cho đến khi **lực hút** không còn giữ được chúng theo trật tự cố định, và chúng trượt qua nhau. Một hạt riêng lẻ không thể nóng chảy (A); không có năng lượng lạnh (B); và các hạt không bao giờ to ra (D).',
+      expFr: 'L’énergie thermique est transférée aux particules ; elles vibrent **de plus en plus** jusqu’à ce que les **forces d’attraction** ne puissent plus les tenir dans un motif fixe, et elles glissent les unes sur les autres. Une seule particule ne peut pas fondre (A) ; l’énergie froide n’existe pas (B) ; et les particules ne grossissent jamais (D).',
     },
     {
       id: 'a4_washing',
@@ -64,6 +67,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'This is **evaporation**: only some particles at the **surface** have enough energy to overcome the forces, and it happens far below the boiling point. Water at 32 °C is not boiling (A); the particles do not disappear — they are in the air as water vapour (B); and particles never change into other particles (C).',
       expVn: 'Đây là **sự bay hơi**: chỉ một số hạt ở **bề mặt** có đủ năng lượng để vượt qua lực hút, và nó xảy ra dưới nhiệt độ sôi rất xa. Nước ở 32 °C không sôi (A); các hạt không biến mất — chúng ở trong không khí dưới dạng hơi nước (B); và các hạt không bao giờ biến thành hạt khác (C).',
+      expFr: 'C’est l’**évaporation** : seules certaines particules de la **surface** ont assez d’énergie pour vaincre les forces, et cela se produit bien en dessous du point d’ébullition. L’eau à 32 °C ne bout pas (A) ; les particules ne disparaissent pas — elles sont dans l’air, sous forme de vapeur d’eau (B) ; et les particules ne se changent jamais en d’autres particules (C).',
     },
     {
       id: 'a5_bubbles',
@@ -78,6 +82,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'At the boiling point, particles **all through** the water overcome the attractive forces and become a gas, so the bubbles are full of **steam**: the same water particles, far apart. They are not air (A); energy is not a substance that fills a bubble (C); and a bubble is never empty — it is full of gas particles (D).',
       expVn: 'Ở nhiệt độ sôi, các hạt **ở khắp** trong nước vượt qua lực hút và thành chất khí, nên các bọt chứa đầy **hơi nước**: vẫn những hạt nước đó, ở xa nhau. Chúng không phải không khí (A); năng lượng không phải là một chất lấp đầy bọt (C); và bọt không bao giờ rỗng — nó chứa đầy hạt khí (D).',
+      expFr: 'Au point d’ébullition, des particules **dans toute** l’eau vainquent les forces d’attraction et deviennent un gaz, donc les bulles sont pleines de **vapeur** : les mêmes particules d’eau, très éloignées. Ce n’est pas de l’air (A) ; l’énergie n’est pas une substance qui remplit une bulle (C) ; et une bulle n’est jamais vide — elle est pleine de particules de gaz (D).',
     },
     {
       id: 'a6_glasses',
@@ -92,6 +97,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The water vapour **condenses**: heat energy is transferred away from its particles to the cold lenses, they slow down, and the attractive forces pull them together into tiny drops. There is no cold energy (A); glass does not hold water to sweat out (B); and particles never get smaller (D).',
       expVn: 'Hơi nước **ngưng tụ**: nhiệt năng được truyền ra khỏi các hạt của nó sang mắt kính lạnh, chúng chậm lại, và lực hút kéo chúng lại thành những giọt nhỏ. Không có năng lượng lạnh (A); thủy tinh không chứa nước để "đổ mồ hôi" (B); và các hạt không bao giờ nhỏ lại (D).',
+      expFr: 'La vapeur d’eau **se condense** : l’énergie thermique est transférée hors de ses particules vers les verres froids des lunettes, elles ralentissent, et les forces d’attraction les rassemblent en petites gouttes. L’énergie froide n’existe pas (A) ; le verre ne contient pas d’eau qu’il pourrait « transpirer » (B) ; et les particules ne rétrécissent jamais (D).',
     },
     {
       id: 'a7_pump',
@@ -106,6 +112,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'A gas can be **compressed** because its particles are far apart; a liquid cannot, because its particles are already **touching** with no space to squash into. Hardness of particles is not the reason (A); a fixed pattern is a solid, not water (B); and C is about flowing, not squashing.',
       expVn: 'Chất khí **nén** được vì các hạt của nó ở xa nhau; chất lỏng thì không, vì các hạt của nó đã **chạm nhau**, không còn chỗ trống để ép vào. Độ cứng của hạt không phải lý do (A); trật tự cố định là chất rắn, không phải nước (B); và C nói về sự chảy, không phải sự nén.',
+      expFr: 'Un gaz peut être **comprimé** parce que ses particules sont éloignées ; un liquide non, parce que ses particules se **touchent** déjà, sans espace où les écraser. La dureté des particules n’est pas la raison (A) ; un motif fixe, c’est un solide, pas l’eau (B) ; et C parle de s’écouler, pas d’écraser.',
     },
     {
       id: 'a8_ball_ring',
@@ -120,6 +127,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The heated ball **expands**, so it no longer fits: its particles vibrate more and take up more space. Particles never get smaller (B) and are never made by heating (C); and heating a solid does change its size, a little (D) — that is expansion.',
       expVn: 'Quả cầu bị đun nóng **giãn nở**, nên không còn lọt qua: các hạt của nó rung động nhiều hơn và chiếm nhiều chỗ hơn. Các hạt không bao giờ nhỏ lại (B) và không bao giờ được tạo ra khi đun nóng (C); và đun nóng chất rắn có làm thay đổi kích thước của nó, một chút (D) — đó là sự giãn nở.',
+      expFr: 'La boule chauffée se **dilate**, donc elle ne passe plus : ses particules vibrent plus et prennent plus de place. Les particules ne rétrécissent jamais (B) et chauffer n’en fabrique jamais (C) ; et chauffer un solide change bien sa taille, un peu (D) — c’est la dilatation.',
     },
   ],
 };

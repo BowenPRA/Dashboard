@@ -4,6 +4,8 @@ import {
   PenLine, Combine, SquareDashed, TrendingUp, ListChecks,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import AreaModel from '../components/math/AreaModel.jsx';
 import { expandModel, missingModel, diagnoseCell } from '../utils/algebra';
@@ -16,8 +18,8 @@ import {
  * EXPAND IT — "one box, one multiplication" (Y7 Maths 2.4).
  *
  * Reads a unit's `expandGrid`:
- *   { title, titleVn, intro?, introVn?, levels: { n: { en, vn } }, items: [
- *       { id, level, expr, context?, contextVn? },             expand (and simplify)
+ *   { title, titleVn, titleFr, intro?, introVn?, introFr?, levels: { n: { en, vn, fr } }, items: [
+ *       { id, level, expr, context?, contextVn?, contextFr? }, expand (and simplify)
  *       { id, level, kind: 'missing', expr, hide: ['outer' | 'inner:<i>'] },
  *   ] }
  * Every box, expansion, answer and slip is derived by utils/algebra.js
@@ -144,8 +146,56 @@ const T = {
     noItems: 'Chưa có câu hỏi',
     back: 'Quay lại Bảng điều khiển',
   },
+  fr: {
+    title: 'Développe',
+    check: 'Vérifier',
+    stuck: 'Montre-moi',
+    cont: 'Continuer',
+    next: 'Suivant',
+    finish: 'Terminer',
+    solved: 'résolues',
+    level: 'Niveau',
+    clean: 'Toutes les cases justes du premier coup.',
+    slipped: "Fini — une erreur, et tu l'as trouvée toi-même.",
+    helped: 'Fini — avec une ou deux étapes montrées.',
+    bookCopy: 'Recopie ceci dans ton cahier',
+    answer: 'Réponse',
+    shown: 'La voici. Lis-la, puis continue.',
+    filled: 'La réponse est remplie pour toi.',
+    fillAll: "Remplis d'abord chaque case.",
+    typeFirst: "Écris d'abord ta réponse.",
+    headExpand: 'Développer',
+    headSimplify: 'Développer et réduire',
+    headMissing: "Chercher à l'envers",
+    stages: { grid: 'Grille', write: 'Écrire', collect: 'Réduire', missing: 'Nombre manquant' },
+    gridTitle: 'Remplis chaque case : extérieur × haut.',
+    gridSub: 'Une case, une multiplication. Le signe devant un terme va dans sa case avec lui.',
+    tapBox: 'Touche une case pour voir sa multiplication.',
+    loose: 'Ceux-ci viennent sans changer',
+    working: "Le travail jusqu'ici",
+    gridRight: 'Toutes les cases sont justes.',
+    writeTitle: 'Écris le développement.',
+    writeSub: 'Lis les cases de la grille, de gauche à droite, avec leurs signes. Sans parenthèses.',
+    writeRight: 'Correct — les parenthèses ont disparu.',
+    writeEarly: "Correct — et tu as déjà réduit les termes semblables, donc c'est la réponse.",
+    collectTitle: 'Réduis les termes semblables.',
+    collectSub: 'Certains termes sont du même type. Regroupe chaque type, en gardant chaque signe.',
+    collectRight: 'Correct — entièrement réduit.',
+    missingTitle: 'Trouve le nombre manquant.',
+    missingSub: "Le développement est donné. Cherche à l'envers ce qui va dans la case.",
+    blankOuter: "le nombre à l'extérieur de la parenthèse",
+    blankInner: (i) => `le nombre du terme ${i + 1} à l'intérieur`,
+    missingRight: 'Correct — regarde-le dans la grille.',
+    gridCheck: 'Vérifie avec la grille',
+    areaTitle: 'La même chose, en aire',
+    areaSub: 'Chaque case est un rectangle : hauteur × largeur. Ensemble, elles forment tout le rectangle.',
+    placeholder: 'Écris ici',
+    boxLabel: (ci, pi) => `case ${ci + 1} de la parenthèse ${pi + 1}`,
+    noItems: 'Pas encore de questions',
+    back: 'Retour au tableau de bord',
+  },
 };
-const both = (key) => ({ en: T.en[key], vn: T.vn[key] });
+const both = (key) => ({ en: T.en[key], vn: T.vn[key], fr: T.fr[key] });
 const STAGE_ICON = { grid: Grid2x2, write: PenLine, collect: Combine, missing: SquareDashed };
 
 const RING = {
@@ -211,7 +261,7 @@ function Stage({ icon: Icon, label, active, done }) {
 
 function Message({ msg, lang }) {
   if (!msg) return null;
-  const text = lang === 'vn' && msg.vn ? msg.vn : msg.en;
+  const text = tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en);
   if (!text) return null;
   const soft = msg.tone === 'shown' || msg.tone === 'info';
   const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
@@ -350,10 +400,10 @@ function Grids({ model, t, compact, inputs, typed = {}, marks = {}, locked, focu
 
 /* ------------------------------------------------------------------ the task */
 
-export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
+export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
   const items = useMemo(() => (pool?.items || []).filter((it) => deriveItem(it)), [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [results, setResults] = useState(() => {
     const init = {};
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
@@ -380,7 +430,7 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
   const item = items[pos];
   const derived = useMemo(() => deriveItem(item), [item]);
   const t = T[lang] || T.en;
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
 
   if (!items.length || !derived) {
     return (
@@ -435,8 +485,8 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
       reveal();
       setLocked(true);
       setHelped(true);
-      setMsg({ tone: 'shown', en: `${bad.en} ${T.en.filled}`, vn: `${bad.vn || bad.en} ${T.vn.filled}` });
-    } else setMsg({ tone: 'bad', en: bad.en, vn: bad.vn || bad.en });
+      setMsg({ tone: 'shown', en: `${bad.en} ${T.en.filled}`, vn: `${bad.vn || bad.en} ${T.vn.filled}`, fr: `${bad.fr || bad.en} ${T.fr.filled}` });
+    } else setMsg({ tone: 'bad', en: bad.en, vn: bad.vn || bad.en, fr: bad.fr || bad.en });
   };
   const showMe = (reveal) => { reveal(); setLocked(true); setHelped(true); setMsg({ tone: 'shown', ...both('shown') }); };
 
@@ -485,8 +535,8 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
     }
     setMarks(next);
     if (firstBad) judge(false, firstBad, revealGrid(next));
-    else if (unread) setMsg({ tone: 'bad', en: unread.en, vn: unread.vn });
-    else if (firstNudge) setMsg({ tone: 'info', en: firstNudge.en, vn: firstNudge.vn });
+    else if (unread) setMsg({ tone: 'bad', en: unread.en, vn: unread.vn, fr: unread.fr });
+    else if (firstNudge) setMsg({ tone: 'info', en: firstNudge.en, vn: firstNudge.vn, fr: firstNudge.fr });
     else judge(true, null, null, both('gridRight'));
   };
 
@@ -498,7 +548,7 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
     if (d.ok) { setMarks({ [key]: 'good' }); judge(true, null, null, good(typed[key])); return; }
     if (d.equivalent || d.code === 'unreadable') {
       setMarks({ [key]: d.equivalent ? 'nudge' : 'bad' });
-      setMsg({ tone: d.equivalent ? 'info' : 'bad', en: d.en, vn: d.vn });
+      setMsg({ tone: d.equivalent ? 'info' : 'bad', en: d.en, vn: d.vn, fr: d.fr });
       return;
     }
     setMarks({ [key]: 'bad' });
@@ -535,7 +585,7 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
     }
     setMarks(next);
     if (firstBad) judge(false, firstBad, revealMissing(next));
-    else if (unread) setMsg({ tone: 'bad', en: unread.en, vn: unread.vn });
+    else if (unread) setMsg({ tone: 'bad', en: unread.en, vn: unread.vn, fr: unread.fr });
     else judge(true, null, null, both('missingRight'));
   };
 
@@ -543,12 +593,12 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const isLast = pos === items.length - 1;
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
-  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn);
+  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn, levelRaw?.fr);
   const headline = mm ? t.headMissing : model.needsCollect ? t.headSimplify : t.headExpand;
   const questionTex = mm ? mm.latex : model.questionLatex;
-  const context = pick(item.context, item.contextVn);
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn) : null;
-  const title = pick(pool?.title, pool?.titleVn) || t.title;
+  const context = pick(item.context, item.contextVn, item.contextFr);
+  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn, pool?.introFr) : null;
+  const title = pick(pool?.title, pool?.titleVn, pool?.titleFr) || t.title;
 
   const focusPiece = focus ? model.pieces[focus.pi] : null;
   let focusLine = null;
@@ -572,8 +622,8 @@ export default function ExpandGrid({ pool, savedData = {}, onComplete, onProgres
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={quit} modeTitle={title} current={pos + 1} total={items.length}
-        lang={bilingual ? lang : undefined}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+        lang={toggleLang ? lang : undefined}
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-5 lg:items-start">
         {/* left: the question, then the working */}

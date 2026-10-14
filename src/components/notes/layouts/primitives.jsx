@@ -54,6 +54,7 @@ import {
 } from 'lucide-react';
 import WidgetRenderer from '../../WidgetRenderer.jsx';
 import { parseInlineText, renderContent, NOTE_TONES } from './helpers.jsx';
+import { field, tr } from '../../../utils/lang';
 
 // A local error boundary so a crashing widget never takes the slide with it.
 class WidgetErrorBoundary extends Component {
@@ -108,16 +109,16 @@ export function Ic({ name, ...props }) {
 /**
  * A typed note card, shaped like a Cambridge Learner's Book panel: a solid
  * colour header strip over a tinted body with a matching hairline border.
- * `note` = { tone, text, badge, badgeVn, icon }. `badge: false` hides the strip.
+ * `note` = { tone, text, badge, icon } (+ `…Vn` / `…Fr` twins). `badge: false` hides the strip.
  * **Bold** runs inside the body take the tone's key-word colour.
  */
 export function Note({ note, lang = 'en', isDisplayMode = false }) {
   const tone = NOTE_TONES[note.tone] || NOTE_TONES.write;
-  const text = lang === 'vn' ? (note.textVn || note.text) : note.text;
+  const text = field(note, 'text', lang);
   const showBadge = note.badge !== false;
   const badgeText = note.badge != null && note.badge !== true && note.badge !== false
-    ? (lang === 'vn' ? (note.badgeVn || note.badge) : note.badge)
-    : (lang === 'vn' ? tone.labelVn : tone.label);
+    ? field(note, 'badge', lang)
+    : field(tone, 'label', lang);
   const iconName = note.icon || tone.icon;
   const lines = String(text || '').split('\n').filter((l) => l.trim());
 
@@ -155,13 +156,14 @@ export function NoteStack({ notes = [], lang = 'en', isDisplayMode = false, colu
 
 // ── Reveal box (answer-box / flip-card) ──────────────────────────────────────
 // The autonomous translation of the classroom "ask, then tell": the student
-// predicts, then taps to check. `reveal` = { label, answer, prompt, ...Vn }.
+// predicts, then taps to check. `reveal` = { label, answer, prompt } (+ `…Vn` /
+// `…Fr` twins).
 export function Reveal({ reveal, lang = 'en', accent = '#8b5cf6', isDisplayMode = false }) {
   const [open, setOpen] = useState(false);
   if (!reveal) return null;
-  const label = lang === 'vn' ? (reveal.labelVn || reveal.label || 'Hiện đáp án') : (reveal.label || 'Reveal the answer');
-  const prompt = lang === 'vn' ? (reveal.promptVn || reveal.prompt) : reveal.prompt;
-  const answer = lang === 'vn' ? (reveal.answerVn || reveal.answer) : reveal.answer;
+  const label = field(reveal, 'label', lang) || tr(lang, 'Reveal the answer', 'Hiện đáp án', 'Voir la réponse');
+  const prompt = field(reveal, 'prompt', lang);
+  const answer = field(reveal, 'answer', lang);
 
   return (
     <div className="w-full">
@@ -205,7 +207,7 @@ export function Media({ slide, source, ctx, drawThis = (source || slide).drawThi
   const hasSvg = !!src.inlineSvg;
   const hasImage = !!src.image;
   if (!hasWidget && !hasSvg && !hasImage) return null;
-  const title = lang === 'vn' ? (src.titleVn || src.title) : src.title;
+  const title = field(src, 'title', lang);
 
   const onExpand = () => {
     if (hasWidget) onZoom({ type: 'widget', config: src.widget });
@@ -218,7 +220,7 @@ export function Media({ slide, source, ctx, drawThis = (source || slide).drawThi
       {drawThis && (
         <div className={`absolute top-0 right-0 bg-[#ffc800] text-amber-950 font-black uppercase tracking-widest rounded-bl-2xl lg:rounded-bl-3xl z-20 shadow-sm flex items-center border-b-2 border-l-2 border-[#cca000] ${isDisplayMode ? 'text-[clamp(0.75rem,1vw,1.1rem)] px-5 py-2.5' : 'text-[9px] sm:text-xs px-3 lg:px-4 py-1.5 lg:py-2'}`}>
           <Pencil className={isDisplayMode ? 'w-4 h-4 mr-2' : 'w-3 h-3 lg:w-4 lg:h-4 mr-1.5 lg:mr-2'} strokeWidth={3} />
-          {lang === 'vn' ? 'Vẽ Hình Này' : 'Draw This'}
+          {tr(lang, 'Draw This', 'Vẽ Hình Này', 'À dessiner')}
         </div>
       )}
       {hasWidget ? (

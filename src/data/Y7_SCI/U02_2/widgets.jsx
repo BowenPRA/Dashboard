@@ -32,69 +32,70 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Flame, Snowflake, RotateCcw, Hand, Thermometer } from 'lucide-react'
 
-const pick = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en)
+import { tr as pick } from '../../../utils/lang'
 
 // ── Substances ───────────────────────────────────────────────────────────────
 // Real melting and boiling points (degrees C), chosen to span the extremes:
 // water is the reference; mercury is a liquid at room temperature; oxygen is a
 // gas well below room temperature; iron is a solid that needs a furnace.
+// Every name is [English, Vietnamese, French].
 const SUBSTANCES = [
   {
-    key: 'water', name: ['Water', 'Nước'], mp: 0, bp: 100,
-    solid: ['Ice', 'Nước đá'], liquid: ['Water', 'Nước'], gas: ['Steam / water vapour', 'Hơi nước'],
-    color: '#2f7fb0', roomWord: ['a liquid', 'chất lỏng'],
+    key: 'water', name: ['Water', 'Nước', 'Eau'], mp: 0, bp: 100,
+    solid: ['Ice', 'Nước đá', 'Glace'], liquid: ['Water', 'Nước', 'Eau'], gas: ['Steam / water vapour', 'Hơi nước', 'Vapeur d’eau'],
+    color: '#2f7fb0', roomWord: ['a liquid', 'chất lỏng', 'un liquide'],
   },
   {
-    key: 'mercury', name: ['Mercury', 'Thủy ngân'], mp: -39, bp: 357,
-    solid: ['Solid mercury', 'Thủy ngân rắn'], liquid: ['Liquid mercury', 'Thủy ngân lỏng'], gas: ['Mercury vapour', 'Hơi thủy ngân'],
-    color: '#7d8892', roomWord: ['a liquid', 'chất lỏng'],
+    key: 'mercury', name: ['Mercury', 'Thủy ngân', 'Mercure'], mp: -39, bp: 357,
+    solid: ['Solid mercury', 'Thủy ngân rắn', 'Mercure solide'], liquid: ['Liquid mercury', 'Thủy ngân lỏng', 'Mercure liquide'], gas: ['Mercury vapour', 'Hơi thủy ngân', 'Vapeur de mercure'],
+    color: '#7d8892', roomWord: ['a liquid', 'chất lỏng', 'un liquide'],
   },
   {
-    key: 'oxygen', name: ['Oxygen', 'Ô-xy'], mp: -218, bp: -183,
-    solid: ['Solid oxygen', 'Ô-xy rắn'], liquid: ['Liquid oxygen', 'Ô-xy lỏng'], gas: ['Oxygen gas', 'Khí ô-xy'],
-    color: '#3f8fd8', roomWord: ['a gas', 'chất khí'],
+    key: 'oxygen', name: ['Oxygen', 'Ô-xy', 'Oxygène'], mp: -218, bp: -183,
+    solid: ['Solid oxygen', 'Ô-xy rắn', 'Oxygène solide'], liquid: ['Liquid oxygen', 'Ô-xy lỏng', 'Oxygène liquide'], gas: ['Oxygen gas', 'Khí ô-xy', 'Oxygène gazeux'],
+    color: '#3f8fd8', roomWord: ['a gas', 'chất khí', 'un gaz'],
   },
   {
-    key: 'iron', name: ['Iron', 'Sắt'], mp: 1538, bp: 2862,
-    solid: ['Solid iron', 'Sắt rắn'], liquid: ['Molten iron', 'Sắt nóng chảy'], gas: ['Iron vapour', 'Hơi sắt'],
-    color: '#b5744f', roomWord: ['a solid', 'chất rắn'],
+    key: 'iron', name: ['Iron', 'Sắt', 'Fer'], mp: 1538, bp: 2862,
+    solid: ['Solid iron', 'Sắt rắn', 'Fer solide'], liquid: ['Molten iron', 'Sắt nóng chảy', 'Fer fondu'], gas: ['Iron vapour', 'Hơi sắt', 'Vapeur de fer'],
+    color: '#b5744f', roomWord: ['a solid', 'chất rắn', 'un solide'],
   },
 ]
 
 const ROOM = 20 // degrees C, the room-temperature marker
 
 const T = {
-  title: ['Heating & Cooling', 'Đun nóng & Làm lạnh'],
-  subtitle: ['a particle model of melting, boiling and more', 'mô hình hạt của nóng chảy, sôi và hơn thế nữa'],
-  see: ['What you see', 'Em nhìn thấy'],
-  particles: ['The particles — zoomed in', 'Các hạt — phóng to'],
-  heat: ['Heat', 'Đun nóng'],
-  cool: ['Cool', 'Làm lạnh'],
-  stop: ['Stop', 'Dừng'],
-  room: ['Room temp', 'Nhiệt độ phòng'],
-  drag: ['Drag the marker, or press Heat / Cool', 'Kéo con trỏ, hoặc bấm Đun nóng / Làm lạnh'],
-  meltingPoint: ['melting point', 'nhiệt độ nóng chảy'],
-  boilingPoint: ['boiling point', 'nhiệt độ sôi'],
-  roomTemp: ['room temperature', 'nhiệt độ phòng'],
-  solid: ['Solid', 'Rắn'],
-  liquid: ['Liquid', 'Lỏng'],
-  gas: ['Gas', 'Khí'],
-  melting: ['Melting', 'Nóng chảy'],
-  freezing: ['Freezing', 'Đông đặc'],
-  boiling: ['Boiling', 'Sôi'],
-  condensing: ['Condensing', 'Ngưng tụ'],
-  evaporating: ['Evaporating', 'Bay hơi'],
-  atRoom: ['At room temperature (20°C) this is', 'Ở nhiệt độ phòng (20°C), chất này là'],
-  dSolid: ['Packed in a fixed pattern — the particles can only vibrate on the spot.', 'Xếp chặt theo trật tự cố định — các hạt chỉ rung tại chỗ.'],
-  dLiquid: ['Still close together, but the particles can now slide past each other and flow.', 'Vẫn ở gần nhau, nhưng các hạt giờ có thể trượt qua nhau và chảy.'],
-  dGas: ['Broken apart — the particles move fast and fill all the space they are given.', 'Đã tách rời — các hạt chuyển động nhanh và lấp đầy mọi khoảng trống.'],
-  dMelting: ['Heat is breaking the fixed pattern — the solid is turning to liquid.', 'Nhiệt đang phá vỡ trật tự cố định — chất rắn đang chuyển thành lỏng.'],
-  dFreezing: ['The particles are slowing and locking back into a fixed pattern.', 'Các hạt chậm lại và khóa trở lại thành trật tự cố định.'],
-  dBoiling: ['Particles all through the liquid are escaping as gas.', 'Các hạt khắp trong lòng chất lỏng đang thoát ra thành khí.'],
-  dCondensing: ['Gas particles are slowing and joining back into a liquid.', 'Các hạt khí chậm lại và nhập lại thành chất lỏng.'],
-  dEvaporating: ['A few particles at the surface are escaping into the air — even though the liquid is not boiling.', 'Vài hạt ở bề mặt đang thoát vào không khí — dù chất lỏng chưa sôi.'],
+  title: ['Heating & Cooling', 'Đun nóng & Làm lạnh', 'Chauffer & refroidir'],
+  subtitle: ['a particle model of melting, boiling and more', 'mô hình hạt của nóng chảy, sôi và hơn thế nữa', 'un modèle particulaire de la fusion, de l’ébullition et plus'],
+  see: ['What you see', 'Em nhìn thấy', 'Ce que tu vois'],
+  particles: ['The particles — zoomed in', 'Các hạt — phóng to', 'Les particules — en gros plan'],
+  heat: ['Heat', 'Đun nóng', 'Chauffer'],
+  cool: ['Cool', 'Làm lạnh', 'Refroidir'],
+  stop: ['Stop', 'Dừng', 'Stop'],
+  room: ['Room temp', 'Nhiệt độ phòng', 'Temp. ambiante'],
+  drag: ['Drag the marker, or press Heat / Cool', 'Kéo con trỏ, hoặc bấm Đun nóng / Làm lạnh', 'Fais glisser le repère, ou appuie sur Chauffer / Refroidir'],
+  meltingPoint: ['melting point', 'nhiệt độ nóng chảy', 'point de fusion'],
+  boilingPoint: ['boiling point', 'nhiệt độ sôi', 'point d’ébullition'],
+  roomTemp: ['room temperature', 'nhiệt độ phòng', 'température ambiante'],
+  solid: ['Solid', 'Rắn', 'Solide'],
+  liquid: ['Liquid', 'Lỏng', 'Liquide'],
+  gas: ['Gas', 'Khí', 'Gaz'],
+  melting: ['Melting', 'Nóng chảy', 'Fusion'],
+  freezing: ['Freezing', 'Đông đặc', 'Solidification'],
+  boiling: ['Boiling', 'Sôi', 'Ébullition'],
+  condensing: ['Condensing', 'Ngưng tụ', 'Condensation'],
+  evaporating: ['Evaporating', 'Bay hơi', 'Évaporation'],
+  atRoom: ['At room temperature (20°C) this is', 'Ở nhiệt độ phòng (20°C), chất này là', 'À température ambiante (20°C), c’est :'],
+  dSolid: ['Packed in a fixed pattern — the particles can only vibrate on the spot.', 'Xếp chặt theo trật tự cố định — các hạt chỉ rung tại chỗ.', 'Serrées selon un motif fixe — les particules peuvent seulement vibrer sur place.'],
+  dLiquid: ['Still close together, but the particles can now slide past each other and flow.', 'Vẫn ở gần nhau, nhưng các hạt giờ có thể trượt qua nhau và chảy.', 'Toujours proches, mais les particules peuvent maintenant glisser les unes sur les autres et couler.'],
+  dGas: ['Broken apart — the particles move fast and fill all the space they are given.', 'Đã tách rời — các hạt chuyển động nhanh và lấp đầy mọi khoảng trống.', 'Séparées — les particules bougent vite et remplissent tout l’espace disponible.'],
+  dMelting: ['Heat is breaking the fixed pattern — the solid is turning to liquid.', 'Nhiệt đang phá vỡ trật tự cố định — chất rắn đang chuyển thành lỏng.', 'La chaleur casse le motif fixe — le solide devient liquide.'],
+  dFreezing: ['The particles are slowing and locking back into a fixed pattern.', 'Các hạt chậm lại và khóa trở lại thành trật tự cố định.', 'Les particules ralentissent et se remettent en place dans un motif fixe.'],
+  dBoiling: ['Particles all through the liquid are escaping as gas.', 'Các hạt khắp trong lòng chất lỏng đang thoát ra thành khí.', 'Des particules de tout le liquide s’échappent sous forme de gaz.'],
+  dCondensing: ['Gas particles are slowing and joining back into a liquid.', 'Các hạt khí chậm lại và nhập lại thành chất lỏng.', 'Les particules de gaz ralentissent et se rassemblent en liquide.'],
+  dEvaporating: ['A few particles at the surface are escaping into the air — even though the liquid is not boiling.', 'Vài hạt ở bề mặt đang thoát vào không khí — dù chất lỏng chưa sôi.', 'Quelques particules de la surface s’échappent dans l’air — même si le liquide ne bout pas.'],
 }
-const t = (lang, key) => T[key][lang === 'vn' ? 1 : 0]
+const t = (lang, key) => pick(lang, ...T[key])
 
 // Format a temperature with a real Unicode minus sign.
 const degC = (v) => `${v < 0 ? '−' : ''}${Math.abs(Math.round(v))}°C`
@@ -339,7 +340,7 @@ export function StateModel({ lang = 'en', isDisplayMode = false }) {
   else if (ph.solid > 0.5) { stateKey = 'solid'; label = t(lang, 'solid'); desc = t(lang, 'dSolid') }
   else { stateKey = 'liquid'; label = t(lang, 'liquid'); desc = evaporating ? t(lang, 'dEvaporating') : t(lang, 'dLiquid') }
 
-  const stateName = pick(lang, sub[stateKey][0], sub[stateKey][1])
+  const stateName = pick(lang, sub[stateKey][0], sub[stateKey][1], sub[stateKey][2])
   const roomPhase = phaseOf(sub, ROOM)
   const roomStateKey = roomPhase.gas > 0.5 ? 'gas' : roomPhase.solid > 0.5 ? 'solid' : 'liquid'
 
@@ -373,7 +374,7 @@ export function StateModel({ lang = 'en', isDisplayMode = false }) {
               className={`rounded-xl font-black uppercase tracking-wide border-2 transition-all active:scale-95 ${big ? 'px-4 py-2 text-sm' : 'px-3 py-1.5 text-xs'} ${subKey === s.key ? 'text-white border-transparent shadow-sm' : 'text-slate-500 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300 bg-white dark:bg-slate-800'}`}
               style={subKey === s.key ? { backgroundColor: s.color } : undefined}
             >
-              {pick(lang, s.name[0], s.name[1])}
+              {pick(lang, s.name[0], s.name[1], s.name[2])}
             </button>
           ))}
         </div>
@@ -423,7 +424,7 @@ export function StateModel({ lang = 'en', isDisplayMode = false }) {
           <div className="px-4 py-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
             <div>
               <div className={`font-black tabular-nums text-slate-800 dark:text-slate-100 leading-none ${big ? 'text-4xl' : 'text-2xl sm:text-3xl'}`}>{degC(temp)}</div>
-              <div className={`font-bold text-slate-400 ${big ? 'text-sm' : 'text-[11px]'}`}>{pick(lang, sub.name[0], sub.name[1])}</div>
+              <div className={`font-bold text-slate-400 ${big ? 'text-sm' : 'text-[11px]'}`}>{pick(lang, sub.name[0], sub.name[1], sub.name[2])}</div>
             </div>
             <div className="text-right">
               <span className={`inline-block rounded-lg px-3 py-1.5 font-black uppercase tracking-wide text-white shadow-sm ${big ? 'text-lg' : 'text-sm'}`} style={{ backgroundColor: stateColor }}>{label}</span>
@@ -523,7 +524,7 @@ export function StateModel({ lang = 'en', isDisplayMode = false }) {
           </div>
           <div className={`mt-1.5 flex items-center justify-center gap-2 font-bold text-slate-400 dark:text-slate-500 ${big ? 'text-sm' : 'text-[11px]'}`}>
             <Hand className={big ? 'w-4 h-4' : 'w-3.5 h-3.5'} strokeWidth={2.5} />
-            {t(lang, 'drag')} · {t(lang, 'atRoom')} {pick(lang, sub[roomStateKey][0], sub[roomStateKey][1])}
+            {t(lang, 'drag')} · {t(lang, 'atRoom')} {pick(lang, sub[roomStateKey][0], sub[roomStateKey][1], sub[roomStateKey][2])}
           </div>
         </div>
       </div>

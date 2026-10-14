@@ -23,6 +23,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'A substance that **changes colour** to show an acid or an alkali is an **indicator**. Corrosive (A) means it attacks skin, eyes and clothes; neutral (C) is pH 7, not a kind of tester; and an alkali (D) is one of the things an indicator detects.',
       expVn: 'Chất **đổi màu** để cho biết axit hay kiềm là **chất chỉ thị**. Ăn mòn (A) nghĩa là làm hỏng da, mắt và quần áo; trung tính (C) là pH 7, không phải một loại chất thử; còn kiềm (D) là một thứ mà chất chỉ thị phát hiện.',
+      expFr: 'Une substance qui **change de couleur** pour montrer un acide ou un alcali est un **indicateur**. Corrosif (A) veut dire qu’il attaque la peau, les yeux et les vêtements ; neutre (C), c’est pH 7, pas un type de testeur ; et un alcali (D) est une des choses qu’un indicateur détecte.',
     },
     {
       id: 'a2_ammonia',
@@ -37,6 +38,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Above 7 is an **alkali**, so pH 11 is an alkali. A big number is a strong ALKALI, not an acid (A and C — acids are below 7), and neutral is exactly 7 (B).',
       expVn: 'Lớn hơn 7 là **kiềm**, nên pH 11 là kiềm. Số lớn là KIỀM mạnh, không phải axit (A và C — axit nhỏ hơn 7), còn trung tính là đúng bằng 7 (B).',
+      expFr: 'Au-dessus de 7, c’est un **alcali**, donc pH 11 est un alcali. Un grand nombre, c’est un ALCALI fort, pas un acide (A et C — les acides sont en dessous de 7), et neutre, c’est exactement 7 (B).',
     },
     {
       id: 'a3_red_stays',
@@ -51,6 +53,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Red litmus changes only in an **alkali** (it turns blue). It stays red in an acid AND in a neutral liquid, so this one test cannot tell those two apart — you would need blue litmus too. That is why B and D are each only half the story, and C is wrong: an alkali would have turned it blue.',
       expVn: 'Giấy quỳ đỏ chỉ đổi màu trong **kiềm** (chuyển xanh). Nó vẫn đỏ trong axit VÀ trong chất trung tính, nên một lần thử này không phân biệt được hai loại đó — em cần thêm quỳ xanh. Vì vậy B và D chỉ đúng một nửa, còn C sai: kiềm sẽ làm nó chuyển xanh.',
+      expFr: 'Le tournesol rouge ne change que dans un **alcali** (il devient bleu). Il reste rouge dans un acide ET dans un liquide neutre, donc ce seul test ne peut pas distinguer les deux — il te faudrait aussi du tournesol bleu. C’est pour ça que B et D ne racontent chacun que la moitié de l’histoire, et C est faux : un alcali l’aurait fait devenir bleu.',
     },
     {
       id: 'a4_blue',
@@ -65,6 +68,7 @@ export const assessment = {
       correct: 'C',
       expEn: '**Blue and purple are the alkali end** of the scale. A strong acid is red (A), neutral is green (B), and a weak acid is orange or yellow (D).',
       expVn: '**Xanh dương và tím là đầu kiềm** của thang. Axit mạnh màu đỏ (A), trung tính màu xanh lá (B), còn axit yếu màu cam hoặc vàng (D).',
+      expFr: '**Le bleu et le violet sont du côté alcali** de l’échelle. Un acide fort est rouge (A), neutre est vert (B), et un acide faible est orange ou jaune (D).',
     },
     {
       id: 'a5_strongest',
@@ -79,6 +83,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'For an alkali, **the bigger the number, the stronger**: pH 14 is the far end of the scale. Sea water (8), toothpaste (9) and soapy water (10) are alkalis too, but closer to 7, so weaker.',
       expVn: 'Với kiềm, **số càng lớn càng mạnh**: pH 14 ở tận cùng của thang. Nước biển (8), kem đánh răng (9) và nước xà phòng (10) cũng là kiềm, nhưng gần 7 hơn, nên yếu hơn.',
+      expFr: 'Pour un alcali, **plus le nombre est grand, plus il est fort** : pH 14 est tout au bout de l’échelle. L’eau de mer (8), le dentifrice (9) et l’eau savonneuse (10) sont aussi des alcalis, mais plus proches de 7, donc plus faibles.',
     },
     {
       id: 'a6_drain_symbol',
@@ -93,6 +98,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Danger lives at **both ends** of the scale: pH 14 is a strong alkali, and it burns skin like a strong acid. It is not an acid (A — acids are below 7) and not neutral (D — neutral is 7); and not every cleaner is corrosive (C) — soapy water is a weak alkali.',
       expVn: 'Nguy hiểm nằm ở **cả hai đầu** của thang: pH 14 là kiềm mạnh, và nó làm bỏng da giống axit mạnh. Nó không phải axit (A — axit nhỏ hơn 7) và không trung tính (D — trung tính là 7); và không phải chất tẩy rửa nào cũng ăn mòn (C) — nước xà phòng là kiềm yếu.',
+      expFr: 'Le danger se trouve **aux deux bouts** de l’échelle : pH 14 est un alcali fort, et il brûle la peau comme un acide fort. Ce n’est pas un acide (A — les acides sont en dessous de 7) ni neutre (D — neutre, c’est 7) ; et tous les nettoyants ne sont pas corrosifs (C) — l’eau savonneuse est un alcali faible.',
     },
     {
       id: 'a7_ant_bite',
@@ -107,6 +113,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'An acid is cancelled out by the **opposite family**: soap is an alkali, so it **neutralises** the acid. Lemon juice (B) and vinegar (C) are acids — they would add more acid. And an acid can be changed: that is exactly what neutralisation does (D).',
       expVn: 'Axit bị triệt tiêu bởi **nhóm chất đối lập**: xà phòng là kiềm, nên nó **trung hòa** axit. Nước chanh (B) và giấm (C) là axit — chúng chỉ thêm axit. Và axit có thể thay đổi: đó chính là việc sự trung hòa làm (D).',
+      expFr: 'Un acide est annulé par la **famille opposée** : le savon est un alcali, donc il **neutralise** l’acide. Le jus de citron (B) et le vinaigre (C) sont des acides — ils ajouteraient encore de l’acide. Et un acide peut être changé : c’est exactement ce que fait la neutralisation (D).',
     },
     {
       id: 'a8_colour_walk',
@@ -121,6 +128,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The acid starts at the red end. Each drop of alkali moves the pH **up, towards 7**, so the colour walks along the scale — orange, yellow — and stops at **green**, neutral. A is an alkali being neutralised; B goes the wrong way, away from neutral; D jumps to the alkali end and back.',
       expVn: 'Axit bắt đầu ở đầu màu đỏ. Mỗi giọt kiềm đưa pH **lên, về phía 7**, nên màu đi dần theo thang — cam, vàng — và dừng ở **xanh lá**, trung tính. A là kiềm đang bị trung hòa; B đi ngược, xa khỏi trung tính; D nhảy sang đầu kiềm rồi quay lại.',
+      expFr: 'L’acide part du côté rouge. Chaque goutte d’alcali fait **monter le pH, vers 7**, donc la couleur avance le long de l’échelle — orange, jaune — et s’arrête au **vert**, neutre. A, c’est un alcali qu’on neutralise ; B va dans le mauvais sens, loin de neutre ; D saute au bout alcali puis revient.',
     },
   ],
 };

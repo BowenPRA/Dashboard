@@ -11,13 +11,12 @@
 // It reuses the 1.3/1.4 Stage/Controls shell deliberately: the class met this
 // interface in the last two lessons, so no time is spent learning it.
 import { useState } from 'react'
+import { tr as pick } from '../../../utils/lang'
 
 const TEAL = '#0087a8'
 const PURPLE = '#5c2483'
 const GREEN = '#4a8b23'
 const RED = '#c8102e'
-
-const pick = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en)
 
 const Stage = ({ children, className = '' }) => (
   <div className={`flex-1 min-h-[210px] w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-inner relative flex flex-col p-3 sm:p-4 overflow-hidden ${className}`}>
@@ -61,35 +60,36 @@ const elevenGroups = (n) => {
 
 // Why a number passes or fails a given test, in one line. Built from the rule
 // plus the number's own digits rather than stored as 30 hand-written strings —
-// but every word of English here still has its Vietnamese twin below it.
+// but every word of English here still has its Vietnamese and French twins
+// beside it.
 const reason = (n, d, lang) => {
   const last = n % 10
   const s = digitSum(n)
   switch (d) {
     case 2:
-      return pick(lang, `It ends in ${last}.`, `Số này tận cùng bằng ${last}.`)
+      return pick(lang, `It ends in ${last}.`, `Số này tận cùng bằng ${last}.`, `Il se termine par ${last}.`)
     case 5:
-      return pick(lang, `It ends in ${last}.`, `Số này tận cùng bằng ${last}.`)
+      return pick(lang, `It ends in ${last}.`, `Số này tận cùng bằng ${last}.`, `Il se termine par ${last}.`)
     case 10:
-      return pick(lang, `It ends in ${last}.`, `Số này tận cùng bằng ${last}.`)
+      return pick(lang, `It ends in ${last}.`, `Số này tận cùng bằng ${last}.`, `Il se termine par ${last}.`)
     case 3:
-      return pick(lang, `The digits add up to ${s}.`, `Tổng các chữ số bằng ${s}.`)
+      return pick(lang, `The digits add up to ${s}.`, `Tổng các chữ số bằng ${s}.`, `La somme des chiffres est ${s}.`)
     case 9:
-      return pick(lang, `The digits add up to ${s}.`, `Tổng các chữ số bằng ${s}.`)
+      return pick(lang, `The digits add up to ${s}.`, `Tổng các chữ số bằng ${s}.`, `La somme des chiffres est ${s}.`)
     case 4:
-      return pick(lang, `The last two digits are ${lastTwo(n)}.`, `Hai chữ số cuối là ${lastTwo(n)}.`)
+      return pick(lang, `The last two digits are ${lastTwo(n)}.`, `Hai chữ số cuối là ${lastTwo(n)}.`, `Les deux derniers chiffres sont ${lastTwo(n)}.`)
     case 8:
-      return pick(lang, `The last three digits are ${lastThree(n)}.`, `Ba chữ số cuối là ${lastThree(n)}.`)
+      return pick(lang, `The last three digits are ${lastThree(n)}.`, `Ba chữ số cuối là ${lastThree(n)}.`, `Les trois derniers chiffres sont ${lastThree(n)}.`)
     case 6:
       return n % 2 === 0
-        ? pick(lang, `It is even, and the digits add up to ${s}.`, `Số này chẵn, và tổng các chữ số bằng ${s}.`)
-        : pick(lang, 'It is not even, so it cannot divide by 6.', 'Số này không chẵn, nên không chia hết cho 6.')
+        ? pick(lang, `It is even, and the digits add up to ${s}.`, `Số này chẵn, và tổng các chữ số bằng ${s}.`, `Il est pair, et la somme des chiffres est ${s}.`)
+        : pick(lang, 'It is not even, so it cannot divide by 6.', 'Số này không chẵn, nên không chia hết cho 6.', 'Il n’est pas pair, donc il ne peut pas être divisible par 6.')
     case 11: {
       const { a, b, diff } = elevenGroups(n)
-      return pick(lang, `The two groups give ${a} and ${b} — a difference of ${diff}.`, `Hai nhóm cho ${a} và ${b} — hiệu là ${diff}.`)
+      return pick(lang, `The two groups give ${a} and ${b} — a difference of ${diff}.`, `Hai nhóm cho ${a} và ${b} — hiệu là ${diff}.`, `Les deux groupes donnent ${a} et ${b} — une différence de ${diff}.`)
     }
     default:
-      return pick(lang, 'There is no easy test for 7 — you have to divide.', 'Không có mẹo dễ nào cho 7 — em phải chia thật.')
+      return pick(lang, 'There is no easy test for 7 — you have to divide.', 'Không có mẹo dễ nào cho 7 — em phải chia thật.', 'Il n’y a pas de critère facile pour 7 — il faut diviser.')
   }
 }
 
@@ -131,14 +131,14 @@ export const FactorHuntWidget = ({ lang = 'en' }) => {
       <Stage>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            {pick(lang, 'Factor hunt', 'Săn ước số')}
+            {pick(lang, 'Factor hunt', 'Săn ước số', 'Chasse aux diviseurs')}
           </span>
           <span className="font-mono font-black text-xs text-slate-400 tabular-nums">{i + 1}/{NUMBERS.length}</span>
         </div>
 
         <div className="rounded-xl border-2 px-3 py-1.5 mb-2 shrink-0 text-center" style={{ borderColor: TEAL, backgroundColor: `${TEAL}0f` }}>
           <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
-            {pick(lang, 'Which of these are factors of', 'Số nào dưới đây là ước số của')}
+            {pick(lang, 'Which of these are factors of', 'Số nào dưới đây là ước số của', 'Lesquels sont des diviseurs de')}
           </p>
           <p className="font-mono font-black tabular-nums leading-none mt-0.5 text-3xl sm:text-4xl" style={{ color: TEAL }}>{n}</p>
         </div>
@@ -162,8 +162,8 @@ export const FactorHuntWidget = ({ lang = 'en' }) => {
             style={{ borderColor: n % last === 0 ? GREEN : RED, backgroundColor: `${n % last === 0 ? GREEN : RED}12` }}>
             <span className="text-[10px] font-black uppercase tracking-widest mr-2" style={{ color: n % last === 0 ? GREEN : RED }}>
               {n % last === 0
-                ? pick(lang, `${last} is a factor`, `${last} là ước số`)
-                : pick(lang, `${last} is not a factor`, `${last} không phải ước số`)}
+                ? pick(lang, `${last} is a factor`, `${last} là ước số`, `${last} est un diviseur`)
+                : pick(lang, `${last} is not a factor`, `${last} không phải ước số`, `${last} n’est pas un diviseur`)}
             </span>
             <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300 leading-snug">{reason(n, last, lang)}</span>
           </div>
@@ -176,21 +176,21 @@ export const FactorHuntWidget = ({ lang = 'en' }) => {
             onClick={() => go(Math.max(0, i - 1))}
             disabled={i === 0}
             className="px-3 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 dark:border-slate-600 text-slate-500 disabled:opacity-30 active:scale-95">
-            {pick(lang, 'Back', 'Lùi')}
+            {pick(lang, 'Back', 'Lùi', 'Retour')}
           </button>
           <button
             onClick={showAll}
             disabled={done}
             className="px-3 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border-2 text-white disabled:opacity-30 active:scale-95"
             style={{ backgroundColor: PURPLE, borderColor: PURPLE }}>
-            {pick(lang, 'Show the rest', 'Hiện phần còn lại')}
+            {pick(lang, 'Show the rest', 'Hiện phần còn lại', 'Tout afficher')}
           </button>
           <button
             onClick={() => !isLast && go(i + 1)}
             disabled={isLast}
             className="flex-1 py-2.5 rounded-xl font-black text-sm uppercase tracking-widest text-white border-2 disabled:opacity-40 active:scale-95 transition-all"
             style={{ backgroundColor: TEAL, borderColor: TEAL }}>
-            {isLast ? pick(lang, 'That is the last one', 'Hết rồi') : pick(lang, 'Next number', 'Số tiếp theo')}
+            {isLast ? pick(lang, 'That is the last one', 'Hết rồi', 'C’est le dernier') : pick(lang, 'Next number', 'Số tiếp theo', 'Nombre suivant')}
           </button>
         </div>
       </Controls>

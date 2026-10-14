@@ -5,6 +5,7 @@ import PeriodicTableSVG from '../components/science/PeriodicTableSVG';
 import { AskHeader, CheckButton, NextButton, ChoiceButton, Verdict, ProgressDots, EmptyScreen, Summary } from '../components/science/TaskChrome';
 import { huntSession, tableView, huntAnswer, huntFeedback, huntRowLabel } from '../components/science/huntView';
 import { markHunt } from '../utils/elementHunt';
+import useLang from '../hooks/useLang';
 
 /**
  * Element Hunt — Science 2.5's generative task on the book's first-20 Periodic
@@ -44,13 +45,21 @@ const T = {
     picked: 'đã chọn', typeHere: 'Nhập kí hiệu', done: 'Hoàn thành lượt truy tìm', right: 'đúng', table: '20 nguyên tố đầu tiên',
     modes: { find: 'Tìm nguyên tố', symbol: 'Viết kí hiệu', name: 'Gọi tên kí hiệu', place: 'Chu kì và nhóm', metal: 'Kim loại hay phi kim', mass: 'Nguyên tử nặng hơn' },
   },
+  fr: {
+    title: 'Chasse aux éléments', check: 'Vérifier', next: 'Suivant', results: 'Voir les résultats', finish: 'Terminer', again: 'Nouvelle chasse',
+    empty: "Cette unité n'a pas de mode Chasse aux éléments.", back: 'Retour', correct: 'Correct', wrong: 'Pas tout à fait',
+    tapOne: 'Touche une case. Ta première touche est ta réponse.',
+    tapAll: "Touche toutes les cases utiles, puis clique sur Vérifier. Touche une case de nouveau pour l'enlever.",
+    picked: 'choisies', typeHere: 'Écris le symbole', done: 'Chasse terminée', right: 'justes', table: 'Les 20 premiers éléments',
+    modes: { find: "Trouver l'élément", symbol: 'Écrire le symbole', name: 'Nommer le symbole', place: 'Périodes et groupes', metal: 'Métal ou non-métal', mass: 'Atomes plus lourds' },
+  },
 };
 
-export default function ElementHunt({ pool, onComplete, onQuit, bilingual = true }) {
+export default function ElementHunt({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(() => huntSession(config, seed), [config, seed]);
-  const [lang, setLang] = useState('en');
+  const { lang: L, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [tap, setTap] = useState(null);       // a tap or a choice
   const [picked, setPicked] = useState([]);   // a multi round's tiles
@@ -60,9 +69,8 @@ export default function ElementHunt({ pool, onComplete, onQuit, bilingual = true
   const [ended, setEnded] = useState(false);
   const [banked, setBanked] = useState(null); // the best finished run before "New hunt"
 
-  const L = bilingual ? lang : 'en';
-  const t = T[L];
-  const say = (o) => (o ? (L === 'vn' && o.vn ? o.vn : o.en) : '');
+  const t = T[L] || T.en;
+  const say = (o) => (o ? o[L] || o.en : '');
 
   const runOf = (res) => {
     const items = session.map((r, i) => ({ itemId: `${r.mode}-${i + 1}`, correct: !!res[i] }));
@@ -79,9 +87,9 @@ export default function ElementHunt({ pool, onComplete, onQuit, bilingual = true
   if (!session.length) return <EmptyScreen text={t.empty} back={t.back} onQuit={onQuit} />;
 
   const topBar = (
-    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn }) || t.title}
+    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn, fr: config.titleFr }) || t.title}
       current={ended ? session.length : idx + 1} total={session.length}
-      lang={bilingual ? lang : undefined} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      lang={L} onLangToggle={toggleLang} />
   );
 
   const reset = () => { setTap(null); setPicked([]); setTyped(''); setMark(null); };
@@ -101,7 +109,7 @@ export default function ElementHunt({ pool, onComplete, onQuit, bilingual = true
       <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
         {topBar}
         <Summary heading={t.done} rightText={`${run.right} / ${session.length} ${t.right}`}
-          rows={session.map((r, i) => ({ ok: !!results[i], label: `${t.modes[r.mode]}: ${say(huntRowLabel(r))}` }))}
+          rows={session.map((r, i) => ({ ok: !!results[i], label: `${t.modes[r.mode]}${L === 'fr' ? ' : ' : ': '}${say(huntRowLabel(r))}` }))}
           againLabel={t.again} finishLabel={t.finish} onAgain={again} onFinish={finish} />
       </div>
     );
@@ -184,7 +192,7 @@ export default function ElementHunt({ pool, onComplete, onQuit, bilingual = true
                   return (
                     <ChoiceButton key={o.val} look={look} disabled={checked} onClick={() => choose(o.val)}>
                       <span className="block">{say(o)}</span>
-                      {L === 'vn' && o.vn && o.vn !== o.en && <span className="block text-xs font-bold opacity-60">{o.en}</span>}
+                      {L !== 'en' && o[L] && o[L] !== o.en && <span className="block text-xs font-bold opacity-60">{o.en}</span>}
                     </ChoiceButton>
                   );
                 })}

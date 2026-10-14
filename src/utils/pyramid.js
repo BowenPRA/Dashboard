@@ -178,9 +178,9 @@ export function makePyramidSession(config, seed = Date.now()) {
  */
 export function markBlock(round, cellId_, typed, filled = {}) {
   const cell = round.cells.find((c) => c.id === cellId_);
-  if (!cell) return { ok: false, en: 'No such block.', vn: 'Không có ô này.' };
+  if (!cell) return { ok: false, en: 'No such block.', vn: 'Không có ô này.', fr: "Ce bloc n'existe pas." };
   const got = tryPoly(typed);
-  if (!got) return { ok: false, code: 'unreadable', en: 'Type an expression, like 5x + 3.', vn: 'Nhập một biểu thức, ví dụ 5x + 3.' };
+  if (!got) return { ok: false, code: 'unreadable', en: 'Type an expression, like 5x + 3.', vn: 'Nhập một biểu thức, ví dụ 5x + 3.', fr: 'Écris une expression, comme 5x + 3.' };
   if (polyEq(got, cell.poly)) {
     const form = formOf(typed);
     if (form.simplest) return { ok: true };
@@ -194,9 +194,9 @@ export function markBlock(round, cellId_, typed, filled = {}) {
   if (below[0] && below[1]) {
     const sub = polySub(below[0].poly, below[1].poly);
     if (polyEq(got, sub) || polyEq(got, polySub(below[1].poly, below[0].poly))) {
-      return { ok: false, code: 'subtracted', en: 'Going UP the pyramid, add the two blocks underneath.', vn: 'Đi LÊN kim tự tháp thì cộng hai ô bên dưới.' };
+      return { ok: false, code: 'subtracted', en: 'Going UP the pyramid, add the two blocks underneath.', vn: 'Đi LÊN kim tự tháp thì cộng hai ô bên dưới.', fr: 'Pour MONTER dans la pyramide, additionne les deux blocs du dessous.' };
     }
-    return { ok: false, code: 'wrong', en: `Add the two blocks underneath: (${below[0].text}) + (${below[1].text}), then collect like terms.`, vn: `Cộng hai ô bên dưới: (${below[0].text}) + (${below[1].text}), rồi gộp hạng tử đồng dạng.` };
+    return { ok: false, code: 'wrong', en: `Add the two blocks underneath: (${below[0].text}) + (${below[1].text}), then collect like terms.`, vn: `Cộng hai ô bên dưới: (${below[0].text}) + (${below[1].text}), rồi gộp hạng tử đồng dạng.`, fr: `Additionne les deux blocs du dessous : (${below[0].text}) + (${below[1].text}), puis réduis les termes semblables.` };
   }
   // working down: this block + its neighbour = the block above
   const tryPair = (aboveR, aboveC, sideR, sideC) => {
@@ -204,20 +204,20 @@ export function markBlock(round, cellId_, typed, filled = {}) {
     const side = known(sideR, sideC);
     if (!above || !side) return null;
     if (polyEq(got, polyAdd(above.poly, side.poly))) {
-      return { ok: false, code: 'added-down', en: 'Going DOWN, subtract: the block above take away the block beside this one.', vn: 'Đi XUỐNG thì trừ: ô bên trên trừ đi ô bên cạnh ô này.' };
+      return { ok: false, code: 'added-down', en: 'Going DOWN, subtract: the block above take away the block beside this one.', vn: 'Đi XUỐNG thì trừ: ô bên trên trừ đi ô bên cạnh ô này.', fr: 'Pour DESCENDRE, soustrais : le bloc du dessus moins le bloc à côté de celui-ci.' };
     }
-    return { ok: false, code: 'wrong', en: `This block + (${side.text}) must make (${above.text}). So it is (${above.text}) − (${side.text}).`, vn: `Ô này + (${side.text}) phải bằng (${above.text}). Vậy nó là (${above.text}) − (${side.text}).` };
+    return { ok: false, code: 'wrong', en: `This block + (${side.text}) must make (${above.text}). So it is (${above.text}) − (${side.text}).`, vn: `Ô này + (${side.text}) phải bằng (${above.text}). Vậy nó là (${above.text}) − (${side.text}).`, fr: `Ce bloc + (${side.text}) doit donner (${above.text}). Donc il vaut (${above.text}) − (${side.text}).` };
   };
   return tryPair(cell.r + 1, cell.c - 1, cell.r, cell.c - 1)
     || tryPair(cell.r + 1, cell.c, cell.r, cell.c + 1)
-    || { ok: false, code: 'not-reachable', en: 'Fill in a block next to this one first — you need two blocks you know.', vn: 'Hãy điền một ô bên cạnh ô này trước — em cần biết hai ô.' };
+    || { ok: false, code: 'not-reachable', en: 'Fill in a block next to this one first — you need two blocks you know.', vn: 'Hãy điền một ô bên cạnh ô này trước — em cần biết hai ô.', fr: "Remplis d'abord un bloc à côté de celui-ci — il te faut deux blocs connus." };
 }
 
 /** A typed solution for a solve round. */
 export function markSolution(round, typed) {
   const raw = String(typed ?? '').replace(/^\s*[a-z]\s*=\s*/i, '');
   const got = tryPoly(raw);
-  if (!got || !isConstant(got)) return { ok: false, en: 'Type a number.', vn: 'Nhập một số.' };
+  if (!got || !isConstant(got)) return { ok: false, en: 'Type a number.', vn: 'Nhập một số.', fr: 'Écris un nombre.' };
   const v = constOf(got);
   if (v[1] === 1 && v[0] === round.solution) return { ok: true };
   return round.equation ? diagnoseSolve(round.equation, raw) : { ok: false };

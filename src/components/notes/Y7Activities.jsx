@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { CheckCircle2, AlertTriangle, XCircle, GripVertical, CornerDownRight, ArrowRight, ArrowLeft, Lightbulb } from 'lucide-react';
 import { SafeInlineMath } from './SafeMath.jsx';
 import { keepWhere } from '../../utils/activity';
+import { tr } from '../../utils/lang';
 import {
   collectModel, expandModel, equationModel, diagnoseSimplify, diagnoseExpand, diagnoseSolve, diagnoseCell,
   opLatex, opText, inverseOf, sameOp, valueText,
@@ -25,8 +26,10 @@ import PeriodicTableSVG from '../science/PeriodicTableSVG.jsx';
  * several-part ones start from the parts that were right (ActivityBlock.jsx).
  */
 
-const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
-const said = (lang, msg) => (msg ? pickL(lang, msg.en, msg.vn) : '');
+const pickL = tr;
+const said = (lang, msg) => (msg ? pickL(lang, msg.en, msg.vn, msg.fr) : '');
+/** An engine's verdict, every language it carries. */
+const verdictOf = (d) => ({ en: d.en, vn: d.vn, fr: d.fr });
 
 const T = {
   en: {
@@ -44,6 +47,14 @@ const T = {
     atoms: 'nguyên tử', total: 'Tổng số nguyên tử', key: 'Chú thích', undo: 'Làm ngược từng bước', selected: 'đã chọn',
     forward: 'Những gì đã làm với chữ cái', backward: 'Làm ngược lại — bước cuối trước',
     tapBoxes: 'Chạm vào mọi ô phù hợp',
+  },
+  fr: {
+    check: 'Vérifier', tapTerm: 'Touche un terme, puis son panier', dropHere: 'Touche pour placer', allPlaced: 'Tout est placé',
+    answer: 'Réponse', tryAgain: 'Encore un essai', typeHere: 'Écris ta réponse', nudge: 'Presque',
+    element: 'Élément', compound: 'Composé', mixture: 'Mélange', pure: 'Corps pur', yes: 'Oui', no: 'Non',
+    atoms: 'atomes', total: 'Nombre total d’atomes', key: 'Légende', undo: 'Annule chaque étape', selected: 'choisi(s)',
+    forward: 'Ce qu’on a fait à la lettre', backward: 'Annule — la dernière étape d’abord',
+    tapBoxes: 'Touche chaque boîte qui convient',
   },
 };
 
@@ -71,7 +82,7 @@ function Verdict({ ok, lang, children }) {
     <div className={`rounded-xl border-2 mt-3 p-3 ${ok ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'}`}>
       <div className={`flex items-center font-black uppercase tracking-widest text-[10px] lg:text-xs mb-1 ${ok ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
         {ok ? <CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} /> : <AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />}
-        {ok ? (lang === 'vn' ? 'Chính xác' : 'Correct') : (lang === 'vn' ? 'Chưa đúng' : 'Not quite')}
+        {ok ? tr(lang, 'Correct', 'Chính xác', 'Correct !') : tr(lang, 'Not quite', 'Chưa đúng', 'Pas tout à fait')}
       </div>
       <div className={`font-bold leading-relaxed text-sm lg:text-base ${ok ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>{children}</div>
     </div>
@@ -166,7 +177,7 @@ export function TermsActivity({ activity, lang, result, onResult, parseText, ret
               onDrop={(e) => { e.preventDefault(); if (dragged != null) put(dragged, b.key); }}
               className={`rounded-2xl border-2 overflow-hidden bg-white dark:bg-slate-800 transition-all ${active ? 'border-[#1cb0f6] ring-4 ring-[#1cb0f6]/20 cursor-pointer' : 'border-slate-200 dark:border-slate-700'}`}>
               <div className="bg-slate-50 dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-700 px-3 py-1.5 font-black text-slate-600 dark:text-slate-300 text-sm text-center">
-                {pickL(lang, b.name.en, b.name.vn)}
+                {said(lang, b.name)}
               </div>
               <div className="p-2 min-h-[52px] flex flex-wrap gap-1.5 items-center">
                 {here.length === 0 && (
@@ -189,7 +200,7 @@ export function TermsActivity({ activity, lang, result, onResult, parseText, ret
       {checked && (
         <Verdict ok={result.correct} lang={lang}>
           <div className="mb-1 text-lg"><SafeInlineMath math={`${model.questionLatex} = ${model.answerLatex}`} /></div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -221,7 +232,7 @@ export function AlgebraActivity({ activity, lang, result, onResult, parseText })
     if (d.equivalent || d.code === 'unreadable') { setMsg({ tone: 'nudge', d }); return; }
     const n = tries + 1;
     setTries(n);
-    if (n >= 2) onResult({ done: true, correct: false, typed, tries: n, why: { en: d.en, vn: d.vn } });
+    if (n >= 2) onResult({ done: true, correct: false, typed, tries: n, why: verdictOf(d) });
     else setMsg({ tone: 'bad', d });
   };
 
@@ -243,7 +254,7 @@ export function AlgebraActivity({ activity, lang, result, onResult, parseText })
         <Verdict ok={result.correct} lang={lang}>
           {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
           <div className="mb-1 text-lg"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={answerLatex} /></div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -266,7 +277,7 @@ export function GridActivity({ activity, lang, result, onResult, parseText, retr
     b.inner.forEach((inner, i) => {
       const d = diagnoseCell(b.outer, inner, cells[i]);
       out[i] = d.ok ? 'good' : 'bad';
-      if (!d.ok && !first) first = { en: d.en, vn: d.vn };
+      if (!d.ok && !first) first = verdictOf(d);
     });
     onResult({ done: true, correct: Object.values(out).every((m) => m === 'good'), cells, marks: out, why: first });
   };
@@ -302,7 +313,7 @@ export function GridActivity({ activity, lang, result, onResult, parseText, retr
         <Verdict ok={result.correct} lang={lang}>
           {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
           <div className="mb-1 text-lg"><SafeInlineMath math={`${model.questionLatex} = ${model.answerLatex}`} /></div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -343,10 +354,25 @@ export function FlowActivity({ activity, lang, result, onResult, parseText, retr
       const k = opOk.findIndex((ok) => !ok);
       const p = picked(k);
       const same = model.ops[model.ops.length - 1 - k];
-      if (p && sameOp(p, same)) why = { en: `That does ${opText(same)} again. Undo it with the inverse: ${opText(inverseOf(same))}.`, vn: `Đó là làm lại ${opText(same)}. Hãy làm ngược bằng phép ngược: ${opText(inverseOf(same))}.` };
-      else why = { en: 'Undo the LAST step first — socks and shoes.', vn: 'Làm ngược bước CUỐI trước — như tất và giày.' };
+      if (p && sameOp(p, same)) {
+        why = {
+          en: `That does ${opText(same)} again. Undo it with the inverse: ${opText(inverseOf(same))}.`,
+          vn: `Đó là làm lại ${opText(same)}. Hãy làm ngược bằng phép ngược: ${opText(inverseOf(same))}.`,
+          fr: `Ça refait ${opText(same)}. Annule-le avec l’opération inverse : ${opText(inverseOf(same))}.`,
+        };
+      } else {
+        why = {
+          en: 'Undo the LAST step first — socks and shoes.',
+          vn: 'Làm ngược bước CUỐI trước — như tất và giày.',
+          fr: 'Annule d’abord la DERNIÈRE étape — comme les chaussettes et les chaussures.',
+        };
+      }
     } else if (valOk.some((ok) => !ok)) {
-      why = { en: 'Check each box: apply the operation on the arrow to the number before it.', vn: 'Kiểm tra từng ô: áp dụng phép toán trên mũi tên cho số đứng trước.' };
+      why = {
+        en: 'Check each box: apply the operation on the arrow to the number before it.',
+        vn: 'Kiểm tra từng ô: áp dụng phép toán trên mũi tên cho số đứng trước.',
+        fr: 'Vérifie chaque case : applique l’opération de la flèche au nombre qui la précède.',
+      };
     }
     onResult({ done: true, correct: opOk.every(Boolean) && valOk.every(Boolean), picks, vals, opOk, valOk, why });
   };
@@ -415,7 +441,7 @@ export function FlowActivity({ activity, lang, result, onResult, parseText, retr
             <SafeInlineMath math={[numTex(model.target), ...model.inverse.map((o, k) => `\\xrightarrow{${opLatex(o)}} ${numTex(model.back[k + 1])}`)].join(' ')} />
             <span className="ml-2"><SafeInlineMath math={`\\Rightarrow ${model.letter} = ${numTex(model.solution)}`} /></span>
           </div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -467,7 +493,7 @@ export function PeriodicActivity({ activity, lang, result, onResult, parseText, 
         <PeriodicTableSVG highlight={highlight} onTap={tap} showNames={activity.names !== false} colourByMetal={colourByMetal} lang={lang} disabled={checked} />
       </div>
       {!checked && single && missed && (
-        <Hint>{t.tryAgain} · {missed.sym} = {pickL(lang, missed.en, missed.vn)}</Hint>
+        <Hint>{t.tryAgain} · {missed.sym} = {pickL(lang, missed.en, missed.vn, missed.fr)}</Hint>
       )}
       {!checked && !single && (
         <div className="mt-2 flex items-center justify-between gap-2">
@@ -475,7 +501,7 @@ export function PeriodicActivity({ activity, lang, result, onResult, parseText, 
           <button onClick={check} disabled={!sel.length} className={primary}>{t.check}</button>
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -490,7 +516,7 @@ function AtomKey({ symbols, lang }) {
       {keyOfElements(symbols).map((k) => (
         <span key={k.el} className="flex items-center gap-1">
           <span className="inline-block w-3.5 h-3.5 rounded-full border-2" style={{ background: k.fill, borderColor: k.stroke }} />
-          {k.el}{k.name ? ` ${pickL(lang, k.name.en, k.name.vn)}` : ''}
+          {k.el}{k.name ? ` ${said(lang, k.name)}` : ''}
         </span>
       ))}
     </div>
@@ -498,10 +524,14 @@ function AtomKey({ symbols, lang }) {
 }
 
 const verdictWords = (v, lang) => {
-  if (v.kind === 'element') return pickL(lang, 'Element — one kind of atom', 'Nguyên tố — một loại nguyên tử');
-  if (v.kind === 'compound') return pickL(lang, 'Compound — different atoms bonded', 'Hợp chất — các nguyên tử khác nhau liên kết');
-  const of = { elements: ['of elements', 'các nguyên tố'], compounds: ['of compounds', 'các hợp chất'], both: ['of elements and compounds', 'nguyên tố và hợp chất'] }[v.mixtureOf];
-  return pickL(lang, `Mixture ${of[0]} — ${v.substances.length} substances`, `Hỗn hợp ${of[1]} — ${v.substances.length} chất`);
+  if (v.kind === 'element') return pickL(lang, 'Element — one kind of atom', 'Nguyên tố — một loại nguyên tử', 'Élément — une seule sorte d’atome');
+  if (v.kind === 'compound') return pickL(lang, 'Compound — different atoms bonded', 'Hợp chất — các nguyên tử khác nhau liên kết', 'Composé — des atomes différents liés');
+  const of = {
+    elements: ['of elements', 'các nguyên tố', 'd’éléments'],
+    compounds: ['of compounds', 'các hợp chất', 'de composés'],
+    both: ['of elements and compounds', 'nguyên tố và hợp chất', 'd’éléments et de composés'],
+  }[v.mixtureOf];
+  return pickL(lang, `Mixture ${of[0]} — ${v.substances.length} substances`, `Hỗn hợp ${of[1]} — ${v.substances.length} chất`, `Mélange ${of[2]} — ${v.substances.length} substances`);
 };
 
 export function ParticlesActivity({ activity, lang, result, onResult, parseText, retry }) {
@@ -565,7 +595,7 @@ export function ParticlesActivity({ activity, lang, result, onResult, parseText,
       </div>
       <AtomKey symbols={symbols} lang={lang} />
       {!checked && <div className="mt-3 flex justify-end"><button onClick={check} disabled={!ready} className={primary}>{t.check}</button></div>}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -593,7 +623,7 @@ export function FormulaActivity({ activity, lang, result, onResult, parseText, r
       if (d.ok) { onResult({ done: true, correct: true, vals, tries: tries + 1 }); return; }
       const n = tries + 1;
       setTries(n);
-      if (n >= 2) onResult({ done: true, correct: false, vals, tries: n, why: { en: d.en, vn: d.vn } });
+      if (n >= 2) onResult({ done: true, correct: false, vals, tries: n, why: verdictOf(d) });
       else setMsg(d);
     };
     return (
@@ -614,7 +644,7 @@ export function FormulaActivity({ activity, lang, result, onResult, parseText, r
           <Verdict ok={result.correct} lang={lang}>
             {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
             <div className="mb-1 text-lg font-black">{formulaPretty(activity.formula)}</div>
-            {parseText(pickL(lang, activity.explain, activity.explainVn))}
+            {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
           </Verdict>
         )}
       </div>
@@ -639,7 +669,7 @@ export function FormulaActivity({ activity, lang, result, onResult, parseText, r
           return (
             <div key={c.el} className="flex items-center gap-2">
               <span className="w-10 text-center font-black text-lg text-slate-800 dark:text-slate-100">{c.el}</span>
-              <span className="flex-1 text-sm font-bold text-slate-500 dark:text-slate-400">{el ? pickL(lang, el.en, el.vn) : ''} · {t.atoms}</span>
+              <span className="flex-1 text-sm font-bold text-slate-500 dark:text-slate-400">{el ? pickL(lang, el.en, el.vn, el.fr) : ''} · {t.atoms}</span>
               <MathInput width="w-16" value={vals[i]} disabled={checked} state={marks[i]} label={`${c.el} atoms`}
                 onChange={(v) => setVals((s) => ({ ...s, [i]: v.replace(/[^\d]/g, '') }))} onEnter={() => ready && !checked && check()} />
               {checked && marks[i] === 'bad' && <span className="font-black text-[#3e7500]">{c.n}</span>}
@@ -654,7 +684,7 @@ export function FormulaActivity({ activity, lang, result, onResult, parseText, r
         </div>
       </div>
       {!checked && <div className="mt-3 flex justify-end"><button onClick={check} disabled={!ready} className={primary}>{t.check}</button></div>}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }

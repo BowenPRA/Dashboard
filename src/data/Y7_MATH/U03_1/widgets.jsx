@@ -27,6 +27,7 @@
 // white plate.
 import { useState } from 'react';
 import { Undo2, Move, SkipForward } from 'lucide-react';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
@@ -35,7 +36,6 @@ const RULE = '#cfd8dc';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 
 const SUP = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
   const tones = {
@@ -142,9 +142,10 @@ function PlaceShift({ lang = 'en', set: setName }) {
           </text>
           <text x="560" y="56" fontFamily={FONT} fontSize="26" fontWeight="bold" fill={KEY} textAnchor="middle">
             {step === 0
-              ? tr(lang, 'Ready', 'Sẵn sàng')
+              ? tr(lang, 'Ready', 'Sẵn sàng', 'Prêt')
               : tr(lang, `${step} of ${set.k} places ${dir > 0 ? 'left' : 'right'}`,
-                        `${step} trên ${set.k} cột sang ${dir > 0 ? 'trái' : 'phải'}`)}
+                        `${step} trên ${set.k} cột sang ${dir > 0 ? 'trái' : 'phải'}`,
+                        `${step} sur ${set.k} rangs, vers la ${dir > 0 ? 'gauche' : 'droite'}`)}
           </text>
 
           {/* Empty columns, so the student can see where a digit is heading. */}
@@ -183,20 +184,21 @@ function PlaceShift({ lang = 'en', set: setName }) {
 
           <text x="560" y="414" fontFamily={FONT} fontSize="24" fill={MUTED} textAnchor="middle">
             {tr(lang, 'An orange zero is holding a column open.',
-                      'Số 0 màu cam giữ chỗ cho một cột.')}
+                      'Số 0 màu cam giữ chỗ cho một cột.',
+                      'Un zéro orange garde une colonne ouverte.')}
           </text>
         </svg>
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
         <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
-          {tr(lang, 'Back', 'Lùi')}
+          {tr(lang, 'Back', 'Lùi', 'Retour')}
         </Btn>
         <Btn tone="orange" icon={Move} disabled={step === set.k} onClick={() => setStep((s) => Math.min(set.k, s + 1))}>
-          {tr(lang, 'Move one place', 'Dịch một cột')}
+          {tr(lang, 'Move one place', 'Dịch một cột', 'Décale 1 rang')}
         </Btn>
         <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>
-          {tr(lang, 'Next number', 'Số khác')}
+          {tr(lang, 'Next number', 'Số khác', 'Nombre suivant')}
         </Btn>
       </div>
     </div>

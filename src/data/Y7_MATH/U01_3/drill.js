@@ -7,12 +7,13 @@
 
 export const drill = {
   mode: 'times-sprint',
-  title: 'Times-Table Sprint', titleVn: 'Chạy nước rút bảng cửu chương',
+  title: 'Times-Table Sprint', titleVn: 'Chạy nước rút bảng cửu chương', titleFr: 'Sprint des tables',
   intro: 'Answer as many as you can before the timer runs out. Knowing your tables is how you list multiples fast.',
   introVn: 'Trả lời càng nhiều càng tốt trước khi hết giờ. Thuộc bảng cửu chương là cách liệt kê bội số nhanh.',
+  introFr: 'Réponds à autant de questions que possible avant la fin du chrono. Connaître tes tables, c’est ce qui te permet de lister les multiples vite.',
   ladder: [
-    { level: 'The 4× table', levelVn: 'Bảng nhân 4', items: [[4, 3], [4, 6], [4, 8], [4, 9]] },
-    { level: 'The 6× table', levelVn: 'Bảng nhân 6', items: [[6, 4], [6, 7], [6, 8], [6, 9]] },
-    { level: 'Mixed tables', levelVn: 'Bảng hỗn hợp', items: [[7, 8], [9, 6], [8, 12], [7, 9]] },
+    { level: 'The 4× table', levelVn: 'Bảng nhân 4', levelFr: 'La table de 4', items: [[4, 3], [4, 6], [4, 8], [4, 9]] },
+    { level: 'The 6× table', levelVn: 'Bảng nhân 6', levelFr: 'La table de 6', items: [[6, 4], [6, 7], [6, 8], [6, 9]] },
+    { level: 'Mixed tables', levelVn: 'Bảng hỗn hợp', levelFr: 'Tables mélangées', items: [[7, 8], [9, 6], [8, 12], [7, 9]] },
   ],
 };

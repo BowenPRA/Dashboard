@@ -4,6 +4,8 @@ import {
   ListChecks, RotateCcw, Scale, PenLine,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr, pickTable } from '../utils/lang';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import PlaceTable from '../components/math/PlaceTable.jsx';
 import { placesOf } from '../utils/decimal';
@@ -17,12 +19,12 @@ import {
  * (Y7 Maths 3.1).
  *
  * Reads a unit's `placeShift`:
- *   { title, titleVn, intro?, introVn?, levels: { n: { en, vn } }, items: [
+ *   { title, titleVn, titleFr, intro?, introVn?, introFr?, levels: { n: { en, vn, fr } }, items: [
  *       { id, level, n: '7.2', op: '×', p: 3 },
  *       { id, level, kind: 'power', n: '6.1', op: '×', result: '61000' },
  *       { id, level, kind: 'convert', n: '4', from: 'kg', to: 'mg' },
  *       { id, level, kind: 'chain', n: '5', ops: [['×', 4], ['÷', 2], ['×', 3]] },
- *       (+ context / contextVn)
+ *       (+ context / contextVn / contextFr)
  *   ] }
  * utils/placeShift.js derives the moves, the placeholders and the answer.
  *
@@ -123,11 +125,50 @@ const T = {
     stepDown: 'xuống đơn vị nhỏ hơn: × 10³', stepUp: 'lên đơn vị lớn hơn: ÷ 10³',
     noItems: 'Chưa có câu hỏi', back: 'Quay lại Bảng điều khiển',
   },
+  fr: {
+    title: 'Glisse les chiffres',
+    check: 'Vérifier', stuck: 'Montre-moi', next: 'Suivant', finish: 'Terminer',
+    solved: 'faites', level: 'Niveau',
+    clean: 'Toutes les étapes justes du premier coup.',
+    slipped: "Fini — une erreur, et tu l'as trouvée toi-même.",
+    helped: 'Fini — avec une ou deux étapes montrées.',
+    bookCopy: 'Recopie ceci dans ton cahier', answer: 'Réponse',
+    heads: { mul: 'Multiplier par une puissance de 10', div: 'Diviser par une puissance de 10', power: "Trouver l'exposant", convert: "Changer d'unité", chain: "Un déplacement après l'autre" },
+    stages: { way: 'Quel sens', slide: 'Glisser', write: 'Écrire' },
+    wayTitle: (a, b) => `${a} → ${b} : que devient le nombre ?`,
+    waySub: "Trouve les deux unités sur l'échelle. Chaque marche vaut 10³.",
+    wayRight: (op) => `Correct — ${op}. Maintenant, fais glisser les chiffres.`,
+    slideTitle: (op) => `Fais glisser les chiffres : ${op}`,
+    slideTitlePower: (op) => `Fais glisser les chiffres : ${op} 10 puissance combien ?`,
+    slideSub: 'Appuie sur ← ou → pour déplacer chaque chiffre. Le point ne bouge jamais.',
+    slideSubPower: "Fais glisser jusqu'à ce que chaque chiffre soit sur son fantôme, dans la ligne du dessous.",
+    notMoved: 'pas encore déplacé',
+    slideFirst: "Fais d'abord glisser les chiffres : appuie sur ← ou →.",
+    dirLeft: '× rend un nombre plus grand, donc les chiffres vont vers la GAUCHE — dans des colonnes plus grandes.',
+    dirRight: '÷ rend un nombre plus petit, donc les chiffres vont vers la DROITE — dans des colonnes plus petites.',
+    countWrong: (pw, p, got) => `Bon sens — mais c'est une colonne par puissance : ${pw} déplace chaque chiffre de ${p} colonne${p === 1 ? '' : 's'}. Tu les as déplacés de ${got}.`,
+    notLined: 'Pas encore aligné — chaque chiffre doit être sur son fantôme, dans la ligne du dessous.',
+    slideRight: (w) => `Correct — ${w}, et le point n'a pas bougé.`,
+    chainNext: (w) => `Correct — ${w}. Maintenant, le déplacement suivant.`,
+    altogether: (w) => `Au total, les chiffres se sont déplacés de ${w}.`,
+    writeTitle: 'Maintenant, écris-le comme un nombre ordinaire.',
+    writeSubGap: "Chaque colonne vide entre les chiffres et le point a besoin d'un 0 pour garder la place.",
+    writeSub: 'Lis les chiffres directement dans le tableau.',
+    powerTitle: "De combien de colonnes les chiffres se sont-ils déplacés ? Ce nombre est l'exposant.",
+    writeRight: 'Correct.',
+    filled: "C'est rempli pour toi.",
+    shown: 'Le voici. Lis-le, puis continue.',
+    everyDigit: (w) => `Chaque chiffre s'est déplacé de ${w}. Le point n'a pas bougé.`,
+    reset: 'Retour au départ', left: "Déplace chaque chiffre d'une colonne vers la gauche", right: "Déplace chaque chiffre d'une colonne vers la droite",
+    power: 'exposant', typeHere: 'ta réponse',
+    stepDown: 'vers une unité plus petite : × 10³', stepUp: 'vers une unité plus grande : ÷ 10³',
+    noItems: 'Pas encore de questions', back: 'Retour au tableau de bord',
+  },
 };
-const both = (key, ...args) => {
-  const en = T.en[key];
-  const vn = T.vn[key];
-  return typeof en === 'function' ? { en: en(...args), vn: vn(...args) } : { en, vn };
+/** A T entry in every language at once: `{ en, vn, fr }`. */
+const inAll = (key, ...args) => {
+  const one = (l) => (typeof T[l][key] === 'function' ? T[l][key](...args) : T[l][key]);
+  return { en: one('en'), vn: one('vn'), fr: one('fr') };
 };
 const STAGE_ICON = { way: Scale, slide: MoveHorizontal, write: PenLine };
 const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
@@ -157,7 +198,7 @@ function Stage({ icon: Icon, label, active, done }) {
 
 function Message({ msg, lang }) {
   if (!msg) return null;
-  const text = lang === 'vn' && msg.vn ? msg.vn : msg.en;
+  const text = tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en);
   if (!text) return null;
   const soft = msg.tone === 'shown' || msg.tone === 'info';
   const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
@@ -192,10 +233,10 @@ function MassLadder({ from, to, t }) {
   );
 }
 
-export default function PlaceShift({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
+export default function PlaceShift({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
   const items = useMemo(() => (pool?.items || []).filter((it) => deriveItem(it)), [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [results, setResults] = useState(() => {
     const init = {};
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
@@ -223,7 +264,7 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
   const item = items[pos];
   const derived = useMemo(() => deriveItem(item), [item]);
   const t = T[lang] || T.en;
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
 
   const stages = derived?.model.kind === 'convert' ? ['way', 'slide', 'write'] : ['slide', 'write'];
   const stage = stageAt || stages[0];
@@ -302,21 +343,21 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
   const pickWay = (c) => {
     if (stage !== 'way' || wrongPicks.includes(c.id)) return;
     const d = diagnoseConvert(model, c);
-    if (d.ok) { setStageAt('slide'); setWrongs(0); setMsg({ tone: 'ok', ...both('wayRight', opText(move)) }); return; }
+    if (d.ok) { setStageAt('slide'); setWrongs(0); setMsg({ tone: 'ok', ...inAll('wayRight', opText(move)) }); return; }
     setSlipped(true);
     setWrongPicks((w) => [...w, c.id]);
     if (wrongs + 1 >= 2) {
-      const f = both('filled');
+      const f = inAll('filled');
       setHelped(true); setStageAt('slide'); setWrongs(0);
-      setMsg({ tone: 'shown', en: `${d.en} ${opText(move)}. ${f.en}`, vn: `${d.vn} ${opText(move)}. ${f.vn}` });
+      setMsg({ tone: 'shown', en: `${d.en} ${opText(move)}. ${f.en}`, vn: `${d.vn} ${opText(move)}. ${f.vn}`, fr: `${d.fr} ${opText(move)}. ${f.fr}` });
       return;
     }
     setWrongs(wrongs + 1);
-    setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr });
   };
   const showWay = () => {
     setHelped(true); setSlipped(true); setStageAt('slide'); setWrongs(0);
-    setMsg({ tone: 'shown', en: `${opText(move)}. ${T.en.shown}`, vn: `${opText(move)}. ${T.vn.shown}` });
+    setMsg({ tone: 'shown', en: `${opText(move)}. ${T.en.shown}`, vn: `${opText(move)}. ${T.vn.shown}`, fr: `${opText(move)}. ${T.fr.shown}` });
   };
 
   /* ---------------------------------------------------------- slide */
@@ -327,23 +368,24 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
     // A chain ends by saying what its moves came to altogether.
     const net = moveWords(model.net);
     const sum = (lng) => (lastMove && kind === 'chain' ? ` ${T[lng].altogether(net[lng])}` : '');
-    setMsg({ tone, en: `${extra?.en ? `${extra.en} ` : ''}${line('en')}${sum('en')}`, vn: `${extra?.vn ? `${extra.vn} ` : ''}${line('vn')}${sum('vn')}` });
+    const say = (lng) => `${extra?.[lng] ? `${extra[lng]} ` : ''}${line(lng)}${sum(lng)}`;
+    setMsg({ tone, en: say('en'), vn: say('vn'), fr: say('fr') });
     if (lastMove) toWrite();
     else { setBase(base + signed(move)); setMoveIdx(moveIdx + 1); setWrongs(0); }
   };
   const checkSlide = () => {
     const want = signed(move);
     const got = offset - base;
-    if (got === 0) { setMsg({ tone: 'info', ...both('slideFirst') }); return; }
+    if (got === 0) { setMsg({ tone: 'info', ...inAll('slideFirst') }); return; }
     if (got === want) { afterSlide('ok'); return; }
     setSlipped(true);
-    const why = Math.sign(got) !== Math.sign(want) ? both(want > 0 ? 'dirLeft' : 'dirRight')
-      : kind === 'power' ? both('notLined')
-        : both('countWrong', pow10Text(move.p), move.p, Math.abs(got));
+    const why = Math.sign(got) !== Math.sign(want) ? inAll(want > 0 ? 'dirLeft' : 'dirRight')
+      : kind === 'power' ? inAll('notLined')
+        : inAll('countWrong', pow10Text(move.p), move.p, Math.abs(got));
     if (wrongs + 1 >= 2) {
       setOffset(base + want);
       setHelped(true);
-      afterSlide('shown', { en: `${why.en} ${T.en.filled}`, vn: `${why.vn} ${T.vn.filled}` });
+      afterSlide('shown', { en: `${why.en} ${T.en.filled}`, vn: `${why.vn} ${T.vn.filled}`, fr: `${why.fr} ${T.fr.filled}` });
       return;
     }
     setWrongs(wrongs + 1);
@@ -352,30 +394,30 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
   const showSlide = () => {
     setOffset(base + signed(move));
     setHelped(true); setSlipped(true);
-    afterSlide('shown', both('shown'));
+    afterSlide('shown', inAll('shown'));
   };
 
   /* ---------------------------------------------------------- write */
   const wantText = kind === 'power' ? String(model.power) : model.resultText;
   const checkWrite = () => {
     const d = kind === 'power' ? diagnosePower(model, typed) : diagnoseShift(model, typed);
-    if (d.ok) { setMark('good'); setMsg({ tone: 'ok', ...both('writeRight') }); completeItem(helped); return; }
-    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+    if (d.ok) { setMark('good'); setMsg({ tone: 'ok', ...inAll('writeRight') }); completeItem(helped); return; }
+    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
     setSlipped(true);
     if (wrongs + 1 >= 2) {
-      const f = both('filled');
+      const f = inAll('filled');
       setTyped(wantText); setMark('shown'); setHelped(true);
-      setMsg({ tone: 'shown', en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}` });
+      setMsg({ tone: 'shown', en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}`, fr: `${d.fr} ${f.fr}` });
       completeItem(true);
       return;
     }
     setWrongs(wrongs + 1);
     setMark('bad');
-    setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr });
   };
   const showWrite = () => {
     setTyped(wantText); setMark('shown'); setHelped(true);
-    setMsg({ tone: 'shown', ...both('shown') });
+    setMsg({ tone: 'shown', ...inAll('shown') });
     completeItem(true);
   };
 
@@ -383,13 +425,13 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const isLast = pos === items.length - 1;
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
-  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn);
-  const title = pick(pool?.title, pool?.titleVn) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn) : null;
-  const context = item.context ? pick(item.context, item.contextVn) : null;
+  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn, levelRaw?.fr);
+  const title = pick(pool?.title, pool?.titleVn, pool?.titleFr) || t.title;
+  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn, pool?.introFr) : null;
+  const context = item.context ? pick(item.context, item.contextVn, item.contextFr) : null;
   const gaps = gapsAt(model.start, offset);
   const movedBy = offset - (stage === 'slide' ? base : 0);
-  const movedWords = movedBy === 0 ? t.notMoved : pick(moveWords(movedBy).en, moveWords(movedBy).vn);
+  const movedWords = movedBy === 0 ? t.notMoved : pickTable(moveWords(movedBy), lang);
   const netWords = moveWords(model.net);
   const inputTone = mark === 'good' ? 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200'
     : mark === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200'
@@ -404,8 +446,8 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={quit} modeTitle={title} current={pos + 1} total={items.length}
-        lang={bilingual ? lang : undefined}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+        lang={toggleLang ? lang : undefined}
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-5 lg:items-start">
         {/* left: the question */}
@@ -543,7 +585,7 @@ export default function PlaceShift({ pool, savedData = {}, onComplete, onProgres
                 </div>
                 <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 sm:p-4 min-w-0">
                   <PlaceTable cols={cols} digits={digits} offset={model.net} placeholders={model.placeholders} filled dropped={model.dropped} tone="good" lang={lang} roomy />
-                  <p className="mt-2 text-center text-sm font-bold text-slate-500 dark:text-slate-400">{t.everyDigit(pick(netWords.en, netWords.vn))}</p>
+                  <p className="mt-2 text-center text-sm font-bold text-slate-500 dark:text-slate-400">{t.everyDigit(pick(netWords.en, netWords.vn, netWords.fr))}</p>
                 </div>
                 <div className="mt-3 flex items-center gap-3 rounded-xl border-2 p-3" style={{ borderColor: INK, backgroundColor: 'rgba(0,135,168,0.07)' }}>
                   <ListChecks className="w-5 h-5 shrink-0" style={{ color: INK }} strokeWidth={3} />

@@ -4,6 +4,8 @@ import {
   ListChecks, CircleDot, PenLine, Hash, ListOrdered,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import IneqLineFigure from '../components/math/IneqLineFigure.jsx';
 import {
@@ -15,12 +17,12 @@ import {
  * SHOW IT — inequalities on a number line (Y7 Maths 2.6).
  *
  * Reads a unit's `ineqLine`:
- *   { title, titleVn, intro?, introVn?, levels: { n: { en, vn } }, items: [
+ *   { title, titleVn, titleFr, intro?, introVn?, introFr?, levels: { n: { en, vn, fr } }, items: [
  *       { id, level, kind: 'draw',  ineq: 'x > 3' },
  *       { id, level, kind: 'read',  ineq: 'x < 4' },
  *       { id, level, kind: 'words', ineq: 't < 0', phrase: 'below' },
- *       { id, level, kind: 'words', ineq: 'p < 9', context, contextVn },
- *       { id, level, kind: 'between', ineqs: ['s > 20', 's < 24'], context?, contextVn? },
+ *       { id, level, kind: 'words', ineq: 'p < 9', context, contextVn, contextFr },
+ *       { id, level, kind: 'between', ineqs: ['s > 20', 's < 24'], context?, contextVn?, contextFr? },
  *   ] }
  * utils/ineqLine.js derives the line, the integers and the slips.
  *
@@ -129,11 +131,54 @@ const T = {
     typeHere: 'con số', sign: 'dấu', and: 'và', noneShort: 'không có',
     noItems: 'Chưa có câu hỏi', back: 'Quay lại Bảng điều khiển',
   },
+  fr: {
+    title: 'Montre-le',
+    check: 'Vérifier', stuck: 'Montre-moi', next: 'Suivant', finish: 'Terminer',
+    solved: 'faites', level: 'Niveau',
+    clean: 'Toutes les étapes justes du premier coup.',
+    slipped: "Fini — une erreur, et tu l'as trouvée toi-même.",
+    helped: 'Fini — avec une ou deux étapes montrées.',
+    bookCopy: 'Recopie ceci dans ton cahier', answer: 'Réponse',
+    heads: { draw: 'Représente-la sur une droite graduée', read: 'Lis la droite graduée', words: 'Écris-la comme une inégalité', between: 'Quels entiers conviennent ?' },
+    stages: { circle: 'Cercle', arrow: 'Flèche', write: 'Écrire', integer: 'Entier', write2: 'Écrire', list: 'Entiers' },
+    circleTitle: "D'abord le cercle : touche le nombre où il va.",
+    circleSub: 'Le cercle est vide, car le nombre lui-même ne convient pas.',
+    circleFirst: "Touche d'abord un nombre sur la droite.",
+    nudgeLeft: "Déplace le cercle d'une graduation vers la gauche", nudgeRight: "Déplace le cercle d'une graduation vers la droite",
+    circleRight: (n) => `Correct — un cercle vide sur ${n} : ${n} lui-même n'est pas inclus.`,
+    arrowTitle: 'Maintenant la flèche : dans quel sens ?',
+    arrowSub: 'La flèche couvre tous les nombres qui conviennent.',
+    arrowFirst: "Choisis d'abord gauche ou droite.",
+    arrowRight: (g) => (g ? 'Correct — supérieur à va vers la droite.' : 'Correct — inférieur à va vers la gauche.'),
+    left: 'Gauche', right: 'Droite',
+    writeTitleRead: "Écris l'inégalité que montre cette droite.",
+    writeTitleWords: 'Écris-la comme une inégalité.',
+    writeSub: 'Choisis le signe, puis écris le nombre.',
+    writeRight: "Correct — c'est l'inégalité.",
+    intTitle: (w, L) => `Le ${w} entier possible pour ${L} ?`,
+    intSub: "Un entier est un nombre sans partie décimale. Le nombre du cercle lui-même ne convient pas.",
+    intRight: (L, list) => `Correct — ${L} peut valoir ${list}`,
+    write2Title: "Écris d'abord les deux inégalités.",
+    write2Sub: "Une pour chaque phrase. L'ordre n'a pas d'importance.",
+    write2Right: 'Correct — maintenant trouve les entiers qui conviennent aux deux.',
+    listTitle: 'Touche chaque entier qui convient aux DEUX.',
+    listSub: "Ou dis qu'aucun entier ne convient.",
+    none: 'Aucun entier ne convient',
+    listRight: 'Correct.',
+    filled: "C'est rempli pour toi.",
+    shown: 'Le voici. Lis-le, puis continue.',
+    couldBe: (L, list) => `${L} peut valoir ${list}`,
+    edgeIs: (w, v) => `Le ${w} entier est ${v}.`,
+    onlyThese: (list) => `Les entiers qui conviennent : ${list}.`,
+    noneWorks: "Aucun entier ne convient : il n'y a pas de nombre entier entre les deux.",
+    typeHere: 'nombre', sign: 'signe', and: 'et', noneShort: 'aucun',
+    noItems: 'Pas encore de questions', back: 'Retour au tableau de bord',
+  },
 };
+/** A T entry in every language at once: `{ en, vn, fr }`. */
 const both = (key, ...args) => {
-  const en = T.en[key];
-  const vn = T.vn[key];
-  return typeof en === 'function' ? { en: en(...args), vn: vn(...args) } : { en, vn };
+  const one = (l) => (typeof T[l][key] === 'function' ? T[l][key](...args) : T[l][key]);
+  return { en: one('en'), vn: one('vn'), fr: one('fr') };
 };
 const STAGE_ICON = { circle: CircleDot, arrow: ArrowRight, write: PenLine, integer: Hash, write2: PenLine, list: ListOrdered };
 const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
@@ -163,7 +208,7 @@ function Stage({ icon: Icon, label, active, done }) {
 
 function Message({ msg, lang }) {
   if (!msg) return null;
-  const text = lang === 'vn' && msg.vn ? msg.vn : msg.en;
+  const text = tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en);
   if (!text) return null;
   const soft = msg.tone === 'shown' || msg.tone === 'info';
   const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
@@ -204,10 +249,10 @@ function WriteRow({ letter, row, mark, disabled, onSign, onType, onEnter, t, inp
 
 const EMPTY_ROW = { sign: null, typed: '' };
 
-export default function InequalityLine({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
+export default function InequalityLine({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
   const items = useMemo(() => (pool?.items || []).filter((it) => deriveItem(it)), [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [results, setResults] = useState(() => {
     const init = {};
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
@@ -236,7 +281,7 @@ export default function InequalityLine({ pool, savedData = {}, onComplete, onPro
   const item = items[pos];
   const model = useMemo(() => deriveItem(item), [item]);
   const t = T[lang] || T.en;
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
 
   if (!items.length || !model) {
     return (
@@ -301,11 +346,11 @@ export default function InequalityLine({ pool, savedData = {}, onComplete, onPro
     if (wrongs + 1 >= 2) {
       reveal();
       setHelped(true);
-      advance(true, { tone: 'shown', en: `${d.en} ${T.en.filled}`, vn: `${d.vn} ${T.vn.filled}` });
+      advance(true, { tone: 'shown', en: `${d.en} ${T.en.filled}`, vn: `${d.vn} ${T.vn.filled}`, fr: `${d.fr ?? d.en} ${T.fr.filled}` });
       return;
     }
     setWrongs(wrongs + 1);
-    setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr });
   };
   const showMe = (reveal) => {
     reveal();
@@ -339,15 +384,15 @@ export default function InequalityLine({ pool, savedData = {}, onComplete, onPro
       else wrong(d, reveals.arrow);
     } else if (stage === 'write') {
       const d = diagnoseWrite(p, rows[0].sign, rows[0].typed, { drawn: kind === 'read' });
-      if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+      if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
       if (d.ok) { setRowMarks(['good', null]); advance(helped, { tone: 'ok', ...both('writeRight') }); } else { setRowMarks(['bad', null]); wrong(d, reveals.write); }
     } else if (stage === 'integer') {
       const d = diagnoseInteger(p, typed);
-      if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+      if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
       if (d.ok) { setMark('good'); advance(helped, { tone: 'ok', ...both('intRight', L, listText(p)) }); } else { setMark('bad'); wrong(d, reveals.integer); }
     } else if (stage === 'write2') {
       const d = diagnoseWriteTwo(model.parts, rows);
-      if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+      if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
       if (d.ok) { setRowMarks(['good', 'good']); advance(helped, { tone: 'ok', ...both('write2Right') }); } else { setRowMarks(d.marks.map((ok) => (ok ? 'good' : 'bad'))); wrong(d, reveals.write2); }
     } else if (stage === 'list') {
       checkList(false);
@@ -355,7 +400,7 @@ export default function InequalityLine({ pool, savedData = {}, onComplete, onPro
   };
   function checkList(none) {
     const d = diagnoseList(model, none ? [] : picks, none);
-    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
     if (d.ok) advance(helped, { tone: 'ok', ...both('listRight') });
     else wrong(d, reveals.list);
   }
@@ -380,11 +425,11 @@ export default function InequalityLine({ pool, savedData = {}, onComplete, onPro
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const isLast = pos === items.length - 1;
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
-  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn);
-  const title = pick(pool?.title, pool?.titleVn) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn) : null;
-  const context = item.context ? pick(item.context, item.contextVn) : null;
-  const sentence = model.sentence ? pick(model.sentence.en, model.sentence.vn) : null;
+  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn, levelRaw?.fr);
+  const title = pick(pool?.title, pool?.titleVn, pool?.titleFr) || t.title;
+  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn, pool?.introFr) : null;
+  const context = item.context ? pick(item.context, item.contextVn, item.contextFr) : null;
+  const sentence = model.sentence ? pick(model.sentence.en, model.sentence.vn, model.sentence.fr) : null;
   const w = p ? edgeWord(p) : null;
 
   let rays = [];
@@ -414,18 +459,18 @@ export default function InequalityLine({ pool, savedData = {}, onComplete, onPro
   );
   const doneLine = kind === 'between'
     ? (model.integers.length ? t.onlyThese(model.integers.map(numText).join(', ')) : t.noneWorks)
-    : `${t.couldBe(L, listText(p))} ${t.edgeIs(pick(w.en, w.vn), numText(p.edge))}`;
+    : `${t.couldBe(L, listText(p))} ${t.edgeIs(pick(w.en, w.vn, w.fr), numText(p.edge))}`;
   const stageTitle = {
     circle: t.circleTitle, arrow: t.arrowTitle, write: kind === 'read' ? t.writeTitleRead : t.writeTitleWords,
-    integer: p ? t.intTitle(pick(w.en, w.vn), L) : '', write2: t.write2Title, list: t.listTitle,
+    integer: p ? t.intTitle(pick(w.en, w.vn, w.fr), L) : '', write2: t.write2Title, list: t.listTitle,
   }[stage];
   const stageSub = { circle: t.circleSub, arrow: t.arrowSub, write: t.writeSub, integer: t.intSub, write2: t.write2Sub, list: t.listSub }[stage];
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={quit} modeTitle={title} current={pos + 1} total={items.length}
-        lang={bilingual ? lang : undefined}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+        lang={toggleLang ? lang : undefined}
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-5 lg:items-start">
         {/* left: the question */}

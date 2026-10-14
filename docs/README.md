@@ -42,6 +42,10 @@ status* section so it can be closed deliberately.
   (`meta.classroom` here, `meta.dashboard` there), the naming rule, the ten rules for
   reducing a taught deck into a self-study unit, how to keep the two sequences in step,
   and the per-section build loop that ends with both repos deployed.
+- [french.md](french.md) — **Year 7 is EN / VN / FR.** How a task screen offers French
+  (`langs`, `useLang`, `tr`), how the French twin is named, the register, and the
+  `scripts/french` extract → translate → apply loop that reuses the classroom decks'
+  French. The validator refuses a Year 7 unit with a missing French twin.
 
 ### AMC 8 Prep (new)
 
@@ -187,4 +191,5 @@ status* section so it can be closed deliberately.
   are the single sources of truth for task ids and dbKeys — never hardcode those
   elsewhere.
 - Bilingual fields (`vn*`) are required wherever an English field has a learner-facing
-  counterpart.
+  counterpart. On a `french: true` track (Y7_MATH, Y7_SCI) each one also needs its
+  French twin (`…Fr` / `fr*`) — see [french.md](french.md).

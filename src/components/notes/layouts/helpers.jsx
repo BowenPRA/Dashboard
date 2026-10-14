@@ -138,7 +138,7 @@ export const NOTE_TONES = {
     border: 'border-[#e8c9a6] dark:border-amber-800/60',
     text: 'text-slate-800 dark:text-amber-50',
     strong: 'font-black text-[#b4530c] dark:text-amber-300',
-    icon: 'Pencil', label: 'Write This Down', labelVn: 'Chép vào vở',
+    icon: 'Pencil', label: 'Write This Down', labelVn: 'Chép vào vở', labelFr: 'À recopier',
   },
   task: {
     accent: '#5c2483',
@@ -146,7 +146,7 @@ export const NOTE_TONES = {
     border: 'border-[#d3c1e2] dark:border-violet-800/60',
     text: 'text-slate-800 dark:text-violet-50',
     strong: 'font-black text-[#5c2483] dark:text-violet-300',
-    icon: 'Hourglass', label: 'Try This', labelVn: 'Thử làm',
+    icon: 'Hourglass', label: 'Try This', labelVn: 'Thử làm', labelFr: 'À toi de jouer',
   },
   plant: {
     accent: '#4a8b23',
@@ -154,7 +154,7 @@ export const NOTE_TONES = {
     border: 'border-[#c4dcae] dark:border-green-800/60',
     text: 'text-slate-800 dark:text-green-50',
     strong: 'font-black text-[#3d731c] dark:text-green-300',
-    icon: 'Leaf', label: 'Remember', labelVn: 'Ghi nhớ',
+    icon: 'Leaf', label: 'Remember', labelVn: 'Ghi nhớ', labelFr: 'À retenir',
   },
   homework: {
     accent: '#c8102e',
@@ -162,7 +162,7 @@ export const NOTE_TONES = {
     border: 'border-[#f0bcc3] dark:border-rose-800/60',
     text: 'text-slate-800 dark:text-rose-50',
     strong: 'font-black text-[#c8102e] dark:text-rose-300',
-    icon: 'AlertTriangle', label: 'Watch Out', labelVn: 'Cẩn thận',
+    icon: 'AlertTriangle', label: 'Watch Out', labelVn: 'Cẩn thận', labelFr: 'Attention',
   },
   theory: {
     accent: '#1a5fa8',
@@ -170,7 +170,7 @@ export const NOTE_TONES = {
     border: 'border-[#bcd3ea] dark:border-blue-800/60',
     text: 'text-slate-800 dark:text-blue-50',
     strong: 'font-black text-[#1a5fa8] dark:text-blue-300',
-    icon: 'Sparkles', label: 'Think Deeper', labelVn: 'Suy nghĩ sâu hơn',
+    icon: 'Sparkles', label: 'Think Deeper', labelVn: 'Suy nghĩ sâu hơn', labelFr: 'Pour aller plus loin',
   },
   info: {
     accent: '#0087a8',
@@ -178,7 +178,7 @@ export const NOTE_TONES = {
     border: 'border-[#b3d9e3] dark:border-cyan-800/60',
     text: 'text-slate-800 dark:text-cyan-50',
     strong: 'font-black text-[#00697f] dark:text-cyan-300',
-    icon: 'Info', label: 'Note', labelVn: 'Ghi chú',
+    icon: 'Info', label: 'Note', labelVn: 'Ghi chú', labelFr: 'Remarque',
   },
 };
 

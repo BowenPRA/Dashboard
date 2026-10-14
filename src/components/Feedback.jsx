@@ -1,6 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Volume2, CheckCircle2, XCircle, AlertCircle, BookOpen } from 'lucide-react';
+import { Volume2, CheckCircle2, XCircle, AlertCircle, BookOpen, Languages } from 'lucide-react';
 import { playChime } from '../utils/sound';
+
+/**
+ * The VN / FR choice on a screen that shows a translation BESIDE the English
+ * rather than switching language (Short Answers, Reading, Diagrams, and the
+ * word card below). Rendered only when an item carries both translations — the
+ * Year 7 tracks — so a Vietnamese-only item keeps exactly the view it had.
+ *
+ *   value     'vn' | 'fr' — the one showing, or null when neither is
+ *   onChange  (code) => void
+ *   light     true on a card that stays light in dark mode (this file's own)
+ */
+const CHOICE_ON = 'bg-slate-700 border-slate-700 text-white';
+const CHOICE_OFF = 'bg-white/70 border-slate-200 text-slate-500 hover:text-slate-800';
+const CHOICE_ON_DARK = 'dark:bg-slate-200 dark:border-slate-200 dark:text-slate-900';
+const CHOICE_OFF_DARK = 'dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400 dark:hover:text-slate-100';
+
+export function TranslationChoice({ value, onChange, className = '', light = false }) {
+  return (
+    <span role="group" aria-label="Translation" className={`inline-flex items-center gap-1 align-middle ${className}`}>
+      <Languages className="w-4 h-4 opacity-60 shrink-0" aria-hidden="true" />
+      {[['vn', 'VN', 'Tiếng Việt'], ['fr', 'FR', 'Français']].map(([code, label, name]) => (
+        <button key={code} type="button" title={name} aria-pressed={value === code}
+          onClick={(e) => { e.stopPropagation(); onChange(code); }}
+          className={`px-2 py-0.5 rounded-md border-2 text-[11px] font-black uppercase tracking-widest transition-colors ${value === code
+            ? `${CHOICE_ON} ${light ? '' : CHOICE_ON_DARK}`
+            : `${CHOICE_OFF} ${light ? '' : CHOICE_OFF_DARK}`}`}>
+          {label}
+        </button>
+      ))}
+    </span>
+  );
+}
+
+// The word card is remounted for every word, so the student's VN / FR choice
+// is remembered here for the rest of the session rather than in its state.
+let rememberedTranslation = 'vn';
 
 export default function Feedback({
   // Core / Vocab Props
@@ -17,6 +53,7 @@ export default function Feedback({
   // Assessment Review Props
   expEn, 
   expVn, 
+  expFr,
   onPrev, 
   isFirst, 
   isLast 
@@ -25,6 +62,11 @@ export default function Feedback({
   const audioState = useRef({ isCancelled: false, currentAudio: null });
   const [btnCooldown, setBtnCooldown] = useState(false);
   const [enterActive, setEnterActive] = useState(false);
+  // VN or FR, offered only when the word (or explanation) has the French too.
+  const [translation, setTranslationState] = useState(rememberedTranslation);
+  const setTranslation = (code) => { rememberedTranslation = code; setTranslationState(code); };
+  const hasFr = isAssessmentMode ? !!expFr : !!(currentWord?.fr || currentWord?.frDef || currentWord?.frSent);
+  const showFr = hasFr && translation === 'fr';
 
   // 1. Enter Key Listener
   useEffect(() => {
@@ -116,15 +158,22 @@ export default function Feedback({
                   <><XCircle className="w-7 h-7 mr-2" strokeWidth={2.5} /> Incorrect Answer</>
                 )}
              </div>
-             {(expEn || expVn) && (
+             {(expEn || expVn || expFr) && (
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 pt-3 border-t border-black/10">
                  <div>
                    <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>Explanation</span>
                    <p className={`text-[15px] font-medium leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{expEn}</p>
                  </div>
                  <div>
-                   <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>Giải thích</span>
-                   <p className={`text-[15px] font-medium italic leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{expVn}</p>
+                   {hasFr ? (
+                     <span className={`text-xs font-black uppercase tracking-widest flex flex-wrap items-center gap-2 mb-1.5 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>
+                       <span className="opacity-80">{showFr ? 'Explication' : 'Giải thích'}</span>
+                       <TranslationChoice light value={translation} onChange={setTranslation} />
+                     </span>
+                   ) : (
+                     <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>Giải thích</span>
+                   )}
+                   <p className={`text-[15px] font-medium italic leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{showFr ? expFr : expVn}</p>
                  </div>
                </div>
              )}
@@ -177,21 +226,25 @@ export default function Feedback({
               </div>
               <div className="flex-1 min-w-0 w-full bg-white/50 p-5 md:p-6 rounded-[2rem] border border-white/60 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-black/5">
-                  <div><h3 className="text-3xl font-black text-slate-800 capitalize">{currentWord.word}</h3><p className="text-xl font-bold text-slate-500 mt-1">{currentWord.vn}</p></div>
+                  <div>
+                    <h3 className="text-3xl font-black text-slate-800 capitalize">{currentWord.word}</h3>
+                    <p className="text-xl font-bold text-slate-500 mt-1">{showFr ? currentWord.fr : currentWord.vn}</p>
+                    {hasFr && <TranslationChoice light value={translation} onChange={setTranslation} className="mt-2 text-slate-500" />}
+                  </div>
                   <button disabled={btnCooldown} onClick={handleManualAudio} className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl shadow-md transition-all active:scale-95 disabled:opacity-70">
                     <Volume2 className="w-6 h-6 mr-2" /><span className="font-bold text-sm uppercase tracking-widest">Play Audio</span>
                   </button>
                 </div>
                 <div className="mb-4">
                   <p className="text-lg font-bold text-slate-800 leading-snug">{currentWord.def}</p>
-                  <p className={`text-md font-medium mt-1 ${accentText}`}>{currentWord.vnDef}</p>
+                  <p className={`text-md font-medium mt-1 ${accentText}`}>{showFr ? currentWord.frDef : currentWord.vnDef}</p>
                 </div>
                 <div className={`pt-4 border-t ${accentBorder}`}>
                   <span className={`font-black text-xs uppercase tracking-widest block mb-2 ${textClass}`}>Sample Sentence</span>
                   <p className="text-xl font-medium italic leading-relaxed text-slate-800">
                     {(currentWord.sent || '').split(new RegExp(`(${currentWord.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${accentHighlight}`}>{part}</strong> : part)}
                   </p>
-                  <p className={`text-lg font-medium italic mt-1 ${accentText}`}>"{currentWord.vnSent}"</p>
+                  <p className={`text-lg font-medium italic mt-1 ${accentText}`}>"{showFr ? currentWord.frSent : currentWord.vnSent}"</p>
                 </div>
               </div>
             </div>

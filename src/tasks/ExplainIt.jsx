@@ -4,6 +4,8 @@ import TopBar from '../components/TopBar';
 import { AskHeader, CheckButton, NextButton, ChoiceButton, Verdict, ProgressDots, EmptyScreen, Summary } from '../components/science/TaskChrome';
 import { BuildBoard, FixBoard, MarkLines } from '../components/notes/ChainActivity';
 import { makeExplainSession, markRound, scenarioById, CHANGE_INFO, CHANGES, EXPLAIN_MODES } from '../utils/stateChain';
+import { tr } from '../utils/lang';
+import useLang from '../hooks/useLang';
 
 /**
  * Explain It — Science 2.3's generative task. A fresh everyday scenario every
@@ -49,10 +51,25 @@ const T = {
     changeQ: 'Sự chuyển thể nào?', before: 'Trước', after: 'Sau — chọn một',
     whole: (name) => `Mọi mắt xích đều đúng chỗ: đó là toàn bộ lời giải thích ${name}.`,
   },
+  fr: {
+    title: 'Explique-le', check: 'Vérifier', next: 'Suivant', results: 'Voir les résultats', finish: 'Terminer', again: 'Nouvelles situations',
+    empty: "Cette unité n'a pas de mode Explique-le.", back: 'Retour', correct: 'Correct', wrong: 'Pas tout à fait', done: 'Tout est expliqué', right: 'justes',
+    ask: {
+      build: "Remets les maillons dans l'ordre.",
+      fix: 'Trouve le maillon faux et corrige-le.',
+      name: 'Dans quel sens va la chaleur ? Quel changement ?',
+      picture: 'Quelle boîte montre les particules après ?',
+    },
+    modes: { build: 'Construire la chaîne', fix: 'Réparer la chaîne', name: 'Nommer le changement', picture: 'Imaginer les particules' },
+    scenario: 'Ce qui se passe', heatQ: "L'énergie thermique est transférée …", to: 'aux particules', away: 'hors des particules',
+    changeQ: "Quel changement d'état ?", before: 'Avant', after: 'Après — choisis-en une',
+    // French needs the article: "de la fusion", "de l'ébullition"
+    whole: (name, info) => `Chaque maillon est à sa place : voilà l'explication complète de ${info?.frThe || name}.`,
+  },
 };
 
 const EMPTY = { slots: [], pick: null, replace: null, heat: null, change: null, choice: null };
-const say = (o, L) => (o ? (L === 'vn' && o.vn ? o.vn : o.en) : '');
+const say = (o, L) => (o ? o[L] || o.en : '');
 const lower = (s) => s.charAt(0).toLowerCase() + s.slice(1);
 
 function ScenarioCard({ round, L, t }) {
@@ -144,12 +161,13 @@ function PicturePanel({ round, draft, set, checked, t }) {
 }
 
 function RoundVerdict({ round, mark, L, t }) {
-  const name = say(CHANGE_INFO[round.change].name, L);
+  const info = CHANGE_INFO[round.change];
+  const name = say(info.name, L);
   const whole = (round.mode === 'build' || round.mode === 'fix') && mark.correct;
   return (
     <Verdict ok={mark.correct} title={mark.correct ? t.correct : t.wrong}>
-      {round.mode === 'build' && mark.correct ? <p>{t.whole(lower(name))}</p> : <MarkLines mark={mark} lang={L} />}
-      {whole && round.mode === 'fix' && <p>{t.whole(lower(name))}</p>}
+      {round.mode === 'build' && mark.correct ? <p>{t.whole(lower(name), info)}</p> : <MarkLines mark={mark} lang={L} />}
+      {whole && round.mode === 'fix' && <p>{t.whole(lower(name), info)}</p>}
     </Verdict>
   );
 }
@@ -163,14 +181,14 @@ const readyOf = (round, d) => (round.mode === 'build' ? round.chain.every((_, i)
 
 // ------------------------------------------------------------------ the task
 
-export default function ExplainIt({ pool, onComplete, onQuit, bilingual = true }) {
+export default function ExplainIt({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(
     () => ((config.modes || []).some((m) => EXPLAIN_MODES.includes(m)) ? makeExplainSession(config, seed) : []),
     [config, seed],
   );
-  const [lang, setLang] = useState('en');
+  const { lang: L, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [draft, setDraft] = useState(EMPTY);
   const [mark, setMark] = useState(null);       // this round's mark
@@ -179,8 +197,7 @@ export default function ExplainIt({ pool, onComplete, onQuit, bilingual = true }
   const [banked, setBanked] = useState(null);   // the best finished run before "New scenarios"
   const round = session[idx];
 
-  const L = bilingual ? lang : 'en';
-  const t = T[L];
+  const t = T[L] || T.en;
 
   const runOf = (res) => {
     const items = session.map((r, i) => ({ itemId: r.id || `${r.mode}-${i + 1}`, correct: !!res[i] }));
@@ -197,9 +214,9 @@ export default function ExplainIt({ pool, onComplete, onQuit, bilingual = true }
   if (!session.length) return <EmptyScreen text={t.empty} back={t.back} onQuit={onQuit} />;
 
   const topBar = (
-    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn }, L) || t.title}
+    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn, fr: config.titleFr }, L) || t.title}
       current={ended ? session.length : idx + 1} total={session.length}
-      lang={bilingual ? lang : undefined} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      lang={L} onLangToggle={toggleLang} />
   );
 
   const again = () => {
@@ -219,7 +236,7 @@ export default function ExplainIt({ pool, onComplete, onQuit, bilingual = true }
       <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
         {topBar}
         <Summary heading={t.done} rightText={`${run.right} / ${session.length} ${t.right}`}
-          rows={session.map((r, i) => ({ ok: !!results[i], label: `${t.modes[r.mode]}: ${L === 'vn' ? scenarioById(r.scenario).nameVn : scenarioById(r.scenario).name}` }))}
+          rows={session.map((r, i) => ({ ok: !!results[i], label: `${t.modes[r.mode]}${L === 'fr' ? ' : ' : ': '}${tr(L, scenarioById(r.scenario).name, scenarioById(r.scenario).nameVn, scenarioById(r.scenario).nameFr)}` }))}
           againLabel={t.again} finishLabel={t.finish} onAgain={again} onFinish={finish} />
       </div>
     );

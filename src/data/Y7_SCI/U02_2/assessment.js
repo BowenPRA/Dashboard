@@ -19,6 +19,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Solid → liquid is **melting**, by heating. Freezing is the reverse (liquid → solid); condensation is gas → liquid; evaporation is liquid → gas.',
       expVn: 'Rắn → lỏng là **nóng chảy**, do đun nóng. Đông đặc là chiều ngược (lỏng → rắn); ngưng tụ là khí → lỏng; bay hơi là lỏng → khí.',
+      expFr: 'Solide → liquide, c’est la **fusion**, en chauffant. La solidification est l’inverse (liquide → solide) ; la condensation, c’est gaz → liquide ; l’évaporation, c’est liquide → gaz.',
     },
     {
       id: 'a2_condense',
@@ -33,6 +34,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Gas → liquid, by cooling, is **condensation**. Boiling goes the other way; melting and freezing are between solid and liquid.',
       expVn: 'Khí → lỏng, do làm lạnh, là **ngưng tụ**. Sôi đi theo chiều ngược lại; nóng chảy và đông đặc là giữa rắn và lỏng.',
+      expFr: 'Gaz → liquide, en refroidissant, c’est la **condensation**. L’ébullition va dans l’autre sens ; la fusion et la solidification se passent entre solide et liquide.',
     },
     {
       id: 'a3_verb_noun',
@@ -47,6 +49,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The verb **evaporate** pairs with the noun **evaporation**. Boil pairs with boiling; C has the pair backwards; "condensing point" is not a word for the change.',
       expVn: 'Động từ **evaporate** đi với danh từ **evaporation**. Boil đi với boiling; C đảo ngược cặp; "condensing point" không phải từ chỉ sự thay đổi.',
+      expFr: 'Le verbe **evaporate** va avec le nom **evaporation**. Boil va avec boiling ; C met la paire à l’envers ; « condensing point » n’est pas un mot pour ce changement.',
     },
     {
       id: 'a4_evap_boil',
@@ -61,6 +64,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Both are **liquid → gas**. Evaporating is slow, from the surface, at any temperature, with no bubbles; boiling is fast, all through the liquid, with bubbles, only at the boiling point. B and D have the facts swapped.',
       expVn: 'Cả hai đều là **lỏng → khí**. Bay hơi chậm, ở bề mặt, ở bất kỳ nhiệt độ nào, không có bọt; sôi nhanh, khắp trong lòng chất lỏng, có bọt, chỉ ở nhiệt độ sôi. B và D đảo ngược các sự thật.',
+      expFr: 'Les deux sont **liquide → gaz**. L’évaporation est lente, en surface, à n’importe quelle température, sans bulles ; l’ébullition est rapide, dans tout le liquide, avec des bulles, seulement au point d’ébullition. B et D inversent les faits.',
     },
     {
       id: 'a5_meniscus',
@@ -75,6 +79,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Read the **bottom of the meniscus** with your **eye level** with it. Reading from above makes the number too high, and the angle is exactly why two students get two different readings from the same water.',
       expVn: 'Đọc ở **đáy mặt khum** với **mắt ngang tầm**. Nhìn từ trên xuống làm con số quá cao, và góc nhìn chính là lý do hai học sinh ra hai kết quả khác nhau từ cùng một lượng nước.',
+      expFr: 'Lis le **bas du ménisque**, avec les **yeux à la même hauteur**. Lire d’en haut donne un nombre trop grand, et c’est justement l’angle qui explique pourquoi deux élèves trouvent deux mesures différentes pour la même eau.',
     },
     {
       id: 'a6_curve',
@@ -89,6 +94,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'At the **boiling point** the heat is used to change liquid into gas (steam), so the temperature holds at 100 °C while the water boils. The burner is still on, the thermometer reads far higher, and there is still water in the beaker.',
       expVn: 'Ở **nhiệt độ sôi** nhiệt được dùng để biến lỏng thành khí (hơi), nên nhiệt độ giữ ở 100 °C trong khi nước sôi. Đèn vẫn cháy, nhiệt kế đọc được cao hơn nhiều, và trong cốc vẫn còn nước.',
+      expFr: 'Au **point d’ébullition**, la chaleur sert à changer le liquide en gaz (la vapeur), donc la température reste à 100 °C pendant que l’eau bout. Le bec Bunsen est toujours allumé, le thermomètre peut indiquer bien plus haut, et il reste de l’eau dans le bécher.',
     },
   ],
 };

@@ -2,6 +2,8 @@ import React, { useMemo, useRef, useState } from 'react';
 import { CheckCircle2, GripVertical, Tag, ChevronRight, Construction, Info } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { stripLabels, viewBoxOf, grade, layout } from '../utils/labelIt';
+import { tr } from '../utils/lang';
+import useLang from '../hooks/useLang';
 
 /**
  * Label It — the unit's own diagram, drawn whole, with its printed labels
@@ -26,6 +28,8 @@ const T = {
     right: 'right', empty: 'No diagrams to label yet.', back: 'Return', placed: 'All labels placed', remove: 'Now tap the box it belongs in' },
   vn: { title: 'Gắn nhãn', tap: 'Chạm một nhãn, rồi chạm vào ô của nó', check: 'Kiểm tra', next: 'Hình tiếp theo', finish: 'Hoàn thành',
     right: 'đúng', empty: 'Chưa có hình để gắn nhãn.', back: 'Quay lại', placed: 'Đã đặt hết nhãn', remove: 'Giờ chạm vào ô phù hợp' },
+  fr: { title: 'Légende-le', tap: 'Touche une étiquette, puis sa case', check: 'Vérifier', next: 'Schéma suivant', finish: 'Terminer',
+    right: 'justes', empty: 'Pas encore de schéma à légender.', back: 'Retour', placed: 'Toutes les étiquettes sont placées', remove: 'Touche maintenant la bonne case' },
 };
 
 const scoreFrom = (done, items) => {
@@ -34,9 +38,9 @@ const scoreFrom = (done, items) => {
   return total ? Math.round((correct / total) * 10) : 0;
 };
 
-export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, savedData = {}, bilingual = true }) {
+export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, savedData = {}, bilingual = true, langs }) {
   const items = useMemo(() => (Array.isArray(pool) ? pool : []).filter((it) => it && (it.inlineSvg || it.image) && (it.pins || []).length), [pool]);
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   // finished diagrams: { [itemId]: { placements, correct, total } }
   const [done, setDone] = useState(() => (savedData && typeof savedData.done === 'object' ? savedData.done : {}));
   const [openedWith] = useState(done);
@@ -54,7 +58,7 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
   const vb = viewBoxOf(item) || { x: 0, y: 0, w: 100, h: 100, str: '0 0 100 100' };
   const bareSvg = useMemo(() => stripLabels(item?.inlineSvg), [item]);
   const lay = useMemo(() => (item ? layout(item) : null), [item]);
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => (lang === 'vn' && vn ? vn : lang === 'fr' && fr ? fr : en);
 
   const finish = (nextDone) => {
     const d = nextDone || done;
@@ -145,13 +149,13 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={quit} modeTitle={t.title} current={idx + 1} total={items.length} lang={lang} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      <TopBar onQuit={quit} modeTitle={t.title} current={idx + 1} total={items.length} lang={lang} onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-5xl mx-auto p-3 sm:p-5 pb-8 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <span className="w-10 h-10 rounded-xl bg-[#1cb0f6] text-white flex items-center justify-center border-b-[4px] border-[#1899d6] shrink-0"><Tag className="w-5 h-5" strokeWidth={2.5} /></span>
           <div>
-            <h2 className="font-black text-slate-800 dark:text-slate-100 text-lg sm:text-xl leading-tight">{pick(item.title, item.titleVn)}</h2>
+            <h2 className="font-black text-slate-800 dark:text-slate-100 text-lg sm:text-xl leading-tight">{pick(item.title, item.titleVn, item.titleFr)}</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{checked ? `${checked.correct} / ${checked.total} ${t.right}` : (picked ? t.remove : t.tap)}</p>
           </div>
         </div>
@@ -167,7 +171,7 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
                 onClick={() => setPicked(picked === b.val ? null : b.val)}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border-2 border-b-[4px] font-bold text-sm transition-all cursor-grab active:cursor-grabbing
                   ${picked === b.val ? 'bg-[#1cb0f6] border-[#1899d6] text-white scale-105' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:-translate-y-0.5'}`}>
-                <GripVertical className="w-4 h-4 opacity-40" strokeWidth={3} />{pick(b.text, b.textVn)}
+                <GripVertical className="w-4 h-4 opacity-40" strokeWidth={3} />{pick(b.text, b.textVn, b.textFr)}
               </button>
             ))}
         </div>
@@ -209,7 +213,7 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
               const answer = item.pins.find((p) => p.id === b.id)?.answer;
               const shownVal = checked && !ok ? answer : val;
               const lbl = shownVal != null ? labelOf(shownVal) : null;
-              const text = lbl ? pick(lbl.text, lbl.textVn) : '';
+              const text = lbl ? pick(lbl.text, lbl.textVn, lbl.textFr) : '';
               const lines = text ? lay.linesOf(text) : [];
               const filled = val != null;
               const fill = checked ? (ok ? '#d7ffb8' : '#ffe3e3') : (filled ? '#e0f4fe' : (inviting ? '#f0faff' : '#ffffff'));
@@ -249,8 +253,8 @@ export default function LabelIt({ pool = [], onComplete, onProgress, onQuit, sav
           <div className={`rounded-xl border-2 p-3 flex items-start gap-2 text-sm font-bold ${checked.correct === checked.total ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 text-amber-800 dark:text-amber-200'}`}>
             {checked.correct === checked.total ? <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} /> : <Info className="w-5 h-5 shrink-0" strokeWidth={3} />}
             <span>{checked.correct === checked.total
-              ? (lang === 'vn' ? 'Đúng hết mọi ô.' : 'Every box right.')
-              : (lang === 'vn' ? 'Ô đỏ giờ hiện nhãn đúng — hãy đọc lại chúng trước khi tiếp tục.' : 'The red boxes now show the right label — read them again before you move on.')}</span>
+              ? tr(lang, 'Every box right.', 'Đúng hết mọi ô.', 'Toutes les cases sont justes.')
+              : tr(lang, 'The red boxes now show the right label — read them again before you move on.', 'Ô đỏ giờ hiện nhãn đúng — hãy đọc lại chúng trước khi tiếp tục.', 'Les cases rouges montrent maintenant la bonne étiquette — relis-les avant de continuer.')}</span>
           </div>
         )}
 

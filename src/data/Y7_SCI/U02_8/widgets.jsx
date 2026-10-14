@@ -27,18 +27,17 @@
 import { useState } from 'react';
 import { Undo2, RotateCcw, ArrowRight, Droplet } from 'lucide-react';
 import { SCALE, phColour, kindOf } from '../../../utils/phLab';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
 const MUTED = '#5b6770';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
-
 const VERDICT = {
-  acid: { en: 'ACID', vn: 'AXIT', colour: '#c0392b' },
-  neutral: { en: 'NEUTRAL', vn: 'TRUNG TÍNH', colour: '#2f8f3f' },
-  alkali: { en: 'ALKALI', vn: 'KIỀM', colour: '#2c6fbb' },
+  acid: { en: 'ACID', vn: 'AXIT', fr: 'ACIDE', colour: '#c0392b' },
+  neutral: { en: 'NEUTRAL', vn: 'TRUNG TÍNH', fr: 'NEUTRE', colour: '#2f8f3f' },
+  alkali: { en: 'ALKALI', vn: 'KIỀM', fr: 'ALCALI', colour: '#2c6fbb' },
 };
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
@@ -61,17 +60,17 @@ function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
 
 // In pH order, so the marker walks the scale from left to right.
 const LIQUIDS = [
-  { en: 'lemon juice', vn: 'nước chanh', ph: 2 },
-  { en: 'vinegar', vn: 'giấm', ph: 3 },
-  { en: 'orange juice', vn: 'nước cam', ph: 4 },
-  { en: 'black coffee', vn: 'cà phê đen', ph: 5 },
-  { en: 'milk', vn: 'sữa', ph: 6 },
-  { en: 'pure water', vn: 'nước tinh khiết', ph: 7 },
-  { en: 'sea water', vn: 'nước biển', ph: 8 },
-  { en: 'baking soda', vn: 'bột nở', ph: 9 },
-  { en: 'soap', vn: 'nước xà phòng', ph: 10 },
-  { en: 'limewater', vn: 'nước vôi trong', ph: 12 },
-  { en: 'oven cleaner', vn: 'nước tẩy lò', ph: 13 },
+  { en: 'lemon juice', vn: 'nước chanh', fr: 'jus de citron', ph: 2 },
+  { en: 'vinegar', vn: 'giấm', fr: 'vinaigre', ph: 3 },
+  { en: 'orange juice', vn: 'nước cam', fr: 'jus d’orange', ph: 4 },
+  { en: 'black coffee', vn: 'cà phê đen', fr: 'café noir', ph: 5 },
+  { en: 'milk', vn: 'sữa', fr: 'lait', ph: 6 },
+  { en: 'pure water', vn: 'nước tinh khiết', fr: 'eau pure', ph: 7 },
+  { en: 'sea water', vn: 'nước biển', fr: 'eau de mer', ph: 8 },
+  { en: 'baking soda', vn: 'bột nở', fr: 'bicarbonate', ph: 9 },
+  { en: 'soap', vn: 'nước xà phòng', fr: 'eau savonneuse', ph: 10 },
+  { en: 'limewater', vn: 'nước vôi trong', fr: 'eau de chaux', ph: 12 },
+  { en: 'oven cleaner', vn: 'nước tẩy lò', fr: 'décape-four', ph: 13 },
 ];
 
 const CELL_W = 60;
@@ -104,7 +103,7 @@ export function PhDipper({ lang = 'en' }) {
           <path d="M 103 74 v 120 q 0 13 13 13 h 52 q 13 0 13 -13 v -120" fill="none" stroke="#6b7a86" strokeWidth="3.5" strokeLinejoin="round" />
           <path d="M 93 71 q 10 8 20 3" fill="none" stroke="#6b7a86" strokeWidth="3.5" strokeLinecap="round" />
           <text x="142" y="254" fontFamily={FONT} fontSize="26" fontWeight="bold" fill={INK} textAnchor="middle">
-            {tr(lang, liquid.en, liquid.vn)}
+            {tr(lang, liquid.en, liquid.vn, liquid.fr)}
           </text>
 
           {/* the paper */}
@@ -113,7 +112,7 @@ export function PhDipper({ lang = 'en' }) {
           <path d="M 356 140 h 44 v 84 h -44 Z" fill={paper} stroke="#6b7a86" strokeWidth="3" strokeLinejoin="round" />
           {!wet && <text x="378" y="196" fontFamily={FONT} fontSize="54" fontWeight="bold" fill="#aeb9c2" textAnchor="middle">?</text>}
           <text x="378" y="254" fontFamily={FONT} fontSize="22" fill={MUTED} textAnchor="middle">
-            {tr(lang, 'indicator paper', 'giấy chỉ thị')}
+            {tr(lang, 'indicator paper', 'giấy chỉ thị', 'papier pH')}
           </text>
 
           {/* the verdict */}
@@ -121,26 +120,26 @@ export function PhDipper({ lang = 'en' }) {
           {wet ? (
             <>
               <text x="796" y="122" fontFamily={FONT} fontSize="96" fontWeight="bold" fill={v.colour} textAnchor="middle">
-                {tr(lang, v.en, v.vn)}
+                {tr(lang, v.en, v.vn, v.fr)}
               </text>
               <text x="796" y="218" fontFamily={FONT} fontSize="76" fontWeight="bold" fill={INK} textAnchor="middle">
                 pH {liquid.ph}
               </text>
               <text x="796" y="258" fontFamily={FONT} fontSize="26" fill={MUTED} textAnchor="middle">
                 {liquid.ph < 7
-                  ? tr(lang, 'below 7', 'nhỏ hơn 7')
+                  ? tr(lang, 'below 7', 'nhỏ hơn 7', 'moins de 7')
                   : liquid.ph > 7
-                    ? tr(lang, 'above 7', 'lớn hơn 7')
-                    : tr(lang, 'exactly 7', 'đúng bằng 7')}
+                    ? tr(lang, 'above 7', 'lớn hơn 7', 'plus de 7')
+                    : tr(lang, 'exactly 7', 'đúng bằng 7', 'exactement 7')}
               </text>
             </>
           ) : (
             <>
               <text x="796" y="130" fontFamily={FONT} fontSize="38" fontWeight="bold" fill="#9aa5ae" textAnchor="middle">
-                {tr(lang, 'Acid, neutral or alkali?', 'Axit, trung tính hay kiềm?')}
+                {tr(lang, 'Acid, neutral or alkali?', 'Axit, trung tính hay kiềm?', 'Acide, neutre ou alcali ?')}
               </text>
               <text x="796" y="200" fontFamily={FONT} fontSize="32" fill="#aeb9c2" textAnchor="middle">
-                {tr(lang, 'Decide, then dip the paper.', 'Quyết định, rồi nhúng giấy.')}
+                {tr(lang, 'Decide, then dip the paper.', 'Quyết định, rồi nhúng giấy.', 'Décide, puis trempe le papier.')}
               </text>
             </>
           )}
@@ -155,7 +154,7 @@ export function PhDipper({ lang = 'en' }) {
             </text>
           ))}
           <text x="140" y="372" fontFamily={FONT} fontSize="30" fontWeight="bold" fill={INK} textAnchor="middle">
-            {tr(lang, 'pH scale', 'thang pH')}
+            {tr(lang, 'pH scale', 'thang pH', 'échelle de pH')}
           </text>
           {wet && (
             <g>
@@ -164,20 +163,20 @@ export function PhDipper({ lang = 'en' }) {
             </g>
           )}
           <text x="560" y="428" fontFamily={FONT} fontSize="24" fill={MUTED} textAnchor="middle">
-            {tr(lang, 'red = acid  ·  green = neutral  ·  blue and purple = alkali', 'đỏ = axit  ·  xanh lá = trung tính  ·  xanh dương và tím = kiềm')}
+            {tr(lang, 'red = acid  ·  green = neutral  ·  blue and purple = alkali', 'đỏ = axit  ·  xanh lá = trung tính  ·  xanh dương và tím = kiềm', 'rouge = acide  ·  vert = neutre  ·  bleu et violet = alcali')}
           </text>
         </svg>
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
         <Btn tone="slate" icon={Undo2} disabled={i === 0 && !wet} onClick={() => (wet ? setWet(false) : (setI((n) => n - 1), setWet(true)))}>
-          {tr(lang, 'Back', 'Lùi')}
+          {tr(lang, 'Back', 'Lùi', 'Retour')}
         </Btn>
         <Btn tone="orange" icon={wet ? ArrowRight : Droplet} disabled={wet && last} onClick={advance}>
-          {wet ? tr(lang, 'Next liquid', 'Chất tiếp theo') : tr(lang, 'Dip the paper', 'Nhúng giấy')}
+          {wet ? tr(lang, 'Next liquid', 'Chất tiếp theo', 'Liquide suivant') : tr(lang, 'Dip the paper', 'Nhúng giấy', 'Trempe le papier')}
         </Btn>
         <Btn tone="teal" icon={RotateCcw} disabled={i === 0 && !wet} onClick={() => { setI(0); setWet(false); }}>
-          {tr(lang, 'Start again', 'Làm lại')}
+          {tr(lang, 'Start again', 'Làm lại', 'Recommencer')}
         </Btn>
       </div>
     </div>

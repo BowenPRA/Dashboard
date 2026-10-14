@@ -139,13 +139,14 @@ export default function TowerDefense({
   const pathSet = useMemo(() => buildPathSet(layout.path), [layout.path]);
 
   // Straight from the unit's Vocab task (unit.realWords). We carry the example
-  // sentence and the Vietnamese gloss too, so the challenge can reinforce the
-  // term after answering rather than just testing it. Words with no definition
+  // sentence and the Vietnamese gloss (and the French, on Year 7) too, so the
+  // challenge can reinforce the term after answering rather than just testing
+  // it. Words with no definition
   // are dropped so a half-authored entry can't produce a blank prompt.
   const vocab = useMemo(() => {
     const words = (pool || [])
       .filter(w => w?.word && (w.def || w.vnDef))
-      .map(w => ({ word: w.word, def: w.def || w.vnDef || '', sent: w.sent || '', vn: w.vn || '' }));
+      .map(w => ({ word: w.word, def: w.def || w.vnDef || '', sent: w.sent || '', vn: w.vn || '', fr: w.fr || '' }));
     return words.length > 0 ? words : null;
   }, [pool]);
 
@@ -344,7 +345,7 @@ export default function TowerDefense({
 
     challengeActiveRef.current = true;
     challengeResolvedRef.current = false;
-    setChallenge({ kind: 'VOCAB', mode, word: item.word, answer: item.word, def: item.def, sent: item.sent, vn: item.vn, choices });
+    setChallenge({ kind: 'VOCAB', mode, word: item.word, answer: item.word, def: item.def, sent: item.sent, vn: item.vn, fr: item.fr, choices });
     setChallengeInput('');
     setChallengeTimeLeft(CHALLENGE_DURATION);
   }

@@ -63,7 +63,10 @@ export function frenchProblems(root) {
           else if (fr.length !== v.length) problems.push(`${where} has ${fr.length} entries, ${k} has ${v.length}`);
           else fr.forEach((x, i) => {
             const r = Array.isArray(ref) ? ref[i] : v[i];
-            if (typeof v[i] === 'string' && !(typeof x === 'string' && x.trim())) problems.push(`${where}[${i}] is empty`);
+            // A fill-in sentence's pieces may be '' on purpose (a blank at the
+            // very start or end); the French is only owed where the VN has words.
+            if (typeof v[i] === 'string' && v[i].trim() && !(typeof x === 'string' && x.trim())) problems.push(`${where}[${i}] is empty`);
+            else if (typeof x !== 'string' && typeof v[i] === 'string') problems.push(`${where}[${i}] is not a string`);
             else if (typeof x === 'string' && mathsOf(x) !== mathsOf(r)) problems.push(`${where}[${i}] maths "${mathsOf(x)}" differs from "${mathsOf(r)}"`);
           });
         } else if (!(typeof fr === 'string' && fr.trim())) {

@@ -35,18 +35,24 @@ export const notes = [
     icon: 'Boxes',
     brand: 'Year 7 Science',
     brandVn: 'Khoa học Lớp 7',
+    brandFr: 'Sciences 7e année',
     eyebrow: 'Unit 2 · 2.1',
     eyebrowVn: 'Chương 2 · 2.1',
+    eyebrowFr: 'Unité 2 · 2.1',
     title: 'Solids, Liquids and Gases',
     titleVn: 'Chất rắn, chất lỏng và chất khí',
+    titleFr: 'Solides, liquides et gaz',
     objective: 'Sort any substance by testing its properties, not by how it looks — and explain those properties with one idea: everything is made of particles, arranged three ways.',
     objectiveVn: 'Phân loại bất kỳ chất nào bằng cách kiểm tra tính chất của nó, không phải vẻ ngoài — và giải thích những tính chất đó bằng một ý tưởng: mọi thứ đều tạo nên từ các hạt, sắp xếp theo ba cách.',
+    objectiveFr: 'Classer n’importe quelle substance en testant ses propriétés, pas d’après son apparence — et expliquer ces propriétés avec une seule idée : tout est fait de particules, disposées de trois façons.',
     card: {
       icon: 'MousePointerClick',
       badge: 'In this lesson',
       badgeVn: 'Trong bài này',
+      badgeFr: 'Dans cette leçon',
       text: 'You will **sort**, **predict** and **tap** your way through it. Six things are scored — the sort on the next slide is the first.',
       textVn: 'Em sẽ **sắp xếp**, **dự đoán** và **chạm** trong suốt bài học. Sáu mục được tính điểm — bài sắp xếp ở slide sau là mục đầu tiên.',
+      textFr: 'Tu vas **trier**, **prédire** et **toucher** tout au long de la leçon. Six activités sont notées — le tri de la diapo suivante est la première.',
     },
   },
 
@@ -57,34 +63,41 @@ export const notes = [
     icon: 'Boxes',
     eyebrow: 'Sort by what it DOES, not what it looks like',
     eyebrowVn: 'Phân loại theo điều nó LÀM, không phải vẻ ngoài',
+    eyebrowFr: 'Classe selon ce que ça FAIT, pas selon l’apparence',
     title: 'Solid, Liquid or Gas?',
     titleVn: 'Chất rắn, chất lỏng hay chất khí?',
+    titleFr: 'Solide, liquide ou gaz ?',
     label: 'Six things to sort',
     labelVn: 'Sáu thứ cần sắp xếp',
+    labelFr: 'Six choses à trier',
     labelIcon: 'Sparkles',
     text: 'Some of these will trick you. Test each one: can it be poured? Does it keep its own shape?',
     textVn: 'Một vài thứ sẽ đánh lừa em. Hãy kiểm tra từng thứ: rót được không? Có giữ hình dạng riêng không?',
+    textFr: 'Certaines vont te piéger. Teste chacune : peut-on la verser ? Garde-t-elle sa propre forme ?',
     sub: 'Drag each card into Solid, Liquid or Gas.',
     subVn: 'Kéo mỗi thẻ vào Chất rắn, Chất lỏng hoặc Chất khí.',
+    subFr: 'Fais glisser chaque carte dans Solide, Liquide ou Gaz.',
     activity: {
       id: 'a1', type: 'sort',
       prompt: 'Sort these six into the right state.',
       promptVn: 'Sắp xếp sáu thứ này vào đúng trạng thái.',
+      promptFr: 'Range ces six exemples dans le bon état.',
       bins: [
-        { id: 'solid', name: 'Solid', nameVn: 'Chất rắn' },
-        { id: 'liquid', name: 'Liquid', nameVn: 'Chất lỏng' },
-        { id: 'gas', name: 'Gas', nameVn: 'Chất khí' },
+        { id: 'solid', name: 'Solid', nameVn: 'Chất rắn', nameFr: 'Solide' },
+        { id: 'liquid', name: 'Liquid', nameVn: 'Chất lỏng', nameFr: 'Liquide' },
+        { id: 'gas', name: 'Gas', nameVn: 'Chất khí', nameFr: 'Gaz' },
       ],
       cards: [
-        { id: 'ice', name: 'Ice', nameVn: 'Nước đá', bin: 'solid' },
-        { id: 'sand', name: 'Sand', nameVn: 'Cát', bin: 'solid' },
-        { id: 'mercury', name: 'Mercury', nameVn: 'Thuỷ ngân', bin: 'liquid' },
-        { id: 'honey', name: 'Honey', nameVn: 'Mật ong', bin: 'liquid' },
-        { id: 'air', name: 'The air around you', nameVn: 'Không khí quanh em', bin: 'gas' },
-        { id: 'helium', name: 'Helium in a balloon', nameVn: 'Khí heli trong bóng bay', bin: 'gas' },
+        { id: 'ice', name: 'Ice', nameVn: 'Nước đá', nameFr: 'Glace', bin: 'solid' },
+        { id: 'sand', name: 'Sand', nameVn: 'Cát', nameFr: 'Sable', bin: 'solid' },
+        { id: 'mercury', name: 'Mercury', nameVn: 'Thuỷ ngân', nameFr: 'Mercure', bin: 'liquid' },
+        { id: 'honey', name: 'Honey', nameVn: 'Mật ong', nameFr: 'Miel', bin: 'liquid' },
+        { id: 'air', name: 'The air around you', nameVn: 'Không khí quanh em', nameFr: 'L’air autour de toi', bin: 'gas' },
+        { id: 'helium', name: 'Helium in a balloon', nameVn: 'Khí heli trong bóng bay', nameFr: 'L’hélium dans un ballon', bin: 'gas' },
       ],
       explain: 'Sand pours, but every single grain keeps its own shape and cannot be squashed — sand is a solid. Mercury is a metal, but it pours and takes the shape of its container — mercury is a liquid. You sort by what a substance **does**, never by what it looks like or what it is made of.',
       explainVn: 'Cát chảy được, nhưng mỗi hạt cát vẫn giữ hình dạng riêng và không thể bị bóp nhỏ — cát là chất rắn. Thuỷ ngân là kim loại, nhưng nó rót được và mang hình dạng vật chứa — thuỷ ngân là chất lỏng. Em phân loại theo điều một chất **làm**, không bao giờ theo vẻ ngoài hay chất liệu của nó.',
+      explainFr: 'Le sable se verse, mais chaque grain garde sa propre forme et ne peut pas être écrasé — le sable est un solide. Le mercure est un métal, mais il se verse et prend la forme de son récipient — le mercure est un liquide. On classe selon ce que **fait** une substance, jamais selon son apparence ou ce dont elle est faite.',
     },
   },
 
@@ -95,8 +108,10 @@ export const notes = [
     icon: 'Globe',
     eyebrow: 'Hạ Long Bay — three states in one photograph',
     eyebrowVn: 'Vịnh Hạ Long — ba trạng thái trong một bức ảnh',
+    eyebrowFr: 'Baie d’Hạ Long — trois états sur une seule photo',
     title: 'Everything Here Is Matter',
     titleVn: 'Mọi thứ ở đây đều là vật chất',
+    titleFr: 'Tout ici est de la matière',
     ratio: 45,
     image: img('halong.jpg'),
     content:
@@ -105,30 +120,35 @@ export const notes = [
     contentVn:
       'Đá là **chất rắn**. Biển là **chất lỏng**. Không khí phía trên là **chất khí**. Ba cách hành xử hoàn toàn khác nhau — và tất cả đều là **vật chất**.\n\n' +
       'Các nhà khoa học chia mọi vật chất thành ba nhóm đó. Không có gì trong bức ảnh này nằm ngoài ba nhóm ấy.',
+    contentFr: 'Le rocher est un **solide**. La mer est un **liquide**. L’air au-dessus est un **gaz**. Trois façons de se comporter complètement différentes — et chacune est de la **matière**.\n\nLes scientifiques classent toute la matière dans ces trois groupes. Rien sur cette photo n’est en dehors.',
     notes: [
       {
         tone: 'write',
         text: '**Matter:** everything you can see and feel.\n**States of matter:** the three groups we sort matter into — **solid, liquid** and **gas**.',
         textVn: '**Vật chất (matter):** mọi thứ em có thể nhìn thấy và chạm vào.\n**Trạng thái của vật chất (states of matter):** ba nhóm mà ta chia vật chất ra — **chất rắn, chất lỏng** và **chất khí**.',
+        textFr: '**Matière (matter) :** tout ce que tu peux voir et toucher.\n**États de la matière (states of matter) :** les trois groupes où l’on classe la matière — **solide, liquide** et **gaz**.',
       },
       {
         tone: 'write',
         text: '**Property:** a way that a substance **behaves** — can you pour it, can you squash it, does it keep its shape? (Not the everyday meaning: a house or land.)',
         textVn: '**Tính chất (property):** cách một chất **hành xử** — rót được không, nén được không, có giữ hình dạng không? (Không phải nghĩa đời thường: nhà cửa hay đất đai.)',
+        textFr: '**Propriété (property) :** une façon dont une substance **se comporte** — peut-on la verser, l’écraser, garde-t-elle sa forme ? (Pas le sens de tous les jours en anglais : une maison ou un terrain.)',
       },
     ],
     check: {
       id: 'c1',
       q: 'In science, what is a **property** of a substance?',
       qVn: 'Trong khoa học, **tính chất (property)** của một chất là gì?',
+      qFr: 'En sciences, qu’est-ce qu’une **propriété** d’une substance ?',
       options: [
-        { val: 'A', text: 'A way it behaves — whether it can be poured, squashed, or keeps its shape', textVn: 'Cách nó hành xử — rót được, nén được, hay giữ hình dạng' },
-        { val: 'B', text: 'Something a person owns', textVn: 'Thứ mà một người sở hữu' },
-        { val: 'C', text: 'Its colour', textVn: 'Màu sắc của nó' },
+        { val: 'A', text: 'A way it behaves — whether it can be poured, squashed, or keeps its shape', textVn: 'Cách nó hành xử — rót được, nén được, hay giữ hình dạng', textFr: 'Une façon de se comporter — si on peut la verser, l’écraser, ou si elle garde sa forme' },
+        { val: 'B', text: 'Something a person owns', textVn: 'Thứ mà một người sở hữu', textFr: 'Quelque chose qu’une personne possède' },
+        { val: 'C', text: 'Its colour', textVn: 'Màu sắc của nó', textFr: 'Sa couleur' },
       ],
       correct: 'A',
       expEn: 'A property is a way a substance **behaves**. Ownership is the everyday meaning of the word, and colour is exactly the thing this lesson tells you not to trust — you sort by what it **does**, not what it looks like.',
       expVn: 'Tính chất là cách một chất **hành xử**. Sở hữu là nghĩa đời thường của từ này, còn màu sắc chính là thứ bài học này bảo em đừng tin — hãy phân loại theo điều nó **làm**, không phải vẻ ngoài.',
+      expFr: 'Une propriété est une façon dont une substance **se comporte**. Ce que l’on possède, c’est le sens de tous les jours du mot anglais, et la couleur est justement ce que cette leçon te dit de ne pas croire — on classe selon ce que ça **fait**, pas selon l’apparence.',
     },
   },
 
@@ -139,8 +159,10 @@ export const notes = [
     icon: 'Box',
     eyebrow: 'State 1 of 3',
     eyebrowVn: 'Trạng thái 1 trong 3',
+    eyebrowFr: 'État 1 sur 3',
     title: 'Solids Keep Their Own Shape',
     titleVn: 'Chất rắn giữ hình dạng riêng',
+    titleFr: 'Les solides gardent leur propre forme',
     ratio: 45,
     image: img('ice.jpg'),
     content:
@@ -149,11 +171,13 @@ export const notes = [
     contentVn:
       'Mỗi viên trong bức ảnh này đều là một **khối lập phương**. Đổ chúng vào bát thì chúng vẫn là khối lập phương. Cầm một viên trong tay và bóp — không có gì xảy ra.\n\n' +
       'Đó là điều chất rắn làm. Nó tự quyết định hình dạng của mình, và giữ nguyên hình dạng ấy. **Thể tích (volume)** — lượng không gian nó chiếm — cũng không đổi.',
+    contentFr: 'Chaque glaçon sur cette image est un **cube**. Verse-les dans un bol : ce sont toujours des cubes. Prends-en un dans ta main et serre — rien ne se passe.\n\nC’est ce que fait un solide. Il choisit sa propre forme, et il la garde. Le **volume** — la place qu’il occupe — reste aussi le même.',
     notes: [
       {
         tone: 'write',
         text: '**A solid:** keeps the same **shape** · keeps the same **volume** · cannot be **compressed** (squashed) · cannot be **poured**.',
         textVn: '**Chất rắn:** giữ nguyên **hình dạng** · giữ nguyên **thể tích** · không thể **nén (compressed)** · không thể **rót (poured)**.',
+        textFr: '**Un solide :** garde la même **forme** · garde le même **volume** · ne peut pas être **comprimé (compressed)** · ne peut pas être **versé (poured)**.',
       },
     ],
   },
@@ -165,8 +189,10 @@ export const notes = [
     icon: 'Droplets',
     eyebrow: 'State 2 of 3',
     eyebrowVn: 'Trạng thái 2 trong 3',
+    eyebrowFr: 'État 2 sur 3',
     title: 'Liquids Borrow the Container’s Shape',
     titleVn: 'Chất lỏng mượn hình dạng của vật chứa',
+    titleFr: 'Les liquides empruntent la forme du récipient',
     ratio: 52,
     side: 'left',
     inlineSvg: DIAGRAMS.SAME_LIQUID,
@@ -176,11 +202,13 @@ export const notes = [
     contentVn:
       'Rót cùng một lượng nước vào một ống cao, một đĩa nông và một cốc tròn thì lần nào trông cũng khác. Nó **không có hình dạng riêng** — nó nhận hình dạng nào được đưa cho.\n\n' +
       'Nhưng hãy nhìn nhãn trên mỗi vật chứa. Lần nào cũng là **50 cm³**. Hình dạng đã đổi. Thể tích thì không.',
+    contentFr: 'Verse la même eau dans un tube haut, un plat bas et un bécher rond : elle a l’air différente à chaque fois. Elle n’a **pas de forme à elle** — elle prend celle qu’on lui donne.\n\nMais regarde l’étiquette de chaque récipient. C’est **50 cm³ à chaque fois**. La forme a changé. Le volume, non.',
     notes: [
       {
         tone: 'write',
         text: '**A liquid:** takes the **shape of its container** · keeps the same **volume** · can be **poured** · cannot be **compressed**.',
         textVn: '**Chất lỏng:** mang **hình dạng của vật chứa** · giữ nguyên **thể tích** · có thể **rót (poured)** · không thể **nén (compressed)**.',
+        textFr: '**Un liquide :** prend la **forme de son récipient** · garde le même **volume** · peut être **versé (poured)** · ne peut pas être **comprimé (compressed)**.',
       },
     ],
   },
@@ -192,8 +220,10 @@ export const notes = [
     icon: 'Wind',
     eyebrow: 'State 3 of 3',
     eyebrowVn: 'Trạng thái 3 trong 3',
+    eyebrowFr: 'État 3 sur 3',
     title: 'Gases Fill Everything They Are In',
     titleVn: 'Chất khí lấp đầy mọi thứ chứa nó',
+    titleFr: 'Les gaz remplissent tout l’espace',
     ratio: 45,
     image: img('balloon.jpg'),
     content:
@@ -202,11 +232,13 @@ export const notes = [
     contentVn:
       'Có một người đang đứng bên trong quả khinh khí cầu đó, và thứ giữ cho nó căng ra là **không khí**. Em không nhìn thấy không khí, không cầm được nó, và nó rất nhẹ — nhưng nó đang lấp đầy mọi góc của một không gian to bằng cả ngôi nhà.\n\n' +
       'Chất khí không nằm ở đáy như chất lỏng. Cho nó một căn phòng thì nó chiếm **cả căn phòng**.',
+    contentFr: 'Il y a une personne debout dans ce ballon, et ce qui le garde ouvert, c’est l’**air**. Tu ne vois pas l’air, tu ne peux pas le prendre, et il pèse très peu — mais il remplit chaque coin d’un espace grand comme une maison.\n\nUn gaz ne reste pas au fond comme un liquide. Donne-lui une pièce et il prend **toute la pièce**.',
     notes: [
       {
         tone: 'write',
         text: '**A gas:** has **no shape of its own** · **fills** any closed container · can be **compressed** easily · its **volume can change** · it weighs very little.',
         textVn: '**Chất khí:** **không có hình dạng riêng** · **lấp đầy** mọi vật chứa kín · dễ dàng bị **nén (compressed)** · **thể tích có thể thay đổi** · nó rất nhẹ.',
+        textFr: '**Un gaz :** n’a **pas de forme à lui** · **remplit** tout récipient fermé · peut être **comprimé (compressed)** facilement · son **volume peut changer** · il pèse très peu.',
       },
     ],
   },
@@ -218,28 +250,35 @@ export const notes = [
     icon: 'Zap',
     eyebrow: 'Predict before you see the reveal',
     eyebrowVn: 'Dự đoán trước khi xem đáp án',
+    eyebrowFr: 'Prédis avant de voir la réponse',
     title: 'Which Plunger Moves?',
     titleVn: 'Cần đẩy nào sẽ di chuyển?',
+    titleFr: 'Quel piston bouge ?',
     label: 'The syringe test',
     labelVn: 'Thử nghiệm xi-lanh',
+    labelFr: 'Le test des seringues',
     labelIcon: 'Target',
     text: 'Two syringes, both holes blocked with a thumb. Push each plunger as hard as you can.',
     textVn: 'Hai xi-lanh, cả hai lỗ đều bị bịt bằng ngón tay cái. Đẩy mạnh từng cần đẩy.',
+    textFr: 'Deux seringues, les deux trous bouchés avec le pouce. Pousse chaque piston aussi fort que tu peux.',
     sub: 'Choose your prediction, then check the next slide.',
     subVn: 'Chọn dự đoán của em, rồi xem slide sau để kiểm tra.',
+    subFr: 'Choisis ta prédiction, puis regarde la diapo suivante.',
     activity: {
       id: 'a2', type: 'predict',
       prompt: 'Which plunger moves?',
       promptVn: 'Cần đẩy nào sẽ di chuyển?',
+      promptFr: 'Quel piston bouge ?',
       options: [
-        { val: 'water', name: 'Only the water plunger', nameVn: 'Chỉ cần đẩy bên nước' },
-        { val: 'air', name: 'Only the air plunger', nameVn: 'Chỉ cần đẩy bên không khí' },
-        { val: 'both', name: 'Both plungers', nameVn: 'Cả hai cần đẩy' },
-        { val: 'neither', name: 'Neither plunger', nameVn: 'Không cần đẩy nào cả' },
+        { val: 'water', name: 'Only the water plunger', nameVn: 'Chỉ cần đẩy bên nước', nameFr: 'Seulement le piston de l’eau' },
+        { val: 'air', name: 'Only the air plunger', nameVn: 'Chỉ cần đẩy bên không khí', nameFr: 'Seulement le piston de l’air' },
+        { val: 'both', name: 'Both plungers', nameVn: 'Cả hai cần đẩy', nameFr: 'Les deux pistons' },
+        { val: 'neither', name: 'Neither plunger', nameVn: 'Không cần đẩy nào cả', nameFr: 'Aucun des deux' },
       ],
       correct: 'air',
       explain: 'Only the **air** plunger moves. Air can be squashed into a smaller space because its particles have huge gaps between them. The water plunger will not budge — water’s particles already touch, so there is no gap left to close.',
       explainVn: 'Chỉ cần đẩy bên **không khí** di chuyển. Không khí có thể bị ép vào khoảng nhỏ hơn vì các hạt của nó có khoảng trống rất lớn ở giữa. Cần đẩy bên nước không nhúc nhích — các hạt nước đã chạm nhau, không còn khoảng trống nào để khép lại.',
+      explainFr: 'Seul le piston de la seringue d’**air** bouge. L’air peut être écrasé dans un espace plus petit parce que ses particules ont d’énormes espaces entre elles. Le piston de la seringue d’eau ne bouge pas — les particules de l’eau se touchent déjà, donc il n’y a plus d’espace à fermer.',
     },
   },
 
@@ -250,8 +289,10 @@ export const notes = [
     icon: 'Zap',
     eyebrow: 'The reveal',
     eyebrowVn: 'Kết quả',
+    eyebrowFr: 'La réponse',
     title: 'Only the Air Moves',
     titleVn: 'Chỉ có không khí di chuyển',
+    titleFr: 'Seul l’air bouge',
     ratio: 50,
     side: 'left',
     inlineSvg: DIAGRAMS.SYRINGES,
@@ -263,11 +304,13 @@ export const notes = [
       'Cần đẩy bên nước không nhúc nhích, dù em có tì mạnh đến đâu. Cần đẩy bên không khí trượt vào dễ dàng — và bật ngược lại ngay khi em buông tay.\n\n' +
       'Không khí đã bị **nén (compressed)**: nó bị ép vào một khoảng nhỏ hơn. Không có gì thoát ra, cũng không có gì thêm vào. Chỉ có lượng không gian nó chiếm là thay đổi.\n\n' +
       'Đây là tính chất duy nhất tách chất khí ra khỏi **cả hai** trạng thái kia. Dự đoán của em gần đến đâu?',
+    contentFr: 'Le piston de la seringue d’eau ne bouge pas, même si tu appuies de tout ton poids. Le piston de la seringue d’air s’enfonce facilement — et revient dès que tu lâches.\n\nL’air a été **comprimé** : il a été écrasé dans un espace plus petit. Rien ne s’est échappé, et rien n’a été ajouté. Seule la place qu’il occupait a changé.\n\nC’est la seule propriété qui sépare un gaz des **deux** autres états. Ta prédiction était-elle juste ?',
     notes: [
       {
         tone: 'write',
         text: '**Compressed:** squashed into a smaller space. **Only a gas can be compressed.**',
         textVn: '**Nén (compressed):** bị ép vào một khoảng không gian nhỏ hơn. **Chỉ chất khí mới có thể bị nén.**',
+        textFr: '**Comprimé (compressed) :** écrasé dans un espace plus petit. **Seul un gaz peut être comprimé.**',
       },
     ],
   },
@@ -279,26 +322,32 @@ export const notes = [
     icon: 'ScanEye',
     eyebrow: 'Back to the hourglass — and one more like it',
     eyebrowVn: 'Quay lại chiếc đồng hồ cát — và thêm một ví dụ nữa',
+    eyebrowFr: 'Retour au sablier — et un autre exemple',
     title: 'You Cannot Tell by Looking',
     titleVn: 'Nhìn thôi thì không thể biết được',
+    titleFr: 'Regarder ne suffit pas',
     columns: [
       {
         heading: 'Sand pours — but it is a SOLID',
         headingVn: 'Cát chảy — nhưng nó là CHẤT RẮN',
+        headingFr: 'Le sable coule — mais c’est un SOLIDE',
         accent: STONE,
         icon: 'Box',
         image: img('hourglass.jpg'),
         caption: 'Look closer. Each **grain** keeps its own shape and cannot be squashed — so each grain is a solid. What is flowing is not the sand; it is **millions of tiny solids rolling over each other**. Sugar, salt and rice do exactly the same thing.',
         captionVn: 'Hãy nhìn kỹ hơn. Mỗi **hạt** cát giữ hình dạng riêng và không thể bị bóp nhỏ — nên mỗi hạt là một chất rắn. Thứ đang chảy không phải là cát; đó là **hàng triệu chất rắn tí hon lăn lên nhau**. Đường, muối và gạo cũng làm y hệt như vậy.',
+        captionFr: 'Regarde de plus près. Chaque **grain** garde sa forme et ne peut pas être écrasé — donc chaque grain est un solide. Ce qui coule, ce n’est pas le sable ; ce sont **des millions de minuscules solides qui roulent les uns sur les autres**. Le sucre, le sel et le riz font exactement pareil.',
       },
       {
         heading: 'Mercury is a metal — but it is a LIQUID',
         headingVn: 'Thuỷ ngân là kim loại — nhưng nó là CHẤT LỎNG',
+        headingFr: 'Le mercure est un métal — mais c’est un LIQUIDE',
         accent: WATER,
         icon: 'Droplets',
         image: img('mercury.jpg'),
         caption: 'Every other metal you have held was hard and cold. This one pours, splashes, and takes the shape of the dish. It is a metal **and** a liquid, and there is no contradiction — **liquid** is not a kind of stuff, it is a way of behaving.',
         captionVn: 'Mọi kim loại khác em từng cầm đều cứng và lạnh. Kim loại này thì rót được, bắn toé, và mang hình dạng của cái đĩa. Nó vừa là kim loại **vừa** là chất lỏng, và không hề mâu thuẫn — **chất lỏng** không phải là một loại vật liệu, mà là một cách hành xử.',
+        captionFr: 'Tous les autres métaux que tu as tenus étaient durs et froids. Celui-ci se verse, éclabousse et prend la forme du plat. C’est un métal **et** un liquide, sans contradiction — **liquide** n’est pas une sorte de matière, c’est une façon de se comporter.',
       },
     ],
   },
@@ -310,8 +359,10 @@ export const notes = [
     icon: 'Grid3x3',
     eyebrow: 'Everything so far, on one grid',
     eyebrowVn: 'Mọi thứ đã học, gọn trong một bảng',
+    eyebrowFr: 'Tout ce qu’on a vu, dans une seule grille',
     title: 'One Table, Three States',
     titleVn: 'Một bảng, ba trạng thái',
+    titleFr: 'Un tableau, trois états',
     ratio: 45,
     side: 'left',
     inlineSvg: DIAGRAMS.STATES_TABLE,
@@ -327,11 +378,14 @@ export const notes = [
       '> **2.** Trạng thái nào dễ bị nén?\n' +
       '> **3.** Trạng thái nào không rót được?\n' +
       '> **4.** Liệt kê các tính chất của chất rắn.',
+    contentFr: 'Toutes les propriétés des dernières diapos, au même endroit. Étudie les coches et les croix, puis teste-toi avec ces questions :\n\n> **1.** Quels sont les trois états de la matière ?\n> **2.** Quel état peut être comprimé facilement ?\n> **3.** Quel état ne peut pas être versé ?\n> **4.** Donne les propriétés des solides.',
     reveal: {
       label: 'Check yourself',
       labelVn: 'Tự kiểm tra',
+      labelFr: 'Teste-toi',
       answer: '**1.** Solid, liquid and gas.\n**2.** A gas.\n**3.** A solid.\n**4.** Keeps the same shape · keeps the same volume · cannot be compressed · cannot be poured.',
       answerVn: '**1.** Chất rắn, chất lỏng và chất khí.\n**2.** Chất khí.\n**3.** Chất rắn.\n**4.** Giữ nguyên hình dạng · giữ nguyên thể tích · không nén được · không rót được.',
+      answerFr: '**1.** Solide, liquide et gaz.\n**2.** Un gaz.\n**3.** Un solide.\n**4.** Garde la même forme · garde le même volume · ne peut pas être comprimé · ne peut pas être versé.',
     },
   },
 
@@ -342,19 +396,23 @@ export const notes = [
     icon: 'BookOpen',
     eyebrow: 'Every science class is an English class',
     eyebrowVn: 'Mỗi tiết khoa học đều là tiết tiếng Anh',
+    eyebrowFr: 'Les sciences, c’est aussi de l’anglais',
     title: '“Theory” Means the Opposite of What You Think',
     titleVn: '“Theory” nghĩa ngược với em nghĩ',
+    titleFr: '« Theory » : le contraire de ce que tu crois',
     content:
       'Scientists noticed four ordinary things: you can smell food cooking in another room; some substances get bigger when heated; liquids turn to gas when heated; substances turn from liquid to solid when cooled. **One single idea explains all four.**\n\n' +
       'In everyday English, *“it’s only a theory”* means **I am not sure**. In science it means almost the opposite: an idea **tested again and again** until it passes **every time**. It is the strongest thing we have.',
     contentVn:
       'Các nhà khoa học để ý bốn điều bình thường: ngửi thấy mùi thức ăn nấu ở phòng khác; một số chất nở to khi đun nóng; chất lỏng biến thành khí khi đun; các chất chuyển từ lỏng sang rắn khi làm lạnh. **Chỉ một ý tưởng duy nhất giải thích được cả bốn.**\n\n' +
       'Trong tiếng Anh đời thường, *“it’s only a theory”* nghĩa là **tôi không chắc**. Trong khoa học thì gần như ngược lại: một ý tưởng được **kiểm chứng nhiều lần** và **lần nào cũng đúng**. Đó là thứ chắc chắn nhất ta có.',
+    contentFr: 'Les scientifiques ont remarqué quatre choses ordinaires : on sent l’odeur de la cuisine depuis une autre pièce ; certaines substances grossissent quand on les chauffe ; les liquides deviennent des gaz quand on les chauffe ; les substances passent de liquide à solide quand on les refroidit. **Une seule idée explique les quatre.**\n\nEn anglais de tous les jours, *“it’s only a theory”* veut dire **je n’en suis pas sûr**. En sciences, cela veut dire presque le contraire : une idée **testée encore et encore** jusqu’à ce qu’elle réussisse **à chaque fois**. C’est ce que nous avons de plus solide.',
     notes: [
       {
         tone: 'write',
         text: '**Hypothesis:** a suggested explanation, which has not been tested yet.\n**Theory:** a hypothesis that has been tested many times and is accepted by scientists.',
         textVn: '**Giả thuyết (hypothesis):** cách giải thích được đề ra, chưa kiểm chứng.\n**Học thuyết (theory):** giả thuyết đã kiểm chứng nhiều lần, được công nhận.',
+        textFr: '**Hypothèse (hypothesis) :** une explication proposée, pas encore testée.\n**Théorie (theory) :** une hypothèse testée de nombreuses fois et acceptée par les scientifiques.',
       },
     ],
   },
@@ -366,19 +424,23 @@ export const notes = [
     icon: 'Sparkles',
     eyebrow: 'The best theory we have — and it is one sentence long',
     eyebrowVn: 'Học thuyết tốt nhất mà ta có — và nó chỉ dài một câu',
+    eyebrowFr: 'Notre meilleure théorie — et elle tient en une phrase',
     title: 'One Idea Explains Everything',
     titleVn: 'Một ý tưởng giải thích tất cả',
+    titleFr: 'Une seule idée explique tout',
     content:
       'All matter — the rock, the sea, the air, your hand — is made of **particles**: pieces far too small to see.\n\n' +
       'They are the **same particles** in a solid, a liquid and a gas; the only thing that changes is **how they are arranged and how they move**. That is the whole theory, and it explains the syringes, the smell from the kitchen, and every row of your table.',
     contentVn:
       'Mọi vật chất — đá, biển, không khí, bàn tay em — đều tạo nên từ các **hạt (particles)**: những mảnh quá nhỏ để nhìn thấy.\n\n' +
       'Đó là **cùng những hạt ấy** trong chất rắn, chất lỏng và chất khí; thứ duy nhất thay đổi là **cách chúng sắp xếp và chuyển động**. Đó là toàn bộ học thuyết, và nó giải thích hai chiếc xi-lanh, mùi thức ăn từ bếp, và mọi hàng trong bảng của em.',
+    contentFr: 'Toute la matière — le rocher, la mer, l’air, ta main — est faite de **particules** : des morceaux beaucoup trop petits pour être vus.\n\nCe sont les **mêmes particules** dans un solide, un liquide et un gaz ; la seule chose qui change, c’est **comment elles sont disposées et comment elles bougent**. C’est toute la théorie, et elle explique les seringues, l’odeur de la cuisine, et chaque ligne de ton tableau.',
     notes: [
       {
         tone: 'write',
         text: '**Particle theory:** all matter is made up of tiny particles. The particles are **arranged differently** in solids, liquids and gases.',
         textVn: '**Thuyết hạt (particle theory):** mọi vật chất đều được tạo nên từ những hạt rất nhỏ. Các hạt được **sắp xếp khác nhau** trong chất rắn, chất lỏng và chất khí.',
+        textFr: '**Théorie particulaire (particle theory) :** toute la matière est faite de minuscules particules. Les particules sont **disposées différemment** dans les solides, les liquides et les gaz.',
       },
     ],
   },
@@ -390,8 +452,10 @@ export const notes = [
     icon: 'Box',
     eyebrow: 'Arrangement 1 of 3',
     eyebrowVn: 'Cách sắp xếp 1 trong 3',
+    eyebrowFr: 'Disposition 1 sur 3',
     title: 'In a Solid, Nobody Moves',
     titleVn: 'Trong chất rắn, không hạt nào đi đâu cả',
+    titleFr: 'Dans un solide, personne ne bouge',
     ratio: 48,
     side: 'left',
     inlineSvg: PARTICLES.PARTICLES_SOLID,
@@ -403,11 +467,13 @@ export const notes = [
       'Xếp sát nhau theo **khuôn mẫu cố định** — hàng và cột, chạm nhau, không có gì ở giữa.\n\n' +
       'Chúng không đứng im: mỗi hạt **dao động (vibrate)** rất nhỏ tại chỗ, nhưng không rời vị trí.\n\n' +
       'Nhìn cốc: khối rắn không chạm thành cốc. Chất rắn giữ hình dạng **của chính nó**.',
+    contentFr: 'Serrées selon un **motif fixe** — en lignes et en colonnes, collées, rien entre elles.\n\nElles ne sont pas figées. Chacune **vibre** : de tout petits mouvements sur place, tout le temps. Mais elle ne quitte jamais sa place.\n\nRegarde le bécher : le bloc ne touche pas les parois. Un solide garde **sa propre** forme.',
     notes: [
       {
         tone: 'write',
         text: '**In a solid:** the particles are in a **fixed pattern**, **tightly packed** and **held together strongly**. They can **vibrate** but they stay in the same place.',
         textVn: '**Trong chất rắn:** các hạt ở trong một **khuôn mẫu cố định**, **xếp sát nhau** và **liên kết chặt với nhau**. Chúng có thể **dao động** nhưng vẫn ở nguyên vị trí.',
+        textFr: '**Dans un solide :** les particules sont dans un **motif fixe**, **serrées** et **fortement liées**. Elles peuvent **vibrer** mais restent à la même place.',
       },
     ],
   },
@@ -419,8 +485,10 @@ export const notes = [
     icon: 'Droplets',
     eyebrow: 'Arrangement 2 of 3',
     eyebrowVn: 'Cách sắp xếp 2 trong 3',
+    eyebrowFr: 'Disposition 2 sur 3',
     title: 'In a Liquid, They Touch — but They Slide',
     titleVn: 'Trong chất lỏng, các hạt chạm nhau — nhưng trượt được',
+    titleFr: 'Dans un liquide, elles se touchent — mais elles glissent',
     ratio: 48,
     side: 'left',
     inlineSvg: PARTICLES.PARTICLES_LIQUID,
@@ -432,11 +500,13 @@ export const notes = [
       'Vẫn chạm nhau, vẫn không có khoảng trống — điều đó không đổi so với chất rắn.\n\n' +
       'Thứ đã đổi là **độ bám giữ**. Giờ nó chỉ còn **yếu**, nên các hạt trượt qua nhau và đổi chỗ. Không còn khuôn mẫu.\n\n' +
       'Nhìn mặt trên: một **bề mặt phẳng**. Đó là hình dạng của vật chứa, không phải của chất lỏng.',
+    contentFr: 'Toujours collées, toujours sans espace entre elles — ça n’a pas changé par rapport au solide.\n\nCe qui a changé, c’est la **prise**. Elle est maintenant **faible**, donc les particules glissent les unes sur les autres et changent de place. Plus de motif.\n\nRegarde le dessus : une **surface plate**. C’est la forme du récipient, pas celle du liquide.',
     notes: [
       {
         tone: 'write',
         text: '**In a liquid:** the particles **still touch** each other, but they are **held together weakly**. They can **move past one another** and change places.',
         textVn: '**Trong chất lỏng:** các hạt **vẫn chạm nhau**, nhưng chỉ **liên kết yếu**. Chúng có thể **trượt qua nhau** và đổi chỗ cho nhau.',
+        textFr: '**Dans un liquide :** les particules **se touchent encore**, mais elles sont **faiblement liées**. Elles peuvent **glisser les unes sur les autres** et changer de place.',
       },
     ],
   },
@@ -448,8 +518,10 @@ export const notes = [
     icon: 'Wind',
     eyebrow: 'Arrangement 3 of 3',
     eyebrowVn: 'Cách sắp xếp 3 trong 3',
+    eyebrowFr: 'Disposition 3 sur 3',
     title: 'In a Gas, Almost All of It Is Empty',
     titleVn: 'Trong chất khí, gần như toàn bộ là khoảng trống',
+    titleFr: 'Dans un gaz, presque tout est vide',
     ratio: 48,
     side: 'left',
     inlineSvg: PARTICLES.PARTICLES_GAS,
@@ -461,11 +533,13 @@ export const notes = [
       'Bây giờ các hạt **không** chạm nhau. Chúng ở xa nhau, chuyển động nhanh theo mọi hướng, và không có gì giữ chúng lại.\n\n' +
       'Chất khí không hề có ít hạt hơn — mà **khoảng cách giữa chúng** đã trở nên rất lớn.\n\n' +
       'Chúng tự lan ra cho đến khi lấp đầy mọi góc — đó là lý do một mùi hương có thể tự lan đến mọi góc trong phòng.',
+    contentFr: 'Maintenant, les particules ne se touchent **pas**. Elles sont éloignées, se déplacent vite dans toutes les directions, et rien ne les retient ensemble.\n\nUn gaz n’a pas moins de particules — c’est l’**espace entre elles** qui est devenu énorme.\n\nElles s’étalent toutes seules jusqu’à remplir chaque coin — c’est pourquoi une odeur peut atteindre tous les coins d’une pièce toute seule.',
     notes: [
       {
         tone: 'write',
         text: '**In a gas:** the particles do **not touch**. They are **far apart** and **spread out by themselves** to fill the space they are in.',
         textVn: '**Trong chất khí:** các hạt **không chạm nhau**. Chúng ở **xa nhau** và **tự lan ra** để lấp đầy không gian chứa chúng.',
+        textFr: '**Dans un gaz :** les particules ne se **touchent pas**. Elles sont **éloignées** et **s’étalent toutes seules** pour remplir l’espace où elles sont.',
       },
     ],
   },
@@ -477,34 +551,41 @@ export const notes = [
     icon: 'Layers',
     eyebrow: 'Sort the facts, not the words',
     eyebrowVn: 'Sắp xếp sự kiện, không phải từ ngữ',
+    eyebrowFr: 'Trie les faits, pas les mots',
     title: 'Which State Does Each Fact Describe?',
     titleVn: 'Mỗi sự kiện mô tả trạng thái nào?',
+    titleFr: 'Quel état chaque fait décrit-il ?',
     label: 'Six particle facts',
     labelVn: 'Sáu sự kiện về hạt',
+    labelFr: 'Six faits sur les particules',
     labelIcon: 'Layers',
     text: 'You have just met all three arrangements. Sort each fact into the state it describes.',
     textVn: 'Em vừa tìm hiểu cả ba cách sắp xếp. Hãy sắp xếp mỗi sự kiện vào trạng thái nó mô tả.',
+    textFr: 'Tu viens de voir les trois dispositions. Range chaque fait dans l’état qu’il décrit.',
     sub: 'Drag each card into Solid, Liquid or Gas.',
     subVn: 'Kéo mỗi thẻ vào Chất rắn, Chất lỏng hoặc Chất khí.',
+    subFr: 'Fais glisser chaque carte dans Solide, Liquide ou Gaz.',
     activity: {
       id: 'a3', type: 'sort',
       prompt: 'Sort these particle facts into the right state.',
       promptVn: 'Sắp xếp các sự kiện về hạt này vào đúng trạng thái.',
+      promptFr: 'Range ces faits sur les particules dans le bon état.',
       bins: [
-        { id: 'solid', name: 'Solid', nameVn: 'Chất rắn' },
-        { id: 'liquid', name: 'Liquid', nameVn: 'Chất lỏng' },
-        { id: 'gas', name: 'Gas', nameVn: 'Chất khí' },
+        { id: 'solid', name: 'Solid', nameVn: 'Chất rắn', nameFr: 'Solide' },
+        { id: 'liquid', name: 'Liquid', nameVn: 'Chất lỏng', nameFr: 'Liquide' },
+        { id: 'gas', name: 'Gas', nameVn: 'Chất khí', nameFr: 'Gaz' },
       ],
       cards: [
-        { id: 'fixed', name: 'Fixed pattern, vibrating on the spot', nameVn: 'Khuôn mẫu cố định, dao động tại chỗ', bin: 'solid' },
-        { id: 'strong', name: 'Held together strongly', nameVn: 'Liên kết chặt với nhau', bin: 'solid' },
-        { id: 'slide', name: 'Touching, but sliding past each other', nameVn: 'Chạm nhau, nhưng trượt qua nhau', bin: 'liquid' },
-        { id: 'weak', name: 'Held together weakly', nameVn: 'Liên kết yếu với nhau', bin: 'liquid' },
-        { id: 'apart', name: 'Far apart, spread out', nameVn: 'Ở xa nhau, lan rộng ra', bin: 'gas' },
-        { id: 'compress', name: 'Can be compressed', nameVn: 'Có thể bị nén', bin: 'gas' },
+        { id: 'fixed', name: 'Fixed pattern, vibrating on the spot', nameVn: 'Khuôn mẫu cố định, dao động tại chỗ', nameFr: 'Motif fixe, vibrent sur place', bin: 'solid' },
+        { id: 'strong', name: 'Held together strongly', nameVn: 'Liên kết chặt với nhau', nameFr: 'Fortement liées', bin: 'solid' },
+        { id: 'slide', name: 'Touching, but sliding past each other', nameVn: 'Chạm nhau, nhưng trượt qua nhau', nameFr: 'Se touchent, mais glissent les unes sur les autres', bin: 'liquid' },
+        { id: 'weak', name: 'Held together weakly', nameVn: 'Liên kết yếu với nhau', nameFr: 'Faiblement liées', bin: 'liquid' },
+        { id: 'apart', name: 'Far apart, spread out', nameVn: 'Ở xa nhau, lan rộng ra', nameFr: 'Éloignées, étalées', bin: 'gas' },
+        { id: 'compress', name: 'Can be compressed', nameVn: 'Có thể bị nén', nameFr: 'Peuvent être comprimées', bin: 'gas' },
       ],
       explain: 'Solid particles sit in a **fixed pattern**, held **strongly** — they can only vibrate. Liquid particles still **touch** but are held **weakly**, so they slide past one another. Gas particles are **far apart** with almost nothing holding them, so the huge gaps between them can be squashed smaller — only a gas can be **compressed**.',
       explainVn: 'Các hạt trong chất rắn nằm trong một **khuôn mẫu cố định**, liên kết **chặt** — chúng chỉ có thể dao động. Các hạt trong chất lỏng vẫn **chạm nhau** nhưng liên kết **yếu**, nên chúng trượt qua nhau. Các hạt trong chất khí ở **xa nhau**, gần như không có gì giữ chúng lại, nên khoảng trống lớn giữa chúng có thể bị ép nhỏ lại — chỉ chất khí mới có thể **bị nén**.',
+      explainFr: 'Les particules d’un solide sont dans un **motif fixe**, **fortement** liées — elles peuvent seulement vibrer. Les particules d’un liquide se **touchent** encore mais sont **faiblement** liées, donc elles glissent les unes sur les autres. Les particules d’un gaz sont **éloignées** et presque rien ne les retient, donc les énormes espaces entre elles peuvent être réduits — seul un gaz peut être **comprimé**.',
     },
   },
 
@@ -515,8 +596,10 @@ export const notes = [
     icon: 'Scale',
     eyebrow: 'You can pour water. You cannot pour a brick. Both are made of particles — so why?',
     eyebrowVn: 'Rót được nước. Không rót được viên gạch. Cả hai đều tạo nên từ các hạt — vậy vì sao?',
+    eyebrowFr: 'On peut verser de l’eau. On ne peut pas verser une brique. Les deux sont faites de particules — alors pourquoi ?',
     title: 'Two Rules That Explain the Whole Table',
     titleVn: 'Hai quy tắc giải thích cả cái bảng',
+    titleFr: 'Deux règles qui expliquent tout le tableau',
     ratio: 52,
     side: 'left',
     inlineSvg: PARTICLES.THREE_ARRANGEMENTS,
@@ -526,26 +609,30 @@ export const notes = [
     contentVn:
       'Mọi dấu tích và dấu chéo em thấy đều suy ra từ hai câu này. Hãy đọc chậm — chúng ngắn, nhưng làm được rất nhiều việc.\n\n' +
       'Rồi đối chiếu chúng với ba ô vuông bên trái. Chất rắn trượt cả hai. Chất lỏng đạt câu đầu và trượt câu sau. Chất khí đạt cả hai.',
+    contentFr: 'Chaque coche et chaque croix que tu as vues viennent de ces deux phrases. Lis-les lentement — elles sont courtes, et elles font énormément de travail.\n\nPuis compare-les aux trois cases à gauche. Un solide échoue aux deux. Un liquide réussit la première et échoue à la seconde. Un gaz réussit les deux.',
     notes: [
       {
         tone: 'write',
         text: 'Matter can only **flow** (be poured) if the particles can **move past one another**.\n\nMatter can only **change volume** if the particles can **spread out or move closer together**.',
         textVn: 'Vật chất chỉ **chảy** (rót được) khi các hạt có thể **trượt qua nhau**.\n\nVật chất chỉ **đổi thể tích** khi các hạt có thể **giãn ra hoặc xích lại gần nhau**.',
+        textFr: 'La matière ne peut **couler** (être versée) que si les particules peuvent **glisser les unes sur les autres**.\n\nLa matière ne peut **changer de volume** que si les particules peuvent **s’écarter ou se rapprocher**.',
       },
     ],
     activity: {
       id: 'a4', type: 'hotspot',
       prompt: 'Tap the box that shows a GAS.',
       promptVn: 'Chạm vào ô thể hiện CHẤT KHÍ.',
+      promptFr: 'Touche la case qui montre un GAZ.',
       svg: PARTICLES.THREE_ARRANGEMENTS, viewBox: '0 0 900 360',
       targets: [
-        { id: 'solid', x: 160, y: 166, r: 95, name: 'the solid box', nameVn: 'ô chất rắn' },
-        { id: 'liquid', x: 450, y: 166, r: 95, name: 'the liquid box', nameVn: 'ô chất lỏng' },
-        { id: 'gas', x: 740, y: 166, r: 95, name: 'the gas box', nameVn: 'ô chất khí' },
+        { id: 'solid', x: 160, y: 166, r: 95, name: 'the solid box', nameVn: 'ô chất rắn', nameFr: 'la case du solide' },
+        { id: 'liquid', x: 450, y: 166, r: 95, name: 'the liquid box', nameVn: 'ô chất lỏng', nameFr: 'la case du liquide' },
+        { id: 'gas', x: 740, y: 166, r: 95, name: 'the gas box', nameVn: 'ô chất khí', nameFr: 'la case du gaz' },
       ],
       correct: 'gas',
       explain: 'The **gas** box: particles far apart, no pattern, nothing holding them together. The solid box packs particles into a tight grid; the liquid box has particles touching but jumbled, with no pattern.',
       explainVn: 'Ô **chất khí**: các hạt ở xa nhau, không có khuôn mẫu, không gì giữ chúng lại. Ô chất rắn xếp các hạt thành lưới chặt; ô chất lỏng có các hạt chạm nhau nhưng lộn xộn, không khuôn mẫu.',
+      explainFr: 'La case du **gaz** : des particules éloignées, sans motif, rien ne les retient ensemble. La case du solide serre les particules dans une grille ; dans la case du liquide, les particules se touchent mais en désordre, sans motif.',
     },
   },
 
@@ -556,26 +643,32 @@ export const notes = [
     icon: 'Equal',
     eyebrow: 'Rule 1 · why one flows and the other does not',
     eyebrowVn: 'Quy tắc 1 · vì sao thứ này chảy còn thứ kia thì không',
+    eyebrowFr: 'Règle 1 · pourquoi l’un coule et pas l’autre',
     title: 'The Difference Is the Pull Between Them',
     titleVn: 'Khác nhau là ở lực hút giữa các hạt',
+    titleFr: 'La différence, c’est l’attraction entre elles',
     columns: [
       {
         heading: 'A solid cannot flow',
         headingVn: 'Chất rắn không chảy được',
+        headingFr: 'Un solide ne peut pas couler',
         accent: STONE,
         icon: 'Box',
         inlineSvg: PARTICLES.PARTICLES_SOLID,
         caption: 'There is a **pull** between the particles — an **attractive force** — and in a solid it is strong. It holds every particle in its place, so they can only vibrate. Nothing can move past anything. So a solid cannot flow, and it keeps its own shape.',
         captionVn: 'Giữa các hạt có một **lực kéo** — gọi là **lực hút (attractive force)** — và trong chất rắn lực này rất mạnh. Nó giữ mỗi hạt ở đúng vị trí, nên chúng chỉ dao động được. Không hạt nào trượt qua hạt nào. Vì thế chất rắn không chảy được, và giữ hình dạng riêng.',
+        captionFr: 'Il y a une **attraction** entre les particules — une **force d’attraction (attractive force)** — et dans un solide elle est forte. Elle tient chaque particule à sa place, donc elles peuvent seulement vibrer. Rien ne peut glisser. Donc un solide ne coule pas, et il garde sa propre forme.',
       },
       {
         heading: 'A liquid can flow',
         headingVn: 'Chất lỏng chảy được',
+        headingFr: 'Un liquide peut couler',
         accent: WATER,
         icon: 'Droplets',
         inlineSvg: PARTICLES.PARTICLES_LIQUID,
         caption: 'The same pull is there, but it is **weak** — weak enough to let the particles slide past one another, and still strong enough to keep them touching. That is why a liquid flows into any shape but never spreads out to fill the room the way a gas does.',
         captionVn: 'Vẫn có lực kéo đó, nhưng nó **yếu** — đủ yếu để các hạt trượt qua nhau, mà vẫn đủ mạnh để giữ chúng chạm vào nhau. Vì thế chất lỏng chảy vào mọi hình dạng nhưng không bao giờ lan ra lấp đầy cả căn phòng như chất khí.',
+        captionFr: 'La même attraction est là, mais elle est **faible** — assez faible pour laisser les particules glisser les unes sur les autres, et assez forte pour qu’elles restent collées. C’est pourquoi un liquide coule dans n’importe quelle forme, mais ne s’étale jamais dans toute la pièce comme un gaz.',
       },
     ],
   },
@@ -587,8 +680,10 @@ export const notes = [
     icon: 'Zap',
     eyebrow: 'Rule 2 · and this is the syringe',
     eyebrowVn: 'Quy tắc 2 · và đây chính là chiếc xi-lanh',
+    eyebrowFr: 'Règle 2 · et voici la seringue',
     title: 'Why the Air Plunger Moved',
     titleVn: 'Vì sao cần đẩy bên không khí lại di chuyển',
+    titleFr: 'Pourquoi le piston de l’air a bougé',
     ratio: 52,
     side: 'left',
     inlineSvg: PARTICLES.COMPRESSING_GAS,
@@ -598,25 +693,29 @@ export const notes = [
     contentVn:
       'Trong chất khí gần như **không có gì giữ các hạt lại**, và có rất nhiều **khoảng trống giữa chúng**. Đẩy vào thì chúng xích lại gần nhau — chất khí chiếm ít chỗ hơn. Không có gì thoát ra: **các khoảng trống nhỏ lại**, và “nén” chỉ có nghĩa như vậy.\n\n' +
       'Giờ đến xi-lanh nước. Các hạt ở đó đã chạm nhau. Không còn khoảng trống để khép, nên cần đẩy không nhúc nhích.',
+    contentFr: 'Dans un gaz, presque **rien ne retient les particules**, avec beaucoup d’**espace entre elles**. Pousse : elles se rapprochent, le gaz prend moins de place. Rien ne s’échappe : **les espaces rétrécissent**, voilà ce que veut dire « comprimé ».\n\nEt la seringue d’eau ? Ces particules se touchent déjà. Il ne reste aucun espace à fermer, donc le piston ne bouge pas.',
     notes: [
       {
         tone: 'write',
         text: '**Attractive forces:** the pull between particles. **Strong** in a solid · **weak** in a liquid · almost **none** in a gas.',
         textVn: '**Lực hút (attractive forces):** lực kéo giữa các hạt. **Mạnh** trong chất rắn · **yếu** trong chất lỏng · gần như **không có** trong chất khí.',
+        textFr: '**Forces d’attraction (attractive forces) :** l’attraction entre les particules. **Fortes** dans un solide · **faibles** dans un liquide · presque **nulles** dans un gaz.',
       },
     ],
     check: {
       id: 'c2',
       q: 'Why can a gas be compressed but a liquid cannot?',
       qVn: 'Vì sao chất khí nén được mà chất lỏng thì không?',
+      qFr: 'Pourquoi un gaz peut-il être comprimé mais pas un liquide ?',
       options: [
-        { val: 'A', text: 'A gas has fewer particles', textVn: 'Chất khí có ít hạt hơn' },
-        { val: 'B', text: 'Gas particles have big spaces between them that can close up; liquid particles already touch', textVn: 'Các hạt khí có khoảng trống lớn ở giữa có thể khép lại; các hạt lỏng đã chạm nhau rồi' },
-        { val: 'C', text: 'Gas particles are softer', textVn: 'Các hạt khí mềm hơn' },
+        { val: 'A', text: 'A gas has fewer particles', textVn: 'Chất khí có ít hạt hơn', textFr: 'Un gaz a moins de particules' },
+        { val: 'B', text: 'Gas particles have big spaces between them that can close up; liquid particles already touch', textVn: 'Các hạt khí có khoảng trống lớn ở giữa có thể khép lại; các hạt lỏng đã chạm nhau rồi', textFr: 'Les particules d’un gaz ont de grands espaces entre elles qui peuvent se fermer ; celles d’un liquide se touchent déjà' },
+        { val: 'C', text: 'Gas particles are softer', textVn: 'Các hạt khí mềm hơn', textFr: 'Les particules d’un gaz sont plus molles' },
       ],
       correct: 'B',
       expEn: 'Compressing closes the **gaps** between particles. A gas has enormous gaps, so it squashes; liquid particles already touch, so there is nothing to close. It is not about the number or the hardness of the particles.',
       expVn: 'Nén là khép lại **khoảng trống** giữa các hạt. Chất khí có khoảng trống rất lớn, nên ép được; các hạt lỏng đã chạm nhau rồi, nên không có gì để khép. Không liên quan đến số lượng hay độ cứng của hạt.',
+      expFr: 'Comprimer, c’est fermer les **espaces** entre les particules. Un gaz a d’énormes espaces, donc il s’écrase ; les particules d’un liquide se touchent déjà, donc il n’y a rien à fermer. Ce n’est pas une question de nombre ni de dureté des particules.',
     },
   },
 
@@ -627,8 +726,10 @@ export const notes = [
     icon: 'Minimize2',
     eyebrow: 'Learner’s Book, page 33 · No particles?',
     eyebrowVn: 'Sách học sinh, trang 33 · Không có hạt nào?',
+    eyebrowFr: 'Livre de l’élève, page 33 · Pas de particules ?',
     title: 'What if You Take Them All Away?',
     titleVn: 'Nếu lấy đi hết các hạt thì sao?',
+    titleFr: 'Et si on les enlève toutes ?',
     ratio: 48,
     side: 'left',
     inlineSvg: PARTICLES.VACUUM_BOX,
@@ -638,11 +739,13 @@ export const notes = [
     contentVn:
       'Hộp chứa khí trông có vẻ trống rỗng. Nó không trống — phần lớn là khoảng không, nhưng vẫn có các hạt đang nảy qua nảy lại.\n\n' +
       'Lấy hết chúng ra thì em có một thứ có tên riêng: **chân không (vacuum)**. Không phải khí loãng, mà là **không có gì cả**. Vũ trụ, bên ngoài khí quyển, gần như là chân không hoàn hảo — vì thế ngoài đó không có âm thanh: âm thanh cần các hạt để truyền đi.',
+    contentFr: 'Une boîte de gaz a l’air vide. Elle ne l’est pas — c’est surtout de l’espace, mais il y a des particules dedans, qui rebondissent partout.\n\nEnlève-les toutes et tu obtiens quelque chose qui a son propre nom : le **vide (vacuum)**. Pas de l’air léger. Pas presque rien. **Rien.** L’espace, en dehors de notre atmosphère, est très proche d’un vide parfait — c’est pourquoi il n’y a pas de son là-haut : le son a besoin de particules pour se propager.',
     notes: [
       {
         tone: 'write',
         text: '**Vacuum:** a space where there are **no particles at all**. A vacuum contains nothing.',
         textVn: '**Chân không (vacuum):** một khoảng không **hoàn toàn không có hạt nào**. Chân không không chứa gì cả.',
+        textFr: '**Vide (vacuum) :** un espace où il n’y a **aucune particule**. Le vide ne contient rien.',
       },
     ],
   },
@@ -654,8 +757,10 @@ export const notes = [
     icon: 'ShieldCheck',
     eyebrow: 'A sponge is a solid — so why can you squash it? Decide before you reveal.',
     eyebrowVn: 'Miếng bọt biển là chất rắn — vậy vì sao bóp được nó? Quyết định trước khi hiện đáp án.',
+    eyebrowFr: 'Une éponge est un solide — alors pourquoi peux-tu l’écraser ? Décide avant d’afficher la réponse.',
     title: 'You Are Not Squashing the Sponge',
     titleVn: 'Em không hề bóp miếng bọt biển',
+    titleFr: 'Tu n’écrases pas l’éponge',
     ratio: 55,
     image: img('sponge.jpg'),
     content:
@@ -664,15 +769,18 @@ export const notes = [
     contentVn:
       'Chúng ta đã viết: **chất rắn không thể bị nén**, vì các hạt của nó đã chạm nhau rồi. Nhưng em có thể bóp miếng bọt biển nhỏ đi một nửa chỉ bằng một tay. Hoặc là học thuyết **sai**, hoặc là chúng ta đã bỏ sót điều gì đó.\n\n' +
       'Hãy nhìn những lỗ nhỏ. Miếng bọt biển là một **bộ khung rắn mỏng với không khí trong mọi khe hở**. Khi em bóp nó, phần chất rắn hoàn toàn không bị nén. **Không khí mới bị nén.** Em đang nén một chất khí, đúng như đã làm với chiếc xi-lanh. Buông tay ra thì không khí lại đẩy nó bung ra. Học thuyết vẫn đứng vững — nhưng chỉ vì chúng ta đã nhìn đủ kỹ để thấy thứ thật sự bị nén là gì.',
+    contentFr: 'Nous l’avons écrit : **un solide ne peut pas être comprimé**, parce que ses particules se touchent déjà. Pourtant tu peux serrer une éponge jusqu’à la moitié de sa taille d’une seule main. Soit la théorie est **fausse**, soit nous avons raté quelque chose.\n\nRegarde les trous. Une éponge est un **fin squelette de solide avec de l’air dans chaque trou**. Quand tu la serres, la partie solide n’est pas du tout comprimée. **C’est l’air qui l’est.** Tu comprimes un gaz, exactement comme avec la seringue. Lâche-la et l’air la fait regonfler. La théorie tient bon — mais seulement parce que nous avons regardé d’assez près pour voir ce qui était vraiment écrasé.',
     reveal: {
       label: 'Page 34, Questions 3 and 4 — the strengths and the weaknesses',
       labelVn: 'Trang 34, Câu hỏi 3 và 4 — điểm mạnh và điểm yếu',
+      labelFr: 'Page 34, questions 3 et 4 — points forts et points faibles',
       answer:
         '**Strengths:** one simple idea explains shape, volume, pouring, compressing, the smell from the kitchen and how a solid can pass the tick-and-cross test — and it makes **predictions we can test**, like the two syringes.\n\n' +
         '**Weaknesses:** nobody has ever seen a particle, so we are believing in something invisible. The picture also makes particles look like hard little balls, which they are not. And it says nothing about **why** the forces between them are strong or weak — that is Year 8.',
       answerVn:
         '**Điểm mạnh:** một ý tưởng đơn giản giải thích được hình dạng, thể tích, việc rót, việc nén, mùi thức ăn từ bếp và cả cách một chất rắn vượt qua bài kiểm tra tích-chéo — và nó đưa ra **dự đoán có thể kiểm chứng**, như hai chiếc xi-lanh.\n\n' +
         '**Điểm yếu:** chưa ai từng nhìn thấy một hạt, nên ta đang tin vào thứ vô hình. Hình vẽ cũng khiến các hạt trông như những viên bi cứng, mà thật ra không phải vậy. Và nó không nói gì về **vì sao** lực giữa chúng mạnh hay yếu — điều đó là của Lớp 8.',
+      answerFr: '**Points forts :** une seule idée simple explique la forme, le volume, le fait de verser, de comprimer, l’odeur de la cuisine et le test des coches et des croix — et elle fait des **prédictions qu’on peut tester**, comme les deux seringues.\n\n**Points faibles :** personne n’a jamais vu une particule, donc on croit en quelque chose d’invisible. Le dessin montre aussi les particules comme de petites billes dures, ce qu’elles ne sont pas. Et elle ne dit rien sur **pourquoi** les forces entre elles sont fortes ou faibles — ce sera en 8e année.',
     },
   },
 
@@ -685,21 +793,24 @@ export const notes = [
     columns: 2,
     eyebrow: 'Before you go on',
     eyebrowVn: 'Trước khi tiếp tục',
+    eyebrowFr: 'Avant de continuer',
     title: 'Can You Do All Six?',
     titleVn: 'Em làm được cả sáu điều này chứ?',
+    titleFr: 'Sais-tu faire les six ?',
     content:
       'You sorted substances by behaviour, predicted a syringe, sorted particle facts and tapped the gas box. Six things were scored along the way — how many did you get right?\n\n' +
       'Next: the Vocab, then **Label It** — you will put every label on these diagrams yourself.',
     contentVn:
       'Em đã phân loại các chất theo cách hành xử, dự đoán về xi-lanh, sắp xếp các sự kiện về hạt, và chạm vào ô chất khí. Sáu mục được tính điểm trong suốt bài — em đúng được bao nhiêu?\n\n' +
       'Tiếp theo: Từ vựng, rồi **Gắn nhãn** — em sẽ tự đặt mọi nhãn lên những hình này.',
+    contentFr: 'Tu as classé des substances selon leur comportement, prédit le test des seringues, trié des faits sur les particules et touché la case du gaz. Six activités ont été notées en chemin — combien en as-tu réussi ?\n\nEnsuite : le vocabulaire, puis **Label It** — tu placeras toi-même chaque légende sur ces schémas.',
     items: [
-      { text: 'Classify any substance as a **solid, liquid or gas** by what it does, not how it looks.', textVn: 'Phân loại bất kỳ chất nào thành **rắn, lỏng hay khí** theo điều nó làm, không phải vẻ ngoài.' },
-      { text: 'List the **properties** of solids, liquids and gases.', textVn: 'Liệt kê **tính chất** của chất rắn, chất lỏng và chất khí.' },
-      { text: 'Describe how the **particles are arranged** in each of the three states.', textVn: 'Mô tả cách **các hạt được sắp xếp** trong mỗi trạng thái.' },
-      { text: 'Use particle theory to explain **why a liquid pours and a solid does not**.', textVn: 'Dùng thuyết hạt để giải thích **vì sao chất lỏng rót được còn chất rắn thì không**.' },
-      { text: 'Use particle theory to explain **why only a gas can be compressed**.', textVn: 'Dùng thuyết hạt để giải thích **vì sao chỉ chất khí mới nén được**.' },
-      { text: 'Say what a **vacuum** is, and use **hypothesis** and **theory** correctly.', textVn: 'Nói **chân không** là gì, và dùng đúng **hypothesis** và **theory**.' },
+      { text: 'Classify any substance as a **solid, liquid or gas** by what it does, not how it looks.', textVn: 'Phân loại bất kỳ chất nào thành **rắn, lỏng hay khí** theo điều nó làm, không phải vẻ ngoài.', textFr: 'Classer n’importe quelle substance comme **solide, liquide ou gaz** selon ce qu’elle fait, pas selon son apparence.' },
+      { text: 'List the **properties** of solids, liquids and gases.', textVn: 'Liệt kê **tính chất** của chất rắn, chất lỏng và chất khí.', textFr: 'Donner les **propriétés** des solides, des liquides et des gaz.' },
+      { text: 'Describe how the **particles are arranged** in each of the three states.', textVn: 'Mô tả cách **các hạt được sắp xếp** trong mỗi trạng thái.', textFr: 'Décrire comment **les particules sont disposées** dans chacun des trois états.' },
+      { text: 'Use particle theory to explain **why a liquid pours and a solid does not**.', textVn: 'Dùng thuyết hạt để giải thích **vì sao chất lỏng rót được còn chất rắn thì không**.', textFr: 'Utiliser la théorie particulaire pour expliquer **pourquoi un liquide se verse et pas un solide**.' },
+      { text: 'Use particle theory to explain **why only a gas can be compressed**.', textVn: 'Dùng thuyết hạt để giải thích **vì sao chỉ chất khí mới nén được**.', textFr: 'Utiliser la théorie particulaire pour expliquer **pourquoi seul un gaz peut être comprimé**.' },
+      { text: 'Say what a **vacuum** is, and use **hypothesis** and **theory** correctly.', textVn: 'Nói **chân không** là gì, và dùng đúng **hypothesis** và **theory**.', textFr: 'Dire ce qu’est le **vide**, et utiliser correctement **hypothèse** et **théorie**.' },
     ],
   },
 ];

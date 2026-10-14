@@ -18,6 +18,8 @@ import { NOTES_BLOB_VERSION, deckItems, mistakesOf, restoreNotes } from '../util
 import { isLayout } from '../components/notes/layouts/helpers.jsx';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import { splitInlineMath } from '../components/notes/splitInlineMath.js';
+import useLang from '../hooks/useLang';
+import { tr, field } from '../utils/lang';
 
 const IconMap = {
   BookOpen, Scale, Target, MessageSquare, ShieldCheck,
@@ -65,8 +67,8 @@ class WidgetErrorBoundary extends Component {
  * now has to ask, and the answer has to be right.
  */
 function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, compact = false, side = false, badge = null }) {
-  const question = lang === 'vn' ? (check.qVn || check.q) : check.q;
-  const explanation = lang === 'vn' ? (check.expVn || check.expEn) : (check.expEn || check.expVn);
+  const question = field(check, 'q', lang);
+  const explanation = tr(lang, check.expEn || check.expVn, check.expVn || check.expEn, check.expFr || check.expEn || check.expVn);
 
   // `compact` is used when the check sits in the layout slide's own footer bar,
   // which already frames it — so drop the top margin, the tinted box and the
@@ -80,7 +82,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
     <div className={shell}>
       <div className={`flex flex-wrap items-center gap-y-1 text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest ${compact ? 'mb-2' : 'mb-3'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
         <HelpCircle className={isDisplayMode ? 'w-5 h-5 mr-2' : 'w-4 h-4 mr-2'} strokeWidth={3} />
-        {lang === 'vn' ? 'Kiểm tra nhanh' : 'Quick Check'}
+        {tr(lang, 'Quick Check', 'Kiểm tra nhanh', 'Vérification rapide')}
         {badge}
       </div>
 
@@ -92,7 +94,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
           sentence-length options in a 24rem strip wrap into ragged slivers. */}
       <div className={`grid gap-2 ${side ? 'sm:grid-cols-2 lg:grid-cols-1' : 'sm:grid-cols-2'}`}>
         {(check.options || []).map((opt) => {
-          const label = lang === 'vn' ? (opt.textVn || opt.text) : opt.text;
+          const label = field(opt, 'text', lang);
           const isRight = opt.val === check.correct;
           const picked = answer?.val === opt.val;
 
@@ -121,8 +123,8 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
         <div className={`rounded-xl border-2 ${compact ? 'mt-2.5' : 'mt-4'} ${answer.correct ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'} ${isDisplayMode ? 'p-[clamp(1rem,1.5vw,1.5rem)]' : (compact ? 'p-3' : 'p-4')}`}>
           <div className={`flex items-center font-black uppercase tracking-widest mb-1.5 ${answer.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'} ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
             {answer.correct
-              ? <><CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} />{lang === 'vn' ? 'Chính xác' : 'Correct'}</>
-              : <><AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />{lang === 'vn' ? 'Chưa đúng' : 'Not quite'}</>}
+              ? <><CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} />{tr(lang, 'Correct', 'Chính xác', 'Correct !')}</>
+              : <><AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />{tr(lang, 'Not quite', 'Chưa đúng', 'Pas tout à fait')}</>}
           </div>
           <div className={`font-bold leading-relaxed ${answer.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'} ${isDisplayMode ? 'text-[clamp(1rem,1.5vw,1.3rem)]' : 'text-sm lg:text-base'}`}>
             {parseText(explanation)}
@@ -185,9 +187,31 @@ const FIX_T = {
     modeFix: 'Sửa Câu Sai',
     modeResults: 'Kết Quả Bài Học',
   },
+  fr: {
+    fixLater: 'Pas de souci — tu pourras corriger ça à la fin de la leçon.',
+    tryAgain: 'Réessayer',
+    again: 'Essaie encore',
+    kept: 'tes bonnes réponses sont gardées',
+    wasRight: 'Ta réponse était juste.',
+    wasWrong: 'La dernière fois, ta réponse était fausse.',
+    fixing: (p, n) => `Corriger mes erreurs · ${p} sur ${n}`,
+    finishedBar: (r, n) => `Leçon terminée · ${r} sur ${n} justes`,
+    results: 'Résultats',
+    skip: 'Passer',
+    next: 'Suivant',
+    finish: 'Terminer',
+    startOver: 'Recommencer',
+    restartTitle: 'Recommencer la leçon ?',
+    restartBody: 'Tes réponses seront effacées et tu reviendras à la diapo 1. Ton meilleur score reste enregistré.',
+    restartHint: 'Pas besoin de recommencer pour corriger une erreur. À la fin de la leçon, tu peux refaire chaque question ratée — et tes bonnes réponses sont gardées.',
+    restartHintDone: 'Pas besoin de recommencer pour corriger tes erreurs. « Corriger mes erreurs » refait seulement celles que tu as ratées — tes bonnes réponses sont gardées.',
+    keep: 'Garder mes réponses',
+    modeFix: 'Corriger mes erreurs',
+    modeResults: 'Résultats de la leçon',
+  },
 };
 
-export default function Notes({ slides, onComplete, onProgress, onQuit, savedData, itemLog, bilingual = true }) {
+export default function Notes({ slides, onComplete, onProgress, onQuit, savedData, itemLog, bilingual = true, langs }) {
   // Resume where the student left off. Students routinely close a deck part
   // way through (the tablet sleeps, the lesson ends, they tap the X), and
   // before this every slide read and every check answered was thrown away.
@@ -198,7 +222,9 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   const [currentIndex, setCurrentIndex] = useState(restored.slide);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
-  const [lang, setLang] = useState('en');
+  // EN / VN, plus FR on Year 7 (`langs` from the host); English alone on an
+  // English-only track. Both switches below render one button per language.
+  const { lang, setLang, langs: offered } = useLang({ langs, bilingual });
   const [isDisplayMode, setIsDisplayMode] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
   const [checkAnswers, setCheckAnswers] = useState(restored.checks); // slide index -> result
@@ -548,13 +574,13 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   }
   
   const currentSlide = slides[currentIndex];
-  const slideTitle = lang === 'vn' ? (currentSlide.titleVn || currentSlide.title) : currentSlide.title;
-  const slideSubtitle = lang === 'vn' ? (currentSlide.subtitleVn || currentSlide.subtitle) : currentSlide.subtitle;
-  const slideObjective = lang === 'vn' ? (currentSlide.objectiveVn || currentSlide.objective) : currentSlide.objective;
-  const slideWarmUp = lang === 'vn' ? (currentSlide.warmUpVn || currentSlide.warmUp) : currentSlide.warmUp;
-  
-  const slideContent = lang === 'vn' ? (currentSlide.contentVn || currentSlide.content) : currentSlide.content;
-  const slideExample = lang === 'vn' ? (currentSlide.exampleVn || currentSlide.example) : currentSlide.example;
+  const slideTitle = field(currentSlide, 'title', lang);
+  const slideSubtitle = field(currentSlide, 'subtitle', lang);
+  const slideObjective = field(currentSlide, 'objective', lang);
+  const slideWarmUp = field(currentSlide, 'warmUp', lang);
+
+  const slideContent = field(currentSlide, 'content', lang);
+  const slideExample = field(currentSlide, 'example', lang);
   
   const hasContent = !!slideContent;
   const hasExample = !!slideExample;
@@ -572,8 +598,10 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   // with a `layout` renders through one of these; slides with only a `type`
   // (intro/concept/summary/warmup) keep the legacy renderer below untouched.
   const hasLayout = isLayout(currentSlide.layout);
-  const pick = (en, vn) => (lang === 'vn' ? (vn ?? en) : en);
-  const layoutCtx = { pick, lang, isDisplayMode, onZoom: setZoomedImage };
+  const pick = (en, vn, fr) => tr(lang, en, vn, fr);
+  // A widget zoomed from a layout slide keeps the slide's language (`withLang`);
+  // the legacy concept slide's widget never took one, so its zoom stays as it was.
+  const layoutCtx = { pick, lang, isDisplayMode, onZoom: (z) => setZoomedImage(z && { ...z, withLang: true }) };
 
   const showExampleOnRight = hasExample && !hasDiagram;
   const rightPanelExists = hasDiagram || showExampleOnRight;
@@ -588,7 +616,8 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
 
   const labelEn = currentSlide.exampleLabel || 'Example';
   const labelVn = currentSlide.exampleLabelVn || currentSlide.exampleLabel || 'Ví Dụ';
-  const displayLabel = lang === 'vn' ? labelVn : labelEn;
+  const labelFr = currentSlide.exampleLabelFr || currentSlide.exampleLabel || 'Exemple';
+  const displayLabel = tr(lang, labelEn, labelVn, labelFr);
 
   const toggleAudio = (audioUrl) => {
     if (!audioUrl) return;
@@ -708,7 +737,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
   const restoredActivity = (activity, result) => (
     <div>
       <div className="font-black text-slate-800 dark:text-slate-100 leading-snug mb-2 text-[15px] sm:text-base lg:text-lg">
-        {parseInlineText(pick(activity.prompt, activity.promptVn))}
+        {parseInlineText(pick(activity.prompt, activity.promptVn, activity.promptFr))}
       </div>
       <div className={`flex items-center gap-2 rounded-xl border-2 p-3 font-bold text-sm lg:text-base ${result.correct ? 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]' : 'bg-[#ffdfe0] border-[#ea2b2b] text-[#a32d23]'}`}>
         {result.correct ? <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} /> : <XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />}
@@ -921,7 +950,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
               {slideObjective ? (
                 <div className={`bg-white/15 backdrop-blur-sm rounded-2xl border-2 border-white/25 shadow-inner max-w-3xl mx-auto ${isDisplayMode ? 'px-8 py-6' : 'px-5 py-4'}`}>
                   <div className={`font-black uppercase tracking-[0.2em] opacity-80 mb-1.5 ${isDisplayMode ? 'text-[clamp(0.8rem,1.1vw,1.1rem)]' : 'text-[10px] sm:text-xs'}`}>
-                    {lang === 'vn' ? 'Mục tiêu' : 'Objective'}
+                    {tr(lang, 'Objective', 'Mục tiêu', 'Objectif')}
                   </div>
                   <p className={`font-bold opacity-95 drop-shadow-sm leading-snug ${isDisplayMode ? 'text-[clamp(1.4rem,2.6vw,2.6rem)]' : 'text-lg lg:text-2xl'}`}>
                     {slideObjective}
@@ -937,7 +966,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                 <div className={`bg-white rounded-2xl shadow-xl border-2 border-amber-300 text-left max-w-3xl mx-auto ${isDisplayMode ? 'mt-8 px-8 py-6' : 'mt-6 px-5 py-4'}`}>
                   <div className={`flex items-center gap-2 text-amber-600 font-black uppercase tracking-[0.15em] mb-2 ${isDisplayMode ? 'text-[clamp(0.8rem,1.1vw,1.15rem)]' : 'text-[11px] sm:text-xs'}`}>
                     <Pencil className={isDisplayMode ? 'w-5 h-5' : 'w-4 h-4'} strokeWidth={3} />
-                    {lang === 'vn' ? 'Khởi động · Làm ngay vào vở' : 'Warm-Up · Do this now in your book'}
+                    {tr(lang, 'Warm-Up · Do this now in your book', 'Khởi động · Làm ngay vào vở', 'Échauffement · À faire tout de suite dans ton cahier')}
                   </div>
                   <div className={`font-bold text-slate-800 leading-snug ${isDisplayMode ? 'text-[clamp(1.3rem,2.4vw,2.4rem)]' : 'text-lg lg:text-2xl'}`}>
                     {parseInlineText(slideWarmUp)}
@@ -1035,7 +1064,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                           {currentSlide.drawThis && (
                             <div className={`absolute top-0 right-0 bg-[#ffc800] text-amber-950 font-black uppercase tracking-widest rounded-bl-2xl lg:rounded-bl-3xl z-20 shadow-sm flex items-center border-b-2 border-l-2 border-[#cca000] ${isDisplayMode ? 'text-[clamp(0.75rem,1vw,1.1rem)] px-5 py-2.5' : 'text-[9px] sm:text-xs px-3 lg:px-4 py-1.5 lg:py-2'}`}>
                               <Pencil className={`${isDisplayMode ? 'w-4 h-4 mr-2' : 'w-3 h-3 lg:w-4 lg:h-4 mr-1.5 lg:mr-2'}`} strokeWidth={3} />
-                              {lang === 'vn' ? 'Vẽ Hình Này' : 'Draw This'}
+                              {tr(lang, 'Draw This', 'Vẽ Hình Này', 'À dessiner')}
                             </div>
                           )}
 
@@ -1127,7 +1156,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
                     {slideTitle || 'Do Now'}
                   </h2>
                   <div className={`ml-auto bg-white/20 text-white font-black uppercase tracking-[0.2em] rounded-full border border-white/30 shadow-inner ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)] px-5 py-2' : 'text-[9px] sm:text-xs px-3 py-1.5'}`}>
-                    {lang === 'vn' ? 'Viết vào vở' : 'Write it down'}
+                    {tr(lang, 'Write it down', 'Viết vào vở', 'Écris-le dans ton cahier')}
                   </div>
                 </div>
                 {/* Body */}
@@ -1172,10 +1201,11 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
             <ChevronLeft className="w-5 h-5" strokeWidth={3} />
           </button>
           
-          {bilingual && (
+          {offered.length > 1 && (
             <div className="flex items-center gap-1 px-1.5 border-r border-l border-white/20">
-              <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === 'en' ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>EN</button>
-              <button onClick={() => setLang('vn')} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === 'vn' ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>VN</button>
+              {offered.map((l) => (
+                <button key={l} onClick={() => setLang(l)} className={`px-2.5 py-1.5 rounded-lg font-black text-xs tracking-wider ${lang === l ? 'bg-[#1cb0f6] text-white' : 'text-white/50 hover:text-white'}`}>{l.toUpperCase()}</button>
+              ))}
             </div>
           )}
 
@@ -1247,9 +1277,10 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
             <>
               <Repeat className="w-4 h-4 shrink-0" strokeWidth={3} />
               <span>
-                {lang === 'vn'
-                  ? `Tiếp tục từ slide ${resumedAt + 1} / ${slides.length}`
-                  : `Picked up where you left off — slide ${resumedAt + 1} of ${slides.length}`}
+                {tr(lang,
+                  `Picked up where you left off — slide ${resumedAt + 1} of ${slides.length}`,
+                  `Tiếp tục từ slide ${resumedAt + 1} / ${slides.length}`,
+                  `On reprend où tu en étais — diapo ${resumedAt + 1} sur ${slides.length}`)}
               </span>
               <button
                 onClick={() => setConfirmRestart(true)}
@@ -1281,21 +1312,21 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
 
             <div className="flex items-center gap-2 sm:gap-4">
               {/* An English-only track (ADD_MATH, COORD_SCI) has no Vietnamese
-                  to switch to; the toggle only offered a button that did nothing. */}
-              {bilingual && (
+                  to switch to; the toggle only offered a button that did nothing.
+                  Year 7 adds FR, so the buttons come from `offered`. Three
+                  buttons share the room two had, so each is a little narrower
+                  on a phone. */}
+              {offered.length > 1 && (
                 <div className="flex bg-slate-100 dark:bg-slate-800 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-1 flex-shrink-0">
-                  <button
-                    onClick={() => setLang('en')}
-                    className={`px-3 sm:px-5 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === 'en' ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
-                  >
-                    EN
-                  </button>
-                  <button
-                    onClick={() => setLang('vn')}
-                    className={`px-3 sm:px-5 py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === 'vn' ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
-                  >
-                    VN
-                  </button>
+                  {offered.map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => setLang(l)}
+                      className={`${offered.length > 2 ? 'px-2 sm:px-4' : 'px-3 sm:px-5'} py-1.5 rounded-lg text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${lang === l ? 'bg-white dark:bg-slate-700 text-[#1cb0f6] shadow-sm border-2 border-slate-200 dark:border-slate-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 border-2 border-transparent'}`}
+                    >
+                      {l.toUpperCase()}
+                    </button>
+                  ))}
                 </div>
               )}
 
@@ -1387,7 +1418,7 @@ export default function Notes({ slides, onComplete, onProgress, onQuit, savedDat
           <div className="relative w-full h-full max-w-7xl max-h-[90vh] flex items-center justify-center bg-slate-50 dark:bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden p-2 sm:p-6 animate-in zoom-in-95 duration-300 border-4 border-slate-200 dark:border-slate-700">
              {zoomedImage.type === 'widget' ? (
                <WidgetErrorBoundary>
-                 <WidgetRenderer config={zoomedImage.config} />
+                 <WidgetRenderer config={zoomedImage.config} lang={zoomedImage.withLang ? lang : undefined} />
                </WidgetErrorBoundary>
              ) : zoomedImage.type === 'svg' ? (
                <div 

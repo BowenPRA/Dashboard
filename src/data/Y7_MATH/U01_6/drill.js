@@ -8,12 +8,13 @@
 
 export const drill = {
   mode: 'long-mult',
-  title: 'Square It by Hand', titleVn: 'Tự bình phương bằng tay',
+  title: 'Square It by Hand', titleVn: 'Tự bình phương bằng tay', titleFr: 'Au carré, à la main',
   intro: 'Each problem is a number times itself. Fill in one box at a time; the grid checks each digit as you go.',
   introVn: 'Mỗi bài là một số nhân với chính nó. Điền từng ô một; lưới kiểm tra từng chữ số khi em làm.',
+  introFr: 'Chaque calcul est un nombre multiplié par lui-même. Remplis une case à la fois ; la grille vérifie chaque chiffre au fur et à mesure.',
   ladder: [
-    { level: 'Warm-up', levelVn: 'Khởi động', items: [[13, 13], [14, 14], [21, 21]] },
-    { level: 'Carries', levelVn: 'Có nhớ', items: [[25, 25], [32, 32], [47, 47]] },
-    { level: 'Stretch', levelVn: 'Nâng cao', items: [[68, 68], [99, 99]] },
+    { level: 'Warm-up', levelVn: 'Khởi động', levelFr: 'Échauffement', items: [[13, 13], [14, 14], [21, 21]] },
+    { level: 'Carries', levelVn: 'Có nhớ', levelFr: 'Retenues', items: [[25, 25], [32, 32], [47, 47]] },
+    { level: 'Stretch', levelVn: 'Nâng cao', levelFr: 'Défi', items: [[68, 68], [99, 99]] },
   ],
 };

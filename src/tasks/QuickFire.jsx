@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Flame, Construction, CheckCircle2, XCircle, ArrowRight, Lightbulb, Trophy, RefreshCw } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr, pickTable } from '../utils/lang';
 import { SafeInlineMath } from '../components/notes/SafeMath.jsx';
 import { makeQuickFire } from '../utils/quickFire';
 
 /* ------------------------------------------------------------------ *
  * QUICK FIRE — short generated cards (Y7 Maths 3.1, 3.2).
  *
- * Reads a unit's `quickFire`: { title, titleVn, modes: [...], rounds }.
+ * Reads a unit's `quickFire`: { title, titleVn, titleFr, modes: [...], rounds }.
  * Every card is dealt fresh from a seed (utils/quickFire.js), so a second
  * attempt is new practice, and every answer is derived from the numbers on
  * the card.
@@ -45,6 +47,16 @@ const T = {
     empty: 'Chưa có thẻ', back: 'Quay lại Bảng điều khiển',
     firstTry: 'lần đầu', secondTry: 'lần hai', shown: 'được chỉ',
   },
+  fr: {
+    title: 'Questions éclair', check: 'Vérifier', next: 'Suivant', finish: 'Terminer', card: 'Carte',
+    right: 'Juste.', answerWas: 'La réponse est', tryAgain: 'Encore un essai',
+    streak: "d'affilée", power: 'exposant',
+    summaryTitle: 'Questions éclair terminées',
+    summaryLine: (c, n) => `${c} sur ${n} justes du premier coup`,
+    score: 'Score', again: 'Nouvelles cartes', done: 'Terminer',
+    empty: 'Pas encore de cartes', back: 'Retour au tableau de bord',
+    firstTry: '1er essai', secondTry: '2e essai', shown: 'montrée',
+  },
 };
 const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
 
@@ -52,12 +64,12 @@ function makeSafe(config, seed) {
   try { return makeQuickFire(config, seed); } catch { return []; }
 }
 
-export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }) {
+export default function QuickFire({ pool, onComplete, onQuit, langs, bilingual = true }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(() => makeSafe(config, seed), [config, seed]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [typed, setTyped] = useState('');
   const [picked, setPicked] = useState(null);     // a choice card's button
@@ -70,8 +82,9 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
   const [ended, setEnded] = useState(false);
   const inputRef = useRef(null);
 
-  const t = lang === 'vn' ? T.vn : T.en;
-  const L = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const t = pickTable(T, lang);
+  // A card's text in `lang`; an empty or missing twin shows the English.
+  const L = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
   const card = session[idx];
   const settled = state === 'good' || state === 'shown';
 
@@ -101,7 +114,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
   const check = () => {
     if (settled) return;
     const d = card.mark(typed);
-    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
     if (d.ok) {
       setState('good');
       setMsg(null);
@@ -112,13 +125,13 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
     setStreak(0);
     if (tries + 1 >= 2) {
       setState('shown');
-      setMsg({ tone: 'shown', en: d.en, vn: d.vn });
+      setMsg({ tone: 'shown', en: d.en, vn: d.vn, fr: d.fr });
       setResults((r) => ({ ...r, [idx]: { score: 0, tries: 2, shown: true } }));
       return;
     }
     setTries(tries + 1);
     setState('bad');
-    setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr });
   };
   // A choice card (two buttons) is answered once: there is nothing to retry.
   const choose = (val) => {
@@ -134,7 +147,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
     }
     setStreak(0);
     setState('shown');
-    setMsg({ tone: 'shown', en: d.en, vn: d.vn });
+    setMsg({ tone: 'shown', en: d.en, vn: d.vn, fr: d.fr });
     setResults((r) => ({ ...r, [idx]: { score: 0, tries: 1, shown: true } }));
   };
   const next = () => {
@@ -147,10 +160,10 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
   };
 
   const topBar = (
-    <TopBar onQuit={quit} modeTitle={L(config.title, config.titleVn) || t.title}
+    <TopBar onQuit={quit} modeTitle={L(config.title, config.titleVn, config.titleFr) || t.title}
       current={summaryOpen ? session.length : idx + 1} total={session.length}
-      lang={bilingual ? lang : undefined}
-      onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      lang={toggleLang ? lang : undefined}
+      onLangToggle={toggleLang} />
   );
 
   /* ---------------------------------------------------------- summary */
@@ -176,8 +189,8 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
                   return (
                     <div key={c.id} className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-slate-800 dark:text-slate-100">
                       <span className="w-5 text-[11px] font-black text-slate-400">{i + 1}</span>
-                      <span className="flex-1 min-w-0 overflow-x-auto text-base"><SafeInlineMath math={c.latex} /> {['round', 'couldbe', 'integer'].includes(c.mode) && <span className="ml-2 text-xs font-bold text-slate-400">{L(c.ask.en, c.ask.vn)}</span>}</span>
-                      <span className="font-mono font-black">{L(c.answer, c.answerVn)}{c.unit ? ` ${c.unit}` : ''}</span>
+                      <span className="flex-1 min-w-0 overflow-x-auto text-base"><SafeInlineMath math={c.latex} /> {['round', 'couldbe', 'integer'].includes(c.mode) && <span className="ml-2 text-xs font-bold text-slate-400">{L(c.ask.en, c.ask.vn, c.ask.fr)}</span>}</span>
+                      <span className="font-mono font-black">{L(c.answer, c.answerVn, c.answerFr)}{c.unit ? ` ${c.unit}` : ''}</span>
                       <span className={`w-16 text-right text-[10px] font-black uppercase tracking-widest ${tone}`}>{!r ? '—' : r.shown ? t.shown : r.tries === 1 ? t.firstTry : t.secondTry}</span>
                     </div>
                   );
@@ -223,7 +236,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
           <div className="text-center text-3xl sm:text-4xl text-slate-900 dark:text-slate-100 overflow-x-auto py-1">
             <SafeInlineMath math={card.latex} />
           </div>
-          <p className="mt-2 text-center text-base font-bold text-slate-500 dark:text-slate-400">{L(card.ask.en, card.ask.vn)}</p>
+          <p className="mt-2 text-center text-base font-bold text-slate-500 dark:text-slate-400">{L(card.ask.en, card.ask.vn, card.ask.fr)}</p>
 
           {card.choices ? (
             <div className="mt-5 grid grid-cols-2 gap-3 max-w-md mx-auto">
@@ -237,7 +250,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
                         : wrongPick ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300'
                           : settled ? 'border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-600'
                             : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:border-orange-400'}`}>
-                    {L(c.en, c.vn)}
+                    {L(c.en, c.vn, c.fr)}
                   </button>
                 );
               })}
@@ -251,7 +264,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
                 readOnly={settled}
                 onChange={(e) => { setTyped(e.target.value); if (state === 'bad') setState(null); }}
                 onKeyDown={(e) => { if (e.key === 'Enter') (settled ? next() : check()); }}
-                inputMode="decimal" autoComplete="off" spellCheck={false} aria-label={L(card.ask.en, card.ask.vn)} placeholder="?"
+                inputMode="decimal" autoComplete="off" spellCheck={false} aria-label={L(card.ask.en, card.ask.vn, card.ask.fr)} placeholder="?"
                 className={`${card.power ? 'w-24' : 'w-52'} px-3 py-2 rounded-xl border-2 border-b-[4px] font-mono font-black text-3xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-orange-500 ${inputTone}`}
               />
               {card.unit && <span className="text-2xl font-black text-slate-700 dark:text-slate-200">{card.unit}</span>}
@@ -269,7 +282,7 @@ export default function QuickFire({ pool, onComplete, onQuit, bilingual = true }
               {soft ? <Lightbulb className="w-5 h-5 shrink-0" strokeWidth={3} /> : <XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />}
               <span>
                 {msg.tone === 'bad' && <span className="mr-1 uppercase text-[10px] tracking-widest">{t.tryAgain} ·</span>}
-                {L(msg.en, msg.vn)}
+                {L(msg.en, msg.vn, msg.fr)}
                 {msg.tone === 'shown' && !card.choices && <span className="ml-1">{t.answerWas} <span className="font-mono">{card.answer}{card.unit ? ` ${card.unit}` : ''}</span>.</span>}
               </span>
             </div>

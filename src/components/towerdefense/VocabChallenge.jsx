@@ -87,6 +87,10 @@ export default function VocabChallenge({
                 {challenge.vn && (
                   <div className="text-lg font-bold text-slate-400 mt-1">{challenge.vn}</div>
                 )}
+                {/* Year 7 words carry the French too: smaller, on its own line. */}
+                {challenge.fr && (
+                  <div className="text-sm font-bold text-slate-400 mt-0.5">{challenge.fr}</div>
+                )}
               </div>
 
               <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3 mb-2">

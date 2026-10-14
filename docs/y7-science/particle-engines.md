@@ -126,7 +126,7 @@ proved applies here too:
 - A `hotspot` strips a diagram's printed text; do not use it on a diagram whose text is
   the content.
 
-Checklist: bilingual everywhere · `check`/`activity` last · no "partner / hands up / on
+Checklist: EN/VN/FR everywhere ([../french.md](../french.md)) · `check`/`activity` last · no "partner / hands up / on
 paper / whiteboard" · no Learner's Book scan · photos copied to
 `public/images/Y7_SCI/<UNIT>/` with credits · `npm run audit:svg Y7_SCI` clean · walked in
 `preview-y7sci.html?unit=<UNIT>`.

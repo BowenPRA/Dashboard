@@ -3,6 +3,8 @@ import {
   Divide, Construction, CheckCircle2, XCircle, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, ListChecks, Target,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { SafeInlineMath } from '../components/notes/SafeMath.jsx';
 import ShortDivBoard from '../components/math/ShortDivBoard.jsx';
 import { focusBox } from '../components/math/shortDivBoardHelpers';
@@ -16,12 +18,12 @@ import { diagnoseRound, placeName } from '../utils/rounding';
  * BUS STOP — short division, written the short way (Y7 Maths 3.2).
  *
  * Reads a unit's `shortDiv`:
- *   { title, titleVn, intro?, introVn?, levels: { n: { en, vn } }, items: [
+ *   { title, titleVn, titleFr, intro?, introVn?, introFr?, levels: { n: { en, vn, fr } }, items: [
  *       { id, level, dividend: '936', divisor: 4 },            exact
  *       { id, level, dividend: '47', divisor: 4 },             exact, once zeros are added
  *       { id, level, dividend: '58', divisor: 7, dp: 3 },      correct to 3 d.p.
  *       { id, level, dividend: '85', divisor: 4, remainder: true },  whole: 21 r 1
- *       (+ context / contextVn)
+ *       (+ context / contextVn / contextFr)
  *   ] }
  * Number Gym (NumberDrill.jsx) also mounts this screen for the short-div
  * drills of 1.4 and 1.5, every item a remainder item.
@@ -108,12 +110,44 @@ const T = {
     noItems: 'Chưa có câu hỏi', back: 'Quay lại Bảng điều khiển',
     dp: 'c.s.t.p.',
   },
+  fr: {
+    title: 'Arrêt de bus',
+    check: 'Vérifier', stuck: 'Montre-moi', next: 'Suivant', finish: 'Terminer',
+    solved: 'faites', level: 'Niveau',
+    clean: 'Toutes les cases justes du premier coup.',
+    slipped: "Fini — une erreur, et tu l'as trouvée toi-même.",
+    helped: 'Fini — avec une ou deux étapes montrées.',
+    bookCopy: 'Recopie ceci dans ton cahier', answer: 'Réponse',
+    headExact: 'Divise', headRound: 'Divise, puis arrondis',
+    stages: { divide: 'Diviser', round: 'Arrondir' },
+    askCol: (d, cur) => `En ${cur}, combien de fois ${d} ?`,
+    readCarry: (k, dg, cur) => `Le petit ${k} va avec le ${dg} — lis-les ensemble : ${cur}.`,
+    boxes: 'Le chiffre en haut. Le reste dans la petite case, en haut à gauche du chiffre suivant.',
+    remLast: 'Dernier chiffre : ce qui reste est le reste — écris-le après le r.',
+    typeTop: "Écris d'abord le chiffre du haut.",
+    fillCarry: 'Il y a un reste. Écris-le dans la petite case — en haut à gauche du chiffre suivant.',
+    fillRem: 'Il reste quelque chose. Écris le reste après le r.',
+    filled: "C'est rempli pour toi.",
+    shown: 'Le voici. Lis-le, puis continue.',
+    pointNote: 'Le point va aussi dans la réponse — juste au-dessus de celui du nombre.',
+    maxZeros: "C'est le maximum de zéros que la page peut contenir.",
+    addZero: 'Ajoute un zéro après le point', removeZero: 'Enlève le dernier zéro',
+    top: 'chiffre du haut, colonne', carry: 'reste reporté sur le chiffre', remainder: 'reste',
+    roundTitle: (q, name) => `Maintenant, arrondis ${q} ${name}.`,
+    roundSub: 'Le dernier chiffre que tu as calculé est celui qui décide.',
+    roundRight: 'Correct — arrondi une seule fois, avec le chiffre suivant.',
+    typeHere: 'réponse arrondie',
+    noItems: 'Pas encore de questions', back: 'Retour au tableau de bord',
+    dp: 'déc.',
+  },
 };
-const both = (key, ...args) => {
-  const en = T.en[key];
-  const vn = T.vn[key];
-  return typeof en === 'function' ? { en: en(...args), vn: vn(...args) } : { en, vn };
+/** A T entry in every language at once: `{ en, vn, fr }`. */
+const inAll = (key, ...args) => {
+  const one = (l) => (typeof T[l][key] === 'function' ? T[l][key](...args) : T[l][key]);
+  return { en: one('en'), vn: one('vn'), fr: one('fr') };
 };
+/** Join two `{ en, vn, fr }` messages with a space, language by language. */
+const joinMsg = (a, b) => ({ en: `${a.en} ${b.en}`, vn: `${a.vn} ${b.vn}`, fr: `${a.fr ?? a.en} ${b.fr ?? b.en}` });
 
 const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
 
@@ -136,7 +170,7 @@ function Stage({ icon: Icon, label, active, done }) {
 
 function Message({ msg, lang }) {
   if (!msg) return null;
-  const text = lang === 'vn' && msg.vn ? msg.vn : msg.en;
+  const text = tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en);
   if (!text) return null;
   const soft = msg.tone === 'shown' || msg.tone === 'info';
   const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
@@ -150,10 +184,10 @@ function Message({ msg, lang }) {
   );
 }
 
-export default function ShortDivision({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
+export default function ShortDivision({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
   const items = useMemo(() => (pool?.items || []).filter((it) => deriveItem(it)), [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [results, setResults] = useState(() => {
     const init = {};
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
@@ -185,7 +219,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
 
   // Open with the cursor in the first box.
   useEffect(() => { focusBox(UID, 'q0'); }, []);
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
 
   if (!items.length || !model) {
     return (
@@ -257,8 +291,8 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     if (msg?.tone === 'bad') setMsg(null);
   };
   const addZero = () => {
-    if (zeros >= MAX_ZEROS || avail >= MAX_COLS) { setMsg({ tone: 'info', ...both('maxZeros') }); return; }
-    setNote(zeros === 0 && model.givenCols === model.intLen ? both('pointNote') : null);
+    if (zeros >= MAX_ZEROS || avail >= MAX_COLS) { setMsg({ tone: 'info', ...inAll('maxZeros') }); return; }
+    setNote(zeros === 0 && model.givenCols === model.intLen ? inAll('pointNote') : null);
     setZeros(zeros + 1);
     if (msg?.tone === 'bad') setMsg(null);
     // the new zero is the next digit: its small box is live straight away
@@ -309,8 +343,8 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     setHelped(true);
     setSlipped(true);
     stepOn(zerosNow, true);
-    const f = both(why ? 'filled' : 'shown');
-    setMsg({ tone: 'shown', en: why ? `${why.en} ${f.en}` : f.en, vn: why ? `${why.vn} ${f.vn}` : f.vn });
+    const f = inAll(why ? 'filled' : 'shown');
+    setMsg({ tone: 'shown', ...(why ? joinMsg(why, f) : f) });
   };
 
   const checkDivide = () => {
@@ -320,12 +354,12 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     const hasBox = kId != null;
     const last = col === need - 1;
     const qText = String(entries[qId] ?? '').trim();
-    if (!qText && !column.leading) { setMsg({ tone: 'info', ...both('typeTop') }); focusBox(UID, qId); return; }
+    if (!qText && !column.leading) { setMsg({ tone: 'info', ...inAll('typeTop') }); focusBox(UID, qId); return; }
     const qOk = qDigitOk(column, qText);
     const kText = String(entries[kId] ?? '').trim();
     if (qOk && hasBox && !kText && column.carryOut !== 0) {
       setMarks((m) => ({ ...m, [qId]: 'good' }));
-      setMsg({ tone: 'info', ...both(lastRem ? 'fillRem' : 'fillCarry') });
+      setMsg({ tone: 'info', ...inAll(lastRem ? 'fillRem' : 'fillCarry') });
       focusBox(UID, kId);
       return;
     }
@@ -359,27 +393,27 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   /* ---------------------------------------------------------- round */
   const checkRound = () => {
     const d = diagnoseRound(model.round, model.dp, roundTyped);
-    if (d.ok) { setRoundMark('good'); setMsg({ tone: 'ok', ...both('roundRight') }); completeItem(helped); return; }
-    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn }); return; }
+    if (d.ok) { setRoundMark('good'); setMsg({ tone: 'ok', ...inAll('roundRight') }); completeItem(helped); return; }
+    if (d.soft) { setMsg({ tone: 'info', en: d.en, vn: d.vn, fr: d.fr }); return; }
     setSlipped(true);
     if (wrongs + 1 >= 2) {
-      const f = both('filled');
+      const f = inAll('filled');
       setRoundTyped(model.answerText);
       setRoundMark('shown');
       setHelped(true);
-      setMsg({ tone: 'shown', en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}` });
+      setMsg({ tone: 'shown', ...joinMsg(d, f) });
       completeItem(true);
       return;
     }
     setWrongs(wrongs + 1);
     setRoundMark('bad');
-    setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr });
   };
   const showRound = () => {
     setRoundTyped(model.answerText);
     setRoundMark('shown');
     setHelped(true);
-    setMsg({ tone: 'shown', ...both('shown') });
+    setMsg({ tone: 'shown', ...inAll('shown') });
     completeItem(true);
   };
 
@@ -387,11 +421,11 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const isLast = pos === items.length - 1;
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
-  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn);
-  const title = pick(pool?.title, pool?.titleVn) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn) : null;
+  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn, levelRaw?.fr);
+  const title = pick(pool?.title, pool?.titleVn, pool?.titleFr) || t.title;
+  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn, pool?.introFr) : null;
   const q = questionText(model);
-  const context = item.context ? pick(item.context, item.contextVn) : null;
+  const context = item.context ? pick(item.context, item.contextVn, item.contextFr) : null;
   const want = hasRound ? placeName(model.dp) : null;
   const sum = `${model.dividendText} \\div ${model.divisor}`;
   const answerLatex = hasRound
@@ -407,8 +441,8 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={quit} modeTitle={title} current={pos + 1} total={items.length}
-        lang={bilingual ? lang : undefined}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+        lang={toggleLang ? lang : undefined}
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-5 lg:items-start">
         {/* left: the question */}
@@ -428,7 +462,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
               </div>
             )}
             {context && <p className="px-4 pt-3 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{context}</p>}
-            <p className="px-4 pt-3 pb-1 text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 leading-snug">{pick(q.en, q.vn)}</p>
+            <p className="px-4 pt-3 pb-1 text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 leading-snug">{pick(q.en, q.vn, q.fr)}</p>
             {intro && <p className="px-4 pb-1 text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
             <div className="px-3 py-3 flex flex-wrap gap-1.5">
               {stages.length > 1 && !itemDone && stages.map((s) => (
@@ -453,7 +487,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
               )}
               {stage === 'round' && (
                 <div className="mb-3">
-                  <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{t.roundTitle(model.quotientText, pick(want.en, want.vn))}</div>
+                  <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{t.roundTitle(model.quotientText, pick(want.en, want.vn, want.frTo))}</div>
                   <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t.roundSub}</p>
                 </div>
               )}
@@ -464,7 +498,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                 activeCol={dividing ? col : null} uid={UID} ink={INK} labels={labels} />
 
               {note && (
-                <p className="mt-2 text-center text-xs font-bold text-orange-600 dark:text-orange-300">{pick(note.en, note.vn)}</p>
+                <p className="mt-2 text-center text-xs font-bold text-orange-600 dark:text-orange-300">{pick(note.en, note.vn, note.fr)}</p>
               )}
 
               {stage === 'round' && (
@@ -514,7 +548,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                   <div className="text-xl text-slate-900 dark:text-slate-100 overflow-x-auto"><SafeInlineMath math={answerLatex} /></div>
                 </div>
                 {verdict && (
-                  <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{pick(verdict.en, verdict.vn)}</p>
+                  <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{pick(verdict.en, verdict.vn, verdict.fr)}</p>
                 )}
                 <div className="mt-4 flex justify-end">
                   <button onClick={isLast ? finish : goNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: INK_DARK }}>

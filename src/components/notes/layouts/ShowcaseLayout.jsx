@@ -6,12 +6,12 @@ import { parseInlineText, toHex } from './helpers.jsx';
 export default function ShowcaseLayout({ slide: s, ctx }) {
   const { pick, isDisplayMode } = ctx;
   const accent = toHex(s.accent || s.color, '#1cb0f6');
-  const title = pick(s.title, s.titleVn);
-  const caption = pick(s.caption, s.captionVn);
+  const title = pick(s.title, s.titleVn, s.titleFr);
+  const caption = pick(s.caption, s.captionVn, s.captionFr);
 
   return (
     <>
-      <HeaderBar title={title || ''} icon={s.icon || 'Microscope'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />
+      <HeaderBar title={title || ''} icon={s.icon || 'Microscope'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn, s.eyebrowFr)} isDisplayMode={isDisplayMode} />
       <div className={`flex-1 min-h-0 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col ${isDisplayMode ? 'p-[clamp(1.25rem,2.5vw,2.5rem)]' : 'p-3 sm:p-4 lg:p-5'}`}>
         <div className="flex-1 min-h-0">
           <Media slide={s} ctx={ctx} />

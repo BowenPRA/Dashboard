@@ -21,6 +21,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Stirring makes a **mixture**: nothing bonds, so the iron keeps its properties and a magnet separates it. A compound (A) needs the atoms to bond, as they do when heated; sulfur is never magnetic (C); and iron is an element (D).',
       expVn: 'Khuấy tạo ra **hỗn hợp**: không có gì liên kết, nên sắt giữ nguyên tính chất và nam châm tách được nó. Hợp chất (A) cần các nguyên tử liên kết, như khi đun nóng; lưu huỳnh không bao giờ bị nam châm hút (C); và sắt là nguyên tố (D).',
+      expFr: 'Remuer donne un **mélange** : rien ne se lie, donc le fer garde ses propriétés et un aimant le sépare. Un composé (A) demande que les atomes se lient, comme quand on chauffe ; le soufre n’est jamais magnétique (C) ; et le fer est un élément (D).',
     },
     {
       id: 'a2_particles',
@@ -35,6 +36,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Two different substances, not bonded, make a **mixture**; each is only one kind of atom, so both are **elements**. It is not a compound (B) because nothing is bonded, not pure (C) because there are two substances, and neither substance is a compound (D).',
       expVn: 'Hai chất khác nhau, không liên kết, tạo thành **hỗn hợp**; mỗi chất chỉ có một loại nguyên tử, nên cả hai là **nguyên tố**. Không phải hợp chất (B) vì không có gì liên kết, không tinh khiết (C) vì có hai chất, và không chất nào là hợp chất (D).',
+      expFr: 'Deux substances différentes, pas liées, forment un **mélange** ; chacune n’a qu’une seule sorte d’atome, donc ce sont deux **éléments**. Ce n’est pas un composé (B) parce que rien n’est lié, ni un corps pur (C) parce qu’il y a deux substances, et aucune des deux substances n’est un composé (D).',
     },
     {
       id: 'a3_magnet_fes',
@@ -49,6 +51,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Iron sulfide is a **compound** with new properties, and it is **not magnetic**, so the magnet does nothing. A and D are the misconception that iron sulfide is magnetic because iron is in it; B is wrong because sulfur is not magnetic.',
       expVn: 'Sắt sunfua là **hợp chất** có tính chất mới, và nó **không bị nam châm hút**, nên nam châm không làm gì được. A và D là quan niệm sai rằng sắt sunfua bị hút vì có sắt trong đó; B sai vì lưu huỳnh không bị nam châm hút.',
+      expFr: 'Le sulfure de fer est un **composé** aux propriétés nouvelles, et il n’est **pas magnétique**, donc l’aimant ne fait rien. A et D font l’erreur de croire que le sulfure de fer est magnétique parce qu’il contient du fer ; B est faux parce que le soufre n’est pas magnétique.',
     },
     {
       id: 'a4_compound_props',
@@ -63,6 +66,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'A compound is **bonded**, has **new** properties and is **hard** to separate. A, B and C all describe a **mixture** — a mixture does not have new properties; each substance in it keeps its own.',
       expVn: 'Hợp chất có **liên kết**, có tính chất **mới** và **khó** tách ra. A, B và C đều mô tả **hỗn hợp** — hỗn hợp không có tính chất mới; mỗi chất trong đó giữ nguyên tính chất của mình.',
+      expFr: 'Un composé est **lié**, a de **nouvelles** propriétés et est **difficile** à séparer. A, B et C décrivent tous un **mélange** — un mélange n’a pas de nouvelles propriétés ; chaque substance qu’il contient garde les siennes.',
     },
     {
       id: 'a5_air',
@@ -77,6 +81,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Air is a **mixture**: nitrogen and oxygen (elements) with carbon dioxide and water (compounds), none bonded to the others. "Mostly nitrogen" (A) still leaves other substances; nitrogen and oxygen in air are not bonded (C); and being all gas does not make it one substance (D).',
       expVn: 'Không khí là **hỗn hợp**: nitơ và oxi (nguyên tố) với cacbon đioxit và nước (hợp chất), không chất nào liên kết với chất khác. "Chủ yếu là nitơ" (A) vẫn còn các chất khác; nitơ và oxi trong không khí không liên kết (C); và đều là khí không làm nó thành một chất (D).',
+      expFr: 'L’air est un **mélange** : azote et oxygène (éléments) avec dioxyde de carbone et eau (composés), sans qu’aucun soit lié aux autres. « Surtout de l’azote » (A) laisse quand même d’autres substances ; l’azote et l’oxygène de l’air ne sont pas liés (C) ; et être entièrement gazeux n’en fait pas une seule substance (D).',
     },
     {
       id: 'a6_pure_label',
@@ -91,6 +96,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'In science **pure means one substance**. Water with minerals is a mixture, whatever the label says. On a bottle, "pure" only means clean (A); natural (B) is not the same as pure; and the minerals are dissolved, not bonded to the water (D).',
       expVn: 'Trong khoa học **tinh khiết nghĩa là một chất**. Nước có khoáng chất là hỗn hợp, dù nhãn ghi gì. Trên chai, "pure" chỉ có nghĩa là sạch (A); tự nhiên (B) không có nghĩa là tinh khiết; và khoáng chất hòa tan, không liên kết với nước (D).',
+      expFr: 'En sciences, **pur veut dire une seule substance**. De l’eau avec des minéraux est un mélange, quoi que dise l’étiquette. Sur une bouteille, « pure » veut seulement dire propre (A) ; naturel (B), ce n’est pas la même chose que pur ; et les minéraux sont dissous, pas liés à l’eau (D).',
     },
     {
       id: 'a7_tap_basin',
@@ -105,6 +111,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The water flowed through **rocks** and **minerals dissolved** in it; when the water evaporated they were left behind, which is why tap water is a mixture. Evaporating water becomes a gas, not a solid (B); the basin does not change (C); and no new compound is made (D).',
       expVn: 'Nước chảy qua **đất đá** và **khoáng chất hòa tan** vào nó; khi nước bay hơi, chúng còn lại, vì thế nước máy là hỗn hợp. Nước bay hơi thành khí, không thành rắn (B); bát không thay đổi (C); và không có hợp chất mới nào được tạo ra (D).',
+      expFr: 'L’eau a coulé à travers des **roches** et des **minéraux** s’y sont **dissous** ; quand l’eau s’est évaporée, ils sont restés : c’est pour ça que l’eau du robinet est un mélange. L’eau qui s’évapore devient un gaz, pas un solide (B) ; la capsule ne change pas (C) ; et aucun nouveau composé ne se forme (D).',
     },
     {
       id: 'a8_salt_water',
@@ -119,6 +126,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Salt water is a **mixture**: the salt and water are not bonded to each other, so evaporating the water leaves the salt. A mixture can contain compounds (A); water is a compound, not an element (C); and a salty taste is just the salt keeping its own property — not a new one (D).',
       expVn: 'Nước muối là **hỗn hợp**: muối và nước không liên kết với nhau, nên làm bay hơi nước thì muối còn lại. Hỗn hợp có thể chứa hợp chất (A); nước là hợp chất, không phải nguyên tố (C); và vị mặn chỉ là muối giữ nguyên tính chất của nó — không phải tính chất mới (D).',
+      expFr: 'L’eau salée est un **mélange** : le sel et l’eau ne sont pas liés l’un à l’autre, donc évaporer l’eau laisse le sel. Un mélange peut contenir des composés (A) ; l’eau est un composé, pas un élément (C) ; et un goût salé, c’est juste le sel qui garde sa propre propriété — pas une nouvelle (D).',
     },
   ],
 };

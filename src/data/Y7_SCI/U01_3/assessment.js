@@ -19,6 +19,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'A specialised cell is like a specialist doctor: built for **one** job, brilliant at it, and no use for the others. Size and organelle count are not the point — the shape fitting the job is.',
       expVn: 'Tế bào chuyên hoá giống bác sĩ chuyên khoa: được tạo ra cho **một** nhiệm vụ, xuất sắc ở đó, và vô dụng với những việc khác. Kích thước hay số bào quan không phải điểm chính — hình dạng phù hợp nhiệm vụ mới là.',
+      expFr: 'Une cellule spécialisée est comme un médecin spécialiste : faite pour **un seul** travail, excellente pour celui-là, et inutile pour les autres. La taille et le nombre d’organites ne comptent pas — ce qui compte, c’est que la forme convienne au travail.',
     },
     {
       id: 'a2_red_blood',
@@ -33,6 +34,7 @@ export const assessment = {
       correct: 'C',
       expEn: '**Haemoglobin** is the red pigment that actually holds the oxygen. The axon belongs to a neurone, cilia to a ciliated cell, and a sap vacuole to a plant cell.',
       expVn: '**Haemoglobin** là sắc tố đỏ thực sự giữ lấy oxy. Sợi trục thuộc tế bào thần kinh, lông rung thuộc tế bào có lông rung, còn không bào thuộc tế bào thực vật.',
+      expFr: 'L’**hémoglobine** est le pigment rouge qui retient vraiment l’oxygène. L’axone appartient à un neurone, les cils à une cellule ciliée, et la vacuole à une cellule végétale.',
     },
     {
       id: 'a3_neurone',
@@ -47,6 +49,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'A neurone carries **electrical signals**; the long axon means one cell can carry a signal from your back to your toe, quickly. B is the root hair cell, C the red blood cell, D the ciliated cell.',
       expVn: 'Tế bào thần kinh truyền **tín hiệu điện**; sợi trục dài nghĩa là một tế bào có thể truyền tín hiệu từ lưng xuống ngón chân, nhanh chóng. B là tế bào lông hút, C là hồng cầu, D là tế bào có lông rung.',
+      expFr: 'Un neurone transporte des **signaux électriques** ; grâce à son long axone, une seule cellule peut transmettre un signal de ton dos jusqu’à ton orteil, rapidement. B est la cellule de poil absorbant, C le globule rouge, D la cellule ciliée.',
     },
     {
       id: 'a4_ciliated',
@@ -61,6 +64,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Ciliated cells **line the tubes from your mouth to your lungs**. Their moving cilia sweep the sticky mucus, with the dust and germs trapped in it, up towards your mouth.',
       expVn: 'Tế bào có lông rung **lót các ống từ miệng xuống phổi**. Lông rung chuyển động của chúng quét chất nhầy dính, cùng bụi và vi khuẩn mắc trong đó, lên phía miệng.',
+      expFr: 'Les cellules ciliées **tapissent les conduits qui vont de ta bouche à tes poumons**. Leurs cils en mouvement balaient le mucus collant, avec la poussière et les microbes qu’il retient, vers ta bouche.',
     },
     {
       id: 'a5_root_hair',
@@ -75,6 +79,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'The long, thin hair pushes out between the soil grains and gives a **big surface** for water to be absorbed through. Roots are in the dark, so catching sunlight is not its job.',
       expVn: 'Lông dài và mảnh đẩy ra giữa các hạt đất và tạo **bề mặt lớn** để hấp thụ nước. Rễ nằm trong bóng tối, nên bắt ánh sáng không phải nhiệm vụ của nó.',
+      expFr: 'Le long poil fin se glisse entre les grains de terre et offre une **grande surface** à travers laquelle l’eau est absorbée. Les racines sont dans le noir, donc capter la lumière du soleil n’est pas son travail.',
     },
     {
       id: 'a6_frame',
@@ -89,6 +94,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The frame is **[cell] is adapted to [job] because it has [feature]**: a sperm cell is adapted to swim because it has a long tail. C gives the wrong job; B and D put the parts in the wrong order.',
       expVn: 'Mẫu câu là **[tế bào] is adapted to [nhiệm vụ] because it has [đặc điểm]**: tế bào tinh trùng thích nghi để bơi vì nó có đuôi dài. C sai nhiệm vụ; B và D đặt các phần sai thứ tự.',
+      expFr: 'Le modèle de phrase est **[cell] is adapted to [job] because it has [feature]** : a sperm cell is adapted to swim because it has a long tail (le spermatozoïde est adapté pour nager car il a une longue queue). C donne le mauvais travail ; B et D mettent les parties dans le mauvais ordre.',
     },
   ],
 };

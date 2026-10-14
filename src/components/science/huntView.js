@@ -110,34 +110,34 @@ export function tableView(round, { checked = false, answer = null, picked = [] }
 
 /** A short line for the end-of-session summary: what the round was about, with its answer. */
 export function huntRowLabel(round) {
-  const el = (s) => elementBySymbol(s) || { sym: s, en: s, vn: s };
-  const both = (fn) => ({ en: fn('en'), vn: fn('vn') });
+  const el = (s) => elementBySymbol(s) || { sym: s, en: s, vn: s, fr: s };
+  const all = (fn) => ({ en: fn('en'), vn: fn('vn'), fr: fn('fr') });
   switch (round.mode) {
-    case 'find': return both((l) => `${el(round.targets[0])[l]} → ${round.targets[0]}`);
-    case 'symbol': return both((l) => `${el(round.answer)[l]} → ${round.answer}`);
-    case 'name': return both((l) => `${round.answer} → ${el(round.answer)[l]}`);
-    case 'mass': return both((l) => `${round.options.map((o) => o.val).join(' / ')} → ${el(round.answer)[l]}`);
+    case 'find': return all((l) => `${el(round.targets[0])[l]} → ${round.targets[0]}`);
+    case 'symbol': return all((l) => `${el(round.answer)[l]} → ${round.answer}`);
+    case 'name': return all((l) => `${round.answer} → ${el(round.answer)[l]}`);
+    case 'mass': return all((l) => `${round.options.map((o) => o.val).join(' / ')} → ${el(round.answer)[l]}`);
     default:
       if (round.kind === 'choice') {
         const o = round.options.find((x) => x.val === round.answer);
-        return both((l) => `${round.focus} → ${o ? o[l] : round.answer}`);
+        return all((l) => `${round.focus} → ${o ? o[l] || o.en : round.answer}`);
       }
-      return both(() => round.targets.join(', '));
+      return all(() => round.targets.join(', '));
   }
 }
 
 /** Lines to show above the round's own `explain` when the answer was wrong. */
 export function huntFeedback(round, answer, mark) {
   if (!mark || mark.ok) return [];
-  if (round.kind === 'type') return mark.en ? [{ en: mark.en, vn: mark.vn }] : [];
+  if (round.kind === 'type') return mark.en ? [{ en: mark.en, vn: mark.vn, fr: mark.fr }] : [];
   if (round.kind === 'tap') {
     const e = elementBySymbol(answer);
-    return e ? [{ en: `You tapped ${e.sym} (${e.en}).`, vn: `Bạn đã chạm vào ${e.sym} (${e.vn}).` }] : [];
+    return e ? [{ en: `You tapped ${e.sym} (${e.en}).`, vn: `Bạn đã chạm vào ${e.sym} (${e.vn}).`, fr: `Tu as touché ${e.sym} (${e.fr}).` }] : [];
   }
   if (round.kind === 'multi') {
     const out = [];
-    if (mark.missed?.length) out.push({ en: `Missed: ${mark.missed.join(', ')}.`, vn: `Còn thiếu: ${mark.missed.join(', ')}.` });
-    if (mark.extra?.length) out.push({ en: `Not in the set: ${mark.extra.join(', ')}.`, vn: `Chọn thừa: ${mark.extra.join(', ')}.` });
+    if (mark.missed?.length) out.push({ en: `Missed: ${mark.missed.join(', ')}.`, vn: `Còn thiếu: ${mark.missed.join(', ')}.`, fr: `Oubliés : ${mark.missed.join(', ')}.` });
+    if (mark.extra?.length) out.push({ en: `Not in the set: ${mark.extra.join(', ')}.`, vn: `Chọn thừa: ${mark.extra.join(', ')}.`, fr: `En trop : ${mark.extra.join(', ')}.` });
     return out;
   }
   return [];

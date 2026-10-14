@@ -22,6 +22,7 @@ import { ShiftActivity, RoundActivity, BusStopActivity, IneqActivity } from './N
 import { ChainActivity } from './ChainActivity.jsx';
 import { CycleActivity } from './CycleActivity.jsx';
 import { PhActivity } from './PhActivity.jsx';
+import { tr, field } from '../../utils/lang';
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -50,7 +51,8 @@ import { PhActivity } from './PhActivity.jsx';
 const GREEN = '#58cc02';
 const RED = '#ff4b4b';
 
-const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
+// pickL(lang, en, vn, fr): the twin for `lang`, English when it has none.
+const pickL = tr;
 
 /** Deterministic shuffle so a slide shows the same order every visit. */
 function seededShuffle(list, seed) {
@@ -86,6 +88,13 @@ const T = {
     shouldBe: 'phải là', choose: 'Chọn một', reveal: 'Xem điều gì xảy ra', up: 'Lên', down: 'Xuống',
     close: 'Gần đúng!', wayOff: 'Chưa gần', spotOn: 'Chính xác',
   },
+  fr: {
+    check: 'Vérifier', done: 'Terminé', tapCard: 'Touche une carte, puis sa case', dropHere: 'Touche pour placer',
+    allPlaced: 'Tout est placé', lockIn: 'Valider', yourGuess: 'Ton estimation', answer: 'Réponse',
+    tapPart: 'Touche le schéma', tries: 'Réessaie — encore une chance', correct: 'Correct !', notQuite: 'Pas tout à fait', missed: 'À côté',
+    shouldBe: 'devrait être', choose: 'Choisis', reveal: 'Voir ce qui se passe', up: 'Monter', down: 'Descendre',
+    close: 'Presque !', wayOff: 'Trop loin', spotOn: 'Pile !',
+  },
 };
 
 // ── shared chrome ────────────────────────────────────────────────────────────
@@ -95,11 +104,11 @@ function Header({ activity, lang, parseText, isDisplayMode, badge }) {
     <>
       <div className={`flex flex-wrap items-center gap-y-1 text-[#1899d6] dark:text-[#5cc8ff] font-black uppercase tracking-widest mb-2 ${isDisplayMode ? 'text-[clamp(0.75rem,1.1vw,1.1rem)]' : 'text-[10px] lg:text-xs'}`}>
         <MousePointerClick className="w-4 h-4 mr-2" strokeWidth={3} />
-        {lang === 'vn' ? 'Hoạt động' : 'Try it'}
+        {tr(lang, 'Try it', 'Hoạt động', 'À toi de jouer')}
         {badge}
       </div>
       <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug mb-3 ${isDisplayMode ? 'text-[clamp(1.1rem,1.8vw,1.5rem)]' : 'text-[15px] sm:text-base lg:text-lg'}`}>
-        {parseText(pickL(lang, activity.prompt, activity.promptVn))}
+        {parseText(pickL(lang, activity.prompt, activity.promptVn, activity.promptFr))}
       </div>
     </>
   );
@@ -165,10 +174,10 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry, side
         className={`flex items-center gap-1.5 rounded-xl border-2 border-b-[4px] font-bold transition-all cursor-pointer ${compact ? 'px-2 py-1.5 text-xs' : 'px-3 py-2 text-sm'} ${style}`}
       >
         {!checked && !inBin && <GripVertical className={`${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'} opacity-40`} strokeWidth={3} />}
-        {parseText(pickL(lang, c.name, c.nameVn))}
+        {parseText(pickL(lang, c.name, c.nameVn, c.nameFr))}
         {checked && !ok && (
           <span className="ml-1 text-[10px] uppercase tracking-widest opacity-80">
-            → {pickL(lang, activity.bins.find((b) => b.id === c.bin)?.name, activity.bins.find((b) => b.id === c.bin)?.nameVn)}
+            → {field(activity.bins.find((b) => b.id === c.bin), 'name', lang)}
           </span>
         )}
         {checked && (ok ? <CheckCircle2 className="w-4 h-4" strokeWidth={3} /> : <XCircle className="w-4 h-4" strokeWidth={3} />)}
@@ -201,7 +210,7 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry, side
               className={`rounded-2xl border-2 overflow-hidden bg-white dark:bg-slate-800 transition-all ${active ? 'border-[#1cb0f6] ring-4 ring-[#1cb0f6]/20 cursor-pointer' : 'border-slate-200 dark:border-slate-700'}`}
             >
               <div className={`bg-slate-50 dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-700 px-3 font-black text-slate-600 dark:text-slate-300 text-sm text-center ${compact ? 'py-1' : 'py-2'}`}>
-                {parseText(pickL(lang, bin.name, bin.nameVn))}
+                {parseText(pickL(lang, bin.name, bin.nameVn, bin.nameFr))}
               </div>
               <div className={`p-2.5 flex flex-wrap gap-2 items-center ${compact ? 'min-h-[40px] py-1.5' : 'min-h-[56px]'}`}>
                 {here.length === 0 && (
@@ -221,7 +230,7 @@ function SortActivity({ activity, lang, result, onResult, parseText, retry, side
         </div>
       )}
       {checked && (
-        <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>
+        <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>
       )}
     </div>
   );
@@ -270,7 +279,7 @@ function OrderActivity({ activity, lang, result, onResult, parseText, retry }) {
               className={`flex items-center gap-3 rounded-xl border-2 border-b-[4px] px-3 py-2 font-bold text-sm transition-all ${style}`}
             >
               <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-500 flex items-center justify-center font-black text-xs shrink-0">{i + 1}</span>
-              <span className="flex-1">{parseText(pickL(lang, s.name, s.nameVn))}</span>
+              <span className="flex-1">{parseText(pickL(lang, s.name, s.nameVn, s.nameFr))}</span>
               {checked
                 ? (ok ? <CheckCircle2 className="w-5 h-5" strokeWidth={3} /> : <span className="text-[10px] uppercase tracking-widest">{t.shouldBe} #{steps.findIndex((x) => x.id === id) + 1}</span>)
                 : (
@@ -284,7 +293,7 @@ function OrderActivity({ activity, lang, result, onResult, parseText, retry }) {
         })}
       </ol>
       {!checked && <div className="mt-3 flex justify-end"><button onClick={check} className={primary}>{t.check}</button></div>}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -294,8 +303,8 @@ function OrderActivity({ activity, lang, result, onResult, parseText, retry }) {
 function EstimateActivity({ activity, lang, result, onResult, parseText }) {
   const t = T[lang] || T.en;
   const { min = 0, max = 100, step = 1, answer } = activity;
-  // `unitVn` is the unit's Vietnamese twin ("giây" for "seconds"), when it has one.
-  const unit = (lang === 'vn' && activity.unitVn) || activity.unit || '';
+  // `unitVn` / `unitFr` are the unit's twins ("giây", "secondes" for "seconds"), when it has them.
+  const unit = field(activity, 'unit', lang) || activity.unit || '';
   const [value, setValue] = useState(result?.guess ?? Math.round(((min + max) / 2) / step) * step);
   const checked = !!result?.done;
   const tol = activity.tolerance ?? 0.2;
@@ -341,7 +350,7 @@ function EstimateActivity({ activity, lang, result, onResult, parseText }) {
       {checked && (
         <Verdict ok={result.correct} lang={lang}>
           <span className="mr-2 px-2 py-0.5 rounded-lg bg-white/60 text-[10px] uppercase tracking-widest">{closeness()}</span>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -409,10 +418,10 @@ function HotspotActivity({ activity, lang, result, onResult, parseText }) {
       {!checked && (
         <div className="mt-2 text-center text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-2">
           <Target className="w-4 h-4" />
-          {tries === 0 ? t.tapPart : `${last?.hit ? pickL(lang, last.hit.name, last.hit.nameVn) : t.missed} — ${t.tries}`}
+          {tries === 0 ? t.tapPart : `${last?.hit ? pickL(lang, last.hit.name, last.hit.nameVn, last.hit.nameFr) : t.missed} — ${t.tries}`}
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -447,7 +456,7 @@ function PredictActivity({ activity, lang, result, onResult, parseText, side }) 
           return (
             <button key={o.val} disabled={checked} onClick={() => setChosen(o.val)}
               className={`text-left rounded-xl border-2 border-b-[4px] p-3 font-bold text-sm transition-all ${style}`}>
-              {parseText(pickL(lang, o.name, o.nameVn))}
+              {parseText(pickL(lang, o.name, o.nameVn, o.nameFr))}
             </button>
           );
         })}
@@ -457,7 +466,7 @@ function PredictActivity({ activity, lang, result, onResult, parseText, side }) 
           <button onClick={reveal} disabled={!chosen} className={primary}><Sparkles className="w-4 h-4 inline mr-1.5 -mt-0.5" />{t.reveal}</button>
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -529,9 +538,9 @@ function PlotActivity({ activity, lang, result, onResult, parseText, retry }) {
     }
     return d.trim();
   };
-  const label = step.kind === 'vertex' ? (lang === 'vn' ? 'Bấm vào đỉnh' : 'Click the vertex')
-    : step.kind === 'zeros' ? (lang === 'vn' ? 'Bấm vào mọi giao điểm với trục x' : 'Click every crossing on the x-axis')
-      : (lang === 'vn' ? `Bấm vào mọi điểm đồ thị gặp y = ${step.at}` : `Click every point where the graph meets y = ${step.at}`);
+  const label = step.kind === 'vertex' ? tr(lang, 'Click the vertex', 'Bấm vào đỉnh', 'Clique sur le sommet')
+    : step.kind === 'zeros' ? tr(lang, 'Click every crossing on the x-axis', 'Bấm vào mọi giao điểm với trục x', 'Clique sur chaque point d’intersection avec l’axe des x')
+      : tr(lang, `Click every point where the graph meets y = ${step.at}`, `Bấm vào mọi điểm đồ thị gặp y = ${step.at}`, `Clique sur chaque point où la courbe rencontre y = ${step.at}`);
 
   return (
     <div>
@@ -582,12 +591,12 @@ function PlotActivity({ activity, lang, result, onResult, parseText, retry }) {
       {!checked && (
         <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
           {step.kind !== 'vertex' && (
-            <button onClick={() => check(true)} className={`${btn} bg-slate-500 border-slate-700 text-white`}>{lang === 'vn' ? 'Không có điểm nào' : 'There are none'}</button>
+            <button onClick={() => check(true)} className={`${btn} bg-slate-500 border-slate-700 text-white`}>{tr(lang, 'There are none', 'Không có điểm nào', 'Il n’y en a aucun')}</button>
           )}
           <button onClick={() => check(false)} disabled={!placed.length} className={primary}>{t.check}</button>
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -634,11 +643,14 @@ function NumberLineActivity({ activity, lang, result, onResult, parseText }) {
       </div>
       {!checked && (
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <span className="text-[11px] font-bold text-slate-400">{lang === 'vn' ? 'Chạm một số để đặt vòng tròn (chạm lần nữa: đặc, lần nữa: bỏ). Chạm phía trên trục để tô.' : 'Tap a number for an open circle, again to fill it, again to remove it. Tap above the line to shade.'}</span>
+          <span className="text-[11px] font-bold text-slate-400">{tr(lang,
+            'Tap a number for an open circle, again to fill it, again to remove it. Tap above the line to shade.',
+            'Chạm một số để đặt vòng tròn (chạm lần nữa: đặc, lần nữa: bỏ). Chạm phía trên trục để tô.',
+            'Touche un nombre pour un cercle vide, encore pour le remplir, encore pour l’enlever. Touche au-dessus de la droite pour colorier.')}</span>
           <button onClick={check} disabled={!marks.length} className={primary}>{t.check}</button>
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -661,11 +673,11 @@ function ReflectActivity({ activity, lang, result, onResult, parseText, retry })
       </div>
       {!checked && (
         <div className="mt-2 flex items-center justify-between gap-2">
-          <span className="text-[11px] font-bold text-slate-400">{sel.length} {lang === 'vn' ? 'đoạn đã chọn' : 'piece(s) selected'}</span>
-          <button onClick={check} disabled={!sel.length} className={primary}>{lang === 'vn' ? 'Phản chiếu' : 'Reflect'}</button>
+          <span className="text-[11px] font-bold text-slate-400">{sel.length} {tr(lang, 'piece(s) selected', 'đoạn đã chọn', 'morceau(x) choisi(s)')}</span>
+          <button onClick={check} disabled={!sel.length} className={primary}>{tr(lang, 'Reflect', 'Phản chiếu', 'Retourner')}</button>
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }
@@ -690,11 +702,11 @@ function VennActivity({ activity, lang, result, onResult, parseText, retry }) {
       </div>
       {!checked && (
         <div className="mt-2 flex items-center justify-between gap-2">
-          <span className="text-[11px] font-bold text-slate-400">{sel.length} {lang === 'vn' ? 'vùng đã tô' : `region${sel.length === 1 ? '' : 's'} shaded — tap to shade or clear`}</span>
+          <span className="text-[11px] font-bold text-slate-400">{sel.length} {tr(lang, `region${sel.length === 1 ? '' : 's'} shaded — tap to shade or clear`, 'vùng đã tô', `zone${sel.length > 1 ? 's' : ''} coloriée${sel.length > 1 ? 's' : ''} — touche pour colorier ou effacer`)}</span>
           <button onClick={check} disabled={!sel.length} className={primary}>{(T[lang] || T.en).check}</button>
         </div>
       )}
-      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</Verdict>}
+      {checked && <Verdict ok={result.correct} lang={lang}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</Verdict>}
     </div>
   );
 }

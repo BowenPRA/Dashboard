@@ -21,6 +21,7 @@ export const assessment = {
       correct: 'A',
       expEn: '$$18 = 6 × 3$$, so 18 is a multiple of 6. $$3$$ is a **factor** of 6 (it divides in), not a multiple — that is the mix-up to avoid.',
       expVn: '$$18 = 6 × 3$$, nên 18 là bội số của 6. $$3$$ là **ước số** của 6 (nó chia hết vào), không phải bội số — đó là chỗ dễ nhầm.',
+      expFr: '$$18 = 6 × 3$$, donc 18 est un multiple de 6. $$3$$ est un **diviseur** (factor) de 6 (il divise 6), pas un multiple — c’est la confusion à éviter.',
     },
     {
       id: 'a2_common',
@@ -35,6 +36,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'In maths “common” means **shared** — a common multiple is a multiple of **both** numbers, in both lists. It does not mean “ordinary”, and a factor divides in rather than being a multiple.',
       expVn: 'Trong toán “common” nghĩa là **chung** — bội số chung là bội của **cả hai** số, có trong cả hai danh sách. Nó không có nghĩa “bình thường”, và ước số thì chia hết vào chứ không phải bội số.',
+      expFr: 'En maths, « common » veut dire **partagé** — un multiple commun est un multiple des **deux** nombres, dans les deux listes. Ça ne veut pas dire « ordinaire », et un diviseur divise le nombre au lieu d’en être un multiple.',
     },
     {
       id: 'a3_lcm',
@@ -49,6 +51,7 @@ export const assessment = {
       correct: 'C',
       expEn: '12 and 24 are both common multiples, but 12 is the **lowest**, so the LCM is 12. Answering 24 multiplies the numbers ($$4 × 6$$); 10 adds them; 2 is a factor.',
       expVn: '12 và 24 đều là bội số chung, nhưng 12 là **nhỏ nhất**, nên BCNN là 12. Trả lời 24 là nhân ($$4 × 6$$); 10 là cộng; 2 là ước số.',
+      expFr: '12 et 24 sont tous les deux des multiples communs, mais 12 est le **plus petit**, donc le PPCM est 12. Répondre 24, c’est multiplier les nombres ($$4 × 6$$) ; 10, c’est les additionner ; 2 est un diviseur.',
     },
     {
       id: 'a4_divides',
@@ -63,6 +66,7 @@ export const assessment = {
       correct: 'B',
       expEn: '3 divides into 6, so the LCM is just the bigger number, 6 — not $$3 × 6 = 18$$. When one number divides the other, the LCM is the larger one.',
       expVn: '3 chia hết 6, nên BCNN chính là số lớn hơn, 6 — không phải $$3 × 6 = 18$$. Khi một số chia hết số kia, BCNN là số lớn hơn.',
+      expFr: '3 divise 6, donc le PPCM est simplement le plus grand nombre, 6 — et pas $$3 × 6 = 18$$. Quand un nombre divise l’autre, le PPCM est le plus grand des deux.',
     },
     {
       id: 'a5_list',
@@ -77,6 +81,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'List them: 8, 16, **24** … and 12, **24** … The lowest in both is 24. Answering 96 multiplies them ($$8 × 12$$); 20 adds them.',
       expVn: 'Liệt kê: 8, 16, **24** … và 12, **24** … Số nhỏ nhất có trong cả hai là 24. Trả lời 96 là nhân ($$8 × 12$$); 20 là cộng.',
+      expFr: 'Fais les listes : 8, 16, **24** … et 12, **24** … Le plus petit nombre dans les deux est 24. Répondre 96, c’est les multiplier ($$8 × 12$$) ; 20, c’est les additionner.',
     },
     {
       id: 'a6_word',
@@ -91,6 +96,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'You need the LCM of 8 and 10, which is 40. Answering 80 multiplies them ($$8 × 10$$); 18 adds them ($$8 + 10$$).',
       expVn: 'Em cần BCNN của 8 và 10, bằng 40. Trả lời 80 là nhân ($$8 × 10$$); 18 là cộng ($$8 + 10$$).',
+      expFr: 'Il te faut le PPCM de 8 et 10, qui est 40. Répondre 80, c’est les multiplier ($$8 × 10$$) ; 18, c’est les additionner ($$8 + 10$$).',
     },
   ],
 };

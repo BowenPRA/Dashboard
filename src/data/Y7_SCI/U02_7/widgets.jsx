@@ -18,10 +18,9 @@
 // the deck's `particles` activities now, where the student sorts the particles
 // themselves instead of a name.
 import { assetUrl } from '../../../utils/assetPaths';
+import { tr } from '../../../utils/lang';
 
 const ironSulfurVideo = assetUrl('images/Y7_SCI/U02_7/ironsulfur.webm');
-
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 
 // No extra frame: `showcase` already wraps the media in a padded panel. Sized
 // from the HEIGHT it is given (showcase boxes are short and wide).
@@ -35,7 +34,7 @@ export function IronSulfurClip({ lang = 'en' }) {
           controls
           playsInline
           preload="metadata"
-          aria-label={tr(lang, 'Iron and sulfur heated together', 'Đun nóng sắt và lưu huỳnh')}
+          aria-label={tr(lang, 'Iron and sulfur heated together', 'Đun nóng sắt và lưu huỳnh', 'Fer et soufre chauffés ensemble')}
         />
       </div>
     </div>

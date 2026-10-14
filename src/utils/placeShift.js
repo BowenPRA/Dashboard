@@ -11,7 +11,7 @@
 //   { id, level, kind: 'power', n: '6.1', op: '×', result: '61000' }  find the power
 //   { id, level, kind: 'convert', n: '4', from: 'kg', to: 'mg' }       metric mass
 //   { id, level, kind: 'chain', n: '5', ops: [['×', 4], ['÷', 2], ['×', 3]] }
-//   (+ context / contextVn, a story told above the sum)
+//   (+ context / contextVn / contextFr, a story told above the sum)
 // The moves, the net power, every snapshot of the table, the placeholders,
 // the answer and the slip behind a wrong answer are derived here; the
 // validator runs the same model (checkShiftItems).
@@ -21,8 +21,8 @@ import { readProblem } from './rounding.js';
 
 export const MASS_UNITS = ['mg', 'g', 'kg', 't'];
 export const MASS_NAMES = {
-  mg: { en: 'milligrams', vn: 'miligam' }, g: { en: 'grams', vn: 'gam' },
-  kg: { en: 'kilograms', vn: 'kilôgam' }, t: { en: 'tonnes', vn: 'tấn' },
+  mg: { en: 'milligrams', vn: 'miligam', fr: 'milligrammes' }, g: { en: 'grams', vn: 'gam', fr: 'grammes' },
+  kg: { en: 'kilograms', vn: 'kilôgam', fr: 'kilogrammes' }, t: { en: 'tonnes', vn: 'tấn', fr: 'tonnes' },
 };
 export const PLACE_LIMITS = [6, -5];           // millions … hundred-thousandths
 export const KINDS = ['shift', 'power', 'convert', 'chain'];
@@ -196,12 +196,12 @@ export function slideLimits(model, cols = tableCols(model)) {
 /** Where the digits go, in words. */
 export function moveWords(net) {
   const n = Math.abs(net);
-  const dir = net > 0 ? { en: 'left', vn: 'sang trái' } : { en: 'right', vn: 'sang phải' };
-  return { en: `${n} place${n === 1 ? '' : 's'} ${dir.en}`, vn: `${n} cột ${dir.vn}`, n, dir };
+  const dir = net > 0 ? { en: 'left', vn: 'sang trái', fr: 'vers la gauche' } : { en: 'right', vn: 'sang phải', fr: 'vers la droite' };
+  return { en: `${n} place${n === 1 ? '' : 's'} ${dir.en}`, vn: `${n} cột ${dir.vn}`, fr: `${n} colonne${n === 1 ? '' : 's'} ${dir.fr}`, n, dir };
 }
 
 /**
- * Mark a typed answer (the ordinary number). `{ ok, code, en, vn }`; a wrong
+ * Mark a typed answer (the ordinary number). `{ ok, code, en, vn, fr }`; a wrong
  * answer is named: 'addzeros' (7.2000 — zeros stuck on after the point),
  * 'nomove', 'direction', 'count' (the right way, the wrong number of places —
  * usually a lost placeholder), 'value'. Unreadable input comes back `soft`.
@@ -220,12 +220,14 @@ export function diagnoseShift(model, typed) {
         ok: false, code: 'addzeros',
         en: `Zeros stuck on after the point do not change a number: ${String(typed).trim()} is still ${model.startText}. Multiplying moves every digit ${want.en} — the point stays where it is.`,
         vn: `Thêm số 0 sau dấu thập phân không làm số thay đổi: ${String(typed).trim()} vẫn là ${model.startText}. Phép nhân làm mọi chữ số dịch ${want.vn} — dấu thập phân giữ nguyên.`,
+        fr: `Des zéros ajoutés après le point ne changent pas un nombre : ${String(typed).trim()} vaut toujours ${model.startText}. Multiplier déplace chaque chiffre de ${want.fr} — le point reste à sa place.`,
       };
     }
     return {
       ok: false, code: 'nomove',
       en: `That is the number you started with. The digits need to move ${want.en}.`,
       vn: `Đó là số ban đầu. Các chữ số cần dịch ${want.vn}.`,
+      fr: `C'est le nombre de départ. Les chiffres doivent se déplacer de ${want.fr}.`,
     };
   }
   for (let k = -10; k <= 10; k += 1) {
@@ -240,6 +242,9 @@ export function diagnoseShift(model, typed) {
         vn: bigger
           ? 'Em đã dịch các chữ số sai chiều — đáp án bị nhỏ đi. Phép nhân làm số lớn hơn: các chữ số dịch sang TRÁI.'
           : 'Em đã dịch các chữ số sai chiều — đáp án bị lớn hơn. Phép chia làm số nhỏ hơn: các chữ số dịch sang PHẢI.',
+        fr: bigger
+          ? 'Les chiffres sont partis dans le mauvais sens — ta réponse est plus petite. Multiplier rend un nombre plus grand : les chiffres vont vers la GAUCHE.'
+          : 'Les chiffres sont partis dans le mauvais sens — ta réponse est plus grande. Diviser rend un nombre plus petit : les chiffres vont vers la DROITE.',
       };
     }
     const got = moveWords(k);
@@ -248,12 +253,14 @@ export function diagnoseShift(model, typed) {
       ok: false, code: 'count',
       en: `Right direction, but that moved the digits ${got.n} place${got.n === 1 ? '' : 's'}, not ${want.n}.${lost ? ' Every empty column between the digits and the point needs a placeholder 0.' : ''}`,
       vn: `Đúng chiều, nhưng em mới dịch các chữ số ${got.n} cột, chứ không phải ${want.n} cột.${lost ? ' Mỗi cột trống giữa các chữ số và dấu thập phân cần một số 0 giữ chỗ.' : ''}`,
+      fr: `Bon sens, mais les chiffres se sont déplacés de ${got.n} colonne${got.n === 1 ? '' : 's'}, pas de ${want.n}.${lost ? " Chaque colonne vide entre les chiffres et le point a besoin d'un 0 pour garder la place." : ''}`,
     };
   }
   return {
     ok: false, code: 'value',
     en: `Not quite. Move every digit ${want.en}, keep the point still, and fill each empty column up to the point with a 0.`,
     vn: `Chưa đúng. Dịch mọi chữ số ${want.vn}, giữ nguyên dấu thập phân, và điền số 0 vào mỗi cột trống cho đến dấu thập phân.`,
+    fr: `Pas tout à fait. Déplace chaque chiffre de ${want.fr}, garde le point immobile, et remplis chaque colonne vide jusqu'au point avec un 0.`,
   };
 }
 
@@ -261,12 +268,18 @@ export function diagnoseShift(model, typed) {
 export function diagnosePower(model, typed) {
   const s = String(typed ?? '').trim();
   if (!s) return readProblem('empty');
-  if (!/^\d+$/.test(s)) return { ok: false, code: 'unreadable', soft: true, en: 'Type the power as a whole number — just the small raised number.', vn: 'Hãy nhập số mũ là một số nguyên — chỉ con số nhỏ viết cao.' };
+  if (!/^\d+$/.test(s)) {
+    return {
+      ok: false, code: 'unreadable', soft: true, en: 'Type the power as a whole number — just the small raised number.', vn: 'Hãy nhập số mũ là một số nguyên — chỉ con số nhỏ viết cao.',
+      fr: "Écris l'exposant comme un nombre entier — juste le petit nombre écrit en haut.",
+    };
+  }
   if (Number(s) === model.power) return { ok: true, code: 'ok' };
   return {
     ok: false, code: 'count',
     en: 'Count the columns again: follow one digit from where it starts to where it ends up. The number of places it moves is the power.',
     vn: 'Đếm lại các cột: theo dõi một chữ số từ chỗ bắt đầu đến chỗ kết thúc. Số cột nó dịch chính là số mũ.',
+    fr: "Recompte les colonnes : suis un chiffre depuis sa place de départ jusqu'à sa place d'arrivée. Le nombre de colonnes parcourues est l'exposant.",
   };
 }
 
@@ -286,10 +299,12 @@ export function diagnoseConvert(model, choice) {
   const path = down ? MASS_UNITS.slice(MASS_UNITS.indexOf(to), MASS_UNITS.indexOf(from) + 1).reverse() : MASS_UNITS.slice(MASS_UNITS.indexOf(from), MASS_UNITS.indexOf(to) + 1);
   const wayEn = down ? 'down to a smaller unit, so there will be MORE of them: multiply' : 'up to a bigger unit, so there will be FEWER of them: divide';
   const wayVn = down ? 'xuống đơn vị nhỏ hơn, nên sẽ có NHIỀU hơn: nhân' : 'lên đơn vị lớn hơn, nên sẽ có ÍT hơn: chia';
+  const wayFr = down ? 'descend vers une unité plus petite, donc il y en aura PLUS : multiplie' : 'monte vers une unité plus grande, donc il y en aura MOINS : divise';
   return {
     ok: false, code: choice.op !== m.op ? 'direction' : 'steps',
     en: `${path.join(' → ')} is ${n} step${n === 1 ? '' : 's'} on the ladder, each one ${pow10Text(3)}. Going ${wayEn}.`,
     vn: `${path.join(' → ')} là ${n} bậc trên thang, mỗi bậc là ${pow10Text(3)}. Đi ${wayVn}.`,
+    fr: `${path.join(' → ')} : ${n} marche${n === 1 ? '' : 's'} sur l'échelle, chacune vaut ${pow10Text(3)}. On ${wayFr}.`,
   };
 }
 

@@ -3,6 +3,8 @@ import {
   Zap, CheckCircle2, XCircle, ArrowRight, Trophy, RotateCcw, Construction, Timer,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 
 /* ------------------------------------------------------------------ *
  * FACTOR BLITZ — "a number lands; grab every factor before the clock."
@@ -20,7 +22,7 @@ import TopBar from '../components/TopBar';
  *
  * Reads a unit's `factorBlitz`:
  *   {
- *     title, titleVn, intro, introVn,
+ *     title, titleVn, titleFr, intro, introVn, introFr,
  *     seconds: 20,                 // optional per-round clock (default 30)
  *     candidates: [2,3,4,…,12],    // optional tile set (default 2…12)
  *     rounds: [24, 36, 30, 48, …], // the target numbers
@@ -77,10 +79,28 @@ const VN = {
   missed: 'Bỏ sót:',
   wrong: 'Không phải ước:',
 };
+const FR = {
+  title: 'Chasse aux diviseurs',
+  intro: 'Un nombre apparaît. Touche tous ses diviseurs inférieurs à 13 avant la fin du chrono — les nombres qui le divisent exactement. 1 et le nombre lui-même comptent toujours, alors cherche à partir de 2.',
+  ready: 'On y va ?',
+  go: 'Commencer',
+  find: 'Touche chaque diviseur de',
+  check: 'Vérifier',
+  next: 'Suivant',
+  finish: 'Terminer',
+  bankHere: 'Terminer & garder l’XP',
+  timeLeft: 'Temps',
+  round: 'Manche',
+  scoreLine: 'manches parfaites',
+  clean: 'Sans faute — tous les diviseurs, rien en trop.',
+  close: 'Des diviseurs ont été oubliés, ou un nombre qui n’en est pas un s’est glissé.',
+  missed: 'Oubliés :',
+  wrong: 'Pas des diviseurs :',
+};
 
 const DEFAULT_CANDIDATES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-export default function FactorBlitz({ pool, onComplete, onQuit, bilingual = true }) {
+export default function FactorBlitz({ pool, onComplete, onQuit, langs, bilingual = true }) {
   const rounds = useMemo(() => (pool?.rounds || []).filter((n) => Number.isInteger(n) && n > 1), [pool]);
   const candidates = useMemo(
     () => (pool?.candidates?.length ? pool.candidates : DEFAULT_CANDIDATES),
@@ -88,7 +108,7 @@ export default function FactorBlitz({ pool, onComplete, onQuit, bilingual = true
   );
   const seconds = pool?.seconds || 30;
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [roundIdx, setRoundIdx] = useState(0);
   const [phase, setPhase] = useState('ready'); // ready | running | graded
   const [selected, setSelected] = useState(() => new Set());
@@ -101,7 +121,7 @@ export default function FactorBlitz({ pool, onComplete, onQuit, bilingual = true
   const selectedRef = useRef(selected);
   useEffect(() => { selectedRef.current = selected; });
 
-  const t = lang === 'vn' ? VN : EN;
+  const t = tr(lang, EN, VN, FR);
   const target = rounds[roundIdx];
   const isLast = roundIdx >= rounds.length - 1;
 
@@ -173,9 +193,9 @@ export default function FactorBlitz({ pool, onComplete, onQuit, bilingual = true
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={onQuit} quitLabel="Exit"
-        modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
+        modeTitle={pool?.title ? tr(lang, pool.title, pool.titleVn || pool.title, pool.titleFr || pool.title) : t.title}
         current={roundIdx + 1} total={rounds.length} lang={lang}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-2xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
@@ -194,7 +214,7 @@ export default function FactorBlitz({ pool, onComplete, onQuit, bilingual = true
               <Zap className="w-7 h-7" style={{ color: LIME_D }} strokeWidth={2.5} />
             </div>
             <p className="font-bold text-slate-600 dark:text-slate-300 max-w-md leading-relaxed">
-              {lang === 'vn' ? (pool.introVn || t.intro) : (pool.intro || t.intro)}
+              {tr(lang, pool.intro || t.intro, pool.introVn || t.intro, pool.introFr || pool.intro || t.intro)}
             </p>
             <button onClick={start}
               className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#84cc16] border-b-[4px] border-[#4d7c0f] active:border-b-0 active:translate-y-[4px]">

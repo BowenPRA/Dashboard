@@ -8,7 +8,7 @@
  * sits where the printed label sat, so the pin never covers what it points at.
  *
  * Item shape (docs/y7-science/ENGAGEMENT-PLAN.md §2.2):
- *   { id, title, titleVn, inlineSvg, viewBox: '0 0 760 430',
+ *   { id, title, titleVn, titleFr?, inlineSvg, viewBox: '0 0 760 430',
  *     image?: 'images/…/x.jpg',  // instead of inlineSvg: a picture whose labels
  *                                // are already painted out; viewBox = its size
  *     font?: 16,       // label size in viewBox units (default from the viewBox)
@@ -16,7 +16,7 @@
  *     pins: [{ id, x, y, answer,
  *              to?: [x, y] | [[x, y], …],   // the part(s) the leader line reaches
  *              side?: 'left'|'right'|'above'|'below'|'center' }],
- *     bank: [{ val, text, textVn }] }        // at least one distractor
+ *     bank: [{ val, text, textVn, textFr? }] } // at least one distractor
  *
  * (x, y) is where the leader line meets the box, and `side` is the way the box
  * grows from there: 'left' puts the box in the LEFT margin (its right edge on
@@ -120,8 +120,9 @@ export function wrap(text, maxW, measure) {
 
 /**
  * Every box's rectangle, one size for the whole diagram so a box's width never
- * gives its answer away. Sized to the widest label in EITHER language, so the
- * language toggle never moves a box. `measure(text, font)` → width.
+ * gives its answer away. Sized to the widest label in ANY language (French
+ * only where the item has it), so the language toggle never moves a box.
+ * `measure(text, font)` → width.
  */
 export function layout(item, measure = approxWidth) {
   const vb = viewBoxOf(item) || { x: 0, y: 0, w: 100, h: 100 };
@@ -130,7 +131,7 @@ export function layout(item, measure = approxWidth) {
   const padY = font * 0.42;
   const lineH = font * 1.22;
   const m = (s) => measure(s, font);
-  const texts = (item.bank || []).flatMap((b) => [b.text, b.textVn].filter(Boolean));
+  const texts = (item.bank || []).flatMap((b) => [b.text, b.textVn, b.textFr].filter(Boolean));
   const widest = Math.max(font * 4, ...texts.map(m));
   const inner = Number.isFinite(item.slotW) ? item.slotW - 2 * padX : Math.min(widest, font * 12);
   const w = inner + 2 * padX;

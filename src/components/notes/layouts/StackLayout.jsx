@@ -7,8 +7,8 @@ import { parseInlineText, renderContent, toHex } from './helpers.jsx';
 export default function StackLayout({ slide: s, ctx }) {
   const { pick, lang, isDisplayMode } = ctx;
   const accent = toHex(s.accent || s.color, '#3b82f6');
-  const title = pick(s.title, s.titleVn);
-  const content = pick(s.content, s.contentVn);
+  const title = pick(s.title, s.titleVn, s.titleFr);
+  const content = pick(s.content, s.contentVn, s.contentFr);
   // 1, 2 or 3 columns (3 fits three short task cards across a laptop screen).
   const columns = s.columns === 1 ? 1 : s.columns === 3 ? 3 : 2;
   const grid = columns === 3 ? 'grid-cols-1 md:grid-cols-3' : columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1';
@@ -16,7 +16,7 @@ export default function StackLayout({ slide: s, ctx }) {
 
   return (
     <>
-      <HeaderBar title={title || ''} icon={s.icon || 'Boxes'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />
+      <HeaderBar title={title || ''} icon={s.icon || 'Boxes'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn, s.eyebrowFr)} isDisplayMode={isDisplayMode} />
       <div className={`flex-1 min-h-0 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-900/50 ${isDisplayMode ? 'p-[clamp(1.5rem,3vw,3rem)]' : 'p-4 sm:p-5 lg:p-6'}`}>
         <div className="max-w-6xl mx-auto">
           {content && <div className="mb-5">{renderContent(content, { isDisplayMode })}</div>}
@@ -24,7 +24,7 @@ export default function StackLayout({ slide: s, ctx }) {
           {isChecklist ? (
             <div className={`grid gap-3 sm:gap-4 ${grid}`}>
               {(s.items || []).map((item, i) => {
-                const text = pick(item.text ?? item, item.textVn);
+                const text = pick(item.text ?? item, item.textVn, item.textFr);
                 return (
                   <div key={i} className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-sm p-4">
                     <span className="shrink-0 rounded-full flex items-center justify-center shadow-sm" style={{ backgroundColor: accent, width: isDisplayMode ? 40 : 32, height: isDisplayMode ? 40 : 32 }}>

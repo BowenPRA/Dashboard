@@ -4,6 +4,8 @@ import {
   ListChecks, MessageSquareText, Workflow, CheckCheck, KeyRound, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import FlowChartPicture from '../components/math/FlowChartPicture.jsx';
 import { equationModel, opText, sameOp, valueText, diagnoseSolve, thinkSentence } from '../utils/algebra';
@@ -16,10 +18,10 @@ import {
  * UNDO IT — "build the flow chart, reverse it, check it" (Y7 Maths 2.5).
  *
  * Reads a unit's `flowSolve`:
- *   { title, titleVn, intro?, introVn?, levels: { n: { en, vn } }, items: [
+ *   { title, titleVn, titleFr, intro?, introVn?, introFr?, levels: { n: { en, vn, fr } }, items: [
  *       { id, level, eq: '2a + 4 = 18' },                       solve
  *       { id, level, ops: [['*', 6], ['-', 4]], result: 32, letter? },   I think of a number
- *       { id, level, eq, story, storyVn },                      a story: pick the equation first
+ *       { id, level, eq, story, storyVn, storyFr },             a story: pick the equation first
  *   ] }
  * The flow chart, its inverse, every box value, the solution, the four
  * equations a story could be written as and the slip behind each wrong one
@@ -136,11 +138,55 @@ const T = {
     noItems: 'Chưa có câu hỏi',
     back: 'Quay lại Bảng điều khiển',
   },
+  fr: {
+    title: 'Défais-le',
+    check: 'Vérifier',
+    stuck: 'Montre-moi',
+    cont: 'Continuer',
+    next: 'Suivant',
+    finish: 'Terminer',
+    solved: 'résolues',
+    level: 'Niveau',
+    clean: 'Toutes les étapes justes du premier coup.',
+    slipped: "Résolu — une erreur, et tu l'as trouvée toi-même.",
+    helped: 'Résolu — avec une ou deux étapes montrées.',
+    bookCopy: 'Recopie ceci dans ton cahier',
+    answer: 'Réponse',
+    shown: 'La voici. Lis-la, puis continue.',
+    filled: 'La réponse est remplie pour toi.',
+    headSolve: 'Résoudre',
+    headStory: "Écrire l'équation, puis résoudre",
+    stages: { equation: 'Équation', forward: 'Organigramme', reverse: 'Défaire', check: 'Vérifier' },
+    letterIs: (L) => `Appelle le nombre inconnu ${L}.`,
+    eqTitle: 'Quelle équation dit la même chose ?',
+    eqSub: "Suis ce qui arrive au nombre, dans l'ordre.",
+    eqRight: "Correct — cette équation raconte l'histoire.",
+    fwdTitle: (L) => `Construis l'organigramme : qu'arrive-t-il à ${L}, dans l'ordre ?`,
+    fwdSub: 'Pars de la lettre. Mets chaque opération sur sa flèche.',
+    trayHint: 'Touche une opération, puis une flèche — ou fais-la glisser. Touche une opération placée pour la reprendre.',
+    fwdRight: "Correct — c'est la chaîne des opérations.",
+    revTitle: "Maintenant, défais-le — la dernière étape d'abord.",
+    revSub: "Pars de la réponse. Mets l'opération inverse sur chaque flèche et calcule chaque case.",
+    revRight: (L, v) => `Correct — ${L} = ${v}. Maintenant, vérifie.`,
+    know: 'Je connais la réponse',
+    tryIt: 'Essayer',
+    knowRight: (L, v) => `Oui — ${L} = ${v}. Maintenant, montre-le sur l'organigramme : défais chaque étape.`,
+    chkTitle: (L, v) => `Remets ${L} = ${v} dans l'équation.`,
+    chkSub: "Calcule ce membre. Il doit donner le nombre de l'autre membre de l'équation.",
+    itWorks: 'Ça marche !',
+    typeNumber: "Écris d'abord un nombre.",
+    working: "Le travail jusqu'ici",
+    checkWord: 'Vérification',
+    arrowLabel: (k) => `flèche ${k + 1}`,
+    boxLabel: (k) => `case ${k + 1}`,
+    noItems: 'Pas encore de questions',
+    back: 'Retour au tableau de bord',
+  },
 };
+/** A T entry in every language at once: `{ en, vn, fr }`. */
 const both = (key, ...args) => {
-  const en = T.en[key];
-  const vn = T.vn[key];
-  return typeof en === 'function' ? { en: en(...args), vn: vn(...args) } : { en, vn };
+  const one = (l) => (typeof T[l][key] === 'function' ? T[l][key](...args) : T[l][key]);
+  return { en: one('en'), vn: one('vn'), fr: one('fr') };
 };
 const STAGE_ICON = { equation: MessageSquareText, forward: Workflow, reverse: Undo2, check: CheckCheck };
 
@@ -186,7 +232,7 @@ function Stage({ icon: Icon, label, active, done }) {
 
 function Message({ msg, lang }) {
   if (!msg) return null;
-  const text = lang === 'vn' && msg.vn ? msg.vn : msg.en;
+  const text = tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en);
   if (!text) return null;
   const soft = msg.tone === 'shown' || msg.tone === 'info';
   const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
@@ -308,10 +354,10 @@ function Tray({ chips, placedIds, picked, locked, onPick, onDrag }) {
 
 /* ------------------------------------------------------------------ the task */
 
-export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
+export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
   const items = useMemo(() => (pool?.items || []).filter((it) => deriveItem(it)), [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [results, setResults] = useState(() => {
     const init = {};
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
@@ -341,7 +387,7 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
   const item = items[pos];
   const derived = useMemo(() => deriveItem(item), [item]);
   const t = T[lang] || T.en;
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
 
   if (!items.length || !derived) {
     return (
@@ -403,8 +449,8 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
       setLocked(true);
       setHelped(true);
       setPicked(null);
-      setMsg({ tone: 'shown', en: `${bad.en} ${T.en.filled}`, vn: `${bad.vn || bad.en} ${T.vn.filled}` });
-    } else setMsg({ tone: 'bad', en: bad.en, vn: bad.vn || bad.en });
+      setMsg({ tone: 'shown', en: `${bad.en} ${T.en.filled}`, vn: `${bad.vn || bad.en} ${T.vn.filled}`, fr: `${bad.fr || bad.en} ${T.fr.filled}` });
+    } else setMsg({ tone: 'bad', en: bad.en, vn: bad.vn || bad.en, fr: bad.fr || bad.en });
   };
   const showMe = (reveal) => { reveal(); setLocked(true); setHelped(true); setPicked(null); setMsg({ tone: 'shown', ...both('shown') }); };
 
@@ -482,7 +528,7 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
   const checkForward = () => {
     if (locked) return;
     const d = diagnoseForward(model, placedList());
-    if (d.empty) { setMsg({ tone: 'bad', en: d.en, vn: d.vn }); return; }
+    if (d.empty) { setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr }); return; }
     setMarks(Object.fromEntries(d.marks.map((ok, k) => [`s${k}`, ok ? 'good' : 'bad'])));
     if (d.ok) judge(true, null, null, both('fwdRight'));
     else judge(false, d, revealForward);
@@ -504,7 +550,7 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
   const checkReverse = () => {
     if (locked) return;
     const d = diagnoseReverse(model, placedList(), model.inverse.map((_, k) => typed[`v${k}`]));
-    if (d.empty || d.unreadable) { setMsg({ tone: 'bad', en: d.en, vn: d.vn }); return; }
+    if (d.empty || d.unreadable) { setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr }); return; }
     const mk = {};
     model.inverse.forEach((_, k) => {
       mk[`s${k}`] = d.opMarks[k] ? 'good' : 'bad';
@@ -517,7 +563,7 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
   const tryKnow = () => {
     if (blank(typed.know)) { setKnowMsg({ tone: 'bad', ...both('typeNumber') }); return; }
     const d = tidySolve(diagnoseSolve(model, typed.know));
-    setKnowMsg(d.ok ? { tone: 'info', ...both('knowRight', L, solText) } : { tone: 'bad', en: d.en, vn: d.vn });
+    setKnowMsg(d.ok ? { tone: 'info', ...both('knowRight', L, solText) } : { tone: 'bad', en: d.en, vn: d.vn, fr: d.fr });
   };
 
   /* ---------------------------------------------------------- check */
@@ -526,7 +572,7 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
     if (locked) return;
     if (blank(typed.check)) { setMsg({ tone: 'bad', ...both('typeNumber') }); return; }
     const d = diagnoseCheck(model, typed.check);
-    if (d.code === 'unreadable') { setMarks({ check: 'bad' }); setMsg({ tone: 'bad', en: d.en, vn: d.vn }); return; }
+    if (d.code === 'unreadable') { setMarks({ check: 'bad' }); setMsg({ tone: 'bad', en: d.en, vn: d.vn, fr: d.fr }); return; }
     setMarks({ check: d.ok ? 'good' : 'bad' });
     judge(d.ok, d, revealCheck, both('itWorks'));
   };
@@ -540,11 +586,11 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const isLast = pos === items.length - 1;
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
-  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn);
-  const title = pick(pool?.title, pool?.titleVn) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn) : null;
+  const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn, levelRaw?.fr);
+  const title = pick(pool?.title, pool?.titleVn, pool?.titleFr) || t.title;
+  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn, pool?.introFr) : null;
   const think = hasEq && !item.story ? thinkSentence(model) : null;
-  const storyText = item.story ? pick(item.story, item.storyVn) : think ? pick(think.en, think.vn) : null;
+  const storyText = item.story ? pick(item.story, item.storyVn, item.storyFr) : think ? pick(think.en, think.vn, think.fr) : null;
   const showEquation = !hasEq || passed('equation') || itemDone;
   const headline = hasEq && !showEquation ? t.headStory : t.headSolve;
   const placedIds = Object.values(placed);
@@ -554,8 +600,8 @@ export default function FlowSolve({ pool, savedData = {}, onComplete, onProgress
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={quit} modeTitle={title} current={pos + 1} total={items.length}
-        lang={bilingual ? lang : undefined}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+        lang={toggleLang ? lang : undefined}
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-5 lg:items-start">
         {/* left: the question, then the working */}

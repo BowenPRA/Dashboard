@@ -10,12 +10,13 @@
 
 export const drill = {
   mode: 'short-div',
-  title: 'Short Division', titleVn: 'Chia ngắn',
+  title: 'Short Division', titleVn: 'Chia ngắn', titleFr: 'Division courte',
   intro: 'The bus stop, the short way: the digit on top, and the remainder written small, up and to the left of the next digit. Every one here divides exactly — so the remainder at the end is 0.',
   introVn: 'Phép chia ngắn: chữ số ở trên, còn số dư viết nhỏ ở phía trên bên trái của chữ số tiếp theo. Mọi phép ở đây đều chia hết — nên số dư cuối cùng bằng 0.',
+  introFr: 'La méthode « bus stop », version courte : le chiffre en haut, et le reste écrit en petit, en haut à gauche du chiffre suivant. Ici, chaque division tombe juste — donc le reste à la fin est 0.',
   ladder: [
-    { level: 'Warm-up', levelVn: 'Khởi động', items: [[48, 4], [96, 6], [84, 7]] },
-    { level: 'Two-digit divisors', levelVn: 'Số chia hai chữ số', items: [[912, 24], [672, 16], [810, 15]] },
-    { level: 'Stretch', levelVn: 'Nâng cao', items: [[2016, 36], [3024, 42]] },
+    { level: 'Warm-up', levelVn: 'Khởi động', levelFr: 'Échauffement', items: [[48, 4], [96, 6], [84, 7]] },
+    { level: 'Two-digit divisors', levelVn: 'Số chia hai chữ số', levelFr: 'Diviseurs à deux chiffres', items: [[912, 24], [672, 16], [810, 15]] },
+    { level: 'Stretch', levelVn: 'Nâng cao', levelFr: 'Défi', items: [[2016, 36], [3024, 42]] },
   ],
 };

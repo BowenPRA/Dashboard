@@ -19,8 +19,9 @@ export default function WidgetRenderer({ config, lang = 'en' }) {
 
   // 1. Legacy Support: If the config is passed directly as a functional React component
   // (Maintains backwards compatibility with Y8/SCIENCE_1A hardcoded imports). Forward
-  // `lang` so a bilingual widget (e.g. Y7_MATH TranslateWidget) follows the deck's
-  // EN/VN toggle; widgets that ignore the prop are unaffected.
+  // `lang` ('en' | 'vn' | 'fr') so a bilingual widget (e.g. Y7_MATH TranslateWidget)
+  // follows the deck's language switch — EN / VN, plus FR on Year 7; read it with
+  // `tr(lang, en, vn, fr)` from utils/lang.js. Widgets that ignore the prop are unaffected.
   if (typeof config === 'function' || (typeof config === 'object' && config.$$typeof)) {
     const LegacyWidget = config;
     return <LegacyWidget lang={lang} />;

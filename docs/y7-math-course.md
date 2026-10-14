@@ -67,10 +67,13 @@ Not every section needs every graded task (Short Answers, Essay, etc.). The less
 workbook + lesson plan are the core three for Year 7. Add graded questions where they
 earn their keep; hold them to [question-quality.md](question-quality.md).
 
-**Bilingual (EN + VN) is required.** This class relies on Vietnamese support, so every
+**Trilingual (EN + VN + FR) is required.** This class relies on Vietnamese support, so every
 learner-facing English field needs its `…Vn` counterpart (`titleVn`, `contentVn`,
-`exampleVn`, `vn`, `vnDef`, …), exactly as Y8 `MATH_1A` does. The lesson UI EN/VN
-toggle and the workbook depend on it.
+`exampleVn`, `vn`, `vnDef`, …), exactly as Y8 `MATH_1A` does — and, since 2026-10-14,
+its French twin beside it (`titleFr`, `contentFr`, `fr`, `frDef`, …; widget text as
+`tr(lang, en, vn, fr)`). Every task's language toggle steps EN → VN → FR, and
+`npm run validate` refuses a missing French twin. How, and the fill tool:
+[french.md](french.md).
 
 ---
 

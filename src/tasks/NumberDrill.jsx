@@ -4,6 +4,8 @@ import {
   Lightbulb, RotateCcw, Lock, Trophy, Sparkles,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { digitAt, modelOf } from '../utils/columnArithmetic';
 import { drillToShortDiv } from '../utils/shortDivision';
 import ShortDivision from './ShortDivision';
@@ -20,9 +22,9 @@ import ShortDivision from './ShortDivision';
  * Reads a unit's `drill`:
  *   {
  *     mode: 'long-mult',
- *     title, titleVn, intro, introVn,
+ *     title, titleVn, titleFr, intro, introVn, introFr,
  *     ladder: [
- *       { level: 'Warm-up', levelVn: '…', items: [[23, 12], [31, 21]] },
+ *       { level: 'Warm-up', levelVn: '…', levelFr: '…', items: [[23, 12], [31, 21]] },
  *       { level: 'Carries', levelVn: '…', items: [[47, 26], [68, 34]] },
  *     ],
  *   }
@@ -104,6 +106,36 @@ const VN = {
   },
 };
 
+const FR = {
+  title: 'Gym des nombres',
+  level: 'Niveau',
+  check: 'Vérifier',
+  next: 'Suivant',
+  finish: 'Terminer',
+  continue: 'Passer au',
+  bankHere: 'Terminer & garder l’XP',
+  levelClear: 'réussi !',
+  unlocked: 'débloqué',
+  clean: 'Toutes les cases justes du premier coup. Tous les points pour celui-ci.',
+  helped: 'Résolu — mais il a fallu montrer une case ou deux.',
+  empty: 'Écris d’abord un chiffre dans chaque case bleue.',
+  carryNote: 'La petite case est la retenue qui entre dans cette colonne.',
+  borrowNote: 'La petite case est l’emprunt (facultatif) : 1 quand cette colonne a pris une dizaine à sa gauche.',
+  scoreLine: 'exercices réussis',
+  heldNote: 'Réussis ce niveau pour ouvrir le suivant.',
+  reasons: {
+    times: 'Vérifie le résultat de la table de multiplication pour cette colonne.',
+    forgotcarry: 'La multiplication est juste — mais tu as oublié d’ajouter la retenue de la colonne de droite.',
+    addwrong: 'Refais l’addition de cette colonne, sans oublier la petite retenue au-dessus.',
+    carrywrong: 'La retenue est le chiffre des dizaines que tu reportes dans la colonne de gauche.',
+    subwrong: 'Refais la soustraction de cette colonne — et si tu as emprunté, enlève d’abord un au chiffre du haut.',
+    borrowwrong: 'L’emprunt vaut 1 quand le chiffre du haut était trop petit et a dû prendre une dizaine à sa gauche.',
+  },
+};
+
+/** A drill field in `lang` — `key`, `keyVn` or `keyFr`; an empty twin shows English. */
+const twin = (lang, obj, key) => tr(lang, obj?.[key], obj?.[`${key}Vn`] || obj?.[key], obj?.[`${key}Fr`] || obj?.[key]);
+
 /* ------------------------------------------------------------- small utils */
 
 const cid = (rowKey, col, which) => `${rowKey}:${col}:${which}`;
@@ -151,7 +183,7 @@ export default function NumberDrill(props) {
   return <ColumnDrill {...props} />;
 }
 
-function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
+function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress, langs, bilingual }) {
   // Flatten the ladder into an ordered list, remembering each item's rung so we
   // can gate progression and show a banner when a new level opens.
   const mode = pool?.mode || 'long-mult';
@@ -164,7 +196,7 @@ function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
         items.push({
           id: `L${ri}-${a}${op}${b}-${ii}`,
           a, b, op, ri,
-          level: rung.level, levelVn: rung.levelVn,
+          level: rung.level, levelVn: rung.levelVn, levelFr: rung.levelFr,
           isRungStart: ii === 0,
           isRungEnd: ii === (rung.items.length - 1),
           isLast: false,
@@ -175,7 +207,7 @@ function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
     return items;
   }, [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   // Items cleared on a previous attempt are restored and skipped: the drill opens
   // on the first item still to do, and their scores already count.
   const [results, setResults] = useState(() => {
@@ -199,7 +231,7 @@ function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
   const [ended, setEnded] = useState(false);
   const firstBox = useRef(null);
 
-  const t = lang === 'vn' ? VN : EN;
+  const t = tr(lang, EN, VN, FR);
   const item = flat[pos];
   const model = useMemo(() => (item ? modelOf(mode, item.a, item.b, item.op) : null), [item, mode]);
   const stage = model?.stages[stageIdx];
@@ -347,11 +379,11 @@ function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
         onQuit={finish}
-        modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
+        modeTitle={pool?.title ? twin(lang, pool, 'title') : t.title}
         current={pos + 1}
         total={flat.length}
         lang={lang}
-        onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))}
+        onLangToggle={toggleLang}
       />
 
       <div className="flex-1 w-full max-w-3xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-3">
@@ -362,7 +394,7 @@ function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
             style={{ borderColor: ORANGE, backgroundColor: `${ORANGE}14` }}>
             <Grid3x3 className="w-4 h-4" style={{ color: ORANGE }} strokeWidth={2.5} />
             <span className="font-black text-sm text-slate-800 dark:text-slate-100">
-              {t.level} {item.ri + 1}: {lang === 'vn' ? (item.levelVn || item.level) : item.level}
+              {t.level} {item.ri + 1}: {twin(lang, item, 'level')}
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-slate-400">
@@ -466,7 +498,7 @@ function ColumnDrill({ pool, onComplete, onQuit, savedData = {}, onProgress }) {
                 <Sparkles className="w-4 h-4 shrink-0" style={{ color: GREEN }} strokeWidth={2.5} />
                 <span className="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100">
                   {t.level} {item.ri + 1} {t.levelClear} {flat[pos + 1]?.level
-                    ? `“${lang === 'vn' ? (flat[pos + 1].levelVn || flat[pos + 1].level) : flat[pos + 1].level}” ${t.unlocked}.`
+                    ? `“${twin(lang, flat[pos + 1], 'level')}” ${t.unlocked}.`
                     : ''}
                 </span>
               </div>
@@ -513,6 +545,13 @@ const SVN = {
   scoreLine: 'phép đúng', timeLeft: 'Thời gian', bankHere: 'Kết thúc & nhận XP',
   levelClear: 'xong', got: 'Em được',
 };
+const SFR = {
+  title: 'Gym des nombres', level: 'Niveau', check: 'Vérifier', next: 'Suivant', finish: 'Terminer',
+  go: 'Lancer le chrono', timeUp: 'Temps écoulé !', ready: 'On y va ?',
+  intro: 'Réponds au plus de calculs possible avant la fin du chrono. Les multiples, ce sont juste les tables de multiplication — plus vite tu les connais, plus vite tu les écris.',
+  scoreLine: 'calculs justes', timeLeft: 'Temps', bankHere: 'Terminer & garder l’XP',
+  levelClear: 'terminé', got: 'Tu as eu',
+};
 
 /** Parse a whole-number answer (products can be up to three digits). */
 const parseWhole = (text) => {
@@ -520,9 +559,9 @@ const parseWhole = (text) => {
   return s === '' ? NaN : Number(s);
 };
 
-function TimesSprint({ pool, onComplete, onQuit }) {
+function TimesSprint({ pool, onComplete, onQuit, langs, bilingual }) {
   const rungs = pool?.ladder || [];
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [rungIdx, setRungIdx] = useState(0);
   const [phase, setPhase] = useState('ready');   // ready | running | graded
   const [entries, setEntries] = useState({});
@@ -535,7 +574,7 @@ function TimesSprint({ pool, onComplete, onQuit }) {
   const entriesRef = useRef(entries);
   useEffect(() => { entriesRef.current = entries; });
 
-  const t = lang === 'vn' ? SVN : SEN;
+  const t = tr(lang, SEN, SVN, SFR);
   const rung = rungs[rungIdx];
   const facts = useMemo(() => (rung?.items || []), [rung]);
   const isLastRung = rungIdx >= rungs.length - 1;
@@ -597,16 +636,16 @@ function TimesSprint({ pool, onComplete, onQuit }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar onQuit={finish}
-        modeTitle={pool?.title ? (lang === 'vn' ? (pool.titleVn || pool.title) : pool.title) : t.title}
+        modeTitle={pool?.title ? twin(lang, pool, 'title') : t.title}
         current={rungIdx + 1} total={rungs.length} lang={lang}
-        onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+        onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-2xl mx-auto p-3 sm:p-5 pb-10 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 rounded-xl px-3 py-1.5 border-2" style={{ borderColor: ORANGE, backgroundColor: `${ORANGE}14` }}>
             <Grid3x3 className="w-4 h-4" style={{ color: ORANGE }} strokeWidth={2.5} />
             <span className="font-black text-sm text-slate-800 dark:text-slate-100">
-              {t.level} {rungIdx + 1}: {lang === 'vn' ? (rung.levelVn || rung.level) : rung.level}
+              {t.level} {rungIdx + 1}: {twin(lang, rung, 'level')}
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-slate-400">
@@ -625,7 +664,7 @@ function TimesSprint({ pool, onComplete, onQuit }) {
 
         {phase === 'ready' ? (
           <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-6 text-center flex flex-col items-center gap-4">
-            <p className="font-bold text-slate-600 dark:text-slate-300 max-w-md">{lang === 'vn' ? (pool.introVn || t.intro) : (pool.intro || t.intro)}</p>
+            <p className="font-bold text-slate-600 dark:text-slate-300 max-w-md">{tr(lang, pool.intro || t.intro, pool.introVn || t.intro, pool.introFr || pool.intro || t.intro)}</p>
             <button onClick={start}
               className="px-6 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white bg-[#f97316] border-b-[4px] border-[#c2410c] active:border-b-0 active:translate-y-[4px]">
               {t.go} · {secondsFor(facts.length)}s

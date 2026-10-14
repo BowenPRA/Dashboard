@@ -3,6 +3,7 @@ import { CheckCircle2, AlertTriangle, ArrowRight, MousePointerClick } from 'luci
 import {
   ARROWS, ARROW, HIT_R, VIEW, PLACES, arrowsOf, midOf, cycleSvg, activityRound, markRound, processName,
 } from '../../utils/waterCycle';
+import { tr } from '../../utils/lang';
 
 /**
  * The `cycle` deck activity (Science 2.4) — one Water Journey round fixed by
@@ -14,7 +15,7 @@ import {
  *            Check — any order that is a real path from A to B is right
  *
  * Schema: { id, type: 'cycle', ask, process?, arrow?, options?, from?, to?,
- * steps?, prompt, promptVn, explain, explainVn }. ActivityBlock draws the
+ * steps?, prompt, promptVn, promptFr, explain, explainVn, explainFr }. ActivityBlock draws the
  * prompt; this draws the diagram and the answer, calls onResult once, then
  * shows the right answer in place — on the diagram — and the explain.
  *
@@ -22,8 +23,8 @@ import {
  * Journey task (tasks/WaterJourney.jsx).
  */
 
-const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
-const sayLine = (lang, l) => pickL(lang, l.en, l.vn);
+const pickL = tr;
+const sayLine = (lang, l) => pickL(lang, l.en, l.vn, l.fr);
 
 const T = {
   en: {
@@ -35,6 +36,11 @@ const T = {
     check: 'Kiểm tra', tapRing: 'Chạm vào vòng tròn trên mũi tên em chọn, rồi bấm Kiểm tra.', picked: 'Mũi tên của em',
     none: 'chưa chọn', start: 'Bắt đầu', end: 'Kết thúc', tapSteps: 'Chạm các quá trình theo thứ tự. Chạm vào một bước để bỏ nó ra.',
     correct: 'Chính xác', wrong: 'Chưa đúng', arrow: 'Mũi tên', diagram: 'Vòng tuần hoàn của nước',
+  },
+  fr: {
+    check: 'Vérifier', tapRing: 'Touche un rond sur la flèche choisie, puis Vérifier.', picked: 'Ta flèche',
+    none: 'aucune', start: 'Départ', end: 'Arrivée', tapSteps: 'Touche les processus dans l’ordre. Touche une étape pour la retirer.',
+    correct: 'Correct !', wrong: 'Pas tout à fait', arrow: 'Flèche', diagram: 'Le cycle de l’eau',
   },
 };
 
@@ -215,7 +221,7 @@ export function CycleActivity({ activity, lang = 'en', result, onResult, parseTe
       {checked && (
         <Verdict ok={result.correct} lang={lang}>
           {named.map((l, i) => <p key={i}>{sayLine(lang, l)}</p>)}
-          <p>{parseText(pickL(lang, activity.explain, activity.explainVn))}</p>
+          <p>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</p>
         </Verdict>
       )}
     </div>
@@ -229,7 +235,7 @@ function JourneyControls({ round, lang, t, order, setOrder, checked, ok, onCheck
   const place = (id, letter, colour) => (
     <div className="flex items-baseline gap-1.5 text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300">
       <span className="shrink-0 px-1.5 rounded-md text-white text-[11px] font-black" style={{ backgroundColor: colour }}>{letter}</span>
-      <span>{pickL(lang, PLACES[id].at.en, PLACES[id].at.vn)}</span>
+      <span>{pickL(lang, PLACES[id].at.en, PLACES[id].at.vn, PLACES[id].at.fr)}</span>
     </div>
   );
   // Compact: under a slide this shares the card with it, so every row counts.

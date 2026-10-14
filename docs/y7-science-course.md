@@ -14,8 +14,9 @@ section is one app unit, zero-padded so it sorts in book order (`U01_1` …
 `U02_1b`), the Dashboard unit absorbs both and lists both in
 `meta.classroom`.
 
-**Bilingual EN + VN, always.** Same students as Maths, and the science words
-("organelle", "compress", "condensation") *are* half the lesson.
+**EN + VN + FR, always.** Same students as Maths, and the science words
+("organelle", "compress", "condensation") *are* half the lesson. Every `…Vn`
+field has its `…Fr` twin beside it (since 2026-10-14) — see [french.md](french.md).
 
 ## 2. The unit shape
 

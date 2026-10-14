@@ -4,6 +4,7 @@ import {
   SCALE, phColour, inkOn, kindOf, KIND_WORDS, LITMUS_PAPERS, LITMUS_CHOICES, LITMUS_DOES,
   stripSvg, afterDrops, NEUTRAL, SUBSTANCES, cap, activityModel, markActivity,
 } from '../../utils/phLab';
+import { tr } from '../../utils/lang';
 
 /**
  * The `ph` deck activity (Science 2.8), and the pieces pH Lab shares with it:
@@ -21,8 +22,8 @@ import {
  * Every colour is drawn on white, so the scale reads the same in dark mode.
  */
 
-const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
-const said = (lang, line) => (line ? pickL(lang, line.en, line.vn) : '');
+const pickL = tr;
+const said = (lang, line) => (line ? pickL(lang, line.en, line.vn, line.fr) : '');
 
 const PH_T = {
   en: {
@@ -36,6 +37,12 @@ const PH_T = {
     blue: 'Giấy quỳ xanh', red: 'Giấy quỳ đỏ', tapChip: 'Chạm một chất, rồi chạm vào vị trí của nó trên thang', tapCell: 'Chạm vào vị trí của nó trên thang',
     correct: 'Chính xác', notQuite: 'Chưa đúng', acidEnd: 'axit', alkaliEnd: 'kiềm', neutral: 'trung tính',
     adding: (w) => `Ống nhỏ giọt: ${w}`, alkali: 'kiềm', acid: 'axit',
+  },
+  fr: {
+    check: 'Vérifier', addDrop: 'Ajouter une goutte', stop: 'Stop : c’est neutre', drops: (n) => `${n} goutte${n > 1 ? 's' : ''} ajoutée${n > 1 ? 's' : ''}`,
+    blue: 'Tournesol bleu', red: 'Tournesol rouge', tapChip: 'Touche un liquide, puis sa place sur l’échelle', tapCell: 'Touche sa place sur l’échelle',
+    correct: 'Correct !', notQuite: 'Pas tout à fait', acidEnd: 'acide', alkaliEnd: 'alcalin', neutral: 'neutre',
+    adding: (w) => `Compte-gouttes : ${w}`, alkali: 'un alcali', acid: 'un acide',
   },
 };
 
@@ -136,7 +143,7 @@ export function LitmusRows({ pick = {}, onPick, want = null, disabled, lang = 'e
                 return (
                   <button key={c} type="button" disabled={disabled} onClick={() => onPick?.(paper, c)}
                     className={`px-1 py-2 rounded-lg border-2 border-b-[3px] text-[11px] sm:text-xs font-black leading-tight ${style}`}>
-                    {pickL(lang, LITMUS_DOES[c].en, LITMUS_DOES[c].vn)}
+                    {pickL(lang, LITMUS_DOES[c].en, LITMUS_DOES[c].vn, LITMUS_DOES[c].fr)}
                   </button>
                 );
               })}
@@ -215,9 +222,9 @@ function Liquid({ sub, pH, show = 'pH', lang }) {
   const kind = pH != null ? KIND_WORDS[kindOf(pH)] : null;
   return (
     <div className="inline-flex flex-wrap items-baseline gap-x-2 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 px-3 py-1.5">
-      {s && <span className="font-black text-slate-800 dark:text-slate-100">{cap(pickL(lang, s.en, s.vn))}</span>}
+      {s && <span className="font-black text-slate-800 dark:text-slate-100">{cap(pickL(lang, s.en, s.vn, s.fr))}</span>}
       {show === 'pH' && pH != null && <span className="font-black text-slate-500 dark:text-slate-400 tabular-nums">pH {pH}</span>}
-      {show === 'kind' && kind && <span className="font-black text-slate-500 dark:text-slate-400">{pickL(lang, kind.a.en, kind.a.vn)}</span>}
+      {show === 'kind' && kind && <span className="font-black text-slate-500 dark:text-slate-400">{pickL(lang, kind.a.en, kind.a.vn, kind.a.fr)}</span>}
     </div>
   );
 }
@@ -256,7 +263,7 @@ function PlaceAsk({ m, lang, checked, answer, finish }) {
   const add = (pH, chip) => { (chips[pH] ||= []).push(chip); };
   for (const id of m.subs) {
     const at = where[id];
-    const label = cap(pickL(lang, SUBSTANCES[id].en, SUBSTANCES[id].vn));
+    const label = cap(pickL(lang, SUBSTANCES[id].en, SUBSTANCES[id].vn, SUBSTANCES[id].fr));
     if (!checked) { if (at != null) add(at, { id, short: String(num(id)), label }); continue; }
     const ok = Math.abs(at - m.answer[id]) <= m.within;
     add(at, { id: `${id}-at`, short: String(num(id)), label, tone: ok ? 'good' : 'bad' });
@@ -273,7 +280,7 @@ function PlaceAsk({ m, lang, checked, answer, finish }) {
             <button key={id} type="button" disabled={checked} onClick={() => setSel(id)}
               className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-b-[4px] px-2.5 py-1.5 text-sm font-bold ${style}`}>
               <span className="w-5 h-5 rounded-full bg-slate-900/10 dark:bg-white/10 flex items-center justify-center text-[11px] font-black">{num(id)}</span>
-              {cap(pickL(lang, SUBSTANCES[id].en, SUBSTANCES[id].vn))}
+              {cap(pickL(lang, SUBSTANCES[id].en, SUBSTANCES[id].vn, SUBSTANCES[id].fr))}
               {!checked && where[id] != null && <span className="text-[11px] opacity-70">· {where[id]}</span>}
               {checked && <span className="text-[11px] opacity-80">· pH {m.answer[id]}</span>}
             </button>
@@ -355,7 +362,7 @@ export function PhActivity({ activity, lang = 'en', result, onResult, parseText 
       {checked && mark && (
         <Verdict ok={!!result.correct} lang={lang} small={beside} className={beside ? 'mt-3 lg:mt-0' : 'mt-3'}>
           {!result.correct && mark.lines.slice(0, mark.named).map((l, i) => <span key={i}>{said(lang, l)}</span>)}
-          <span>{parseText(pickL(lang, activity.explain, activity.explainVn))}</span>
+          <span>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</span>
         </Verdict>
       )}
     </div>

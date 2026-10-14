@@ -21,6 +21,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'An expression has a letter and **no equals sign**: $$3k + 1$$. B and D have an = sign, so they are not expressions; C has an = sign and no letter.',
       expVn: 'Biểu thức có chữ cái và **không có dấu bằng**: $$3k + 1$$. B và D có dấu =, nên không phải biểu thức; C có dấu = và không có chữ cái.',
+      expFr: 'Une expression a une lettre et **pas de signe égal** : $$3k + 1$$. B et D ont un signe =, donc ce ne sont pas des expressions ; C a un signe = et pas de lettre.',
     },
     {
       id: 'a2_represent',
@@ -35,6 +36,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'A letter represents a **number** we do not know — here, how many grams there are. It is not the bag, not a grain, and not the letter itself.',
       expVn: 'Một chữ cái đại diện cho một **con số** ta chưa biết — ở đây là số gam gạo. Nó không phải cái túi, không phải một hạt gạo, và không phải bản thân chữ cái.',
+      expFr: 'Une lettre représente un **nombre** qu’on ne connaît pas — ici, combien il y a de grammes. Ce n’est pas le sac, ni un grain, ni la lettre elle-même.',
     },
     {
       id: 'a3_notation',
@@ -49,6 +51,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Drop the × signs and put the number in front: $$7mn$$. A puts the number at the end; B and D turn multiplying into adding — only the × sign disappears.',
       expVn: 'Bỏ các dấu × và đặt số đứng trước: $$7mn$$. A đặt số ở cuối; B và D biến phép nhân thành phép cộng — chỉ dấu × mới biến mất.',
+      expFr: 'Enlève les signes × et mets le nombre devant : $$7mn$$. A met le nombre à la fin ; B et D transforment la multiplication en addition — seul le signe × disparaît.',
     },
     {
       id: 'a4_less_than',
@@ -63,6 +66,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Start from $$t$$ and take 6 away: $$t − 6$$. Check with numbers — 6 less than 10 is 4, which is $$10 − 6$$. A has the order backwards; B multiplies; C adds.',
       expVn: 'Bắt đầu từ $$t$$ rồi bớt 6: $$t − 6$$. Thử bằng số — 6 less than 10 là 4, tức là $$10 − 6$$. A viết ngược thứ tự; B nhân; C cộng.',
+      expFr: 'Pars de $$t$$ et enlève 6 : $$t − 6$$. Vérifie avec des nombres — 6 de moins que 10, c’est 4, soit $$10 − 6$$. A met l’ordre à l’envers ; B multiplie ; C additionne.',
     },
     {
       id: 'a5_subtract_from',
@@ -77,6 +81,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'The result is $$2x$$. "Subtract the result **from 9**" starts at 9: $$9 − 2x$$. A is "subtract 9" (no "from"); C subtracts before multiplying; D subtracts 9 from $$x$$ first.',
       expVn: 'Kết quả là $$2x$$. "Lấy **9** trừ đi kết quả" bắt đầu từ 9: $$9 − 2x$$. A là "trừ đi 9" (không có "from"); C trừ trước khi nhân; D lấy $$x$$ trừ 9 trước.',
+      expFr: 'Le résultat est $$2x$$. « Subtract the result **from 9** » (soustrais le résultat de 9) part de 9 : $$9 − 2x$$. A, c’est « subtract 9 » (sans « from ») ; C soustrait avant de multiplier ; D soustrait d’abord 9 de $$x$$.',
     },
     {
       id: 'a6_word_problem',
@@ -91,6 +96,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Two big bottles: $$2b$$. Four small: $$4s$$. "Total" → add: $$2b + 4s$$. Two sizes mean two letters that cannot be combined, so A and D (which multiply them) and C (which adds a bare 6) are wrong.',
       expVn: 'Hai chai lớn: $$2b$$. Bốn chai nhỏ: $$4s$$. "Tổng" → cộng: $$2b + 4s$$. Hai cỡ khác nhau nghĩa là hai chữ cái không gộp được, nên A và D (nhân chúng) và C (cộng thêm số 6) đều sai.',
+      expFr: 'Deux grandes bouteilles : $$2b$$. Quatre petites : $$4s$$. « Total » → additionne : $$2b + 4s$$. Deux tailles, donc deux lettres qu’on ne peut pas regrouper : A et D (qui les multiplient) et C (qui ajoute un 6 tout seul) sont faux.',
     },
   ],
 };

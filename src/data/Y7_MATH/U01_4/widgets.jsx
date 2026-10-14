@@ -11,6 +11,7 @@
 // interface last lesson, so no time is spent learning it, and the only visible
 // change is that the winning chip is the HIGHEST match rather than the lowest.
 import { useState } from 'react'
+import { tr as pick } from '../../../utils/lang'
 
 const TEAL = '#0087a8'
 const PURPLE = '#5c2483'
@@ -18,8 +19,6 @@ const ORANGE = '#c25e12'
 const GREEN = '#4a8b23'
 const RED = '#c8102e'
 const BLUE = '#1a5fa8'
-
-const pick = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en)
 
 const Stage = ({ children, className = '' }) => (
   <div className={`flex-1 min-h-[210px] w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-inner relative flex flex-col p-3 sm:p-4 overflow-hidden ${className}`}>
@@ -47,19 +46,24 @@ const Controls = ({ children }) => (
 const PAIRS = [
   { a: 12, b: 18, fa: [1, 2, 3, 4, 6, 12], fb: [1, 2, 3, 6, 9, 18], hcf: 6,
     note: '1, 2, 3 and 6 are in both lists. The HCF is the highest of them: 6.',
-    noteVn: '1, 2, 3 và 6 đều có trong cả hai danh sách. ƯCLN là số lớn nhất trong đó: 6.' },
+    noteVn: '1, 2, 3 và 6 đều có trong cả hai danh sách. ƯCLN là số lớn nhất trong đó: 6.',
+    noteFr: '1, 2, 3 et 6 sont dans les deux listes. Le PGCD est le plus grand d’entre eux : 6.' },
   { a: 24, b: 80, fa: [1, 2, 3, 4, 6, 8, 12, 24], fb: [1, 2, 4, 5, 8, 10, 16, 20, 40, 80], hcf: 8,
     note: 'The book’s example. The biggest number in both lists is 8.',
-    noteVn: 'Ví dụ trong sách. Số lớn nhất có trong cả hai danh sách là 8.' },
+    noteVn: 'Ví dụ trong sách. Số lớn nhất có trong cả hai danh sách là 8.',
+    noteFr: 'L’exemple du livre. Le plus grand nombre dans les deux listes est 8.' },
   { a: 8, b: 9, fa: [1, 2, 4, 8], fb: [1, 3, 9], hcf: 1,
     note: 'The only common factor is 1. The HCF is 1 — never “none”.',
-    noteVn: 'Ước số chung duy nhất là 1. ƯCLN bằng 1 — không bao giờ là “không có”.' },
+    noteVn: 'Ước số chung duy nhất là 1. ƯCLN bằng 1 — không bao giờ là “không có”.',
+    noteFr: 'Le seul diviseur commun est 1. Le PGCD est 1 — jamais « aucun ».' },
   { a: 6, b: 18, fa: [1, 2, 3, 6], fb: [1, 2, 3, 6, 9, 18], hcf: 6,
     note: '6 divides into 18, so the HCF is just the smaller number, 6.',
-    noteVn: '6 chia hết 18, nên ƯCLN chính là số nhỏ hơn, 6.' },
+    noteVn: '6 chia hết 18, nên ƯCLN chính là số nhỏ hơn, 6.',
+    noteFr: '6 divise 18, donc le PGCD est simplement le plus petit nombre, 6.' },
   { a: 20, b: 30, fa: [1, 2, 4, 5, 10, 20], fb: [1, 2, 3, 5, 6, 10, 15, 30], hcf: 10,
     note: 'The biggest number that appears in both lists is 10.',
-    noteVn: 'Số lớn nhất xuất hiện trong cả hai danh sách là 10.' },
+    noteVn: 'Số lớn nhất xuất hiện trong cả hai danh sách là 10.',
+    noteFr: 'Le plus grand nombre présent dans les deux listes est 10.' },
 ]
 
 // A chip: grey until its row is shown, then coloured; orange if it is a common
@@ -103,37 +107,37 @@ export const HcfFinderWidget = ({ lang = 'en' }) => {
   const isCommon = (n) => p.fa.includes(n) && p.fb.includes(n)
 
   const nextLabel =
-    step === 0 ? pick(lang, `Factors of ${p.a}`, `Ước số của ${p.a}`)
-      : step === 1 ? pick(lang, `Factors of ${p.b}`, `Ước số của ${p.b}`)
-        : step === 2 ? pick(lang, 'Find the matches', 'Tìm các số chung')
-          : step === 3 ? pick(lang, 'Show the HCF', 'Hiện ƯCLN')
-            : pick(lang, 'Next pair', 'Cặp tiếp theo')
+    step === 0 ? pick(lang, `Factors of ${p.a}`, `Ước số của ${p.a}`, `Diviseurs de ${p.a}`)
+      : step === 1 ? pick(lang, `Factors of ${p.b}`, `Ước số của ${p.b}`, `Diviseurs de ${p.b}`)
+        : step === 2 ? pick(lang, 'Find the matches', 'Tìm các số chung', 'Nombres communs')
+          : step === 3 ? pick(lang, 'Show the HCF', 'Hiện ƯCLN', 'Voir le PGCD')
+            : pick(lang, 'Next pair', 'Cặp tiếp theo', 'Paire suivante')
 
   return (
     <div className="w-full h-full flex flex-col select-none">
       <Stage>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            {pick(lang, 'HCF finder', 'Máy tìm ƯCLN')}
+            {pick(lang, 'HCF finder', 'Máy tìm ƯCLN', 'Trouve le PGCD')}
           </span>
           <span className="font-mono font-black text-xs text-slate-400 tabular-nums">{i + 1}/{PAIRS.length}</span>
         </div>
 
         <div className="rounded-xl border-2 px-3 py-2.5 mb-2 shrink-0 text-center" style={{ borderColor: TEAL, backgroundColor: `${TEAL}0f` }}>
           <p className="font-black text-slate-800 dark:text-slate-100 leading-snug text-base sm:text-lg lg:text-xl">
-            {pick(lang, `Find the highest common factor of ${p.a} and ${p.b}`, `Tìm ước số chung lớn nhất của ${p.a} và ${p.b}`)}
+            {pick(lang, `Find the highest common factor of ${p.a} and ${p.b}`, `Tìm ước số chung lớn nhất của ${p.a} và ${p.b}`, `Trouve le plus grand commun diviseur de ${p.a} et ${p.b}`)}
           </p>
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar space-y-2.5 text-slate-800 dark:text-slate-100">
-          <FactorRow label={pick(lang, `Factors of ${p.a}`, `Ước số của ${p.a}`)} nums={p.fa} base={BLUE} show={step >= 1} hcf={p.hcf} isCommon={isCommon} step={step} />
-          <FactorRow label={pick(lang, `Factors of ${p.b}`, `Ước số của ${p.b}`)} nums={p.fb} base={RED} show={step >= 2} hcf={p.hcf} isCommon={isCommon} step={step} />
+          <FactorRow label={pick(lang, `Factors of ${p.a}`, `Ước số của ${p.a}`, `Diviseurs de ${p.a}`)} nums={p.fa} base={BLUE} show={step >= 1} hcf={p.hcf} isCommon={isCommon} step={step} />
+          <FactorRow label={pick(lang, `Factors of ${p.b}`, `Ước số của ${p.b}`, `Diviseurs de ${p.b}`)} nums={p.fb} base={RED} show={step >= 2} hcf={p.hcf} isCommon={isCommon} step={step} />
 
           {step >= 4 && (
             <div className="rounded-xl px-3 py-2 flex items-center gap-3 animate-in fade-in zoom-in-95 duration-300 border-2" style={{ borderColor: GREEN, backgroundColor: `${GREEN}12` }}>
-              <span className="text-[10px] font-black uppercase tracking-widest shrink-0" style={{ color: GREEN }}>{pick(lang, 'HCF', 'ƯCLN')}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest shrink-0" style={{ color: GREEN }}>{pick(lang, 'HCF', 'ƯCLN', 'PGCD')}</span>
               <span className="font-mono font-black text-2xl" style={{ color: GREEN }}>{p.hcf}</span>
-              <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300 leading-snug">{pick(lang, p.note, p.noteVn)}</span>
+              <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300 leading-snug">{pick(lang, p.note, p.noteVn, p.noteFr)}</span>
             </div>
           )}
         </div>
@@ -145,14 +149,14 @@ export const HcfFinderWidget = ({ lang = 'en' }) => {
             onClick={() => go(Math.max(0, i - 1))}
             disabled={i === 0}
             className="px-3 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 dark:border-slate-600 text-slate-500 disabled:opacity-30 active:scale-95">
-            {pick(lang, 'Back', 'Lùi')}
+            {pick(lang, 'Back', 'Lùi', 'Retour')}
           </button>
           <button
             onClick={() => (step < 4 ? setStep(step + 1) : !last && go(i + 1))}
             disabled={step === 4 && last}
             className="flex-1 py-2.5 rounded-xl font-black text-sm uppercase tracking-widest text-white border-2 disabled:opacity-40 active:scale-95 transition-all"
             style={{ backgroundColor: step === 4 ? PURPLE : TEAL, borderColor: step === 4 ? PURPLE : TEAL }}>
-            {step === 4 && last ? pick(lang, 'That is the last one', 'Hết rồi') : nextLabel}
+            {step === 4 && last ? pick(lang, 'That is the last one', 'Hết rồi', 'C’est la dernière') : nextLabel}
           </button>
         </div>
       </Controls>

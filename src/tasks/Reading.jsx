@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { CheckCircle2, BookOpen, Volume2, VolumeX, XCircle } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import { TranslationChoice } from '../components/Feedback';
 import { playChime } from '../utils/sound';
 
-export default function Reading({ pool, track, unitId, savedData = {}, onComplete }) {
+export default function Reading({ pool, track, unitId, savedData = {}, onComplete, langs }) {
   const passages = useMemo(() => pool || [], [pool]);
   const [passageIndex, setPassageIndex] = useState(0);
   const [gameState, setGameState] = useState('Q'); 
@@ -11,6 +12,10 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
   const [cumulativeCorrect, setCumulativeCorrect] = useState(0);
   const [btnCooldown, setBtnCooldown] = useState(false);
   const [localAnswers, setLocalAnswers] = useState(savedData);
+  // The translation under a checked passage: Vietnamese, or French when the
+  // passage has it too (Year 7) and the student picks FR — kept across passages.
+  const [trChoice, setTrChoice] = useState('vn');
+  const offersFr = !Array.isArray(langs) || langs.includes('fr');
   
   const inputRefs = useRef([]);
   const audioState = useRef({ currentAudio: null });
@@ -303,6 +308,9 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
             if ((inputs[idx] || '').toLowerCase() === targetLetters.toLowerCase()) currentScore++;
           });
           const isPerfect = currentScore === blankWords.length;
+          const hasFr = offersFr && !!(currentPassage.frTitle || currentPassage.frText);
+          const showFr = hasFr && trChoice === 'fr';
+          const trLabelClass = `font-black text-[10px] sm:text-xs uppercase tracking-widest ${isPerfect ? 'text-[#468500] dark:text-[#a3e635]' : 'text-[#C9362A] dark:text-[#f87171]'}`;
 
           return (
             <div className={`fixed bottom-0 left-0 w-full border-t-[6px] p-4 md:p-6 animate-in slide-in-from-bottom-10 shadow-[0_-15px_50px_-15px_rgba(0,0,0,0.2)] z-50
@@ -341,13 +349,20 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
 
                   <div className="hidden md:block w-px bg-black/10 dark:bg-white/10"></div>
 
-                  {/* Right Half: Vietnamese Translation (Scrollable) */}
+                  {/* Right Half: Vietnamese (or French) Translation (Scrollable) */}
                   <div className="flex-[2] max-h-[100px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent">
-                    <span className={`font-black text-[10px] sm:text-xs uppercase tracking-widest block mb-1 ${isPerfect ? 'text-[#468500] dark:text-[#a3e635]' : 'text-[#C9362A] dark:text-[#f87171]'}`}>
-                      {currentPassage.vnTitle}
-                    </span>
+                    {hasFr ? (
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
+                        <span className={trLabelClass}>{showFr ? currentPassage.frTitle : currentPassage.vnTitle}</span>
+                        <TranslationChoice value={trChoice} onChange={setTrChoice} className="text-slate-500 dark:text-slate-400" />
+                      </div>
+                    ) : (
+                      <span className={`${trLabelClass} block mb-1`}>
+                        {currentPassage.vnTitle}
+                      </span>
+                    )}
                     <p className="font-medium text-sm text-slate-700 dark:text-slate-300 italic leading-snug">
-                      "{currentPassage.vnText}"
+                      "{showFr ? currentPassage.frText : currentPassage.vnText}"
                     </p>
                   </div>
                 </div>

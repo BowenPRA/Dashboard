@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { FIRST_20, TABLE, BLANK_CELLS, tilePos, colX, rowY } from '../../utils/elements.js';
+import { tr } from '../../utils/lang.js';
 
 /**
  * The book's first-20 Periodic Table (Science 2.5, p.54), tappable. Drawn from
@@ -19,7 +20,7 @@ import { FIRST_20, TABLE, BLANK_CELLS, tilePos, colX, rowY } from '../../utils/e
  *                  also dropped automatically when the table is drawn narrower
  *                  than NARROW_PX, where they would be unreadably small.
  *   colourByMetal  yellow metals, blue non-metals (default true); false = plain white
- *   lang           'en' | 'vn' — which name the tiles show
+ *   lang           'en' | 'vn' | 'fr' — which name the tiles show
  *   disabled       tiles stop responding
  *   masked         [sym] — these tiles show "?" instead of their symbol
  *   bands          [{ period } | { group }] — a dashed outline round a row or column
@@ -104,7 +105,7 @@ export default function PeriodicTableSVG({
           const fill = m.fill || base.fill;
           const text = m.text || INK;
           const hidden = masked.includes(el.sym);
-          const name = lang === 'vn' ? el.vn : el.en;
+          const name = tr(lang, el.en, el.vn, el.fr);
           const tap = () => onTap(el.sym);
           return (
             <g

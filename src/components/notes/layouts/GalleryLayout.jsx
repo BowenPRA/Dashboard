@@ -7,6 +7,7 @@
 // picture-beside-text card so a second row still fits without scrolling.
 import { HeaderBar, Ic } from './primitives.jsx';
 import { parseInlineText, renderContent, toHex, NOTE_TONES } from './helpers.jsx';
+import { field } from '../../../utils/lang';
 
 const COLS = {
   2: 'grid-cols-1 sm:grid-cols-2',
@@ -18,15 +19,15 @@ export default function GalleryLayout({ slide: s, ctx }) {
   const { pick, lang, isDisplayMode } = ctx;
   const tone = NOTE_TONES[s.tone] || NOTE_TONES.write;
   const accent = toHex(s.accent, tone.accent);
-  const title = pick(s.title, s.titleVn);
-  const content = pick(s.content, s.contentVn);
+  const title = pick(s.title, s.titleVn, s.titleFr);
+  const content = pick(s.content, s.contentVn, s.contentFr);
   const items = s.items || [];
   const colCount = COLS[s.columns] ? s.columns : 4;
   const grid = COLS[colCount];
   // Anything that needs a second row switches to picture-beside-text.
   const dense = Math.ceil(items.length / colCount) > 1;
   const copyLabel = s.copy === false ? null
-    : pick(s.copyLabel, s.copyLabelVn) || (lang === 'vn' ? tone.labelVn : tone.label);
+    : pick(s.copyLabel, s.copyLabelVn, s.copyLabelFr) || field(tone, 'label', lang);
 
   const mediaBox = dense
     ? `shrink-0 border-r-2 ${isDisplayMode ? 'w-[clamp(5.5rem,9vw,8rem)]' : 'w-24 sm:w-28 lg:w-32'}`
@@ -34,7 +35,7 @@ export default function GalleryLayout({ slide: s, ctx }) {
 
   return (
     <>
-      <HeaderBar title={title || ''} icon={s.icon || 'Boxes'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn)} isDisplayMode={isDisplayMode} />
+      <HeaderBar title={title || ''} icon={s.icon || 'Boxes'} accent={accent} eyebrow={pick(s.eyebrow, s.eyebrowVn, s.eyebrowFr)} isDisplayMode={isDisplayMode} />
       <div className={`flex-1 min-h-0 overflow-y-auto custom-scrollbar bg-slate-50/60 dark:bg-slate-900/50 flex flex-col ${isDisplayMode ? 'p-[clamp(1.25rem,2.5vw,2.5rem)]' : 'p-4 sm:p-6'}`}>
         {/* my-auto centres the grid when it fits and collapses to 0 when it
             doesn't, so a tall set scrolls instead of being clipped. */}
@@ -51,9 +52,9 @@ export default function GalleryLayout({ slide: s, ctx }) {
 
           <div className={`grid gap-3 sm:gap-4 ${grid}`}>
             {items.map((item, i) => {
-              const term = pick(item.term, item.termVn);
-              const text = pick(item.text, item.textVn);
-              const tag = pick(item.tag, item.tagVn);
+              const term = pick(item.term, item.termVn, item.termFr);
+              const text = pick(item.text, item.textVn, item.textFr);
+              const tag = pick(item.tag, item.tagVn, item.tagFr);
               return (
                 <div key={i} className={`flex overflow-hidden rounded-xl border-2 ${tone.border} bg-white dark:bg-slate-800 shadow-sm ${dense ? 'flex-row' : 'flex-col'}`}>
                   <div className={`relative ${tone.card} ${tone.border} ${mediaBox} flex items-center justify-center text-slate-800 dark:text-slate-100 ${isDisplayMode ? 'p-3' : 'p-2 sm:p-3'}`}>

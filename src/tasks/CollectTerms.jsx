@@ -4,6 +4,8 @@ import {
   TrendingUp, Search, Sigma, PenLine, HelpCircle, ListChecks, GripVertical,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import { collectModel, diagnoseBasket, diagnoseSimplify } from '../utils/algebra';
 import {
@@ -18,8 +20,8 @@ import {
  * simplest form.
  *
  * Reads a unit's `collectTerms`:
- *   { title, titleVn, intro?, introVn?, levels: { n: { en, vn } },
- *     items: [{ id, level, expr, context?, contextVn? }] }
+ *   { title, titleVn, titleFr, intro?, introVn?, introFr?, levels: { n: { en, vn, fr } },
+ *     items: [{ id, level, expr, context?, contextVn?, contextFr? }] }
  * `expr` is the question only. utils/algebra.js derives the terms, kinds,
  * basket totals, the answer and the slip behind a wrong answer.
  *
@@ -132,10 +134,60 @@ const T = {
     decideWrong: 'Không rút gọn được: mỗi rổ chỉ có một hạng tử, nên không có hai hạng tử nào đồng dạng. Biểu thức đã ở dạng gọn nhất.',
     noLike: 'Không có hạng tử đồng dạng: đã ở dạng gọn nhất.',
   },
+  fr: {
+    title: 'Réduis',
+    headline: 'Réduire',
+    level: (n) => `Niveau ${n}`,
+    solved: 'résolues',
+    stages: { find: 'Trouver', collect: 'Regrouper', write: 'Écrire', decide: 'Réduire ?' },
+    check: 'Vérifier',
+    stuck: 'Montre-moi',
+    cont: 'Continuer',
+    next: 'Suivant',
+    finish: 'Terminer',
+    clean: 'Toutes les étapes justes du premier coup.',
+    slipped: "Fini — une erreur, et tu l'as corrigée toi-même.",
+    helped: 'Fini — avec une étape montrée.',
+    bookCopy: 'Recopie ceci dans ton cahier',
+    answer: 'Réponse',
+    shown: 'La voici. Lis-la, puis continue.',
+    filled: 'La réponse est remplie pour toi.',
+    empty: 'Pas encore de questions',
+    back: 'Retour au tableau de bord',
+    working: 'Les termes semblables côte à côte',
+    findTitle: 'Range chaque terme dans le panier de son type.',
+    findSub: 'Le signe devant un terme se déplace avec lui. Touche un terme, puis un panier — ou fais-le glisser.',
+    tray: 'Les termes',
+    trayDone: 'Chaque terme est dans un panier. Appuie sur Vérifier.',
+    dropHere: 'Touche ou dépose un terme ici',
+    placeAll: "Mets d'abord chaque terme dans un panier.",
+    findRight: 'Rangé — chaque terme est dans le panier de son type, avec son signe.',
+    cameBack: (n) => `${n} termes sont revenus dans la ligne.`,
+    collectTitle: 'Fais le total de chaque panier.',
+    collectSub: 'Avance dans la ligne signe par signe. Une lettre seule compte pour 1.',
+    collectHint: 'Écris comme 4x ou −2.',
+    fillAll: "Remplis d'abord chaque case.",
+    collectRight: 'Correct — chaque type a maintenant un seul total.',
+    writeTitle: 'Écris la réponse sous sa forme la plus simple.',
+    writeSub: 'Mets les totaux des paniers ensemble, chacun avec son signe.',
+    writeHint: 'Écris comme 4x + 6y. Tu peux écrire x² comme x^2.',
+    totals: 'Totaux des paniers',
+    typeFirst: "Écris d'abord ta réponse.",
+    writeRight: (a) => `Correct — ${a} est sous sa forme la plus simple.`,
+    decideTitle: 'Peut-on la réduire ?',
+    decideSub: 'Regarde les paniers. Y a-t-il un panier avec deux termes ?',
+    yes: 'Oui — on réduit',
+    no: "Non — c'est fini",
+    decideRight: "Correct — chaque panier n'a qu'un terme, donc rien ne se regroupe. Elle est déjà sous sa forme la plus simple.",
+    decideWrong: "On ne peut pas la réduire : chaque panier n'a qu'un terme, donc aucun terme n'est semblable à un autre. Elle est déjà sous sa forme la plus simple.",
+    noLike: 'Pas de termes semblables : déjà sous sa forme la plus simple.',
+  },
 };
+/** A T entry in every language at once: `{ en, vn, fr }`. */
 const both = (key, ...args) => ({
   en: typeof T.en[key] === 'function' ? T.en[key](...args) : T.en[key],
   vn: typeof T.vn[key] === 'function' ? T.vn[key](...args) : T.vn[key],
+  fr: typeof T.fr[key] === 'function' ? T.fr[key](...args) : T.fr[key],
 });
 const STAGE_ICON = { find: Search, collect: Sigma, write: PenLine, decide: HelpCircle };
 
@@ -167,7 +219,7 @@ function Stage({ icon: Icon, label, active, done }) {
 }
 
 function Message({ msg, lang }) {
-  const text = msg ? (lang === 'vn' && msg.vn ? msg.vn : msg.en) : null;
+  const text = msg ? tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en) : null;
   if (!text) return null;
   const tone = msg.ok ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
     : msg.shown || msg.info ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
@@ -274,10 +326,10 @@ function buildEntry(it) {
   }
 }
 
-export default function CollectTerms({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true }) {
+export default function CollectTerms({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
   const entries = useMemo(() => (pool?.items || []).filter((it) => it?.id && it?.expr).map(buildEntry).filter(Boolean), [pool]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [results, setResults] = useState(() => {
     const init = {};
     for (const [id, score] of Object.entries(savedData || {})) init[id] = { score: Number(score) || 0 };
@@ -306,8 +358,8 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
   const [chipMarks, setChipMarks] = useState({});   // term index -> good | bad | shown
   const [holding, setHolding] = useState(null);     // the chip picked up (term index)
 
-  const t = lang === 'vn' ? T.vn : T.en;
-  const L = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const t = T[lang] || T.en;
+  const L = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
   const entry = entries[pos];
 
   if (!entry) {
@@ -364,8 +416,8 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
       reveal();
       setLocked(true);
       setHelped(true);
-      setMsg({ shown: true, en: `${bad.en} ${T.en.filled}`, vn: `${bad.vn} ${T.vn.filled}` });
-    } else setMsg({ ok: false, en: bad.en, vn: bad.vn });
+      setMsg({ shown: true, en: `${bad.en} ${T.en.filled}`, vn: `${bad.vn} ${T.vn.filled}`, fr: `${bad.fr ?? bad.en} ${T.fr.filled}` });
+    } else setMsg({ ok: false, en: bad.en, vn: bad.vn, fr: bad.fr });
   };
   const showMe = (reveal) => { reveal(); setLocked(true); setHelped(true); setMsg({ shown: true, ...both('shown') }); };
 
@@ -432,6 +484,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
     const bad = {
       en: [...shownMsgs.map((m) => m.en), extra?.en].filter(Boolean).join(' '),
       vn: [...shownMsgs.map((m) => m.vn), extra?.vn].filter(Boolean).join(' '),
+      fr: [...shownMsgs.map((m) => m.fr), extra?.fr].filter(Boolean).join(' '),
     };
     judge(wrong.length === 0, bad, revealFind(nextPlaced, nextMarks), both('findRight'));
   };
@@ -453,7 +506,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
     const unreadable = verdicts.find(([, d]) => d.code === 'unreadable');
     if (unreadable) {
       setMarks((m) => ({ ...m, [`b${unreadable[0]}`]: 'bad' }));
-      setMsg({ info: true, en: unreadable[1].en, vn: unreadable[1].vn });
+      setMsg({ info: true, en: unreadable[1].en, vn: unreadable[1].vn, fr: unreadable[1].fr });
       return;
     }
     const next = { ...marks };
@@ -462,7 +515,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
       next[`b${bi}`] = d.ok ? 'good' : 'bad';
       if (!d.ok && !bad) {
         const name = model.baskets[bi].name;
-        bad = { en: `${name.en}: ${d.en}`, vn: `${name.vn}: ${d.vn}` };
+        bad = { en: `${name.en}: ${d.en}`, vn: `${name.vn}: ${d.vn}`, fr: `${name.fr} : ${d.fr}` };
       }
     }
     setMarks(next);
@@ -475,10 +528,10 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
     const raw = String(typed.w ?? '').trim();
     if (!raw) { setMsg({ info: true, ...both('typeFirst') }); return; }
     let d;
-    try { d = missingKinds(model, raw) || diagnoseSimplify(item.expr, raw); } catch { d = { ok: false, code: 'unreadable', en: 'That cannot be read as an expression.', vn: 'Không đọc được biểu thức.' }; }
-    if (d.code === 'unreadable') { setMarks({ w: 'bad' }); setMsg({ info: true, en: d.en, vn: d.vn }); return; }
+    try { d = missingKinds(model, raw) || diagnoseSimplify(item.expr, raw); } catch { d = { ok: false, code: 'unreadable', en: 'That cannot be read as an expression.', vn: 'Không đọc được biểu thức.', fr: 'Je ne peux pas lire cette expression.' }; }
+    if (d.code === 'unreadable') { setMarks({ w: 'bad' }); setMsg({ info: true, en: d.en, vn: d.vn, fr: d.fr }); return; }
     if (d.ok) { setMarks({ w: 'good' }); judge(true, null, null, both('writeRight', model.answerText)); return; }
-    if (d.equivalent) { setMarks({ w: 'nudge' }); setMsg({ info: true, en: d.en, vn: d.vn }); return; }
+    if (d.equivalent) { setMarks({ w: 'nudge' }); setMsg({ info: true, en: d.en, vn: d.vn, fr: d.fr }); return; }
     setMarks({ w: 'bad' });
     judge(false, d, () => { setTyped({ w: model.answerText }); setMarks({ w: 'shown' }); });
   };
@@ -495,12 +548,12 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
   /* ---------------------------------------------------------- render helpers */
   const cleared = entries.reduce((s, e) => s + (results[e.item.id]?.score || 0), 0);
   const levelName = item.level ? pool?.levels?.[item.level] : null;
-  const levelLabel = levelName ? (typeof levelName === 'string' ? levelName : L(levelName.en, levelName.vn)) : null;
+  const levelLabel = levelName ? (typeof levelName === 'string' ? levelName : L(levelName.en, levelName.vn, levelName.fr)) : null;
   const qLatex = model.questionLatex;
   const regroupLatex = rowLatex(terms, regroupedIndexes(model));
   const showRegroup = model.simplifiable && regroupLatex !== qLatex;
-  const context = item.context ? L(item.context, item.contextVn) : null;
-  const intro = pos === startPos && pool?.intro ? L(pool.intro, pool.introVn) : null;
+  const context = item.context ? L(item.context, item.contextVn, item.contextFr) : null;
+  const intro = pos === startPos && pool?.intro ? L(pool.intro, pool.introVn, pool.introFr) : null;
   const bookLines = model.simplifiable
     ? [{ tex: qLatex }, ...(showRegroup ? [{ tex: `= ${regroupLatex}` }] : []), { tex: `= ${model.answerLatex}` }]
     : [{ tex: qLatex }, { text: t.noLike }];
@@ -511,11 +564,11 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
       <TopBar
         onQuit={quit}
-        modeTitle={L(pool?.title, pool?.titleVn) || t.title}
+        modeTitle={L(pool?.title, pool?.titleVn, pool?.titleFr) || t.title}
         current={pos + 1}
         total={entries.length}
         lang={lang}
-        onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined}
+        onLangToggle={toggleLang}
       />
 
       <div className="flex-1 w-full max-w-5xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-5 lg:items-start">
@@ -599,7 +652,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
                           key={bi}
                           role="button"
                           tabIndex={0}
-                          aria-label={L(b.name.en, b.name.vn)}
+                          aria-label={L(b.name.en, b.name.vn, b.name.fr)}
                           onClick={() => { if (target) put(holding, bi); }}
                           onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && target) { e.preventDefault(); put(holding, bi); } }}
                           onDragOver={(e) => e.preventDefault()}
@@ -610,7 +663,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
                           <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-700 px-3 py-1.5 font-black text-sm text-slate-600 dark:text-slate-300"
                             style={colour ? { color: colour } : undefined}>
                             <ShoppingBasket className="w-4 h-4 shrink-0" strokeWidth={2.5} />
-                            {L(b.name.en, b.name.vn)}
+                            {L(b.name.en, b.name.vn, b.name.fr)}
                           </div>
                           <div className="p-2 min-h-[60px] flex flex-wrap gap-2 items-center">
                             {here.length === 0 && (
@@ -651,7 +704,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
                       const colour = kindColour(model, bi);
                       return (
                         <div key={key} className="rounded-xl bg-slate-50 dark:bg-slate-800/60 border-2 border-slate-100 dark:border-slate-800 border-l-[6px] px-3 py-2" style={{ borderLeftColor: colour }}>
-                          <div className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: colour }}>{L(b.name.en, b.name.vn)}</div>
+                          <div className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: colour }}>{L(b.name.en, b.name.vn, b.name.fr)}</div>
                           <div className="flex flex-wrap items-center gap-2 text-2xl text-slate-900 dark:text-slate-100">
                             <span className="overflow-x-auto max-w-full"><SafeInlineMath math={`${rowLatex(terms, b.terms)} =`} /></span>
                             <ExprBox
@@ -659,7 +712,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
                               state={marks[key]}
                               disabled={locked || marks[key] === 'good'}
                               onEnter={checkCollect}
-                              label={L(b.name.en, b.name.vn)}
+                              label={L(b.name.en, b.name.vn, b.name.fr)}
                               onChange={(v) => { setTyped((x) => ({ ...x, [key]: v })); setMarks((m) => ({ ...m, [key]: undefined })); }}
                             />
                           </div>
@@ -681,7 +734,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
                   <div className="flex flex-wrap gap-2 mb-3">
                     {model.baskets.map((b, bi) => (
                       <span key={bi} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border-2 bg-white dark:bg-slate-800 text-lg text-slate-900 dark:text-slate-100" style={{ borderColor: kindColour(model, bi) }}>
-                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: kindColour(model, bi) }}>{L(b.name.en, b.name.vn)}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: kindColour(model, bi) }}>{L(b.name.en, b.name.vn, b.name.fr)}</span>
                         <SafeInlineMath math={b.totalLatex} />
                       </span>
                     ))}
@@ -712,7 +765,7 @@ export default function CollectTerms({ pool, savedData = {}, onComplete, onProgr
                     {model.baskets.map((b, bi) => (
                       <span key={bi} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border-2 bg-white dark:bg-slate-800 text-lg text-slate-900 dark:text-slate-100" style={{ borderColor: kindColour(model, bi) }}>
                         <ShoppingBasket className="w-4 h-4" style={{ color: kindColour(model, bi) }} strokeWidth={2.5} />
-                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: kindColour(model, bi) }}>{L(b.name.en, b.name.vn)}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: kindColour(model, bi) }}>{L(b.name.en, b.name.vn, b.name.fr)}</span>
                         <SafeInlineMath math={rowLatex(terms, b.terms)} />
                       </span>
                     ))}

@@ -18,6 +18,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'A tissue is a group of **similar cells** working together on one job — the ciliated epithelium lining the windpipe. One cell is a cell, a lung is an organ, a mosquito is an organism.',
       expVn: 'Mô là một nhóm **tế bào giống nhau** cùng làm một nhiệm vụ — biểu mô có lông rung lót khí quản. Một tế bào là tế bào, phổi là cơ quan, con muỗi là sinh vật.',
+      expFr: 'Un tissu est un groupe de **cellules semblables** qui travaillent ensemble pour un seul travail — l’épithélium cilié qui tapisse la trachée. Une cellule est une cellule, un poumon est un organe, un moustique est un organisme.',
     },
     {
       id: 'a2_organ',
@@ -32,6 +33,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'An organ — the heart, a lung, a leaf — is built from **several different tissues**. A is a tissue, B an organism, D an organ system.',
       expVn: 'Cơ quan — tim, phổi, lá — được tạo nên từ **nhiều loại mô khác nhau**. A là mô, B là sinh vật, D là hệ cơ quan.',
+      expFr: 'Un organe — le cœur, un poumon, une feuille — est fait de **plusieurs tissus différents**. A est un tissu, B un organisme, D un système d’organes.',
     },
     {
       id: 'a3_organ_system',
@@ -46,6 +48,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'A set of organs sharing one function is an **organ system** — here, the digestive system. Each of those parts on its own is an organ.',
       expVn: 'Một nhóm cơ quan chung một chức năng là **hệ cơ quan** — ở đây là hệ tiêu hoá. Mỗi phần riêng lẻ là một cơ quan.',
+      expFr: 'Un ensemble d’organes qui partagent une même fonction est un **système d’organes** — ici, le système digestif. Chacune de ces parties, seule, est un organe.',
     },
     {
       id: 'a4_organism',
@@ -60,6 +63,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'An organism is any **whole living thing** — a tree, a mosquito, you. A leaf is an organ, onion epidermis is a tissue, and the breathing system is an organ system.',
       expVn: 'Sinh vật là bất kỳ **cơ thể sống hoàn chỉnh** nào — một cái cây, một con muỗi, em. Lá là cơ quan, biểu bì hành là mô, và hệ hô hấp là hệ cơ quan.',
+      expFr: 'Un organisme est n’importe quel **être vivant entier** — un arbre, un moustique, toi. Une feuille est un organe, l’épiderme d’oignon est un tissu, et le système respiratoire est un système d’organes.',
     },
     {
       id: 'a5_order',
@@ -74,6 +78,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Each level is built out of the one before: **cell → tissue → organ → organ system → organism**. D is the right ladder upside down; A and C swap rungs.',
       expVn: 'Mỗi cấp độ được tạo nên từ cấp độ trước: **tế bào → mô → cơ quan → hệ cơ quan → sinh vật**. D là bậc thang đúng nhưng lộn ngược; A và C đảo các bậc.',
+      expFr: 'Chaque niveau est construit à partir du précédent : **cellule → tissu → organe → système d’organes → organisme**. D est la bonne échelle à l’envers ; A et C échangent des barreaux.',
     },
     {
       id: 'a6_jellyfish',
@@ -88,6 +93,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'A jellyfish is made of cells arranged in tissues, but it has no true **organs** — no heart, lungs or brain — and so no organ systems either. Every organism has cells; a living thing can be an organism without organs.',
       expVn: 'Sứa được tạo nên từ các tế bào xếp thành mô, nhưng không có **cơ quan** thật sự — không tim, phổi hay não — nên cũng không có hệ cơ quan. Mọi sinh vật đều có tế bào; một cơ thể sống có thể là sinh vật mà không có cơ quan.',
+      expFr: 'Une méduse est faite de cellules organisées en tissus, mais elle n’a pas de vrais **organes** — pas de cœur, pas de poumons, pas de cerveau — et donc pas de systèmes d’organes non plus. Tout organisme a des cellules ; un être vivant peut être un organisme sans avoir d’organes.',
     },
   ],
 };

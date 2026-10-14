@@ -24,6 +24,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The power counts the zeros after the 1, so $$10^6$$ is a 1 followed by six zeros: $$1000000$$, one million. A multiplied 10 by the power. B has only five zeros — that is $$10^5$$. D has seven — that is $$10^7$$.',
       expVn: 'Số mũ đếm số chữ số 0 đứng sau số 1, nên $$10^6$$ là một số 1 và sáu số 0 theo sau: $$1000000$$, một triệu. A lấy 10 nhân với số mũ. B chỉ có năm số 0 — đó là $$10^5$$. D có bảy số 0 — đó là $$10^7$$.',
+      expFr: 'L’exposant compte les zéros après le 1, donc $$10^6$$ est un 1 suivi de six zéros : $$1000000$$, un million. A a multiplié 10 par l’exposant. B n’a que cinq zéros — c’est $$10^5$$. D en a sept — c’est $$10^7$$.',
     },
     {
       id: 'a2_multiply_decimal',
@@ -38,6 +39,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Every digit moves 4 places left: the 2 lands in the ten-thousands and the 9 in the thousands, and the three empty columns get placeholder zeros: $$29000$$. A stuck four zeros on after the point, which is still $$2.9$$. B moved only 3 places. C took the point out and then added four zeros — that moves the digits 5 places.',
       expVn: 'Mọi chữ số dịch 4 cột sang trái: số 2 vào hàng chục nghìn và số 9 vào hàng nghìn, và ba cột trống cần số 0 giữ chỗ: $$29000$$. A thêm bốn số 0 vào sau phần thập phân, mà số đó vẫn là $$2.9$$. B chỉ dịch 3 cột. C bỏ dấu thập phân rồi thêm bốn số 0 — như vậy là dịch các chữ số 5 cột.',
+      expFr: 'Chaque chiffre se décale de 4 rangs à gauche : le 2 arrive dans les dizaines de mille et le 9 dans les milliers, et les trois colonnes vides reçoivent des zéros de position : $$29000$$. A a collé quatre zéros après le point, ce qui donne toujours $$2.9$$. B ne s’est décalé que de 3 rangs. C a enlevé le point puis ajouté quatre zéros — cela décale les chiffres de 5 rangs.',
     },
     {
       id: 'a3_multiply_small',
@@ -52,6 +54,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Every digit moves 4 places left: the 2 lands in the hundreds and the 5 in the tens. The ones column is left empty, so it gets a placeholder 0: $$250$$. A moved only 3 places and C moved 5. D stuck four zeros on the end, which is still $$0.025$$.',
       expVn: 'Mọi chữ số dịch 4 cột sang trái: số 2 vào hàng trăm và số 5 vào hàng chục. Cột hàng đơn vị bị trống, nên cần một số 0 giữ chỗ: $$250$$. A chỉ dịch 3 cột, còn C dịch 5 cột. D thêm bốn số 0 vào cuối, mà số đó vẫn là $$0.025$$.',
+      expFr: 'Chaque chiffre se décale de 4 rangs à gauche : le 2 arrive dans les centaines et le 5 dans les dizaines. La colonne des unités reste vide, donc elle reçoit un 0 de position : $$250$$. A ne s’est décalé que de 3 rangs et C de 5. D a collé quatre zéros à la fin, ce qui donne toujours $$0.025$$.',
     },
     {
       id: 'a4_divide_placeholders',
@@ -66,6 +69,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Every digit moves 3 places right: the 6 lands in the hundredths and the 8 in the thousandths. The ones and tenths columns are left empty, so each needs a placeholder 0: $$0.068$$. B lost a placeholder — that is only 2 places. C moved 4 places. D moved the digits left, which is multiplying.',
       expVn: 'Mọi chữ số dịch 3 cột sang phải: số 6 vào hàng phần trăm và số 8 vào hàng phần nghìn. Cột hàng đơn vị và hàng phần mười bị trống, nên mỗi cột cần một số 0 giữ chỗ: $$0.068$$. B làm mất một số 0 giữ chỗ — như vậy chỉ là dịch 2 cột. C dịch 4 cột. D dịch các chữ số sang trái, tức là phép nhân.',
+      expFr: 'Chaque chiffre se décale de 3 rangs à droite : le 6 arrive dans les centièmes et le 8 dans les millièmes. Les colonnes des unités et des dixièmes restent vides, donc chacune a besoin d’un 0 de position : $$0.068$$. B a perdu un zéro de position — ce n’est que 2 rangs. C s’est décalé de 4 rangs. D a décalé les chiffres vers la gauche, ce qui revient à multiplier.',
     },
     {
       id: 'a5_divide_decimal',
@@ -80,6 +84,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Every digit moves 2 places right: the 4 lands in the hundredths and the 5 in the thousandths, and the empty ones and tenths columns get placeholder zeros: $$0.045$$. A moved the digits left — that is $$4.5 × 10^2$$. B moved only one place. D wrote two zeros after the point instead of moving two places, which is three places.',
       expVn: 'Mọi chữ số dịch 2 cột sang phải: số 4 vào hàng phần trăm và số 5 vào hàng phần nghìn, và các cột trống ở hàng đơn vị và hàng phần mười cần số 0 giữ chỗ: $$0.045$$. A dịch các chữ số sang trái — đó là $$4.5 × 10^2$$. B chỉ dịch một cột. D viết hai số 0 sau dấu thập phân thay vì dịch hai cột, tức là đã dịch ba cột.',
+      expFr: 'Chaque chiffre se décale de 2 rangs à droite : le 4 arrive dans les centièmes et le 5 dans les millièmes, et les colonnes vides des unités et des dixièmes reçoivent des zéros de position : $$0.045$$. A a décalé les chiffres vers la gauche — c’est $$4.5 × 10^2$$. B ne s’est décalé que d’un rang. D a écrit deux zéros après le point au lieu de se décaler de deux rangs, ce qui fait trois rangs.',
     },
     {
       id: 'a6_missing_power',
@@ -94,6 +99,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Follow the 7: it moves from the ones to the hundred-thousands, 5 places left, so $$n = 5$$. A counted the four zeros in $$730000$$ — but the 3 moved as well. B counted all six digits. C gave the number $$10^5$$ itself, not the power.',
       expVn: 'Theo dõi số 7: nó dịch từ hàng đơn vị lên hàng trăm nghìn, 5 cột sang trái, nên $$n = 5$$. A đếm bốn số 0 trong $$730000$$ — nhưng số 3 cũng đã dịch. B đếm cả sáu chữ số. C viết chính số $$10^5$$, không phải số mũ.',
+      expFr: 'Suis le 7 : il passe des unités aux centaines de mille, 5 rangs à gauche, donc $$n = 5$$. A a compté les quatre zéros de $$730000$$ — mais le 3 s’est décalé aussi. B a compté les six chiffres. C a donné le nombre $$10^5$$ lui-même, pas l’exposant.',
     },
     {
       id: 'a7_mass',
@@ -108,6 +114,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'kg to g to mg is two steps down the ladder, so multiply by $$10^3$$ twice: $$× 10^6$$. The 3 moves 6 places left: $$30000$$ mg. A took only one step — $$30$$ is the mass in grams. C stuck six zeros on the end, which is still $$0.03$$. D divided, but a smaller unit needs a bigger number.',
       expVn: 'Từ kg sang g sang mg là hai bậc đi xuống thang, nên nhân với $$10^3$$ hai lần: $$× 10^6$$. Số 3 dịch 6 cột sang trái: $$30000$$ mg. A chỉ đi một bậc — $$30$$ là khối lượng tính theo gam. C thêm sáu số 0 vào cuối, mà số đó vẫn là $$0.03$$. D đã chia, nhưng đơn vị nhỏ hơn thì số đo phải lớn hơn.',
+      expFr: 'De kg à g puis à mg, c’est deux marches vers le bas de l’échelle, donc multiplie par $$10^3$$ deux fois : $$× 10^6$$. Le 3 se décale de 6 rangs à gauche : $$30000$$ mg. A n’a fait qu’une marche — $$30$$ est la masse en grammes. C a collé six zéros à la fin, ce qui donne toujours $$0.03$$. D a divisé, mais une unité plus petite demande un nombre plus grand.',
     },
     {
       id: 'a8_chain',
@@ -122,6 +129,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Multiplying moves the digits 5 places left, then dividing moves them 2 places back to the right: $$5 − 2 = 3$$ places left overall, which is $$× 10^3$$. B added the two powers, as if both moves went left. C went the wrong way. D multiplied the two powers.',
       expVn: 'Phép nhân làm các chữ số dịch 5 cột sang trái, rồi phép chia làm chúng dịch ngược lại 2 cột sang phải: tổng cộng $$5 − 2 = 3$$ cột sang trái, tức là $$× 10^3$$. B cộng hai số mũ, như thể cả hai lần đều dịch sang trái. C đi sai chiều. D nhân hai số mũ với nhau.',
+      expFr: 'Multiplier décale les chiffres de 5 rangs à gauche, puis diviser les ramène de 2 rangs vers la droite : $$5 − 2 = 3$$ rangs à gauche en tout, c’est-à-dire $$× 10^3$$. B a additionné les deux exposants, comme si les deux déplacements allaient à gauche. C est allé dans le mauvais sens. D a multiplié les deux exposants.',
     },
   ],
 };

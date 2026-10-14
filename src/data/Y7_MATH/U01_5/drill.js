@@ -11,12 +11,13 @@
 
 export const drill = {
   mode: 'short-div',
-  title: 'Divide and Read the Remainder', titleVn: 'Chia và đọc số dư',
+  title: 'Divide and Read the Remainder', titleVn: 'Chia và đọc số dư', titleFr: 'Divise et lis le reste',
   intro: 'The bus stop, the short way: carry each remainder small, up and to the left of the next digit. What is left at the end goes after the r — a remainder of 0 means it divides exactly.',
   introVn: 'Phép chia ngắn: nhớ từng số dư nhỏ ở phía trên bên trái của chữ số tiếp theo. Phần còn lại cuối cùng viết sau chữ r — số dư bằng 0 nghĩa là chia hết.',
+  introFr: 'La méthode « bus stop », version courte : écris chaque reste en petit, en haut à gauche du chiffre suivant. Ce qui reste à la fin s’écrit après le r — un reste de 0 veut dire que la division tombe juste.',
   ladder: [
-    { level: 'Warm-up', levelVn: 'Khởi động', items: [[85, 4], [97, 6], [73, 5]] },
-    { level: 'Two-digit divisors', levelVn: 'Số chia hai chữ số', items: [[500, 12], [853, 9], [647, 15]] },
-    { level: 'Stretch', levelVn: 'Nâng cao', items: [[3960, 7], [2017, 11]] },
+    { level: 'Warm-up', levelVn: 'Khởi động', levelFr: 'Échauffement', items: [[85, 4], [97, 6], [73, 5]] },
+    { level: 'Two-digit divisors', levelVn: 'Số chia hai chữ số', levelFr: 'Diviseurs à deux chiffres', items: [[500, 12], [853, 9], [647, 15]] },
+    { level: 'Stretch', levelVn: 'Nâng cao', levelFr: 'Défi', items: [[3960, 7], [2017, 11]] },
   ],
 };

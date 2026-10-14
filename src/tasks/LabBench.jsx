@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Beaker, CheckCircle2, XCircle, ChevronRight, Construction, RotateCcw } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import { makeSession, drawRound, markAnswer } from '../utils/labBench';
+import useLang from '../hooks/useLang';
 
 /**
  * Lab Bench — the measuring-skill task that is never the same twice. Each
@@ -18,13 +19,14 @@ import { makeSession, drawRound, markAnswer } from '../utils/labBench';
 const T = {
   en: { title: 'Lab Bench', check: 'Check', next: 'Next', finish: 'Finish', again: 'New readings', empty: 'This unit has no Lab Bench modes.', back: 'Return', placeholder: 'Type the reading', correct: 'Correct', wrong: 'Not quite', reading: 'The reading is' },
   vn: { title: 'Bàn thí nghiệm', check: 'Kiểm tra', next: 'Tiếp', finish: 'Hoàn thành', again: 'Số đọc mới', empty: 'Bài này chưa có chế độ Bàn thí nghiệm.', back: 'Quay lại', placeholder: 'Nhập số đọc', correct: 'Chính xác', wrong: 'Chưa đúng', reading: 'Số đọc đúng là' },
+  fr: { title: 'Paillasse de labo', check: 'Vérifier', next: 'Suivant', finish: 'Terminer', again: 'Nouvelles lectures', empty: "Cette unité n'a pas de mode Paillasse de labo.", back: 'Retour', placeholder: 'Écris la lecture', correct: 'Correct', wrong: 'Pas tout à fait', reading: 'La bonne lecture est' },
 };
 
-export default function LabBench({ pool, onComplete, onQuit }) {
+export default function LabBench({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(() => makeSession(config, seed), [config, seed]);
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [typed, setTyped] = useState('');
   const [results, setResults] = useState({});   // idx -> boolean
@@ -59,17 +61,17 @@ export default function LabBench({ pool, onComplete, onQuit }) {
     else finish();
   };
 
-  const pick = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const pick = (en, vn, fr) => (lang === 'vn' && vn ? vn : lang === 'fr' && fr ? fr : en);
   const ok = results[idx];
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
-      <TopBar onQuit={quit} modeTitle={pick(config.title, config.titleVn) || t.title} current={idx + 1} total={session.length} lang={lang} onLangToggle={() => setLang((l) => (l === 'en' ? 'vn' : 'en'))} />
+      <TopBar onQuit={quit} modeTitle={pick(config.title, config.titleVn, config.titleFr) || t.title} current={idx + 1} total={session.length} lang={lang} onLangToggle={toggleLang} />
 
       <div className="flex-1 w-full max-w-4xl mx-auto p-3 sm:p-5 pb-8 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <span className="w-10 h-10 rounded-xl bg-[#0d9488] text-white flex items-center justify-center border-b-[4px] border-[#0f766e] shrink-0"><Beaker className="w-5 h-5" strokeWidth={2.5} /></span>
-          <h2 className="font-black text-slate-800 dark:text-slate-100 text-lg sm:text-xl leading-tight">{pick(round.ask, round.askVn)}</h2>
+          <h2 className="font-black text-slate-800 dark:text-slate-100 text-lg sm:text-xl leading-tight">{pick(round.ask, round.askVn, round.askFr)}</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_260px] items-start">
@@ -96,7 +98,7 @@ export default function LabBench({ pool, onComplete, onQuit }) {
                   {ok ? <CheckCircle2 className="w-4 h-4 mr-1.5" strokeWidth={3} /> : <XCircle className="w-4 h-4 mr-1.5" strokeWidth={3} />}
                   {ok ? t.correct : `${t.wrong} — ${t.reading} ${round.answer} ${round.unit}`}
                 </div>
-                {pick(round.why, round.whyVn)}
+                {pick(round.why, round.whyVn, round.whyFr)}
               </div>
             )}
 

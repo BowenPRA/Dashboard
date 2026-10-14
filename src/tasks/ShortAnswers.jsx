@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bot, CheckCircle2, XCircle, MinusCircle, PenTool, ArrowRight, Languages } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import { TranslationChoice } from '../components/Feedback';
 
 import { gradeShortAnswer } from '../utils/aiGrader';
 import { EmptyState } from '../components/ui';
@@ -44,7 +45,7 @@ const checkRequiredWordGroup = (wordGroup, text) => {
   return false;
 };
 
-export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle }) {
+export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, savedData = {}, strikes = 0, onAddStrike, track, unitTitle, langs }) {
   const questions = pool?.shortQA || [];
   const [localAnswers, setLocalAnswers] = useState(savedData);
 
@@ -67,6 +68,9 @@ export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, sav
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [showTranslation, setShowTranslation] = useState(false);
+  // Which translation the reveal shows when a question has both (Year 7) —
+  // kept across questions, so a French reader picks FR once.
+  const [trChoice, setTrChoice] = useState('vn');
   
   const [cumulativePoints, setCumulativePoints] = useState(0);
   const [maxPossiblePoints, setMaxPossiblePoints] = useState(0);
@@ -79,6 +83,16 @@ export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, sav
   const markScheme = currentQ?.markScheme || ['Provides a correct explanation or calculation.', 'Addresses the specific prompt.'];
   const modelAnswer = currentQ?.modelAnswer || currentQ?.sampleAnswer || "No model answer provided.";
   const vnTranslation = currentQ?.vnTranslation || null;
+  // The French twin, on a track that offers French. A Vietnamese-only question
+  // keeps its single View Translation button.
+  const frTranslation = (!Array.isArray(langs) || langs.includes('fr')) ? (currentQ?.frTranslation || null) : null;
+  const bothTranslations = !!(vnTranslation && frTranslation);
+  const shownTranslation = frTranslation && (trChoice === 'fr' || !vnTranslation) ? frTranslation : vnTranslation;
+  const chooseTranslation = (code) => {
+    if (showTranslation && trChoice === code) { setShowTranslation(false); return; }
+    setTrChoice(code);
+    setShowTranslation(true);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -369,7 +383,9 @@ export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, sav
              <h2 className="text-[#14b8a6] font-black text-xl uppercase tracking-widest">
                Question {currentIndex + 1}
              </h2>
-             {vnTranslation && (
+             {bothTranslations ? (
+               <TranslationChoice value={showTranslation ? trChoice : null} onChange={chooseTranslation} className="text-slate-500 dark:text-slate-400" />
+             ) : (vnTranslation || frTranslation) && (
                <button 
                  onClick={() => setShowTranslation(!showTranslation)}
                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-[#14b8a6] hover:bg-teal-50 dark:hover:bg-teal-900/30 transition-colors text-xs font-bold uppercase tracking-widest"
@@ -384,10 +400,10 @@ export default function ShortAnswers({ pool, onComplete, onProgress, onQuit, sav
             {currentQ.question}
           </p>
           
-          {showTranslation && vnTranslation && (
+          {showTranslation && shownTranslation && (
             <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-xl border-l-4 border-[#14b8a6] animate-in slide-in-from-top-2 duration-200">
               <p className="text-slate-600 dark:text-slate-400 font-medium italic">
-                "{vnTranslation}"
+                "{shownTranslation}"
               </p>
             </div>
           )}

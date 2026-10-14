@@ -64,7 +64,7 @@ export function normalizeAnswer(s) {
 export function makeChallengeBank(pool, unitId) {
   const vocab = (pool || [])
     .filter(w => w?.word && (w.def || w.vnDef))
-    .map(w => ({ word: w.word, def: w.def || w.vnDef || '', sent: w.sent || '', vn: w.vn || '' }));
+    .map(w => ({ word: w.word, def: w.def || w.vnDef || '', sent: w.sent || '', vn: w.vn || '', fr: w.fr || '' }));
   const mathGen = mathChallengeFor(unitId);
 
   if (vocab.length === 0 && !mathGen) return null;
@@ -102,7 +102,7 @@ export function makeChallengeBank(pool, unitId) {
       prompt: item.def,
       answer: item.word,
       choices,
-      reveal: { word: item.word, sent: item.sent, vn: item.vn },
+      reveal: { word: item.word, sent: item.sent, vn: item.vn, fr: item.fr },
     };
   }
 

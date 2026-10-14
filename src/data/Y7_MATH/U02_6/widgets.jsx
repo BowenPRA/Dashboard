@@ -23,6 +23,7 @@
 // white plate.
 import { useState } from 'react';
 import { Undo2, ArrowRight, SkipForward } from 'lucide-react';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
@@ -31,7 +32,6 @@ const MUTED = '#5b6770';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 const MINUS = '−';
 
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 const num = (v) => (v < 0 ? `${MINUS}${-v}` : `${v}`);
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
@@ -100,21 +100,21 @@ function ShowIt({ lang = 'en', set }) {
   if (step === 0) {
     line = (
       <text x="560" y="400" fontFamily={FONT} fontSize="36" fill="#9aa5ae" textAnchor="middle">
-        {tr(lang, `Where is ${nText}? Is ${nText} included?`, `${nText} ở đâu? ${nText} có được tính không?`)}
+        {tr(lang, `Where is ${nText}? Is ${nText} included?`, `${nText} ở đâu? ${nText} có được tính không?`, `Où est ${nText} ? ${nText} est-il inclus ?`)}
       </text>
     );
   } else if (step === 1) {
     line = (
       <text x="560" y="400" fontFamily={FONT} fontSize="40" fontWeight="bold" fill={KEY} textAnchor="middle">
-        {tr(lang, `Open circle: ${nText} is not included.`, `Vòng tròn rỗng: không tính ${nText}.`)}
+        {tr(lang, `Open circle: ${nText} is not included.`, `Vòng tròn rỗng: không tính ${nText}.`, `Cercle vide : ${nText} n’est pas inclus.`)}
       </text>
     );
   } else if (step === 2) {
     line = (
       <text x="560" y="400" fontFamily={FONT} fontSize="40" fontWeight="bold" fill={KEY} textAnchor="middle">
         {greater
-          ? tr(lang, 'Greater than: the arrow goes right.', 'Lớn hơn: mũi tên sang phải.')
-          : tr(lang, 'Less than: the arrow goes left.', 'Nhỏ hơn: mũi tên sang trái.')}
+          ? tr(lang, 'Greater than: the arrow goes right.', 'Lớn hơn: mũi tên sang phải.', 'Plus grand que : flèche vers la droite.')
+          : tr(lang, 'Less than: the arrow goes left.', 'Nhỏ hơn: mũi tên sang trái.', 'Plus petit que : flèche vers la gauche.')}
       </text>
     );
   }
@@ -166,7 +166,7 @@ function ShowIt({ lang = 'en', set }) {
             <g>
               <rect x="110" y="344" width="900" height="84" rx="16" fill="#eef6e6" stroke={GREEN} strokeWidth="3" />
               <text x="620" y="400" fontFamily={FONT} fontSize="38" fontWeight="bold" fill={GREEN} textAnchor="end">
-                {greater ? tr(lang, 'Smallest integer: ', 'Số nguyên nhỏ nhất: ') : tr(lang, 'Largest integer: ', 'Số nguyên lớn nhất: ')}
+                {greater ? tr(lang, 'Smallest integer: ', 'Số nguyên nhỏ nhất: ', 'Plus petit entier : ') : tr(lang, 'Largest integer: ', 'Số nguyên lớn nhất: ', 'Plus grand entier : ')}
                 {num(edge)}
               </text>
               <text x="660" y="400" fontFamily={FONT} fontSize="32" fontWeight="bold" fill={MUTED} textAnchor="start">{list3}</text>
@@ -177,13 +177,13 @@ function ShowIt({ lang = 'en', set }) {
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
         <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
-          {tr(lang, 'Back', 'Lùi')}
+          {tr(lang, 'Back', 'Lùi', 'Retour')}
         </Btn>
         <Btn tone="orange" icon={ArrowRight} disabled={step === LAST} onClick={() => setStep((s) => Math.min(LAST, s + 1))}>
-          {step === 2 ? tr(lang, 'Integers', 'Số nguyên') : tr(lang, 'Next step', 'Bước tiếp')}
+          {step === 2 ? tr(lang, 'Integers', 'Số nguyên', 'Entiers') : tr(lang, 'Next step', 'Bước tiếp', 'Étape suivante')}
         </Btn>
         <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>
-          {tr(lang, 'Next question', 'Câu tiếp')}
+          {tr(lang, 'Next question', 'Câu tiếp', 'Question suivante')}
         </Btn>
       </div>
     </div>

@@ -22,6 +22,7 @@
 // SVG opens with a white plate, so it reads in dark mode too.
 import { useState } from 'react';
 import { Undo2, ArrowRight, SkipForward } from 'lucide-react';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
@@ -37,8 +38,6 @@ const KINDS = [
 ];
 const NUMBER_KIND = { stroke: '#5b6770', fill: '#eef1f4' };
 const PLAIN = { stroke: '#8a979e', fill: '#ffffff' };
-
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
   const tones = {
@@ -128,7 +127,7 @@ function Collect({ lang = 'en', set }) {
   });
   const answer = groups.map((g) => g.text).join(' ');
 
-  const pills = [tr(lang, '1 Find', '1 Tìm'), tr(lang, '2 Move', '2 Chuyển'), tr(lang, '3 Collect', '3 Gộp')];
+  const pills = [tr(lang, '1 Find', '1 Tìm', '1 Trouve'), tr(lang, '2 Move', '2 Chuyển', '2 Bouge'), tr(lang, '3 Collect', '3 Gộp', '3 Réduis')];
 
   return (
     <div className="w-full h-full flex flex-col gap-3 select-none">
@@ -177,7 +176,7 @@ function Collect({ lang = 'en', set }) {
             <g>
               <rect x="150" y="320" width="820" height="106" rx="16" fill="#fdf1e3" stroke={KEY} strokeWidth="3" />
               <text x="560" y="390" fontFamily={FONT} fontSize="46" fontWeight="bold" fill={INK} textAnchor="middle">
-                {tr(lang, 'Simplest form: ', 'Dạng gọn nhất: ')}
+                {tr(lang, 'Simplest form: ', 'Dạng gọn nhất: ', 'Forme réduite : ')}
                 <tspan fill={KEY}>{answer}</tspan>
               </text>
             </g>
@@ -186,9 +185,9 @@ function Collect({ lang = 'en', set }) {
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-        <Btn tone="orange" icon={ArrowRight} disabled={step === 3} onClick={() => setStep((s) => Math.min(3, s + 1))}>{tr(lang, 'Next step', 'Bước tiếp')}</Btn>
-        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>{tr(lang, 'Next expression', 'Biểu thức khác')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+        <Btn tone="orange" icon={ArrowRight} disabled={step === 3} onClick={() => setStep((s) => Math.min(3, s + 1))}>{tr(lang, 'Next step', 'Bước tiếp', 'Suivant')}</Btn>
+        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>{tr(lang, 'Next expression', 'Biểu thức khác', 'Autre expression')}</Btn>
       </div>
     </div>
   );
@@ -219,7 +218,7 @@ const PYRAMIDS = [
     given: ['0-0', '0-1', '0-2'],
     steps: [
       { id: '1-0', from: ['0-0', '0-1'], en: 'a + b + 2a = 3a + b' },
-      { id: '1-1', from: ['0-1', '0-2'], en: '2a + 3b: no like terms', vn: '2a + 3b: không có hạng tử đồng dạng' },
+      { id: '1-1', from: ['0-1', '0-2'], en: '2a + 3b: no like terms', vn: '2a + 3b: không có hạng tử đồng dạng', fr: '2a + 3b : pas de termes semblables' },
       { id: '2-0', from: ['1-0', '1-1'], en: '3a + b + 2a + 3b = 5a + 4b' },
     ],
   },
@@ -258,7 +257,7 @@ export function Pyramid({ lang = 'en' }) {
         <svg viewBox="0 0 840 470" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <rect x="0" y="0" width="840" height="470" rx="14" fill="#ffffff" />
           <text x="420" y="42" fontFamily={FONT} fontSize="32" fontWeight="bold" fill={MUTED} textAnchor="middle">
-            {p.back ? tr(lang, 'Work backwards', 'Làm ngược lại') : tr(lang, 'Add the two blocks below', 'Cộng hai ô bên dưới')}
+            {p.back ? tr(lang, 'Work backwards', 'Làm ngược lại', 'Calcule à l’envers') : tr(lang, 'Add the two blocks below', 'Cộng hai ô bên dưới', 'Ajoute les deux cases du dessous')}
           </text>
           <text x="20" y="42" fontFamily={FONT} fontSize="22" fontWeight="bold" fill="#9aa5ae" textAnchor="start">{which + 1} / {PYRAMIDS.length}</text>
 
@@ -288,20 +287,20 @@ export function Pyramid({ lang = 'en' }) {
 
           {current ? (
             <text x="420" y="448" fontFamily={FONT} fontSize="38" fontWeight="bold" fill={KEY} textAnchor="middle">
-              {lang === 'vn' && current.vn ? current.vn : current.en}
+              {tr(lang, current.en, current.vn, current.fr)}
             </text>
           ) : (
             <text x="420" y="448" fontFamily={FONT} fontSize="32" fill="#9aa5ae" textAnchor="middle">
-              {tr(lang, 'Which block can you find first?', 'Em tìm được ô nào trước?')}
+              {tr(lang, 'Which block can you find first?', 'Em tìm được ô nào trước?', 'Quelle case trouves-tu en premier ?')}
             </text>
           )}
         </svg>
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-        <Btn tone="orange" icon={ArrowRight} disabled={step === p.steps.length} onClick={() => setStep((s) => Math.min(p.steps.length, s + 1))}>{tr(lang, 'Next block', 'Ô tiếp')}</Btn>
-        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % PYRAMIDS.length); setStep(0); }}>{tr(lang, 'Next pyramid', 'Kim tự tháp khác')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+        <Btn tone="orange" icon={ArrowRight} disabled={step === p.steps.length} onClick={() => setStep((s) => Math.min(p.steps.length, s + 1))}>{tr(lang, 'Next block', 'Ô tiếp', 'Suivant')}</Btn>
+        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % PYRAMIDS.length); setStep(0); }}>{tr(lang, 'Next pyramid', 'Kim tự tháp khác', 'Autre pyramide')}</Btn>
       </div>
     </div>
   );

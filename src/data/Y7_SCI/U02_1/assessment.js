@@ -19,6 +19,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'A solid decides its own **shape** and keeps its **volume**; it cannot be squashed or poured. B describes a liquid and C a gas; D mixes a solid with gas and liquid properties.',
       expVn: 'Chất rắn tự quyết định **hình dạng** và giữ **thể tích**; không nén được, không rót được. B mô tả chất lỏng và C mô tả chất khí; D trộn chất rắn với tính chất của khí và lỏng.',
+      expFr: 'Un solide décide de sa propre **forme** et garde son **volume** ; on ne peut ni l’écraser ni le verser. B décrit un liquide et C un gaz ; D mélange un solide avec des propriétés de gaz et de liquide.',
     },
     {
       id: 'a2_gas',
@@ -33,6 +34,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Only a gas can be **compressed** — the air syringe moved, the water syringe did not. Pouring and taking the container’s shape are shared with liquids, and all three states are made of particles.',
       expVn: 'Chỉ chất khí mới **nén được** — xi-lanh không khí di chuyển, xi-lanh nước thì không. Rót được và mang hình dạng vật chứa là tính chất chung với chất lỏng, và cả ba trạng thái đều tạo nên từ các hạt.',
+      expFr: 'Seul un gaz peut être **comprimé** — le piston de la seringue d’air a bougé, celui de la seringue d’eau non. Se verser et prendre la forme du récipient, les liquides le font aussi, et les trois états sont faits de particules.',
     },
     {
       id: 'a3_mercury',
@@ -47,6 +49,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'You sort by **behaviour**, not by what something is made of. Mercury pours and takes the shape of the dish, so it is a **liquid** — a metal and a liquid, with no contradiction.',
       expVn: 'Phân loại theo **cách hành xử**, không theo vật liệu. Thuỷ ngân rót được và mang hình dạng cái đĩa, nên nó là **chất lỏng** — vừa là kim loại vừa là chất lỏng, không hề mâu thuẫn.',
+      expFr: 'On classe selon le **comportement**, pas selon ce dont la chose est faite. Le mercure se verse et prend la forme du récipient, donc c’est un **liquide** — un métal et un liquide, sans contradiction.',
     },
     {
       id: 'a4_liquid_particles',
@@ -61,6 +64,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Matter can only flow if its particles can **move past one another**. In a liquid the attractive forces are weak enough to allow that; in a solid they are strong and hold every particle in place. Liquid particles still touch — B describes a gas.',
       expVn: 'Vật chất chỉ chảy được khi các hạt của nó có thể **trượt qua nhau**. Trong chất lỏng lực hút đủ yếu để cho phép điều đó; trong chất rắn lực hút mạnh và giữ mỗi hạt tại chỗ. Các hạt lỏng vẫn chạm nhau — B mô tả chất khí.',
+      expFr: 'La matière ne peut couler que si ses particules peuvent **glisser les unes sur les autres**. Dans un liquide, les forces d’attraction sont assez faibles pour le permettre ; dans un solide, elles sont fortes et tiennent chaque particule en place. Les particules d’un liquide se touchent encore — B décrit un gaz.',
     },
     {
       id: 'a5_gas_particles',
@@ -75,6 +79,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Gas particles are **far apart**, moving fast, with nothing holding them together — so they spread out to fill any container. A describes a solid, B a liquid; a gas does not have fewer particles, the space between them is just bigger.',
       expVn: 'Các hạt khí ở **xa nhau**, chuyển động nhanh, không có gì giữ chúng lại — nên chúng lan ra lấp đầy mọi vật chứa. A mô tả chất rắn, B mô tả chất lỏng; chất khí không có ít hạt hơn, chỉ là khoảng trống giữa chúng lớn hơn.',
+      expFr: 'Les particules d’un gaz sont **éloignées les unes des autres**, se déplacent vite, et rien ne les retient ensemble — alors elles s’étalent pour remplir n’importe quel récipient. A décrit un solide, B un liquide ; un gaz n’a pas moins de particules, c’est juste l’espace entre elles qui est plus grand.',
     },
     {
       id: 'a6_vacuum',
@@ -89,6 +94,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'A vacuum is a space with **no particles at all** — not thin air, nothing. That is why there is no sound in space: sound needs particles to travel through.',
       expVn: 'Chân không là khoảng không **hoàn toàn không có hạt nào** — không phải khí loãng, mà là không có gì. Vì thế trong vũ trụ không có âm thanh: âm thanh cần các hạt để truyền đi.',
+      expFr: 'Le vide est un espace **sans aucune particule** — pas de l’air léger, rien du tout. C’est pour ça qu’il n’y a pas de son dans l’espace : le son a besoin de particules pour se propager.',
     },
   ],
 };

@@ -22,6 +22,7 @@
 // Every SVG opens with a white plate. Neither widget is scored.
 import { useState } from 'react'
 import { Undo2, ArrowRight, Eye, SkipForward } from 'lucide-react'
+import { tr } from '../../../utils/lang'
 
 const INK = '#2b2b2b'
 const KEY = '#c25e12'
@@ -32,7 +33,6 @@ const FONT = "Inter, 'Segoe UI', system-ui, sans-serif"
 const METAL = { fill: '#fbe7a1', stroke: '#b8912a' }
 const NONMETAL = { fill: '#cfe5f5', stroke: '#4f8fbf' }
 
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en)
 const SUB = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉']
 const sub = (n) => String(n).split('').map((d) => SUB[+d]).join('')
 
@@ -72,15 +72,15 @@ const E = {
 
 // stem + ending = the compound's name; the ending is drawn in orange.
 const NAME_CARDS = [
-  { els: ['sodium', 'chlorine'], stem: 'sodium chlor', end: 'ide', vn: 'natri clorua' },
-  { els: ['potassium', 'chlorine'], stem: 'potassium chlor', end: 'ide', vn: 'kali clorua' },
-  { els: ['calcium', 'oxygen'], stem: 'calcium ox', end: 'ide', vn: 'canxi oxit' },
-  { els: ['lithium', 'oxygen'], stem: 'lithium ox', end: 'ide', vn: 'liti oxit' },
-  { els: ['sodium', 'sulfur'], stem: 'sodium sulf', end: 'ide', vn: 'natri sunfua' },
-  { els: ['copper', 'sulfur', 'oxygen'], stem: 'copper sulf', end: 'ate', vn: 'đồng sunfat' },
-  { els: ['calcium', 'carbon', 'oxygen'], stem: 'calcium carbon', end: 'ate', vn: 'canxi cacbonat' },
-  { els: ['potassium', 'nitrogen', 'oxygen'], stem: 'potassium nitr', end: 'ate', vn: 'kali nitrat' },
-  { els: ['sodium', 'carbon', 'oxygen'], stem: 'sodium carbon', end: 'ate', vn: 'natri cacbonat' },
+  { els: ['sodium', 'chlorine'], stem: 'sodium chlor', end: 'ide', vn: 'natri clorua', fr: 'chlorure de sodium' },
+  { els: ['potassium', 'chlorine'], stem: 'potassium chlor', end: 'ide', vn: 'kali clorua', fr: 'chlorure de potassium' },
+  { els: ['calcium', 'oxygen'], stem: 'calcium ox', end: 'ide', vn: 'canxi oxit', fr: 'oxyde de calcium' },
+  { els: ['lithium', 'oxygen'], stem: 'lithium ox', end: 'ide', vn: 'liti oxit', fr: 'oxyde de lithium' },
+  { els: ['sodium', 'sulfur'], stem: 'sodium sulf', end: 'ide', vn: 'natri sunfua', fr: 'sulfure de sodium' },
+  { els: ['copper', 'sulfur', 'oxygen'], stem: 'copper sulf', end: 'ate', vn: 'đồng sunfat', fr: 'sulfate de cuivre' },
+  { els: ['calcium', 'carbon', 'oxygen'], stem: 'calcium carbon', end: 'ate', vn: 'canxi cacbonat', fr: 'carbonate de calcium' },
+  { els: ['potassium', 'nitrogen', 'oxygen'], stem: 'potassium nitr', end: 'ate', vn: 'kali nitrat', fr: 'nitrate de potassium' },
+  { els: ['sodium', 'carbon', 'oxygen'], stem: 'sodium carbon', end: 'ate', vn: 'natri cacbonat', fr: 'carbonate de sodium' },
 ]
 
 const TILE_W = 300
@@ -142,11 +142,11 @@ export function NameCompound({ lang = 'en' }) {
               <rect x="210" y="330" width="700" height="52" rx="26" fill="#fdf1e3" stroke={KEY} strokeWidth="2.5" />
               <text x="560" y="365" fontFamily={FONT} fontSize="26" fontWeight="bold" fill={KEY} textAnchor="middle">
                 {ate
-                  ? tr(lang, 'Two elements + oxygen: ends in -ate', 'Hai nguyên tố + oxi: kết thúc bằng -ate')
-                  : tr(lang, 'Two elements: the non-metal ends in -ide', 'Hai nguyên tố: phi kim kết thúc bằng -ide')}
+                  ? tr(lang, 'Two elements + oxygen: ends in -ate', 'Hai nguyên tố + oxi: kết thúc bằng -ate', 'Deux éléments + oxygène : finit en -ate')
+                  : tr(lang, 'Two elements: the non-metal ends in -ide', 'Hai nguyên tố: phi kim kết thúc bằng -ide', 'Deux éléments : le non-métal finit en -ide')}
               </text>
-              {lang === 'vn' && (
-                <text x="560" y="420" fontFamily={FONT} fontSize="26" fill={MUTED} textAnchor="middle">({card.vn})</text>
+              {lang !== 'en' && (
+                <text x="560" y="420" fontFamily={FONT} fontSize="26" fill={MUTED} textAnchor="middle">({tr(lang, '', card.vn, card.fr)})</text>
               )}
             </g>
           ) : (
@@ -156,9 +156,9 @@ export function NameCompound({ lang = 'en' }) {
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={pos === 0 && !shown} onClick={back}>{tr(lang, 'Back', 'Lùi')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={pos === 0 && !shown} onClick={back}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
         <Btn tone="orange" icon={shown ? ArrowRight : Eye} onClick={next}>
-          {shown ? tr(lang, 'Next', 'Tiếp') : tr(lang, 'Show the name', 'Hiện tên')}
+          {shown ? tr(lang, 'Next', 'Tiếp', 'Suivant') : tr(lang, 'Show the name', 'Hiện tên', 'Voir le nom')}
         </Btn>
       </div>
     </div>
@@ -169,12 +169,12 @@ export function NameCompound({ lang = 'en' }) {
  * WIDGET 2 — READ THE FORMULA
  * ============================================================= */
 const ATOM = {
-  H: { r: 30, fill: '#ffffff', stroke: '#6b7580', en: 'hydrogen', vn: 'hiđro' },
-  O: { r: 40, fill: '#f08b82', stroke: '#b3261e', en: 'oxygen', vn: 'oxi' },
-  C: { r: 40, fill: '#aab4bc', stroke: '#3b444b', en: 'carbon', vn: 'cacbon' },
-  S: { r: 44, fill: '#efe04a', stroke: '#8a7c00', en: 'sulfur', vn: 'lưu huỳnh' },
-  Na: { r: 44, fill: '#d9c7ef', stroke: '#5c2483', en: 'sodium', vn: 'natri' },
-  Ca: { r: 48, fill: '#fbe7a1', stroke: '#b8912a', en: 'calcium', vn: 'canxi' },
+  H: { r: 30, fill: '#ffffff', stroke: '#6b7580', en: 'hydrogen', vn: 'hiđro', fr: 'hydrogène' },
+  O: { r: 40, fill: '#f08b82', stroke: '#b3261e', en: 'oxygen', vn: 'oxi', fr: 'oxygène' },
+  C: { r: 40, fill: '#aab4bc', stroke: '#3b444b', en: 'carbon', vn: 'cacbon', fr: 'carbone' },
+  S: { r: 44, fill: '#efe04a', stroke: '#8a7c00', en: 'sulfur', vn: 'lưu huỳnh', fr: 'soufre' },
+  Na: { r: 44, fill: '#d9c7ef', stroke: '#5c2483', en: 'sodium', vn: 'natri', fr: 'sodium' },
+  Ca: { r: 48, fill: '#fbe7a1', stroke: '#b8912a', en: 'calcium', vn: 'canxi', fr: 'calcium' },
 }
 
 // parts: the formula in reading order; atoms: positions around the particle's
@@ -228,9 +228,12 @@ export function FormulaReader({ lang = 'en' }) {
 
   const line = ([sym, n]) => {
     const a = ATOM[sym]
-    const name = tr(lang, a.en, a.vn)
-    const count = lang === 'vn' ? `${n} nguyên tử ${name}` : `${n} ${name} atom${n > 1 ? 's' : ''}`
-    const none = n === 1 ? tr(lang, ' (no number)', ' (không có số)') : ''
+    const name = tr(lang, a.en, a.vn, a.fr)
+    const count = tr(lang,
+      `${n} ${name} atom${n > 1 ? 's' : ''}`,
+      `${n} nguyên tử ${name}`,
+      `${n} atome${n > 1 ? 's' : ''} ${/^[aeiouyhéè]/i.test(name) ? 'd’' : 'de '}${name}`)
+    const none = n === 1 ? tr(lang, ' (no number)', ' (không có số)', ' (sans nombre)') : ''
     return `${sym}${n > 1 ? sub(n) : ''} → ${count}${none}`
   }
 
@@ -261,7 +264,7 @@ export function FormulaReader({ lang = 'en' }) {
           ))}
           {step === 0 && (
             <text x="290" y="290" fontFamily={FONT} fontSize="30" fill="#9aa5ae" textAnchor="middle">
-              {tr(lang, 'How many atoms? Which elements?', 'Bao nhiêu nguyên tử? Nguyên tố nào?')}
+              {tr(lang, 'How many atoms? Which elements?', 'Bao nhiêu nguyên tử? Nguyên tố nào?', 'Combien d’atomes ? Quels éléments ?')}
             </text>
           )}
 
@@ -280,12 +283,12 @@ export function FormulaReader({ lang = 'en' }) {
           {step > P && (
             <g>
               <text x="840" y="360" fontFamily={FONT} fontSize="42" fontWeight="bold" fill={INK} textAnchor="middle">
-                {tr(lang, `${total} atoms in one particle`, `${total} nguyên tử trong một hạt`)}
+                {tr(lang, `${total} atoms in one particle`, `${total} nguyên tử trong một hạt`, `${total} atomes dans une particule`)}
               </text>
               <text x="840" y="406" fontFamily={FONT} fontSize="30" fontWeight="bold" fill={kinds > 1 ? KEY : BLUE} textAnchor="middle">
                 {kinds > 1
-                  ? tr(lang, `a compound: ${kinds} kinds of atom`, `một hợp chất: ${kinds} loại nguyên tử`)
-                  : tr(lang, 'an element: one kind of atom', 'một nguyên tố: một loại nguyên tử')}
+                  ? tr(lang, `a compound: ${kinds} kinds of atom`, `một hợp chất: ${kinds} loại nguyên tử`, `un composé\u00a0: ${kinds} sortes d’atomes`)
+                  : tr(lang, 'an element: one kind of atom', 'một nguyên tố: một loại nguyên tử', 'un élément : une sorte d’atome')}
               </text>
             </g>
           )}
@@ -293,9 +296,9 @@ export function FormulaReader({ lang = 'en' }) {
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-        <Btn tone="orange" icon={ArrowRight} disabled={step === P + 1} onClick={() => setStep((s) => Math.min(P + 1, s + 1))}>{tr(lang, 'Next step', 'Bước tiếp')}</Btn>
-        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % FORMULAE.length); setStep(0) }}>{tr(lang, 'Next formula', 'Công thức khác')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+        <Btn tone="orange" icon={ArrowRight} disabled={step === P + 1} onClick={() => setStep((s) => Math.min(P + 1, s + 1))}>{tr(lang, 'Next step', 'Bước tiếp', 'Étape suivante')}</Btn>
+        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % FORMULAE.length); setStep(0) }}>{tr(lang, 'Next formula', 'Công thức khác', 'Autre formule')}</Btn>
       </div>
     </div>
   )

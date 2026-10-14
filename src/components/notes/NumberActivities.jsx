@@ -12,6 +12,7 @@ import {
   shortDivModel, qDigitOk, carryOk, qHint, carryHint, needZeroHint, MAX_ZEROS,
 } from '../../utils/shortDivision';
 import { keepWhere } from '../../utils/activity';
+import { tr } from '../../utils/lang';
 import IneqLineFigure from '../math/IneqLineFigure.jsx';
 import {
   ineqModel, diagnoseCircle, diagnoseArrow, diagnoseInteger, diagnoseWrite, diagnoseList, edgeWord, listText, numText,
@@ -36,8 +37,17 @@ import {
  * is the previous wrong result when the activity is reopened to be fixed.
  */
 
-const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
-const said = (lang, m) => (m ? pickL(lang, m.en, m.vn) : '');
+const pickL = tr;
+const said = (lang, m) => (m ? pickL(lang, m.en, m.vn, m.fr) : '');
+/** One message in all three languages, from a key of T (or INEQ_T) and its arguments. */
+const msgOf = (table, key, ...args) => {
+  const at = (l) => (typeof table[l][key] === 'function' ? table[l][key](...args) : table[l][key]);
+  return { en: at('en'), vn: at('vn'), fr: at('fr') };
+};
+/** An engine's verdict, every language it carries. */
+const verdictOf = (d) => ({ en: d.en, vn: d.vn, fr: d.fr });
+/** A rounding place for "rounded to …": French has the "à" built in (`frTo`). */
+const toPlace = (p) => ({ en: p.en, vn: p.vn, fr: p.frTo ?? p.fr });
 
 const T = {
   en: {
@@ -86,6 +96,29 @@ const T = {
     extra: 'Em có nhiều số 0 hơn mức cần — những số 0 thừa được bỏ đi.',
     dp: 'c.s.t.p.',
   },
+  fr: {
+    check: 'Vérifier', answer: 'Réponse', tryAgain: 'Encore un essai', typeHere: 'Écris ta réponse',
+    notMoved: 'pas encore déplacé', slideFirst: 'Fais d’abord glisser les chiffres : appuie sur ← ou →.',
+    slideHow: 'Appuie sur ← ou → pour déplacer tous les chiffres. Le point décimal ne bouge jamais.',
+    slideGhost: 'Fais glisser jusqu’à ce que chaque chiffre soit sur son fantôme, dans la ligne du dessous.',
+    dirLeft: 'Le nombre devient plus grand, donc les chiffres vont à GAUCHE — dans des colonnes plus grandes.',
+    dirRight: 'Le nombre devient plus petit, donc les chiffres vont à DROITE — dans des colonnes plus petites.',
+    count: (p, got) => `Bonne direction — mais chaque chiffre avance de ${p} colonne${p === 1 ? '' : 's'}, une par puissance. Tu les as déplacés de ${got}.`,
+    notLined: 'Pas encore aligné — chaque chiffre doit être sur son fantôme, dans la ligne du dessous.',
+    ladder: (got) => `Bonne direction — mais compte les marches de l’échelle. Chaque marche vaut 10³, soit 3 colonnes. Tu les as déplacés de ${got}.`,
+    left: 'une colonne à gauche', right: 'une colonne à droite', reset: 'retour au départ',
+    everyDigit: (w) => `Tous les chiffres se sont déplacés de ${w}. Le point décimal n’a pas bougé.`,
+    powerIs: (p) => `Les chiffres se sont déplacés de ${p} colonne${p === 1 ? '' : 's'}, donc la puissance est ${p}.`,
+    tapKeep: (name) => `Touche le dernier chiffre que tu gardes pour arrondir ${name}.`,
+    tapWrong: (got, want, col) => `C’est le chiffre des ${got}. Pour arrondir ${want}, le dernier chiffre gardé est dans la colonne des ${col}.`,
+    nowType: (d) => `Le chiffre suivant est ${d} — c’est lui qui décide. Écris maintenant le nombre arrondi.`,
+    fillAll: 'Remplis d’abord toutes les cases — un chiffre au-dessus de chaque colonne, et chaque reste dans sa petite case.',
+    fillRound: 'Écris maintenant la réponse arrondie dans la case du dessous.',
+    notDone: 'Pas encore fini.', addZero: 'ajouter un zéro', removeZero: 'enlever le dernier zéro',
+    rounded: 'arrondi', top: 'chiffre du haut, colonne', carry: 'reste reporté sur le chiffre',
+    extra: 'Tu avais plus de zéros que nécessaire — les zéros en trop sont enlevés.',
+    dp: 'déc.',
+  },
 };
 
 const btn = 'px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-xs border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
@@ -100,7 +133,7 @@ function Verdict({ ok, lang, children }) {
     <div className={`rounded-xl border-2 mt-3 p-3 ${ok ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'}`}>
       <div className={`flex items-center font-black uppercase tracking-widest text-[10px] lg:text-xs mb-1 ${ok ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
         {ok ? <CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} /> : <AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />}
-        {ok ? (lang === 'vn' ? 'Chính xác' : 'Correct') : (lang === 'vn' ? 'Chưa đúng' : 'Not quite')}
+        {ok ? tr(lang, 'Correct', 'Chính xác', 'Correct !') : tr(lang, 'Not quite', 'Chưa đúng', 'Pas tout à fait')}
       </div>
       <div className={`font-bold leading-relaxed text-sm lg:text-base ${ok ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>{children}</div>
     </div>
@@ -136,14 +169,14 @@ export function ShiftActivity({ activity, lang, result, onResult, parseText }) {
   const slide = (by) => { if (!checked) { setOffset((o) => Math.max(limits[0], Math.min(limits[1], o + by))); setMsg(null); } };
   const check = () => {
     if (checked) return;
-    if (offset === 0) { setMsg({ tone: 'nudge', en: T.en.slideFirst, vn: T.vn.slideFirst }); return; }
+    if (offset === 0) { setMsg({ tone: 'nudge', ...msgOf(T, 'slideFirst') }); return; }
     if (offset === model.net) { onResult({ done: true, correct: true, offset, tries: tries + 1 }); return; }
     const p = Math.abs(model.net);
     const why = Math.sign(offset) !== Math.sign(model.net)
-      ? { en: model.net > 0 ? T.en.dirLeft : T.en.dirRight, vn: model.net > 0 ? T.vn.dirLeft : T.vn.dirRight }
-      : isPower ? { en: T.en.notLined, vn: T.vn.notLined }
-        : model.kind === 'convert' ? { en: T.en.ladder(Math.abs(offset)), vn: T.vn.ladder(Math.abs(offset)) }
-          : { en: T.en.count(p, Math.abs(offset)), vn: T.vn.count(p, Math.abs(offset)) };
+      ? msgOf(T, model.net > 0 ? 'dirLeft' : 'dirRight')
+      : isPower ? msgOf(T, 'notLined')
+        : model.kind === 'convert' ? msgOf(T, 'ladder', Math.abs(offset))
+          : msgOf(T, 'count', p, Math.abs(offset));
     const n = tries + 1;
     setTries(n);
     if (n >= 2) onResult({ done: true, correct: false, offset, tries: n, why });
@@ -182,7 +215,7 @@ export function ShiftActivity({ activity, lang, result, onResult, parseText }) {
           {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
           <div className="mb-1 text-lg"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={answerLatex(model)} /></div>
           <div className="mb-1">{isPower ? t.powerIs(model.power) : t.everyDigit(said(lang, words))}</div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -215,26 +248,32 @@ export function RoundActivity({ activity, lang, result, onResult, parseText }) {
 
   const tap = (place) => {
     if (checked || tapped) return;
-    if (place === m.keepPlace) { setTapped(true); setWrongTap(null); setMsg({ tone: 'nudge', en: T.en.nowType(m.decider), vn: T.vn.nowType(m.decider) }); return; }
+    if (place === m.keepPlace) { setTapped(true); setWrongTap(null); setMsg({ tone: 'nudge', ...msgOf(T, 'nowType', m.decider) }); return; }
     const got = columnName(place);
     const keep = columnName(m.keepPlace);
+    const to = toPlace(want);
     setWrongTap(place);
-    setMsg({ tone: 'nudge', en: T.en.tapWrong(got.en, want.en, keep.en), vn: T.vn.tapWrong(got.vn, want.vn, keep.vn) });
+    setMsg({
+      tone: 'nudge',
+      en: T.en.tapWrong(got.en, want.en, keep.en),
+      vn: T.vn.tapWrong(got.vn, want.vn, keep.vn),
+      fr: T.fr.tapWrong(got.fr ?? got.en, to.fr ?? to.en, keep.fr ?? keep.en),
+    });
   };
   const check = () => {
     if (checked || !tapped) return;
     const d = diagnoseRound(m, m.places, typed);
     if (d.ok) { onResult({ done: true, correct: true, typed, tries: tries + 1 }); return; }
-    if (d.soft) { setMsg({ tone: 'nudge', en: d.en, vn: d.vn }); return; }
+    if (d.soft) { setMsg({ tone: 'nudge', ...verdictOf(d) }); return; }
     const n = tries + 1;
     setTries(n);
-    if (n >= 2) onResult({ done: true, correct: false, typed, tries: n, why: { en: d.en, vn: d.vn } });
-    else setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    if (n >= 2) onResult({ done: true, correct: false, typed, tries: n, why: verdictOf(d) });
+    else setMsg({ tone: 'bad', ...verdictOf(d) });
   };
 
   return (
     <div>
-      {!tapped && <p className="mb-2 text-sm font-bold text-slate-600 dark:text-slate-300">{t.tapKeep(pickL(lang, want.en, want.vn))}</p>}
+      {!tapped && <p className="mb-2 text-sm font-bold text-slate-600 dark:text-slate-300">{t.tapKeep(said(lang, toPlace(want)))}</p>}
       <div className="flex items-end justify-center gap-1 flex-wrap">
         {chars.map((c, i) => {
           if (c.place === null) return <span key={i} className="px-0.5 pb-1 font-mono font-black text-3xl text-slate-800 dark:text-slate-100 leading-none">.</span>;
@@ -249,7 +288,7 @@ export function RoundActivity({ activity, lang, result, onResult, parseText }) {
           return (
             <span key={i} className="flex items-end">
               <button type="button" disabled={tapped || checked} onClick={() => tap(c.place)}
-                aria-label={`${c.ch} — ${pickL(lang, columnName(c.place).en, columnName(c.place).vn)}`}
+                aria-label={`${c.ch} — ${said(lang, columnName(c.place))}`}
                 className={`w-9 h-12 rounded-lg border-2 border-b-[4px] font-mono font-black text-2xl transition-all disabled:cursor-default ${style}`}>{c.ch}</button>
               {keep && <span className="mx-0.5 w-[3px] h-14 rounded-full bg-[#1cb0f6]" aria-hidden="true" />}
             </span>
@@ -274,7 +313,7 @@ export function RoundActivity({ activity, lang, result, onResult, parseText }) {
         <Verdict ok={result.correct} lang={lang}>
           {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
           <div className="mb-1 text-lg"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={`${text} \\to ${m.text}`} /></div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -332,13 +371,13 @@ export function BusStopActivity({ activity, lang, result, onResult, parseText, r
     if (checked) return;
     const blank = (id) => !String(entries[id] ?? '').trim();
     const missing = model.cols.slice(0, avail).some((col, c) => (blank(`q${c}`) && !col.leading) || (c >= 1 && blank(`k${c}`) && col.carryIn !== 0));
-    if (missing) { setMsg({ tone: 'nudge', en: T.en.fillAll, vn: T.vn.fillAll }); return; }
+    if (missing) { setMsg({ tone: 'nudge', ...msgOf(T, 'fillAll') }); return; }
     // Out of digits before it is finished: the named slip, not a lost try.
     if (avail < need) {
       setMsg({ tone: 'nudge', ...needZeroHint(model, model.cols[avail - 1]) });
       return;
     }
-    if (hasRound && !answer.trim()) { setMsg({ tone: 'nudge', en: T.en.fillRound, vn: T.vn.fillRound }); return; }
+    if (hasRound && !answer.trim()) { setMsg({ tone: 'nudge', ...msgOf(T, 'fillRound') }); return; }
 
     const mk = {};
     let first = null;
@@ -355,9 +394,9 @@ export function BusStopActivity({ activity, lang, result, onResult, parseText, r
     let roundOk = true;
     if (hasRound) {
       const d = diagnoseRound(model.round, model.dp, answer);
-      if (d.soft) { setMsg({ tone: 'nudge', en: d.en, vn: d.vn }); return; }
+      if (d.soft) { setMsg({ tone: 'nudge', ...verdictOf(d) }); return; }
       roundOk = d.ok;
-      if (!d.ok && !first) first = { en: d.en, vn: d.vn };
+      if (!d.ok && !first) first = verdictOf(d);
     }
     const trimmed = avail > need;
     if (trimmed) setZeros(model.zerosNeeded);
@@ -398,14 +437,14 @@ export function BusStopActivity({ activity, lang, result, onResult, parseText, r
           <span className="text-xs font-bold text-slate-400">({model.dp} {t.dp})</span>
         </div>
       )}
-      {hasRound && !checked && <p className="mt-1 text-center text-[11px] font-bold text-slate-400">{pickL(lang, `correct to ${want.en}`, `chính xác đến ${want.vn}`)}</p>}
+      {hasRound && !checked && <p className="mt-1 text-center text-[11px] font-bold text-slate-400">{pickL(lang, `correct to ${want.en}`, `chính xác đến ${want.vn}`, `arrondi ${toPlace(want).fr ?? want.en}`)}</p>}
       {!checked && msg && <Hint tone={msg.tone}>{msg.tone === 'bad' && <span className="mr-1 uppercase text-[10px] tracking-widest">{t.tryAgain} ·</span>}{said(lang, msg)}</Hint>}
       {!checked && <div className="mt-3 flex justify-end"><button onClick={check} className={primary}>{t.check}</button></div>}
       {checked && (
         <Verdict ok={result.correct} lang={lang}>
           {!result.correct && result.why && <div className="mb-1">{said(lang, result.why)}</div>}
           <div className="mb-1 text-lg overflow-x-auto"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={answerTex} /></div>
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>
@@ -441,6 +480,19 @@ const INEQ_T = {
     noneWorks: 'Không có số nguyên nào thỏa mãn.',
     circleAt: (n, way) => `Vòng tròn rỗng tại ${n}, mũi tên sang ${way}.`,
   },
+  fr: {
+    draw: 'Touche le nombre pour le cercle vide, puis choisis la flèche.',
+    read: 'Choisis le signe, puis écris le nombre.',
+    list: 'Touche chaque entier qui convient.',
+    left: 'Gauche', right: 'Droite', none: 'Aucun entier ne convient',
+    needCircle: 'Touche d’abord un nombre sur la droite : le cercle se place là.',
+    needArrow: 'Choisis maintenant le sens de la flèche.',
+    integer: (w, L) => `Le ${w} entier que ${L} peut prendre ?`,
+    couldBe: (L, list) => `${L} peut valoir ${list}`,
+    works: (list) => `Les entiers qui conviennent : ${list}.`,
+    noneWorks: 'Aucun entier ne convient.',
+    circleAt: (n, way) => `Cercle vide sur ${n}, flèche vers ${way}.`,
+  },
 };
 
 export function IneqActivity({ activity, lang, result, onResult, parseText }) {
@@ -462,18 +514,18 @@ export function IneqActivity({ activity, lang, result, onResult, parseText }) {
   const kept = { circle, dir, sign, typed, picks };
 
   const settle = (d) => {
-    if (d.soft) { setMsg({ tone: 'nudge', en: d.en, vn: d.vn }); return; }
+    if (d.soft) { setMsg({ tone: 'nudge', ...verdictOf(d) }); return; }
     if (d.ok) { onResult({ done: true, correct: true, ...kept, tries: tries + 1 }); return; }
     const n = tries + 1;
     setTries(n);
-    if (n >= 2) onResult({ done: true, correct: false, ...kept, tries: n, why: { en: d.en, vn: d.vn } });
-    else setMsg({ tone: 'bad', en: d.en, vn: d.vn });
+    if (n >= 2) onResult({ done: true, correct: false, ...kept, tries: n, why: verdictOf(d) });
+    else setMsg({ tone: 'bad', ...verdictOf(d) });
   };
   const check = (none = false) => {
     if (checked) return;
     if (ask === 'draw') {
-      if (circle == null) { setMsg({ tone: 'nudge', en: INEQ_T.en.needCircle, vn: INEQ_T.vn.needCircle }); return; }
-      if (!dir) { setMsg({ tone: 'nudge', en: INEQ_T.en.needArrow, vn: INEQ_T.vn.needArrow }); return; }
+      if (circle == null) { setMsg({ tone: 'nudge', ...msgOf(INEQ_T, 'needCircle') }); return; }
+      if (!dir) { setMsg({ tone: 'nudge', ...msgOf(INEQ_T, 'needArrow') }); return; }
       const c = diagnoseCircle(p, circle);
       settle(c.ok ? diagnoseArrow(p, dir) : c);
     } else if (ask === 'read') settle(diagnoseWrite(p, sign, typed, { drawn: true }));
@@ -494,7 +546,7 @@ export function IneqActivity({ activity, lang, result, onResult, parseText }) {
   } else if (ask === 'draw' && circle != null) rays = [{ n: circle, dir }];
   const halves = ask !== 'list' && !Number.isInteger(p.n);
   const w = p ? edgeWord(p) : null;
-  const way = p ? pickL(lang, p.greater ? 'right' : 'left', p.greater ? 'phải' : 'trái') : '';
+  const way = p ? pickL(lang, p.greater ? 'right' : 'left', p.greater ? 'phải' : 'trái', p.greater ? 'la droite' : 'la gauche') : '';
   const answer = ask === 'list'
     ? (model.integers.length ? it.works(model.integers.map(numText).join(', ')) : it.noneWorks)
     : ask === 'draw' ? it.circleAt(numText(p.n), way)
@@ -547,7 +599,7 @@ export function IneqActivity({ activity, lang, result, onResult, parseText }) {
 
       {!checked && ask === 'integer' && (
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-          <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{it.integer(pickL(lang, w.en, w.vn), p.letter)}</span>
+          <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{it.integer(said(lang, w), p.letter)}</span>
           <input value={typed} onChange={(e) => { setTyped(e.target.value); clear(); }} onKeyDown={(e) => { if (e.key === 'Enter') check(); }}
             inputMode="text" autoComplete="off" spellCheck={false} aria-label={t.typeHere} placeholder="?"
             className={`w-20 px-2 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-xl text-center focus:outline-none focus:border-sky-500 ${IDLE}`} />
@@ -571,7 +623,7 @@ export function IneqActivity({ activity, lang, result, onResult, parseText }) {
           {ask === 'read'
             ? <div className="mb-1 text-lg"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span><SafeInlineMath math={p.latex} /></div>
             : <div className="mb-1"><span className="text-[10px] uppercase tracking-widest mr-2">{t.answer}</span>{answer}</div>}
-          {parseText(pickL(lang, activity.explain, activity.explainVn))}
+          {parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}
         </Verdict>
       )}
     </div>

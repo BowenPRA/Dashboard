@@ -22,6 +22,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'An **atom** is a tiny piece of matter, and everything is made of atoms. A describes an **element**; D describes a **nanotube**; and atoms are in everything, not only metals (C).',
       expVn: '**Nguyên tử** là một mẩu vật chất rất nhỏ, và mọi thứ đều được tạo nên từ nguyên tử. A mô tả **nguyên tố**; D mô tả **ống nano**; và nguyên tử có trong mọi thứ, không chỉ kim loại (C).',
+      expFr: 'Un **atome** est un tout petit morceau de matière, et tout est fait d’atomes. A décrit un **élément** ; D décrit un **nanotube** ; et les atomes sont dans tout, pas seulement dans les métaux (C).',
     },
     {
       id: 'a2_element',
@@ -36,6 +37,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'An element is made of **only one kind of atom**, so pure **silver** is an element. Water has two kinds of atom (B); air is several gases (C); a ring with silver and gold has two kinds of atom (D).',
       expVn: 'Nguyên tố chỉ gồm **một loại nguyên tử**, nên **bạc** nguyên chất là một nguyên tố. Nước có hai loại nguyên tử (B); không khí gồm nhiều chất khí (C); chiếc nhẫn có cả bạc và vàng có hai loại nguyên tử (D).',
+      expFr: 'Un élément est fait d’**une seule sorte d’atome**, donc l’**argent** pur est un élément. L’eau a deux sortes d’atomes (B) ; l’air, ce sont plusieurs gaz (C) ; une bague en argent et en or a deux sortes d’atomes (D).',
     },
     {
       id: 'a3_alone',
@@ -50,6 +52,7 @@ export const assessment = {
       correct: 'D',
       expEn: '**Neon** atoms move around **alone**. Gold atoms are packed closely (A); oxygen is particles of 2 joined atoms (B); sulfur is particles of 8 atoms in a ring (C).',
       expVn: 'Nguyên tử **neon** chuyển động **riêng lẻ**. Nguyên tử vàng xếp sát nhau (A); oxi là các hạt gồm 2 nguyên tử liên kết (B); lưu huỳnh là các hạt gồm 8 nguyên tử thành vòng (C).',
+      expFr: 'Les atomes de **néon** se déplacent **seuls**. Les atomes d’or sont serrés (A) ; l’oxygène, ce sont des particules de 2 atomes liés (B) ; le soufre, ce sont des particules de 8 atomes en anneau (C).',
     },
     {
       id: 'a4_group',
@@ -64,6 +67,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'A column is a **group** — lithium, sodium and potassium are group 1. A **period** is a row (A and B are the same wrong idea); a symbol is the short way to write one element (D).',
       expVn: 'Một cột là một **nhóm** — liti, natri và kali thuộc nhóm 1. **Chu kì** là một hàng (A và B cùng một ý sai); kí hiệu là cách viết ngắn gọn một nguyên tố (D).',
+      expFr: 'Une colonne est un **groupe** — le lithium, le sodium et le potassium sont dans le groupe 1. Une **période** est une ligne (A et B sont la même idée fausse) ; un symbole est la façon courte d’écrire un élément (D).',
     },
     {
       id: 'a5_metals',
@@ -78,6 +82,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The metals — lithium, beryllium, sodium, magnesium, aluminium, potassium, calcium — are on the **left**. The right side, including the last group, is non-metals (A, B); period 1 is hydrogen and helium, both non-metals (D).',
       expVn: 'Các kim loại — liti, beri, natri, magie, nhôm, kali, canxi — nằm ở bên **trái**. Bên phải, kể cả nhóm cuối, là phi kim (A, B); chu kì 1 là hiđro và heli, đều là phi kim (D).',
+      expFr: 'Les métaux — lithium, béryllium, sodium, magnésium, aluminium, potassium, calcium — sont à **gauche**. Le côté droit, y compris le dernier groupe, ce sont des non-métaux (A, B) ; la période 1, c’est l’hydrogène et l’hélium, deux non-métaux (D).',
     },
     {
       id: 'a6_capitals',
@@ -92,6 +97,7 @@ export const assessment = {
       correct: 'A',
       expEn: '**Mg**: the first letter is a capital and the second is small. MG would be read as two symbols (B); a symbol never starts with a small letter (C, D) — and mg is the unit milligram.',
       expVn: '**Mg**: chữ cái đầu viết hoa và chữ thứ hai viết thường. MG sẽ được đọc là hai kí hiệu (B); kí hiệu không bao giờ bắt đầu bằng chữ thường (C, D) — và mg là đơn vị miligam.',
+      expFr: '**Mg** : la première lettre est une majuscule et la deuxième une minuscule. MG se lirait comme deux symboles (B) ; un symbole ne commence jamais par une minuscule (C, D) — et mg est l’unité milligramme.',
     },
     {
       id: 'a7_latin',
@@ -106,6 +112,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'There is no K in "potassium": **K** comes from its Latin name, **kalium**. C is the first letter of carbon (A); Cl and He are the first letter plus another letter of chlorine and helium (C, D).',
       expVn: 'Trong "potassium" không có chữ K: **K** đến từ tên La-tinh **kalium**. C là chữ cái đầu của carbon (A); Cl và He là chữ cái đầu cộng một chữ khác của chlorine và helium (C, D).',
+      expFr: 'Il n’y a pas de K dans « potassium » : **K** vient de son nom latin, **kalium**. C est la première lettre de carbone (A) ; Cl et He sont la première lettre plus une autre lettre de chlore et d’hélium (C, D).',
     },
     {
       id: 'a8_mass',
@@ -120,6 +127,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Atoms get heavier in reading order, and **nitrogen** comes just before oxygen, so its atoms are lighter. Fluorine comes after oxygen in period 2 (A); sulfur and sodium are in period 3, later still (B, C).',
       expVn: 'Nguyên tử nặng dần theo thứ tự đọc, và **nitơ** đứng ngay trước oxi, nên nguyên tử của nó nhẹ hơn. Flo đứng sau oxi trong chu kì 2 (A); lưu huỳnh và natri ở chu kì 3, còn đứng sau nữa (B, C).',
+      expFr: 'Les atomes deviennent plus lourds dans l’ordre de lecture, et l’**azote** vient juste avant l’oxygène, donc ses atomes sont plus légers. Le fluor vient après l’oxygène dans la période 2 (A) ; le soufre et le sodium sont dans la période 3, encore plus loin (B, C).',
     },
   ],
 };

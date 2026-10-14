@@ -9,12 +9,13 @@
 
 export const drill = {
   mode: 'long-mult',
-  title: 'Two-Digit Multiplication', titleVn: 'Nhân số có hai chữ số',
+  title: 'Two-Digit Multiplication', titleVn: 'Nhân số có hai chữ số', titleFr: 'Multiplication à deux chiffres',
   intro: 'Fill in one box at a time. The grid checks each digit as you go, and shows you where a carry went wrong.',
   introVn: 'Điền từng ô một. Lưới kiểm tra từng chữ số khi em làm, và chỉ cho em chỗ nào bị sai số nhớ.',
+  introFr: 'Remplis une case à la fois. La grille vérifie chaque chiffre au fur et à mesure, et te montre où une retenue s’est trompée.',
   ladder: [
-    { level: 'Warm-up', levelVn: 'Khởi động', items: [[23, 12], [31, 21], [42, 13]] },
-    { level: 'Carries', levelVn: 'Có nhớ', items: [[47, 26], [68, 34], [59, 47]] },
-    { level: 'Stretch', levelVn: 'Nâng cao', items: [[236, 47], [418, 65]] },
+    { level: 'Warm-up', levelVn: 'Khởi động', levelFr: 'Échauffement', items: [[23, 12], [31, 21], [42, 13]] },
+    { level: 'Carries', levelVn: 'Có nhớ', levelFr: 'Retenues', items: [[47, 26], [68, 34], [59, 47]] },
+    { level: 'Stretch', levelVn: 'Nâng cao', levelFr: 'Défi', items: [[236, 47], [418, 65]] },
   ],
 };

@@ -19,6 +19,7 @@
 // SVG opens with a white plate.
 import { useState } from 'react';
 import { Undo2, ArrowRight, SkipForward } from 'lucide-react';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
@@ -27,8 +28,6 @@ const PURPLE = '#5c2483';
 const MUTED = '#5b6770';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 const MINUS = '−';
-
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
   const tones = {
@@ -102,7 +101,7 @@ function Expand({ lang = 'en', set }) {
           <rect x="0" y="0" width="1120" height="440" rx="14" fill="#ffffff" />
 
           <text x="560" y="78" fontFamily={FONT} fontSize="54" fontWeight="bold" fill={INK} textAnchor="middle">
-            {tr(lang, 'Expand ', 'Khai triển ')}
+            {tr(lang, 'Expand ', 'Khai triển ', 'Développe ')}
             <tspan fill={KEY}>{bracketText(p)}</tspan>
           </text>
           <text x="1096" y="52" fontFamily={FONT} fontSize="22" fontWeight="bold" fill="#9aa5ae" textAnchor="end">{which + 1} / {list.length}</text>
@@ -153,16 +152,16 @@ function Expand({ lang = 'en', set }) {
           )}
           {step === 0 && (
             <text x="560" y="392" fontFamily={FONT} fontSize="32" fill="#9aa5ae" textAnchor="middle">
-              {tr(lang, 'Say the first multiplication, then press Next box.', 'Nói phép nhân đầu tiên, rồi bấm Ô tiếp.')}
+              {tr(lang, 'Say the first multiplication, then press Next box.', 'Nói phép nhân đầu tiên, rồi bấm Ô tiếp.', 'Dis la première multiplication, puis appuie sur Suivant.')}
             </text>
           )}
         </svg>
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-        <Btn tone="orange" icon={ArrowRight} disabled={done} onClick={() => setStep((s) => Math.min(n + 1, s + 1))}>{tr(lang, 'Next box', 'Ô tiếp')}</Btn>
-        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>{tr(lang, 'Next question', 'Câu tiếp')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+        <Btn tone="orange" icon={ArrowRight} disabled={done} onClick={() => setStep((s) => Math.min(n + 1, s + 1))}>{tr(lang, 'Next box', 'Ô tiếp', 'Suivant')}</Btn>
+        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>{tr(lang, 'Next question', 'Câu tiếp', 'Autre calcul')}</Btn>
       </div>
     </div>
   );

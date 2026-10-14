@@ -20,6 +20,7 @@
 // Every SVG opens with a white plate.
 import { useState } from 'react';
 import { Undo2, ArrowRight, SkipForward } from 'lucide-react';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
@@ -29,8 +30,6 @@ const GREEN = '#4a8b23';
 const MUTED = '#5b6770';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 const MINUS = '−';
-
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
   const tones = {
@@ -137,13 +136,13 @@ function Reverse({ lang = 'en', set }) {
   if (step === 0) {
     line = (
       <text x="560" y="392" fontFamily={FONT} fontSize="34" fill="#9aa5ae" textAnchor="middle">
-        {n === 1 ? tr(lang, `What happens to ${p.L}?`, `Điều gì xảy ra với ${p.L}?`) : tr(lang, `What happens to ${p.L} first?`, `Điều gì xảy ra với ${p.L} trước tiên?`)}
+        {n === 1 ? tr(lang, `What happens to ${p.L}?`, `Điều gì xảy ra với ${p.L}?`, `Que devient ${p.L} ?`) : tr(lang, `What happens to ${p.L} first?`, `Điều gì xảy ra với ${p.L} trước tiên?`, `Que devient ${p.L} en premier ?`)}
       </text>
     );
   } else if (step === n) {
     line = (
       <text x="560" y="392" fontFamily={FONT} fontSize="34" fill="#9aa5ae" textAnchor="middle">
-        {tr(lang, 'Now undo it, starting from the right.', 'Giờ làm ngược lại, bắt đầu từ bên phải.')}
+        {tr(lang, 'Now undo it, starting from the right.', 'Giờ làm ngược lại, bắt đầu từ bên phải.', 'Maintenant, annule depuis la droite.')}
       </text>
     );
   } else if (activeBack) {
@@ -156,7 +155,7 @@ function Reverse({ lang = 'en', set }) {
   } else if (step > 0 && step < n) {
     line = (
       <text x="560" y="392" fontFamily={FONT} fontSize="34" fill="#9aa5ae" textAnchor="middle">
-        {tr(lang, 'What happens next?', 'Tiếp theo là gì?')}
+        {tr(lang, 'What happens next?', 'Tiếp theo là gì?', 'Et ensuite ?')}
       </text>
     );
   }
@@ -168,7 +167,7 @@ function Reverse({ lang = 'en', set }) {
           <rect x="0" y="0" width="1120" height="440" rx="14" fill="#ffffff" />
 
           <text x="560" y="84" fontFamily={FONT} fontSize="56" fontWeight="bold" fill={INK} textAnchor="middle">
-            {tr(lang, 'Solve ', 'Giải ')}
+            {tr(lang, 'Solve ', 'Giải ', 'Résous ')}
             <tspan fill={KEY}>{equation}</tspan>
           </text>
           <text x="1096" y="52" fontFamily={FONT} fontSize="22" fontWeight="bold" fill="#9aa5ae" textAnchor="end">{which + 1} / {list.length}</text>
@@ -237,7 +236,7 @@ function Reverse({ lang = 'en', set }) {
               <rect x="110" y="340" width="900" height="88" rx="16" fill="#fdf1e3" stroke={KEY} strokeWidth="3" />
               <text x="560" y="398" fontFamily={FONT} fontSize="44" fontWeight="bold" fill={KEY} textAnchor="middle">
                 {p.L} = {num(vals[0])}
-                <tspan dx="36" fill={INK} fontSize="36">{tr(lang, 'Check: ', 'Thử lại: ')}{substituted(p, vals[0])} = {p.r}</tspan>
+                <tspan dx="36" fill={INK} fontSize="36">{tr(lang, 'Check: ', 'Thử lại: ', 'Vérifie : ')}{substituted(p, vals[0])} = {p.r}</tspan>
                 <tspan dx="14" fill={GREEN}>✓</tspan>
               </text>
             </g>
@@ -246,9 +245,9 @@ function Reverse({ lang = 'en', set }) {
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-        <Btn tone="orange" icon={ArrowRight} disabled={checked} onClick={() => setStep((s) => Math.min(last, s + 1))}>{step === 2 * n ? tr(lang, 'Check', 'Thử lại') : tr(lang, 'Next box', 'Ô tiếp')}</Btn>
-        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>{tr(lang, 'Next question', 'Câu tiếp')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+        <Btn tone="orange" icon={ArrowRight} disabled={checked} onClick={() => setStep((s) => Math.min(last, s + 1))}>{step === 2 * n ? tr(lang, 'Check', 'Thử lại', 'Vérifier') : tr(lang, 'Next box', 'Ô tiếp', 'Suivant')}</Btn>
+        <Btn tone="teal" icon={SkipForward} onClick={() => { setWhich((w) => (w + 1) % list.length); setStep(0); }}>{tr(lang, 'Next question', 'Câu tiếp', 'Autre question')}</Btn>
       </div>
     </div>
   );

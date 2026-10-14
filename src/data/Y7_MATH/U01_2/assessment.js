@@ -24,6 +24,7 @@ export const assessment = {
       correct: 'A',
       expEn: '“Product” means multiply: $$-8 × 5 = -40$$ (different signs → negative). The value $$-3$$ comes from adding, $$-8 + 5$$ — reading “product” as “sum”.',
       expVn: '“Product” (tích) nghĩa là nhân: $$-8 × 5 = -40$$ (khác dấu → âm). Giá trị $$-3$$ là do cộng, $$-8 + 5$$ — hiểu nhầm “product” thành “tổng”.',
+      expFr: '« Product » (produit) veut dire multiplier : $$-8 × 5 = -40$$ (signes différents → négatif). La valeur $$-3$$ vient d’une addition, $$-8 + 5$$ — c’est lire « product » comme « sum » (somme).',
     },
     {
       id: 'a2_quotient',
@@ -38,6 +39,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'A “quotient” is the answer to a division: $$-45 ÷ -9$$. Same signs → positive, so the quotient is $$5$$. Choosing $$-5$$ forgets that division follows the same sign rules as multiplication.',
       expVn: '“Quotient” (thương) là kết quả của phép chia: $$-45 ÷ -9$$. Cùng dấu → dương, nên thương là $$5$$. Chọn $$-5$$ là quên rằng phép chia theo cùng quy tắc dấu như phép nhân.',
+      expFr: 'Un « quotient » est le résultat d’une division : $$-45 ÷ -9$$. Signes identiques → positif, donc le quotient est $$5$$. Choisir $$-5$$, c’est oublier que la division suit les mêmes règles de signes que la multiplication.',
     },
     {
       id: 'a3_routine',
@@ -52,6 +54,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Two negatives multiplied give a positive: $$-7 × -8 = 56$$. Answering $$-56$$ keeps the sign negative; $$-15$$ comes from adding the two numbers instead of multiplying.',
       expVn: 'Hai số âm nhân nhau cho kết quả dương: $$-7 × -8 = 56$$. Trả lời $$-56$$ là giữ dấu âm; $$-15$$ là do cộng hai số thay vì nhân.',
+      expFr: 'Deux négatifs multipliés donnent un positif : $$-7 × -8 = 56$$. Répondre $$-56$$, c’est garder le signe négatif ; $$-15$$ vient de l’addition des deux nombres au lieu de leur multiplication.',
     },
     {
       id: 'a4_brackets',
@@ -66,6 +69,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Do the bracket first — it is an addition, so $$-2 + -1 = -3$$. Then $$24 ÷ -3 = -8$$. Getting $$8$$ means you wrongly made the bracket $$+3$$, applying “two negatives make a positive” to an addition.',
       expVn: 'Làm trong ngoặc trước — đó là phép cộng, nên $$-2 + -1 = -3$$. Rồi $$24 ÷ -3 = -8$$. Ra $$8$$ nghĩa là em đã sai khi cho ngoặc bằng $$+3$$, áp dụng “hai số âm thành số dương” cho phép cộng.',
+      expFr: 'Fais d’abord la parenthèse — c’est une addition, donc $$-2 + -1 = -3$$. Ensuite $$24 ÷ -3 = -8$$. Trouver $$8$$ veut dire que tu as transformé la parenthèse en $$+3$$ par erreur, en appliquant « deux négatifs donnent un positif » à une addition.',
     },
     {
       id: 'a5_backwards',
@@ -80,6 +84,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The answer $$54$$ is positive and one factor is negative, so the missing number must be negative. $$54 ÷ 6 = 9$$, so it is $$-9$$. Check: $$-6 × -9 = 54$$.',
       expVn: 'Đáp án $$54$$ là dương mà một thừa số đã âm, nên số còn thiếu phải âm. $$54 ÷ 6 = 9$$, nên đó là $$-9$$. Thử lại: $$-6 × -9 = 54$$.',
+      expFr: 'La réponse $$54$$ est positive et un facteur est négatif, donc le nombre manquant doit être négatif. $$54 ÷ 6 = 9$$, donc c’est $$-9$$. Vérification : $$-6 × -9 = 54$$.',
     },
     {
       id: 'a6_word',
@@ -94,6 +99,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Going down is negative, at $$-7$$ m each minute for $$8$$ minutes: $$8 × -7 = -56$$ m. The value $$56$$ drops the sign; $$1$$ comes from adding, $$8 + -7$$.',
       expVn: 'Đi xuống là âm, $$-7$$ m mỗi phút trong $$8$$ phút: $$8 × -7 = -56$$ m. Giá trị $$56$$ là bỏ mất dấu; $$1$$ là do cộng, $$8 + -7$$.',
+      expFr: 'Descendre, c’est négatif : $$-7$$ m chaque minute pendant $$8$$ minutes : $$8 × -7 = -56$$ m. La valeur $$56$$ oublie le signe ; $$1$$ vient d’une addition, $$8 + -7$$.',
     },
   ],
 };

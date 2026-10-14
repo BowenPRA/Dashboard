@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, AlertTriangle, XCircle, CornerDownRight, Wrench } from 'lucide-react';
-import { chainActivityRound, markRound, textOf } from '../../utils/stateChain';
+import { chainActivityRound, markRound, itemOf } from '../../utils/stateChain';
+import { tr } from '../../utils/lang';
 
 /**
  * Explain It's chain, on a slide (the `chain` deck activity) — and the two
@@ -20,8 +21,10 @@ import { chainActivityRound, markRound, textOf } from '../../utils/stateChain';
  * Activity items carry no `text` field, so the narration never reads them.
  */
 
-const pickL = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en);
-const said = (lang, msg) => (msg ? pickL(lang, msg.en, msg.vn) : '');
+const pickL = tr;
+const said = (lang, msg) => (msg ? pickL(lang, msg.en, msg.vn, msg.fr) : '');
+/** A link or trap's sentence in `lang` (the engine's `fr` beside its `vn`), English when it has none. */
+const linkText = (id, lang) => { const it = itemOf(id); return it ? pickL(lang, it.en, it.vn, it.fr) : ''; };
 
 const CHAIN_T = {
   en: {
@@ -35,6 +38,12 @@ const CHAIN_T = {
     bank: 'Các mắt xích — chạm để thêm', tapBroken: 'Chạm vào mắt xích bị hỏng', replaceWith: 'Thay bằng',
     pickFirst: 'Hãy chạm vào mắt xích bị hỏng trước', shouldBe: 'phải là', fine: 'mắt xích này không sai', broken: 'bị hỏng',
     correct: 'Chính xác', notQuite: 'Chưa đúng', chain: 'Chuỗi giải thích',
+  },
+  fr: {
+    check: 'Vérifier', step: 'Étape', empty: 'Touche un maillon ci-dessous', next: 'Le maillon suivant va ici',
+    bank: 'Maillons — touche-en un pour l’ajouter', tapBroken: 'Touche le maillon cassé', replaceWith: 'Remplace-le par',
+    pickFirst: 'Touche d’abord le maillon cassé', shouldBe: 'devrait être', fine: 'celui-ci était juste', broken: 'cassé',
+    correct: 'Correct !', notQuite: 'Pas tout à fait', chain: 'La chaîne',
   },
 };
 
@@ -121,7 +130,7 @@ export function BuildBoard({ round, slots, onChange, checked, lang, wide = false
           return (
             <li key={i}>
               <LinkCard n={i + 1} dense={dense} look={checked ? (ok ? 'good' : 'bad') : 'idle'} onClick={checked ? undefined : () => remove(i)}>
-                {checked && !ok ? <Swap wrong={textOf(id, lang)} right={textOf(right, lang)} /> : textOf(id, lang)}
+                {checked && !ok ? <Swap wrong={linkText(id, lang)} right={linkText(right, lang)} /> : linkText(id, lang)}
               </LinkCard>
             </li>
           );
@@ -137,7 +146,7 @@ export function BuildBoard({ round, slots, onChange, checked, lang, wide = false
       <Label className={dense ? 'hidden' : 'hidden sm:flex'}><CornerDownRight className="w-3.5 h-3.5" />{t.bank}</Label>
       <div className={`flex flex-col ${dense ? 'gap-1' : 'gap-1.5'}`}>
         {round.bank.filter((id) => !placed.has(id)).map((id) => (
-          <LinkCard key={id} dense={dense} onClick={() => add(id)}>{textOf(id, lang)}</LinkCard>
+          <LinkCard key={id} dense={dense} onClick={() => add(id)}>{linkText(id, lang)}</LinkCard>
         ))}
       </div>
     </div>
@@ -169,7 +178,7 @@ export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lan
           return (
             <li key={i}>
               <LinkCard n={i + 1} dense={dense} look={look} onClick={checked ? undefined : () => onPick(i)} note={note} noteTone={tone}>
-                {checked && isBroken ? <Swap wrong={textOf(id, lang)} right={textOf(rightId, lang)} label={t.broken} /> : textOf(id, lang)}
+                {checked && isBroken ? <Swap wrong={linkText(id, lang)} right={linkText(rightId, lang)} label={t.broken} /> : linkText(id, lang)}
               </LinkCard>
             </li>
           );
@@ -190,7 +199,7 @@ export function FixBoard({ round, pick, replace, onPick, onReplace, checked, lan
             : id === rightId ? (replace === id ? 'good' : 'answer') : replace === id ? 'bad' : 'muted';
           return (
             <LinkCard key={id} dense={dense} look={look} disabled={checked || pick == null} onClick={() => onReplace(id)}>
-              {textOf(id, lang)}
+              {linkText(id, lang)}
             </LinkCard>
           );
         })}
@@ -259,7 +268,7 @@ export function ChainActivity({ activity, lang, result, onResult, parseText = (x
                 ? { ...mark, explain: mark.explain.filter((l) => !l.en.startsWith(`Link ${round.broken + 1}:`)) }
                 : mark} />
             )}
-            <p className={!result.correct ? 'mt-1' : ''}>{parseText(pickL(lang, activity.explain, activity.explainVn))}</p>
+            <p className={!result.correct ? 'mt-1' : ''}>{parseText(pickL(lang, activity.explain, activity.explainVn, activity.explainFr))}</p>
           </div>
         </div>
       )}

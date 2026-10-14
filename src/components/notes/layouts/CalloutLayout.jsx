@@ -7,9 +7,9 @@ import { renderContent, toHex } from './helpers.jsx';
 export default function CalloutLayout({ slide: s, ctx }) {
   const { pick, lang, isDisplayMode } = ctx;
   const accent = toHex(s.accent || s.color, '#8b5cf6');
-  const eyebrow = pick(s.eyebrow, s.eyebrowVn);
-  const title = pick(s.title, s.titleVn);
-  const content = pick(s.content, s.contentVn);
+  const eyebrow = pick(s.eyebrow, s.eyebrowVn, s.eyebrowFr);
+  const title = pick(s.title, s.titleVn, s.titleFr);
+  const content = pick(s.content, s.contentVn, s.contentFr);
 
   return (
     // Centred via the card's `my-auto` (see StatementLayout) so an overflowing

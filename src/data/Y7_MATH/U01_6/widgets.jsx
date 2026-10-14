@@ -12,12 +12,11 @@
 // It reuses the 1.3–1.5 Stage/Controls shell deliberately: the class met this
 // interface in the last three lessons, so no time is spent learning it.
 import { useState } from 'react'
+import { tr as pick } from '../../../utils/lang'
 
 const TEAL = '#0087a8'
 const PURPLE = '#5c2483'
 const GREEN = '#4a8b23'
-
-const pick = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en)
 
 const Stage = ({ children, className = '' }) => (
   <div className={`flex-1 min-h-[210px] w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-inner relative flex flex-col p-3 sm:p-4 overflow-hidden ${className}`}>
@@ -46,26 +45,31 @@ const STEPS = [
     line: '³√125 − √49',
     note: 'Two roots, then a subtraction. Do the roots first.',
     noteVn: 'Hai căn, rồi một phép trừ. Làm căn trước.',
+    noteFr: 'Deux racines, puis une soustraction. Fais d’abord les racines.',
   },
   {
     line: '5 × 5 × 5 = 125',
     note: 'so ³√125 = 5',
     noteVn: 'nên ³√125 = 5',
+    noteFr: 'donc ³√125 = 5',
   },
   {
     line: '7 × 7 = 49',
     note: 'so √49 = 7',
     noteVn: 'nên √49 = 7',
+    noteFr: 'donc √49 = 7',
   },
   {
     line: '³√125 − √49 = 5 − 7',
     note: 'Now it is just a subtraction from 1.1.',
     noteVn: 'Bây giờ chỉ còn một phép trừ như bài 1.1.',
+    noteFr: 'Il ne reste qu’une soustraction, comme en 1.1.',
   },
   {
     line: '5 − 7 = −2',
     note: 'The answer to a root question can be negative.',
     noteVn: 'Đáp án của một bài về căn vẫn có thể là số âm.',
+    noteFr: 'La réponse à une question de racines peut être négative.',
   },
 ]
 
@@ -78,7 +82,7 @@ export const WorkedExampleWidget = ({ lang = 'en' }) => {
       <Stage>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            {pick(lang, 'Worked example', 'Ví dụ mẫu')}
+            {pick(lang, 'Worked example', 'Ví dụ mẫu', 'Exemple corrigé')}
           </span>
           <span className="font-mono font-black text-xs text-slate-400 tabular-nums">{n}/{STEPS.length}</span>
         </div>
@@ -103,7 +107,7 @@ export const WorkedExampleWidget = ({ lang = 'en' }) => {
                 style={{ borderColor: tone, backgroundColor: `${tone}12` }}>
                 <p className="font-black tabular-nums leading-none text-2xl sm:text-3xl" style={{ color: tone }}>{s.line}</p>
                 <p className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300 leading-snug mt-1">
-                  {pick(lang, s.note, s.noteVn)}
+                  {pick(lang, s.note, s.noteVn, s.noteFr)}
                 </p>
               </div>
             )
@@ -117,13 +121,13 @@ export const WorkedExampleWidget = ({ lang = 'en' }) => {
             onClick={() => setN(Math.max(1, n - 1))}
             disabled={n === 1}
             className="px-3 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 dark:border-slate-600 text-slate-500 disabled:opacity-30 active:scale-95">
-            {pick(lang, 'Back', 'Lùi')}
+            {pick(lang, 'Back', 'Lùi', 'Retour')}
           </button>
           <button
             onClick={() => setN(done ? 1 : n + 1)}
             className="flex-1 py-2.5 rounded-xl font-black text-sm uppercase tracking-widest text-white border-2 active:scale-95 transition-all"
             style={{ backgroundColor: done ? PURPLE : TEAL, borderColor: done ? PURPLE : TEAL }}>
-            {done ? pick(lang, 'Start again', 'Làm lại') : pick(lang, 'Next line', 'Dòng tiếp theo')}
+            {done ? pick(lang, 'Start again', 'Làm lại', 'Recommencer') : pick(lang, 'Next line', 'Dòng tiếp theo', 'Ligne suivante')}
           </button>
         </div>
       </Controls>

@@ -4,6 +4,8 @@ import {
   Parentheses, Equal, RotateCcw, Flag,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
 import { makePyramidSession, markBlock } from '../utils/pyramid';
 import {
@@ -13,7 +15,7 @@ import {
 /* ------------------------------------------------------------------ *
  * ALGEBRA PYRAMIDS — each block is the two blocks under it, added.
  *
- * Reads a unit's `pyramids`: { title, titleVn, modes: [...], rounds }.
+ * Reads a unit's `pyramids`: { title, titleVn, titleFr, modes: [...], rounds }.
  * Every round is generated fresh from a seed (utils/pyramid.js), so a second
  * attempt is practice, not memory:
  *   up        bottom row given; build every block above
@@ -122,10 +124,56 @@ const T = {
     rounds: 'Các kim tự tháp',
     score: 'Điểm',
   },
+  fr: {
+    title: 'Pyramides algébriques',
+    modes: { up: 'Monter', down: 'Descendre', brackets: 'Parenthèses', solve: 'Résoudre' },
+    rules: {
+      up: 'Chaque bloc est la somme des deux blocs du dessous. Réduis les termes semblables.',
+      down: 'On additionne en montant, on soustrait en descendant.',
+      brackets: 'Développe chaque parenthèse, puis additionne les deux blocs du dessous et réduis.',
+      solve: "Monte jusqu'au bloc du sommet. Il est égal au nombre, donc résous pour trouver la lettre.",
+    },
+    round: (i, n) => `Pyramide ${i} sur ${n}`,
+    check: 'Vérifier',
+    cont: 'Continuer',
+    next: 'Pyramide suivante',
+    results: 'Voir les résultats',
+    finish: 'Terminer',
+    again: 'Nouvelles pyramides',
+    hint: 'Touche un bloc « ? », écris son expression, appuie sur Entrée.',
+    typeFirst: "Écris d'abord une expression dans un bloc « ? ».",
+    notYet: "Pas encore — remplis d'abord un bloc à côté de celui-ci. Il te faut deux blocs connus.",
+    right: (x) => `Correct : ${x}.`,
+    filled: (x) => `Ce bloc vaut ${x} — rempli pour toi.`,
+    eqTitle: "Écris l'équation",
+    eqSub: (n) => `Le bloc du sommet vaut ${n}, donc l'expression du sommet est égale à ${n} :`,
+    solveTitle: 'Résous-la',
+    solveHint: 'Écris un nombre, comme 7.',
+    typeNumber: "Écris d'abord un nombre.",
+    solvedRight: (l, v) => `Correct — ${l} = ${v}.`,
+    solFilled: (l, v) => `La solution est ${l} = ${v} — remplie pour toi.`,
+    checkTitle: 'Vérifie',
+    checkSub: (l, v, n) => `Mets ${l} = ${v} dans chaque bloc : chaque bloc est toujours la somme des deux du dessous, et le sommet donne ${n}.`,
+    built: 'Pyramide construite — chaque bloc juste du premier coup.',
+    builtSlip: 'Pyramide construite — et tu as corrigé tes erreurs toi-même.',
+    builtHelped: "Pyramide construite — avec un peu d'aide.",
+    summaryTitle: 'Pyramides terminées',
+    summaryLine: (c, n) => `${c} pyramides sur ${n} construites sans aide`,
+    halfNote: 'Une pyramide avec un bloc rempli pour toi compte pour moitié.',
+    empty: "Cette unité n'a pas de mode pyramide.",
+    back: 'Retour',
+    howTitle: 'Comment marche une pyramide',
+    howUp: 'En montant : additionne',
+    howDown: 'En descendant : soustrais',
+    rounds: 'Pyramides',
+    score: 'Score',
+  },
 };
+/** A T entry in every language at once: `{ en, vn, fr }`. */
 const both = (key, ...args) => ({
   en: typeof T.en[key] === 'function' ? T.en[key](...args) : T.en[key],
   vn: typeof T.vn[key] === 'function' ? T.vn[key](...args) : T.vn[key],
+  fr: typeof T.fr[key] === 'function' ? T.fr[key](...args) : T.fr[key],
 });
 const MODE_ICON = { up: ArrowUp, down: ArrowDown, brackets: Parentheses, solve: Equal };
 
@@ -134,7 +182,7 @@ const BRICK_W = { 3: 'w-[6.5rem] sm:w-32 lg:w-36', 4: 'w-24 sm:w-28' };
 const domId = (seed, idx, id) => `pyr-${seed}-${idx}-${id}`;
 
 function Message({ msg, lang }) {
-  const text = msg ? (lang === 'vn' && msg.vn ? msg.vn : msg.en) : null;
+  const text = msg ? tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en) : null;
   if (!text) return null;
   const tone = msg.ok ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
     : msg.shown || msg.info ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
@@ -223,12 +271,12 @@ function makeSessionSafe(config, seed) {
   }
 }
 
-export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = true }) {
+export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(() => makeSessionSafe(config, seed), [config, seed]);
 
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [solved, setSolved] = useState({});     // block id -> good | shown
   const [typed, setTyped] = useState({});
@@ -246,8 +294,8 @@ export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = 
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [ended, setEnded] = useState(false);
 
-  const t = lang === 'vn' ? T.vn : T.en;
-  const L = (en, vn) => (lang === 'vn' && vn ? vn : en);
+  const t = T[lang] || T.en;
+  const L = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
   const round = session[idx];
 
   const finish = () => {
@@ -329,7 +377,7 @@ export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = 
       return;
     }
     // unreadable, or the right value not yet simplified: a nudge, not a wrong answer
-    if (d.code === 'unreadable' || d.equivalent) { setMsg({ info: true, en: d.en, vn: d.vn }); return; }
+    if (d.code === 'unreadable' || d.equivalent) { setMsg({ info: true, en: d.en, vn: d.vn, fr: d.fr }); return; }
     // nothing known next to it yet: not a wrong answer either
     if (!blockReachable(round, id, solved)) { setMsg({ info: true, ...both('notYet') }); return; }
     const n = (tries[id] || 0) + 1;
@@ -342,11 +390,11 @@ export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = 
       setBad((b) => ({ ...b, [id]: false }));
       setHelped(true);
       const f = both('filled', cell.text);
-      setMsg({ shown: true, en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}` });
+      setMsg({ shown: true, en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}`, fr: `${d.fr ?? d.en} ${f.fr}` });
       afterBlock(next, true);
     } else {
       setBad((b) => ({ ...b, [id]: true }));
-      setMsg({ ok: false, en: d.en, vn: d.vn });
+      setMsg({ ok: false, en: d.en, vn: d.vn, fr: d.fr });
     }
   };
   const checkTarget = active && !solved[active]
@@ -364,7 +412,7 @@ export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = 
       completeRound(helped, 'check');
       return;
     }
-    if (!d.code || d.code === 'unreadable') { setMsg({ info: true, en: d.en, vn: d.vn }); return; }
+    if (!d.code || d.code === 'unreadable') { setMsg({ info: true, en: d.en, vn: d.vn, fr: d.fr }); return; }
     const n = solTries + 1;
     setSolTries(n);
     setSlipped(true);
@@ -373,11 +421,11 @@ export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = 
       setSolTyped(String(round.solution));
       setHelped(true);
       const f = both('solFilled', round.letter, numText(round.solution));
-      setMsg({ shown: true, en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}` });
+      setMsg({ shown: true, en: `${d.en} ${f.en}`, vn: `${d.vn} ${f.vn}`, fr: `${d.fr ?? d.en} ${f.fr}` });
       completeRound(true, 'check');
     } else {
       setSolState('bad');
-      setMsg({ ok: false, en: d.en, vn: d.vn });
+      setMsg({ ok: false, en: d.en, vn: d.vn, fr: d.fr });
     }
   };
 
@@ -397,11 +445,11 @@ export default function AlgebraPyramids({ pool, onComplete, onQuit, bilingual = 
   const topBar = (
     <TopBar
       onQuit={quit}
-      modeTitle={L(config.title, config.titleVn) || t.title}
+      modeTitle={L(config.title, config.titleVn, config.titleFr) || t.title}
       current={summaryOpen ? session.length : idx + 1}
       total={session.length}
       lang={lang}
-      onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined}
+      onLangToggle={toggleLang}
     />
   );
 

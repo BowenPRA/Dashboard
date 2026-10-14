@@ -3,7 +3,7 @@
 // Quick Fire — short generated cards for the Year 7 number units, fresh every
 // attempt (like Pyramids). A unit declares only its modes and how many cards:
 //
-//   quickFire: { title, titleVn, modes: ['shift', 'power', 'mass'], rounds: 12 }
+//   quickFire: { title, titleVn, titleFr, modes: ['shift', 'power', 'mass'], rounds: 12 }
 //
 //   shift   7.2 × 10³ = ?, 520 ÷ 10⁴ = ?          (marked by placeShift.diagnoseShift)
 //   power   6.1 × 10^? = 61000                      (diagnosePower)
@@ -18,6 +18,9 @@
 //
 // Every card's answer is derived from the numbers it was dealt, and every wrong
 // answer is answered by the name of its slip.
+//
+// Every message is an `{ en, vn, fr }` table (French for the Year 7 tracks that
+// offer it); the numbers in all three come from the same `${}` values.
 
 import { dec, decText, spanOf, roundTo } from './decimal.js';
 import { shiftModel, questionLatex, diagnoseShift, diagnosePower, PLACE_LIMITS, MASS_UNITS } from './placeShift.js';
@@ -65,7 +68,7 @@ function shiftCard(rng, id) {
     if (!fits(m.result) || m.cols.length > 9) continue;
     return {
       id, mode: 'shift', latex: `${questionLatex(m)} =`, answer: m.resultText,
-      ask: { en: 'Write it as an ordinary number.', vn: 'Viết thành số thường.' },
+      ask: { en: 'Write it as an ordinary number.', vn: 'Viết thành số thường.', fr: 'Écris-le comme un nombre ordinaire.' },
       mark: (typed) => diagnoseShift(m, typed),
     };
   }
@@ -81,7 +84,7 @@ function powerCard(rng, id) {
     const m = shiftModel({ id, kind: 'power', n: base.n, op, result: probe.resultText });
     return {
       id, mode: 'power', latex: questionLatex(m), answer: String(m.power), power: true,
-      ask: { en: 'What is the power?', vn: 'Số mũ là bao nhiêu?' },
+      ask: { en: 'What is the power?', vn: 'Số mũ là bao nhiêu?', fr: "Quel est l'exposant ?" },
       mark: (typed) => diagnosePower(m, typed),
     };
   }
@@ -99,7 +102,7 @@ function massCard(rng, id) {
     if (!fits(m.result) || m.cols.length > 10) continue;
     return {
       id, mode: 'mass', latex: questionLatex(m), answer: m.resultText, unit: MASS_UNITS[j],
-      ask: { en: 'Change the unit. Every step on the ladder is 10³.', vn: 'Đổi đơn vị. Mỗi bậc trên thang là 10³.' },
+      ask: { en: 'Change the unit. Every step on the ladder is 10³.', vn: 'Đổi đơn vị. Mỗi bậc trên thang là 10³.', fr: "Change d'unité. Chaque marche de l'échelle vaut 10³." },
       mark: (typed) => diagnoseShift(m, typed),
     };
   }
@@ -129,7 +132,7 @@ function roundCard(rng, id) {
     const name = placeName(places);
     return {
       id, mode: 'round', latex: n, answer: decText(answer),
-      ask: { en: `Round to ${name.en}.`, vn: `Làm tròn đến ${name.vn}.` },
+      ask: { en: `Round to ${name.en}.`, vn: `Làm tròn đến ${name.vn}.`, fr: `Arrondis ${name.frTo}.` },
       mark: (typed) => diagnoseRound(n, places, typed),
     };
   }
@@ -151,14 +154,14 @@ function compareCard(rng, id) {
     const less = a < b;
     const [A, B] = [numText(a), numText(b)];
     const why = less
-      ? { en: `${A} is further LEFT on the number line than ${B}, so ${A} is less than ${B}.`, vn: `${A} nằm xa hơn về bên TRÁI trên trục số so với ${B}, nên ${A} nhỏ hơn ${B}.` }
-      : { en: `${A} is further RIGHT on the number line than ${B}, so ${A} is greater than ${B}.`, vn: `${A} nằm xa hơn về bên PHẢI trên trục số so với ${B}, nên ${A} lớn hơn ${B}.` };
+      ? { en: `${A} is further LEFT on the number line than ${B}, so ${A} is less than ${B}.`, vn: `${A} nằm xa hơn về bên TRÁI trên trục số so với ${B}, nên ${A} nhỏ hơn ${B}.`, fr: `${A} est plus à GAUCHE que ${B} sur la droite graduée, donc ${A} est inférieur à ${B}.` }
+      : { en: `${A} is further RIGHT on the number line than ${B}, so ${A} is greater than ${B}.`, vn: `${A} nằm xa hơn về bên PHẢI trên trục số so với ${B}, nên ${A} lớn hơn ${B}.`, fr: `${A} est plus à DROITE que ${B} sur la droite graduée, donc ${A} est supérieur à ${B}.` };
     return {
       id, mode: 'compare', latex: `${numLatex(a)} \\;\\square\\; ${numLatex(b)}`, answer: less ? '<' : '>',
-      ask: { en: 'Less than or greater than?', vn: 'Nhỏ hơn hay lớn hơn?' },
+      ask: { en: 'Less than or greater than?', vn: 'Nhỏ hơn hay lớn hơn?', fr: 'Inférieur ou supérieur ?' },
       choices: [
-        { val: '<', en: '<  is less than', vn: '<  nhỏ hơn' },
-        { val: '>', en: '>  is greater than', vn: '>  lớn hơn' },
+        { val: '<', en: '<  is less than', vn: '<  nhỏ hơn', fr: '<  est inférieur à' },
+        { val: '>', en: '>  is greater than', vn: '>  lớn hơn', fr: '>  est supérieur à' },
       ],
       mark: (val) => (val === (less ? '<' : '>') ? { ok: true } : { ok: false, ...why }),
     };
@@ -178,16 +181,16 @@ function couldBeCard(rng, id) {
       : (p.greater ? p.edge + intIn(rng, 0, 40) : p.edge - intIn(rng, 0, 40));
   const yes = p.works(v);
   const [V, N] = [numText(v), numText(n)];
-  const rel = p.greater ? { en: 'greater', vn: 'lớn hơn' } : { en: 'less', vn: 'nhỏ hơn' };
+  const rel = p.greater ? { en: 'greater', vn: 'lớn hơn', fr: 'supérieur à' } : { en: 'less', vn: 'nhỏ hơn', fr: 'inférieur à' };
   const why = yes
-    ? { en: `Yes: ${V} is ${rel.en} than ${N}.`, vn: `Có: ${V} ${rel.vn} ${N}.` }
+    ? { en: `Yes: ${V} is ${rel.en} than ${N}.`, vn: `Có: ${V} ${rel.vn} ${N}.`, fr: `Oui : ${V} est ${rel.fr} ${N}.` }
     : v === n
-      ? { en: `No: ${V} is the open circle. ${V} is not ${rel.en} than ${V}.`, vn: `Không: ${V} là vòng tròn rỗng. ${V} không ${rel.vn} ${V}.` }
-      : { en: `No: ${V} is ${p.greater ? 'less' : 'greater'} than ${N} — it is on the other side of the circle.`, vn: `Không: ${V} ${p.greater ? 'nhỏ hơn' : 'lớn hơn'} ${N} — nó nằm ở phía bên kia vòng tròn.` };
+      ? { en: `No: ${V} is the open circle. ${V} is not ${rel.en} than ${V}.`, vn: `Không: ${V} là vòng tròn rỗng. ${V} không ${rel.vn} ${V}.`, fr: `Non : ${V} est le cercle vide. ${V} n'est pas ${rel.fr} ${V}.` }
+      : { en: `No: ${V} is ${p.greater ? 'less' : 'greater'} than ${N} — it is on the other side of the circle.`, vn: `Không: ${V} ${p.greater ? 'nhỏ hơn' : 'lớn hơn'} ${N} — nó nằm ở phía bên kia vòng tròn.`, fr: `Non : ${V} est ${p.greater ? 'inférieur à' : 'supérieur à'} ${N} — il est de l'autre côté du cercle.` };
   return {
-    id, mode: 'couldbe', latex: p.latex, answer: yes ? 'Yes' : 'No', answerVn: yes ? 'Có' : 'Không',
-    ask: { en: `Could ${letter} be ${V}?`, vn: `${letter} có thể là ${V} không?` },
-    choices: [{ val: 'yes', en: 'Yes', vn: 'Có' }, { val: 'no', en: 'No', vn: 'Không' }],
+    id, mode: 'couldbe', latex: p.latex, answer: yes ? 'Yes' : 'No', answerVn: yes ? 'Có' : 'Không', answerFr: yes ? 'Oui' : 'Non',
+    ask: { en: `Could ${letter} be ${V}?`, vn: `${letter} có thể là ${V} không?`, fr: `${letter} peut-il valoir ${V} ?` },
+    choices: [{ val: 'yes', en: 'Yes', vn: 'Có', fr: 'Oui' }, { val: 'no', en: 'No', vn: 'Không', fr: 'Non' }],
     mark: (val) => ((val === 'yes') === yes ? { ok: true } : { ok: false, ...why }),
   };
 }
@@ -198,7 +201,7 @@ function integerCard(rng, id) {
   const w = edgeWord(p);
   return {
     id, mode: 'integer', latex: p.latex, answer: numText(p.edge),
-    ask: { en: `The ${w.en} integer ${letter} could be?`, vn: `Số nguyên ${w.vn} mà ${letter} có thể là?` },
+    ask: { en: `The ${w.en} integer ${letter} could be?`, vn: `Số nguyên ${w.vn} mà ${letter} có thể là?`, fr: `Quel est le ${w.fr} entier que ${letter} peut valoir ?` },
     mark: (typed) => diagnoseInteger(p, typed),
   };
 }

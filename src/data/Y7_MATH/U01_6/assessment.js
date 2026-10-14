@@ -20,6 +20,7 @@ export const assessment = {
       correct: 'B',
       expEn: '$$7^2 = 7 × 7 = 49$$. The small 2 means multiply two 7s together, not multiply 7 by 2 (which is $$14$$). Adding would give $$9$$.',
       expVn: '$$7^2 = 7 × 7 = 49$$. Số 2 nhỏ nghĩa là nhân hai số 7, không phải nhân 7 với 2 (ra $$14$$). Cộng thì ra $$9$$.',
+      expFr: '$$7^2 = 7 × 7 = 49$$. Le petit 2 veut dire multiplier deux 7 entre eux, pas multiplier 7 par 2 (ce qui donne $$14$$). Additionner donnerait $$9$$.',
     },
     {
       id: 'a2_root',
@@ -34,6 +35,7 @@ export const assessment = {
       correct: 'A',
       expEn: '$$\\sqrt{100}$$ asks which number times itself is 100. It is $$10$$, because $$10 × 10 = 100$$. Answering $$50$$ halves 100 instead of finding the root.',
       expVn: '$$\\sqrt{100}$$ hỏi số nào nhân với chính nó bằng 100. Đó là $$10$$, vì $$10 × 10 = 100$$. Trả lời $$50$$ là chia đôi 100 thay vì tìm căn.',
+      expFr: '$$\\sqrt{100}$$ demande quel nombre multiplié par lui-même donne 100. C’est $$10$$, car $$10 × 10 = 100$$. Répondre $$50$$, c’est prendre la moitié de 100 au lieu de trouver la racine.',
     },
     {
       id: 'a3_cube',
@@ -48,6 +50,7 @@ export const assessment = {
       correct: 'C',
       expEn: '$$4^3 = 4 × 4 × 4 = 64$$. Answering $$16$$ stops at $$4 × 4$$ (that is four *squared*); $$12$$ is $$4 × 3$$.',
       expVn: '$$4^3 = 4 × 4 × 4 = 64$$. Trả lời $$16$$ là dừng ở $$4 × 4$$ (đó là bốn *bình phương*); $$12$$ là $$4 × 3$$.',
+      expFr: '$$4^3 = 4 × 4 × 4 = 64$$. Répondre $$16$$, c’est s’arrêter à $$4 × 4$$ (c’est quatre *au carré*) ; $$12$$, c’est $$4 × 3$$.',
     },
     {
       id: 'a4_cube_root',
@@ -62,6 +65,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'The cube root asks which number times itself twice is 27: $$3 × 3 × 3 = 27$$, so $$\\sqrt[3]{27} = 3$$. Answering $$9$$ divides by 3 instead of taking the root.',
       expVn: 'Căn bậc ba hỏi số nào nhân với chính nó hai lần bằng 27: $$3 × 3 × 3 = 27$$, nên $$\\sqrt[3]{27} = 3$$. Trả lời $$9$$ là chia cho 3 thay vì lấy căn.',
+      expFr: 'La racine cubique demande quel nombre, multiplié deux fois par lui-même, donne 27 : $$3 × 3 × 3 = 27$$, donc $$\\sqrt[3]{27} = 3$$. Répondre $$9$$, c’est diviser par 3 au lieu de prendre la racine.',
     },
     {
       id: 'a5_trap',
@@ -76,6 +80,7 @@ export const assessment = {
       correct: 'A',
       expEn: '40 is between the squares $$36 = 6^2$$ and $$49 = 7^2$$, so $$\\sqrt{40}$$ is between 6 and 7. Answering 20 and 21 halves 40 instead of using the square list.',
       expVn: '40 nằm giữa hai số chính phương $$36 = 6^2$$ và $$49 = 7^2$$, nên $$\\sqrt{40}$$ nằm giữa 6 và 7. Trả lời 20 và 21 là chia đôi 40 thay vì dùng bảng bình phương.',
+      expFr: '40 est entre les carrés $$36 = 6^2$$ et $$49 = 7^2$$, donc $$\\sqrt{40}$$ est entre 6 et 7. Répondre 20 et 21, c’est prendre la moitié de 40 au lieu d’utiliser la liste des carrés.',
     },
     {
       id: 'a6_word',
@@ -90,6 +95,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'A perfect square means side × side = 400, so the side is $$\\sqrt{400} = 20$$ (because $$20 × 20 = 400$$). Answering $$200$$ halves 400; $$100$$ quarters it.',
       expVn: 'Hình vuông hoàn hảo nghĩa là cạnh × cạnh = 400, nên cạnh là $$\\sqrt{400} = 20$$ (vì $$20 × 20 = 400$$). Trả lời $$200$$ là chia đôi 400; $$100$$ là chia tư.',
+      expFr: 'Un carré parfait veut dire côté × côté = 400, donc le côté est $$\\sqrt{400} = 20$$ (car $$20 × 20 = 400$$). Répondre $$200$$, c’est prendre la moitié de 400 ; $$100$$, c’est en prendre le quart.',
     },
   ],
 };

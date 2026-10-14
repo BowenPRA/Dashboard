@@ -24,6 +24,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Multiply out means expand: $$6 × c = 6c$$ and $$6 × 5 = 30$$. A multiplied only the first term; B added $$6 + 5$$; D carried on past the answer — $$6c$$ and 30 are not like terms.',
       expVn: 'Multiply out nghĩa là khai triển: $$6 × c = 6c$$ và $$6 × 5 = 30$$. A chỉ nhân hạng tử đầu; B cộng $$6 + 5$$; D làm tiếp quá đáp án — $$6c$$ và 30 không đồng dạng.',
+      expFr: '« Multiply out » veut dire développer : $$6 × c = 6c$$ et $$6 × 5 = 30$$. A n’a multiplié que le premier terme ; B a additionné $$6 + 5$$ ; D a continué après la réponse — $$6c$$ et 30 ne sont pas des termes semblables.',
     },
     {
       id: 'a2_expanded',
@@ -38,6 +39,7 @@ export const assessment = {
       correct: 'A',
       expEn: '$$4 × y = 4y$$ and $$4 × (−9) = −36$$: the minus goes into the box with the 9. B lost the minus sign; C did not multiply the 9; D carried on past the answer.',
       expVn: '$$4 × y = 4y$$ và $$4 × (−9) = −36$$: dấu trừ đi vào ô cùng số 9. B làm mất dấu trừ; C không nhân số 9; D làm tiếp quá đáp án.',
+      expFr: '$$4 × y = 4y$$ et $$4 × (−9) = −36$$ : le moins va dans la case avec le 9. B a perdu le signe moins ; C n’a pas multiplié le 9 ; D a continué après la réponse.',
     },
     {
       id: 'a3_number_letter',
@@ -52,6 +54,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Multiply the numbers and keep the letter: $$7 × 3m = 21m$$, and $$7 × 2 = 14$$. A added $$7 + 3$$; B multiplied only the first term; C added $$7 + 2$$.',
       expVn: 'Nhân các số và giữ chữ cái: $$7 × 3m = 21m$$, và $$7 × 2 = 14$$. A cộng $$7 + 3$$; B chỉ nhân hạng tử đầu; C cộng $$7 + 2$$.',
+      expFr: 'Multiplie les nombres et garde la lettre : $$7 × 3m = 21m$$, et $$7 × 2 = 14$$. A a additionné $$7 + 3$$ ; B n’a multiplié que le premier terme ; C a additionné $$7 + 2$$.',
     },
     {
       id: 'a4_minus_finished',
@@ -66,6 +69,7 @@ export const assessment = {
       correct: 'B',
       expEn: '$$8 × 5 = 40$$ and $$8 × (−2k) = −16k$$, so $$40 − 16k$$, and stop. A carried on past the answer — 40 and $$16k$$ are not like terms; C added $$8 + 2$$; D lost the minus sign.',
       expVn: '$$8 × 5 = 40$$ và $$8 × (−2k) = −16k$$, nên $$40 − 16k$$, rồi dừng. A làm tiếp quá đáp án — 40 và $$16k$$ không đồng dạng; C cộng $$8 + 2$$; D làm mất dấu trừ.',
+      expFr: '$$8 × 5 = 40$$ et $$8 × (−2k) = −16k$$, donc $$40 − 16k$$, et on s’arrête. A a continué après la réponse — 40 et $$16k$$ ne sont pas des termes semblables ; C a additionné $$8 + 2$$ ; D a perdu le signe moins.',
     },
     {
       id: 'a5_expand_simplify',
@@ -80,6 +84,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Expand: $$6x + 12$$. Collect: $$6x + 5x = 11x$$, so $$11x + 12$$. B multiplied only the first term; C expanded but did not simplify; D collected a number with $$x$$ terms.',
       expVn: 'Khai triển: $$6x + 12$$. Gộp: $$6x + 5x = 11x$$, nên $$11x + 12$$. B chỉ nhân hạng tử đầu; C đã khai triển nhưng chưa rút gọn; D gộp một con số với các hạng tử chứa $$x$$.',
+      expFr: 'Développe : $$6x + 12$$. Réduis : $$6x + 5x = 11x$$, donc $$11x + 12$$. B n’a multiplié que le premier terme ; C a développé mais n’a pas réduit ; D a réuni un nombre avec des termes en $$x$$.',
     },
     {
       id: 'a6_two_brackets',
@@ -94,6 +99,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'The −2 goes into both boxes: $$5n + 15 − 2n − 8 = 3n + 7$$. A lost the sign on the 8 ($$−2 × 4 = −8$$); C lost the minus in front of the second bracket; D multiplied only the first term in each bracket.',
       expVn: 'Số −2 đi vào cả hai ô: $$5n + 15 − 2n − 8 = 3n + 7$$. A làm mất dấu ở số 8 ($$−2 × 4 = −8$$); C bỏ mất dấu trừ trước ngoặc thứ hai; D chỉ nhân hạng tử đầu trong mỗi ngoặc.',
+      expFr: 'Le −2 va dans les deux cases : $$5n + 15 − 2n − 8 = 3n + 7$$. A a perdu le signe du 8 ($$−2 × 4 = −8$$) ; C a perdu le moins devant la deuxième parenthèse ; D n’a multiplié que le premier terme de chaque parenthèse.',
     },
     {
       id: 'a7_backwards',
@@ -108,6 +114,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The box times $$3a$$ makes $$18a$$, so it is $$18 ÷ 3 = 6$$. Check the other box: $$6 × 7 = 42$$. A took away ($$18 − 3$$); B added ($$18 + 3$$); D took away ($$42 − 7$$).',
       expVn: 'Số trong ô nhân $$3a$$ ra $$18a$$, nên số đó là $$18 ÷ 3 = 6$$. Kiểm tra ô còn lại: $$6 × 7 = 42$$. A lấy $$18 − 3$$; B lấy $$18 + 3$$; D lấy $$42 − 7$$.',
+      expFr: 'La case fois $$3a$$ donne $$18a$$, donc c’est $$18 ÷ 3 = 6$$. Vérifie l’autre case : $$6 × 7 = 42$$. A a soustrait ($$18 − 3$$) ; B a additionné ($$18 + 3$$) ; D a soustrait ($$42 − 7$$).',
     },
     {
       id: 'a8_word_problem',
@@ -122,6 +129,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Four boxes of $$p + 3$$ is $$4(p + 3) = 4p + 12$$; giving away 5 leaves $$4p + 12 − 5 = 4p + 7$$. A multiplied only the $$p$$ ($$4p + 3 − 5$$); B forgot the 5 she gave away; C collected unlike terms.',
       expVn: 'Bốn hộp, mỗi hộp $$p + 3$$ thứ, là $$4(p + 3) = 4p + 12$$; cho đi 5 thì còn $$4p + 12 − 5 = 4p + 7$$. A chỉ nhân $$p$$ ($$4p + 3 − 5$$); B quên 5 cây bút chì đã cho đi; C gộp các hạng tử không đồng dạng.',
+      expFr: 'Quatre boîtes de $$p + 3$$, c’est $$4(p + 3) = 4p + 12$$ ; en donner 5 laisse $$4p + 12 − 5 = 4p + 7$$. A n’a multiplié que le $$p$$ ($$4p + 3 − 5$$) ; B a oublié les 5 qu’elle a donnés ; C a réduit des termes non semblables.',
     },
   ],
 };

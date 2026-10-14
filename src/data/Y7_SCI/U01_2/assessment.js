@@ -19,6 +19,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'An animal cell has a **cell membrane, cytoplasm, mitochondria and a nucleus**. The other lists smuggle in plant-only parts (cell wall, chloroplasts, vacuole) or substances (cellulose, chlorophyll).',
       expVn: 'Tế bào động vật có **màng tế bào, tế bào chất, ti thể và nhân**. Các danh sách khác lẫn vào những phần chỉ có ở thực vật (thành tế bào, lục lạp, không bào) hoặc các chất (xenlulozơ, diệp lục).',
+      expFr: 'Une cellule animale a une **membrane cellulaire, du cytoplasme, des mitochondries et un noyau**. Les autres listes glissent des parties propres aux plantes (paroi cellulaire, chloroplastes, vacuole) ou des substances (cellulose, chlorophylle).',
     },
     {
       id: 'a2_mitochondria',
@@ -33,6 +34,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'The **mitochondria** release energy from food. The nucleus controls the cell, the membrane controls what goes in and out, and the vacuole (plant-only) stores sap.',
       expVn: '**Ti thể** giải phóng năng lượng từ thức ăn. Nhân điều khiển tế bào, màng kiểm soát những gì ra vào, còn không bào (chỉ ở thực vật) chứa dịch.',
+      expFr: 'Les **mitochondries** libèrent l’énergie de la nourriture. Le noyau contrôle la cellule, la membrane contrôle ce qui entre et sort, et la vacuole (seulement chez les plantes) contient le suc cellulaire.',
     },
     {
       id: 'a3_three_things',
@@ -47,6 +49,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Remove the plant-only extras — the **cell wall, the chloroplasts and the sap vacuole** — and everything left is an animal cell. The other lists remove parts every cell needs.',
       expVn: 'Bỏ những phần chỉ có ở thực vật — **thành tế bào, lục lạp và không bào** — và những gì còn lại là một tế bào động vật. Các danh sách khác bỏ đi những phần mọi tế bào đều cần.',
+      expFr: 'Enlève les parties propres aux plantes — la **paroi cellulaire, les chloroplastes et la vacuole** — et tout ce qui reste est une cellule animale. Les autres listes enlèvent des parties dont toute cellule a besoin.',
     },
     {
       id: 'a4_shape',
@@ -61,6 +64,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'No **cell wall** means no stiff box, so an animal cell has **no fixed shape** — which suits an animal, because it moves. A plant cell has a wall and keeps its box shape; plants stand still.',
       expVn: 'Không có **thành tế bào** nghĩa là không có hộp cứng, nên tế bào động vật **không có hình dạng cố định** — phù hợp với động vật vì chúng di chuyển. Tế bào thực vật có thành và giữ hình hộp; cây đứng yên.',
+      expFr: 'Pas de **paroi cellulaire**, donc pas de boîte rigide : une cellule animale n’a **pas de forme fixe** — c’est utile pour un animal, parce qu’il bouge. Une cellule végétale a une paroi et garde sa forme de boîte ; les plantes ne bougent pas.',
     },
     {
       id: 'a5_stain',
@@ -75,6 +79,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Cheek cells are almost see-through. Methylene blue is a **stain** — a coloured dye that makes the parts easier to see (the nucleus goes dark blue). Magnifying is the microscope\'s job.',
       expVn: 'Tế bào má gần như trong suốt. Xanh methylen là **thuốc nhuộm** — phẩm màu làm các bộ phận dễ nhìn thấy hơn (nhân chuyển xanh đậm). Phóng đại là việc của kính hiển vi.',
+      expFr: 'Les cellules de la joue sont presque transparentes. Le bleu de méthylène est un **colorant (stain)** — une teinture qui rend les parties plus visibles (le noyau devient bleu foncé). Grossir, c’est le travail du microscope.',
     },
     {
       id: 'a6_microscope',
@@ -89,6 +94,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Start with the **smallest objective lens**, find the cells, and only then turn to a larger lens for more magnification. Starting large makes the cells almost impossible to find — and easy to crush.',
       expVn: 'Bắt đầu với **vật kính nhỏ nhất**, tìm tế bào, rồi mới xoay sang vật kính lớn hơn để phóng đại nhiều hơn. Bắt đầu bằng vật kính lớn khiến tế bào gần như không thể tìm thấy — và dễ làm vỡ lam kính.',
+      expFr: 'Commence avec le **plus petit objectif**, trouve les cellules, et seulement ensuite passe à un objectif plus grand pour grossir davantage. Si tu commences grand, les cellules sont presque impossibles à trouver — et faciles à écraser.',
     },
   ],
 };

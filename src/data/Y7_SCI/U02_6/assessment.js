@@ -22,6 +22,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Both atoms are **oxygen**: one kind of atom, so O₂ is an **element**. Two atoms do not make a compound — two **kinds** of atom do (A). Being a gas says nothing about it (C), and the small number only counts atoms (D).',
       expVn: 'Cả hai nguyên tử đều là **oxi**: một loại nguyên tử, nên O₂ là **nguyên tố**. Hai nguyên tử không làm nên hợp chất — hai **loại** nguyên tử mới làm nên hợp chất (A). Là chất khí không nói lên điều gì (C), và số nhỏ chỉ đếm số nguyên tử (D).',
+      expFr: 'Les deux atomes sont de l’**oxygène** : une seule sorte d’atome, donc O₂ est un **élément**. Deux atomes ne font pas un composé — deux **sortes** d’atomes, si (A). Être un gaz n’en dit rien (C), et le petit nombre ne fait que compter les atomes (D).',
     },
     {
       id: 'a2_compound',
@@ -36,6 +37,7 @@ export const assessment = {
       correct: 'D',
       expEn: '**MgO** has two capital letters — magnesium and oxygen, bonded: a compound (magnesium oxide). Cl₂ and N₂ have two atoms but only one kind each, and Fe is iron alone — all elements.',
       expVn: '**MgO** có hai chữ in hoa — magie và oxi, liên kết với nhau: một hợp chất (magnesium oxide). Cl₂ và N₂ có hai nguyên tử nhưng mỗi chất chỉ một loại, còn Fe chỉ là sắt — tất cả đều là nguyên tố.',
+      expFr: '**MgO** a deux lettres majuscules — magnésium et oxygène, liés : un composé (magnesium oxide). Cl₂ et N₂ ont deux atomes mais une seule sorte chacun, et Fe, c’est du fer seul — ce sont tous des éléments.',
     },
     {
       id: 'a3_properties',
@@ -50,6 +52,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'A compound has **new properties**, not like the elements it is made from: sodium chloride is table salt, white crystals you can eat. A, B and D all think a compound keeps its elements’ properties.',
       expVn: 'Hợp chất có **tính chất mới**, không giống các nguyên tố tạo nên nó: sodium chloride là muối ăn, tinh thể trắng em ăn được. A, B và D đều nghĩ hợp chất giữ tính chất của các nguyên tố.',
+      expFr: 'Un composé a de **nouvelles propriétés**, il ne ressemble pas aux éléments qui le forment : le chlorure de sodium, c’est le sel de table, des cristaux blancs qui se mangent. A, B et D pensent tous qu’un composé garde les propriétés de ses éléments.',
     },
     {
       id: 'a4_ide',
@@ -64,6 +67,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'The metal first — **potassium** — and the non-metal ending in -ide — **chloride**. B has the order backwards, C’s -ate would mean oxygen is in it too, and D forgets to change the ending.',
       expVn: 'Kim loại trước — **potassium** — và phi kim với đuôi -ide — **chloride**. B đảo ngược thứ tự, đuôi -ate của C nghĩa là có cả oxi, còn D quên đổi đuôi.',
+      expFr: 'Le métal d’abord — **potassium** — puis le non-métal qui finit en -ide — **chloride**. B met l’ordre à l’envers, le -ate de C voudrait dire qu’il y a aussi de l’oxygène, et D oublie de changer la fin du mot.',
     },
     {
       id: 'a5_ate',
@@ -78,6 +82,7 @@ export const assessment = {
       correct: 'B',
       expEn: '**-ate** means two elements **plus oxygen**: magnesium, sulfur and oxygen. A is magnesium sulfide (-ide); D is magnesium oxide; manganese (C) is a different element.',
       expVn: '**-ate** nghĩa là hai nguyên tố **cộng với oxi**: magie, lưu huỳnh và oxi. A là magnesium sulfide (-ide); D là magnesium oxide; mangan (C) là một nguyên tố khác.',
+      expFr: '**-ate** veut dire deux éléments **plus l’oxygène** : magnésium, soufre et oxygène. A est magnesium sulfide (-ide) ; D est magnesium oxide ; le manganèse (C) est un autre élément.',
     },
     {
       id: 'a6_mono',
@@ -92,6 +97,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'CO has one carbon atom and **one** oxygen atom: **mono** = one, so carbon **monoxide**. “Carbon oxide” (A) cannot tell it from CO₂, which is carbon **di**oxide (B). Cobalt is Co, with a small o (D).',
       expVn: 'CO có một nguyên tử cacbon và **một** nguyên tử oxi: **mono** = một, nên là carbon **monoxide**. “Carbon oxide” (A) không phân biệt được với CO₂, là carbon **di**oxide (B). Coban là Co, với chữ o thường (D).',
+      expFr: 'CO a un atome de carbone et **un** atome d’oxygène : **mono** = un, donc carbon **monoxide**. « Carbon oxide » (A) ne le distingue pas de CO₂, qui est carbon **di**oxide (B). Le cobalt s’écrit Co, avec un petit o (D).',
     },
     {
       id: 'a7_count',
@@ -106,6 +112,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Ca (1) + C (1) + O₃ (3) = **5 atoms**. 3 counts the elements, not the atoms (A); 4 treats O₃ as one oxygen atom plus one more (B); 6 counts the small a of Ca as an atom of its own (C) — Ca is ONE calcium atom.',
       expVn: 'Ca (1) + C (1) + O₃ (3) = **5 nguyên tử**. 3 là số nguyên tố, không phải số nguyên tử (A); 4 coi O₃ là một nguyên tử oxi cộng thêm một (B); 6 đếm chữ a thường của Ca như một nguyên tử riêng (C) — Ca là MỘT nguyên tử canxi.',
+      expFr: 'Ca (1) + C (1) + O₃ (3) = **5 atomes**. 3 compte les éléments, pas les atomes (A) ; 4 prend O₃ pour un atome d’oxygène plus un autre (B) ; 6 compte le petit a de Ca comme un atome à part (C) — Ca, c’est UN atome de calcium.',
     },
     {
       id: 'a8_write',
@@ -120,6 +127,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'One N needs no number; three hydrogen atoms are **H₃**, with the 3 **after** the H it counts: **NH₃**. B puts the 3 after the wrong symbol; C forgets the number; D counts the total atoms instead.',
       expVn: 'Một N không cần số; ba nguyên tử hiđro là **H₃**, với số 3 đứng **sau** chữ H mà nó đếm: **NH₃**. B đặt số 3 sau sai kí hiệu; C quên số; D đếm tổng số nguyên tử.',
+      expFr: 'Un seul N n’a pas besoin de nombre ; trois atomes d’hydrogène s’écrivent **H₃**, avec le 3 **après** le H qu’il compte : **NH₃**. B met le 3 après le mauvais symbole ; C oublie le nombre ; D compte le total des atomes à la place.',
     },
   ],
 };

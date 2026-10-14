@@ -21,6 +21,7 @@ export const assessment = {
       correct: 'C',
       expEn: '"6 is a factor of 24", "24 is divisible by 6" and "24 is a multiple of 6" all say the same thing. The others swap the two numbers, which reverses the meaning.',
       expVn: '"6 là ước của 24", "24 chia hết cho 6" và "24 là bội của 6" đều nói cùng một điều. Các câu khác đảo hai số, làm đảo nghĩa.',
+      expFr: '« 6 est un diviseur de 24 », « 24 est divisible par 6 » et « 24 est un multiple de 6 » disent tous la même chose. Les autres échangent les deux nombres, ce qui inverse le sens.',
     },
     {
       id: 'a2_last_digit',
@@ -35,6 +36,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'A number is divisible by 10 when its last digit is 0, and only $$250$$ ends in 0. $$105$$ and $$15$$ end in 5 (divisible by 5, not 10); $$52$$ ends in 2.',
       expVn: 'Một số chia hết cho 10 khi chữ số cuối là 0, và chỉ $$250$$ tận cùng bằng 0. $$105$$ và $$15$$ tận cùng 5 (chia hết cho 5, không phải 10); $$52$$ tận cùng 2.',
+      expFr: 'Un nombre est divisible par 10 quand son dernier chiffre est 0, et seul $$250$$ se termine par 0. $$105$$ et $$15$$ se terminent par 5 (divisibles par 5, pas par 10) ; $$52$$ se termine par 2.',
     },
     {
       id: 'a3_digit_sum',
@@ -49,6 +51,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'For $$531$$ the digits add to $$5 + 3 + 1 = 9$$, a multiple of 9, so it divides. $$532$$ adds to 10, $$91$$ to 10, $$100$$ to 1 — none is a multiple of 9.',
       expVn: 'Với $$531$$ tổng chữ số là $$5 + 3 + 1 = 9$$, bội của 9, nên chia hết. $$532$$ có tổng 10, $$91$$ có 10, $$100$$ có 1 — không số nào là bội của 9.',
+      expFr: 'Pour $$531$$, la somme des chiffres est $$5 + 3 + 1 = 9$$, un multiple de 9, donc il est divisible. $$532$$ donne 10, $$91$$ donne 10, $$100$$ donne 1 — aucun n’est un multiple de 9.',
     },
     {
       id: 'a4_six_both',
@@ -63,6 +66,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Dividing by 6 needs the 2 test AND the 3 test. $$42$$ is even and $$4 + 2 = 6$$ is a multiple of 3, so it passes both. $$16$$ is even but fails the 3 test; $$15$$ and $$33$$ are odd.',
       expVn: 'Chia hết cho 6 cần cả dấu hiệu 2 và dấu hiệu 3. $$42$$ là số chẵn và $$4 + 2 = 6$$ là bội của 3, nên thoả cả hai. $$16$$ chẵn nhưng không thoả dấu hiệu 3; $$15$$ và $$33$$ là số lẻ.',
+      expFr: 'Pour être divisible par 6, il faut passer le critère de 2 ET celui de 3. $$42$$ est pair et $$4 + 2 = 6$$ est un multiple de 3, donc il passe les deux. $$16$$ est pair mais échoue au critère de 3 ; $$15$$ et $$33$$ sont impairs.',
     },
     {
       id: 'a5_remainder_7',
@@ -77,6 +81,7 @@ export const assessment = {
       correct: 'C',
       expEn: '$$3960 ÷ 7 = 565$$ remainder $$5$$. The remainder is not 0, so 3960 is **not** divisible by 7 — which is why 7 was the one number missing a test.',
       expVn: '$$3960 ÷ 7 = 565$$ dư $$5$$. Số dư khác 0, nên 3960 **không** chia hết cho 7 — đó là lý do 7 là số duy nhất không có dấu hiệu.',
+      expFr: '$$3960 ÷ 7 = 565$$ reste $$5$$. Le reste n’est pas 0, donc 3960 n’est **pas** divisible par 7 — c’est pour ça que 7 était le seul nombre sans critère.',
     },
     {
       id: 'a6_word',
@@ -91,6 +96,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'The test for 8 is the last **three** digits: $$304 ÷ 8 = 38$$, so 5304 divides by 8 and every crate is full. Being even or ending in 4 is the test for 2, not for 8.',
       expVn: 'Dấu hiệu cho 8 là **ba** chữ số cuối: $$304 ÷ 8 = 38$$, nên 5304 chia hết cho 8 và mọi thùng đều đầy. Chẵn hay tận cùng 4 là dấu hiệu cho 2, không phải cho 8.',
+      expFr: 'Le critère pour 8, ce sont les **trois** derniers chiffres : $$304 ÷ 8 = 38$$, donc 5304 est divisible par 8 et chaque caisse est pleine. Être pair ou se terminer par 4, c’est le critère pour 2, pas pour 8.',
     },
   ],
 };

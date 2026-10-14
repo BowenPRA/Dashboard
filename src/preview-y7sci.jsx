@@ -7,7 +7,7 @@
 // adds a task (Element Hunt, Particle Lab) needs no edit here.
 //   ?slide=N   resume NOTES on slide N (1-based)
 //   ?item=N    open LABEL_IT on its N-th diagram
-//   ?lang=vn   mount the widget bench in Vietnamese
+//   ?lang=vn|fr  mount the widget bench, and every task, in that language
 // DIAGRAMS lays every SVG on one page; WIDGETS mounts every widget.
 //
 // Saves round-trip as they do on the dashboard: each onProgress/onComplete is
@@ -27,7 +27,13 @@ const PARAMS = new URLSearchParams(window.location.search);
 const UNIT = PARAMS.get('unit') || 'U01_1';
 const RESUME_SLIDE = Number(PARAMS.get('slide')) || 0;
 const RESUME_ITEM = Number(PARAMS.get('item')) || 0;
-const LANG = PARAMS.get('lang') === 'vn' ? 'vn' : 'en';
+const LANG = ['vn', 'fr'].includes(PARAMS.get('lang')) ? PARAMS.get('lang') : 'en';
+// `?lang=fr` (or `vn`) also opens every task in that language: the track's
+// list rotated to start there, since useLang opens on the first one offered.
+const openIn = (langs) => {
+  const i = langs.indexOf(LANG);
+  return i > 0 ? [...langs.slice(i), ...langs.slice(0, i)] : langs;
+};
 // `?open=NOTES` mounts a task straight away (with `?slide=N`, a whole deck can be
 // swept slide by slide from a script).
 const OPEN = PARAMS.get('open');
@@ -127,7 +133,7 @@ function Harness() {
     const Comp = def.component;
     return (
       <Suspense fallback={<div className="p-8 font-black">Loading {open}…</div>}>
-        <Comp langs={langsOf(ctx.track)} {...def.props(ctx)} />
+        <Comp langs={openIn(langsOf(ctx.track))} {...def.props(ctx)} />
       </Suspense>
     );
   }

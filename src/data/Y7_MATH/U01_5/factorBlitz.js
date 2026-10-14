@@ -10,10 +10,12 @@
 export const factorBlitz = {
   title: 'Factor Blitz',
   titleVn: 'Truy Tìm Ước Số',
+  titleFr: 'Blitz des diviseurs',
   seconds: 30,
   intro:
     'A number appears. Tap every factor under 13 before the clock runs out — the numbers that divide it exactly. Each tap is a divisibility test: does this number go in with nothing left over?',
   introVn:
     'Một số xuất hiện. Bấm mọi ước số dưới 13 trước khi hết giờ — những số chia hết cho nó. Mỗi lần bấm là một phép kiểm tra chia hết: số này chia vào có dư không?',
+  introFr: 'Un nombre apparaît. Touche tous ses diviseurs inférieurs à 13 avant la fin du chrono — les nombres qui le divisent exactement. Chaque touche est un critère de divisibilité : ce nombre entre-t-il dedans sans reste ?',
   rounds: [72, 90, 66, 84, 56, 45, 88, 63],
 };

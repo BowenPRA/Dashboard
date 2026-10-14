@@ -58,7 +58,8 @@ fresh scenario every round.
   pot of phở broth), `condense` (the bathroom mirror, a glass of iced coffee, a
   pot lid, dew). Vietnamese contexts where natural. Only changes the deck
   teaches; `contract` only if the deck uses the word.
-- `LINKS` — the canonical links, each `{ id, en, vn }`, and `chainFor(change)`
+- `LINKS` — the canonical links, each `{ id, en, vn, fr }` (every engine table carries
+  French — [../french.md](../french.md)), and `chainFor(change)`
   → the ordered link ids (3 for expand, 4 for the state changes). Word the links
   exactly as the deck's write notes do ("Heat energy is transferred to the
   particles." …), so the task rehearses the sentence the student copied.

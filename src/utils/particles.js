@@ -18,7 +18,7 @@
 // so every round's picture is new.
 
 import { parseFormula } from './chemFormula.js';
-import { elementBySymbol } from './elements.js';
+import { elementBySymbol, leFr } from './elements.js';
 import { rngFrom } from './labBench.js';
 
 // ------------------------------------------------------------------ atoms
@@ -58,46 +58,46 @@ const BENT = (mid, end) => [[mid, 0, -0.25], [end, -0.85, 0.45], [end, 0.85, 0.4
 
 export const SUBSTANCES = {
   // elements
-  He: { en: 'helium', vn: 'heli', atoms: [['He', 0, 0]] },
-  Ne: { en: 'neon', vn: 'neon', atoms: [['Ne', 0, 0]] },
-  Ar: { en: 'argon', vn: 'agon', atoms: [['Ar', 0, 0]] },
-  Fe: { en: 'iron', vn: 'sắt', atoms: [['Fe', 0, 0]], magnetic: true },
-  S: { en: 'sulfur', vn: 'lưu huỳnh', atoms: [['S', 0, 0]] },
-  Cu: { en: 'copper', vn: 'đồng', atoms: [['Cu', 0, 0]] },
-  Mg: { en: 'magnesium', vn: 'magie', atoms: [['Mg', 0, 0]] },
-  H2: { en: 'hydrogen', vn: 'hiđro', atoms: L2('H', 'H') },
-  O2: { en: 'oxygen', vn: 'oxi', atoms: L2('O', 'O') },
-  N2: { en: 'nitrogen', vn: 'nitơ', atoms: L2('N', 'N') },
-  Cl2: { en: 'chlorine', vn: 'clo', atoms: L2('Cl', 'Cl') },
+  He: { en: 'helium', vn: 'heli', fr: 'hélium', atoms: [['He', 0, 0]] },
+  Ne: { en: 'neon', vn: 'neon', fr: 'néon', atoms: [['Ne', 0, 0]] },
+  Ar: { en: 'argon', vn: 'agon', fr: 'argon', atoms: [['Ar', 0, 0]] },
+  Fe: { en: 'iron', vn: 'sắt', fr: 'fer', atoms: [['Fe', 0, 0]], magnetic: true },
+  S: { en: 'sulfur', vn: 'lưu huỳnh', fr: 'soufre', atoms: [['S', 0, 0]] },
+  Cu: { en: 'copper', vn: 'đồng', fr: 'cuivre', atoms: [['Cu', 0, 0]] },
+  Mg: { en: 'magnesium', vn: 'magie', fr: 'magnésium', atoms: [['Mg', 0, 0]] },
+  H2: { en: 'hydrogen', vn: 'hiđro', fr: 'dihydrogène', atoms: L2('H', 'H') },
+  O2: { en: 'oxygen', vn: 'oxi', fr: 'dioxygène', atoms: L2('O', 'O') },
+  N2: { en: 'nitrogen', vn: 'nitơ', fr: 'diazote', atoms: L2('N', 'N') },
+  Cl2: { en: 'chlorine', vn: 'clo', fr: 'dichlore', atoms: L2('Cl', 'Cl') },
   // compounds, drawable
-  H2O: { en: 'water', vn: 'nước', atoms: BENT('O', 'H') },
-  CO2: { en: 'carbon dioxide', vn: 'cacbon đioxit', atoms: [['O', -1, 0], ['C', 0, 0], ['O', 1, 0]], parts: ['carbon', 'di', 'oxide'] },
-  CO: { en: 'carbon monoxide', vn: 'cacbon monoxit', atoms: L2('C', 'O'), parts: ['carbon', 'mono', 'oxide'] },
-  CH4: { en: 'methane', vn: 'metan', atoms: [['C', 0, 0], ['H', -1, 0], ['H', 1, 0], ['H', 0, -1], ['H', 0, 1]] },
-  NH3: { en: 'ammonia', vn: 'amoniac', atoms: [['N', 0, 0.1], ['H', -0.95, 0.55], ['H', 0.95, 0.55], ['H', 0, -0.95]] },
-  HCl: { en: 'hydrogen chloride', vn: 'hiđro clorua', atoms: L2('H', 'Cl'), parts: ['hydrogen', 'chloride'] },
-  SO2: { en: 'sulfur dioxide', vn: 'lưu huỳnh đioxit', atoms: BENT('S', 'O'), parts: ['sulfur', 'di', 'oxide'] },
-  H2S: { en: 'hydrogen sulfide', vn: 'hiđro sunfua', atoms: BENT('S', 'H'), parts: ['hydrogen', 'sulfide'] },
-  NaCl: { en: 'sodium chloride', vn: 'natri clorua', atoms: L2('Na', 'Cl'), parts: ['sodium', 'chloride'] },
-  MgO: { en: 'magnesium oxide', vn: 'magie oxit', atoms: L2('Mg', 'O'), parts: ['magnesium', 'oxide'] },
-  CaO: { en: 'calcium oxide', vn: 'canxi oxit', atoms: L2('Ca', 'O'), parts: ['calcium', 'oxide'] },
-  FeS: { en: 'iron sulfide', vn: 'sắt sunfua', atoms: L2('Fe', 'S'), parts: ['iron', 'sulfide'] },
-  KCl: { en: 'potassium chloride', vn: 'kali clorua', atoms: L2('K', 'Cl'), parts: ['potassium', 'chloride'] },
-  CaCl2: { en: 'calcium chloride', vn: 'canxi clorua', atoms: [['Cl', -1, 0], ['Ca', 0, 0], ['Cl', 1, 0]], parts: ['calcium', 'chloride'] },
-  MgCl2: { en: 'magnesium chloride', vn: 'magie clorua', atoms: [['Cl', -1, 0], ['Mg', 0, 0], ['Cl', 1, 0]], parts: ['magnesium', 'chloride'] },
-  CuO: { en: 'copper oxide', vn: 'đồng oxit', atoms: L2('Cu', 'O'), parts: ['copper', 'oxide'] },
+  H2O: { en: 'water', vn: 'nước', fr: 'eau', atoms: BENT('O', 'H') },
+  CO2: { en: 'carbon dioxide', vn: 'cacbon đioxit', fr: 'dioxyde de carbone', atoms: [['O', -1, 0], ['C', 0, 0], ['O', 1, 0]], parts: ['carbon', 'di', 'oxide'] },
+  CO: { en: 'carbon monoxide', vn: 'cacbon monoxit', fr: 'monoxyde de carbone', atoms: L2('C', 'O'), parts: ['carbon', 'mono', 'oxide'] },
+  CH4: { en: 'methane', vn: 'metan', fr: 'méthane', atoms: [['C', 0, 0], ['H', -1, 0], ['H', 1, 0], ['H', 0, -1], ['H', 0, 1]] },
+  NH3: { en: 'ammonia', vn: 'amoniac', fr: 'ammoniac', atoms: [['N', 0, 0.1], ['H', -0.95, 0.55], ['H', 0.95, 0.55], ['H', 0, -0.95]] },
+  HCl: { en: 'hydrogen chloride', vn: 'hiđro clorua', fr: "chlorure d'hydrogène", atoms: L2('H', 'Cl'), parts: ['hydrogen', 'chloride'] },
+  SO2: { en: 'sulfur dioxide', vn: 'lưu huỳnh đioxit', fr: 'dioxyde de soufre', atoms: BENT('S', 'O'), parts: ['sulfur', 'di', 'oxide'] },
+  H2S: { en: 'hydrogen sulfide', vn: 'hiđro sunfua', fr: "sulfure d'hydrogène", atoms: BENT('S', 'H'), parts: ['hydrogen', 'sulfide'] },
+  NaCl: { en: 'sodium chloride', vn: 'natri clorua', fr: 'chlorure de sodium', atoms: L2('Na', 'Cl'), parts: ['sodium', 'chloride'] },
+  MgO: { en: 'magnesium oxide', vn: 'magie oxit', fr: 'oxyde de magnésium', atoms: L2('Mg', 'O'), parts: ['magnesium', 'oxide'] },
+  CaO: { en: 'calcium oxide', vn: 'canxi oxit', fr: 'oxyde de calcium', atoms: L2('Ca', 'O'), parts: ['calcium', 'oxide'] },
+  FeS: { en: 'iron sulfide', vn: 'sắt sunfua', fr: 'sulfure de fer', atoms: L2('Fe', 'S'), parts: ['iron', 'sulfide'] },
+  KCl: { en: 'potassium chloride', vn: 'kali clorua', fr: 'chlorure de potassium', atoms: L2('K', 'Cl'), parts: ['potassium', 'chloride'] },
+  CaCl2: { en: 'calcium chloride', vn: 'canxi clorua', fr: 'chlorure de calcium', atoms: [['Cl', -1, 0], ['Ca', 0, 0], ['Cl', 1, 0]], parts: ['calcium', 'chloride'] },
+  MgCl2: { en: 'magnesium chloride', vn: 'magie clorua', fr: 'chlorure de magnésium', atoms: [['Cl', -1, 0], ['Mg', 0, 0], ['Cl', 1, 0]], parts: ['magnesium', 'chloride'] },
+  CuO: { en: 'copper oxide', vn: 'đồng oxit', fr: 'oxyde de cuivre', atoms: L2('Cu', 'O'), parts: ['copper', 'oxide'] },
   // compounds, named but not drawn
-  CaCO3: { en: 'calcium carbonate', vn: 'canxi cacbonat', parts: ['calcium', 'carbonate'] },
-  MgCO3: { en: 'magnesium carbonate', vn: 'magie cacbonat', parts: ['magnesium', 'carbonate'] },
-  CuSO4: { en: 'copper sulfate', vn: 'đồng sunfat', parts: ['copper', 'sulfate'] },
-  Li2SO4: { en: 'lithium sulfate', vn: 'liti sunfat', parts: ['lithium', 'sulfate'] },
-  'Ca(NO3)2': { en: 'calcium nitrate', vn: 'canxi nitrat', parts: ['calcium', 'nitrate'] },
-  NaNO3: { en: 'sodium nitrate', vn: 'natri nitrat', parts: ['sodium', 'nitrate'] },
-  NaOH: { en: 'sodium hydroxide', vn: 'natri hiđroxit', parts: ['sodium', 'hydroxide'] },
-  KOH: { en: 'potassium hydroxide', vn: 'kali hiđroxit', parts: ['potassium', 'hydroxide'] },
-  LiOH: { en: 'lithium hydroxide', vn: 'liti hiđroxit', parts: ['lithium', 'hydroxide'] },
-  C6H12O6: { en: 'glucose', vn: 'glucozơ' },
-  C2H6O: { en: 'ethanol', vn: 'etanol' },
+  CaCO3: { en: 'calcium carbonate', vn: 'canxi cacbonat', fr: 'carbonate de calcium', parts: ['calcium', 'carbonate'] },
+  MgCO3: { en: 'magnesium carbonate', vn: 'magie cacbonat', fr: 'carbonate de magnésium', parts: ['magnesium', 'carbonate'] },
+  CuSO4: { en: 'copper sulfate', vn: 'đồng sunfat', fr: 'sulfate de cuivre', parts: ['copper', 'sulfate'] },
+  Li2SO4: { en: 'lithium sulfate', vn: 'liti sunfat', fr: 'sulfate de lithium', parts: ['lithium', 'sulfate'] },
+  'Ca(NO3)2': { en: 'calcium nitrate', vn: 'canxi nitrat', fr: 'nitrate de calcium', parts: ['calcium', 'nitrate'] },
+  NaNO3: { en: 'sodium nitrate', vn: 'natri nitrat', fr: 'nitrate de sodium', parts: ['sodium', 'nitrate'] },
+  NaOH: { en: 'sodium hydroxide', vn: 'natri hiđroxit', fr: 'hydroxyde de sodium', parts: ['sodium', 'hydroxide'] },
+  KOH: { en: 'potassium hydroxide', vn: 'kali hiđroxit', fr: 'hydroxyde de potassium', parts: ['potassium', 'hydroxide'] },
+  LiOH: { en: 'lithium hydroxide', vn: 'liti hiđroxit', fr: 'hydroxyde de lithium', parts: ['lithium', 'hydroxide'] },
+  C6H12O6: { en: 'glucose', vn: 'glucozơ', fr: 'glucose' },
+  C2H6O: { en: 'ethanol', vn: 'etanol', fr: 'éthanol' },
 };
 
 // What each naming part says about the elements (the 2.6 rules).
@@ -273,34 +273,34 @@ export function keyOfElements(symbols) {
  */
 export function diagnoseFormula(want, typed) {
   const t = String(typed ?? '').replace(/\s+/g, '').replace(/[₀-₉]/g, (d) => String('₀₁₂₃₄₅₆₇₈₉'.indexOf(d)));
-  if (!t) return { ok: false, en: 'Type the formula, like H2O.', vn: 'Nhập công thức, ví dụ H2O.' };
+  if (!t) return { ok: false, en: 'Type the formula, like H2O.', vn: 'Nhập công thức, ví dụ H2O.', fr: 'Écris la formule, par exemple H2O.' };
   const target = Object.fromEntries(countsOf(want).map((c) => [c.el, c.n]));
   let got = null;
   try { got = parseFormula(t); } catch { got = null; }
   const same = (a, b) => a && Object.keys(a).length === Object.keys(b).length && Object.keys(b).every((k) => a[k] === b[k]);
   if (same(got, target)) {
-    if (t.replace(/([A-Za-z)])1(?!\d)/g, '$1') === want && t !== want) return { ok: true, one: true, en: 'Right — but a 1 is never written: no number means one.', vn: 'Đúng — nhưng không viết số 1: không có số nghĩa là một.' };
+    if (t.replace(/([A-Za-z)])1(?!\d)/g, '$1') === want && t !== want) return { ok: true, one: true, en: 'Right — but a 1 is never written: no number means one.', vn: 'Đúng — nhưng không viết số 1: không có số nghĩa là một.', fr: "Correct — mais on n'écrit jamais le 1 : pas de nombre veut dire un." };
     return { ok: true, order: t !== want ? want : null };
   }
   if (/^[a-z]/.test(t) || (got && Object.keys(got).some((k) => !elementBySymbol(k)))) {
-    return { ok: false, code: 'capitals', en: 'Every symbol starts with a capital letter; a second letter is small (Ca, Cl, Na).', vn: 'Mỗi kí hiệu bắt đầu bằng chữ hoa; chữ thứ hai viết thường (Ca, Cl, Na).' };
+    return { ok: false, code: 'capitals', en: 'Every symbol starts with a capital letter; a second letter is small (Ca, Cl, Na).', vn: 'Mỗi kí hiệu bắt đầu bằng chữ hoa; chữ thứ hai viết thường (Ca, Cl, Na).', fr: 'Chaque symbole commence par une majuscule ; une deuxième lettre est une minuscule (Ca, Cl, Na).' };
   }
   // the number in front of the symbol it counts: 2HO → H2O
   if (/^\d/.test(t) || /\d[A-Z]/.test(t)) {
     try {
       const moved = t.replace(/(\d+)([A-Z][a-z]?)/g, '$2$1');
-      if (same(parseFormula(moved), target)) return { ok: false, code: 'number-place', en: 'The small number goes AFTER the symbol it counts: H₂O means two H atoms.', vn: 'Số nhỏ đứng SAU kí hiệu mà nó đếm: H₂O nghĩa là hai nguyên tử H.' };
+      if (same(parseFormula(moved), target)) return { ok: false, code: 'number-place', en: 'The small number goes AFTER the symbol it counts: H₂O means two H atoms.', vn: 'Số nhỏ đứng SAU kí hiệu mà nó đếm: H₂O nghĩa là hai nguyên tử H.', fr: "Le petit nombre se place APRÈS le symbole qu'il compte : H₂O veut dire deux atomes H." };
     } catch { /* fall through */ }
   }
   if (got && Object.keys(got).length === Object.keys(target).length && Object.keys(target).every((k) => got[k])) {
-    return { ok: false, code: 'counts', en: `Right elements — count the atoms again: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')}.`, vn: `Đúng nguyên tố — đếm lại số nguyên tử: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')}.` };
+    return { ok: false, code: 'counts', en: `Right elements — count the atoms again: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')}.`, vn: `Đúng nguyên tố — đếm lại số nguyên tử: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')}.`, fr: `Bons éléments — recompte les atomes : ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')}.` };
   }
   if (got && Object.keys(got).some((k) => !target[k])) {
     const odd = Object.keys(got).find((k) => !target[k]);
     const e = elementBySymbol(odd);
-    return { ok: false, code: 'element', en: `${odd} is ${e ? e.en : 'not in this particle'}. Match each colour to its element in the key.`, vn: `${odd} là ${e ? e.vn : 'không có trong hạt này'}. Khớp mỗi màu với nguyên tố của nó trong chú thích.` };
+    return { ok: false, code: 'element', en: `${odd} is ${e ? e.en : 'not in this particle'}. Match each colour to its element in the key.`, vn: `${odd} là ${e ? e.vn : 'không có trong hạt này'}. Khớp mỗi màu với nguyên tố của nó trong chú thích.`, fr: `${e ? `${odd}, c'est ${leFr(e.fr)}` : `${odd} n'est pas dans cette particule`}. Associe chaque couleur à son élément dans la légende.` };
   }
-  return { ok: false, code: 'wrong', en: `Count each colour: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')} → ${formulaPretty(want)}.`, vn: `Đếm từng màu: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')} → ${formulaPretty(want)}.` };
+  return { ok: false, code: 'wrong', en: `Count each colour: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')} → ${formulaPretty(want)}.`, vn: `Đếm từng màu: ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')} → ${formulaPretty(want)}.`, fr: `Compte chaque couleur : ${countsOf(want).map((c) => `${c.n} ${c.el}`).join(', ')} → ${formulaPretty(want)}.` };
 }
 
 // ------------------------------------------------------------------ Particle Lab sessions

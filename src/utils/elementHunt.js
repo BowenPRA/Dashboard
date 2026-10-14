@@ -14,7 +14,7 @@
 //
 // Everything a round marks against comes from utils/elements.js.
 
-import { FIRST_20, elementBySymbol, querySymbols, queryWords, symbolWay, diagnoseSymbol } from './elements.js';
+import { FIRST_20, elementBySymbol, querySymbols, queryWords, symbolWay, diagnoseSymbol, leFr, duFr, deFr, frWithEn } from './elements.js';
 import { rngFrom } from './labBench.js';
 
 export const HUNT_MODES = ['find', 'symbol', 'name', 'place', 'metal', 'mass'];
@@ -36,23 +36,23 @@ function lookalikes(el, rng) {
 
 function roundFind(rng) {
   const el = pick(rng, FIRST_20);
-  return { mode: 'find', kind: 'tap', ask: { en: `Tap ${el.en}.`, vn: `Chạm vào ${el.vn} (${el.en}).` }, targets: [el.sym], hideNames: true,
-    explain: { en: `${cap(el.en)} is ${el.sym}: period ${el.period}${el.group ? `, group ${el.group}` : ''}. Its symbol is ${symbolWay(el).en}.`, vn: `${el.vn} là ${el.sym}: chu kì ${el.period}${el.group ? `, nhóm ${el.group}` : ''}. Kí hiệu của nó là ${symbolWay(el).vn}.` } };
+  return { mode: 'find', kind: 'tap', ask: { en: `Tap ${el.en}.`, vn: `Chạm vào ${el.vn} (${el.en}).`, fr: `Touche ${leFr(frWithEn(el))}.` }, targets: [el.sym], hideNames: true,
+    explain: { en: `${cap(el.en)} is ${el.sym}: period ${el.period}${el.group ? `, group ${el.group}` : ''}. Its symbol is ${symbolWay(el).en}.`, vn: `${el.vn} là ${el.sym}: chu kì ${el.period}${el.group ? `, nhóm ${el.group}` : ''}. Kí hiệu của nó là ${symbolWay(el).vn}.`, fr: `${cap(leFr(el.fr))}, c'est ${el.sym} : période ${el.period}${el.group ? `, groupe ${el.group}` : ''}. Son symbole est ${symbolWay(el).fr}.` } };
 }
 
 function roundSymbol(rng) {
   // Latin symbols and two-letter symbols are where the marks go; weight them.
   const pool = rng() < 0.4 ? FIRST_20.filter((e) => e.latin || e.sym.length === 2) : FIRST_20;
   const el = pick(rng, pool);
-  return { mode: 'symbol', kind: 'type', ask: { en: `Type the symbol for ${el.en}.`, vn: `Nhập kí hiệu của ${el.vn} (${el.en}).` }, answer: el.sym, element: el.sym,
-    explain: { en: `${cap(el.en)} is ${el.sym} — ${symbolWay(el).en}. Capital first, small second.`, vn: `${el.vn} là ${el.sym} — ${symbolWay(el).vn}. Chữ đầu viết hoa, chữ sau viết thường.` } };
+  return { mode: 'symbol', kind: 'type', ask: { en: `Type the symbol for ${el.en}.`, vn: `Nhập kí hiệu của ${el.vn} (${el.en}).`, fr: `Écris le symbole ${duFr(frWithEn(el))}.` }, answer: el.sym, element: el.sym,
+    explain: { en: `${cap(el.en)} is ${el.sym} — ${symbolWay(el).en}. Capital first, small second.`, vn: `${el.vn} là ${el.sym} — ${symbolWay(el).vn}. Chữ đầu viết hoa, chữ sau viết thường.`, fr: `Le symbole ${duFr(el.fr)} est ${el.sym} — ${symbolWay(el).fr}. Majuscule d'abord, minuscule ensuite.` } };
 }
 
 function roundName(rng) {
   const el = pick(rng, FIRST_20);
-  const options = shuffle(rng, [el, ...lookalikes(el, rng)]).map((e) => ({ val: e.sym, en: e.en, vn: e.vn }));
-  return { mode: 'name', kind: 'choice', ask: { en: `Which element has the symbol ${el.sym}?`, vn: `Nguyên tố nào có kí hiệu ${el.sym}?` }, options, answer: el.sym,
-    explain: { en: `${el.sym} is ${el.en} — ${symbolWay(el).en}.`, vn: `${el.sym} là ${el.vn} (${el.en}) — ${symbolWay(el).vn}.` } };
+  const options = shuffle(rng, [el, ...lookalikes(el, rng)]).map((e) => ({ val: e.sym, en: e.en, vn: e.vn, fr: e.fr }));
+  return { mode: 'name', kind: 'choice', ask: { en: `Which element has the symbol ${el.sym}?`, vn: `Nguyên tố nào có kí hiệu ${el.sym}?`, fr: `Quel élément a pour symbole ${el.sym} ?` }, options, answer: el.sym,
+    explain: { en: `${el.sym} is ${el.en} — ${symbolWay(el).en}.`, vn: `${el.sym} là ${el.vn} (${el.en}) — ${symbolWay(el).vn}.`, fr: `${el.sym}, c'est ${leFr(el.fr)} — ${symbolWay(el).fr}.` } };
 }
 
 function roundPlace(rng) {
@@ -66,25 +66,25 @@ function roundPlace(rng) {
   const targets = querySymbols(q);
   if (!targets.length) return roundPlace(rng);
   const explain = q.group != null && q.period != null
-    ? { en: `Period ${q.period} is row ${q.period}; group ${q.group} is column ${q.group}. They cross at ${targets[0]}.`, vn: `Chu kì ${q.period} là hàng ${q.period}; nhóm ${q.group} là cột ${q.group}. Chúng giao nhau ở ${targets[0]}.` }
-    : q.group != null || q.sameGroupAs ? { en: `A group is a COLUMN — go down: ${targets.join(', ')}.`, vn: `Nhóm là một CỘT — đi xuống: ${targets.join(', ')}.` }
-      : { en: `A period is a ROW — go across: ${targets.join(', ')}.`, vn: `Chu kì là một HÀNG — đi ngang: ${targets.join(', ')}.` };
+    ? { en: `Period ${q.period} is row ${q.period}; group ${q.group} is column ${q.group}. They cross at ${targets[0]}.`, vn: `Chu kì ${q.period} là hàng ${q.period}; nhóm ${q.group} là cột ${q.group}. Chúng giao nhau ở ${targets[0]}.`, fr: `La période ${q.period} est la ligne ${q.period} ; le groupe ${q.group} est la colonne ${q.group}. Elles se croisent en ${targets[0]}.` }
+    : q.group != null || q.sameGroupAs ? { en: `A group is a COLUMN — go down: ${targets.join(', ')}.`, vn: `Nhóm là một CỘT — đi xuống: ${targets.join(', ')}.`, fr: `Un groupe est une COLONNE — descends : ${targets.join(', ')}.` }
+      : { en: `A period is a ROW — go across: ${targets.join(', ')}.`, vn: `Chu kì là một HÀNG — đi ngang: ${targets.join(', ')}.`, fr: `Une période est une LIGNE — lis de gauche à droite : ${targets.join(', ')}.` };
   return { mode: 'place', kind: targets.length === 1 && q.period != null && q.group != null ? 'tap' : 'multi', ask: queryWords(q), targets, query: q, explain };
 }
 
 function roundMetal(rng) {
   if (rng() < 0.4) {
     const el = pick(rng, FIRST_20.filter((e) => e.sym !== 'H'));
-    return { mode: 'metal', kind: 'choice', ask: { en: `Is ${el.en} (${el.sym}) a metal or a non-metal?`, vn: `${el.vn} (${el.sym}) là kim loại hay phi kim?` },
-      options: [{ val: 'metal', en: 'Metal', vn: 'Kim loại' }, { val: 'non', en: 'Non-metal', vn: 'Phi kim' }], answer: el.metal ? 'metal' : 'non', focus: el.sym, colourHidden: true,
-      explain: { en: `Metals are on the left of the table and non-metals on the right; the line between them is a staircase, so boron and silicon are non-metals but aluminium is a metal. ${cap(el.en)} is a ${el.metal ? 'metal' : 'non-metal'}.`, vn: `Kim loại ở bên trái bảng, phi kim ở bên phải; đường ranh giới là một bậc thang, nên bo và silic là phi kim nhưng nhôm là kim loại. ${el.vn} là ${el.metal ? 'kim loại' : 'phi kim'}.` } };
+    return { mode: 'metal', kind: 'choice', ask: { en: `Is ${el.en} (${el.sym}) a metal or a non-metal?`, vn: `${el.vn} (${el.sym}) là kim loại hay phi kim?`, fr: `${cap(leFr(el.fr))} (${el.sym}) est-il un métal ou un non-métal ?` },
+      options: [{ val: 'metal', en: 'Metal', vn: 'Kim loại', fr: 'Métal' }, { val: 'non', en: 'Non-metal', vn: 'Phi kim', fr: 'Non-métal' }], answer: el.metal ? 'metal' : 'non', focus: el.sym, colourHidden: true,
+      explain: { en: `Metals are on the left of the table and non-metals on the right; the line between them is a staircase, so boron and silicon are non-metals but aluminium is a metal. ${cap(el.en)} is a ${el.metal ? 'metal' : 'non-metal'}.`, vn: `Kim loại ở bên trái bảng, phi kim ở bên phải; đường ranh giới là một bậc thang, nên bo và silic là phi kim nhưng nhôm là kim loại. ${el.vn} là ${el.metal ? 'kim loại' : 'phi kim'}.`, fr: `Les métaux sont à gauche du tableau et les non-métaux à droite ; la limite entre eux est un escalier, donc le bore et le silicium sont des non-métaux mais l'aluminium est un métal. ${cap(leFr(el.fr))} est un ${el.metal ? 'métal' : 'non-métal'}.` } };
   }
   const q = { period: pick(rng, [2, 3, 4]), metal: rng() < 0.6 };
   const targets = querySymbols(q);
   // period 4 of the first 20 has no non-metals: nothing to tap, so draw again
   if (!targets.length) return roundMetal(rng);
   return { mode: 'metal', kind: 'multi', ask: queryWords(q), targets, query: q, colourHidden: true,
-    explain: { en: `Metals are on the left, non-metals on the right. In period ${q.period} the ${q.metal ? 'metals' : 'non-metals'} are ${targets.join(', ')}.`, vn: `Kim loại ở bên trái, phi kim ở bên phải. Trong chu kì ${q.period}, các ${q.metal ? 'kim loại' : 'phi kim'} là ${targets.join(', ')}.` } };
+    explain: { en: `Metals are on the left, non-metals on the right. In period ${q.period} the ${q.metal ? 'metals' : 'non-metals'} are ${targets.join(', ')}.`, vn: `Kim loại ở bên trái, phi kim ở bên phải. Trong chu kì ${q.period}, các ${q.metal ? 'kim loại' : 'phi kim'} là ${targets.join(', ')}.`, fr: `Les métaux sont à gauche, les non-métaux à droite. Dans la période ${q.period}, les ${q.metal ? 'métaux' : 'non-métaux'} sont ${targets.join(', ')}.` } };
 }
 
 function roundMass(rng) {
@@ -93,9 +93,9 @@ function roundMass(rng) {
   let a; let b;
   do { [a, b] = shuffle(rng, FIRST_20).slice(0, 2); } while ((a.sym === 'Ar' && b.sym === 'K') || (a.sym === 'K' && b.sym === 'Ar') || Math.abs(a.z - b.z) > 9);
   const heavy = a.z > b.z ? a : b;
-  return { mode: 'mass', kind: 'choice', ask: { en: `Which has the heavier atoms: ${a.en} or ${b.en}?`, vn: `Nguyên tử nào nặng hơn: ${a.vn} hay ${b.vn}?` },
-    options: [a, b].map((e) => ({ val: e.sym, en: `${cap(e.en)} (${e.sym})`, vn: `${e.vn} (${e.sym})` })), answer: heavy.sym,
-    explain: { en: `Read the table like a page — left to right, then the next row. The atoms get heavier as you go, so ${heavy.en} is heavier.`, vn: `Đọc bảng như đọc một trang sách — trái sang phải, rồi hàng tiếp theo. Nguyên tử nặng dần, nên ${heavy.vn} nặng hơn.` } };
+  return { mode: 'mass', kind: 'choice', ask: { en: `Which has the heavier atoms: ${a.en} or ${b.en}?`, vn: `Nguyên tử nào nặng hơn: ${a.vn} hay ${b.vn}?`, fr: `Lequel a les atomes les plus lourds : ${leFr(a.fr)} ou ${leFr(b.fr)} ?` },
+    options: [a, b].map((e) => ({ val: e.sym, en: `${cap(e.en)} (${e.sym})`, vn: `${e.vn} (${e.sym})`, fr: `${cap(e.fr)} (${e.sym})` })), answer: heavy.sym,
+    explain: { en: `Read the table like a page — left to right, then the next row. The atoms get heavier as you go, so ${heavy.en} is heavier.`, vn: `Đọc bảng như đọc một trang sách — trái sang phải, rồi hàng tiếp theo. Nguyên tử nặng dần, nên ${heavy.vn} nặng hơn.`, fr: `Lis le tableau comme une page — de gauche à droite, puis la ligne suivante. Les atomes sont de plus en plus lourds, donc les atomes ${deFr(heavy.fr)} sont plus lourds.` } };
 }
 
 const MAKERS = { find: roundFind, symbol: roundSymbol, name: roundName, place: roundPlace, metal: roundMetal, mass: roundMass };
@@ -142,7 +142,9 @@ export function checkHuntConfig(cfg) {
         const r = makeHuntRound(m, rng);
         const right = r.kind === 'type' ? r.answer : r.kind === 'multi' ? r.targets : r.kind === 'tap' ? r.targets[0] : r.answer;
         if (!markHunt(r, right).ok) out.push(`elementHunt mode "${m}" does not accept its own answer`);
-        if (!r.ask?.en || !r.ask?.vn || !r.explain?.en || !r.explain?.vn) out.push(`elementHunt mode "${m}" drew a round without bilingual text`);
+        // the engine writes all three languages, whatever the track offers
+        if (['en', 'vn', 'fr'].some((l) => !r.ask?.[l] || !r.explain?.[l])) out.push(`elementHunt mode "${m}" drew a round without its text in every language`);
+        if (r.kind === 'choice' && r.options.some((o) => !o.fr)) out.push(`elementHunt mode "${m}" drew a choice without its text in every language`);
         if (r.kind === 'choice' && !r.options.some((o) => o.val === r.answer)) out.push(`elementHunt mode "${m}" drew a choice without its answer`);
         if ((r.kind === 'tap' || r.kind === 'multi') && !r.targets?.length) out.push(`elementHunt mode "${m}" drew a round with nothing to tap`);
       }

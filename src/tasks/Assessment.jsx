@@ -8,6 +8,8 @@ import {
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 
 // --- MATH & TEXT RENDERING UTILITIES ---
 
@@ -455,7 +457,11 @@ export default function Assessment(props) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(extractedTimeLimit);
-  const [lang, setLang] = useState('en');
+  // EN/VN, or EN/VN/FR on Year 7 (`langs` from the host); an English-only
+  // track (`bilingual: false` in the task registry) gets no toggle.
+  const { lang, toggleLang } = useLang({ langs: props.langs, bilingual: props.bilingual });
+  // A content twin in the current language — an empty or missing one shows English.
+  const twin = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
   
   const [scoreData, setScoreData] = useState(null);
   const [expandedReviewId, setExpandedReviewId] = useState(null);
@@ -600,9 +606,10 @@ export default function Assessment(props) {
   // everywhere else in the app the same X now saves.
   const quitTest = () => {
     if (phase === 'testing') {
-      const ok = window.confirm(lang === 'vn'
-        ? 'Thoát bài đánh giá? Lần làm này sẽ không được lưu.'
-        : 'Leave the quiz? This attempt will not be saved.');
+      const ok = window.confirm(tr(lang,
+        'Leave the quiz? This attempt will not be saved.',
+        'Thoát bài đánh giá? Lần làm này sẽ không được lưu.',
+        'Quitter le quiz ? Cette tentative ne sera pas enregistrée.'));
       if (!ok) return;
     }
     if (typeof onQuit === 'function') onQuit();
@@ -660,15 +667,13 @@ export default function Assessment(props) {
       <TopBar 
         onQuit={phase === 'review' ? finishAndExit : quitTest}
         quitLabel={phase === 'testing' ? 'Exit' : 'Save & Quit'}
-        modeTitle={phase === 'review' ? (lang === 'vn' ? 'Kết Quả' : 'Results') : (lang === 'vn' ? 'Bài Đánh Giá' : 'Assessment Module')}
+        modeTitle={phase === 'review' ? tr(lang, 'Results', 'Kết Quả', 'Résultats') : tr(lang, 'Assessment Module', 'Bài Đánh Giá', 'Évaluation')}
         current={phase === 'review' ? scoreData?.correctCount : (phase === 'testing' ? currentIdx + 1 : undefined)}
         total={phase === 'setup' ? undefined : totalQuestions}
         progress={phase === 'testing' ? ((currentIdx) / totalQuestions) * 100 : (phase === 'review' ? 100 : undefined)}
         timeLeft={phase === 'testing' ? timeLeft : undefined}
         lang={lang}
-        // An English-only track (`bilingual: false` in the task registry) has
-        // no Vietnamese to switch to, so it gets no toggle.
-        onLangToggle={props.bilingual === false ? undefined : () => setLang(prev => prev === 'en' ? 'vn' : 'en')}
+        onLangToggle={toggleLang}
       />
 
       <div className="flex-1 overflow-hidden flex flex-col relative min-h-0 w-full">
@@ -680,13 +685,14 @@ export default function Assessment(props) {
             </div>
             
             <h1 className="text-4xl sm:text-5xl font-black mb-4 tracking-tight drop-shadow-sm text-slate-800 dark:text-white">
-              {lang === 'vn' ? 'Sẵn Sàng Chưa?' : 'Module Ready'}
+              {tr(lang, 'Module Ready', 'Sẵn Sàng Chưa?', 'On commence ?')}
             </h1>
             
             <p className="text-lg sm:text-xl font-bold text-slate-500 dark:text-slate-400 mb-10 max-w-xl leading-relaxed">
-              {lang === 'vn' 
-                ? 'Kiểm tra kiến thức của bạn. Trả lời cẩn thận và xem lại kết quả chi tiết ở cuối bài.' 
-                : 'Test your knowledge on this module. Answer carefully and review your performance at the end.'}
+              {tr(lang,
+                'Test your knowledge on this module. Answer carefully and review your performance at the end.',
+                'Kiểm tra kiến thức của bạn. Trả lời cẩn thận và xem lại kết quả chi tiết ở cuối bài.',
+                'Teste tes connaissances. Réponds avec soin et revois tes résultats en détail à la fin.')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-12 w-full justify-center">
@@ -696,7 +702,7 @@ export default function Assessment(props) {
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">
-                    {lang === 'vn' ? 'Tổng câu hỏi' : 'Total Questions'}
+                    {tr(lang, 'Total Questions', 'Tổng câu hỏi', 'Nombre de questions')}
                   </div>
                   <div className="text-3xl font-black text-slate-700 dark:text-white">{totalQuestions}</div>
                 </div>
@@ -708,7 +714,7 @@ export default function Assessment(props) {
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">
-                    {lang === 'vn' ? 'Thời gian' : 'Time Limit'}
+                    {tr(lang, 'Time Limit', 'Thời gian', 'Temps limite')}
                   </div>
                   <div className="text-3xl font-black font-mono text-slate-700 dark:text-white">
                     {extractedTimeLimit ? formatTime(extractedTimeLimit) : 'None'}
@@ -722,14 +728,14 @@ export default function Assessment(props) {
                   onClick={onQuit}
                   className="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-2xl font-black uppercase tracking-widest text-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all border-b-[6px] active:border-b-[2px] active:translate-y-[4px] shadow-sm"
               >
-                {lang === 'vn' ? 'Thoát' : 'Later'}
+                {tr(lang, 'Later', 'Thoát', 'Plus tard')}
               </button>
               <button 
                   onClick={() => setPhase('testing')}
                   className="px-12 py-4 bg-[#58CC02] border-[#46A802] text-white rounded-2xl font-black uppercase tracking-widest text-lg hover:bg-[#46A802] transition-all border-b-[6px] active:border-b-0 active:translate-y-[6px] shadow-sm flex items-center justify-center"
               >
                 <PlayCircle className="w-7 h-7 mr-3" />
-                {lang === 'vn' ? 'Bắt Đầu' : 'Start Assessment'}
+                {tr(lang, 'Start Assessment', 'Bắt Đầu', 'Commencer')}
               </button>
             </div>
           </div>
@@ -743,7 +749,7 @@ export default function Assessment(props) {
                   {hasPassage && (
                     <div className={`w-full max-w-2xl mx-auto bg-white dark:bg-slate-800 p-6 sm:p-8 lg:p-10 rounded-3xl shadow-sm border-2 border-slate-200 dark:border-slate-700 mb-6 ${hasGraphic ? 'shrink-0' : ''}`}>
                       <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight mb-6 leading-tight">
-                        {lang === 'vn' && currentPassage.vnTitle ? currentPassage.vnTitle : currentPassage.title}
+                        {twin(currentPassage.title, currentPassage.vnTitle, currentPassage.frTitle)}
                       </h2>
                       {currentPassage.meta && (
                         <div className="inline-block px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-xs mb-6">
@@ -751,7 +757,7 @@ export default function Assessment(props) {
                         </div>
                       )}
                       <div className="space-y-4 text-slate-700 dark:text-slate-300 text-lg leading-relaxed font-medium">
-                        {passageParagraphs(lang === 'vn' && currentPassage.vnText ? currentPassage.vnText : currentPassage.text).map((p, i) => (
+                        {passageParagraphs(twin(currentPassage.text, currentPassage.vnText, currentPassage.frText)).map((p, i) => (
                           <p key={i}>{renderPassageWithGlossary(p)}</p>
                         ))}
                       </div>
@@ -795,7 +801,7 @@ export default function Assessment(props) {
                 disabled={currentIdx === 0}
                 className="px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 font-black text-slate-400 uppercase tracking-widest text-base hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
               >
-                {lang === 'vn' ? 'Quay Lại' : 'Previous'}
+                {tr(lang, 'Previous', 'Quay Lại', 'Précédent')}
               </button>
 
               <button 
@@ -809,7 +815,7 @@ export default function Assessment(props) {
                 `}
               >
                 <span className="hidden sm:inline">
-                  {currentIdx === totalQuestions - 1 ? (lang === 'vn' ? 'Nộp Bài' : 'Submit') : (lang === 'vn' ? 'Tiếp Theo' : 'Continue')}
+                  {currentIdx === totalQuestions - 1 ? tr(lang, 'Submit', 'Nộp Bài', 'Valider') : tr(lang, 'Continue', 'Tiếp Theo', 'Continuer')}
                 </span>
                 <span className="sm:hidden">
                   {currentIdx === totalQuestions - 1 ? 'Submit' : 'Next'}
@@ -828,10 +834,10 @@ export default function Assessment(props) {
                   {(scoreData.correctCount / totalQuestions) >= 0.7 ? <Award className="w-12 h-12" strokeWidth={2.5} /> : <RefreshCcw className="w-12 h-12" strokeWidth={2.5} />}
                 </div>
                 <h1 className="text-4xl sm:text-6xl font-black mb-3 tracking-tight drop-shadow-md">
-                  {(scoreData.correctCount / totalQuestions) >= 0.7 ? (lang === 'vn' ? 'Tuyệt Vời!' : 'Outstanding!') : (lang === 'vn' ? 'Cần Cố Gắng' : 'Keep Practicing')}
+                  {(scoreData.correctCount / totalQuestions) >= 0.7 ? tr(lang, 'Outstanding!', 'Tuyệt Vời!', 'Excellent !') : tr(lang, 'Keep Practicing', 'Cần Cố Gắng', 'Encore un effort')}
                 </h1>
                 <div className="inline-flex items-center bg-black/10 px-6 py-2.5 rounded-2xl font-black text-xl sm:text-3xl mt-2 border border-white/20 shadow-sm">
-                  <span className="opacity-90 mr-3">{lang === 'vn' ? 'Điểm:' : 'Score:'}</span>
+                  <span className="opacity-90 mr-3">{tr(lang, 'Score:', 'Điểm:', 'Score :')}</span>
                   <span>{scoreData.correctCount} / {totalQuestions}</span>
                 </div>
               </div>
@@ -848,7 +854,7 @@ export default function Assessment(props) {
                         </div>
                         <div className="flex-1">
                           <div className="font-black text-xs sm:text-sm text-slate-400 uppercase tracking-widest mb-1">
-                            {lang === 'vn' ? 'Câu hỏi' : 'Question'} {i + 1}
+                            {tr(lang, 'Question', 'Câu hỏi', 'Question')} {i + 1}
                           </div>
                           <div className="font-bold text-lg sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed">
                             {parseText(res.title)}
@@ -878,14 +884,14 @@ export default function Assessment(props) {
                             {(res.type === 'dnd' || res.type === 'order') && <DndQuestion question={res} value={res.userAns} isReviewing={true} />}
                           </div>
 
-                          {((lang === 'vn' && res.expVn) || res.expEn) && (
+                          {twin(res.expEn, res.expVn, res.expFr) && (
                             <div className="max-w-3xl mx-auto bg-[#1CB0F6]/10 border-2 border-[#1CB0F6]/30 rounded-3xl p-6 sm:p-8 text-[#1899D6] dark:text-[#38bdf8] shadow-sm">
                               <div className="flex items-center font-black uppercase tracking-widest text-sm mb-4">
                                 <BookOpen className="w-6 h-6 mr-3" strokeWidth={3} />
-                                {lang === 'vn' ? 'Giải Thích' : 'Explanation'}
+                                {tr(lang, 'Explanation', 'Giải Thích', 'Explication')}
                               </div>
                               <div className="font-bold text-lg sm:text-xl leading-relaxed text-slate-800 dark:text-slate-200">
-                                {parseText((lang === 'vn' && res.expVn) ? res.expVn : res.expEn)}
+                                {parseText(twin(res.expEn, res.expVn, res.expFr))}
                               </div>
                             </div>
                           )}
@@ -901,7 +907,7 @@ export default function Assessment(props) {
                 onClick={finishAndExit}
                 className="w-full sm:w-auto px-12 py-5 bg-[#1CB0F6] border-[#1899D6] text-white rounded-2xl font-black uppercase tracking-widest text-lg sm:text-xl hover:bg-[#159BD9] transition-all border-b-[6px] active:border-b-0 active:translate-y-[6px] shadow-sm flex items-center justify-center"
               >
-                {lang === 'vn' ? 'Hoàn Thành' : 'Finish & Continue'} <ArrowRight className="w-7 h-7 ml-3" strokeWidth={3} />
+                {tr(lang, 'Finish & Continue', 'Hoàn Thành', 'Terminer')} <ArrowRight className="w-7 h-7 ml-3" strokeWidth={3} />
               </button>
             </div>
           </div>
@@ -918,7 +924,7 @@ export default function Assessment(props) {
               </button>
             </div>
             <p className="text-lg font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
-              {lang === 'vn' && activeGlossaryTerm.vnDef ? activeGlossaryTerm.vnDef : activeGlossaryTerm.def}
+              {twin(activeGlossaryTerm.def, activeGlossaryTerm.vnDef, activeGlossaryTerm.frDef)}
             </p>
           </div>
         </div>

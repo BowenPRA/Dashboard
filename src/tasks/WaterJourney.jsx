@@ -7,6 +7,7 @@ import {
   makeJourneySession, markRound, cycleSvg, arrowsOf, processName, stateAnswerOf,
   MODES, ARROW, ARROWS, PLACES, PROCESS, EVERYDAY_BY_ID, STATE_OPTIONS,
 } from '../utils/waterCycle';
+import useLang from '../hooks/useLang';
 
 /**
  * Water Journey — Science 2.4's generative task. Rounds are drawn fresh from a
@@ -63,10 +64,26 @@ const T = {
     state: 'Trạng thái của nước', heat: 'Nhiệt năng được…', diagram: 'Vòng tuần hoàn của nước',
     heatShort: { in: 'nhận vào', out: 'tỏa ra', none: 'không cái nào' },
   },
+  fr: {
+    title: "Le voyage de l'eau", check: 'Vérifier', next: 'Suivant', results: 'Voir les résultats', finish: 'Terminer', again: 'Nouvelles questions',
+    empty: "Cette unité n'a pas de mode Voyage de l'eau.", back: 'Retour', correct: 'Correct', wrong: 'Pas tout à fait', done: 'Voyage terminé', right: 'justes',
+    ask: {
+      arrow: 'Quel processus montre la flèche orange ?',
+      tap: (p) => `Touche la flèche : ${p}.`,
+      journey: "Remets le voyage dans l'ordre.",
+      state: (p) => `${p[0].toUpperCase()}${p.slice(1)} : que se passe-t-il pour l'eau ?`,
+      everyday: 'Quel processus est-ce ?',
+    },
+    modes: { arrow: 'Nommer la flèche', tap: 'Trouver la flèche', journey: 'Suivre une particule', state: "Ce que fait l'eau", everyday: "L'eau au quotidien" },
+    tapRing: 'Touche un rond sur le schéma, puis clique sur Vérifier.', picked: 'Ta flèche', none: 'pas encore', arrowN: 'Flèche',
+    start: 'Départ', end: 'Arrivée', tapSteps: "Touche les processus dans l'ordre. Touche une étape pour l'enlever.",
+    state: "L'état de l'eau", heat: "L'énergie thermique est…", diagram: "Le cycle de l'eau",
+    heatShort: { in: 'absorbée', out: 'libérée', none: "ni l'un ni l'autre" },
+  },
 };
 
 const EMPTY = { picked: null, choice: null, order: [], state: null, heat: null };
-const say = (o, L) => (o ? (L === 'vn' && o.vn ? o.vn : o.en) : '');
+const say = (o, L) => (o ? o[L] || o.en : '');
 
 const askOf = (round, t, L) => {
   if (round.mode === 'tap' || round.mode === 'state') return t.ask[round.mode](processName(round.process, L));
@@ -116,7 +133,7 @@ function Stage({ round, svg, draft, setPicked, checked, L, t }) {
       {item && (
         <div className="shrink-0 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 shadow-sm px-4 py-2 sm:py-3 text-center">
           <div className="font-black text-lg sm:text-xl lg:text-2xl text-slate-800 dark:text-slate-100 leading-snug">{item.en}</div>
-          {L === 'vn' && <div className="font-bold text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-0.5">({item.vn})</div>}
+          {L !== 'en' && item[L] && <div className="font-bold text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-0.5">({item[L]})</div>}
         </div>
       )}
       <div className="relative w-full shrink min-h-[8rem] aspect-[800/470] lg:aspect-auto lg:flex-1 lg:min-h-0">
@@ -239,19 +256,19 @@ function Panel({ round, draft, set, checked, result, L, t, check, answerNow }) {
 
 const summaryLabel = (round, t, L) => {
   const detail = round.mode === 'journey' ? `${say(PLACES[round.from], L)} → ${say(PLACES[round.to], L)}`
-    : round.mode === 'everyday' ? say({ en: EVERYDAY_BY_ID[round.item].en, vn: EVERYDAY_BY_ID[round.item].vn }, L)
+    : round.mode === 'everyday' ? say(EVERYDAY_BY_ID[round.item], L)
       : say(PROCESS[round.process], L);
-  return `${t.modes[round.mode]}: ${detail}`;
+  return `${t.modes[round.mode]}${L === 'fr' ? ' : ' : ': '}${detail}`;
 };
 
-export default function WaterJourney({ pool, onComplete, onQuit, bilingual = true }) {
+export default function WaterJourney({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(
     () => ((config.modes || []).some((m) => MODES.includes(m)) ? makeJourneySession(config, seed) : []),
     [config, seed],
   );
-  const [lang, setLang] = useState('en');
+  const { lang: L, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [draft, setDraft] = useState(EMPTY);
   const [result, setResult] = useState(null);   // this round's mark
@@ -260,8 +277,7 @@ export default function WaterJourney({ pool, onComplete, onQuit, bilingual = tru
   const [banked, setBanked] = useState(null);   // the best finished run before "New rounds"
   const round = session[idx];
 
-  const L = bilingual ? lang : 'en';
-  const t = T[L];
+  const t = T[L] || T.en;
   const svg = useMemo(() => (round ? figureOf(round, draft, result, L) : ''), [round, draft, result, L]);
 
   const runOf = (res) => {
@@ -279,9 +295,9 @@ export default function WaterJourney({ pool, onComplete, onQuit, bilingual = tru
   if (!session.length) return <EmptyScreen text={t.empty} back={t.back} onQuit={onQuit} />;
 
   const topBar = (
-    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn }, L) || t.title}
+    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn, fr: config.titleFr }, L) || t.title}
       current={ended ? session.length : idx + 1} total={session.length}
-      lang={bilingual ? lang : undefined} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      lang={L} onLangToggle={toggleLang} />
   );
 
   const reset = () => { setDraft(EMPTY); setResult(null); };

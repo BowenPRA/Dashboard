@@ -4,6 +4,7 @@ import LinePlane from '../math/LinePlane.jsx';
 import { LINE_COLORS, latticeFromEvent } from '../math/linePlaneGeom.js';
 import { modelOf, clickNeeds, frPt, numPt, onLine, samePt, ptText, texToText } from '../../utils/lineLab';
 import { stepText } from '../../utils/lineLabText';
+import { field } from '../../utils/lang';
 
 /**
  * The `line` activity on a Notes slide — one click step of the Line Lab, done
@@ -26,6 +27,7 @@ const UNIT = 30;
 const T = {
   en: { check: 'Check', correct: 'Correct', notQuite: 'Not quite', never: 'They never meet', aim: 'Tap the grid to place a point' },
   vn: { check: 'Kiểm tra', correct: 'Chính xác', notQuite: 'Chưa đúng', never: 'Không bao giờ gặp nhau', aim: 'Chạm vào lưới để đặt điểm' },
+  fr: { check: 'Vérifier', correct: 'Correct !', notQuite: 'Pas tout à fait', never: 'Elles ne se croisent jamais', aim: 'Touche la grille pour placer un point' },
 };
 
 const btn = 'px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-xs border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
@@ -179,7 +181,7 @@ export default function LineActivity({ activity, lang, result, onResult, parseTe
             {result.correct ? t.correct : t.notQuite}
           </div>
           <div className={`font-bold leading-relaxed text-sm lg:text-base ${result.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
-            {parseText(lang === 'vn' ? (activity.explainVn ?? activity.explain) : activity.explain)}
+            {parseText(field(activity, 'explain', lang))}
           </div>
         </div>
       )}

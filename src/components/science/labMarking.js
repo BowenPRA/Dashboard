@@ -7,19 +7,23 @@
 //
 // Every mark* takes the student's raw inputs (typed strings, a tray of counts,
 // a list of tapped chips, a button's value) and returns { ok, … }. Every
-// explain* returns { en, vn } text derived from the round itself.
+// explain* returns { en, vn, fr } text derived from the round itself.
 
 import { SUBSTANCES, countsOf, diagnoseFormula, formulaPretty, elementsFromName, keyOfElements, isCompound } from '../../utils/particles.js';
-import { elementBySymbol } from '../../utils/elements.js';
+import { elementBySymbol, leFr, duFr, deFr, auFr } from '../../utils/elements.js';
 
-const E = (sym) => elementBySymbol(sym) || { sym, en: sym, vn: sym };
+const E = (sym) => elementBySymbol(sym) || { sym, en: sym, vn: sym, fr: sym };
 const F = (formula) => formulaPretty(formula);
 const listEn = (a) => (a.length <= 1 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
 const listVn = (a) => (a.length <= 1 ? a.join('') : `${a.slice(0, -1).join(', ')} và ${a[a.length - 1]}`);
+const listFr = (a) => (a.length <= 1 ? a.join('') : `${a.slice(0, -1).join(', ')} et ${a[a.length - 1]}`);
 const elEn = (sym) => `${E(sym).en} (${sym})`;
 const elVn = (sym) => `${E(sym).vn} (${sym})`;
+const elFr = (sym) => `${E(sym).fr} (${sym})`;
 const subEn = (f) => `${SUBSTANCES[f]?.en || f} (${F(f)})`;
 const subVn = (f) => `${SUBSTANCES[f]?.vn || f} (${F(f)})`;
+const subFr = (f) => `${SUBSTANCES[f]?.fr || f} (${F(f)})`;
+const plural = (n, word) => `${word}${n === 1 ? '' : 's'}`;
 
 /** Fill and stroke of an atom in the drawings (the util's own fallback for an unstyled element). */
 export const atomStyleOf = (sym) => {
@@ -99,6 +103,7 @@ export function explainCount(round) {
   const rule = {
     en: `The small number counts the symbol just before it. No number means one.${brackets ? ' A number after a bracket multiplies everything inside the bracket.' : ''}`,
     vn: `Số nhỏ đếm kí hiệu đứng ngay trước nó. Không có số nghĩa là một.${brackets ? ' Số đứng sau dấu ngoặc nhân với mọi thứ bên trong ngoặc.' : ''}`,
+    fr: `Le petit nombre compte le symbole juste avant lui. Pas de nombre veut dire un.${brackets ? ' Un nombre après une parenthèse multiplie tout ce qui est dans la parenthèse.' : ''}`,
   };
   const reads = readFormula(round.formula);
   const term = (c, noNumber) => {
@@ -112,6 +117,7 @@ export function explainCount(round) {
   const working = {
     en: `${round.counts.map((c) => term(c, '(no number)')).join(' · ')}. So ${F(round.formula)} has ${round.elements} element${round.elements === 1 ? '' : 's'} and ${sum} atoms.`,
     vn: `${round.counts.map((c) => term(c, '(không có số)')).join(' · ')}. Vậy ${F(round.formula)} có ${round.elements} nguyên tố và ${sum} nguyên tử.`,
+    fr: `${round.counts.map((c) => term(c, '(pas de nombre)')).join(' · ')}. Donc ${F(round.formula)} a ${round.elements} ${plural(round.elements, 'élément')} et ${sum} atomes.`,
   };
   return { rule, working };
 }
@@ -126,9 +132,9 @@ export function markFormula(round, typed) {
   if (!d.ok || !d.order) return d;
   const t = normaliseTyped(typed);
   if (t.replace(/([A-Za-z)])1(?!\d)/g, '$1') === round.formula) {
-    return { ok: true, note: 'one', en: `Right — but a 1 is never written: ${F(round.formula)}.`, vn: `Đúng — nhưng số 1 không bao giờ được viết: ${F(round.formula)}.` };
+    return { ok: true, note: 'one', en: `Right — but a 1 is never written: ${F(round.formula)}.`, vn: `Đúng — nhưng số 1 không bao giờ được viết: ${F(round.formula)}.`, fr: `Correct — mais on n'écrit jamais le 1 : ${F(round.formula)}.` };
   }
-  return { ok: true, note: 'order', en: `Right — it is usually written ${F(round.formula)}.`, vn: `Đúng — công thức này thường được viết là ${F(round.formula)}.` };
+  return { ok: true, note: 'order', en: `Right — it is usually written ${F(round.formula)}.`, vn: `Đúng — công thức này thường được viết là ${F(round.formula)}.`, fr: `Correct — on l'écrit en général ${F(round.formula)}.` };
 }
 
 export function explainFormula(round) {
@@ -136,22 +142,23 @@ export function explainFormula(round) {
   return {
     en: `Count the atoms of each colour: ${round.counts.map((c) => `${c.n} × ${elEn(c.el)}`).join(', ')}. The small number goes after the symbol, and no number means one: ${F(round.formula)}${name.en ? `, ${name.en}` : ''}.`,
     vn: `Đếm nguyên tử mỗi màu: ${round.counts.map((c) => `${c.n} × ${elVn(c.el)}`).join(', ')}. Số nhỏ đứng sau kí hiệu, không có số nghĩa là một: ${F(round.formula)}${name.vn ? `, ${name.vn}` : ''}.`,
+    fr: `Compte les atomes de chaque couleur : ${round.counts.map((c) => `${c.n} × ${elFr(c.el)}`).join(', ')}. Le petit nombre se place après le symbole, et pas de nombre veut dire un : ${F(round.formula)}${name.fr ? `, ${name.fr}` : ''}.`,
   };
 }
 
 // ------------------------------------------------------------------ build
 
-/** tray: { [el]: n } → { ok, off: [{ el, have, need }], lines: [{ en, vn }] } */
+/** tray: { [el]: n } → { ok, off: [{ el, have, need }], lines: [{ en, vn, fr }] } */
 export function markBuild(round, tray = {}) {
   const want = Object.fromEntries(round.counts.map((c) => [c.el, c.n]));
   const syms = [...new Set([...round.counts.map((c) => c.el), ...(round.palette || []), ...Object.keys(tray)])];
   const off = syms.map((el) => ({ el, have: tray[el] || 0, need: want[el] || 0 })).filter((o) => o.have !== o.need);
   const f = F(round.formula);
   const lines = off.map(({ el, have, need }) => {
-    if (!need) return { en: `${f} has no ${elEn(el)} — take ${have === 1 ? 'it' : 'them'} out.`, vn: `${f} không có ${elVn(el)} — hãy bỏ ra.` };
+    if (!need) return { en: `${f} has no ${elEn(el)} — take ${have === 1 ? 'it' : 'them'} out.`, vn: `${f} không có ${elVn(el)} — hãy bỏ ra.`, fr: `${f} ne contient pas ${deFr(elFr(el))} — enlève-${have === 1 ? 'le' : 'les'}.` };
     const atoms = `atom${need === 1 ? '' : 's'}`;
-    if (have < need) return { en: `${f} needs ${need} ${elEn(el)} ${atoms} — you have ${have}.`, vn: `${f} cần ${need} nguyên tử ${elVn(el)} — bạn đang có ${have}.` };
-    return { en: `${f} needs only ${need} ${elEn(el)} ${atoms} — you have ${have}.`, vn: `${f} chỉ cần ${need} nguyên tử ${elVn(el)} — bạn đang có ${have}.` };
+    if (have < need) return { en: `${f} needs ${need} ${elEn(el)} ${atoms} — you have ${have}.`, vn: `${f} cần ${need} nguyên tử ${elVn(el)} — bạn đang có ${have}.`, fr: `${f} a besoin de ${need} ${plural(need, 'atome')} ${deFr(elFr(el))} — tu en as ${have}.` };
+    return { en: `${f} needs only ${need} ${elEn(el)} ${atoms} — you have ${have}.`, vn: `${f} chỉ cần ${need} nguyên tử ${elVn(el)} — bạn đang có ${have}.`, fr: `${f} n'a besoin que de ${need} ${plural(need, 'atome')} ${deFr(elFr(el))} — tu en as ${have}.` };
   });
   return { ok: !off.length, off, lines };
 }
@@ -161,6 +168,7 @@ export function explainBuild(round) {
   return {
     en: `${F(round.formula)}${name.en ? ` (${name.en})` : ''} is ${listEn(round.counts.map((c) => `${c.n} ${E(c.el).en} atom${c.n === 1 ? '' : 's'}`))} bonded together. The small number counts the atom before it; no number means one.`,
     vn: `${F(round.formula)}${name.vn ? ` (${name.vn})` : ''} gồm ${listVn(round.counts.map((c) => `${c.n} nguyên tử ${E(c.el).vn}`))} liên kết với nhau. Số nhỏ đếm nguyên tử đứng trước nó; không có số nghĩa là một.`,
+    fr: `${F(round.formula)}${name.fr ? ` (${name.fr})` : ''}, c'est ${listFr(round.counts.map((c) => `${c.n} ${plural(c.n, 'atome')} ${deFr(E(c.el).fr)}`))} liés entre eux. Le petit nombre compte l'atome avant lui ; pas de nombre veut dire un.`,
   };
 }
 
@@ -181,25 +189,27 @@ export function explainName(round) {
   const lines = [];
   for (const part of sub.parts || []) {
     if (part === 'mono' || part === 'di') {
-      lines.push({ en: `"${part}-" counts the oxygen atoms (${part === 'di' ? 'two' : 'one'}) — it adds no new element.`, vn: `"${part}-" đếm số nguyên tử oxi (${part === 'di' ? 'hai' : 'một'}) — nó không thêm nguyên tố mới.` });
+      lines.push({ en: `"${part}-" counts the oxygen atoms (${part === 'di' ? 'two' : 'one'}) — it adds no new element.`, vn: `"${part}-" đếm số nguyên tử oxi (${part === 'di' ? 'hai' : 'một'}) — nó không thêm nguyên tố mới.`, fr: `"${part}-" compte les atomes d'oxygène (${part === 'di' ? 'deux' : 'un'}) — il n'ajoute aucun nouvel élément.` });
       continue;
     }
     const els = elementsFromName({ parts: [part] }) || [];
     if (!els.length) continue;
+    // fr, like vn, quotes the English word: the name the student reads is English
     if (part === 'hydroxide') {
-      lines.push({ en: `"hydroxide" = ${elEn('O')} + ${elEn('H')}.`, vn: `"hydroxide" (hiđroxit) = ${elVn('O')} + ${elVn('H')}.` });
+      lines.push({ en: `"hydroxide" = ${elEn('O')} + ${elEn('H')}.`, vn: `"hydroxide" (hiđroxit) = ${elVn('O')} + ${elVn('H')}.`, fr: `"hydroxide" (hydroxyde) = ${elFr('O')} + ${elFr('H')}.` });
     } else if (/ate$/.test(part)) {
       const x = els.find((s) => s !== 'O') || els[0];
-      lines.push({ en: `"-ate": ${part} = ${elEn(x)} + ${elEn('O')}. The ending adds oxygen.`, vn: `"-ate": ${part} = ${elVn(x)} + ${elVn('O')}. Đuôi này thêm oxi.` });
+      lines.push({ en: `"-ate": ${part} = ${elEn(x)} + ${elEn('O')}. The ending adds oxygen.`, vn: `"-ate": ${part} = ${elVn(x)} + ${elVn('O')}. Đuôi này thêm oxi.`, fr: `"-ate" : ${part} = ${elFr(x)} + ${elFr('O')}. Cette terminaison ajoute de l'oxygène.` });
     } else if (/ide$/.test(part)) {
-      lines.push({ en: `"-ide": ${part} is just ${elEn(els[0])}.`, vn: `"-ide": ${part} chỉ là ${elVn(els[0])}.` });
+      lines.push({ en: `"-ide": ${part} is just ${elEn(els[0])}.`, vn: `"-ide": ${part} chỉ là ${elVn(els[0])}.`, fr: `"-ide" : ${part}, c'est juste ${leFr(elFr(els[0]))}.` });
     } else {
-      lines.push({ en: `"${part}" is an element: ${elEn(els[0])}.`, vn: `"${part}" là một nguyên tố: ${elVn(els[0])}.` });
+      lines.push({ en: `"${part}" is an element: ${elEn(els[0])}.`, vn: `"${part}" là một nguyên tố: ${elVn(els[0])}.`, fr: `"${part}" est un élément : ${elFr(els[0])}.` });
     }
   }
   const summary = {
     en: `So ${sub.en || F(round.formula)} contains ${listEn(round.answer.map(elEn))}: ${F(round.formula)}.`,
     vn: `Vậy ${sub.vn || F(round.formula)} gồm ${listVn(round.answer.map(elVn))}: ${F(round.formula)}.`,
+    fr: `Donc ${sub.fr ? leFr(sub.fr) : F(round.formula)} contient ${listFr(round.answer.map((s) => duFr(elFr(s))))} : ${F(round.formula)}.`,
   };
   return { lines, summary };
 }
@@ -217,11 +227,11 @@ export function markPure(round, { choice, count } = {}) {
 
 export const markMagnet = (round, yes) => ({ ok: yes === round.verdict.magnet });
 
-const kindWord = (f) => (isCompound(f) ? { en: 'a compound', vn: 'hợp chất' } : { en: 'an element', vn: 'nguyên tố' });
+const kindWord = (f) => (isCompound(f) ? { en: 'a compound', vn: 'hợp chất', fr: 'un composé' } : { en: 'an element', vn: 'nguyên tố', fr: 'un élément' });
 const MIX = {
-  elements: { en: 'a mixture of elements', vn: 'hỗn hợp các nguyên tố' },
-  compounds: { en: 'a mixture of compounds', vn: 'hỗn hợp các hợp chất' },
-  both: { en: 'a mixture of elements and compounds', vn: 'hỗn hợp gồm cả nguyên tố và hợp chất' },
+  elements: { en: 'a mixture of elements', vn: 'hỗn hợp các nguyên tố', fr: "un mélange d'éléments" },
+  compounds: { en: 'a mixture of compounds', vn: 'hỗn hợp các hợp chất', fr: 'un mélange de composés' },
+  both: { en: 'a mixture of elements and compounds', vn: 'hỗn hợp gồm cả nguyên tố và hợp chất', fr: "un mélange d'éléments et de composés" },
 };
 
 /** Element / compound / mixture, from the verdict. */
@@ -233,6 +243,7 @@ export function explainBox(verdict) {
     return {
       en: `Every particle is ${subEn(f)}, and every atom in it is ${elEn(el)}. One kind of particle, made of one kind of atom: an element.`,
       vn: `Mọi hạt đều là ${subVn(f)}, và mọi nguyên tử trong đó đều là ${elVn(el)}. Một loại hạt, chỉ gồm một loại nguyên tử: một nguyên tố.`,
+      fr: `Toutes les particules sont des particules ${deFr(subFr(f))}, et tous leurs atomes sont des atomes ${deFr(elFr(el))}. Une seule sorte de particule, faite d'une seule sorte d'atome : un élément.`,
     };
   }
   if (verdict.kind === 'compound') {
@@ -241,12 +252,14 @@ export function explainBox(verdict) {
     return {
       en: `Every particle is ${subEn(f)}: ${listEn(els.map(elEn))} atoms bonded together. One kind of particle with different atoms bonded: a compound.`,
       vn: `Mọi hạt đều là ${subVn(f)}: các nguyên tử ${listVn(els.map(elVn))} liên kết với nhau. Một loại hạt gồm các nguyên tử khác nhau liên kết: một hợp chất.`,
+      fr: `Toutes les particules sont des particules ${deFr(subFr(f))} : des atomes ${listFr(els.map((e) => deFr(elFr(e))))} liés entre eux. Une seule sorte de particule, avec des atomes différents liés : un composé.`,
     };
   }
   const mix = MIX[verdict.mixtureOf] || MIX.both;
   return {
     en: `There are ${subs.length} kinds of particle: ${listEn(subs.map((f) => `${SUBSTANCES[f]?.en || f} (${F(f)}, ${kindWord(f).en})`))}. More than one kind of particle: ${mix.en}.`,
     vn: `Có ${subs.length} loại hạt: ${listVn(subs.map((f) => `${SUBSTANCES[f]?.vn || f} (${F(f)}, ${kindWord(f).vn})`))}. Nhiều hơn một loại hạt: ${mix.vn}.`,
+    fr: `Il y a ${subs.length} sortes de particules : ${listFr(subs.map((f) => `${SUBSTANCES[f]?.fr || f} (${F(f)}, ${kindWord(f).fr})`))}. Plus d'une sorte de particule : ${mix.fr}.`,
   };
 }
 
@@ -258,12 +271,14 @@ export function explainPure(verdict) {
     return {
       en: `Only one kind of particle: ${subEn(subs[0])}. One substance, so it is pure — ${k.en}.`,
       vn: `Chỉ có một loại hạt: ${subVn(subs[0])}. Một chất, nên nó tinh khiết — một ${k.vn}.`,
+      fr: `Une seule sorte de particule : ${subFr(subs[0])}. Une seule substance, donc c'est un corps pur — ${k.fr}.`,
     };
   }
   const mix = MIX[verdict.mixtureOf] || MIX.both;
   return {
     en: `${subs.length} different kinds of particle: ${listEn(subs.map(subEn))}. That is ${subs.length} substances mixed together, so it is not pure: ${mix.en}.`,
     vn: `${subs.length} loại hạt khác nhau: ${listVn(subs.map(subVn))}. Đó là ${subs.length} chất trộn lẫn với nhau, nên không tinh khiết: ${mix.vn}.`,
+    fr: `${subs.length} sortes de particules différentes : ${listFr(subs.map(subFr))}. Ce sont ${subs.length} substances mélangées, donc ce n'est pas un corps pur : ${mix.fr}.`,
   };
 }
 
@@ -275,6 +290,7 @@ export function explainMagnet(verdict) {
     return {
       en: `The iron particles (Fe) are free — not bonded to ${listEn(others.map(subEn)) || 'anything'}. A mixture keeps the properties of what is in it, so a magnet pulls the iron out.`,
       vn: `Các hạt sắt (Fe) tự do — không liên kết với ${listVn(others.map(subVn)) || 'chất nào'}. Hỗn hợp giữ nguyên tính chất của các chất trong nó, nên nam châm hút được sắt ra.`,
+      fr: `Les particules de fer (Fe) sont libres — pas liées ${others.length ? `aux particules ${listFr(others.map((f) => deFr(subFr(f))))}` : 'à autre chose'}. Un mélange garde les propriétés de ce qu'il contient, donc un aimant attire le fer et le sépare.`,
     };
   }
   const bonded = subs.find((f) => f !== 'Fe' && countsOf(f).some((c) => c.el === 'Fe'));
@@ -283,10 +299,12 @@ export function explainMagnet(verdict) {
     return {
       en: `Every iron atom is bonded to ${listEn(partners.map(elEn))}: ${subEn(bonded)}, a new substance with new properties. It is not magnetic, so a magnet pulls nothing out.`,
       vn: `Mỗi nguyên tử sắt đều liên kết với ${listVn(partners.map(elVn))}: ${subVn(bonded)}, một chất mới với tính chất mới. Nó không bị nam châm hút, nên nam châm không hút được gì ra.`,
+      fr: `Chaque atome de fer est lié ${listFr(partners.map((p) => auFr(elFr(p))))} : ${subFr(bonded)}, une nouvelle substance avec de nouvelles propriétés. Elle n'est pas magnétique, donc l'aimant n'attire rien.`,
     };
   }
   return {
     en: `There is no iron in this box — only ${listEn(subs.map(subEn))}. A magnet has no iron to pull out.`,
     vn: `Không có sắt trong hộp này — chỉ có ${listVn(subs.map(subVn))}. Nam châm không có sắt để hút ra.`,
+    fr: `Il n'y a pas de fer dans cette boîte — seulement ${listFr(subs.map((f) => duFr(subFr(f))))}. L'aimant n'a aucun fer à attirer.`,
   };
 }

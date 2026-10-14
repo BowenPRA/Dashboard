@@ -137,13 +137,14 @@ export function drillToShortDiv(drill) {
   const levels = {};
   const items = [];
   (drill?.ladder || []).forEach((rung, ri) => {
-    levels[ri + 1] = { en: rung.level, vn: rung.levelVn || rung.level };
+    levels[ri + 1] = { en: rung.level, vn: rung.levelVn || rung.level, fr: rung.levelFr || rung.level };
     (rung.items || []).forEach(([D, d], ii) => {
       items.push({ id: `L${ri}-${D}d${d}-${ii}`, level: ri + 1, dividend: String(D), divisor: d, remainder: true });
     });
   });
   return {
-    title: drill?.title, titleVn: drill?.titleVn, intro: drill?.intro, introVn: drill?.introVn, levels, items,
+    title: drill?.title, titleVn: drill?.titleVn, titleFr: drill?.titleFr,
+    intro: drill?.intro, introVn: drill?.introVn, introFr: drill?.introFr, levels, items,
   };
 }
 
@@ -168,11 +169,13 @@ export function qHint(model, col) {
     return {
       en: `Is ${col.current} as big as ${d}? If ${d} does not go into ${col.current}, the digit on top is 0 — and the whole ${col.current} is carried.`,
       vn: `${col.current} có lớn bằng ${d} không? Nếu ${col.current} không chia được cho ${d}, chữ số ở trên là 0 — và cả ${col.current} được nhớ sang.`,
+      fr: `Est-ce que ${col.current} est aussi grand que ${d} ? Si ${d} ne va pas dans ${col.current}, le chiffre du haut est 0 — et tout le ${col.current} est reporté.`,
     };
   }
   return {
     en: `How many whole ${d}s go into ${col.current}? Count up in ${d}s and stop before you go past ${col.current}.`,
     vn: `${col.current} chứa được bao nhiêu lần ${d} trọn vẹn? Đếm thêm từng ${d} một và dừng lại trước khi vượt quá ${col.current}.`,
+    fr: `En ${col.current}, combien de fois ${d} ? Compte de ${d} en ${d} et arrête-toi avant de dépasser ${col.current}.`,
   };
 }
 
@@ -182,6 +185,7 @@ export function carryHint(model, col) {
   return {
     en: `What is left over? ${col.current} − ${d} × ${col.q} = ? That remainder goes in the small box, up and to the left of the next digit.`,
     vn: `Còn dư bao nhiêu? ${col.current} − ${d} × ${col.q} = ? Số dư đó được viết vào ô nhỏ, ở phía trên bên trái của chữ số tiếp theo.`,
+    fr: `Que reste-t-il ? ${col.current} − ${d} × ${col.q} = ? Ce reste va dans la petite case, en haut à gauche du chiffre suivant.`,
   };
 }
 
@@ -191,6 +195,7 @@ export function remHint(model, col) {
   return {
     en: `What is left over? ${col.current} − ${d} × ${col.q} = ? There is no next digit to carry it onto, so it is the remainder — write it after the r.`,
     vn: `Còn dư bao nhiêu? ${col.current} − ${d} × ${col.q} = ? Không còn chữ số nào để nhớ sang, nên đó là số dư — viết nó sau chữ r.`,
+    fr: `Que reste-t-il ? ${col.current} − ${d} × ${col.q} = ? Il n'y a plus de chiffre où le reporter, donc c'est le reste — écris-le après le r.`,
   };
 }
 
@@ -201,11 +206,13 @@ export function remainderVerdict(model) {
     return {
       en: `Remainder 0, so ${d} divides ${D} exactly — ${d} is a factor of ${D}.`,
       vn: `Số dư bằng 0, nên ${D} chia hết cho ${d} — ${d} là ước của ${D}.`,
+      fr: `Reste 0, donc ${d} divise ${D} exactement — ${d} est un diviseur de ${D}.`,
     };
   }
   return {
     en: `Remainder ${r}, not 0, so ${d} does not divide ${D} exactly — ${d} is not a factor of ${D}.`,
     vn: `Số dư là ${r}, khác 0, nên ${D} không chia hết cho ${d} — ${d} không phải là ước của ${D}.`,
+    fr: `Reste ${r}, pas 0, donc ${d} ne divise pas ${D} exactement — ${d} n'est pas un diviseur de ${D}.`,
   };
 }
 
@@ -215,12 +222,14 @@ export function needZeroHint(model, col) {
     return {
       en: `The remainder is ${col.carryOut}, not 0 — so it is not finished. Add a zero after the point (+0) and carry the ${col.carryOut} onto it.`,
       vn: `Số dư là ${col.carryOut}, chưa phải 0 — nên phép chia chưa xong. Thêm một số 0 sau dấu thập phân (+0) và nhớ ${col.carryOut} sang nó.`,
+      fr: `Le reste est ${col.carryOut}, pas 0 — donc ce n'est pas fini. Ajoute un zéro après le point (+0) et reporte le ${col.carryOut} dessus.`,
     };
   }
   const want = placeName(model.dp);
   return {
     en: `To round to ${want.en} you need one place further — ${model.dp + 1} decimal places. Add a zero after the point (+0) and carry the remainder onto it.`,
     vn: `Để làm tròn đến ${want.vn}, em cần tính thêm một cột — ${model.dp + 1} chữ số thập phân. Thêm một số 0 sau dấu thập phân (+0) và nhớ số dư sang nó.`,
+    fr: `Pour arrondir ${want.frTo}, il te faut un rang de plus — ${model.dp + 1} décimales. Ajoute un zéro après le point (+0) et reporte le reste dessus.`,
   };
 }
 
@@ -230,21 +239,23 @@ export function extraZeroNote(model) {
     return {
       en: 'The remainder is 0, so it has finished. More zeros would only put 0s on the end — the extra ones are taken away.',
       vn: 'Số dư bằng 0, nên phép chia đã xong. Thêm số 0 nữa chỉ tạo ra các số 0 ở cuối — những số 0 thừa được bỏ đi.',
+      fr: "Le reste est 0, donc c'est fini. D'autres zéros ne mettraient que des 0 à la fin — ceux en trop sont retirés.",
     };
   }
   return {
     en: `${model.dp + 1} decimal places is enough: one more than the ${model.dp} you are rounding to. The extra zeros are taken away.`,
     vn: `${model.dp + 1} chữ số thập phân là đủ: nhiều hơn một so với ${model.dp} chữ số em cần làm tròn. Những số 0 thừa được bỏ đi.`,
+    fr: `${model.dp + 1} décimales suffisent : une de plus que pour arrondir ${placeName(model.dp).frTo}. Les zéros en trop sont retirés.`,
   };
 }
 
 /** The question as a sentence. */
 export function questionText(model) {
   const s = `${model.dividendText} ÷ ${model.divisor}`;
-  if (model.remainderMode) return { en: `Work out ${s}. Is there a remainder?`, vn: `Tính ${s}. Có số dư không?` };
-  if (model.dp == null) return { en: `Work out ${s}.`, vn: `Tính ${s}.` };
+  if (model.remainderMode) return { en: `Work out ${s}. Is there a remainder?`, vn: `Tính ${s}. Có số dư không?`, fr: `Calcule ${s}. Y a-t-il un reste ?` };
+  if (model.dp == null) return { en: `Work out ${s}.`, vn: `Tính ${s}.`, fr: `Calcule ${s}.` };
   const want = placeName(model.dp);
-  return { en: `Work out ${s}, correct to ${want.en}.`, vn: `Tính ${s}, chính xác đến ${want.vn}.` };
+  return { en: `Work out ${s}, correct to ${want.en}.`, vn: `Tính ${s}, chính xác đến ${want.vn}.`, fr: `Calcule ${s}, arrondi ${want.frTo}.` };
 }
 
 /** Problems with a unit's `shortDiv.items`, as strings. */

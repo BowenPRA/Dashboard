@@ -41,8 +41,9 @@ Dashboard keys: `COLLECT_TERMS p39 · EXPAND_GRID p40 · FLOW_SOLVE p41 · ALG_P
 
 ## 2. Engine schemas (unit data keys)
 
-Everything learner-facing is bilingual (`…Vn`). Levels are `{ n: { en, vn } }` and an
-item's `level` may only climb through the list.
+Everything learner-facing is bilingual (`…Vn`) and, on Year 7, French too (`…Fr`
+beside each `…Vn`, levels `{ n: { en, vn, fr } }` — [../french.md](../french.md)). The
+examples below show the Vietnamese only. An item's `level` may only climb through the list.
 
 ### 2.1 Collect It — `collectTerms` (2.3)
 

@@ -284,9 +284,9 @@ export const writtenRun = (terms) => terms.map((t, i) => (i === 0 ? t.text : `${
 
 /** What to call a kind of term, for a basket label. */
 export function kindName(key) {
-  if (key === '1') return { en: 'Numbers', vn: 'Các số' };
+  if (key === '1') return { en: 'Numbers', vn: 'Các số', fr: 'Nombres' };
   const m = monoText(key);
-  return { en: `${m} terms`, vn: `Hạng tử ${m}` };
+  return { en: `${m} terms`, vn: `Hạng tử ${m}`, fr: `Termes en ${m}` };
 }
 
 // ------------------------------------------------------------------ written form
@@ -375,15 +375,15 @@ export function formOf(src) {
 }
 
 const FORM_MESSAGE = {
-  brackets: { en: 'The value is right, but the brackets are still there. Multiply them out.', vn: 'Giá trị đúng, nhưng vẫn còn dấu ngoặc. Hãy nhân phá ngoặc.' },
-  'like-terms': { en: 'The value is right, but it is not finished: two terms are still the same kind. Collect them.', vn: 'Giá trị đúng, nhưng chưa xong: vẫn còn hai hạng tử cùng loại. Hãy gộp chúng.' },
-  'one-coefficient': { en: 'Right — but write x, not 1x. The 1 is invisible.', vn: 'Đúng — nhưng hãy viết x, không viết 1x. Số 1 được ẩn đi.' },
-  'number-after-letter': { en: 'Right value — but write the number first: 3x, not x3.', vn: 'Giá trị đúng — nhưng hãy viết số trước: 3x, không phải x3.' },
-  'times-sign': { en: 'Right value — but leave out the × sign: write 3x, not 3 × x.', vn: 'Giá trị đúng — nhưng bỏ dấu ×: viết 3x, không phải 3 × x.' },
-  'repeated-letter': { en: 'Right value — but a letter times itself is a power: x × x is x².', vn: 'Giá trị đúng — nhưng một chữ nhân với chính nó là lũy thừa: x × x là x².' },
-  'zero-term': { en: 'Right value — but a term that comes to 0 is left out.', vn: 'Giá trị đúng — nhưng hạng tử bằng 0 thì bỏ đi.' },
-  'double-sign': { en: 'Right value — but a plus followed by a minus is just a minus: write x − 3, not x + −3.', vn: 'Giá trị đúng — nhưng dấu cộng rồi dấu trừ chỉ là dấu trừ: viết x − 3, không viết x + −3.' },
-  'not-a-term': { en: 'The value is right, but it is not written in its simplest form yet.', vn: 'Giá trị đúng, nhưng chưa viết ở dạng gọn nhất.' },
+  brackets: { en: 'The value is right, but the brackets are still there. Multiply them out.', vn: 'Giá trị đúng, nhưng vẫn còn dấu ngoặc. Hãy nhân phá ngoặc.', fr: 'La valeur est juste, mais les parenthèses sont toujours là. Développe-les.' },
+  'like-terms': { en: 'The value is right, but it is not finished: two terms are still the same kind. Collect them.', vn: 'Giá trị đúng, nhưng chưa xong: vẫn còn hai hạng tử cùng loại. Hãy gộp chúng.', fr: "La valeur est juste, mais ce n'est pas fini : deux termes sont encore semblables. Réduis-les." },
+  'one-coefficient': { en: 'Right — but write x, not 1x. The 1 is invisible.', vn: 'Đúng — nhưng hãy viết x, không viết 1x. Số 1 được ẩn đi.', fr: 'Correct — mais écris x, pas 1x. Le 1 est invisible.' },
+  'number-after-letter': { en: 'Right value — but write the number first: 3x, not x3.', vn: 'Giá trị đúng — nhưng hãy viết số trước: 3x, không phải x3.', fr: "Bonne valeur — mais écris le nombre d'abord : 3x, pas x3." },
+  'times-sign': { en: 'Right value — but leave out the × sign: write 3x, not 3 × x.', vn: 'Giá trị đúng — nhưng bỏ dấu ×: viết 3x, không phải 3 × x.', fr: 'Bonne valeur — mais enlève le signe × : écris 3x, pas 3 × x.' },
+  'repeated-letter': { en: 'Right value — but a letter times itself is a power: x × x is x².', vn: 'Giá trị đúng — nhưng một chữ nhân với chính nó là lũy thừa: x × x là x².', fr: "Bonne valeur — mais une lettre multipliée par elle-même est une puissance : x × x, c'est x²." },
+  'zero-term': { en: 'Right value — but a term that comes to 0 is left out.', vn: 'Giá trị đúng — nhưng hạng tử bằng 0 thì bỏ đi.', fr: "Bonne valeur — mais un terme qui vaut 0 ne s'écrit pas." },
+  'double-sign': { en: 'Right value — but a plus followed by a minus is just a minus: write x − 3, not x + −3.', vn: 'Giá trị đúng — nhưng dấu cộng rồi dấu trừ chỉ là dấu trừ: viết x − 3, không viết x + −3.', fr: "Bonne valeur — mais un plus suivi d'un moins, c'est juste un moins : écris x − 3, pas x + −3." },
+  'not-a-term': { en: 'The value is right, but it is not written in its simplest form yet.', vn: 'Giá trị đúng, nhưng chưa viết ở dạng gọn nhất.', fr: "La valeur est juste, mais elle n'est pas encore écrite sous sa forme la plus simple." },
 };
 export const formMessage = (reason) => FORM_MESSAGE[reason] || FORM_MESSAGE['not-a-term'];
 
@@ -426,7 +426,7 @@ export function collectModel(expr) {
 }
 
 /**
- * What went wrong in a simplify answer. Returns { ok, code, en, vn } where ok
+ * What went wrong in a simplify answer. Returns { ok, code, en, vn, fr } where ok
  * means right AND finished. Codes, most specific first:
  *   form-*        right value, not finished (see formMessage)
  *   invisible-one a kind with a bare x was totalled as if x were 0x
@@ -438,7 +438,7 @@ export function collectModel(expr) {
 export function diagnoseSimplify(expr, typed) {
   const model = collectModel(expr);
   const got = tryPoly(typed);
-  if (!got) return { ok: false, code: 'unreadable', en: 'That cannot be read as an expression. Use numbers, letters, + and −.', vn: 'Không đọc được biểu thức. Hãy dùng số, chữ cái, + và −.' };
+  if (!got) return { ok: false, code: 'unreadable', en: 'That cannot be read as an expression. Use numbers, letters, + and −.', vn: 'Không đọc được biểu thức. Hãy dùng số, chữ cái, + và −.', fr: 'Je ne peux pas lire cette expression. Utilise des nombres, des lettres, + et −.' };
   if (polyEq(got, model.answer)) {
     const form = formOf(typed);
     if (form.simplest) return { ok: true, code: 'ok' };
@@ -450,7 +450,7 @@ export function diagnoseSimplify(expr, typed) {
   for (const b of model.baskets) {
     const sq = `${b.key}^2`;
     if (b.key.length === 1 && got[sq] && !model.answer[sq]) {
-      return { ok: false, code: 'squared', en: `${b.key} + ${b.key} is 2${b.key}. Only ${b.key} × ${b.key} is ${b.key}². Adding like terms never changes the letter.`, vn: `${b.key} + ${b.key} là 2${b.key}. Chỉ có ${b.key} × ${b.key} mới là ${b.key}². Cộng hạng tử đồng dạng không làm thay đổi chữ cái.` };
+      return { ok: false, code: 'squared', en: `${b.key} + ${b.key} is 2${b.key}. Only ${b.key} × ${b.key} is ${b.key}². Adding like terms never changes the letter.`, vn: `${b.key} + ${b.key} là 2${b.key}. Chỉ có ${b.key} × ${b.key} mới là ${b.key}². Cộng hạng tử đồng dạng không làm thay đổi chữ cái.`, fr: `${b.key} + ${b.key}, c'est 2${b.key}. Seul ${b.key} × ${b.key} donne ${b.key}². Additionner des termes semblables ne change jamais la lettre.` };
     }
   }
   // the letter vanished: 8s − s = 7
@@ -458,14 +458,14 @@ export function diagnoseSimplify(expr, typed) {
     if (b.key === '1' || b.total[0] === 0 || got[b.key]) continue;
     if (got['1'] && rEq(got['1'], rAdd(constOf(want), b.total))) {
       const terms = b.terms.map((i) => model.written[i]);
-      return { ok: false, code: 'letter-gone', en: `The letter never disappears: ${writtenRun(terms)} is ${termText(b.total, b.key)}, not ${termText(b.total, '1')}.`, vn: `Chữ cái không bao giờ biến mất: kết quả là ${termText(b.total, b.key)}, không phải ${termText(b.total, '1')}.` };
+      return { ok: false, code: 'letter-gone', en: `The letter never disappears: ${writtenRun(terms)} is ${termText(b.total, b.key)}, not ${termText(b.total, '1')}.`, vn: `Chữ cái không bao giờ biến mất: kết quả là ${termText(b.total, b.key)}, không phải ${termText(b.total, '1')}.`, fr: `La lettre ne disparaît jamais : ${writtenRun(terms)} donne ${termText(b.total, b.key)}, pas ${termText(b.total, '1')}.` };
     }
   }
   // a whole kind left out: 4x for 4x + 6y
   const wantKeys = Object.keys(want);
   if (keysGot.length < wantKeys.length && keysGot.every((k) => want[k] && rEq(got[k], want[k]))) {
     const missing = wantKeys.filter((k) => !got[k]);
-    return { ok: false, code: 'missing-kind', en: `Not finished — ${missing.map((k) => (k === '1' ? 'the numbers' : `the ${monoText(k)} terms`)).join(' and ')} are missing. Every basket goes into the answer.`, vn: `Chưa xong — còn thiếu ${missing.map((k) => (k === '1' ? 'các số' : `các hạng tử ${monoText(k)}`)).join(' và ')}. Mọi rổ đều phải có trong đáp án.` };
+    return { ok: false, code: 'missing-kind', en: `Not finished — ${missing.map((k) => (k === '1' ? 'the numbers' : `the ${monoText(k)} terms`)).join(' and ')} are missing. Every basket goes into the answer.`, vn: `Chưa xong — còn thiếu ${missing.map((k) => (k === '1' ? 'các số' : `các hạng tử ${monoText(k)}`)).join(' và ')}. Mọi rổ đều phải có trong đáp án.`, fr: `Pas fini — il manque ${missing.map((k) => (k === '1' ? 'les nombres' : `les termes en ${monoText(k)}`)).join(' et ')}. Chaque panier va dans la réponse.` };
   }
   // unlike kinds joined: a key in the answer that the question never had
   const foreign = keysGot.filter((k) => !model.order.includes(k));
@@ -475,10 +475,10 @@ export function diagnoseSimplify(expr, typed) {
       const c = got[b.key];
       const tryNum = model.baskets.find((o) => o.key === '1');
       if (tryNum && c && rEq(c, rAdd(b.total, tryNum.total)) && !got['1']) {
-        return { ok: false, code: 'unlike', en: `A number and ${articleFor(b.key)} ${monoText(b.key)} term are not like terms, so they cannot be added: ${polyText(want)} is already finished.`, vn: `Một số và một hạng tử ${monoText(b.key)} không đồng dạng nên không cộng được: ${polyText(want)} là xong rồi.` };
+        return { ok: false, code: 'unlike', en: `A number and ${articleFor(b.key)} ${monoText(b.key)} term are not like terms, so they cannot be added: ${polyText(want)} is already finished.`, vn: `Một số và một hạng tử ${monoText(b.key)} không đồng dạng nên không cộng được: ${polyText(want)} là xong rồi.`, fr: `Un nombre et un terme en ${monoText(b.key)} ne sont pas des termes semblables, donc on ne peut pas les additionner : ${polyText(want)} est déjà fini.` };
       }
     }
-    return { ok: false, code: 'unlike', en: `Only like terms collect. ${model.baskets.map((b) => monoText(b.key) || 'numbers').join(', ')} are different kinds, so each is totalled on its own: ${polyText(want)}.`, vn: `Chỉ gộp các hạng tử đồng dạng. ${model.baskets.map((b) => monoText(b.key) || 'các số').join(', ')} là các loại khác nhau, nên mỗi loại được cộng riêng: ${polyText(want)}.` };
+    return { ok: false, code: 'unlike', en: `Only like terms collect. ${model.baskets.map((b) => monoText(b.key) || 'numbers').join(', ')} are different kinds, so each is totalled on its own: ${polyText(want)}.`, vn: `Chỉ gộp các hạng tử đồng dạng. ${model.baskets.map((b) => monoText(b.key) || 'các số').join(', ')} là các loại khác nhau, nên mỗi loại được cộng riêng: ${polyText(want)}.`, fr: `Seuls les termes semblables se réduisent. ${model.baskets.map((b) => monoText(b.key) || 'nombres').join(', ')} sont de types différents, donc chacun est additionné à part : ${polyText(want)}.` };
   }
   for (const b of model.baskets) {
     const g = got[b.key] || ZERO;
@@ -486,20 +486,20 @@ export function diagnoseSimplify(expr, typed) {
     const terms = b.terms.map((i) => model.written[i]);
     // the letter vanished: 8s − s = 7
     if (b.key !== '1' && g[0] === 0 && got['1'] && rEq(rAdd(got['1'], rNeg(constOf(want))), b.total)) {
-      return { ok: false, code: 'letter-gone', en: `The letter never disappears: ${writtenRun(terms)} is ${termText(b.total, b.key)}, not ${termText(b.total, '1')}.`, vn: `Chữ cái không bao giờ biến mất: kết quả là ${termText(b.total, b.key)}, không phải ${termText(b.total, '1')}.` };
+      return { ok: false, code: 'letter-gone', en: `The letter never disappears: ${writtenRun(terms)} is ${termText(b.total, b.key)}, not ${termText(b.total, '1')}.`, vn: `Chữ cái không bao giờ biến mất: kết quả là ${termText(b.total, b.key)}, không phải ${termText(b.total, '1')}.`, fr: `La lettre ne disparaît jamais : ${writtenRun(terms)} donne ${termText(b.total, b.key)}, pas ${termText(b.total, '1')}.` };
     }
     // x means 1x: totalling as if a bare letter were worth nothing
     const noOnes = terms.filter((t) => !t.hiddenOne).reduce((s, t) => rAdd(s, t.coef), ZERO);
     if (terms.some((t) => t.hiddenOne) && rEq(g, noOnes)) {
-      return { ok: false, code: 'invisible-one', en: `${monoText(b.key)} means 1${monoText(b.key)}. Count it: the ${monoText(b.key)} terms make ${termText(b.total, b.key)}.`, vn: `${monoText(b.key)} nghĩa là 1${monoText(b.key)}. Hãy đếm nó: các hạng tử ${monoText(b.key)} cộng lại được ${termText(b.total, b.key)}.` };
+      return { ok: false, code: 'invisible-one', en: `${monoText(b.key)} means 1${monoText(b.key)}. Count it: the ${monoText(b.key)} terms make ${termText(b.total, b.key)}.`, vn: `${monoText(b.key)} nghĩa là 1${monoText(b.key)}. Hãy đếm nó: các hạng tử ${monoText(b.key)} cộng lại được ${termText(b.total, b.key)}.`, fr: `${monoText(b.key)} veut dire 1${monoText(b.key)}. Compte-le : les termes en ${monoText(b.key)} font ${termText(b.total, b.key)}.` };
     }
     // a minus sign left behind
     const allPlus = terms.reduce((s, t) => rAdd(s, [Math.abs(t.coef[0]), t.coef[1]]), ZERO);
     if (terms.some((t) => t.coef[0] < 0) && rEq(g, allPlus)) {
-      return { ok: false, code: 'lost-sign', en: `The sign in front of a term belongs to it. ${terms.filter((t) => t.coef[0] < 0).map((t) => t.text).join(' and ')} is taken away, so the ${b.key === '1' ? 'numbers make' : `${monoText(b.key)} terms make`} ${termText(b.total, b.key)}.`, vn: `Dấu đứng trước hạng tử thuộc về hạng tử đó. ${terms.filter((t) => t.coef[0] < 0).map((t) => t.text).join(' và ')} là bị trừ đi, nên kết quả là ${termText(b.total, b.key)}.` };
+      return { ok: false, code: 'lost-sign', en: `The sign in front of a term belongs to it. ${terms.filter((t) => t.coef[0] < 0).map((t) => t.text).join(' and ')} is taken away, so the ${b.key === '1' ? 'numbers make' : `${monoText(b.key)} terms make`} ${termText(b.total, b.key)}.`, vn: `Dấu đứng trước hạng tử thuộc về hạng tử đó. ${terms.filter((t) => t.coef[0] < 0).map((t) => t.text).join(' và ')} là bị trừ đi, nên kết quả là ${termText(b.total, b.key)}.`, fr: `Le signe devant un terme lui appartient. ${terms.filter((t) => t.coef[0] < 0).map((t) => t.text).join(' et ')} est soustrait, donc ${b.key === '1' ? 'les nombres font' : `les termes en ${monoText(b.key)} font`} ${termText(b.total, b.key)}.` };
     }
   }
-  return { ok: false, code: 'wrong', en: `Collect each kind on its own: ${model.baskets.map((b) => `${b.terms.map((i) => model.written[i].text).join(' ')} → ${b.total[0] === 0 ? '0' : termText(b.total, b.key)}`).join(';  ')}.`, vn: `Gộp riêng từng loại: ${model.baskets.map((b) => `${b.terms.map((i) => model.written[i].text).join(' ')} → ${b.total[0] === 0 ? '0' : termText(b.total, b.key)}`).join(';  ')}.` };
+  return { ok: false, code: 'wrong', en: `Collect each kind on its own: ${model.baskets.map((b) => `${b.terms.map((i) => model.written[i].text).join(' ')} → ${b.total[0] === 0 ? '0' : termText(b.total, b.key)}`).join(';  ')}.`, vn: `Gộp riêng từng loại: ${model.baskets.map((b) => `${b.terms.map((i) => model.written[i].text).join(' ')} → ${b.total[0] === 0 ? '0' : termText(b.total, b.key)}`).join(';  ')}.`, fr: `Réduis chaque type à part : ${model.baskets.map((b) => `${b.terms.map((i) => model.written[i].text).join(' ')} → ${b.total[0] === 0 ? '0' : termText(b.total, b.key)}`).join(';  ')}.` };
 }
 
 /** A basket's typed total ("4x", "4", "-x", "0") against the derived total. */
@@ -510,17 +510,17 @@ export function diagnoseBasket(model, basketIndex, typed) {
   // accept "4" for "4x" in a basket that already names its letter
   let got = tryPoly(raw);
   if (got && isConstant(got) && b.key !== '1' && raw !== '0') got = polyMul(got, { [b.key]: ONE });
-  if (!got) return { ok: false, code: 'unreadable', en: 'Type the total, like 4x or −2.', vn: 'Nhập tổng, ví dụ 4x hoặc −2.' };
+  if (!got) return { ok: false, code: 'unreadable', en: 'Type the total, like 4x or −2.', vn: 'Nhập tổng, ví dụ 4x hoặc −2.', fr: 'Écris le total, comme 4x ou −2.' };
   const g = got[b.key] || ZERO;
   const onlyThisKind = Object.keys(got).every((k) => k === b.key);
   if (onlyThisKind && rEq(g, b.total)) return { ok: true };
-  if (!onlyThisKind) return { ok: false, code: 'unlike', en: `Everything in this basket is ${b.key === '1' ? 'a number' : `${articleFor(b.key)} ${monoText(b.key)} term`}, so the total is one too.`, vn: `Mọi thứ trong rổ này đều là ${b.key === '1' ? 'số' : `hạng tử ${monoText(b.key)}`}, nên tổng cũng vậy.` };
+  if (!onlyThisKind) return { ok: false, code: 'unlike', en: `Everything in this basket is ${b.key === '1' ? 'a number' : `${articleFor(b.key)} ${monoText(b.key)} term`}, so the total is one too.`, vn: `Mọi thứ trong rổ này đều là ${b.key === '1' ? 'số' : `hạng tử ${monoText(b.key)}`}, nên tổng cũng vậy.`, fr: `Tout dans ce panier est ${b.key === '1' ? 'un nombre' : `un terme en ${monoText(b.key)}`}, donc le total aussi.` };
   const noOnes = terms.filter((t) => !t.hiddenOne).reduce((s, t) => rAdd(s, t.coef), ZERO);
-  if (terms.some((t) => t.hiddenOne) && rEq(g, noOnes)) return { ok: false, code: 'invisible-one', en: `${monoText(b.key)} on its own is 1${monoText(b.key)} — count it.`, vn: `${monoText(b.key)} đứng một mình là 1${monoText(b.key)} — hãy đếm nó.` };
+  if (terms.some((t) => t.hiddenOne) && rEq(g, noOnes)) return { ok: false, code: 'invisible-one', en: `${monoText(b.key)} on its own is 1${monoText(b.key)} — count it.`, vn: `${monoText(b.key)} đứng một mình là 1${monoText(b.key)} — hãy đếm nó.`, fr: `${monoText(b.key)} tout seul, c'est 1${monoText(b.key)} — compte-le.` };
   const allPlus = terms.reduce((s, t) => rAdd(s, [Math.abs(t.coef[0]), t.coef[1]]), ZERO);
-  if (terms.some((t) => t.coef[0] < 0) && rEq(g, allPlus)) return { ok: false, code: 'lost-sign', en: 'A minus term is taken away, not added.', vn: 'Hạng tử có dấu trừ thì bị trừ đi, không cộng vào.' };
-  if (rEq(g, rNeg(b.total))) return { ok: false, code: 'sign', en: 'Check the sign of the total — is there more added or more taken away?', vn: 'Kiểm tra dấu của tổng — phần cộng vào nhiều hơn hay phần trừ đi nhiều hơn?' };
-  return { ok: false, code: 'wrong', en: `Go along the basket: ${terms.map((t) => t.text).join(', ')}.`, vn: `Đi lần lượt trong rổ: ${terms.map((t) => t.text).join(', ')}.` };
+  if (terms.some((t) => t.coef[0] < 0) && rEq(g, allPlus)) return { ok: false, code: 'lost-sign', en: 'A minus term is taken away, not added.', vn: 'Hạng tử có dấu trừ thì bị trừ đi, không cộng vào.', fr: 'Un terme avec un moins est soustrait, pas additionné.' };
+  if (rEq(g, rNeg(b.total))) return { ok: false, code: 'sign', en: 'Check the sign of the total — is there more added or more taken away?', vn: 'Kiểm tra dấu của tổng — phần cộng vào nhiều hơn hay phần trừ đi nhiều hơn?', fr: "Vérifie le signe du total — y a-t-il plus d'ajouté ou plus d'enlevé ?" };
+  return { ok: false, code: 'wrong', en: `Go along the basket: ${terms.map((t) => t.text).join(', ')}.`, vn: `Đi lần lượt trong rổ: ${terms.map((t) => t.text).join(', ')}.`, fr: `Parcours le panier : ${terms.map((t) => t.text).join(', ')}.` };
 }
 
 // ------------------------------------------------------------------ expand (2.4)
@@ -608,7 +608,7 @@ export function expandModel(expr) {
 export function diagnoseCell(outer, inner, typed) {
   const want = polyMul({ [outer.key]: outer.coef }, { [inner.key]: inner.coef });
   const got = tryPoly(typed);
-  if (!got) return { ok: false, code: 'unreadable', en: 'Type the product, like 15 or −4c.', vn: 'Nhập tích, ví dụ 15 hoặc −4c.' };
+  if (!got) return { ok: false, code: 'unreadable', en: 'Type the product, like 15 or −4c.', vn: 'Nhập tích, ví dụ 15 hoặc −4c.', fr: 'Écris le produit, comme 15 ou −4c.' };
   if (polyEq(got, want)) {
     const form = formOf(typed);
     if (form.simplest) return { ok: true };
@@ -617,21 +617,21 @@ export function diagnoseCell(outer, inner, typed) {
   const oText = termText(outer.coef, outer.key);
   const iText = termText(inner.coef, inner.key);
   const wText = polyText(want);
-  if (polyEq(got, { [inner.key]: inner.coef })) return { ok: false, code: 'not-multiplied', en: `Every box is a multiplication: ${oText} × ${iText}. The inside term has to be multiplied too.`, vn: `Mỗi ô là một phép nhân: ${oText} × ${iText}. Hạng tử bên trong cũng phải được nhân.` };
-  if (polyEq(got, polyNeg(want))) return { ok: false, code: 'sign', en: `Take the sign with the term: ${oText} × ${iText} = ${wText}.`, vn: `Mang theo dấu cùng hạng tử: ${oText} × ${iText} = ${wText}.` };
+  if (polyEq(got, { [inner.key]: inner.coef })) return { ok: false, code: 'not-multiplied', en: `Every box is a multiplication: ${oText} × ${iText}. The inside term has to be multiplied too.`, vn: `Mỗi ô là một phép nhân: ${oText} × ${iText}. Hạng tử bên trong cũng phải được nhân.`, fr: `Chaque case est une multiplication : ${oText} × ${iText}. Le terme à l'intérieur doit aussi être multiplié.` };
+  if (polyEq(got, polyNeg(want))) return { ok: false, code: 'sign', en: `Take the sign with the term: ${oText} × ${iText} = ${wText}.`, vn: `Mang theo dấu cùng hạng tử: ${oText} × ${iText} = ${wText}.`, fr: `Garde le signe avec le terme : ${oText} × ${iText} = ${wText}.` };
   const [gk] = Object.keys(got);
   const [wk] = Object.keys(want);
   if (Object.keys(got).length === 1 && gk === wk) {
     const g = got[gk];
     const added = rAdd(outer.coef, inner.coef);
     if (rEq(g, added) || rEq(g, rAdd(rAbs(outer.coef), rAbs(inner.coef)))) {
-      return { ok: false, code: 'added', en: `Multiply the numbers, do not add them: ${oText} × ${iText} = ${wText}.`, vn: `Nhân các số, đừng cộng: ${oText} × ${iText} = ${wText}.` };
+      return { ok: false, code: 'added', en: `Multiply the numbers, do not add them: ${oText} × ${iText} = ${wText}.`, vn: `Nhân các số, đừng cộng: ${oText} × ${iText} = ${wText}.`, fr: `Multiplie les nombres, ne les additionne pas : ${oText} × ${iText} = ${wText}.` };
     }
   }
   if (Object.keys(got).length === 1 && gk !== wk) {
-    return { ok: false, code: 'letter', en: `Check the letter: ${oText} × ${iText} = ${wText}.`, vn: `Kiểm tra chữ cái: ${oText} × ${iText} = ${wText}.` };
+    return { ok: false, code: 'letter', en: `Check the letter: ${oText} × ${iText} = ${wText}.`, vn: `Kiểm tra chữ cái: ${oText} × ${iText} = ${wText}.`, fr: `Vérifie la lettre : ${oText} × ${iText} = ${wText}.` };
   }
-  return { ok: false, code: 'wrong', en: `${oText} × ${iText} = ${wText}.`, vn: `${oText} × ${iText} = ${wText}.` };
+  return { ok: false, code: 'wrong', en: `${oText} × ${iText} = ${wText}.`, vn: `${oText} × ${iText} = ${wText}.`, fr: `${oText} × ${iText} = ${wText}.` };
 }
 
 /**
@@ -642,7 +642,7 @@ export function diagnoseExpand(expr, typed, { simplify } = {}) {
   const model = expandModel(expr);
   const mustCollect = simplify ?? model.needsCollect;
   const got = tryPoly(typed);
-  if (!got) return { ok: false, code: 'unreadable', en: 'That cannot be read as an expression. Use numbers, letters, + and −.', vn: 'Không đọc được biểu thức. Hãy dùng số, chữ cái, + và −.' };
+  if (!got) return { ok: false, code: 'unreadable', en: 'That cannot be read as an expression. Use numbers, letters, + and −.', vn: 'Không đọc được biểu thức. Hãy dùng số, chữ cái, + và −.', fr: 'Je ne peux pas lire cette expression. Utilise des nombres, des lettres, + et −.' };
   const form = formOf(typed);
   if (polyEq(got, model.answer)) {
     if (form.brackets) return { ok: false, equivalent: true, code: 'form-brackets', ...formMessage('brackets') };
@@ -662,8 +662,8 @@ export function diagnoseExpand(expr, typed, { simplify } = {}) {
       added = polyAdd(added, c);
     });
   }
-  if (polyEq(got, firstOnly)) return { ok: false, code: 'first-only', en: 'Multiply EVERY term inside the bracket, not just the first one.', vn: 'Nhân MỌI hạng tử bên trong ngoặc, không chỉ hạng tử đầu tiên.' };
-  if (polyEq(got, added)) return { ok: false, code: 'added', en: 'Multiply the number outside by each term — do not add it.', vn: 'Nhân số bên ngoài với từng hạng tử — đừng cộng.' };
+  if (polyEq(got, firstOnly)) return { ok: false, code: 'first-only', en: 'Multiply EVERY term inside the bracket, not just the first one.', vn: 'Nhân MỌI hạng tử bên trong ngoặc, không chỉ hạng tử đầu tiên.', fr: 'Multiplie CHAQUE terme dans la parenthèse, pas seulement le premier.' };
+  if (polyEq(got, added)) return { ok: false, code: 'added', en: 'Multiply the number outside by each term — do not add it.', vn: 'Nhân số bên ngoài với từng hạng tử — đừng cộng.', fr: "Multiplie le nombre à l'extérieur par chaque terme — ne l'additionne pas." };
   // carried on past the answer: 12 − 4c = 8c
   const keys = Object.keys(model.answer);
   if (keys.length > Object.keys(got).length && Object.keys(got).length === 1) {
@@ -671,15 +671,15 @@ export function diagnoseExpand(expr, typed, { simplify } = {}) {
     const [gk] = Object.keys(got);
     if (rEq(got[gk], sum)) collectedUnlike = true;
   }
-  if (collectedUnlike) return { ok: false, code: 'past-answer', en: `Stop at ${model.answerText}. Its terms are not like terms, so they cannot be collected.`, vn: `Dừng ở ${model.answerText}. Các hạng tử không đồng dạng nên không gộp được.` };
+  if (collectedUnlike) return { ok: false, code: 'past-answer', en: `Stop at ${model.answerText}. Its terms are not like terms, so they cannot be collected.`, vn: `Dừng ở ${model.answerText}. Các hạng tử không đồng dạng nên không gộp được.`, fr: `Arrête-toi à ${model.answerText}. Ses termes ne sont pas semblables, donc on ne peut pas les réduire.` };
   // a sign flipped somewhere
   const signSlip = model.expandedTerms.some((t, i) => {
     const flipped = model.expandedTerms.reduce((p, u, j) => polyAdd(p, { [u.key]: j === i ? rNeg(u.coef) : u.coef }), {});
     return polyEq(got, flipped);
   });
-  if (signSlip) return { ok: false, code: 'sign', en: 'One sign is wrong. The sign in front of a term goes into its box with it.', vn: 'Có một dấu bị sai. Dấu đứng trước hạng tử đi vào ô cùng với hạng tử đó.' };
+  if (signSlip) return { ok: false, code: 'sign', en: 'One sign is wrong. The sign in front of a term goes into its box with it.', vn: 'Có một dấu bị sai. Dấu đứng trước hạng tử đi vào ô cùng với hạng tử đó.', fr: 'Un signe est faux. Le signe devant un terme va dans sa case avec lui.' };
   // A pointer, not the answer: the student still has another go.
-  return { ok: false, code: 'wrong', en: `Fill the grid one box at a time: multiply every term inside by the term outside, keeping each sign${model.needsCollect ? ', then collect the like terms' : ''}.`, vn: `Điền từng ô một: nhân mọi hạng tử bên trong với hạng tử bên ngoài, giữ nguyên dấu${model.needsCollect ? ', rồi gộp các hạng tử đồng dạng' : ''}.` };
+  return { ok: false, code: 'wrong', en: `Fill the grid one box at a time: multiply every term inside by the term outside, keeping each sign${model.needsCollect ? ', then collect the like terms' : ''}.`, vn: `Điền từng ô một: nhân mọi hạng tử bên trong với hạng tử bên ngoài, giữ nguyên dấu${model.needsCollect ? ', rồi gộp các hạng tử đồng dạng' : ''}.`, fr: `Remplis la grille une case à la fois : multiplie chaque terme à l'intérieur par le terme à l'extérieur, en gardant chaque signe${model.needsCollect ? ', puis réduis les termes semblables' : ''}.` };
 }
 
 /**
@@ -867,7 +867,7 @@ export const valueText = numText;
 export function diagnoseSolve(model, typed) {
   const raw = String(typed ?? '').replace(/^\s*[a-z]\s*=\s*/i, '');
   const got = tryPoly(raw);
-  if (!got || !isConstant(got)) return { ok: false, code: 'unreadable', en: 'Type a number, like 7 or −4.', vn: 'Nhập một số, ví dụ 7 hoặc −4.' };
+  if (!got || !isConstant(got)) return { ok: false, code: 'unreadable', en: 'Type a number, like 7 or −4.', vn: 'Nhập một số, ví dụ 7 hoặc −4.', fr: 'Écris un nombre, comme 7 ou −4.' };
   const v = constOf(got);
   if (rEq(v, model.solution)) return { ok: true };
   // did the operation instead of undoing it
@@ -875,14 +875,14 @@ export function diagnoseSolve(model, typed) {
   for (const op of [...model.ops].reverse()) same = applyOp(same, op);
   if (rEq(v, same)) {
     const op = model.ops[model.ops.length - 1];
-    return { ok: false, code: 'same-op', en: `That DOES the operation instead of undoing it. The inverse of ${opText(op)} is ${opText(inverseOf(op))}.`, vn: `Em đã LÀM phép toán thay vì làm ngược lại. Phép ngược của ${opText(op)} là ${opText(inverseOf(op))}.` };
+    return { ok: false, code: 'same-op', en: `That DOES the operation instead of undoing it. The inverse of ${opText(op)} is ${opText(inverseOf(op))}.`, vn: `Em đã LÀM phép toán thay vì làm ngược lại. Phép ngược của ${opText(op)} là ${opText(inverseOf(op))}.`, fr: `Ça FAIT l'opération au lieu de la défaire. L'opération inverse de ${opText(op)} est ${opText(inverseOf(op))}.` };
   }
   if (model.ops.length > 1) {
     let wrong = model.target;
     for (const op of model.ops.map(inverseOf)) wrong = applyOp(wrong, op);
     if (rEq(v, wrong)) {
       const last = model.ops[model.ops.length - 1];
-      return { ok: false, code: 'wrong-order', en: `Undo the LAST step first — socks and shoes. ${opText(last)} happened last, so ${opText(inverseOf(last))} comes first.`, vn: `Làm ngược bước CUỐI trước — như tất và giày. ${opText(last)} làm sau cùng, nên ${opText(inverseOf(last))} làm trước.` };
+      return { ok: false, code: 'wrong-order', en: `Undo the LAST step first — socks and shoes. ${opText(last)} happened last, so ${opText(inverseOf(last))} comes first.`, vn: `Làm ngược bước CUỐI trước — như tất và giày. ${opText(last)} làm sau cùng, nên ${opText(inverseOf(last))} làm trước.`, fr: `Défais la DERNIÈRE étape d'abord — comme les chaussettes et les chaussures. ${opText(last)} est venu en dernier, donc ${opText(inverseOf(last))} vient en premier.` };
     }
   }
   let check = v;
@@ -891,16 +891,16 @@ export function diagnoseSolve(model, typed) {
     .replace(/\\frac\{([^{}]*)\}\{(\d+)\}/g, (_, a, d) => (/[+-]/.test(a) ? `(${a}) ÷ ${d}` : `${a} ÷ ${d}`))
     .replace(/\\times/g, '×')
     .replace(/ - /g, ' − ');
-  return { ok: false, code: 'check', en: `Check it: when ${model.letter} = ${numText(v)}, ${sidePlain} = ${numText(check)}, not ${numText(model.target)}.`, vn: `Thử lại: khi ${model.letter} = ${numText(v)}, ${sidePlain} = ${numText(check)}, không phải ${numText(model.target)}.` };
+  return { ok: false, code: 'check', en: `Check it: when ${model.letter} = ${numText(v)}, ${sidePlain} = ${numText(check)}, not ${numText(model.target)}.`, vn: `Thử lại: khi ${model.letter} = ${numText(v)}, ${sidePlain} = ${numText(check)}, không phải ${numText(model.target)}.`, fr: `Vérifie : quand ${model.letter} = ${numText(v)}, ${sidePlain} = ${numText(check)}, pas ${numText(model.target)}.` };
 }
 
 // ------------------------------------------------------------------ "I think of a number"
 
 const VERB = {
-  '+': { en: (n) => `add ${n}`, vn: (n) => `cộng ${n}` },
-  '-': { en: (n) => `subtract ${n}`, vn: (n) => `trừ đi ${n}` },
-  '*': { en: (n) => (n === 2 ? 'double it' : `multiply it by ${n}`), vn: (n) => (n === 2 ? 'gấp đôi nó' : `nhân nó với ${n}`) },
-  '/': { en: (n) => (n === 2 ? 'halve it' : `divide it by ${n}`), vn: (n) => (n === 2 ? 'chia đôi nó' : `chia nó cho ${n}`) },
+  '+': { en: (n) => `add ${n}`, vn: (n) => `cộng ${n}`, fr: (n) => `j'ajoute ${n}` },
+  '-': { en: (n) => `subtract ${n}`, vn: (n) => `trừ đi ${n}`, fr: (n) => `je soustrais ${n}` },
+  '*': { en: (n) => (n === 2 ? 'double it' : `multiply it by ${n}`), vn: (n) => (n === 2 ? 'gấp đôi nó' : `nhân nó với ${n}`), fr: (n) => (n === 2 ? 'je le double' : `je le multiplie par ${n}`) },
+  '/': { en: (n) => (n === 2 ? 'halve it' : `divide it by ${n}`), vn: (n) => (n === 2 ? 'chia đôi nó' : `chia nó cho ${n}`), fr: (n) => (n === 2 ? 'je prends la moitié' : `je le divise par ${n}`) },
 };
 
 /** "I think of a number, multiply it by 3, then add 5. The answer is 26." */
@@ -908,10 +908,12 @@ export function thinkSentence(model) {
   const steps = model.ops.map((o) => VERB[o.op]);
   const en = model.ops.map((o, i) => steps[i].en(o.n));
   const vn = model.ops.map((o, i) => steps[i].vn(o.n));
+  const fr = model.ops.map((o, i) => steps[i].fr(o.n));
   const join = (list, then) => (list.length === 1 ? list[0] : `${list.slice(0, -1).join(', ')}, ${then} ${list[list.length - 1]}`);
   return {
     en: `I think of a number, ${join(en, 'then')}. The answer is ${numText(model.target)}.`,
     vn: `Tôi nghĩ ra một số, ${join(vn, 'rồi')}. Kết quả là ${numText(model.target)}.`,
+    fr: `Je pense à un nombre, ${join(fr, 'puis')}. Le résultat est ${numText(model.target)}.`,
   };
 }
 
@@ -932,14 +934,14 @@ export function equationChoices(model) {
     out.push({ id, latex, correct: false, why });
   };
   if (model.ops.length > 1) {
-    add('order', [...model.ops].reverse(), { en: 'Those operations are in the wrong order. Read the story from the start: the first thing done to the number goes nearest the letter.', vn: 'Các phép toán sai thứ tự. Đọc câu chuyện từ đầu: việc làm đầu tiên với số đó nằm gần chữ cái nhất.' });
-    add('missing', model.ops.slice(1), { en: 'One of the steps is missing.', vn: 'Thiếu một bước.' });
+    add('order', [...model.ops].reverse(), { en: 'Those operations are in the wrong order. Read the story from the start: the first thing done to the number goes nearest the letter.', vn: 'Các phép toán sai thứ tự. Đọc câu chuyện từ đầu: việc làm đầu tiên với số đó nằm gần chữ cái nhất.', fr: "Ces opérations sont dans le mauvais ordre. Lis l'histoire depuis le début : la première chose faite au nombre va le plus près de la lettre." });
+    add('missing', model.ops.slice(1), { en: 'One of the steps is missing.', vn: 'Thiếu một bước.', fr: 'Il manque une des étapes.' });
   }
-  add('inverse', [...model.ops.slice(0, -1), inverseOf(model.ops[model.ops.length - 1])], { en: 'That writes the inverse. The equation says what was DONE to the number; undoing comes later, when you solve.', vn: 'Đó là phép ngược. Phương trình ghi lại những gì đã LÀM với số đó; làm ngược là việc khi giải.' });
+  add('inverse', [...model.ops.slice(0, -1), inverseOf(model.ops[model.ops.length - 1])], { en: 'That writes the inverse. The equation says what was DONE to the number; undoing comes later, when you solve.', vn: 'Đó là phép ngược. Phương trình ghi lại những gì đã LÀM với số đó; làm ngược là việc khi giải.', fr: "Ça écrit l'opération inverse. L'équation dit ce qui a été FAIT au nombre ; défaire vient plus tard, quand tu résous." });
   if (out.length < 3 && model.ops.length === 1) {
     const o = model.ops[0];
     const swap = o.op === '+' || o.op === '-' ? { op: o.op === '+' ? '*' : '/', n: Math.max(2, o.n) } : { op: o.op === '*' ? '+' : '-', n: o.n };
-    add('operation', [swap], { en: 'That is a different operation from the one in the story.', vn: 'Đó là một phép toán khác với phép toán trong câu chuyện.' });
+    add('operation', [swap], { en: 'That is a different operation from the one in the story.', vn: 'Đó là một phép toán khác với phép toán trong câu chuyện.', fr: "C'est une opération différente de celle de l'histoire." });
   }
   return out;
 }

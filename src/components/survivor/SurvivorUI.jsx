@@ -447,6 +447,10 @@ export function LevelUpModal({ level, cards, challenge, onPick }) {
                 {revealed.reveal?.vn && (
                   <div className="text-slate-400 font-bold text-sm mt-1">{revealed.reveal.vn}</div>
                 )}
+                {/* Year 7 words carry the French too: smaller, on its own line. */}
+                {revealed.reveal?.fr && (
+                  <div className="text-slate-400 font-bold text-xs mt-0.5">{revealed.reveal.fr}</div>
+                )}
                 {!revealed.correct && (
                   <div className="text-rose-500 font-bold text-xs mt-3 uppercase tracking-widest">Rolling an upgrade for you…</div>
                 )}

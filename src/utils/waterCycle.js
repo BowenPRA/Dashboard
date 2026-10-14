@@ -29,34 +29,34 @@ import { rngFrom } from './labBench.js';
 
 export const PLACES = {
   sea: {
-    en: 'open water', vn: 'mặt nước hở',
-    detail: 'the sea, lakes and rivers', detailVn: 'biển, hồ và sông',
-    at: { en: 'in open water (the sea)', vn: 'ở mặt nước hở (biển)' },
+    en: 'open water', vn: 'mặt nước hở', fr: 'eau libre', frThe: "l'eau libre",
+    detail: 'the sea, lakes and rivers', detailVn: 'biển, hồ và sông', detailFr: 'la mer, les lacs et les rivières',
+    at: { en: 'in open water (the sea)', vn: 'ở mặt nước hở (biển)', fr: "dans l'eau libre (la mer)" },
   },
   air: {
-    en: 'the atmosphere', vn: 'khí quyển',
-    detail: 'water vapour in the air', detailVn: 'hơi nước trong không khí',
-    at: { en: 'in the atmosphere, as water vapour', vn: 'trong khí quyển, ở dạng hơi nước' },
+    en: 'the atmosphere', vn: 'khí quyển', fr: "l'atmosphère", frThe: "l'atmosphère",
+    detail: 'water vapour in the air', detailVn: 'hơi nước trong không khí', detailFr: "la vapeur d'eau dans l'air",
+    at: { en: 'in the atmosphere, as water vapour', vn: 'trong khí quyển, ở dạng hơi nước', fr: "dans l'atmosphère, sous forme de vapeur d'eau" },
   },
   cloud: {
-    en: 'a cloud', vn: 'đám mây',
-    detail: 'tiny drops of liquid water', detailVn: 'những giọt nước lỏng rất nhỏ',
-    at: { en: 'in a cloud', vn: 'trong một đám mây' },
+    en: 'a cloud', vn: 'đám mây', fr: 'un nuage', frThe: 'un nuage',
+    detail: 'tiny drops of liquid water', detailVn: 'những giọt nước lỏng rất nhỏ', detailFr: "de minuscules gouttes d'eau liquide",
+    at: { en: 'in a cloud', vn: 'trong một đám mây', fr: 'dans un nuage' },
   },
   land: {
-    en: 'the land', vn: 'mặt đất',
-    detail: 'the ground and the soil', detailVn: 'mặt đất và lớp đất',
-    at: { en: 'on the land', vn: 'trên mặt đất' },
+    en: 'the land', vn: 'mặt đất', fr: 'le sol', frThe: 'le sol',
+    detail: 'the ground and the soil', detailVn: 'mặt đất và lớp đất', detailFr: 'la surface de la terre et le sol',
+    at: { en: 'on the land', vn: 'trên mặt đất', fr: 'sur le sol' },
   },
   ground: {
-    en: 'groundwater', vn: 'nước ngầm',
-    detail: 'water in the soil and rocks', detailVn: 'nước trong đất và đá',
-    at: { en: 'as groundwater, in the rocks', vn: 'thành nước ngầm, trong lòng đất đá' },
+    en: 'groundwater', vn: 'nước ngầm', fr: 'nappe phréatique', frThe: 'la nappe phréatique',
+    detail: 'water in the soil and rocks', detailVn: 'nước trong đất và đá', detailFr: "l'eau dans le sol et les roches",
+    at: { en: 'as groundwater, in the rocks', vn: 'thành nước ngầm, trong lòng đất đá', fr: 'dans la nappe phréatique, dans les roches' },
   },
   plant: {
-    en: 'a plant', vn: 'cây',
-    detail: 'its roots, stem and leaves', detailVn: 'rễ, thân và lá của cây',
-    at: { en: 'inside a plant', vn: 'bên trong một cái cây' },
+    en: 'a plant', vn: 'cây', fr: 'une plante', frThe: 'une plante',
+    detail: 'its roots, stem and leaves', detailVn: 'rễ, thân và lá của cây', detailFr: 'ses racines, sa tige et ses feuilles',
+    at: { en: 'inside a plant', vn: 'bên trong một cái cây', fr: "à l'intérieur d'une plante" },
   },
 };
 
@@ -65,63 +65,79 @@ export const PLACES = {
 // the water does not change state; `heat` is 'in' (heat energy taken in),
 // 'out' (given out) or null. `near` is the process a student most often
 // mistakes it for — always one of the four options in an `arrow` round.
+// `frThe` is the French name with its article, for sentences; `frPl` marks the
+// one whose French name is plural (les précipitations), so its verbs agree.
 
 export const PROCESSES = [
   {
-    id: 'evaporation', en: 'evaporation', vn: 'sự bay hơi', from: 'sea', to: 'air',
+    id: 'evaporation', en: 'evaporation', vn: 'sự bay hơi', fr: 'évaporation', frThe: "l'évaporation", from: 'sea', to: 'air',
     state: { from: 'liquid', to: 'gas' }, heat: 'in', near: 'transpiration',
     short: 'liquid water turning to a gas at its surface — from the sea, a lake or a puddle',
     shortVn: 'nước lỏng chuyển thành khí ở bề mặt — từ biển, hồ hay vũng nước',
+    shortFr: "l'eau liquide qui se transforme en gaz à sa surface — depuis la mer, un lac ou une flaque",
     why: 'The Sun heats the sea. Heat energy is transferred to the water particles: they move faster, and some break free from the surface as a gas — water vapour.',
     whyVn: 'Mặt Trời làm nóng biển. Nhiệt năng được truyền cho các hạt nước: chúng chuyển động nhanh hơn, và một số thoát ra khỏi bề mặt thành khí — hơi nước.',
+    whyFr: "Le Soleil chauffe la mer. De l'énergie thermique est transférée aux particules d'eau : elles bougent plus vite, et certaines s'échappent de la surface sous forme de gaz — la vapeur d'eau.",
   },
   {
-    id: 'transpiration', en: 'transpiration', vn: 'sự thoát hơi nước', from: 'plant', to: 'air',
+    id: 'transpiration', en: 'transpiration', vn: 'sự thoát hơi nước', fr: 'transpiration', frThe: 'la transpiration', from: 'plant', to: 'air',
     state: { from: 'liquid', to: 'gas' }, heat: 'in', near: 'evaporation',
     short: 'water leaving a plant through its leaves',
     shortVn: 'nước đi ra khỏi cây qua lá',
+    shortFr: "l'eau qui sort d'une plante par ses feuilles",
     why: 'Water leaves a plant through its leaves, as water vapour. Like evaporation, the liquid takes in heat energy and becomes a gas.',
     whyVn: 'Nước đi ra khỏi cây qua lá, ở dạng hơi nước. Giống như sự bay hơi, chất lỏng nhận nhiệt năng và trở thành khí.',
+    whyFr: "L'eau sort d'une plante par ses feuilles, sous forme de vapeur d'eau. Comme pour l'évaporation, le liquide reçoit de l'énergie thermique et devient un gaz.",
   },
   {
-    id: 'condensation', en: 'condensation', vn: 'sự ngưng tụ', from: 'air', to: 'cloud',
+    id: 'condensation', en: 'condensation', vn: 'sự ngưng tụ', fr: 'condensation', frThe: 'la condensation', from: 'air', to: 'cloud',
     state: { from: 'gas', to: 'liquid' }, heat: 'out', near: 'evaporation',
     short: 'water vapour cooling and turning into tiny drops',
     shortVn: 'hơi nước lạnh đi và chuyển thành những giọt nước rất nhỏ',
+    shortFr: "la vapeur d'eau qui se refroidit et se transforme en minuscules gouttes",
     why: 'High up, the air is cold. Heat energy is transferred away from the vapour: its particles slow down and pull together into tiny drops of liquid — a cloud.',
     whyVn: 'Trên cao, không khí lạnh. Nhiệt năng được truyền ra khỏi hơi nước: các hạt chậm lại và hút nhau thành những giọt lỏng rất nhỏ — một đám mây.',
+    whyFr: "En altitude, l'air est froid. De l'énergie thermique quitte la vapeur : ses particules ralentissent et se rapprochent en minuscules gouttes de liquide — un nuage.",
   },
   {
-    id: 'precipitation', en: 'precipitation', vn: 'giáng thủy', from: 'cloud', to: ['land', 'sea'],
+    id: 'precipitation', en: 'precipitation', vn: 'giáng thủy', fr: 'précipitations', frThe: 'les précipitations', frPl: true, from: 'cloud', to: ['land', 'sea'],
     state: null, heat: null, near: 'condensation',
     short: 'water falling from a cloud — rain, snow, hail or sleet',
     shortVn: 'nước rơi từ đám mây — mưa, tuyết, mưa đá hoặc mưa tuyết',
+    shortFr: "l'eau qui tombe d'un nuage — pluie, neige, grêle ou neige fondue",
     why: 'The drops in a cloud join up until they are too heavy for the air to hold, and fall. Rain is liquid in the cloud and still liquid when it lands, so the fall changes no state. Snow and hail froze inside the cloud before they fell; falling does not change them either.',
     whyVn: 'Các giọt nước trong mây nhập lại đến khi quá nặng, không khí không giữ nổi, và chúng rơi xuống. Mưa là chất lỏng trong mây và vẫn là chất lỏng khi chạm đất, nên khi rơi không có sự chuyển thể nào. Tuyết và mưa đá đã đông đặc trong mây trước khi rơi; việc rơi cũng không làm chúng chuyển thể.',
+    whyFr: "Les gouttes d'un nuage s'assemblent jusqu'à être trop lourdes pour que l'air les retienne, et elles tombent. La pluie est liquide dans le nuage et toujours liquide quand elle arrive au sol : la chute ne provoque aucun changement d'état. La neige et la grêle ont gelé dans le nuage avant de tomber ; la chute ne les change pas non plus.",
   },
   {
-    id: 'runoff', en: 'surface run-off', vn: 'dòng chảy bề mặt', from: 'land', to: 'sea',
+    id: 'runoff', en: 'surface run-off', vn: 'dòng chảy bề mặt', fr: 'ruissellement', frThe: 'le ruissellement', from: 'land', to: 'sea',
     state: null, heat: null, near: 'soaking',
     short: 'water flowing over the ground into rivers',
     shortVn: 'nước chảy trên mặt đất vào sông',
+    shortFr: "l'eau qui coule sur le sol jusqu'aux rivières",
     why: 'Rain that does not soak in flows across the ground into rivers, and the rivers carry it to the sea. It carries soil away with it. It is liquid all the way.',
     whyVn: 'Nước mưa không thấm xuống thì chảy trên mặt đất vào sông, và sông đưa nó ra biển. Nó cuốn đất đi theo. Nó là chất lỏng suốt quãng đường.',
+    whyFr: "La pluie qui ne s'infiltre pas coule sur le sol jusqu'aux rivières, et les rivières l'emportent jusqu'à la mer. Elle emporte de la terre avec elle. Elle reste liquide tout le long du trajet.",
   },
   {
-    id: 'soaking', en: 'soaking in', vn: 'thấm xuống đất', from: 'land', to: 'ground',
+    id: 'soaking', en: 'soaking in', vn: 'thấm xuống đất', fr: 'infiltration', frThe: "l'infiltration", from: 'land', to: 'ground',
     state: null, heat: null, near: 'runoff',
     short: 'water soaking down into the soil and rocks',
     shortVn: 'nước thấm xuống đất và đá',
+    shortFr: "l'eau qui s'enfonce dans le sol et les roches",
     why: 'Rain soaks down through the soil into the rocks and becomes groundwater. It stays a liquid.',
     whyVn: 'Nước mưa thấm xuống qua lớp đất vào trong đá và trở thành nước ngầm. Nó vẫn là chất lỏng.',
+    whyFr: "La pluie s'infiltre à travers le sol jusque dans les roches et rejoint la nappe phréatique. Elle reste liquide.",
   },
   {
-    id: 'gwflow', en: 'groundwater flow', vn: 'dòng nước ngầm', from: 'ground', to: 'sea',
+    id: 'gwflow', en: 'groundwater flow', vn: 'dòng nước ngầm', fr: 'écoulement souterrain', frThe: "l'écoulement souterrain", from: 'ground', to: 'sea',
     state: null, heat: null, near: 'runoff',
     short: 'groundwater moving slowly through the rocks to rivers and the sea',
     shortVn: 'nước ngầm di chuyển chậm qua đất đá ra sông và biển',
+    shortFr: "l'eau souterraine qui avance lentement à travers les roches jusqu'aux rivières et à la mer",
     why: 'Groundwater moves slowly through the rocks — it can take years — and seeps out into rivers and the sea. It is liquid all the way.',
     whyVn: 'Nước ngầm di chuyển chậm qua đất đá — có thể mất nhiều năm — rồi rỉ ra sông và biển. Nó là chất lỏng suốt quãng đường.',
+    whyFr: "L'eau souterraine avance lentement à travers les roches — cela peut prendre des années — et ressort dans les rivières et la mer. Elle reste liquide tout le long du trajet.",
   },
 ];
 
@@ -131,35 +147,45 @@ const toList = (to) => (Array.isArray(to) ? to : [to]);
 /** Every edge of the graph: { process, from, to }. */
 export const EDGES = PROCESSES.flatMap((p) => toList(p.to).map((to) => ({ process: p.id, from: p.from, to })));
 
-/** A process name; in Vietnamese the English key word follows in brackets. */
+/** A process name; in Vietnamese and French the English key word follows in brackets (not when it is the same word). */
 export function processName(pid, lang = 'en') {
   const p = PROCESS[pid];
   if (!p) return String(pid);
-  return lang === 'vn' ? `${p.vn} (${p.en})` : p.en;
+  if (lang === 'vn') return `${p.vn} (${p.en})`;
+  if (lang === 'fr') return p.fr && p.fr !== p.en ? `${p.fr} (${p.en})` : p.en;
+  return p.en;
 }
+
+// French "de" / "à" before a place with its article: du sol, de l'atmosphère,
+// d'un nuage · au sol, à l'atmosphère, à un nuage.
+const deP = (s) => (s.startsWith('le ') ? `du ${s.slice(3)}` : s.startsWith('les ') ? `des ${s.slice(4)}` : /^[aeiouyhéè]/i.test(s) ? `d'${s}` : `de ${s}`);
+const aP = (s) => (s.startsWith('le ') ? `au ${s.slice(3)}` : s.startsWith('les ') ? `aux ${s.slice(4)}` : `à ${s}`);
+/** "de l'eau libre à l'atmosphère" — a French route between two places. */
+const routeFr = (from, to) => `${deP(PLACES[from].frThe)} ${[].concat(to).map((t) => aP(PLACES[t].frThe)).join(' ou ')}`;
 
 /** "from open water to the atmosphere" — for the lines that name an arrow. */
 export function routeOf(pid) {
   const p = PROCESS[pid];
-  if (!p) return { en: '', vn: '' };
+  if (!p) return { en: '', vn: '', fr: '' };
   const to = toList(p.to);
   return {
     en: `from ${PLACES[p.from].en} to ${to.map((t) => PLACES[t].en).join(' or ')}`,
     vn: `từ ${PLACES[p.from].vn} đến ${to.map((t) => PLACES[t].vn).join(' hoặc ')}`,
+    fr: routeFr(p.from, to),
   };
 }
 
 // ------------------------------------------------------------------ state + heat
 
 export const STATE_OPTIONS = [
-  { id: 'lg', en: 'liquid → gas', vn: 'lỏng → khí' },
-  { id: 'gl', en: 'gas → liquid', vn: 'khí → lỏng' },
-  { id: 'none', en: 'no change of state', vn: 'không chuyển thể' },
+  { id: 'lg', en: 'liquid → gas', vn: 'lỏng → khí', fr: 'liquide → gaz' },
+  { id: 'gl', en: 'gas → liquid', vn: 'khí → lỏng', fr: 'gaz → liquide' },
+  { id: 'none', en: 'no change of state', vn: 'không chuyển thể', fr: "pas de changement d'état" },
 ];
 export const HEAT_OPTIONS = [
-  { id: 'in', en: 'heat energy is taken in', vn: 'nhiệt năng được nhận vào' },
-  { id: 'out', en: 'heat energy is given out', vn: 'nhiệt năng được tỏa ra' },
-  { id: 'none', en: 'neither — nothing changes state', vn: 'không cái nào — không có gì chuyển thể' },
+  { id: 'in', en: 'heat energy is taken in', vn: 'nhiệt năng được nhận vào', fr: "de l'énergie thermique est absorbée" },
+  { id: 'out', en: 'heat energy is given out', vn: 'nhiệt năng được tỏa ra', fr: "de l'énergie thermique est libérée" },
+  { id: 'none', en: 'neither — nothing changes state', vn: 'không cái nào — không có gì chuyển thể', fr: "ni l'un ni l'autre — rien ne change d'état" },
 ];
 
 /** The state-mode answer a process carries: { state: 'lg'|'gl'|'none', heat: 'in'|'out'|'none' }. */
@@ -337,7 +363,7 @@ function arrowSvg(a, tone) {
  *   numbers    { [arrowId]: n } — step numbers on a journey's arrows
  */
 export function cycleSvg({ highlight = null, tones = null, dimRest, hit = false, labels = null, marks = null, numbers = null, lang = 'en' } = {}) {
-  const say = (o) => (lang === 'vn' && o.vn ? o.vn : o.en);
+  const say = (o) => o[lang] || o.en;
   const lit = highlight == null ? [] : [].concat(highlight);
   const tone = {};
   for (const id of lit) tone[id] = 'lit';
@@ -393,87 +419,87 @@ export function cycleSvg({ highlight = null, tones = null, dimRest, hit = false,
 export const EVERYDAY = [
   // evaporation
   { id: 'puddle', process: 'evaporation', trap: 'soaking',
-    en: 'A puddle on the road disappears on a sunny morning.', vn: 'Một vũng nước trên đường biến mất vào một buổi sáng nắng.',
-    why: 'Liquid to gas, from the surface of the puddle straight into the air.', whyVn: 'Từ lỏng thành khí, từ bề mặt vũng nước bay thẳng vào không khí.' },
+    en: 'A puddle on the road disappears on a sunny morning.', vn: 'Một vũng nước trên đường biến mất vào một buổi sáng nắng.', fr: 'Une flaque sur la route disparaît par un matin ensoleillé.',
+    why: 'Liquid to gas, from the surface of the puddle straight into the air.', whyVn: 'Từ lỏng thành khí, từ bề mặt vũng nước bay thẳng vào không khí.', whyFr: "De liquide à gaz, depuis la surface de la flaque directement dans l'air." },
   { id: 'washing', process: 'evaporation', trap: 'condensation',
-    en: 'Wet clothes dry on the line in the sun.', vn: 'Quần áo ướt khô trên dây phơi dưới nắng.',
-    why: 'The Sun transfers heat energy to the water, and its particles escape from the cloth as a gas.', whyVn: 'Mặt Trời truyền nhiệt năng cho nước, và các hạt nước thoát ra khỏi vải thành khí.' },
+    en: 'Wet clothes dry on the line in the sun.', vn: 'Quần áo ướt khô trên dây phơi dưới nắng.', fr: 'Des vêtements mouillés sèchent sur le fil au soleil.',
+    why: 'The Sun transfers heat energy to the water, and its particles escape from the cloth as a gas.', whyVn: 'Mặt Trời truyền nhiệt năng cho nước, và các hạt nước thoát ra khỏi vải thành khí.', whyFr: "Le Soleil transfère de l'énergie thermique à l'eau, et ses particules s'échappent du tissu sous forme de gaz." },
   { id: 'sea_warms', process: 'evaporation', trap: 'transpiration',
-    en: 'The sea warms up in the sun, and water goes into the air.', vn: 'Biển ấm lên dưới nắng, và nước đi vào không khí.',
-    why: 'Most of the water vapour in the air evaporated from the sea.', whyVn: 'Phần lớn hơi nước trong không khí bay hơi từ biển.' },
+    en: 'The sea warms up in the sun, and water goes into the air.', vn: 'Biển ấm lên dưới nắng, và nước đi vào không khí.', fr: "La mer se réchauffe au soleil, et de l'eau passe dans l'air.",
+    why: 'Most of the water vapour in the air evaporated from the sea.', whyVn: 'Phần lớn hơi nước trong không khí bay hơi từ biển.', whyFr: "La plus grande partie de la vapeur d'eau de l'air s'est évaporée de la mer." },
   { id: 'lake_lower', process: 'evaporation', trap: 'gwflow',
-    en: 'In a long dry season with no rain, a lake gets lower and lower.', vn: 'Trong một mùa khô dài không mưa, mặt hồ ngày càng thấp xuống.',
-    why: 'Water leaves the surface of the lake as water vapour, and no rain puts it back.', whyVn: 'Nước rời khỏi mặt hồ ở dạng hơi nước, và không có mưa bù lại.' },
+    en: 'In a long dry season with no rain, a lake gets lower and lower.', vn: 'Trong một mùa khô dài không mưa, mặt hồ ngày càng thấp xuống.', fr: "Pendant une longue saison sèche sans pluie, le niveau d'un lac baisse de plus en plus.",
+    why: 'Water leaves the surface of the lake as water vapour, and no rain puts it back.', whyVn: 'Nước rời khỏi mặt hồ ở dạng hơi nước, và không có mưa bù lại.', whyFr: "L'eau quitte la surface du lac sous forme de vapeur d'eau, et aucune pluie ne la remplace." },
   // transpiration
   { id: 'rice_field', process: 'transpiration', trap: 'evaporation',
-    en: 'A rice field loses water through its rice plants.', vn: 'Ruộng lúa mất nước qua cây lúa.',
-    why: 'Out through the leaves of the plants — not off the water or the ground. That makes it transpiration.', whyVn: 'Đi ra qua lá cây — không phải từ mặt nước hay mặt đất. Vì vậy đó là sự thoát hơi nước.' },
+    en: 'A rice field loses water through its rice plants.', vn: 'Ruộng lúa mất nước qua cây lúa.', fr: "Une rizière perd de l'eau par ses plants de riz.",
+    why: 'Out through the leaves of the plants — not off the water or the ground. That makes it transpiration.', whyVn: 'Đi ra qua lá cây — không phải từ mặt nước hay mặt đất. Vì vậy đó là sự thoát hơi nước.', whyFr: "Par les feuilles des plantes — pas depuis l'eau ni depuis le sol. C'est donc de la transpiration." },
   { id: 'forest', process: 'transpiration', trap: 'evaporation',
-    en: 'A forest puts water vapour into the air on a hot day.', vn: 'Một khu rừng đưa hơi nước vào không khí vào một ngày nóng.',
-    why: 'It is water vapour, but it came out of the leaves of the trees.', whyVn: 'Đó là hơi nước, nhưng nó đi ra từ lá cây.' },
+    en: 'A forest puts water vapour into the air on a hot day.', vn: 'Một khu rừng đưa hơi nước vào không khí vào một ngày nóng.', fr: "Une forêt envoie de la vapeur d'eau dans l'air par une journée chaude.",
+    why: 'It is water vapour, but it came out of the leaves of the trees.', whyVn: 'Đó là hơi nước, nhưng nó đi ra từ lá cây.', whyFr: "C'est de la vapeur d'eau, mais elle est sortie des feuilles des arbres." },
   { id: 'mango', process: 'transpiration', trap: 'condensation',
-    en: 'Water vapour leaves the leaves of a mango tree on a hot afternoon.', vn: 'Hơi nước thoát ra từ lá cây xoài vào một buổi chiều nóng.',
-    why: 'Water leaving a plant through its leaves is transpiration.', whyVn: 'Nước đi ra khỏi cây qua lá là sự thoát hơi nước.' },
+    en: 'Water vapour leaves the leaves of a mango tree on a hot afternoon.', vn: 'Hơi nước thoát ra từ lá cây xoài vào một buổi chiều nóng.', fr: "De la vapeur d'eau sort des feuilles d'un manguier par un après-midi chaud.",
+    why: 'Water leaving a plant through its leaves is transpiration.', whyVn: 'Nước đi ra khỏi cây qua lá là sự thoát hơi nước.', whyFr: "L'eau qui sort d'une plante par ses feuilles, c'est la transpiration." },
   { id: 'banana', process: 'transpiration', trap: 'evaporation',
-    en: 'A banana plantation gives off water vapour through its big leaves.', vn: 'Một vườn chuối thải hơi nước qua những chiếc lá to.',
-    why: 'The water comes out of the plants, through their leaves.', whyVn: 'Nước đi ra từ cây, qua lá của chúng.' },
+    en: 'A banana plantation gives off water vapour through its big leaves.', vn: 'Một vườn chuối thải hơi nước qua những chiếc lá to.', fr: "Une bananeraie rejette de la vapeur d'eau par ses grandes feuilles.",
+    why: 'The water comes out of the plants, through their leaves.', whyVn: 'Nước đi ra từ cây, qua lá của chúng.', whyFr: "L'eau sort des plantes, par leurs feuilles." },
   // condensation
   { id: 'iced_coffee', process: 'condensation', trap: 'evaporation',
-    en: 'Drops form on the outside of a glass of iced coffee.', vn: 'Giọt nước đọng bên ngoài ly cà phê đá.',
-    why: 'Water vapour in the air touched the cold glass, cooled and turned back into liquid. Nothing leaked through the glass.', whyVn: 'Hơi nước trong không khí chạm vào ly lạnh, lạnh đi và trở lại thành chất lỏng. Không có gì thấm qua ly.' },
+    en: 'Drops form on the outside of a glass of iced coffee.', vn: 'Giọt nước đọng bên ngoài ly cà phê đá.', fr: "Des gouttes se forment sur l'extérieur d'un verre de café glacé.",
+    why: 'Water vapour in the air touched the cold glass, cooled and turned back into liquid. Nothing leaked through the glass.', whyVn: 'Hơi nước trong không khí chạm vào ly lạnh, lạnh đi và trở lại thành chất lỏng. Không có gì thấm qua ly.', whyFr: "La vapeur d'eau de l'air a touché le verre froid, s'est refroidie et est redevenue liquide. Rien n'a traversé le verre." },
   { id: 'cloud_forms', process: 'condensation', trap: 'evaporation',
-    en: 'A cloud forms high in the sky.', vn: 'Một đám mây hình thành trên cao.',
-    why: 'Gas to liquid: a cloud is tiny drops of water, made when vapour cools.', whyVn: 'Từ khí thành lỏng: mây là những giọt nước rất nhỏ, hình thành khi hơi nước lạnh đi.' },
+    en: 'A cloud forms high in the sky.', vn: 'Một đám mây hình thành trên cao.', fr: 'Un nuage se forme haut dans le ciel.',
+    why: 'Gas to liquid: a cloud is tiny drops of water, made when vapour cools.', whyVn: 'Từ khí thành lỏng: mây là những giọt nước rất nhỏ, hình thành khi hơi nước lạnh đi.', whyFr: "De gaz à liquide : un nuage, ce sont de minuscules gouttes d'eau, formées quand la vapeur se refroidit." },
   { id: 'mist', process: 'condensation', trap: 'evaporation',
-    en: 'Mist lies over a lake at sunrise.', vn: 'Sương mù phủ trên mặt hồ lúc bình minh.',
-    why: 'You can see it, so it is already liquid: tiny drops of vapour that cooled and condensed.', whyVn: 'Em nhìn thấy được, nên nó đã là chất lỏng: những giọt nhỏ từ hơi nước đã lạnh đi và ngưng tụ.' },
+    en: 'Mist lies over a lake at sunrise.', vn: 'Sương mù phủ trên mặt hồ lúc bình minh.', fr: 'De la brume flotte sur un lac au lever du soleil.',
+    why: 'You can see it, so it is already liquid: tiny drops of vapour that cooled and condensed.', whyVn: 'Em nhìn thấy được, nên nó đã là chất lỏng: những giọt nhỏ từ hơi nước đã lạnh đi và ngưng tụ.', whyFr: "Tu peux la voir, donc elle est déjà liquide : de minuscules gouttes de vapeur qui s'est refroidie et condensée." },
   { id: 'breath', process: 'condensation', trap: 'evaporation',
-    en: 'Your breath makes a little white cloud on a cold morning.', vn: 'Hơi thở của em tạo thành một làn khói trắng nhỏ vào buổi sáng lạnh.',
-    why: 'The cold air cooled the water vapour in your breath into tiny drops — that is what you see.', whyVn: 'Không khí lạnh làm hơi nước trong hơi thở lạnh đi thành những giọt nhỏ — đó là thứ em nhìn thấy.' },
+    en: 'Your breath makes a little white cloud on a cold morning.', vn: 'Hơi thở của em tạo thành một làn khói trắng nhỏ vào buổi sáng lạnh.', fr: 'Ton souffle fait un petit nuage blanc par un matin froid.',
+    why: 'The cold air cooled the water vapour in your breath into tiny drops — that is what you see.', whyVn: 'Không khí lạnh làm hơi nước trong hơi thở lạnh đi thành những giọt nhỏ — đó là thứ em nhìn thấy.', whyFr: "L'air froid a refroidi la vapeur d'eau de ton souffle en minuscules gouttes — c'est ce que tu vois." },
   { id: 'mirror', process: 'condensation', trap: 'evaporation',
-    en: 'The bathroom mirror goes misty after a hot shower.', vn: 'Gương phòng tắm bị mờ sau khi tắm nước nóng.',
-    why: 'Water vapour from the shower touched the cool mirror and turned into tiny drops.', whyVn: 'Hơi nước từ vòi sen chạm vào tấm gương mát và biến thành những giọt nhỏ.' },
+    en: 'The bathroom mirror goes misty after a hot shower.', vn: 'Gương phòng tắm bị mờ sau khi tắm nước nóng.', fr: 'Le miroir de la salle de bain se couvre de buée après une douche chaude.',
+    why: 'Water vapour from the shower touched the cool mirror and turned into tiny drops.', whyVn: 'Hơi nước từ vòi sen chạm vào tấm gương mát và biến thành những giọt nhỏ.', whyFr: "La vapeur d'eau de la douche a touché le miroir frais et s'est transformée en minuscules gouttes." },
   { id: 'pho_lid', process: 'condensation', trap: 'precipitation',
-    en: 'Drops of water collect under the lid of a pot of phở broth.', vn: 'Giọt nước đọng dưới nắp nồi nước dùng phở.',
-    why: 'Water vapour from the hot broth hits the cooler lid and turns back into liquid.', whyVn: 'Hơi nước từ nồi nước dùng nóng chạm vào nắp mát hơn và trở lại thành chất lỏng.' },
+    en: 'Drops of water collect under the lid of a pot of phở broth.', vn: 'Giọt nước đọng dưới nắp nồi nước dùng phở.', fr: "Des gouttes d'eau se forment sous le couvercle d'une marmite de bouillon de phở.",
+    why: 'Water vapour from the hot broth hits the cooler lid and turns back into liquid.', whyVn: 'Hơi nước từ nồi nước dùng nóng chạm vào nắp mát hơn và trở lại thành chất lỏng.', whyFr: "La vapeur d'eau du bouillon chaud touche le couvercle plus frais et redevient liquide." },
   { id: 'dew', process: 'condensation', trap: 'precipitation',
-    en: 'Dew covers the grass on a cool, clear morning.', vn: 'Sương đọng trên cỏ vào một buổi sáng mát, trời quang.',
-    why: 'Dew did not fall from a cloud. Water vapour in the air condensed on the cold grass.', whyVn: 'Sương không rơi từ đám mây. Hơi nước trong không khí ngưng tụ trên cỏ lạnh.' },
+    en: 'Dew covers the grass on a cool, clear morning.', vn: 'Sương đọng trên cỏ vào một buổi sáng mát, trời quang.', fr: "La rosée couvre l'herbe par un matin frais et dégagé.",
+    why: 'Dew did not fall from a cloud. Water vapour in the air condensed on the cold grass.', whyVn: 'Sương không rơi từ đám mây. Hơi nước trong không khí ngưng tụ trên cỏ lạnh.', whyFr: "La rosée n'est pas tombée d'un nuage. La vapeur d'eau de l'air s'est condensée sur l'herbe froide." },
   { id: 'kettle_cloud', process: 'condensation', trap: 'evaporation',
-    en: 'A white cloud appears a little way above the spout of a boiling kettle.', vn: 'Một làn khói trắng xuất hiện cách vòi ấm đang sôi một khoảng nhỏ.',
-    why: 'The white cloud is tiny drops: the invisible vapour cooled and condensed. Right at the spout, where you see nothing, is the gas.', whyVn: 'Làn khói trắng là những giọt nước nhỏ: hơi nước vô hình đã lạnh đi và ngưng tụ. Ngay sát vòi ấm, nơi em không thấy gì, mới là chất khí.' },
+    en: 'A white cloud appears a little way above the spout of a boiling kettle.', vn: 'Một làn khói trắng xuất hiện cách vòi ấm đang sôi một khoảng nhỏ.', fr: "Un nuage blanc apparaît un peu au-dessus du bec d'une bouilloire qui bout.",
+    why: 'The white cloud is tiny drops: the invisible vapour cooled and condensed. Right at the spout, where you see nothing, is the gas.', whyVn: 'Làn khói trắng là những giọt nước nhỏ: hơi nước vô hình đã lạnh đi và ngưng tụ. Ngay sát vòi ấm, nơi em không thấy gì, mới là chất khí.', whyFr: "Le nuage blanc, ce sont de minuscules gouttes : la vapeur invisible s'est refroidie et condensée. Juste au bec, là où tu ne vois rien, c'est le gaz." },
   // precipitation
   { id: 'hanoi_rain', process: 'precipitation', trap: 'condensation',
-    en: 'Rain falls on Hà Nội.', vn: 'Mưa rơi xuống Hà Nội.',
-    why: 'Water falling from a cloud.', whyVn: 'Nước rơi từ đám mây.' },
+    en: 'Rain falls on Hà Nội.', vn: 'Mưa rơi xuống Hà Nội.', fr: 'La pluie tombe sur Hà Nội.',
+    why: 'Water falling from a cloud.', whyVn: 'Nước rơi từ đám mây.', whyFr: "De l'eau qui tombe d'un nuage." },
   { id: 'hail', process: 'precipitation', trap: 'condensation',
-    en: 'Hail bounces off the road in a storm.', vn: 'Mưa đá nảy trên mặt đường trong cơn bão.',
-    why: 'Rain, snow, hail and sleet are all water falling from clouds — all precipitation.', whyVn: 'Mưa, tuyết, mưa đá và mưa tuyết đều là nước rơi từ mây — đều là giáng thủy.' },
+    en: 'Hail bounces off the road in a storm.', vn: 'Mưa đá nảy trên mặt đường trong cơn bão.', fr: 'La grêle rebondit sur la route pendant un orage.',
+    why: 'Rain, snow, hail and sleet are all water falling from clouds — all precipitation.', whyVn: 'Mưa, tuyết, mưa đá và mưa tuyết đều là nước rơi từ mây — đều là giáng thủy.', whyFr: "La pluie, la neige, la grêle et la neige fondue, c'est de l'eau qui tombe des nuages — ce sont toutes des précipitations." },
   { id: 'sapa_snow', process: 'precipitation', trap: 'condensation',
-    en: 'Snow lands on a mountain in Sa Pa.', vn: 'Tuyết rơi xuống núi ở Sa Pa.',
-    why: 'It is frozen, but it still fell from a cloud: precipitation.', whyVn: 'Nó đã đông đặc, nhưng vẫn rơi từ đám mây: giáng thủy.' },
+    en: 'Snow lands on a mountain in Sa Pa.', vn: 'Tuyết rơi xuống núi ở Sa Pa.', fr: 'La neige tombe sur une montagne à Sa Pa.',
+    why: 'It is frozen, but it still fell from a cloud: precipitation.', whyVn: 'Nó đã đông đặc, nhưng vẫn rơi từ đám mây: giáng thủy.', whyFr: "Elle est gelée, mais elle est quand même tombée d'un nuage : ce sont des précipitations." },
   { id: 'halong', process: 'precipitation', trap: 'runoff',
-    en: 'Rain falls straight into Hạ Long Bay.', vn: 'Mưa rơi thẳng xuống vịnh Hạ Long.',
-    why: 'Water falling from a cloud — this time into open water.', whyVn: 'Nước rơi từ đám mây — lần này rơi xuống mặt nước hở.' },
+    en: 'Rain falls straight into Hạ Long Bay.', vn: 'Mưa rơi thẳng xuống vịnh Hạ Long.', fr: "La pluie tombe directement dans la baie d'Hạ Long.",
+    why: 'Water falling from a cloud — this time into open water.', whyVn: 'Nước rơi từ đám mây — lần này rơi xuống mặt nước hở.', whyFr: "De l'eau qui tombe d'un nuage — cette fois dans l'eau libre." },
   { id: 'sleet', process: 'precipitation', trap: 'condensation',
-    en: 'Sleet falls on a cold, windy day.', vn: 'Mưa tuyết rơi vào một ngày lạnh, nhiều gió.',
-    why: 'Sleet is rain and snow falling together — precipitation.', whyVn: 'Mưa tuyết là mưa và tuyết rơi cùng lúc — giáng thủy.' },
+    en: 'Sleet falls on a cold, windy day.', vn: 'Mưa tuyết rơi vào một ngày lạnh, nhiều gió.', fr: 'De la neige fondue tombe par une journée froide et venteuse.',
+    why: 'Sleet is rain and snow falling together — precipitation.', whyVn: 'Mưa tuyết là mưa và tuyết rơi cùng lúc — giáng thủy.', whyFr: "La neige fondue, c'est de la pluie et de la neige qui tombent ensemble — des précipitations." },
   // on the ground
   { id: 'hillside', process: 'runoff', trap: 'soaking',
-    en: 'In a storm, muddy water rushes down a bare hillside into a river.', vn: 'Trong cơn bão, nước bùn chảy xiết xuống sườn đồi trọc vào sông.',
-    why: 'Water flowing across the ground into a river — and carrying the soil with it.', whyVn: 'Nước chảy trên mặt đất vào sông — và cuốn đất đi theo.' },
+    en: 'In a storm, muddy water rushes down a bare hillside into a river.', vn: 'Trong cơn bão, nước bùn chảy xiết xuống sườn đồi trọc vào sông.', fr: "Pendant un orage, de l'eau boueuse dévale une colline sans arbres jusqu'à une rivière.",
+    why: 'Water flowing across the ground into a river — and carrying the soil with it.', whyVn: 'Nước chảy trên mặt đất vào sông — và cuốn đất đi theo.', whyFr: "De l'eau qui coule sur le sol jusqu'à une rivière — en emportant la terre avec elle." },
   { id: 'street', process: 'runoff', trap: 'gwflow',
-    en: 'Rain runs along the street, into the drains and on to the river.', vn: 'Nước mưa chảy dọc con đường, vào cống rồi ra sông.',
-    why: 'It flows over the surface to a river instead of soaking in.', whyVn: 'Nó chảy trên bề mặt ra sông thay vì thấm xuống.' },
+    en: 'Rain runs along the street, into the drains and on to the river.', vn: 'Nước mưa chảy dọc con đường, vào cống rồi ra sông.', fr: "La pluie coule le long de la rue, dans les égouts, puis jusqu'à la rivière.",
+    why: 'It flows over the surface to a river instead of soaking in.', whyVn: 'Nó chảy trên bề mặt ra sông thay vì thấm xuống.', whyFr: "Elle coule en surface jusqu'à une rivière au lieu de s'infiltrer." },
   { id: 'coffee_farm', process: 'soaking', trap: 'runoff',
-    en: 'Rain soaks into the soil of a coffee farm in Đắk Lắk.', vn: 'Nước mưa thấm vào đất của một nông trại cà phê ở Đắk Lắk.',
-    why: 'Down through the soil and into the rocks: it becomes groundwater.', whyVn: 'Thấm xuống qua lớp đất vào trong đá: nó trở thành nước ngầm.' },
+    en: 'Rain soaks into the soil of a coffee farm in Đắk Lắk.', vn: 'Nước mưa thấm vào đất của một nông trại cà phê ở Đắk Lắk.', fr: "La pluie s'infiltre dans le sol d'une plantation de café à Đắk Lắk.",
+    why: 'Down through the soil and into the rocks: it becomes groundwater.', whyVn: 'Thấm xuống qua lớp đất vào trong đá: nó trở thành nước ngầm.', whyFr: 'À travers le sol et jusque dans les roches : elle rejoint la nappe phréatique.' },
   { id: 'terraces', process: 'soaking', trap: 'runoff',
-    en: 'Terraced rice fields hold the rain back, so it sinks into the ground.', vn: 'Ruộng bậc thang giữ nước mưa lại, nên nước thấm xuống đất.',
-    why: 'Held back, the water has time to soak in instead of running off.', whyVn: 'Được giữ lại, nước có thời gian thấm xuống thay vì chảy đi.' },
+    en: 'Terraced rice fields hold the rain back, so it sinks into the ground.', vn: 'Ruộng bậc thang giữ nước mưa lại, nên nước thấm xuống đất.', fr: "Les rizières en terrasses retiennent la pluie, alors elle s'enfonce dans le sol.",
+    why: 'Held back, the water has time to soak in instead of running off.', whyVn: 'Được giữ lại, nước có thời gian thấm xuống thay vì chảy đi.', whyFr: "Retenue, l'eau a le temps de s'infiltrer au lieu de ruisseler." },
   { id: 'spring', process: 'gwflow', trap: 'runoff',
-    en: 'Water that soaked into a hill years ago seeps out of the rocks into a stream.', vn: 'Nước đã thấm vào một ngọn đồi từ nhiều năm trước rỉ ra khỏi đá vào một con suối.',
-    why: 'Groundwater moving slowly through the rocks, back to rivers and the sea.', whyVn: 'Nước ngầm di chuyển chậm qua đất đá, trở lại sông và biển.' },
+    en: 'Water that soaked into a hill years ago seeps out of the rocks into a stream.', vn: 'Nước đã thấm vào một ngọn đồi từ nhiều năm trước rỉ ra khỏi đá vào một con suối.', fr: "De l'eau infiltrée dans une colline il y a des années ressort des roches dans un ruisseau.",
+    why: 'Groundwater moving slowly through the rocks, back to rivers and the sea.', whyVn: 'Nước ngầm di chuyển chậm qua đất đá, trở lại sông và biển.', whyFr: "De l'eau souterraine qui avance lentement à travers les roches, jusqu'aux rivières et à la mer." },
 ];
 export const EVERYDAY_BY_ID = Object.fromEntries(EVERYDAY.map((e) => [e.id, e]));
 
@@ -632,10 +658,10 @@ export function answerOf(round) {
 // ------------------------------------------------------------------ marking
 
 const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
-const why = (p) => ({ en: p.why, vn: p.whyVn });
+const why = (p) => ({ en: p.why, vn: p.whyVn, fr: p.whyFr });
 
 /**
- * Mark one round. → { ok, lines: [{ en, vn }], … }. A wrong answer is answered
+ * Mark one round. → { ok, lines: [{ en, vn, fr }], … }. A wrong answer is answered
  * by name first — what the chosen process really is, or where the walk broke —
  * then the right answer's why.
  */
@@ -645,17 +671,18 @@ export function markRound(round, answer) {
     const ok = answer === round.process;
     const chosen = PROCESS[answer];
     const lines = [];
-    if (!ok && chosen) lines.push({ en: `Not ${chosen.en}: that is ${chosen.short}.`, vn: `Không phải ${chosen.vn}: đó là ${chosen.shortVn}.` });
+    if (!ok && chosen) lines.push({ en: `Not ${chosen.en}: that is ${chosen.short}.`, vn: `Không phải ${chosen.vn}: đó là ${chosen.shortVn}.`, fr: `Ce n'est pas ${chosen.frThe} — ${chosen.frThe}, c'est ${chosen.shortFr}.` });
     if (round.mode === 'arrow') {
       const a = ARROW[round.arrow];
       lines.push({
         en: `This arrow goes from ${PLACES[a.from].en} to ${PLACES[a.to].en}: ${right.en}.`,
         vn: `Mũi tên này đi từ ${PLACES[a.from].vn} đến ${PLACES[a.to].vn}: ${right.vn}.`,
+        fr: `Cette flèche va ${routeFr(a.from, a.to)} : ${right.frThe}.`,
       });
       lines.push(why(right));
     } else {
       const item = EVERYDAY_BY_ID[round.item];
-      lines.push({ en: `${cap(right.en)}. ${item.why}`, vn: `${cap(right.vn)}. ${item.whyVn}` });
+      lines.push({ en: `${cap(right.en)}. ${item.why}`, vn: `${cap(right.vn)}. ${item.whyVn}`, fr: `${cap(right.frThe)}. ${item.whyFr}` });
     }
     return { ok, lines };
   }
@@ -668,10 +695,11 @@ export function markRound(round, answer) {
       lines.push({
         en: `You tapped ${p.en}: the arrow from ${PLACES[tapped.from].en} to ${PLACES[tapped.to].en}.`,
         vn: `Em đã chạm vào ${p.vn}: mũi tên từ ${PLACES[tapped.from].vn} đến ${PLACES[tapped.to].vn}.`,
+        fr: `Tu as touché ${p.frThe} : la flèche ${routeFr(tapped.from, tapped.to)}.`,
       });
     }
     const r = routeOf(round.process);
-    lines.push({ en: `${cap(right.en)} goes ${r.en}.`, vn: `${cap(right.vn)} đi ${r.vn}.` }, why(right));
+    lines.push({ en: `${cap(right.en)} goes ${r.en}.`, vn: `${cap(right.vn)} đi ${r.vn}.`, fr: `${cap(right.frThe)} : ${r.fr}.` }, why(right));
     return { ok, lines };
   }
   if (round.mode === 'state') {
@@ -680,8 +708,8 @@ export function markRound(round, answer) {
     const s = STATE_OPTIONS.find((o) => o.id === want.state);
     const h = HEAT_OPTIONS.find((o) => o.id === want.heat);
     const first = want.state === 'none'
-      ? { en: `${cap(right.en)}: no change of state, so heat energy is neither taken in nor given out.`, vn: `${cap(right.vn)}: không chuyển thể, nên nhiệt năng không được nhận vào cũng không tỏa ra.` }
-      : { en: `${cap(right.en)}: ${s.en}; ${h.en}.`, vn: `${cap(right.vn)}: ${s.vn}; ${h.vn}.` };
+      ? { en: `${cap(right.en)}: no change of state, so heat energy is neither taken in nor given out.`, vn: `${cap(right.vn)}: không chuyển thể, nên nhiệt năng không được nhận vào cũng không tỏa ra.`, fr: `${cap(right.fr)} : pas de changement d'état, donc l'énergie thermique n'est ni absorbée ni libérée.` }
+      : { en: `${cap(right.en)}: ${s.en}; ${h.en}.`, vn: `${cap(right.vn)}: ${s.vn}; ${h.vn}.`, fr: `${cap(right.fr)} : ${s.fr} ; ${h.fr}.` };
     const lines = [first, why(right)];
     return { ok: parts.state && parts.heat, parts, lines };
   }
@@ -699,11 +727,13 @@ export function markRound(round, answer) {
       lines.push({
         en: `Step ${w.stuck + 1}, ${p.en}, cannot happen there: the particle is ${here.map((h) => h.at.en).join(' or ')}, but ${p.en} starts ${PLACES[p.from].at.en}.`,
         vn: `Bước ${w.stuck + 1}, ${p.vn}, không thể xảy ra ở đó: hạt nước đang ${here.map((h) => h.at.vn).join(' hoặc ')}, nhưng ${p.vn} bắt đầu ${PLACES[p.from].at.vn}.`,
+        fr: `Étape ${w.stuck + 1} : ${p.frThe} ${p.frPl ? 'sont impossibles' : 'est impossible'} ici. La particule est ${here.map((h) => h.at.fr).join(' ou ')}, mais ${p.frThe} ${p.frPl ? 'commencent' : 'commence'} ${PLACES[p.from].at.fr}.`,
       });
     } else {
       lines.push({
         en: `That order ends ${w.at.map((pl) => PLACES[pl].at.en).join(' or ')}, not ${PLACES[round.to].at.en}.`,
         vn: `Thứ tự đó kết thúc ${w.at.map((pl) => PLACES[pl].at.vn).join(' hoặc ')}, không phải ${PLACES[round.to].at.vn}.`,
+        fr: `Cet ordre se termine ${w.at.map((pl) => PLACES[pl].at.fr).join(' ou ')}, pas ${PLACES[round.to].at.fr}.`,
       });
     }
   }
@@ -711,13 +741,14 @@ export function markRound(round, answer) {
   lines.push({
     en: `${ok ? 'Your order' : 'A right order'}: ${shown.map((pid) => name(pid).en).join(' → ')}.`,
     vn: `${ok ? 'Thứ tự của em' : 'Một thứ tự đúng'}: ${shown.map((pid) => name(pid).vn).join(' → ')}.`,
+    fr: `${ok ? 'Ton ordre' : 'Un ordre correct'} : ${shown.map((pid) => name(pid).fr).join(' → ')}.`,
   });
   return { ok, lines, path: pathArrows(round.from, round.to, shown) };
 }
 
 // ------------------------------------------------------------------ the deck activity
 // { id, type: 'cycle', ask: 'tap' | 'arrow' | 'journey', process?, arrow?,
-//   options?, from?, to?, steps?, prompt, promptVn, explain, explainVn }
+//   options?, from?, to?, steps?, prompt, promptVn, promptFr?, explain, explainVn, explainFr? }
 // One round, fixed by the activity; anything shuffled is seeded by its id so
 // the slide looks the same on every visit.
 
@@ -751,14 +782,14 @@ export function catalogueProblems() {
   const out = [];
   const places = Object.keys(PLACES);
   for (const [id, p] of Object.entries(PLACES)) {
-    if (!p.en || !p.vn || !p.at?.en || !p.at?.vn) out.push(`place ${id} needs en/vn and a bilingual "at"`);
+    if (!p.en || !p.vn || !p.fr || !p.frThe || !p.at?.en || !p.at?.vn || !p.at?.fr) out.push(`place ${id} needs en/vn/fr/frThe and an "at" in every language`);
     if (!ANCHORS[id]) out.push(`place ${id} has no anchor in the drawing`);
   }
   const ids = new Set();
   for (const p of PROCESSES) {
     if (ids.has(p.id)) out.push(`duplicate process ${p.id}`);
     ids.add(p.id);
-    for (const k of ['en', 'vn', 'short', 'shortVn', 'why', 'whyVn']) if (!p[k]) out.push(`process ${p.id} needs ${k}`);
+    for (const k of ['en', 'vn', 'fr', 'frThe', 'short', 'shortVn', 'shortFr', 'why', 'whyVn', 'whyFr']) if (!p[k]) out.push(`process ${p.id} needs ${k}`);
     if (!places.includes(p.from)) out.push(`process ${p.id} starts at unknown place ${p.from}`);
     for (const t of toList(p.to)) if (!places.includes(t)) out.push(`process ${p.id} ends at unknown place ${t}`);
     if (!['in', 'out', null].includes(p.heat)) out.push(`process ${p.id} heat must be in, out or null`);
@@ -789,7 +820,7 @@ export function catalogueProblems() {
     eids.add(e.id);
     if (!PROCESS[e.process]) out.push(`everyday ${e.id}: unknown process ${e.process}`);
     if (e.trap && (!PROCESS[e.trap] || e.trap === e.process)) out.push(`everyday ${e.id}: trap "${e.trap}" must be a different process`);
-    for (const k of ['en', 'vn', 'why', 'whyVn']) if (!e[k]) out.push(`everyday ${e.id} needs ${k}`);
+    for (const k of ['en', 'vn', 'fr', 'why', 'whyVn', 'whyFr']) if (!e[k]) out.push(`everyday ${e.id} needs ${k}`);
   }
   return out;
 }
@@ -829,7 +860,7 @@ function roundProblems(r) {
     }
   }
   if (!accepts(answerOf(r))) out.push(`${at}: does not accept its own answer`);
-  if (!markRound(r, answerOf(r)).lines.every((l) => l.en && l.vn)) out.push(`${at}: a verdict line is not bilingual`);
+  if (!markRound(r, answerOf(r)).lines.every((l) => l.en && l.vn && l.fr)) out.push(`${at}: a verdict line is missing a language`);
   return out;
 }
 
@@ -857,11 +888,13 @@ export function checkJourneyConfig(cfg) {
 }
 
 /** Problems with a `cycle` deck activity (utils/activity.js). */
-export function checkCycleActivity(a, { bilingual = true } = {}) {
+export function checkCycleActivity(a, { bilingual = true, french = false } = {}) {
   const out = [];
   if (!a || typeof a !== 'object') return ['activity missing'];
   if (!CYCLE_ASKS.includes(a.ask)) return [`ask "${a.ask}" — ${CYCLE_ASKS.join('/')}`];
   if (bilingual && (!a.promptVn || !a.explainVn)) out.push('needs promptVn and explainVn');
+  // only on a track that offers French (the caller says so)
+  if (bilingual && french && (!a.promptFr || !a.explainFr)) out.push('needs promptFr and explainFr');
   if (a.ask === 'tap' && !PROCESS[a.process]) out.push(`tap needs a process (${PROCESSES.map((p) => p.id).join('/')})`);
   if (a.ask === 'arrow') {
     if (a.arrow !== undefined && !ARROW[a.arrow]) out.push(`arrow "${a.arrow}" — known arrows: ${ARROWS.map((x) => x.id).join('/')}`);

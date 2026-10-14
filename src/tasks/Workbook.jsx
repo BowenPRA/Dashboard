@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect, useRef, Component } from 'react';
 import { Eye, EyeOff, CheckCircle2, XCircle, Construction, ChevronLeft, ChevronRight, ChevronDown, Lightbulb, GripVertical, CornerDownRight, Check, RotateCcw, HelpCircle, MonitorPlay, Minimize2, Pencil, ClipboardCheck } from 'lucide-react';
 import TopBar from '../components/TopBar';
+import useLang from '../hooks/useLang';
+import { tr } from '../utils/lang';
 import { renderMath } from '../components/notes/renderMath';
 import { splitInlineMath } from '../components/notes/splitInlineMath';
 import { answersEquivalent } from '../utils/mathEquivalence';
@@ -8,8 +10,9 @@ import { assetUrl } from '../utils/assetPaths';
 
 /* ------------------------------------------------------------------ *
  * Slide-per-problem practice. Reads a unit's `workbook` array:
- *   [{ tier, tierVn, questions: [{ id, prompt, promptVn, type?,
- *        solution:[…], solutionVn:[…], answer, answerVn, … }] }]
+ *   [{ tier, tierVn, tierFr, questions: [{ id, prompt, promptVn, promptFr, type?,
+ *        solution:[…], solutionVn:[…], solutionFr:[…], answer, answerVn, answerFr, … }] }]
+ * (the `…Fr` twins are read on a track that offers French; a missing one shows English)
  * One problem per screen; each question carries its own answer widget
  * (a typed box, multiple choice, fill-in boxes, dropdowns, or drag-and-
  * drop), and "Show solution" reveals the worked steps. Marking is local.
@@ -168,7 +171,7 @@ const ChoiceAnswer = ({ q, value, onChange, checked, lang, big = false }) => (
         else if (selected) { box = 'bg-rose-50 dark:bg-rose-900/20 border-rose-400 border-b-[4px]'; dot = 'border-rose-400 bg-rose-400'; }
         else { box = 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'; }
       } else if (selected) { box = 'bg-[#1cb0f6]/10 border-[#1cb0f6] border-b-[4px] active:border-b-2 active:translate-y-[2px]'; dot = 'border-[#1cb0f6] bg-[#1cb0f6]'; }
-      const label = lang === 'vn' && opt.textVn != null ? opt.textVn : opt.text;
+      const label = tr(lang, opt.text, opt.textVn, opt.textFr);
       return (
         <button key={opt.val} onClick={() => !checked && onChange(opt.val)} disabled={checked}
           className={`w-full rounded-2xl border-2 text-left flex items-center gap-4 transition-all ${big ? 'p-[clamp(1rem,1.6vw,1.6rem)]' : 'p-4'} ${box}`}>
@@ -186,7 +189,7 @@ const ChoiceAnswer = ({ q, value, onChange, checked, lang, big = false }) => (
 
 // --- Inline sentence with typed boxes or dropdowns -------------------
 const BlankSentence = ({ q, value, onChange, checked, lang, mode, big = false }) => {
-  const parts = (lang === 'vn' && q.textPartsVn) ? q.textPartsVn : (q.textParts || []);
+  const parts = tr(lang, q.textParts, q.textPartsVn || undefined, q.textPartsFr || undefined) || [];
   const answers = value || {};
   return (
     <div className={`text-slate-700 dark:text-slate-200 font-semibold leading-[2.4] bg-slate-50 dark:bg-slate-800/40 rounded-2xl border-2 border-slate-200 dark:border-slate-700 ${big ? 'text-[clamp(1.4rem,2.2vw,2.2rem)] p-[clamp(1.25rem,2vw,2rem)]' : 'text-lg sm:text-2xl p-5 sm:p-6'}`}>
@@ -218,7 +221,7 @@ const BlankSentence = ({ q, value, onChange, checked, lang, mode, big = false })
                       className={`appearance-none font-black outline-none cursor-pointer pr-9 pl-4 py-1.5 rounded-xl border-2 border-b-[4px] ${style}`}>
                       <option value="" disabled>…</option>
                       {(blank.options || []).map((o) => (
-                        <option key={o.val} value={o.val}>{lang === 'vn' && o.textVn != null ? o.textVn : o.text}</option>
+                        <option key={o.val} value={o.val}>{tr(lang, o.text, o.textVn, o.textFr)}</option>
                       ))}
                     </select>
                     <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-60" strokeWidth={3} />
@@ -248,7 +251,7 @@ const DragAnswer = ({ q, value, onChange, checked, lang, big = false }) => {
   const [picked, setPicked] = useState(null);
   const [dragged, setDragged] = useState(null);
   const placements = value || {};
-  const label = (item) => (lang === 'vn' && item.textVn != null ? item.textVn : item.text);
+  const label = (item) => tr(lang, item.text, item.textVn, item.textFr);
   const placed = Object.values(placements).flat();
   const bank = (q.bank || []).filter((it) => !placed.includes(it.val));
 
@@ -275,7 +278,7 @@ const DragAnswer = ({ q, value, onChange, checked, lang, big = false }) => {
       {!checked && (
         <div className="flex flex-wrap gap-2.5 items-center justify-center p-4 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40 min-h-[72px]">
           {bank.length === 0
-            ? <span className="text-slate-400 font-bold uppercase tracking-widest text-sm flex items-center gap-2"><Check className="w-5 h-5" />{lang === 'vn' ? 'Đã đặt hết' : 'All placed'}</span>
+            ? <span className="text-slate-400 font-bold uppercase tracking-widest text-sm flex items-center gap-2"><Check className="w-5 h-5" />{tr(lang, 'All placed', 'Đã đặt hết', 'Tout est placé')}</span>
             : bank.map((it) => (
               <button key={it.val} draggable onClick={() => setPicked(picked?.val === it.val ? null : it)}
                 onDragStart={(e) => { setDragged(it); e.dataTransfer.effectAllowed = 'move'; }}
@@ -296,12 +299,12 @@ const DragAnswer = ({ q, value, onChange, checked, lang, big = false }) => {
               className={`flex flex-col sm:flex-row items-stretch rounded-2xl border-2 overflow-hidden transition-all bg-white dark:bg-slate-800
                 ${active ? 'border-[#1cb0f6] ring-4 ring-[#1cb0f6]/20 cursor-pointer' : 'border-slate-200 dark:border-slate-700'}`}>
               <div className="bg-slate-50 dark:bg-slate-900 border-b-2 sm:border-b-0 sm:border-r-2 border-slate-200 dark:border-slate-700 p-3 flex items-center justify-center sm:w-2/5 shrink-0">
-                <span className={`font-black text-slate-500 dark:text-slate-400 text-center ${big ? 'text-[clamp(1.05rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}`}><RichText text={lang === 'vn' && target.titleVn != null ? target.titleVn : target.title} /></span>
+                <span className={`font-black text-slate-500 dark:text-slate-400 text-center ${big ? 'text-[clamp(1.05rem,1.6vw,1.6rem)]' : 'text-sm sm:text-base'}`}><RichText text={tr(lang, target.title, target.titleVn, target.titleFr)} /></span>
               </div>
               <div className="flex-1 p-3 min-h-[64px] flex flex-wrap gap-2 items-center">
                 {here.length === 0 && (
                   <span className={`flex items-center gap-2 font-black uppercase tracking-widest text-xs ${active ? 'text-[#1cb0f6] animate-pulse' : checked ? 'text-rose-400' : 'text-slate-300 dark:text-slate-600'}`}>
-                    {checked ? (lang === 'vn' ? 'Bỏ trống' : 'Left blank') : (<><CornerDownRight className="w-4 h-4" />{active ? (lang === 'vn' ? 'Đặt vào đây' : 'Tap to place') : (lang === 'vn' ? 'Kéo vào đây' : 'Drop here')}</>)}
+                    {checked ? tr(lang, 'Left blank', 'Bỏ trống', 'Laissé vide') : (<><CornerDownRight className="w-4 h-4" />{active ? tr(lang, 'Tap to place', 'Đặt vào đây', 'Touche pour placer') : tr(lang, 'Drop here', 'Kéo vào đây', 'Dépose ici')}</>)}
                   </span>
                 )}
                 {here.map((val, idx) => {
@@ -340,16 +343,16 @@ const TextAnswer = ({ value, onChange, onEnter, checked, correct, lang, result, 
         ${correct ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3d8b00] dark:text-lime-300'
           : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>
         {correct
-          ? <><CheckCircle2 className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Chính xác' : 'Correct'}</>
+          ? <><CheckCircle2 className="w-5 h-5" strokeWidth={3} />{tr(lang, 'Correct', 'Chính xác', 'Correct')}</>
           : result?.shown
-            ? <><Eye className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Đã xem lời giải' : 'Solution shown'}</>
-            : <><XCircle className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Bạn viết' : 'You wrote'} “{result?.value}”</>}
+            ? <><Eye className="w-5 h-5" strokeWidth={3} />{tr(lang, 'Solution shown', 'Đã xem lời giải', 'Solution affichée')}</>
+            : <><XCircle className="w-5 h-5" strokeWidth={3} />{tr(lang, 'You wrote', 'Bạn viết', 'Tu as écrit')} “{result?.value}”</>}
       </div>
     );
   }
   return (
     <input value={value} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onEnter(); } }}
-      placeholder={lang === 'vn' ? 'Nhập đáp án của bạn' : 'Type your answer'} spellCheck={false} autoComplete="off"
+      placeholder={tr(lang, 'Type your answer', 'Nhập đáp án của bạn', 'Écris ta réponse')} spellCheck={false} autoComplete="off"
       className={`w-full rounded-xl border-2 border-b-[4px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-bold focus:outline-none focus:border-[#1cb0f6] ${big ? 'px-6 py-5 text-[clamp(1.3rem,2vw,2rem)]' : 'px-4 py-3.5 text-lg'}`} />
   );
 };
@@ -366,16 +369,17 @@ const AnswerWidget = ({ q, value, onChange, onEnter, checked, lang, result, big 
 
 // `title` lets a unit run TWO workbook tasks (WORKBOOK and WORKBOOK_B, one per
 // textbook exercise) without both bars reading "Workbook Practice".
-// `bilingual: false` (an English-only track) drops the EN/VN toggle from the
-// top bar — there is nothing for it to switch to.
-export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice', bilingual = true, solutionLabel = 'Solution' }) {
+// `langs` (from the host) is what the top-bar toggle steps through — EN/VN, or
+// EN/VN/FR on Year 7; `bilingual: false` (an English-only track) drops the
+// toggle — there is nothing for it to switch to.
+export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onProgress, title = 'Workbook Practice', langs, bilingual = true, solutionLabel = 'Solution' }) {
   const problems = useMemo(() => {
     const groups = Array.isArray(pool) ? pool : [];
-    return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn, theme: g.theme })));
+    return groups.flatMap((g) => (g.questions || []).map((q) => ({ ...q, tier: g.tier, tierVn: g.tierVn, tierFr: g.tierFr, theme: g.theme })));
   }, [pool]);
 
   const [idx, setIdx] = useState(0);
-  const [lang, setLang] = useState('en');
+  const { lang, toggleLang } = useLang({ langs, bilingual });
   // A correct answer from a previous attempt is restored so it is not asked
   // again — it shows as already solved (method visible) and the student skips
   // past it. Only correct answers are persisted, so wrong ones stay retryable.
@@ -499,10 +503,10 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
   }
 
   const theme = themeFor(q.theme || q.tier);
-  const tierLabel = lang === 'vn' ? (q.tierVn || q.tier) : q.tier;
-  const prompt = lang === 'vn' ? (q.promptVn || q.prompt) : q.prompt;
-  const steps = (lang === 'vn' ? (q.solutionVn || q.solution) : q.solution) || [];
-  const answer = lang === 'vn' ? (q.answerVn || q.answer) : q.answer;
+  const tierLabel = tr(lang, q.tier, q.tierVn || q.tier, q.tierFr || q.tier);
+  const prompt = tr(lang, q.prompt, q.promptVn || q.prompt, q.promptFr || q.prompt);
+  const steps = tr(lang, q.solution, q.solutionVn || q.solution, q.solutionFr || q.solution) || [];
+  const answer = tr(lang, q.answer, q.answerVn || q.answer, q.answerFr || q.answer);
   const diagram = isRevealed && q.inlineSvgSolved ? q.inlineSvgSolved : q.inlineSvg;
   const hasFillIn = !!q.inlineSvgSolved;
   const isLast = idx === total - 1;
@@ -561,7 +565,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
           {hasFillIn && !isRevealed && (
             <div className="mt-2 flex items-center gap-1.5 text-xs font-bold text-slate-400">
               <Lightbulb className="w-4 h-4" strokeWidth={2.5} />
-              {lang === 'vn' ? 'Xem lời giải để điền vào bảng' : 'Reveal the solution to fill this in'}
+              {tr(lang, 'Reveal the solution to fill this in', 'Xem lời giải để điền vào bảng', 'Affiche la solution pour compléter')}
             </div>
           )}
         </div>
@@ -585,8 +589,8 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
             ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3d8b00] dark:text-lime-300'
             : 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'}`}>
           {result.correct
-            ? <><CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} />{lang === 'vn' ? 'Chính xác! Làm tốt lắm.' : 'Correct — nice work!'}</>
-            : <><XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />{lang === 'vn' ? 'Chưa đúng — xem các bước bên dưới.' : 'Not quite — follow the steps below.'}</>}
+            ? <><CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} />{tr(lang, 'Correct — nice work!', 'Chính xác! Làm tốt lắm.', 'Correct — bien joué !')}</>
+            : <><XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />{tr(lang, 'Not quite — follow the steps below.', 'Chưa đúng — xem các bước bên dưới.', 'Pas tout à fait — suis les étapes ci-dessous.')}</>}
         </div>
       )}
 
@@ -594,7 +598,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
       {isRevealed && (
         <div className={`bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-top-2 duration-300 ${isDisplayMode ? 'p-[clamp(1.25rem,2vw,2.25rem)]' : 'p-5 sm:p-6'}`}>
           <div className={`text-[10px] sm:text-xs font-black uppercase tracking-widest mb-3 ${theme.text}`}>
-            {lang === 'vn' ? 'Lời giải' : solutionLabel}
+            {tr(lang, solutionLabel, 'Lời giải', 'Solution')}
           </div>
           <ol className="space-y-3">
             {steps.map((step, si) => (
@@ -635,7 +639,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
           )}
           {answer && (
             <div className="mt-5 flex items-center gap-2 flex-wrap">
-              <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400">{lang === 'vn' ? 'Đáp án' : 'Answer'}</span>
+              <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400">{tr(lang, 'Answer', 'Đáp án', 'Réponse')}</span>
               <span className={`inline-flex items-center bg-[#58cc02]/10 border-2 border-[#58cc02]/40 text-[#3d8b00] dark:text-[#7bd42f] font-black rounded-xl px-4 py-1.5 ${isDisplayMode ? 'text-[clamp(1.3rem,2.1vw,2.1rem)]' : 'text-lg sm:text-xl'}`}>
                 <RichText text={answer} />
               </span>
@@ -655,7 +659,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
 
       {!isDisplayMode && (
         <TopBar onQuit={finish} modeTitle={title} current={idx + 1} total={total}
-          lang={lang} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+          lang={lang} onLangToggle={toggleLang} />
       )}
 
       {/* Problem card */}
@@ -666,7 +670,7 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
         <div className={`${theme.bg} flex items-center justify-between text-white flex-shrink-0 border-b-4 border-black/10 ${isDisplayMode ? 'px-[clamp(1.5rem,3vw,3rem)] py-[clamp(0.75rem,1.4vw,1.4rem)]' : 'px-5 sm:px-7 py-3 sm:py-4'}`}>
           <span className={`font-black uppercase tracking-widest drop-shadow-sm ${isDisplayMode ? 'text-[clamp(1rem,1.5vw,1.6rem)]' : 'text-sm sm:text-base'}`}>{tierLabel}</span>
           <span className={`font-black bg-white/20 rounded-full px-3 py-1 border border-white/30 ${isDisplayMode ? 'text-[clamp(0.85rem,1.2vw,1.3rem)]' : 'text-xs sm:text-sm'}`}>
-            {lang === 'vn' ? 'Câu' : 'Question'} {idx + 1} / {total}
+            {tr(lang, 'Question', 'Câu', 'Question')} {idx + 1} / {total}
           </span>
         </div>
 
@@ -690,18 +694,18 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
               className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-widest border-2 border-b-[4px] active:border-b-2 active:translate-y-[2px]
                 ${isRevealed ? 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400' : `${theme.bg} border-black/20 text-white`}`}>
               {isRevealed ? <EyeOff className="w-5 h-5" strokeWidth={2.5} /> : <Eye className="w-5 h-5" strokeWidth={2.5} />}
-              {isRevealed ? (lang === 'vn' ? 'Ẩn lời giải' : 'Hide solution') : (lang === 'vn' ? 'Xem lời giải' : 'Show solution')}
+              {isRevealed ? tr(lang, 'Hide solution', 'Ẩn lời giải', 'Masquer la solution') : tr(lang, 'Show solution', 'Xem lời giải', 'Voir la solution')}
             </button>
           ) : !result ? (
             // Answering: primary Check, secondary "I'm stuck".
             <div className="flex flex-col sm:flex-row gap-2">
               <button onClick={check} disabled={!isAnswerable(q, draft)}
                 className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-black text-base uppercase tracking-widest bg-[#58cc02] border-2 border-b-[4px] border-[#58a700] text-white hover:bg-[#4fb802] active:border-b-2 active:translate-y-[2px] transition-all disabled:opacity-40 disabled:pointer-events-none">
-                <CheckCircle2 className="w-5 h-5" strokeWidth={3} />{lang === 'vn' ? 'Kiểm tra' : 'Check'}
+                <CheckCircle2 className="w-5 h-5" strokeWidth={3} />{tr(lang, 'Check', 'Kiểm tra', 'Vérifier')}
               </button>
               <button onClick={reveal}
                 className="flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl font-black text-sm uppercase tracking-widest bg-white dark:bg-slate-800 border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:border-b-2 active:translate-y-[2px] transition-all">
-                <HelpCircle className="w-5 h-5" strokeWidth={2.5} />{lang === 'vn' ? 'Gợi ý' : "I'm stuck"}
+                <HelpCircle className="w-5 h-5" strokeWidth={2.5} />{tr(lang, "I'm stuck", 'Gợi ý', 'Je bloque')}
               </button>
             </div>
           ) : (
@@ -710,12 +714,12 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
               <button onClick={isRevealed ? hideSolution : reveal}
                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-widest bg-slate-100 dark:bg-slate-800 border-2 border-b-[4px] border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 active:border-b-2 active:translate-y-[2px]">
                 {isRevealed ? <EyeOff className="w-5 h-5" strokeWidth={2.5} /> : <Eye className="w-5 h-5" strokeWidth={2.5} />}
-                {isRevealed ? (lang === 'vn' ? 'Ẩn lời giải' : 'Hide solution') : (lang === 'vn' ? 'Xem lời giải' : 'Show solution')}
+                {isRevealed ? tr(lang, 'Hide solution', 'Ẩn lời giải', 'Masquer la solution') : tr(lang, 'Show solution', 'Xem lời giải', 'Voir la solution')}
               </button>
               {result.shown && (
                 <button onClick={retry}
                   className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-black text-sm uppercase tracking-widest bg-[#1cb0f6]/10 border-2 border-b-[4px] border-[#1cb0f6]/40 text-[#1899d6] dark:text-[#5cc4f7] active:border-b-2 active:translate-y-[2px]">
-                  <RotateCcw className="w-5 h-5" strokeWidth={2.5} />{lang === 'vn' ? 'Thử lại' : 'Try it'}
+                  <RotateCcw className="w-5 h-5" strokeWidth={2.5} />{tr(lang, 'Try it', 'Thử lại', 'Réessayer')}
                 </button>
               )}
             </div>
@@ -756,12 +760,12 @@ export default function Workbook({ pool, onComplete, onQuit, savedData = {}, onP
             <button onClick={finish}
               className="flex items-center px-5 sm:px-7 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase bg-[#58cc02] border-b-[4px] border-[#58a700] text-white hover:bg-[#46a802] active:border-b-0 active:translate-y-[4px] transition-all">
               <CheckCircle2 className="w-6 h-6 mr-2" strokeWidth={2.5} />
-              {lang === 'vn' ? 'Xong' : 'Done'}
+              {tr(lang, 'Done', 'Xong', 'Terminé')}
             </button>
           ) : (
             <button onClick={() => go(1)}
               className="flex items-center px-5 sm:px-8 py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg tracking-widest uppercase bg-[#1cb0f6] border-b-[4px] border-[#1899d6] text-white hover:bg-[#159bd9] active:border-b-0 active:translate-y-[4px] transition-all">
-              <span className="hidden sm:inline mr-1">{lang === 'vn' ? 'Tiếp' : 'Next'}</span>
+              <span className="hidden sm:inline mr-1">{tr(lang, 'Next', 'Tiếp', 'Suivant')}</span>
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={3} />
             </button>
           )}

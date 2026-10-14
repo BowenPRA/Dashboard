@@ -21,6 +21,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Substitute 15 for $$n$$: $$15 − 6 = 9$$. A added; C left the expression unfinished, which was last lesson\'s answer; D pushed digits together.',
       expVn: 'Thay 15 vào chỗ $$n$$: $$15 − 6 = 9$$. A cộng; C để nguyên biểu thức, là đáp án của bài trước; D ghép các chữ số lại.',
+      expFr: 'Remplace $$n$$ par 15 : $$15 − 6 = 9$$. A a additionné ; C a laissé l’expression inachevée, ce qui était la réponse de la leçon précédente ; D a collé les chiffres.',
     },
     {
       id: 'a2_formula',
@@ -35,6 +36,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'A formula is a rule with letters **and** an = sign: $$P = 2l + 2w$$. A and D are expressions (no = sign); B has an = sign but no letters.',
       expVn: 'Công thức là một quy tắc có chữ cái **và** dấu =: $$P = 2l + 2w$$. A và D là biểu thức (không có dấu =); B có dấu = nhưng không có chữ cái.',
+      expFr: 'Une formule est une règle avec des lettres **et** un signe = : $$P = 2l + 2w$$. A et D sont des expressions (pas de signe =) ; B a un signe = mais pas de lettres.',
     },
     {
       id: 'a3_hidden_times',
@@ -49,6 +51,7 @@ export const assessment = {
       correct: 'C',
       expEn: '$$7k$$ means $$7 × k$$. Put the × back: $$7 × 3 = 21$$. A pushed the digits together; B added; D subtracted.',
       expVn: '$$7k$$ nghĩa là $$7 × k$$. Viết lại dấu ×: $$7 × 3 = 21$$. A ghép các chữ số lại; B cộng; D trừ.',
+      expFr: '$$7k$$ veut dire $$7 × k$$. Remets le × : $$7 × 3 = 21$$. A a collé les chiffres ; B a additionné ; D a soustrait.',
     },
     {
       id: 'a4_order',
@@ -63,6 +66,7 @@ export const assessment = {
       correct: 'A',
       expEn: 'Multiply first: $$4 × 5 = 20$$, then add 3: $$23$$. B added first ($$5 + 3 = 8$$, then $$× 4$$); C added everything; D pushed the digits together.',
       expVn: 'Nhân trước: $$4 × 5 = 20$$, rồi cộng 3: $$23$$. B cộng trước ($$5 + 3 = 8$$, rồi $$× 4$$); C cộng tất cả; D ghép các chữ số lại.',
+      expFr: 'Multiplie d’abord : $$4 × 5 = 20$$, puis ajoute 3 : $$23$$. B a additionné d’abord ($$5 + 3 = 8$$, puis $$× 4$$) ; C a tout additionné ; D a collé les chiffres.',
     },
     {
       id: 'a5_negative',
@@ -77,6 +81,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'Brackets: $$10 − 3 × (−2) = 10 − (−6) = 10 + 6 = 16$$. A left the minus sign behind ($$10 − 6$$); C put the minus on the wrong answer; D subtracted before multiplying.',
       expVn: 'Dấu ngoặc: $$10 − 3 × (−2) = 10 − (−6) = 10 + 6 = 16$$. A bỏ quên dấu trừ ($$10 − 6$$); C đặt dấu trừ sai chỗ; D trừ trước khi nhân.',
+      expFr: 'Parenthèses : $$10 − 3 × (−2) = 10 − (−6) = 10 + 6 = 16$$. A a oublié le signe moins ($$10 − 6$$) ; C a mis le moins sur la mauvaise réponse ; D a soustrait avant de multiplier.',
     },
     {
       id: 'a6_word_problem',
@@ -91,6 +96,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Substitute $$k = 6$$: $$C = 8 + 2 × 6 = 8 + 12 = 20$$. A added first ($$8 + 2 = 10$$, then $$× 6$$); B forgot the 8; C pushed digits together.',
       expVn: 'Thay $$k = 6$$: $$C = 8 + 2 × 6 = 8 + 12 = 20$$. A cộng trước ($$8 + 2 = 10$$, rồi $$× 6$$); B quên số 8; C ghép các chữ số lại.',
+      expFr: 'Remplace avec $$k = 6$$ : $$C = 8 + 2 × 6 = 8 + 12 = 20$$. A a additionné d’abord ($$8 + 2 = 10$$, puis $$× 6$$) ; B a oublié le 8 ; C a collé les chiffres.',
     },
   ],
 };

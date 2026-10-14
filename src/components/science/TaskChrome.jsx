@@ -2,6 +2,7 @@ import React from 'react';
 import { CheckCircle2, XCircle, ChevronRight, Construction, RotateCcw, Trophy } from 'lucide-react';
 import { atomStyleOf } from './labMarking.js';
 import { elementBySymbol } from '../../utils/elements.js';
+import { tr } from '../../utils/lang.js';
 
 /**
  * The pieces Element Hunt and Particle Lab share: the ask header, chunky
@@ -158,7 +159,7 @@ export function AtomKey({ symbols, lang = 'en', label }) {
           <span key={sym} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-sm">
             <AtomSwatch sym={sym} />
             <span className="font-black text-slate-800 dark:text-slate-100">{sym}</span>
-            <span className="font-bold text-slate-500 dark:text-slate-400">{e ? (lang === 'vn' ? e.vn : e.en) : ''}</span>
+            <span className="font-bold text-slate-500 dark:text-slate-400">{e ? tr(lang, e.en, e.vn, e.fr) : ''}</span>
           </span>
         );
       })}

@@ -18,7 +18,13 @@ const params = new URLSearchParams(window.location.search);
 const TRACK = 'Y7_MATH';
 const UNIT = params.get('unit') || 'U01_2';
 const SLIDE = Number(params.get('slide'));
-const LANG = params.get('lang') === 'vn' ? 'vn' : 'en';
+const LANG = ['vn', 'fr'].includes(params.get('lang')) ? params.get('lang') : 'en';
+// `?lang=fr` (or `vn`) also opens every task in that language: the track's
+// list rotated to start there, since useLang opens on the first one offered.
+const openIn = (langs) => {
+  const i = langs.indexOf(LANG);
+  return i > 0 ? [...langs.slice(i), ...langs.slice(0, i)] : langs;
+};
 // `?open=NOTES` mounts a task straight away (with `?slide=N`, a whole deck can be
 // swept slide by slide from a script).
 const OPEN = params.get('open');
@@ -103,7 +109,7 @@ function Harness() {
     const Comp = def.component;
     return (
       <Suspense fallback={<div className="p-8 font-black">Loading {open}…</div>}>
-        <Comp langs={langsOf(ctx.track)} {...def.props(ctx)} />
+        <Comp langs={openIn(langsOf(ctx.track))} {...def.props(ctx)} />
       </Suspense>
     );
   }

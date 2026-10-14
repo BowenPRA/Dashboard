@@ -9,6 +9,8 @@ import {
 } from '../components/science/labMarking';
 import { makeLabSession, LAB_MODES, boxSvg, clusterSvg, particleCardSvg, formulaPretty } from '../utils/particles';
 import { elementBySymbol } from '../utils/elements';
+import { tr } from '../utils/lang';
+import useLang from '../hooks/useLang';
 
 /**
  * Particle Lab — Science 2.6 and 2.7's generative task. Rounds are drawn fresh
@@ -72,14 +74,37 @@ const T = {
     yes: 'Có', no: 'Không', box: 'Một hộp các hạt', particle: 'Một hạt',
     missed: 'Còn thiếu', notIn: 'Không có trong đó', substancesAre: (n) => `Có ${n} chất khác nhau.`,
   },
+  fr: {
+    title: 'Labo des particules', check: 'Vérifier', next: 'Suivant', results: 'Voir les résultats', finish: 'Terminer', again: 'Nouvelles particules',
+    empty: "Cette unité n'a pas de mode Labo des particules.", back: 'Retour', correct: 'Correct', wrong: 'Pas tout à fait', done: 'Labo terminé', right: 'justes',
+    ask: {
+      count: 'Compte les atomes de cette formule.',
+      formula: 'Écris la formule de cette particule.',
+      build: 'Construis une particule de cette substance.',
+      name: 'Quels éléments y a-t-il dans ce composé ?',
+      classify2: 'Cette boîte contient-elle un élément ou un composé ?',
+      classify3: 'Cette boîte contient-elle un élément, un composé ou un mélange ?',
+      pure: 'Cette boîte contient-elle un corps pur ou un mélange ?',
+      magnet: 'Un aimant attirerait-il le fer hors de cette boîte ?',
+    },
+    modes: { count: 'Compter les atomes', formula: 'Écrire la formule', build: 'Construire la particule', name: 'Lire le nom', classify: 'Élément, composé ou mélange', pure: 'Corps pur ou mélange', magnet: "Le test de l'aimant" },
+    elements: "Combien d'éléments différents ?", atoms: 'atomes', total: "Combien d'atomes en tout ?",
+    typeFormula: 'Écris la formule', tray: 'Ta particule', rightParticle: 'La bonne particule', addAtoms: 'Ajoute des atomes avec + et −, puis clique sur Vérifier.',
+    tapElements: "Touche chaque élément qu'il contient, puis clique sur Vérifier.", less: 'Un de moins', more: 'Un de plus',
+    element: 'Élément', compound: 'Composé', mixture: 'Mélange', pure: 'Corps pur', substances: 'Combien de substances différentes ?',
+    yes: 'Oui', no: 'Non', box: 'Une boîte de particules', particle: 'Une particule',
+    missed: 'Oubliés', notIn: 'Pas dedans', substancesAre: (n) => (n === 1 ? 'Il y a 1 substance.' : `Il y a ${n} substances différentes.`),
+  },
 };
 
 const EMPTY = { elements: '', per: {}, total: '', typed: '', tray: {}, chips: [], choice: null, count: '' };
 const MAX_ATOMS = 6;
 
 const askOf = (round, t) => (round.mode === 'classify' ? (round.withMixtures ? t.ask.classify3 : t.ask.classify2) : t.ask[round.mode]);
-const nameOfEl = (sym, L) => { const e = elementBySymbol(sym); return e ? (L === 'vn' ? e.vn : e.en) : sym; };
-const say = (o, L) => (o ? (L === 'vn' && o.vn ? o.vn : o.en) : '');
+const nameOfEl = (sym, L) => { const e = elementBySymbol(sym); return e ? tr(L, e.en, e.vn, e.fr) : sym; };
+const say = (o, L) => (o ? o[L] || o.en : '');
+// The translated name shown in brackets under the English one (not when the French is the English word: glucose).
+const twinOf = (name, L) => (L !== 'en' && name?.[L] && (L === 'vn' || name[L] !== name.en) ? name[L] : null);
 const INPUT_LOOK = {
   good: 'border-[#58a700] bg-[#d7ffb8] text-[#3e7500]',
   bad: 'border-rose-400 bg-rose-50 text-rose-600',
@@ -90,10 +115,11 @@ const INPUT_LOOK = {
 
 function NameLine({ name, L, className = '' }) {
   if (!name?.en) return null;
+  const twin = twinOf(name, L);
   return (
     <div className={`text-center ${className}`}>
       <div className="font-black text-xl sm:text-2xl text-slate-600 dark:text-slate-300">{name.en}</div>
-      {L === 'vn' && name.vn && <div className="font-bold text-sm text-slate-400">({name.vn})</div>}
+      {twin && <div className="font-bold text-sm text-slate-400">({twin})</div>}
     </div>
   );
 }
@@ -182,7 +208,7 @@ function Stage({ round, draft, checked, result, boxPicture, L, t }) {
     return (
       <Card className="p-6 flex flex-col items-center justify-center gap-1 min-h-[9rem] lg:min-h-[16rem] text-center">
         <div className="font-black text-4xl sm:text-5xl text-slate-800 dark:text-slate-100 break-words">{round.name?.en}</div>
-        {L === 'vn' && round.name?.vn && <div className="font-bold text-lg text-slate-400">({round.name.vn})</div>}
+        {twinOf(round.name, L) && <div className="font-bold text-lg text-slate-400">({twinOf(round.name, L)})</div>}
         {checked && <div className="mt-3 font-black text-4xl text-[#16a34a]">= <Formula formula={round.formula} /></div>}
       </Card>
     );
@@ -346,16 +372,18 @@ function LabVerdict({ round, result, L, t }) {
   } else if (round.mode === 'build') {
     lines.push(...(result.lines || []), explainBuild(round));
   } else if (round.mode === 'name') {
-    const both = (list) => ({ en: list.map((s) => `${s} (${nameOfEl(s, 'en')})`).join(', '), vn: list.map((s) => `${s} (${nameOfEl(s, 'vn')})`).join(', ') });
-    if (result.missed?.length) { const b = both(result.missed); lines.push({ en: `${T.en.missed}: ${b.en}.`, vn: `${T.vn.missed}: ${b.vn}.` }); }
-    if (result.extra?.length) { const b = both(result.extra); lines.push({ en: `${T.en.notIn}: ${b.en}.`, vn: `${T.vn.notIn}: ${b.vn}.` }); }
+    const named = (list, l) => list.map((s) => `${s} (${nameOfEl(s, l)})`).join(', ');
+    // French puts a space before the colon
+    const listLine = (key, list) => ({ en: `${T.en[key]}: ${named(list, 'en')}.`, vn: `${T.vn[key]}: ${named(list, 'vn')}.`, fr: `${T.fr[key]} : ${named(list, 'fr')}.` });
+    if (result.missed?.length) lines.push(listLine('missed', result.missed));
+    if (result.extra?.length) lines.push(listLine('notIn', result.extra));
     const ex = explainName(round);
     lines.push(...ex.lines, ex.summary);
   } else if (round.mode === 'classify') {
     lines.push(explainBox(round.verdict));
   } else if (round.mode === 'pure') {
     const n = round.verdict.substances.length;
-    if (!result.countOk) lines.push({ en: T.en.substancesAre(n), vn: T.vn.substancesAre(n) });
+    if (!result.countOk) lines.push({ en: T.en.substancesAre(n), vn: T.vn.substancesAre(n), fr: T.fr.substancesAre(n) });
     lines.push(explainPure(round.verdict));
   } else {
     lines.push(explainMagnet(round.verdict));
@@ -371,19 +399,20 @@ const summaryLabel = (round, t, L) => {
   const detail = round.mode === 'name' ? round.name?.en
     : round.formula ? formulaPretty(round.formula)
       : round.verdict ? round.verdict.substances.map(formulaPretty).join(' + ') : '';
-  return `${t.modes[round.mode]}${detail ? `: ${detail}` : ''}${L === 'vn' && round.mode === 'name' && round.name?.vn ? ` (${round.name.vn})` : ''}`;
+  const twin = round.mode === 'name' ? twinOf(round.name, L) : null;
+  return `${t.modes[round.mode]}${detail ? `${L === 'fr' ? ' : ' : ': '}${detail}` : ''}${twin ? ` (${twin})` : ''}`;
 };
 
 // ------------------------------------------------------------------ the task
 
-export default function ParticleLab({ pool, onComplete, onQuit, bilingual = true }) {
+export default function ParticleLab({ pool, onComplete, onQuit, bilingual = true, langs }) {
   const config = useMemo(() => pool || {}, [pool]);
   const [seed, setSeed] = useState(() => Date.now());
   const session = useMemo(
     () => ((config.modes || []).some((m) => LAB_MODES.includes(m)) ? makeLabSession(config, seed) : []),
     [config, seed],
   );
-  const [lang, setLang] = useState('en');
+  const { lang: L, toggleLang } = useLang({ langs, bilingual });
   const [idx, setIdx] = useState(0);
   const [draft, setDraft] = useState(EMPTY);
   const [result, setResult] = useState(null);   // this round's mark
@@ -393,8 +422,7 @@ export default function ParticleLab({ pool, onComplete, onQuit, bilingual = true
   const round = session[idx];
   const boxPicture = useMemo(() => (round?.particles ? boxSvg(round.particles, round.seed, BOX_OPTS) : ''), [round]);
 
-  const L = bilingual ? lang : 'en';
-  const t = T[L];
+  const t = T[L] || T.en;
 
   const runOf = (res) => {
     const items = session.map((r, i) => ({ itemId: `${r.mode}-${i + 1}`, correct: !!res[i] }));
@@ -411,9 +439,9 @@ export default function ParticleLab({ pool, onComplete, onQuit, bilingual = true
   if (!session.length) return <EmptyScreen text={t.empty} back={t.back} onQuit={onQuit} />;
 
   const topBar = (
-    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn }, L) || t.title}
+    <TopBar onQuit={quit} modeTitle={say({ en: config.title, vn: config.titleVn, fr: config.titleFr }, L) || t.title}
       current={ended ? session.length : idx + 1} total={session.length}
-      lang={bilingual ? lang : undefined} onLangToggle={bilingual ? () => setLang((l) => (l === 'en' ? 'vn' : 'en')) : undefined} />
+      lang={L} onLangToggle={toggleLang} />
   );
 
   const reset = () => { setDraft(EMPTY); setResult(null); };

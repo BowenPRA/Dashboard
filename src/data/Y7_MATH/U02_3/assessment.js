@@ -22,6 +22,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'Like terms have the same letters: $$8v$$ and $$v$$ (which is $$1v$$). A has the same number but different letters; B is $$t^2$$ against $$t$$, two different kinds; D is a number against a $$u$$ term.',
       expVn: 'Hạng tử đồng dạng có cùng chữ cái: $$8v$$ và $$v$$ (tức là $$1v$$). A có cùng con số nhưng khác chữ cái; B là $$t^2$$ với $$t$$, hai loại khác nhau; D là một số với một hạng tử $$u$$.',
+      expFr: 'Les termes semblables ont les mêmes lettres : $$8v$$ et $$v$$ (qui est $$1v$$). A a le même nombre mais des lettres différentes ; B, c’est $$t^2$$ contre $$t$$, deux sortes différentes ; D, c’est un nombre contre un terme en $$u$$.',
     },
     {
       id: 'a2_terms',
@@ -36,6 +37,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'The + and − signs separate five terms: $$3h$$, $$8$$, $$-2g$$, $$-h$$ and $$1$$. A counts the kinds ($$h$$, $$g$$ and numbers), not the terms; C misses a number on its own; D counts only the letters.',
       expVn: 'Các dấu + và − ngăn cách năm hạng tử: $$3h$$, $$8$$, $$-2g$$, $$-h$$ và $$1$$. A đếm số loại ($$h$$, $$g$$ và các số), không phải số hạng tử; C bỏ sót một số đứng riêng; D chỉ đếm các chữ cái.',
+      expFr: 'Les signes + et − séparent cinq termes : $$3h$$, $$8$$, $$-2g$$, $$-h$$ et $$1$$. A compte les sortes ($$h$$, $$g$$ et les nombres), pas les termes ; C oublie un nombre seul ; D ne compte que les lettres.',
     },
     {
       id: 'a3_invisible_one',
@@ -50,6 +52,7 @@ export const assessment = {
       correct: 'C',
       expEn: 'A lone $$z$$ is $$1z$$, so $$9z - 1z = 8z$$. A cancels the letters; B loses the letter, which never disappears; D treats the lone $$z$$ as nothing.',
       expVn: 'Chữ $$z$$ đứng riêng là $$1z$$, nên $$9z - 1z = 8z$$. A triệt tiêu các chữ cái; B làm mất chữ cái, trong khi chữ cái không bao giờ biến mất; D coi chữ $$z$$ đứng riêng như không có gì.',
+      expFr: 'Un $$z$$ seul, c’est $$1z$$, donc $$9z - 1z = 8z$$. A annule les lettres ; B perd la lettre, qui ne disparaît jamais ; D considère le $$z$$ seul comme rien.',
     },
     {
       id: 'a4_lost_sign',
@@ -64,6 +67,7 @@ export const assessment = {
       correct: 'B',
       expEn: 'The minus belongs to $$4a$$: $$6a - 4a = 2a$$, and $$2b + 5b = 7b$$. A left the minus sign behind; C joins unlike terms; D moved the minus sign onto the $$b$$ terms.',
       expVn: 'Dấu trừ thuộc về $$4a$$: $$6a - 4a = 2a$$, và $$2b + 5b = 7b$$. A bỏ quên dấu trừ; C gộp các hạng tử không đồng dạng; D chuyển dấu trừ sang các hạng tử $$b$$.',
+      expFr: 'Le moins appartient à $$4a$$ : $$6a - 4a = 2a$$, et $$2b + 5b = 7b$$. A a oublié le signe moins ; C réunit des termes non semblables ; D a déplacé le signe moins sur les termes en $$b$$.',
     },
     {
       id: 'a5_unlike',
@@ -78,6 +82,7 @@ export const assessment = {
       correct: 'D',
       expEn: '$$4k$$ is a $$k$$ term and $$7$$ is a number: no like terms, so $$4k + 7$$ is already in simplest form. A and B collect unlike terms; C multiplies them.',
       expVn: '$$4k$$ là hạng tử $$k$$ còn $$7$$ là một số: không có hạng tử đồng dạng, nên $$4k + 7$$ đã ở dạng gọn nhất. A và B gộp các hạng tử không đồng dạng; C nhân chúng với nhau.',
+      expFr: '$$4k$$ est un terme en $$k$$ et $$7$$ est un nombre : pas de termes semblables, donc $$4k + 7$$ est déjà sous forme réduite. A et B réduisent des termes non semblables ; C les multiplie.',
     },
     {
       id: 'a6_squared',
@@ -92,6 +97,7 @@ export const assessment = {
       correct: 'A',
       expEn: '$$x^2$$ and $$x$$ are different kinds. The $$x^2$$ terms make $$5x^2 + 1x^2 = 6x^2$$, and $$3x$$ stays. B collects $$x$$ with $$x^2$$; C reads $$x^2$$ as an $$x$$ term; D adds the powers, but collecting never changes the letters.',
       expVn: '$$x^2$$ và $$x$$ là hai loại khác nhau. Các hạng tử $$x^2$$ được $$5x^2 + 1x^2 = 6x^2$$, còn $$3x$$ giữ nguyên. B gộp $$x$$ với $$x^2$$; C đọc $$x^2$$ thành hạng tử $$x$$; D cộng các số mũ, nhưng gộp hạng tử không bao giờ làm đổi chữ cái.',
+      expFr: '$$x^2$$ et $$x$$ sont de sortes différentes. Les termes en $$x^2$$ donnent $$5x^2 + 1x^2 = 6x^2$$, et $$3x$$ reste. B réunit $$x$$ avec $$x^2$$ ; C lit $$x^2$$ comme un terme en $$x$$ ; D additionne les puissances, mais réduire ne change jamais les lettres.',
     },
     {
       id: 'a7_ab_ba',
@@ -106,6 +112,7 @@ export const assessment = {
       correct: 'A',
       expEn: '$$mn$$ and $$nm$$ are like terms, because $$m \\times n = n \\times m$$: $$7mn - 3mn = 4mn$$, and $$2 + 6 = 8$$. B left the minus sign behind; C adds the numbers to the $$mn$$ terms; D does not see that $$nm$$ is $$mn$$.',
       expVn: '$$mn$$ và $$nm$$ là hạng tử đồng dạng, vì $$m \\times n = n \\times m$$: $$7mn - 3mn = 4mn$$, và $$2 + 6 = 8$$. B bỏ quên dấu trừ; C cộng các số vào hạng tử $$mn$$; D không nhận ra $$nm$$ chính là $$mn$$.',
+      expFr: '$$mn$$ et $$nm$$ sont des termes semblables, car $$m \\times n = n \\times m$$ : $$7mn - 3mn = 4mn$$, et $$2 + 6 = 8$$. B a oublié le signe moins ; C ajoute les nombres aux termes en $$mn$$ ; D ne voit pas que $$nm$$, c’est $$mn$$.',
     },
     {
       id: 'a8_perimeter',
@@ -120,6 +127,7 @@ export const assessment = {
       correct: 'D',
       expEn: 'Add all four sides: $$3y + 2 + y + 3y + 2 + y = 8y + 4$$ metres. A only goes half way round; B adds the numbers to the $$y$$ terms; C forgets that each lone $$y$$ is $$1y$$.',
       expVn: 'Cộng cả bốn cạnh: $$3y + 2 + y + 3y + 2 + y = 8y + 4$$ mét. A mới đi nửa vòng; B cộng các số vào hạng tử $$y$$; C quên rằng mỗi chữ $$y$$ đứng riêng là $$1y$$.',
+      expFr: 'Additionne les quatre côtés : $$3y + 2 + y + 3y + 2 + y = 8y + 4$$ mètres. A ne fait que la moitié du tour ; B ajoute les nombres aux termes en $$y$$ ; C oublie que chaque $$y$$ seul vaut $$1y$$.',
     },
   ],
 };

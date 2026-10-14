@@ -7,8 +7,9 @@
 // hot-dog problem stands on its own with its photograph. LcmFinderWidget reveals
 // the multiples of the first number, then the second, rings the matches, then
 // boxes the lowest. It reuses the 1.1/1.2 Stage/Controls shell and takes the
-// deck's `lang` so its text is bilingual.
+// deck's `lang` so its text is trilingual (EN / VN / FR).
 import { useState } from 'react'
+import { tr as pick } from '../../../utils/lang'
 
 const TEAL = '#0087a8'
 const PURPLE = '#5c2483'
@@ -16,8 +17,6 @@ const ORANGE = '#c25e12'
 const GREEN = '#4a8b23'
 const RED = '#c8102e'
 const BLUE = '#1a5fa8'
-
-const pick = (lang, en, vn) => (lang === 'vn' ? (vn ?? en) : en)
 
 const Stage = ({ children, className = '' }) => (
   <div className={`flex-1 min-h-[210px] w-full bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-slate-200 dark:border-slate-700 shadow-inner relative flex flex-col p-3 sm:p-4 overflow-hidden ${className}`}>
@@ -45,19 +44,24 @@ const Controls = ({ children }) => (
 const PAIRS = [
   { a: 4, b: 6, ma: [4, 8, 12, 16, 20, 24], mb: [6, 12, 18, 24], lcm: 12,
     note: '12 and 24 are both in both lists. The LCM is the lowest of them: 12.',
-    noteVn: '12 và 24 đều có trong cả hai danh sách. BCNN là số nhỏ nhất: 12.' },
+    noteVn: '12 và 24 đều có trong cả hai danh sách. BCNN là số nhỏ nhất: 12.',
+    noteFr: '12 et 24 sont dans les deux listes. Le PPCM est le plus petit des deux : 12.' },
   { a: 3, b: 5, ma: [3, 6, 9, 12, 15, 18], mb: [5, 10, 15, 20, 25], lcm: 15,
     note: '3 and 5 share no factor, so the LCM is simply 3 × 5 = 15.',
-    noteVn: '3 và 5 không có thừa số chung, nên BCNN đơn giản là 3 × 5 = 15.' },
+    noteVn: '3 và 5 không có thừa số chung, nên BCNN đơn giản là 3 × 5 = 15.',
+    noteFr: '3 et 5 n’ont aucun diviseur commun, donc le PPCM est simplement 3 × 5 = 15.' },
   { a: 4, b: 8, ma: [4, 8, 12, 16, 20, 24], mb: [8, 16, 24, 32], lcm: 8,
     note: '4 divides into 8, so the LCM is just the bigger number, 8 — not 4 × 8 = 32.',
-    noteVn: '4 chia hết 8, nên BCNN chính là số lớn hơn, 8 — không phải 4 × 8 = 32.' },
+    noteVn: '4 chia hết 8, nên BCNN chính là số lớn hơn, 8 — không phải 4 × 8 = 32.',
+    noteFr: '4 divise 8, donc le PPCM est juste le plus grand nombre, 8 — pas 4 × 8 = 32.' },
   { a: 6, b: 9, ma: [6, 12, 18, 24, 30, 36], mb: [9, 18, 27, 36], lcm: 18,
     note: 'The book’s example. The first number in both lists is 18.',
-    noteVn: 'Ví dụ trong sách. Số đầu tiên có trong cả hai danh sách là 18.' },
+    noteVn: 'Ví dụ trong sách. Số đầu tiên có trong cả hai danh sách là 18.',
+    noteFr: 'L’exemple du livre. Le premier nombre dans les deux listes est 18.' },
   { a: 8, b: 12, ma: [8, 16, 24, 32], mb: [12, 24, 36], lcm: 24,
     note: 'The first number that appears in both lists is 24.',
-    noteVn: 'Số đầu tiên xuất hiện trong cả hai danh sách là 24.' },
+    noteVn: 'Số đầu tiên xuất hiện trong cả hai danh sách là 24.',
+    noteFr: 'Le premier nombre qui apparaît dans les deux listes est 24.' },
 ]
 
 // A chip: grey until its row is shown, then coloured; orange if it is a common
@@ -101,37 +105,37 @@ export const LcmFinderWidget = ({ lang = 'en' }) => {
   const isCommon = (n) => p.ma.includes(n) && p.mb.includes(n)
 
   const nextLabel =
-    step === 0 ? pick(lang, `Multiples of ${p.a}`, `Bội số của ${p.a}`)
-      : step === 1 ? pick(lang, `Multiples of ${p.b}`, `Bội số của ${p.b}`)
-        : step === 2 ? pick(lang, 'Find the matches', 'Tìm các số chung')
-          : step === 3 ? pick(lang, 'Show the LCM', 'Hiện BCNN')
-            : pick(lang, 'Next pair', 'Cặp tiếp theo')
+    step === 0 ? pick(lang, `Multiples of ${p.a}`, `Bội số của ${p.a}`, `Multiples de ${p.a}`)
+      : step === 1 ? pick(lang, `Multiples of ${p.b}`, `Bội số của ${p.b}`, `Multiples de ${p.b}`)
+        : step === 2 ? pick(lang, 'Find the matches', 'Tìm các số chung', 'Nombres communs')
+          : step === 3 ? pick(lang, 'Show the LCM', 'Hiện BCNN', 'Voir le PPCM')
+            : pick(lang, 'Next pair', 'Cặp tiếp theo', 'Paire suivante')
 
   return (
     <div className="w-full h-full flex flex-col select-none">
       <Stage>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            {pick(lang, 'LCM finder', 'Máy tìm BCNN')}
+            {pick(lang, 'LCM finder', 'Máy tìm BCNN', 'Trouve le PPCM')}
           </span>
           <span className="font-mono font-black text-xs text-slate-400 tabular-nums">{i + 1}/{PAIRS.length}</span>
         </div>
 
         <div className="rounded-xl border-2 px-3 py-2.5 mb-2 shrink-0 text-center" style={{ borderColor: TEAL, backgroundColor: `${TEAL}0f` }}>
           <p className="font-black text-slate-800 dark:text-slate-100 leading-snug text-base sm:text-lg lg:text-xl">
-            {pick(lang, `Find the lowest common multiple of ${p.a} and ${p.b}`, `Tìm bội số chung nhỏ nhất của ${p.a} và ${p.b}`)}
+            {pick(lang, `Find the lowest common multiple of ${p.a} and ${p.b}`, `Tìm bội số chung nhỏ nhất của ${p.a} và ${p.b}`, `Trouve le plus petit commun multiple de ${p.a} et ${p.b}`)}
           </p>
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar space-y-2.5 text-slate-800 dark:text-slate-100">
-          <MultRow label={pick(lang, `Multiples of ${p.a}`, `Bội số của ${p.a}`)} nums={p.ma} base={BLUE} show={step >= 1} lcm={p.lcm} isCommon={isCommon} step={step} />
-          <MultRow label={pick(lang, `Multiples of ${p.b}`, `Bội số của ${p.b}`)} nums={p.mb} base={RED} show={step >= 2} lcm={p.lcm} isCommon={isCommon} step={step} />
+          <MultRow label={pick(lang, `Multiples of ${p.a}`, `Bội số của ${p.a}`, `Multiples de ${p.a}`)} nums={p.ma} base={BLUE} show={step >= 1} lcm={p.lcm} isCommon={isCommon} step={step} />
+          <MultRow label={pick(lang, `Multiples of ${p.b}`, `Bội số của ${p.b}`, `Multiples de ${p.b}`)} nums={p.mb} base={RED} show={step >= 2} lcm={p.lcm} isCommon={isCommon} step={step} />
 
           {step >= 4 && (
             <div className="rounded-xl px-3 py-2 flex items-center gap-3 animate-in fade-in zoom-in-95 duration-300 border-2" style={{ borderColor: GREEN, backgroundColor: `${GREEN}12` }}>
-              <span className="text-[10px] font-black uppercase tracking-widest shrink-0" style={{ color: GREEN }}>{pick(lang, 'LCM', 'BCNN')}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest shrink-0" style={{ color: GREEN }}>{pick(lang, 'LCM', 'BCNN', 'PPCM')}</span>
               <span className="font-mono font-black text-2xl" style={{ color: GREEN }}>{p.lcm}</span>
-              <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300 leading-snug">{pick(lang, p.note, p.noteVn)}</span>
+              <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-300 leading-snug">{pick(lang, p.note, p.noteVn, p.noteFr)}</span>
             </div>
           )}
         </div>
@@ -143,14 +147,14 @@ export const LcmFinderWidget = ({ lang = 'en' }) => {
             onClick={() => go(Math.max(0, i - 1))}
             disabled={i === 0}
             className="px-3 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border-2 border-slate-200 dark:border-slate-600 text-slate-500 disabled:opacity-30 active:scale-95">
-            {pick(lang, 'Back', 'Lùi')}
+            {pick(lang, 'Back', 'Lùi', 'Retour')}
           </button>
           <button
             onClick={() => (step < 4 ? setStep(step + 1) : !last && go(i + 1))}
             disabled={step === 4 && last}
             className="flex-1 py-2.5 rounded-xl font-black text-sm uppercase tracking-widest text-white border-2 disabled:opacity-40 active:scale-95 transition-all"
             style={{ backgroundColor: step === 4 ? PURPLE : TEAL, borderColor: step === 4 ? PURPLE : TEAL }}>
-            {step === 4 && last ? pick(lang, 'That is the last one', 'Hết rồi') : nextLabel}
+            {step === 4 && last ? pick(lang, 'That is the last one', 'Hết rồi', 'C’est la dernière') : nextLabel}
           </button>
         </div>
       </Controls>

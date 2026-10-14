@@ -30,6 +30,7 @@
 import { useState } from 'react';
 import { Scissors, Undo2, RotateCcw, ArrowRight } from 'lucide-react';
 import { FIRST_20 } from '../../../utils/elements.js';
+import { tr } from '../../../utils/lang';
 
 const INK = '#2b2b2b';
 const KEY = '#c25e12';
@@ -41,8 +42,6 @@ const METAL = { fill: '#fbe7a1', stroke: '#b8912a' };
 const NONMETAL = { fill: '#cfe5f5', stroke: '#4f8fbf' };
 const PLAIN = { fill: '#ffffff', stroke: '#8a979e' };
 const OFF = { fill: '#eef1f4', stroke: '#d5dbe1', text: '#b8c1ca', name: '#c8d0d7' };
-
-const tr = (lang, en, vn) => (lang === 'vn' ? vn : en);
 
 function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
   const tones = {
@@ -67,13 +66,13 @@ function Btn({ onClick, disabled, tone = 'teal', icon: Icon, children }) {
  * ============================================================= */
 const LAST_CUT = 25;
 const MILESTONES = [
-  { n: 0, en: 'gold cube', vn: 'khối vàng', longEn: 'a 1 cm gold cube', longVn: 'khối vàng rộng 1 cm' },
-  { n: 3, en: 'sand', vn: 'hạt cát', longEn: 'a grain of sand', longVn: 'một hạt cát' },
-  { n: 7, en: 'hair', vn: 'sợi tóc', longEn: 'as thin as a hair', longVn: 'mỏng như sợi tóc' },
-  { n: 9, en: 'cell', vn: 'tế bào', longEn: 'one cell (Unit 1)', longVn: 'một tế bào (Chương 1)' },
-  { n: 13, en: 'bacterium', vn: 'vi khuẩn', longEn: 'a bacterium', longVn: 'một vi khuẩn' },
-  { n: 17, en: 'virus', vn: 'vi-rút', longEn: 'a virus', longVn: 'một vi-rút' },
-  { n: 25, en: 'atom', vn: 'nguyên tử', longEn: 'ONE GOLD ATOM', longVn: 'MỘT NGUYÊN TỬ VÀNG' },
+  { n: 0, en: 'gold cube', vn: 'khối vàng', fr: 'cube d’or', longEn: 'a 1 cm gold cube', longVn: 'khối vàng rộng 1 cm', longFr: 'un cube d’or de 1 cm' },
+  { n: 3, en: 'sand', vn: 'hạt cát', fr: 'sable', longEn: 'a grain of sand', longVn: 'một hạt cát', longFr: 'un grain de sable' },
+  { n: 7, en: 'hair', vn: 'sợi tóc', fr: 'cheveu', longEn: 'as thin as a hair', longVn: 'mỏng như sợi tóc', longFr: 'fin comme un cheveu' },
+  { n: 9, en: 'cell', vn: 'tế bào', fr: 'cellule', longEn: 'one cell (Unit 1)', longVn: 'một tế bào (Chương 1)', longFr: 'une cellule (unité 1)' },
+  { n: 13, en: 'bacterium', vn: 'vi khuẩn', fr: 'bactérie', longEn: 'a bacterium', longVn: 'một vi khuẩn', longFr: 'une bactérie' },
+  { n: 17, en: 'virus', vn: 'vi-rút', fr: 'virus', longEn: 'a virus', longVn: 'một vi-rút', longFr: 'un virus' },
+  { n: 25, en: 'atom', vn: 'nguyên tử', fr: 'atome', longEn: 'ONE GOLD ATOM', longVn: 'MỘT NGUYÊN TỬ VÀNG', longFr: 'UN ATOME D’OR' },
 ];
 
 // 10 mm halved n times, written out in full so the zeros do the work:
@@ -99,19 +98,19 @@ export function HalvingWidget({ lang = 'en' }) {
 
           {/* counter */}
           <rect x="20" y="16" width="340" height="262" rx="18" fill="#fdf1e3" stroke={KEY} strokeWidth="3" />
-          <text x="190" y="66" fontFamily={FONT} fontSize="30" fontWeight="bold" fill={INK} textAnchor="middle">{tr(lang, 'Cut in half', 'Cắt đôi')}</text>
+          <text x="190" y="66" fontFamily={FONT} fontSize="30" fontWeight="bold" fill={INK} textAnchor="middle">{tr(lang, 'Cut in half', 'Cắt đôi', 'Couper en deux')}</text>
           <text x="190" y="214" fontFamily={FONT} fontSize="140" fontWeight="bold" fill={KEY} textAnchor="middle">{n}</text>
-          <text x="190" y="260" fontFamily={FONT} fontSize="30" fill={INK} textAnchor="middle">{tr(lang, n === 1 ? 'time' : 'times', 'lần')}</text>
+          <text x="190" y="260" fontFamily={FONT} fontSize="30" fill={INK} textAnchor="middle">{tr(lang, n === 1 ? 'time' : 'times', 'lần', 'fois')}</text>
 
           {/* width read-out */}
-          <text x="740" y="70" fontFamily={FONT} fontSize="28" fill={MUTED} textAnchor="middle">{tr(lang, 'How wide?', 'Rộng bao nhiêu?')}</text>
+          <text x="740" y="70" fontFamily={FONT} fontSize="28" fill={MUTED} textAnchor="middle">{tr(lang, 'How wide?', 'Rộng bao nhiêu?', 'Quelle largeur ?')}</text>
           <text x="740" y="160" fontFamily={FONT} fontSize="76" fontWeight="bold" fill={INK} textAnchor="middle">{widthMm(n)} mm</text>
           {here ? (
             <text x="740" y="236" fontFamily={FONT} fontSize={n === LAST_CUT ? 46 : 38} fontWeight="bold" fill={KEY} textAnchor="middle">
-              {n === 0 ? tr(lang, here.longEn, here.longVn) : `≈ ${tr(lang, here.longEn, here.longVn)}`}
+              {n === 0 ? tr(lang, here.longEn, here.longVn, here.longFr) : `≈ ${tr(lang, here.longEn, here.longVn, here.longFr)}`}
             </text>
           ) : (
-            <text x="740" y="236" fontFamily={FONT} fontSize="34" fill="#9aa5ae" textAnchor="middle">{tr(lang, 'Keep cutting…', 'Cắt tiếp…')}</text>
+            <text x="740" y="236" fontFamily={FONT} fontSize="34" fill="#9aa5ae" textAnchor="middle">{tr(lang, 'Keep cutting…', 'Cắt tiếp…', 'Continue à couper…')}</text>
           )}
 
           {/* track */}
@@ -132,7 +131,7 @@ export function HalvingWidget({ lang = 'en' }) {
               <g key={m.n}>
                 <line x1={trackX(m.n)} y1="341" x2={trackX(m.n)} y2={y - 22} stroke={reached ? KEY : '#c3cbd2'} strokeWidth="2" />
                 <text x={lx} y={y} fontFamily={FONT} fontSize="22" fontWeight={reached ? 'bold' : 'normal'} fill={reached ? KEY : '#9aa5ae'} textAnchor={anchor}>
-                  {tr(lang, m.en, m.vn)}
+                  {tr(lang, m.en, m.vn, m.fr)}
                 </text>
               </g>
             );
@@ -141,9 +140,9 @@ export function HalvingWidget({ lang = 'en' }) {
       </div>
 
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
-        <Btn tone="slate" icon={Undo2} disabled={n === 0} onClick={() => setN((v) => Math.max(0, v - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-        <Btn tone="orange" icon={Scissors} disabled={n === LAST_CUT} onClick={() => setN((v) => Math.min(LAST_CUT, v + 1))}>{tr(lang, 'Cut in half', 'Cắt đôi')}</Btn>
-        <Btn tone="teal" icon={RotateCcw} disabled={n === 0} onClick={() => setN(0)}>{tr(lang, 'Start again', 'Làm lại')}</Btn>
+        <Btn tone="slate" icon={Undo2} disabled={n === 0} onClick={() => setN((v) => Math.max(0, v - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+        <Btn tone="orange" icon={Scissors} disabled={n === LAST_CUT} onClick={() => setN((v) => Math.min(LAST_CUT, v + 1))}>{tr(lang, 'Cut in half', 'Cắt đôi', 'Couper en deux')}</Btn>
+        <Btn tone="teal" icon={RotateCcw} disabled={n === 0} onClick={() => setN(0)}>{tr(lang, 'Start again', 'Làm lại', 'Recommencer')}</Btn>
       </div>
     </div>
   );
@@ -190,10 +189,10 @@ function PeriodicTable({ lang = 'en', mode }) {
       bands = [sel.kind === 'period' ? periodBand(sel.idx) : groupBand(sel.idx)];
     }
     status = !sel
-      ? tr(lang, 'The first 20 elements', '20 nguyên tố đầu tiên')
+      ? tr(lang, 'The first 20 elements', '20 nguyên tố đầu tiên', 'Les 20 premiers éléments')
       : sel.kind === 'period'
-        ? tr(lang, `A row is called a period · period ${sel.idx}`, `Một hàng gọi là một chu kì · chu kì ${sel.idx}`)
-        : tr(lang, `A column is called a group · group ${sel.idx}`, `Một cột gọi là một nhóm · nhóm ${sel.idx}`);
+        ? tr(lang, `A row is called a period · period ${sel.idx}`, `Một hàng gọi là một chu kì · chu kì ${sel.idx}`, `Une ligne s’appelle une période · période ${sel.idx}`)
+        : tr(lang, `A column is called a group · group ${sel.idx}`, `Một cột gọi là một nhóm · nhóm ${sel.idx}`, `Une colonne s’appelle un groupe · groupe ${sel.idx}`);
   }
 
   if (mode === 'mass') {
@@ -205,9 +204,9 @@ function PeriodicTable({ lang = 'en', mode }) {
           : { ...OFF, sw: 1.5 };
     const cur = FIRST_20[step - 1];
     status = step === 0
-      ? tr(lang, 'Press Next atom: the lightest atom first', 'Bấm Nguyên tử tiếp: nguyên tử nhẹ nhất trước')
-      : `${step}. ${cur.en}${lang === 'vn' ? ` (${cur.vn})` : ''}` +
-        (step === 1 ? tr(lang, ' — the lightest', ' — nhẹ nhất') : step === 20 ? tr(lang, ' — the heaviest here', ' — nặng nhất ở đây') : '');
+      ? tr(lang, 'Press Next atom: the lightest atom first', 'Bấm Nguyên tử tiếp: nguyên tử nhẹ nhất trước', 'Appuie sur Atome suivant : l’atome le plus léger d’abord')
+      : `${step}. ${cur.en}${tr(lang, '', ` (${cur.vn})`, ` (${cur.fr})`)}` +
+        (step === 1 ? tr(lang, ' — the lightest', ' — nhẹ nhất', ' — le plus léger') : step === 20 ? tr(lang, ' — the heaviest here', ' — nặng nhất ở đây', ' — le plus lourd ici') : '');
   }
 
   if (mode === 'metals') {
@@ -219,10 +218,10 @@ function PeriodicTable({ lang = 'en', mode }) {
           ? { ...bookColour(el), text: INK, name: MUTED, sw: step === 3 ? 1.5 : 2.5 }
           : { ...OFF, sw: 1.5 };
     status = [
-      tr(lang, 'Metals and non-metals', 'Kim loại và phi kim'),
-      tr(lang, 'Metals: the yellow boxes', 'Kim loại: các ô màu vàng'),
-      tr(lang, 'Non-metals: the blue boxes', 'Phi kim: các ô màu xanh'),
-      tr(lang, 'Similar elements sit close together', 'Các nguyên tố giống nhau nằm gần nhau'),
+      tr(lang, 'Metals and non-metals', 'Kim loại và phi kim', 'Métaux et non-métaux'),
+      tr(lang, 'Metals: the yellow boxes', 'Kim loại: các ô màu vàng', 'Métaux : les cases jaunes'),
+      tr(lang, 'Non-metals: the blue boxes', 'Phi kim: các ô màu xanh', 'Non-métaux : les cases bleues'),
+      tr(lang, 'Similar elements sit close together', 'Các nguyên tố giống nhau nằm gần nhau', 'Les éléments qui se ressemblent sont proches'),
     ][step];
   }
 
@@ -237,12 +236,12 @@ function PeriodicTable({ lang = 'en', mode }) {
     if (picked) {
       bands = [periodBand(picked.period), ...(picked.group ? [groupBand(picked.group)] : [])];
       const where = picked.group
-        ? tr(lang, `period ${picked.period}, group ${picked.group}`, `chu kì ${picked.period}, nhóm ${picked.group}`)
-        : tr(lang, `period ${picked.period}, no group`, `chu kì ${picked.period}, không thuộc nhóm nào`);
-      status = `${picked.sym} · ${picked.en}${lang === 'vn' ? ` (${picked.vn})` : ''} · ${where} · ` +
-        (picked.metal ? tr(lang, 'a metal', 'kim loại') : tr(lang, 'a non-metal', 'phi kim'));
+        ? tr(lang, `period ${picked.period}, group ${picked.group}`, `chu kì ${picked.period}, nhóm ${picked.group}`, `période ${picked.period}, groupe ${picked.group}`)
+        : tr(lang, `period ${picked.period}, no group`, `chu kì ${picked.period}, không thuộc nhóm nào`, `période ${picked.period}, sans groupe`);
+      status = `${picked.sym} · ${picked.en}${tr(lang, '', ` (${picked.vn})`, ` (${picked.fr})`)} · ${where} · ` +
+        (picked.metal ? tr(lang, 'a metal', 'kim loại', 'un métal') : tr(lang, 'a non-metal', 'phi kim', 'un non-métal'));
     } else {
-      status = tr(lang, 'Tap an element', 'Chạm vào một nguyên tố');
+      status = tr(lang, 'Tap an element', 'Chạm vào một nguyên tố', 'Touche un élément');
     }
   }
 
@@ -298,26 +297,26 @@ function PeriodicTable({ lang = 'en', mode }) {
       <div className="shrink-0 flex items-center justify-center gap-3 flex-wrap">
         {mode === 'rowscols' && (
           <>
-            <Btn tone="orange" icon={ArrowRight} onClick={() => cycle('period', 4)}>{tr(lang, 'Next row', 'Hàng tiếp')}</Btn>
-            <Btn tone="orange" icon={ArrowRight} onClick={() => cycle('group', 8)}>{tr(lang, 'Next column', 'Cột tiếp')}</Btn>
-            <Btn tone="slate" icon={RotateCcw} disabled={!sel} onClick={() => setSel(null)}>{tr(lang, 'Clear', 'Xóa')}</Btn>
+            <Btn tone="orange" icon={ArrowRight} onClick={() => cycle('period', 4)}>{tr(lang, 'Next row', 'Hàng tiếp', 'Ligne suivante')}</Btn>
+            <Btn tone="orange" icon={ArrowRight} onClick={() => cycle('group', 8)}>{tr(lang, 'Next column', 'Cột tiếp', 'Colonne suivante')}</Btn>
+            <Btn tone="slate" icon={RotateCcw} disabled={!sel} onClick={() => setSel(null)}>{tr(lang, 'Clear', 'Xóa', 'Effacer')}</Btn>
           </>
         )}
         {mode === 'mass' && (
           <>
-            <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((v) => Math.max(0, v - 1))}>{tr(lang, 'Back', 'Lùi')}</Btn>
-            <Btn tone="orange" icon={ArrowRight} disabled={step === 20} onClick={() => setStep((v) => Math.min(20, v + 1))}>{tr(lang, 'Next atom', 'Nguyên tử tiếp')}</Btn>
-            <Btn tone="teal" icon={RotateCcw} disabled={step === 0} onClick={() => setStep(0)}>{tr(lang, 'Start again', 'Làm lại')}</Btn>
+            <Btn tone="slate" icon={Undo2} disabled={step === 0} onClick={() => setStep((v) => Math.max(0, v - 1))}>{tr(lang, 'Back', 'Lùi', 'Retour')}</Btn>
+            <Btn tone="orange" icon={ArrowRight} disabled={step === 20} onClick={() => setStep((v) => Math.min(20, v + 1))}>{tr(lang, 'Next atom', 'Nguyên tử tiếp', 'Atome suivant')}</Btn>
+            <Btn tone="teal" icon={RotateCcw} disabled={step === 0} onClick={() => setStep(0)}>{tr(lang, 'Start again', 'Làm lại', 'Recommencer')}</Btn>
           </>
         )}
         {mode === 'metals' && (
           <>
-            <Btn tone="orange" icon={ArrowRight} disabled={step === 3} onClick={() => setStep((v) => Math.min(3, v + 1))}>{tr(lang, 'Next', 'Tiếp')}</Btn>
-            <Btn tone="teal" icon={RotateCcw} disabled={step === 0} onClick={() => setStep(0)}>{tr(lang, 'Start again', 'Làm lại')}</Btn>
+            <Btn tone="orange" icon={ArrowRight} disabled={step === 3} onClick={() => setStep((v) => Math.min(3, v + 1))}>{tr(lang, 'Next', 'Tiếp', 'Suivant')}</Btn>
+            <Btn tone="teal" icon={RotateCcw} disabled={step === 0} onClick={() => setStep(0)}>{tr(lang, 'Start again', 'Làm lại', 'Recommencer')}</Btn>
           </>
         )}
         {mode === 'explore' && (
-          <Btn tone="slate" icon={RotateCcw} disabled={!sel} onClick={() => setSel(null)}>{tr(lang, 'Clear', 'Xóa')}</Btn>
+          <Btn tone="slate" icon={RotateCcw} disabled={!sel} onClick={() => setSel(null)}>{tr(lang, 'Clear', 'Xóa', 'Effacer')}</Btn>
         )}
       </div>
     </div>

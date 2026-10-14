@@ -3,6 +3,7 @@ import {
   Trophy, ClipboardCheck, Wrench, Check, X, BookOpen, RotateCcw, ChevronRight, Sparkles,
 } from 'lucide-react';
 import { deckItems } from '../../utils/notesReview';
+import { tr } from '../../utils/lang';
 
 /**
  * The end-of-lesson results for a Notes deck: every check and activity, right
@@ -48,13 +49,29 @@ const REVIEW_T = {
     startOver: 'Làm lại từ đầu',
     activity: 'Hoạt động',
   },
+  fr: {
+    lessonDone: 'Leçon terminée',
+    right: (r, n) => `${r} sur ${n} justes`,
+    fixIntro: (k) => `Corrige ${k === 1 ? 'ton erreur' : `tes ${k} erreurs`} pour avoir tous les points. Tu refais seulement ce qui était faux — tes bonnes réponses sont gardées.`,
+    allRight: 'Tous les points — tout est juste.',
+    allFixed: 'Tout est corrigé — tous les points !',
+    fixAll: (k) => `Corriger mes erreurs (${k})`,
+    questions: 'Questions',
+    slide: (n) => `Diapo ${n}`,
+    fixed: 'Corrigé',
+    redo: 'Refaire',
+    view: 'Voir',
+    readAgain: 'Relire la leçon',
+    startOver: 'Recommencer',
+    activity: 'Activité',
+  },
 };
 
 const labelOf = ({ check, activity }, slide, lang) => {
-  const pick = (en, vn) => (lang === 'vn' ? (vn || en) : en);
-  if (check) return pick(check.q, check.qVn);
-  if (activity?.prompt) return pick(activity.prompt, activity.promptVn);
-  return pick(slide?.title, slide?.titleVn) || '';
+  const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
+  if (check) return pick(check.q, check.qVn, check.qFr);
+  if (activity?.prompt) return pick(activity.prompt, activity.promptVn, activity.promptFr);
+  return pick(slide?.title, slide?.titleVn, slide?.titleFr) || '';
 };
 
 export default function NotesReview({
