@@ -546,7 +546,7 @@ export const notes = [
     icon: 'Activity',
     eyebrow: 'Spread 9.7 · induced e.m.f. in a moving wire',
     title: 'Electromagnetic Induction',
-    ratio: 50,
+    ratio: 55,
     inlineSvg: DIAGRAMS.INDUCED_WIRE,
     drawThis: true,
     content:

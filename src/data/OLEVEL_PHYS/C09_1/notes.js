@@ -476,11 +476,11 @@ export const notes = [
     icon: 'Magnet',
     eyebrow: 'Spread 9.2 · field lines',
     title: 'The Magnetic Field',
-    ratio: 45,
+    ratio: 50,
     inlineSvg: DIAGRAMS.FIELD_LINES_BAR,
     drawThis: true,
     content:
-      'The filings line up because there is a **magnetic field** around the magnet. It pushes and pulls on magnetic materials in it.\n\n' +
+      'The filings line up because there is a **magnetic field** around the magnet.\n\n' +
       'Field lines run from the **N pole to the S pole**. The field is **strongest where the lines are closest** — at the poles.',
     notes: [
       {
