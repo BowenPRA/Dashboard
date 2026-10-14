@@ -1,4 +1,4 @@
-import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical, TestTubes, Trophy } from 'lucide-react';
+import { Atom, Leaf, Languages, Calculator, BookOpen, Landmark, FlaskConical, Sigma, Puzzle, Orbit, Gamepad2, MonitorSmartphone, Variable, Microscope, SquareRadical, TestTubes, Trophy, Zap } from 'lucide-react';
 
 /**
  * The one place a track is defined.
@@ -300,6 +300,33 @@ export const TRACK_REGISTRY = [
       text: 'text-lime-600 dark:text-lime-400',
       ambient1: 'bg-lime-400', ambient2: 'bg-green-500',
       glow: 'hover:border-lime-400 dark:hover:border-lime-600',
+    },
+  },
+  {
+    // Cambridge O Level Physics (5054), built from the chapters of Complete
+    // Physics for Cambridge IGCSE (Oxford), the book the student's course reads
+    // from. A unit is one or two of the book's two-page spreads, cut where the
+    // physics changes; a section is one chapter (C09_ is Chapter 9, Magnets and
+    // currents). docs/olevel-phys-course.md maps every spread to its unit.
+    id: 'OLEVEL_PHYS',
+    title: 'O Level Physics',
+    desc: 'Cambridge O Level 5054 · Complete Physics chapters',
+    icon: Zap,
+    group: 'Cambridge',
+    // English-only, like IGCSE_CHEM: the paper is sat in English and "induced",
+    // "solenoid", "commutator" are the marks.
+    bilingual: false,
+    // One section per book chapter, matched by unit-id prefix (C09_2 is the
+    // second unit cut from Chapter 9). A new chapter needs a row, or it falls
+    // into "More".
+    sections: [
+      { prefix: 'C09_', label: 'Chapter 9', title: 'Magnets and Currents' },
+    ],
+    theme: {
+      bg: 'bg-blue-600', border: 'border-blue-800', hover: 'hover:bg-blue-500',
+      text: 'text-blue-700 dark:text-blue-300',
+      ambient1: 'bg-blue-500', ambient2: 'bg-indigo-500',
+      glow: 'hover:border-blue-500 dark:hover:border-blue-700',
     },
   },
   {
