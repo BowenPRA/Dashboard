@@ -317,6 +317,11 @@ def build_layout_narration(slide):
             pieces.append(val)
     return speechify(". ".join(pieces))
 
+def unescape_js(s):
+    """Undo the quote escapes a JS string literal needs (\\' \\" \\`), so the
+    narrated text and the vocab filename carry the apostrophe, not a backslash."""
+    return re.sub(r"\\(['\"`])", r"\1", s or "")
+
 def parse_js_to_dict(filepath):
     data = {
         "realWords": [],
@@ -343,15 +348,20 @@ def parse_js_to_dict(filepath):
         if rw_block:
             blocks = extract_objects(rw_block)
             for block in blocks:
-                word_m = re.search(r'word\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
-                def_m = re.search(r'def\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
-                sent_m = re.search(r'sent\s*:\s*(["\'`])(.*?)\1', block, re.DOTALL)
-                
+                # Escape-aware, like the slide regex in build_layout_narration:
+                # `(.*?)\1` stopped at the first quote even when it was escaped,
+                # so a def written 'a magnet\'s force' narrated as "a magnet",
+                # and a word with an escaped apostrophe would have put a
+                # backslash into its filename (OLEVEL_PHYS, 2026-10-14).
+                word_m = re.search(r'word\s*:\s*(["\'`])((?:\\.|[^\\])*?)\1', block, re.DOTALL)
+                def_m = re.search(r'def\s*:\s*(["\'`])((?:\\.|[^\\])*?)\1', block, re.DOTALL)
+                sent_m = re.search(r'sent\s*:\s*(["\'`])((?:\\.|[^\\])*?)\1', block, re.DOTALL)
+
                 if word_m:
                     data["realWords"].append({
-                        "word": word_m.group(2).strip(),
-                        "def": def_m.group(2).strip() if def_m else "",
-                        "sent": sent_m.group(2).strip() if sent_m else ""
+                        "word": unescape_js(word_m.group(2)).strip(),
+                        "def": unescape_js(def_m.group(2)).strip() if def_m else "",
+                        "sent": unescape_js(sent_m.group(2)).strip() if sent_m else ""
                     })
 
         # 3. Extract dictation

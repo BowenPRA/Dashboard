@@ -61,6 +61,17 @@ status* section so it can be closed deliberately.
   Spectator Strike: the method each one stages, the item schema, how it is marked, and
   what the validator checks.
 
+### O Level Physics (new)
+
+- [olevel-phys-course.md](olevel-phys-course.md) — **start here.** The `OLEVEL_PHYS` track
+  (Cambridge O Level 5054), built from the chapters of *Complete Physics for Cambridge
+  IGCSE*: one or two spreads make a unit, one chapter makes a section. The light unit
+  shape the teacher asked for (Notes · Vocab · Questions · Source Analysis · Quiz — no
+  workbook, no engine), the physics colour code, the conventions that are content
+  (conventional current, N → S, Fleming's left hand), and the Chapter 9 map. Three units
+  are built (`C09_1`–`C09_3`), with a one-page plan each under `olevel-phys/plans/` and the
+  standing [olevel-phys/AUTHORING-BRIEF.md](olevel-phys/AUTHORING-BRIEF.md).
+
 ### Year 7 Cambridge Math (new)
 
 - [y7-math-course.md](y7-math-course.md) — **start here.** The course spine: how a

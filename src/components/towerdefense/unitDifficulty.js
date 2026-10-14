@@ -290,6 +290,32 @@ export const TRACK_LEVELS = {
       blurb: 'Hard, dense and slow to react. Hold the middle of the table.',
     },
   },
+  // O Level Physics (Complete Physics chapters). Hand-authored like every
+  // science track: `tierForUnit` cannot parse `C09_1`. Chapter 9 climbs from
+  // tier 1 (magnets) to tier 2 (motors and induction) with the physics.
+  OLEVEL_PHYS: {
+    // Magnets and fields: two like poles face each other across the road, and
+    // the one place the pull cancels is where the enemy walks.
+    C09_1: {
+      mapId: 'JUNCTION', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Neutral Point',
+      blurb: 'Two like poles, one road between them. Where the fields cancel, nothing is pulled either way — hold that spot.',
+    },
+    // Coils and electromagnets: the road winds round and round like a
+    // solenoid, and every extra turn makes the field stronger.
+    C09_2: {
+      mapId: 'SPIRAL', themeId: 'STANDARD', tier: 1,
+      mapName: 'The Solenoid',
+      blurb: 'Round and round the coil the road winds. More turns, more current, more pull — switch it on.',
+    },
+    // Motors and induction: the loop closes on itself like a circuit, and the
+    // current flips every half turn to keep the motor going the same way.
+    C09_3: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 2,
+      mapName: 'The Split Ring',
+      blurb: 'Half a turn, then the current flips. Keep the coil turning the same way, wave after wave.',
+    },
+  },
   // The standalone Arcade track (see src/views/Arcade.jsx). Its "units" are not
   // lessons — they are the game's own campaign, a designed six-level ladder both
   // cabinets share. Level ids are `ARC_*`, deliberately unlike any lesson unit
