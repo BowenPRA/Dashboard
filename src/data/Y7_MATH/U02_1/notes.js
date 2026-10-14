@@ -294,7 +294,7 @@ export const notes = [
     contentVn:
       'Thầy Bowen hoà tan **s gam** muối. Lan hoà tan **nhiều hơn thầy Bowen hai gam**. Lan dùng bao nhiêu muối?\n\n' +
       'Muối tan ra và biến mất. Nó vẫn là **s gam** — chỉ là em không nhìn thấy nữa. Chữ cái trong đại số cũng hoạt động đúng như vậy. Lan dùng **s + 2**.',
-    contentFr: 'M. Bowen dissout **s grammes** de sel. Lan dissout **deux grammes de plus que M. Bowen**. Combien de sel Lan utilise-t-elle ?\n\nLe sel se dissout et disparaît. Il y a toujours **s grammes** — tu ne peux juste plus le voir. C’est exactement ce que fait une lettre. Lan utilise **s + 2**.',
+    contentFr: 'M. Bowen dissout **s grammes** de sel. Lan en dissout **deux grammes de plus que M. Bowen**. Combien Lan en utilise-t-elle ?\n\nLe sel disparaît, mais il y a toujours **s grammes** — tu ne le vois plus, c’est tout. C’est exactement ce que fait une lettre. Lan utilise **s + 2**.',
     notes: [
       {
         tone: 'write',
@@ -304,7 +304,7 @@ export const notes = [
         textVn:
           '**more than** (nhiều hơn) → cộng · **less than / fewer than** (ít hơn) → trừ\n' +
           '**times as many / as much** (gấp … lần) → nhân · **half as much** (bằng một nửa) → chia cho 2',
-        textFr: '**more than** (plus que) → additionner · **less than** / **fewer than** (moins que) → soustraire\n**times as many / as much** (… fois plus) → multiplier · **half as much** (la moitié) → diviser par 2',
+        textFr: '**more than** (plus que) → + · **less than** / **fewer than** (moins que) → −\n**times as many / as much** (… fois plus) → × · **half as much** (la moitié) → ÷ 2',
       },
     ],
     activity: {

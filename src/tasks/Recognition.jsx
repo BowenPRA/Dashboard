@@ -42,10 +42,13 @@ const buildQuiz = (pool = []) => {
   }));
 };
 
-export default function Recognition({ pool = [], track, unitId, onComplete, onQuit }) {
+export default function Recognition({ pool = [], track, unitId, langs, onComplete, onQuit }) {
   // An English-only track (the IGCSE ones) has no Vietnamese anywhere else, so
-  // the instructions here do not switch into it either.
+  // the instructions here do not switch into it either. There is no language
+  // toggle on this screen: the English instruction carries its translations
+  // underneath, and a French track (`langs` from the host) adds a French line.
   const bilingual = getTrackConfig(track)?.bilingual !== false;
+  const french = bilingual && Array.isArray(langs) && langs.includes('fr');
   const quiz = useMemo(() => buildQuiz(pool), [pool]);
 
   const [phase, setPhase] = useState('study'); // study -> bridge -> check
@@ -155,8 +158,13 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
         </p>
         {!bilingual && <div className="mb-9" />}
         {bilingual && (
-          <p className="text-base font-medium italic text-slate-400 dark:text-slate-500 mb-10 max-w-md">
+          <p className={`text-base font-medium italic text-slate-400 dark:text-slate-500 max-w-md ${french ? 'mb-1' : 'mb-10'}`}>
             {quiz.length} từ. Chọn nghĩa đúng cho mỗi từ. Phần này tính điểm.
+          </p>
+        )}
+        {french && (
+          <p className="text-base font-medium italic text-slate-400 dark:text-slate-500 mb-10 max-w-md">
+            {quiz.length} mots. Choisis le bon sens pour chacun. Cette partie rapporte les XP.
           </p>
         )}
         <button
@@ -179,7 +187,7 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
 
         <div className="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto">
           <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs sm:text-sm mb-6 text-center">
-            Which meaning is correct?{bilingual && ' · Nghĩa nào đúng?'}
+            Which meaning is correct?{bilingual && ' · Nghĩa nào đúng?'}{french && ' · Quel est le bon sens ?'}
           </p>
 
           <h1 className="text-5xl sm:text-6xl font-black text-slate-800 dark:text-slate-100 tracking-tight text-center break-words px-4 capitalize mb-10">
@@ -242,6 +250,11 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
           {bilingual && (
             <p className="text-slate-400 dark:text-slate-600 font-medium italic text-sm sm:text-base mt-2">
               Bạn đã biết từ này chưa? Trả lời thật lòng — phần này không tính điểm. Sau đó sẽ có bài kiểm tra.
+            </p>
+          )}
+          {french && (
+            <p className="text-slate-400 dark:text-slate-600 font-medium italic text-sm sm:text-base mt-1">
+              Connais-tu déjà ce mot ? Réponds honnêtement — cette partie n’est pas notée. Un test sur chaque mot suit.
             </p>
           )}
         </div>

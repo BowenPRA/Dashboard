@@ -10,7 +10,7 @@
 
 export const drill = {
   mode: 'column-add-sub',
-  title: 'Column Add & Subtract', titleVn: 'Cộng & Trừ theo cột', titleFr: 'Addition et soustraction posées',
+  title: 'Column Add & Subtract', titleVn: 'Cộng & Trừ theo cột', titleFr: 'Calcul posé (+ et −)',
   intro: 'Fill in one box at a time. The grid checks each digit, and the small box is the carry (for +) or the borrow (for −).',
   introVn: 'Điền từng ô một. Lưới kiểm tra từng chữ số, và ô nhỏ là số nhớ (với +) hoặc số mượn (với −).',
   introFr: 'Remplis une case à la fois. La grille vérifie chaque chiffre, et la petite case est la retenue (pour +) ou l’emprunt (pour −).',

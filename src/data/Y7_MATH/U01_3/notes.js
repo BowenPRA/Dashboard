@@ -46,13 +46,13 @@ export const notes = [
     eyebrowFr: 'Deux minutes, papier et crayon',
     title: 'When Do They Meet Again?',
     titleVn: 'Khi nào chúng lại gặp nhau?',
-    titleFr: 'Quand se retrouvent-elles ?',
+    titleFr: 'Quand se retrouvent-ils ?',
     text: 'A red light flashes every 4 seconds. A blue light flashes every 6 seconds.',
     textVn: 'Một đèn đỏ nháy mỗi 4 giây. Một đèn xanh nháy mỗi 6 giây.',
-    textFr: 'Une lumière rouge clignote toutes les 4 secondes. Une lumière bleue clignote toutes les 6 secondes.',
+    textFr: 'Un feu rouge clignote toutes les 4 secondes, un feu bleu toutes les 6 secondes.',
     sub: 'They have just flashed **at the same time**. After how many seconds will they **next** flash together? Write your best guess before you go on.',
     subVn: 'Chúng vừa nháy **cùng một lúc**. Sau bao nhiêu giây nữa chúng sẽ **lại** nháy cùng nhau? Hãy viết dự đoán trước khi tiếp tục.',
-    subFr: 'Elles viennent de clignoter **en même temps**. Après combien de secondes vont-elles **de nouveau** clignoter ensemble ? Écris ta meilleure idée avant de continuer.',
+    subFr: 'Ils viennent de clignoter **en même temps**. Dans combien de secondes le feront-ils **à nouveau** ensemble ? Note ton estimation d’abord.',
   },
 
   // 3 ─ Key word: Multiple + CHECK 1 ────────────────────────────────────────
@@ -145,7 +145,7 @@ export const notes = [
     eyebrowFr: 'Les grands mots du cours',
     title: 'Common & Lowest Common Multiple',
     titleVn: 'Bội số chung & BCNN',
-    titleFr: 'Multiple commun et plus petit commun multiple',
+    titleFr: 'Multiple commun et PPCM',
     ratio: 45,
     inlineSvg: DIAGRAMS.LCM_LISTS,
     content:
@@ -154,13 +154,13 @@ export const notes = [
     contentVn:
       'Viết ra bội số của mỗi số và tìm những số có trong **cả hai** danh sách — đó là **bội số chung**. Với 4 và 6 chúng là 12, 24, 36, …\n\n' +
       '**Lowest** chỉ có nghĩa là **nhỏ nhất**. **Bội số chung nhỏ nhất (BCNN)** là số nhỏ nhất trong đó. Đây chính là ý tưởng **BCNN** — hôm nay ta học các từ tiếng Anh cho nó.',
-    contentFr: 'Écris les multiples de chaque nombre et cherche ceux qui sont dans les **deux** listes — ce sont les **multiples communs** (common multiples). Pour 4 et 6, ce sont 12, 24, 36, …\n\n**Lowest** veut juste dire **le plus petit**. Le **plus petit commun multiple** (lowest common multiple, **LCM**) est le plus petit d’entre eux. C’est la même idée que le **PPCM** — aujourd’hui, on apprend les mots anglais pour le dire.',
+    contentFr: 'Écris les multiples de chaque nombre et garde ceux des **deux** listes : ce sont les **multiples communs** (common multiples). Pour 4 et 6 : 12, 24, 36, …\n\n**Lowest** veut dire **le plus petit**. Le plus petit d’entre eux est le **PPCM** (lowest common multiple, **LCM**). Aujourd’hui, on apprend les mots anglais.',
     notes: [
       {
         tone: 'write',
         text: '**Common multiple:** a multiple of **both** numbers (in both lists).\n**Lowest common multiple (LCM):** the smallest common multiple. The LCM of 4 and 6 is 12.',
         textVn: '**Bội số chung:** bội của **cả hai** số (có trong cả hai danh sách).\n**Bội số chung nhỏ nhất (BCNN):** bội số chung nhỏ nhất. BCNN của 4 và 6 là 12.',
-        textFr: '**Multiple commun (common multiple) :** un multiple des **deux** nombres (dans les deux listes).\n**Plus petit commun multiple (LCM) :** le plus petit multiple commun. Le PPCM de 4 et 6 est 12.',
+        textFr: '**Multiple commun (common multiple) :** un multiple des **deux** nombres.\n**PPCM (LCM) :** le plus petit multiple commun. Le PPCM de 4 et 6 est 12.',
       },
     ],
     check: {

@@ -154,7 +154,7 @@ export const notes = [
     eyebrowFr: 'Les grands mots du cours',
     title: 'Common & Highest Common Factor',
     titleVn: 'Ước số chung & ƯCLN',
-    titleFr: 'Diviseur commun et plus grand commun diviseur',
+    titleFr: 'Diviseur commun et PGCD',
     ratio: 45,
     inlineSvg: DIAGRAMS.HCF_LISTS,
     content:
@@ -163,13 +163,13 @@ export const notes = [
     contentVn:
       'Nhớ nhé: trong toán, **common** nghĩa là **chung**. Viết ước số của mỗi số, rồi tìm những số có trong **cả hai** danh sách — đó là **ước số chung**. Với 12 và 18 chúng là 1, 2, 3 và 6.\n\n' +
       '**Highest** chỉ có nghĩa là **lớn nhất**. **Ước số chung lớn nhất (ƯCLN)** là số lớn nhất trong đó. Đây chính là **ƯCLN** — hôm nay ta học các từ tiếng Anh.',
-    contentFr: 'Rappelle-toi : en maths, **common** veut dire **partagé**. Écris les diviseurs de chaque nombre, puis trouve ceux qui sont dans les **deux** listes — ce sont les **diviseurs communs** (common factors). Pour 12 et 18, ce sont 1, 2, 3 et 6.\n\n**Highest** veut juste dire **le plus grand**. Le **plus grand commun diviseur** (highest common factor, **HCF**) est le plus grand d’entre eux. C’est la même idée que le **PGCD** — aujourd’hui, on apprend les mots anglais.',
+    contentFr: 'En maths, **common** veut dire **partagé**. Écris les diviseurs de chaque nombre et garde ceux des **deux** listes : ce sont les **diviseurs communs** (common factors). Pour 12 et 18 : 1, 2, 3 et 6.\n\n**Highest** veut dire **le plus grand**. Le plus grand d’entre eux est le **PGCD** (highest common factor, **HCF**). Aujourd’hui, on apprend les mots anglais.',
     notes: [
       {
         tone: 'write',
         text: '**Common factor:** a factor of **both** numbers (in both lists).\n**Highest common factor (HCF):** the biggest common factor. The HCF of 12 and 18 is 6.',
         textVn: '**Ước số chung:** ước của **cả hai** số (có trong cả hai danh sách).\n**Ước số chung lớn nhất (ƯCLN):** ước số chung lớn nhất. ƯCLN của 12 và 18 là 6.',
-        textFr: '**Diviseur commun (common factor) :** un diviseur des **deux** nombres (dans les deux listes).\n**Plus grand commun diviseur (HCF) :** le plus grand diviseur commun. Le PGCD de 12 et 18 est 6.',
+        textFr: '**Diviseur commun (common factor) :** un diviseur des **deux** nombres.\n**PGCD (HCF) :** le plus grand diviseur commun. Le PGCD de 12 et 18 est 6.',
       },
     ],
     check: {

@@ -66,7 +66,7 @@ const ROOM = 20 // degrees C, the room-temperature marker
 
 const T = {
   title: ['Heating & Cooling', 'Đun nóng & Làm lạnh', 'Chauffer & refroidir'],
-  subtitle: ['a particle model of melting, boiling and more', 'mô hình hạt của nóng chảy, sôi và hơn thế nữa', 'un modèle particulaire de la fusion, de l’ébullition et plus'],
+  subtitle: ['a particle model of melting, boiling and more', 'mô hình hạt của nóng chảy, sôi và hơn thế nữa', 'le modèle particulaire : fusion, ébullition…'],
   see: ['What you see', 'Em nhìn thấy', 'Ce que tu vois'],
   particles: ['The particles — zoomed in', 'Các hạt — phóng to', 'Les particules — en gros plan'],
   heat: ['Heat', 'Đun nóng', 'Chauffer'],
