@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Divide, Construction, CheckCircle2, XCircle, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, ListChecks, Target,
+  Grid3x3, RotateCcw,
 } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import useLang from '../hooks/useLang';
@@ -13,6 +14,12 @@ import {
   MAX_ZEROS, MAX_COLS,
 } from '../utils/shortDivision';
 import { diagnoseRound, placeName } from '../utils/rounding';
+// Two optional stages, switched on per item (Year 7 Maths 4.4): `table: true`
+// writes the divisor's times table first; `check: true` ends with the inverse
+// calculation. An item without them runs exactly as before.
+import { tableCellOk, tableHint, tableBoxId, inverseChoices, markInverse, inverseProduct, TABLE_MIN_DIVISOR } from '../utils/shortDivExtras';
+import { decText } from '../utils/decimal';
+import { TimesTableCard, InverseChoices, InverseDone } from '../components/math/ShortDivExtras.jsx';
 
 /* ------------------------------------------------------------------ *
  * BUS STOP — short division, written the short way (Y7 Maths 3.2).
@@ -37,6 +44,10 @@ import { diagnoseRound, placeName } from '../utils/rounding';
  *           A remainder item has no zeros: at the last digit, what is left
  *           over goes in the r box after the answer.
  *   ROUND   (dp items) type the answer rounded to the accuracy asked for.
+ *   TABLE   (`table: true`, a 2-digit divisor) BEFORE dividing: write 2 × d …
+ *           9 × d by adding d each time. The table then stays on the left.
+ *   CHECK   (`check: true`, exact items) AFTER dividing: pick the inverse
+ *           calculation, answer × d, from three. utils/shortDivExtras.js.
  *
  * A wrong box can be tried again; a second wrong answer at the same step (or
  * "Show me") fills it in and the item pays half. Progress blob:
@@ -59,7 +70,12 @@ const T = {
     helped: 'Done — with a step or two shown to you.',
     bookCopy: 'Copy this into your book', answer: 'Answer',
     headExact: 'Divide', headRound: 'Divide, then round',
-    stages: { divide: 'Divide', round: 'Round' },
+    stages: { divide: 'Divide', round: 'Round', table: 'Table', check: 'Check' },
+    tableTitle: (d) => `Write the ${d} times table first.`,
+    tableSub: (d) => `Keep adding ${d}. 1 × ${d} is done for you.`,
+    fillTable: 'Fill in every row of the table first.',
+    checkTitle: 'Check with the inverse calculation.',
+    checkSub: (D) => `Which calculation takes you back to ${D}?`,
     askCol: (d, cur) => `How many ${d}s in ${cur}?`,
     readCarry: (k, dg, cur) => `The small ${k} rides on the ${dg} — read them together: ${cur}.`,
     boxes: 'Digit on top. Remainder in the small box, up and to the left of the next digit.',
@@ -89,7 +105,12 @@ const T = {
     helped: 'Đã xong — có một vài bước được chỉ cho em.',
     bookCopy: 'Chép phần này vào vở', answer: 'Đáp án',
     headExact: 'Chia', headRound: 'Chia, rồi làm tròn',
-    stages: { divide: 'Chia', round: 'Làm tròn' },
+    stages: { divide: 'Chia', round: 'Làm tròn', table: 'Bảng nhân', check: 'Thử lại' },
+    tableTitle: (d) => `Viết bảng nhân ${d} trước.`,
+    tableSub: (d) => `Cứ cộng thêm ${d}. Dòng 1 × ${d} đã có sẵn.`,
+    fillTable: 'Hãy điền hết các dòng của bảng trước.',
+    checkTitle: 'Thử lại bằng phép tính ngược.',
+    checkSub: (D) => `Phép tính nào đưa em trở lại ${D}?`,
     askCol: (d, cur) => `${cur} chứa bao nhiêu lần ${d}?`,
     readCarry: (k, dg, cur) => `Số ${k} nhỏ đi cùng số ${dg} — đọc chung thành ${cur}.`,
     boxes: 'Chữ số ở trên. Số dư viết vào ô nhỏ, phía trên bên trái của chữ số tiếp theo.',
@@ -119,7 +140,12 @@ const T = {
     helped: 'Fini — avec une ou deux étapes montrées.',
     bookCopy: 'Recopie ceci dans ton cahier', answer: 'Réponse',
     headExact: 'Divise', headRound: 'Divise, puis arrondis',
-    stages: { divide: 'Diviser', round: 'Arrondir' },
+    stages: { divide: 'Diviser', round: 'Arrondir', table: 'Table', check: 'Vérification' },
+    tableTitle: (d) => `Écris d'abord la table de ${d}.`,
+    tableSub: (d) => `Ajoute ${d} à chaque fois. 1 × ${d} est déjà fait.`,
+    fillTable: "Remplis d'abord toutes les lignes de la table.",
+    checkTitle: 'Vérifie avec le calcul inverse.',
+    checkSub: (D) => `Quel calcul te ramène à ${D} ?`,
     askCol: (d, cur) => `En ${cur}, combien de fois ${d} ?`,
     readCarry: (k, dg, cur) => `Le petit ${k} va avec le ${dg} — lis-les ensemble : ${cur}.`,
     boxes: 'Le chiffre en haut. Le reste dans la petite case, en haut à gauche du chiffre suivant.',
@@ -154,6 +180,14 @@ const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] acti
 function deriveItem(item) {
   if (!item?.id) return null;
   try { return shortDivModel(item); } catch { return null; }
+}
+
+/** The optional stages an item switches on (utils/shortDivExtras.js). */
+function extrasOf(item, model) {
+  return {
+    table: item?.table === true && !!model && model.divisor >= TABLE_MIN_DIVISOR,
+    check: item?.check === true && !!model && model.dp == null && !model.remainderMode,
+  };
 }
 
 function Stage({ icon: Icon, label, active, done }) {
@@ -198,7 +232,11 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     const i = items.findIndex((it) => savedData?.[it.id] == null);
     return i === -1 ? 0 : i;
   });
-  const [stage, setStage] = useState('divide');
+  // null = the item's first stage: Table when it has one, else Divide.
+  const [stageSet, setStage] = useState(null);
+  const [tableEntries, setTableEntries] = useState({});
+  const [tableMarks, setTableMarks] = useState({});
+  const [invMarks, setInvMarks] = useState({});
   const [zeros, setZeros] = useState(0);
   const [entries, setEntries] = useState({});
   const [marks, setMarks] = useState({});
@@ -215,6 +253,8 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
 
   const item = items[pos];
   const model = useMemo(() => deriveItem(item), [item]);
+  const extras = extrasOf(item, model);
+  const stage = stageSet ?? (extras.table ? 'table' : 'divide');
   const t = T[lang] || T.en;
 
   // Open with the cursor in the first box.
@@ -243,7 +283,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   // or — at the last digit of a remainder item — the r box after the answer.
   const carryIdOf = (c, availNow = avail) => (rem && c === need - 1 ? 'r' : c + 1 < availNow ? `k${c + 1}` : null);
   const lastRem = rem && col === need - 1;
-  const stages = hasRound ? ['divide', 'round'] : ['divide'];
+  const stages = [...(extras.table ? ['table'] : []), 'divide', ...(hasRound ? ['round'] : []), ...(extras.check ? ['check'] : [])];
 
   /* ---------------------------------------------------------- saving */
   const summary = (res) => {
@@ -262,7 +302,8 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   };
   const goNext = () => {
     setPos((p) => p + 1);
-    setStage('divide'); setZeros(0); setEntries({}); setMarks({}); setCol(0); setWrongs(0);
+    setStage(null); setZeros(0); setEntries({}); setMarks({}); setCol(0); setWrongs(0);
+    setTableEntries({}); setTableMarks({}); setInvMarks({});
     setHelped(false); setSlipped(false); setMsg(null); setNote(null);
     setRoundTyped(''); setRoundMark(null); setItemDone(false);
     focusBox(UID, 'q0');
@@ -317,6 +358,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     setMsg(null);
     setWrongs(0);
     if (hasRound) { setStage('round'); requestAnimationFrame(() => document.getElementById(`${UID}-round`)?.focus()); }
+    else if (extras.check) setStage('check');
     else completeItem(wasHelped);
   };
   const stepOn = (zerosNow, wasHelped) => {
@@ -417,6 +459,80 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     completeItem(true);
   };
 
+  /* ---------------------------------------------------------- table (table: true) */
+  // The extras' messages are { en, fr } (Unit 4 units); English stands in for vn.
+  const enVn = (m) => ({ ...m, vn: m.vn ?? m.en });
+  const tableKs = [2, 3, 4, 5, 6, 7, 8, 9];
+  const tableDone = (marksNow) => {
+    setTableMarks(marksNow);
+    setWrongs(0);
+    setStage('divide');
+    focusBox(UID, 'q0');
+  };
+  const editTable = (k, text) => {
+    setTableEntries((e) => ({ ...e, [k]: text }));
+    if (tableMarks[k] === 'bad') setTableMarks((m) => ({ ...m, [k]: undefined }));
+    if (msg?.tone === 'bad' || msg?.tone === 'info') setMsg(null);
+  };
+  const checkTable = () => {
+    const d = model.divisor;
+    const open = tableKs.filter((k) => tableMarks[k] !== 'good' && tableMarks[k] !== 'shown');
+    if (open.some((k) => !String(tableEntries[k] ?? '').trim())) { setMsg({ tone: 'info', ...inAll('fillTable') }); return; }
+    const wrong = open.filter((k) => !tableCellOk(d, k, tableEntries[k]));
+    const next = { ...tableMarks };
+    open.forEach((k) => { next[k] = wrong.includes(k) ? 'bad' : 'good'; });
+    if (!wrong.length) { setMsg(null); tableDone(next); return; }
+    setSlipped(true);
+    const hint = enVn(tableHint(d, wrong[0]));
+    if (wrongs + 1 >= 2) {
+      // second try: the wrong rows are written in, and the item pays half
+      wrong.forEach((k) => { next[k] = 'shown'; });
+      setTableEntries((e) => ({ ...e, ...Object.fromEntries(wrong.map((k) => [k, String(k * d)])) }));
+      setHelped(true);
+      setMsg({ tone: 'shown', ...joinMsg(hint, inAll('filled')) });
+      tableDone(next);
+      return;
+    }
+    setWrongs(wrongs + 1);
+    setTableMarks(next);
+    setMsg({ tone: 'bad', ...hint });
+    document.getElementById(tableBoxId(UID, wrong[0]))?.focus();
+  };
+  const showTable = () => {
+    const d = model.divisor;
+    const next = { ...tableMarks };
+    tableKs.forEach((k) => { if (next[k] !== 'good') next[k] = 'shown'; });
+    setTableEntries((e) => ({ ...e, ...Object.fromEntries(tableKs.map((k) => [k, String(k * d)])) }));
+    setHelped(true);
+    setSlipped(true);
+    setMsg({ tone: 'shown', ...inAll('shown') });
+    tableDone(next);
+  };
+
+  /* ---------------------------------------------------------- check (check: true) */
+  const pickInverse = (val) => {
+    const v = enVn(markInverse(model, val));
+    if (v.ok) { setInvMarks((m) => ({ ...m, [val]: 'good' })); setMsg({ tone: 'ok', ...v }); completeItem(helped); return; }
+    setSlipped(true);
+    if (wrongs + 1 >= 2) {
+      setInvMarks((m) => ({ ...m, [val]: 'bad', back: 'shown' }));
+      setHelped(true);
+      setMsg({ tone: 'shown', ...joinMsg(v, enVn(markInverse(model, 'back'))) });
+      completeItem(true);
+      return;
+    }
+    setWrongs(wrongs + 1);
+    setInvMarks((m) => ({ ...m, [val]: 'bad' }));
+    setMsg({ tone: 'bad', ...v });
+  };
+  const showInverse = () => {
+    setInvMarks((m) => ({ ...m, back: 'shown' }));
+    setHelped(true);
+    setSlipped(true);
+    setMsg({ tone: 'shown', ...enVn(markInverse(model, 'back')) });
+    completeItem(true);
+  };
+
   /* ---------------------------------------------------------- render helpers */
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
   const isLast = pos === items.length - 1;
@@ -466,10 +582,14 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
             {intro && <p className="px-4 pb-1 text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
             <div className="px-3 py-3 flex flex-wrap gap-1.5">
               {stages.length > 1 && !itemDone && stages.map((s) => (
-                <Stage key={s} icon={s === 'divide' ? Divide : Target} label={t.stages[s]} active={s === stage} done={stages.indexOf(s) < stages.indexOf(stage)} />
+                <Stage key={s} icon={s === 'divide' ? Divide : s === 'table' ? Grid3x3 : s === 'check' ? RotateCcw : Target} label={t.stages[s]} active={s === stage} done={stages.indexOf(s) < stages.indexOf(stage)} />
               ))}
             </div>
           </div>
+          {/* the times table, once written, stays beside the bus stop */}
+          {extras.table && stage !== 'table' && (
+            <TimesTableCard key={`tt-${item.id}`} divisor={model.divisor} entries={tableEntries} marks={tableMarks} compact uid={UID} lang={lang} ink={INK} />
+          )}
         </div>
 
         {/* right: the bus stop */}
@@ -491,11 +611,28 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                   <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t.roundSub}</p>
                 </div>
               )}
+              {(stage === 'table' || stage === 'check') && (
+                <div className="mb-3">
+                  <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{stage === 'table' ? t.tableTitle(model.divisor) : t.checkTitle}</div>
+                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{stage === 'table' ? t.tableSub(model.divisor) : t.checkSub(model.dividendText)}</p>
+                </div>
+              )}
 
-              <ShortDivBoard model={model} zeros={zeros} entries={entries} stateOf={stateOf} onEdit={edit}
-                onEnter={dividing ? checkDivide : undefined}
-                onAddZero={dividing && !rem ? addZero : null} onRemoveZero={canRemove ? removeZero : null}
-                activeCol={dividing ? col : null} uid={UID} ink={INK} labels={labels} />
+              {stage === 'table' ? (
+                <TimesTableCard key={`tt-${item.id}`} divisor={model.divisor} entries={tableEntries} marks={tableMarks} editable
+                  onEdit={editTable} onEnter={checkTable} uid={UID} lang={lang} ink={INK} />
+              ) : (
+                <ShortDivBoard model={model} zeros={zeros} entries={entries} stateOf={stateOf} onEdit={edit}
+                  onEnter={dividing ? checkDivide : undefined}
+                  onAddZero={dividing && !rem ? addZero : null} onRemoveZero={canRemove ? removeZero : null}
+                  activeCol={dividing ? col : null} uid={UID} ink={INK} labels={labels} />
+              )}
+
+              {stage === 'check' && (
+                <div className="mt-4">
+                  <InverseChoices choices={inverseChoices(model)} marks={invMarks} onPick={pickInverse} />
+                </div>
+              )}
 
               {note && (
                 <p className="mt-2 text-center text-xs font-bold text-orange-600 dark:text-orange-300">{pick(note.en, note.vn, note.fr)}</p>
@@ -519,11 +656,13 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
               <Message msg={msg} lang={lang} />
 
               <div className="mt-4 flex items-center justify-end gap-2">
-                <button onClick={stage === 'round' ? showRound : () => revealStep(null)}
+                <button onClick={stage === 'round' ? showRound : stage === 'table' ? showTable : stage === 'check' ? showInverse : () => revealStep(null)}
                   className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
                   <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
                 </button>
-                <button onClick={stage === 'round' ? checkRound : checkDivide} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>
+                {stage !== 'check' && (
+                  <button onClick={stage === 'round' ? checkRound : stage === 'table' ? checkTable : checkDivide} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>
+                )}
               </div>
             </div>
           )}
@@ -547,6 +686,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.answer}</div>
                   <div className="text-xl text-slate-900 dark:text-slate-100 overflow-x-auto"><SafeInlineMath math={answerLatex} /></div>
                 </div>
+                {extras.check && <InverseDone model={model} product={decText(inverseProduct(model))} lang={lang} ink={INK} />}
                 {verdict && (
                   <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{pick(verdict.en, verdict.vn, verdict.fr)}</p>
                 )}
