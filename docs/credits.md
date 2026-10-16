@@ -170,6 +170,11 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 | `public/images/Y7_MATH/U04_1/berlin.jpg` | The men's 100 m final at the 2009 World Championships in Berlin, 16 August 2009 — the race in which Usain Bolt set the world record of 9.58 s (left to right: Thompson, Powell, Gay, Bolt, Patton), for ordering the five real times starting with the fastest; native 640 px | Erik van Leeuwen (erki.nl) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:100_m_final_Berlin_2009.JPG) | GFDL |
 
 <!-- @@U04_2_CREDITS@@ -->
+**4.2 Adding and Subtracting Decimals** (`Y7_MATH/U04_2`, slide 15 — Mr Bowen vs Usain Bolt; copied from the classroom deck `U04_1_4`, whose `images/CREDITS.json` lists it):
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U04_2/bolt.jpg` | Usain Bolt smiling, Berlin 2009 — Usain Bolt at the 2009 World Championships in Berlin (cropped to the top 410 px of the 514 × 640 original) | Erik van Leeuwen (erki.nl) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Usain_Bolt_smiling_Berlin_2009.JPG) | GFDL |
 
 <!-- @@U04_3_CREDITS@@ -->
 | File | What it shows | Author | Source | Licence |

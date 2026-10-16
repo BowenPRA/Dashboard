@@ -23,6 +23,7 @@ import { checkPhActivity } from './phLab.js';
 import { checkDecOrderActivity } from './decOrder.js';
 
 // @@U04_2_ACT_IMPORT@@
+import { checkDecColumnActivity } from './decColumn.js';
 
 // @@U04_3_ACT_IMPORT@@
 import { checkPointBackActivity } from './pointBack.js';
@@ -76,6 +77,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'decorder',
 
   // @@U04_2_ACT_TYPES@@
+  'deccol',
 
   // @@U04_3_ACT_TYPES@@
   'pointback',
@@ -381,6 +383,8 @@ export function checkActivity(a, { bilingual = true } = {}) {
   if (a.type === 'decorder') for (const p of checkDecOrderActivity(a)) out.push(p);
 
   // @@U04_2_ACT_CHECK@@
+  // `deccol` (Maths 4.2): one written column sum — line up the points, zeros, columns.
+  if (a.type === 'deccol') for (const p of checkDecColumnActivity(a)) out.push(`deccol ${p}`);
 
   // @@U04_3_ACT_CHECK@@
   if (a.type === 'pointback') for (const p of checkPointBackActivity(a)) out.push(`pointback: ${p}`);

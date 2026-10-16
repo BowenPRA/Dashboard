@@ -63,6 +63,7 @@ import { frenchProblems, frenchSourceProblems, vnTwinPaths, vnShadow, enFrProble
 import { checkDecOrderItems } from '../src/utils/decOrder.js';
 
 // @@U04_2_IMPORT@@
+import { checkDecColumnItems } from '../src/utils/decColumn.js';
 
 // @@U04_3_IMPORT@@
 import { checkPointBackItems } from '../src/utils/pointBack.js';
@@ -274,6 +275,17 @@ for (const trackId of TRACK_IDS) {
     }
 
     // @@U04_2_CHECK@@
+    if (unit.decColumn !== undefined) {
+      const at = `${label}: decColumn`;
+      const cfg = unit.decColumn;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${at} needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${at} has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${at} item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkDecColumnItems(cfg.items || [], { bilingual })) err(`${at} ${p}`);
+    }
 
     // @@U04_3_CHECK@@
     // 4.3 Point Out, Point Back: every item's estimate, product, point and written answer derived and accepted.

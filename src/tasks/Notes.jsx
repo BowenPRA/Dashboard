@@ -140,9 +140,10 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
 const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
   'chain', 'cycle', 'ph',
-  // Maths Unit 4: Fill the Zeros (4.1), Point Out Point Back (4.3), Make It
-  // Easy (4.5) — under the slide they squeeze it to a sliver at 1280×720.
-  'decorder', 'pointback', 'makeeasy']);
+  // Maths Unit 4: Fill the Zeros (4.1), Line Up the Points (4.2), Point Out
+  // Point Back (4.3), Make It Easy (4.5) — under the slide they squeeze it to a
+  // sliver at 1280×720.
+  'decorder', 'deccol', 'pointback', 'makeeasy']);
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
 const FIX_T = {

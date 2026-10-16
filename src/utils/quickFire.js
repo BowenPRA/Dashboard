@@ -34,6 +34,7 @@ export const QF_MODES = [
   'deccompare', 'decpick',
 
   // @@U04_2_QF_MODES@@
+  'decNear', 'decChange',
 
   // @@U04_3_QF_MODES@@
   'pointMul', 'pointFact',
@@ -229,6 +230,9 @@ function integerCard(rng, id) {
 import { decCompareCard, decPickCard } from './decOrder.js';
 
 // @@U04_2_QF_CARDS@@
+// 4.2 mental + and −: decNear (8.4 − 2.9: take 3, give 0.1 back) and decChange
+// (10 − 3.65), dealt and marked by utils/decColumn.js.
+import { decNearCard, decChangeCard } from './decColumn.js';
 
 // @@U04_3_QF_CARDS@@
 // 4.3 multiplying decimals (utils/pointBack.js marks them; an import may sit
@@ -399,6 +403,7 @@ const MAKERS = {
   deccompare: decCompareCard, decpick: decPickCard,
 
   // @@U04_2_QF_MAKERS@@
+  decNear: decNearCard, decChange: decChangeCard,
 
   // @@U04_3_QF_MAKERS@@
   pointMul: pointMulCard, pointFact: pointFactCard,

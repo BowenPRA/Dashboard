@@ -28,6 +28,7 @@ import { tr, field } from '../../utils/lang';
 import { DecOrderActivity } from './DecOrderActivity.jsx';
 
 // @@U04_2_ACT_IMPORT@@
+import { DecColumnActivity } from './DecColumnActivity.jsx';
 
 // @@U04_3_ACT_IMPORT@@
 import { PointBackActivity } from './PointBackActivity.jsx';
@@ -767,6 +768,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'decorder': body = <DecOrderActivity {...common} />; break;
 
     // @@U04_2_ACT_CASE@@
+    case 'deccol': body = <DecColumnActivity {...common} />; break;
 
     // @@U04_3_ACT_CASE@@
     case 'pointback': body = <PointBackActivity {...common} />; break;
