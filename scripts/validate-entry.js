@@ -74,6 +74,7 @@ import { checkShortDivExtras } from '../src/utils/shortDivExtras.js';
 import { checkMakeEasyItems } from '../src/utils/makeEasy.js';
 
 // @@SCI_U03_1_IMPORT@@
+import { checkWeighConfig } from '../src/utils/weighIt.js';
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -306,6 +307,7 @@ for (const trackId of TRACK_IDS) {
     }
 
     // @@SCI_U03_1_CHECK@@
+    if (unit.weighIt !== undefined) for (const p of checkWeighConfig(unit.weighIt, { bilingual })) err(`${label}: weighIt ${p}`);
 
 
     // -- Find & Fix and Order It: every error must be locatable exactly once in
