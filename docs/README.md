@@ -81,13 +81,17 @@ status* section so it can be closed deliberately.
 - [y7-math-course.md](y7-math-course.md) — **start here.** The course spine: how a
   Cambridge section maps to an app unit, the 10-unit course map, one-time setup
   (`Y7_MATH` track, `WORKBOOK` component, lesson warm-up), and the per-section
-  build loop. Units 1.1–2.6 and 3.1–3.2 are built; the self-study format is
+  build loop. Units 1.1–2.6, 3.1–3.2 and 4.1–4.5 are built; the self-study format is
   [y7-math/ADAPTATION-PLAN.md](y7-math/ADAPTATION-PLAN.md), with a one-page plan
   per unit under `y7-math/plans/`.
 - [y7-math/algebra-engines.md](y7-math/algebra-engines.md) — **the 2.3–2.5 build.** The
   unit shape from 2.3 on, the Collect It / Expand It / Undo It / Pyramids schemas, the
   `terms` · `algebra` · `grid` · `flow` deck activities, and what "interactive" means for
   a Y7 deck (16–20 scored items, every vote a `predict`, every whiteboard slide typed).
+- [y7-math/decimal-engines.md](y7-math/decimal-engines.md) — **the Unit 4 (decimals) build,
+  the first English/French-only units.** Fill the Zeros, Line Up the Points, Point Out
+  Point Back, Bus Stop's times-table and inverse-check stages, Make It Easy; their
+  Quick Fire modes and deck activities.
 - [y7-math/number-engines.md](y7-math/number-engines.md) — **the 2.6 and 3.1–3.2 build.**
   The current unit shape and XP (vocabulary 10, practice opens at 20); Show It (an
   inequality on a number line: the open circle, then the arrow), Slide the Digits (× ÷ 10ⁿ

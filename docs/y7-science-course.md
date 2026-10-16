@@ -141,7 +141,8 @@ cell). Every explanation says why each distractor is wrong.
 | 2.6 Compounds and formulae | `U02_6` | built — Particle Lab | `U02_6` |
 | 2.7 Compounds and mixtures | `U02_7` | built — Particle Lab (mixtures) | `U02_7` |
 | 2.8 Acids and bases | `U02_8` | built — pH Lab | `U02_8` |
-| 3.1 → | `U03_1` … | next, once taught | — |
+| 3.1 Gravity, weight and mass | `U03_1` | built — Weigh It (EN/FR only) | `U03_1` |
+| 3.2 → | `U03_2` … | next, once taught | — |
 
 From 2.5 the units follow [y7-science/particle-engines.md](y7-science/particle-engines.md):
 a denser deck (15–18 scored items, with the new `periodic` / `particles` / `formula`
@@ -150,6 +151,12 @@ first-20 Periodic Table) or Particle Lab (count, write, build and sort particles
 2.3, 2.4 and 2.8 (built last, closing Unit 2) follow the same shape with their own
 engines and deck activities — Explain It / `chain`, Water Journey / `cycle`, pH Lab /
 `ph` — in [y7-science/unit2-close-engines.md](y7-science/unit2-close-engines.md).
+
+**From 3.1 (2026-10-16) the units are English and French only**, as the classroom decks
+are: `meta.vietnamese: false`, `…Fr` twins and no `…Vn` ones (see
+[french.md](french.md) and `src/utils/langCheck.js`). 3.1's engine is Weigh It
+(`WEIGH_IT` p80, `src/utils/weighIt.js`) — W = m × g on the formula triangle, g from a
+planet strip, kg vs N.
 
 Not adapted, by design: `U00_1` (Day One), `U00_2` (the accuracy lab),
 `U00_3` (the planters) — they only exist with a room. Nor are the classroom's

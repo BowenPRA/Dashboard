@@ -17,7 +17,7 @@ the engine (on `src/utils/decimal.js`) works out every step, the answer and the
 name of the slip behind a wrong answer, and `npm run validate` runs the same code.
 
 Dashboard keys: `DEC_ORDER p76 · DEC_COLUMN p77 · POINT_BACK p78 · MAKE_EASY p79`
-(p80 reserved for Science 3.1). 4.4 reuses `SHORT_DIV p56`.
+(and `WEIGH_IT p80`, Science 3.1). 4.4 reuses `SHORT_DIV p56`. **p81 is next.**
 
 ---
 

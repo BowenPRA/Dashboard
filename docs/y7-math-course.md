@@ -94,6 +94,13 @@ From the workbook contents. Build in book order; each row is one unit folder.
 | 9 | **Sequences & functions** | 9.1 `U09_1` Generating sequences 1 · 9.2 `U09_2` Generating sequences 2 · 9.3 `U09_3` Using the nth term · 9.4 `U09_4` Representing simple functions |
 | 10 | **Percentages** | 10.1 `U10_1` Fractions, decimals & percentages · 10.2 `U10_2` Percentages large & small |
 
+**Progress (2026-10-16):** Unit 4 **Decimals** (4.1–4.5) is built to
+[y7-math/decimal-engines.md](y7-math/decimal-engines.md), from the classroom decks
+`U04_1_4` (4.1–4.4 in one period), `U04_5` and `U04_review` — and, like them, in **English
+and French only** (`meta.vietnamese: false`). Engines: Fill the Zeros (`DEC_ORDER`), Line
+Up the Points (`DEC_COLUMN`), Point Out, Point Back (`POINT_BACK`), Bus Stop with a times
+table and an inverse check (4.4), Make It Easy (`MAKE_EASY`).
+
 **Progress (2026-09-30):** 3.1 Multiplying and dividing by powers of 10 and 3.2 Rounding are
 built to [y7-math/number-engines.md](y7-math/number-engines.md), from the one classroom
 deck that teaches both (`U03_1_2`, split at its hinge slide). 3.1 has Slide the Digits — the
