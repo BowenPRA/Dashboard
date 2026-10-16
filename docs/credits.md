@@ -163,6 +163,11 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 ## Year 7 Maths Unit 4 and Science 3.1 (2026-10-16)
 
 <!-- @@U04_1_CREDITS@@ -->
+**Maths 4.1 Ordering decimals** (`Y7_MATH/U04_1`), copied from the classroom deck `lessons/content/y7-math/U04_1_4/images/` (its `CREDITS.json`):
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U04_1/berlin.jpg` | The men's 100 m final at the 2009 World Championships in Berlin, 16 August 2009 — the race in which Usain Bolt set the world record of 9.58 s (left to right: Thompson, Powell, Gay, Bolt, Patton), for ordering the five real times starting with the fastest; native 640 px | Erik van Leeuwen (erki.nl) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:100_m_final_Berlin_2009.JPG) | GFDL |
 
 <!-- @@U04_2_CREDITS@@ -->
 
