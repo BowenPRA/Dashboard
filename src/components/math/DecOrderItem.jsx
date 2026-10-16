@@ -37,6 +37,7 @@ const T = {
     positionSub: 'Tap one of them.',
     compareTitle: 'Which sign goes in the box?',
     compareSub: 'Read it from the left: the first number … the second number.',
+    digitTitle: 'Try each digit in the box. Which ones keep the sign true?',
     digitSub: 'Tap a digit to choose it. Tap it again to take it back.',
     check: 'Check', done: 'Done', stuck: 'Show me',
     fill: 'fill with a zero', remove: 'take this zero away',
@@ -49,6 +50,7 @@ const T = {
     positionSub: 'Touche l’un d’eux.',
     compareTitle: 'Quel signe va dans la case ?',
     compareSub: 'Lis de gauche à droite : le premier nombre … le deuxième nombre.',
+    digitTitle: 'Essaie chaque chiffre dans la case. Lesquels gardent le signe vrai ?',
     digitSub: 'Touche un chiffre pour le choisir. Touche-le encore pour le reprendre.',
     check: 'Vérifier', done: 'Fini', stuck: 'Montre-moi',
     fill: 'compléter avec un zéro', remove: 'enlever ce zéro',
@@ -259,7 +261,7 @@ export default function DecOrderItem({ model: m, lang = 'en', oneShot = false, c
     : stage === 'order' ? { text: L(questionOf(m)), sub: t.orderSub }
       : stage === 'position' ? { text: L(positionQuestion(m)), sub: t.positionSub }
         : stage === 'compare' ? { text: t.compareTitle, sub: t.compareSub }
-          : { text: L(questionOf(m)), sub: t.digitSub };
+          : { text: t.digitTitle, sub: t.digitSub };
   const zerosNow = stage === 'fill' ? added : (m.fill ? allZeros(m) : {});
   const boardMode = stage === 'fill' ? 'fill' : stage === 'order' ? 'order' : stage === 'position' ? 'pick' : 'view';
   const toneCls = (st) => (st === 'good' ? 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200'

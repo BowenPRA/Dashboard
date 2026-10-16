@@ -88,8 +88,9 @@ digit. 16 items.
 **Deck activity `decorder`** — the same item fields on the activity, plus
 `prompt` / `explain` (and `…Fr`): `{ id, type: 'decorder', kind: 'compare' |
 'order' | 'digit', …, prompt, promptFr, explain, explainFr }`. One try: the first
-wrong answer ends it, named, with the right answer drawn. It is not in Notes'
-`SIDE_ACTIVITIES`, so it sits under the slide, full width.
+wrong answer ends it, named, with the right answer drawn. Notes.jsx adds it to
+`SIDE_ACTIVITIES`, so from lg it sits in the column beside the slide (compact
+board); on a phone it is the footer under the slide, like every activity.
 
 **Quick Fire modes** `deccompare` (3.3 □ 3.25: two buttons, never equal — pairs
 built round the decInt, longer and whole traps) and `decpick` (the smallest or

@@ -58,7 +58,7 @@ export default function DecOrderBoard({
     const pad = Array.from({ length: model.maxInt - row.intText.length }, (_, k) => <span key={`p${k}`} className={`${S.cell} shrink-0`} />);
     const whole = row.intText.split('').map((d, k) => <span key={`i${k}`} className={digitCls}>{d}</span>);
     const point = (
-      <span key="pt" className={`${S.point} shrink-0 flex items-end justify-center pb-1 font-mono font-black leading-none`}
+      <span key="pt" className={`${S.point} shrink-0 flex items-end justify-center pb-1 font-mono font-black leading-none text-slate-800 dark:text-slate-100`}
         style={{ color: row.dp > 0 ? undefined : ZERO }}>
         {row.dp > 0 || n > 0 ? '.' : ''}
       </span>
