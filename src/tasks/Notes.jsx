@@ -141,6 +141,8 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
   'chain', 'cycle', 'ph']);
 
+SIDE_ACTIVITIES.add('pointback'); // 4.3 (U04_3): the tap row fits a side column; under the slide it hides the slide
+
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
 const FIX_T = {
   en: {

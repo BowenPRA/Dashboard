@@ -29,6 +29,7 @@ import { tr, field } from '../../utils/lang';
 // @@U04_2_ACT_IMPORT@@
 
 // @@U04_3_ACT_IMPORT@@
+import { PointBackActivity } from './PointBackActivity.jsx';
 
 // @@U04_4_ACT_IMPORT@@
 
@@ -765,6 +766,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@U04_2_ACT_CASE@@
 
     // @@U04_3_ACT_CASE@@
+    case 'pointback': body = <PointBackActivity {...common} />; break;
 
     // @@U04_4_ACT_CASE@@
 
