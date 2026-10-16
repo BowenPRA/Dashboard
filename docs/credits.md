@@ -165,6 +165,11 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 <!-- @@U04_1_CREDITS@@ -->
 
 <!-- @@U04_2_CREDITS@@ -->
+**4.2 Adding and Subtracting Decimals** (`Y7_MATH/U04_2`, slide 15 — Mr Bowen vs Usain Bolt; copied from the classroom deck `U04_1_4`, whose `images/CREDITS.json` lists it):
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U04_2/bolt.jpg` | Usain Bolt smiling, Berlin 2009 — Usain Bolt at the 2009 World Championships in Berlin (cropped to the top 410 px of the 514 × 640 original) | Erik van Leeuwen (erki.nl) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Usain_Bolt_smiling_Berlin_2009.JPG) | GFDL |
 
 <!-- @@U04_3_CREDITS@@ -->
 

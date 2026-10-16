@@ -226,7 +226,7 @@ export const DIAGRAMS = {
     <text x="740" y="348" font-family="${FONT}" font-size="26" font-weight="bold" fill="${INK}" text-anchor="middle">9</text>
 
     <path d="M 644 292 C 560 120, 250 120, 168 290" fill="none" stroke="${KEY}" stroke-width="4" marker-end="url(#u42-take)"/>
-    <text x="406" y="164" font-family="${FONT}" font-size="30" font-weight="bold" fill="${KEY}" text-anchor="middle">− 3</text>
+    <text x="406" y="134" font-family="${FONT}" font-size="30" font-weight="bold" fill="${KEY}" text-anchor="middle">− 3</text>
     <path d="M 164 312 C 166 352, 180 352, 182 316" fill="none" stroke="${GREEN}" stroke-width="3.5" marker-end="url(#u42-back)"/>
     <text x="196" y="392" font-family="${FONT}" font-size="24" font-weight="bold" fill="${GREEN}" text-anchor="start">+ 0.1 back</text>
 

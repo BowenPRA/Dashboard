@@ -80,6 +80,11 @@ export default function DecColumnBoard({
   const activeTint = (c) => (c === active ? 'bg-sky-100/80 dark:bg-sky-900/30' : '');
   const paper = (c) => (inGrid(c) || lining ? 'border border-slate-100 dark:border-slate-800' : '');
 
+  // Enter checks the step. It stops here: a Notes slide listens for Enter to
+  // turn the page, and the box it was typed in may be gone by the time the
+  // key reaches the window (the finished sum is redrawn).
+  const enterKey = (e) => { if (e.key === 'Enter') { e.stopPropagation(); onEnter?.(); } };
+
   const digitSpan = (text, cls = '') => (
     <span className={`font-mono font-black ${S.digit} leading-none tabular-nums ${cls}`}>{text}</span>
   );
@@ -159,7 +164,7 @@ export default function DecColumnBoard({
             const next = `c${m.cellOf(placeOfCell(c) + 1)}`;
             if (t && stateOf(next) === 'live') focusBox(uid, next);
           }}
-          onKeyDown={(e) => { if (e.key === 'Enter') onEnter?.(); }}
+          onKeyDown={enterKey}
           readOnly={!editable}
           disabled={st === 'idle'}
           inputMode="numeric" autoComplete="off" aria-label={`${labels.digit || 'answer digit'} ${c + 1}`}
@@ -184,7 +189,7 @@ export default function DecColumnBoard({
           id={domId(uid, id)}
           value={text}
           onChange={(e) => onEdit?.(id, e.target.value.replace(/\D/g, '').slice(-1))}
-          onKeyDown={(e) => { if (e.key === 'Enter') onEnter?.(); }}
+          onKeyDown={enterKey}
           readOnly={!editable}
           inputMode="numeric" autoComplete="off" aria-label={`${labels.carry || 'carry'} ${c + 1}`}
           className={`${S.carry} rounded-md border-[1.5px] text-center font-mono font-black leading-none tabular-nums outline-none

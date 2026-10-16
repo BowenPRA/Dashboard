@@ -140,6 +140,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
 const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
   'chain', 'cycle', 'ph']);
+SIDE_ACTIVITIES.add('deccol'); // Maths 4.2: one column sum, narrow enough for the side
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
 const FIX_T = {
