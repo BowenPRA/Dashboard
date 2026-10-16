@@ -159,3 +159,17 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 | | `hiv`, `hw-q24-hiv` | B11.26 the human immunodeficiency virus |
 
 `B10_1/hw-q9-reflex.jpg` and `B11_2/hw-q12-female.jpg` are the two diagrams that survived in the student's copy of Wolsey Hall Assignment 10 (© Wolsey Hall Oxford), shown in the review of that assignment.
+
+## Year 7 Maths Unit 4 and Science 3.1 (2026-10-16)
+
+<!-- @@U04_1_CREDITS@@ -->
+
+<!-- @@U04_2_CREDITS@@ -->
+
+<!-- @@U04_3_CREDITS@@ -->
+
+<!-- @@U04_4_CREDITS@@ -->
+
+<!-- @@U04_5_CREDITS@@ -->
+
+<!-- @@SCI_U03_1_CREDITS@@ -->

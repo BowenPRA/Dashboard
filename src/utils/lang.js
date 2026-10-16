@@ -3,8 +3,14 @@
 // English — never to another translation.
 //
 //   en  English     always
-//   vn  Vietnamese  every track, unless it declares `bilingual: false`
+//   vn  Vietnamese  every track, unless it declares `bilingual: false` — and
+//                   not in a unit whose meta says `vietnamese: false`
 //   fr  French      tracks that declare `french: true` (Y7_MATH, Y7_SCI)
+//
+// Year 7 is English and French from Maths Unit 4 and Science Unit 3 (October
+// 2026), as the classroom decks are: those units set `meta.vietnamese: false`,
+// write a `…Fr` twin beside every English string and no `…Vn` one, and their
+// screens toggle EN → FR. The units before them keep EN / VN / FR.
 //
 // Twin names follow the Vietnamese one they sit beside: a `…Vn` suffix becomes
 // `…Fr` (`title` / `titleVn` / `titleFr`), and the older `vn…` prefix becomes
@@ -16,11 +22,25 @@
 // and every `$…$` span stay exactly as the English has them. The validator
 // refuses a French twin whose maths differs (scripts/validate-entry.js).
 
-/** The languages a track offers, in toggle order. `cfg` is its registry entry. */
-export function langsFor(cfg) {
+/**
+ * The languages a unit offers, in toggle order. `cfg` is its track's registry
+ * entry; `unit` (optional) is the unit's data, whose `meta.vietnamese: false`
+ * takes VN off an EN / VN / FR track.
+ */
+export function langsFor(cfg, unit) {
   if (cfg?.bilingual === false) return ['en'];
-  return cfg?.french ? ['en', 'vn', 'fr'] : ['en', 'vn'];
+  const langs = cfg?.french ? ['en', 'vn', 'fr'] : ['en', 'vn'];
+  return isEnFr(unit) && langs.includes('fr') ? langs.filter((l) => l !== 'vn') : langs;
 }
+
+/** An English / French unit: `meta.vietnamese: false` — it has no Vietnamese. */
+export const isEnFr = (unit) => unit?.meta?.vietnamese === false;
+
+/**
+ * The translations a screen can show BESIDE the English (Short Answers,
+ * Reading, Diagrams, the word card): every language offered but English.
+ */
+export const besideLangs = (langs) => resolveLangs(langs).filter((l) => l !== 'en');
 
 /**
  * The languages a task screen offers when its host passed `langs` — or, from a

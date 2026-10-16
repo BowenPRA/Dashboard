@@ -133,7 +133,7 @@ function Harness() {
     const Comp = def.component;
     return (
       <Suspense fallback={<div className="p-8 font-black">Loading {open}…</div>}>
-        <Comp langs={openIn(langsOf(ctx.track))} {...def.props(ctx)} />
+        <Comp langs={openIn(langsOf(ctx.track, ctx.unit))} {...def.props(ctx)} />
       </Suspense>
     );
   }

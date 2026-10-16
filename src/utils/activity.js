@@ -18,6 +18,18 @@ import { ineqModel } from './ineqLine.js';
 import { checkChainActivity } from './stateChain.js';
 import { checkCycleActivity } from './waterCycle.js';
 import { checkPhActivity } from './phLab.js';
+// Unit 4 (decimals) and Science 3.1 deck activities, one block per unit:
+// @@U04_1_ACT_IMPORT@@
+
+// @@U04_2_ACT_IMPORT@@
+
+// @@U04_3_ACT_IMPORT@@
+
+// @@U04_4_ACT_IMPORT@@
+
+// @@U04_5_ACT_IMPORT@@
+
+// @@SCI_U03_1_ACT_IMPORT@@
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -54,7 +66,19 @@ import { checkPhActivity } from './phLab.js';
 // docs/y7-science/unit2-close-engines.md.
 export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict', 'plot', 'numberline', 'reflect', 'venn',
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
-  'chain', 'cycle', 'ph'];
+  'chain', 'cycle', 'ph',
+  // @@U04_1_ACT_TYPES@@
+
+  // @@U04_2_ACT_TYPES@@
+
+  // @@U04_3_ACT_TYPES@@
+
+  // @@U04_4_ACT_TYPES@@
+
+  // @@U04_5_ACT_TYPES@@
+
+  // @@SCI_U03_1_ACT_TYPES@@
+];
 
 export const INEQ_ASKS = ['draw', 'read', 'integer', 'list'];
 
@@ -345,6 +369,17 @@ export function checkActivity(a, { bilingual = true } = {}) {
   for (const [type, check] of [['chain', checkChainActivity], ['cycle', checkCycleActivity], ['ph', checkPhActivity]]) {
     if (a.type === type) for (const p of check(a, { bilingual })) out.push(`${type} ${p}`);
   }
+  // @@U04_1_ACT_CHECK@@
+
+  // @@U04_2_ACT_CHECK@@
+
+  // @@U04_3_ACT_CHECK@@
+
+  // @@U04_4_ACT_CHECK@@
+
+  // @@U04_5_ACT_CHECK@@
+
+  // @@SCI_U03_1_ACT_CHECK@@
   return out;
 }
 

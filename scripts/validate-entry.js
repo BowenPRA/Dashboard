@@ -58,7 +58,18 @@ import { checkShortDivItems, drillToShortDiv } from '../src/utils/shortDivision.
 import { checkShiftItems } from '../src/utils/placeShift.js';
 import { checkQuickFireConfig } from '../src/utils/quickFire.js';
 import { checkIneqItems } from '../src/utils/ineqLine.js';
-import { frenchProblems, frenchSourceProblems } from '../src/utils/langCheck.js';
+import { frenchProblems, frenchSourceProblems, vnTwinPaths, vnShadow, enFrProblems, translatedShapes } from '../src/utils/langCheck.js';
+// @@U04_1_IMPORT@@
+
+// @@U04_2_IMPORT@@
+
+// @@U04_3_IMPORT@@
+
+// @@U04_4_IMPORT@@
+
+// @@U04_5_IMPORT@@
+
+// @@SCI_U03_1_IMPORT@@
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -67,7 +78,10 @@ const AUDIO = path.join(ROOT, 'public/audio');
 const errors = [];
 const warnings = [];
 const info = [];
-const err = (m) => errors.push(m);
+// While an English / French unit is checked, its messages name the French
+// field its rules really looked at (`qVn` → `qFr`) — see vnShadow below.
+let renameTwins = null;
+const err = (m) => errors.push(renameTwins ? renameTwins(m) : m);
 const warn = (m) => warnings.push(m);
 
 // ---------------------------------------------------------------- registries
@@ -108,6 +122,15 @@ const warn = (m) => warnings.push(m);
 }
 
 // -------------------------------------------------------------------- content
+// The fields the trilingual Year 7 units translate (path shapes such as
+// `unit.notes[].check.q`). An English / French unit must translate the same
+// ones — see enFrProblems.
+const FR_REFERENCE = new Set();
+for (const t of TRACK_REGISTRY.filter((x) => x.french)) {
+  const { meta, data } = getTrack(t.id);
+  for (const m of meta) if (data[m.id]?.meta?.vietnamese !== false) translatedShapes(data[m.id], FR_REFERENCE);
+}
+
 const seenHashes = new Map();
 let unitCount = 0;
 let taskCount = 0;
@@ -118,8 +141,34 @@ for (const trackId of TRACK_IDS) {
 
   for (const m of meta) {
     unitCount++;
-    const unit = data[m.id];
+    renameTwins = null;
+    let unit = data[m.id];
     const label = `${trackId}/${m.id}`;
+    const trackCfg = TRACK_REGISTRY.find((t) => t.id === trackId);
+
+    // -- English / French unit (`meta.vietnamese: false` — Year 7 from Maths
+    //    Unit 4 and Science Unit 3; src/utils/lang.js). No Vietnamese anywhere;
+    //    a French twin beside every English string the unit translates; then
+    //    every rule below runs on a copy with the French in the Vietnamese
+    //    slots, so "needs a bilingual X" demands the French.
+    if (unit.meta?.vietnamese === false) {
+      if (trackCfg?.french !== true || trackCfg?.bilingual === false) err(`${label}: meta.vietnamese is false, but ${trackId} is not a french: true track — the unit would be English only`);
+      const vn = vnTwinPaths(unit);
+      vn.slice(0, 4).forEach((p) => err(`${label}: an English / French unit carries Vietnamese at ${p}`));
+      if (vn.length > 4) err(`${label}: …and ${vn.length - 4} more Vietnamese fields`);
+      const missing = enFrProblems(unit, FR_REFERENCE);
+      missing.slice(0, 8).forEach((p) => err(`${label}: French ${p}`));
+      if (missing.length > 8) err(`${label}: …and ${missing.length - 8} more English strings without French`);
+      unit = vnShadow(unit);
+      renameTwins = (msg) => msg
+        .replace(/([a-z])Vn\b/g, '$1Fr').replace(/\bvn(?=[A-Z])/g, 'fr')
+        .replace(/\/vn\b/g, '/fr').replace(/\bbilingual\b/g, 'French');
+    }
+    // A calibration hook: VALIDATE_ENFR=1 runs the untranslated-English check
+    // on every French track's units too, as warnings.
+    else if (process.env.VALIDATE_ENFR && trackCfg?.french) {
+      enFrProblems(unit, FR_REFERENCE).slice(0, 12).forEach((p) => warn(`${label}: (enfr) French ${p}`));
+    }
     const dir = path.join(DATA, trackId, m.id);
     // A track may opt out of bilingual content (`bilingual: false` in the track
     // registry) — e.g. an English-only IGCSE track. English fields stay
@@ -202,6 +251,20 @@ for (const trackId of TRACK_IDS) {
       for (const p of check(cfg.items || [], { bilingual })) err(`${at} ${p}`);
     }
     if (unit.quickFire !== undefined) for (const p of checkQuickFireConfig(unit.quickFire, { bilingual })) err(`${label}: quickFire ${p}`);
+
+    // -- Unit 4 decimals and Science 3.1 engines (docs/y7-math/decimal-engines.md)
+    // @@U04_1_CHECK@@
+
+    // @@U04_2_CHECK@@
+
+    // @@U04_3_CHECK@@
+
+    // @@U04_4_CHECK@@
+
+    // @@U04_5_CHECK@@
+
+    // @@SCI_U03_1_CHECK@@
+
 
     // -- Find & Fix and Order It: every error must be locatable exactly once in
     //    its passage, every list orderable. An error the screen cannot find is

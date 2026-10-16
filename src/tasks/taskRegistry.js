@@ -13,6 +13,19 @@ import { getTrackConfig } from '../components/trackRegistry';
 import { notesToFix } from '../utils/notesReview';
 import { isTestSubmitted } from '../utils/amcTest';
 import { langsFor } from '../utils/lang';
+// Unit 4 (Decimals) and Science 3.1 engines import their icons here, one
+// line per unit, so parallel builds never edit the same line.
+// @@U04_1_IMPORT@@
+
+// @@U04_2_IMPORT@@
+
+// @@U04_3_IMPORT@@
+
+// @@U04_4_IMPORT@@
+
+// @@U04_5_IMPORT@@
+
+// @@SCI_U03_1_IMPORT@@
 
 /**
  * Does this track carry Vietnamese twins? A track that declares
@@ -22,12 +35,14 @@ import { langsFor } from '../utils/lang';
 const bilingualOf = (track) => getTrackConfig(track)?.bilingual !== false;
 
 /**
- * The languages a track's task screens offer, in toggle order: `['en']`,
- * `['en', 'vn']`, or `['en', 'vn', 'fr']` on a `french: true` track. The host
- * passes it to EVERY task as `langs` (YearDashboard, the preview harnesses), so
- * no entry below has to — a screen reads it through hooks/useLang.
+ * The languages a unit's task screens offer, in toggle order: `['en']`,
+ * `['en', 'vn']`, or `['en', 'vn', 'fr']` on a `french: true` track — and
+ * `['en', 'fr']` for a unit there that sets `meta.vietnamese: false` (Year 7
+ * from Maths Unit 4 / Science Unit 3). The host passes it to EVERY task as
+ * `langs` (YearDashboard, the preview harnesses), so no entry below has to — a
+ * screen reads it through hooks/useLang.
  */
-export const langsOf = (track) => langsFor(getTrackConfig(track));
+export const langsOf = (track, unit) => langsFor(getTrackConfig(track), unit);
 
 /**
  * The one place a task type is defined.
@@ -1668,6 +1683,21 @@ export const TASKS = [
     buildPool: (u) => u.fnInverse,
     props: ({ pool, savedData, onComplete, onProgress, onQuit }) => ({ pool, mode: 'inverse', savedData, onComplete, onProgress, onQuit }),
   },
+  // ── Year 7 Maths Unit 4, decimals (U04_1–U04_5) and Science 3.1 ───────────
+  // p76 DEC_ORDER (4.1) · p77 DEC_COLUMN (4.2) · p78 POINT_BACK (4.3) ·
+  // p79 MAKE_EASY (4.5) · p80 Science 3.1, if it needs an engine. 4.4 reuses
+  // SHORT_DIV (p56). Item shapes: docs/y7-math/decimal-engines.md.
+  // @@U04_1_TASKS@@
+
+  // @@U04_2_TASKS@@
+
+  // @@U04_3_TASKS@@
+
+  // @@U04_4_TASKS@@
+
+  // @@U04_5_TASKS@@
+
+  // @@SCI_U03_1_TASKS@@
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));

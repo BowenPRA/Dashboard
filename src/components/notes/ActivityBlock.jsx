@@ -23,6 +23,18 @@ import { ChainActivity } from './ChainActivity.jsx';
 import { CycleActivity } from './CycleActivity.jsx';
 import { PhActivity } from './PhActivity.jsx';
 import { tr, field } from '../../utils/lang';
+// Unit 4 (decimals) and Science 3.1 deck activities, one line per unit:
+// @@U04_1_ACT_IMPORT@@
+
+// @@U04_2_ACT_IMPORT@@
+
+// @@U04_3_ACT_IMPORT@@
+
+// @@U04_4_ACT_IMPORT@@
+
+// @@U04_5_ACT_IMPORT@@
+
+// @@SCI_U03_1_ACT_IMPORT@@
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -747,6 +759,19 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'chain': body = <ChainActivity {...common} />; break;
     case 'cycle': body = <CycleActivity {...common} />; break;
     case 'ph': body = <PhActivity {...common} />; break;
+    // Year 7 maths Unit 4 (decimals) and science 3.1
+    // @@U04_1_ACT_CASE@@
+
+    // @@U04_2_ACT_CASE@@
+
+    // @@U04_3_ACT_CASE@@
+
+    // @@U04_4_ACT_CASE@@
+
+    // @@U04_5_ACT_CASE@@
+
+    // @@SCI_U03_1_ACT_CASE@@
+
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }
   return (

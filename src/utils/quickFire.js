@@ -27,7 +27,19 @@ import { shiftModel, questionLatex, diagnoseShift, diagnosePower, PLACE_LIMITS, 
 import { diagnoseRound, placeName } from './rounding.js';
 import { parseIneq, diagnoseInteger, edgeWord, numText, numLatex } from './ineqLine.js';
 
-export const QF_MODES = ['shift', 'power', 'mass', 'round', 'compare', 'couldbe', 'integer'];
+export const QF_MODES = [
+  'shift', 'power', 'mass', 'round', 'compare', 'couldbe', 'integer',
+  // Unit 4 (decimals) modes, one block per unit:
+  // @@U04_1_QF_MODES@@
+
+  // @@U04_2_QF_MODES@@
+
+  // @@U04_3_QF_MODES@@
+
+  // @@U04_4_QF_MODES@@
+
+  // @@U04_5_QF_MODES@@
+];
 export const QF_ROUNDS = [6, 20];
 
 /** A small seeded RNG (mulberry32), so a seed replays the same cards. */
@@ -206,9 +218,29 @@ function integerCard(rng, id) {
   };
 }
 
+// ── Unit 4 (decimals) cards — one block per unit ───────────────────────────
+// @@U04_1_QF_CARDS@@
+
+// @@U04_2_QF_CARDS@@
+
+// @@U04_3_QF_CARDS@@
+
+// @@U04_4_QF_CARDS@@
+
+// @@U04_5_QF_CARDS@@
+
 const MAKERS = {
   shift: shiftCard, power: powerCard, mass: massCard, round: roundCard,
   compare: compareCard, couldbe: couldBeCard, integer: integerCard,
+  // @@U04_1_QF_MAKERS@@
+
+  // @@U04_2_QF_MAKERS@@
+
+  // @@U04_3_QF_MAKERS@@
+
+  // @@U04_4_QF_MAKERS@@
+
+  // @@U04_5_QF_MAKERS@@
 };
 
 /** A session of cards for a unit's `quickFire` config. */

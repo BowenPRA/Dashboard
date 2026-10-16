@@ -146,9 +146,9 @@ export default function YearDashboard({ track }) {
         onProgress: (score, answers, meta) => handleTaskProgress(activeTask.id, score, answers, meta),
         onQuit: closeTask,
       });
-      // Every task hears which languages the track offers (EN, EN/VN or
-      // EN/VN/FR) — see hooks/useLang.
-      taskElement = <TaskComponent langs={langsOf(track)} {...taskProps} />;
+      // Every task hears which languages the unit offers (EN, EN/VN, EN/VN/FR,
+      // or EN/FR for a unit with no Vietnamese) — see hooks/useLang.
+      taskElement = <TaskComponent langs={langsOf(track, activeUnitData)} {...taskProps} />;
     }
   }
 

@@ -437,6 +437,34 @@ export const TRACK_LEVELS = {
       mapName: 'The Round Tower',
       blurb: 'A winding climb, and it is crawling. Five or more, and up they come.',
     },
+    // Unit 4 (Decimals): a fourth chapter, five sections, low again and up to
+    // the boss rush at 4.5.
+    U04_1: {
+      mapId: 'WAVE', themeId: 'DESERT', tier: 1,
+      mapName: 'The Starting Line',
+      blurb: 'A new chapter. Fill the gaps with zeros and line them up — fastest first.',
+    },
+    U04_2: {
+      mapId: 'JUNCTION', themeId: 'NIGHT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Point Crossing',
+      blurb: 'Every lane lines up on the point. Hold the crossing, and it is crawling.',
+    },
+    U04_3: {
+      mapId: 'CIRCUIT', themeId: 'STANDARD', tier: 3, waveMod: 'SIEGE',
+      mapName: 'The Metre Track',
+      blurb: 'Take the point out, put it back. Armored heavies grind round the track.',
+    },
+    U04_4: {
+      mapId: 'COMB', themeId: 'DESERT', tier: 4, waveMod: 'TIDE',
+      mapName: 'The Bus Station',
+      blurb: 'The point goes straight up. Wave after wave, and they never slow down.',
+    },
+    U04_5: {
+      mapId: 'GAUNTLET', themeId: 'ICE', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Shortcut',
+      blurb: 'There is always an easier way through. Queens and broods, the whole way down.',
+      bannedTowers: ['NITRO'],
+    },
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.
@@ -507,6 +535,12 @@ export const TRACK_LEVELS = {
       mapName: 'The Acid Lake',
       blurb: 'Both ends of the scale burn. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
+    },
+    // Unit 3 (Forces and energy) opens a new chapter, low again.
+    U03_1: {
+      mapId: 'WAVE', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Drop Zone',
+      blurb: 'A new chapter. Everything falls at the same rate — hold the valley while it lands.',
     },
   },
 };
