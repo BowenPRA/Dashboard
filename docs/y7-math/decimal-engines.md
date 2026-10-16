@@ -32,6 +32,60 @@ Dashboard keys: `DEC_ORDER p76 · DEC_COLUMN p77 · POINT_BACK p78 · MAKE_EASY 
 
 ## 4.4 Dividing decimals
 <!-- @@U04_4_DOC@@ -->
+`Y7_MATH/U04_4` — plan in [plans/U04_4.md](plans/U04_4.md). No new task and no new
+dbKey: the practice engine is the 3.2 **Bus Stop** (`SHORT_DIV`, p56 —
+[number-engines.md](number-engines.md) §2.2), which already divides a decimal
+(`dividend: '8.24'`), adds zeros, rounds (`dp`) and takes divisors up to 25. 4.4 adds
+two **optional stages, switched on per item** (`src/utils/shortDivExtras.js`, drawn by
+`src/components/math/ShortDivExtras.jsx`). An item without them runs exactly as before,
+so 3.2's Bus Stop and the Number Gym short-div drills are untouched.
+
+```js
+shortDiv: {
+  title: 'Bus Stop', titleFr: 'Division courte', intro, introFr,
+  levels: { 1: { en: 'The point goes straight up', fr: '…' }, … },
+  items: [
+    { id: 'd2', level: 1, dividend: '19.35', divisor: 5, check: true },   // ends with the inverse
+    { id: 'd8', level: 4, dividend: '55.2', divisor: 12, table: true },   // starts with the 12 times table
+    { id: 'd14', level: 6, dividend: '38.75', divisor: 5, check: true,
+      context: 'Mr Bowen and four friends share …', contextFr: '…' },
+  ],
+}
+```
+
+- **`table: true`** — a 2-digit divisor only (11–25; the validator refuses less). A
+  *Table* stage comes first: 1 × d is given, the student types 2 × d … 9 × d ("keep
+  adding d"). Enter goes to the next empty row and checks once every row is written.
+  Slip: a wrong row is flagged with "Row 7: add 12 to the row above — 72 + 12" (never the
+  value); a second wrong check writes the wrong rows in and the item pays half. The
+  finished table then sits in the left column, beside the bus stop, while they divide.
+- **`check: true`** — exact items only (the validator refuses it with `dp`, where the
+  rounded answer does not multiply back, and on remainder items). A *Check* stage comes
+  last: three calculations as buttons, in an order fixed by the item id — `answer × d`
+  (right), `dividend × d` ("that multiplies the number you started with") and
+  `answer ÷ d` ("dividing again only takes you further away"). One wrong pick is a
+  named slip; a second (or Show me) settles it and pays half. The done panel adds the
+  check line: `2.04 × 6 = 12.24 — back to where you started`.
+- Stage chips read Table · Divide · (Round) · Check. The screen's new strings are in its
+  `T` table in all three languages; the extras' messages are `{ en, fr }`.
+- `checkShortDivExtras(items)` runs in `npm run validate` (the U04_4 marker) beside
+  `checkShortDivItems`; it also proves `answer × d` comes back to the dividend.
+
+**Quick Fire** (`utils/quickFire.js`, the U04_4 block — helpers prefixed `div44`):
+`quickFire: { modes: ['decdivide', 'divcheck'], rounds: 12 }`. Both deal the quotient
+first (1.4 · 2.06 · 0.38 · 2.13 · 0.06 shapes) and build the dividend from it, so every
+card divides exactly by 2–9.
+- `decdivide` — "8.24 ÷ 4 =", typed. Slips: a lost 0 (2.6 for 2.06: "a digit was too
+  small to divide — write 0"), the right digits with the point elsewhere (20.6, 0.206:
+  "it goes straight up"), anything else answered by the inverse ("2.5 × 4 = 10, not
+  8.24"). A comma is a soft nudge, not a wrong answer.
+- `divcheck` — "9.18 ÷ 3 = 3.6. Check it with the inverse. Is it right?", two buttons
+  (Right / Wrong, answered once). About 45% of claims are right; the rest are a lost 0
+  or the point one place out. The verdict is the multiplication: "3.6 × 3 = 10.8, not
+  9.18 — so it is wrong. 9.18 ÷ 3 = 3.06."
+
+**Deck activities:** no new type — `predict`, `estimate`, `busstop` (a decimal
+dividend, a 2-digit divisor, added zeros), `sort` and `round`.
 
 ## 4.5 Making decimal calculations easier
 <!-- @@U04_5_DOC@@ -->

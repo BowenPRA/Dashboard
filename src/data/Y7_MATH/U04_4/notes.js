@@ -167,8 +167,8 @@ export const notes = [
     titleFr: 'Écris le 0',
     ratio: 45,
     inlineSvg: DIAGRAMS.ZERO_PLACE,
-    content: 'In $8.24 ÷ 4$, 4 into 2 does not go. That place in the answer still needs a digit: **0**.\n\nLeave it out, and every digit after it moves one place to the left.',
-    contentFr: 'Dans $8.24 ÷ 4$, 2 divisé par 4 ne va pas. Cette place dans la réponse a quand même besoin d’un chiffre : **0**.\n\nSi tu l’oublies, chaque chiffre qui suit glisse d’un rang vers la gauche.',
+    content: 'In $8.24 ÷ 4$, 4 into 2 does not go. That place in the answer still needs a digit: **0**.',
+    contentFr: 'Dans $8.24 ÷ 4$, 2 divisé par 4 ne va pas. Cette place dans la réponse a quand même besoin d’un chiffre : **0**.',
     notes: [
       {
         tone: 'write',
@@ -237,8 +237,8 @@ export const notes = [
     eyebrowFr: 'À toi',
     title: 'Divide, Then Check',
     titleFr: 'Divise, puis vérifie',
-    content: 'Work these out the short way. Check each one with the inverse.\n\n**a** $9.36 ÷ 3$\n**b** $7.35 ÷ 5$\n**c** $0.84 ÷ 6$\n**d** $6.3 ÷ 4$\n\nDo **d** below: write $6.3$ as $6.300$ and keep going. Work out the other three, then check them.',
-    contentFr: 'Calcule-les par la division courte. Vérifie chacun avec le calcul inverse.\n\n**a** $9.36 ÷ 3$\n**b** $7.35 ÷ 5$\n**c** $0.84 ÷ 6$\n**d** $6.3 ÷ 4$\n\nFais **d** ci-dessous : écris $6.3$ comme $6.300$ et continue. Trouve les trois autres, puis vérifie-les.',
+    content: 'Divide the short way. Check each one with the inverse.\n\n**a** $9.36 ÷ 3$ · **b** $7.35 ÷ 5$ · **c** $0.84 ÷ 6$\n\n**d** $6.3 ÷ 4$ is below: write $6.3$ as $6.300$ and keep going.',
+    contentFr: 'Divise par la division courte. Vérifie chacun avec le calcul inverse.\n\n**a** $9.36 ÷ 3$ · **b** $7.35 ÷ 5$ · **c** $0.84 ÷ 6$\n\n**d** $6.3 ÷ 4$ est ci-dessous : écris $6.3$ comme $6.300$ et continue.',
     reveal: {
       label: 'Check a, b and c',
       labelFr: 'Vérifie a, b et c',
@@ -336,13 +336,13 @@ export const notes = [
     eyebrowFr: 'À toi',
     title: 'Dividing by a Bigger Number',
     titleFr: 'Diviser par un plus grand nombre',
-    content: 'Write the times table you need first.\n\n**a** $89.6 ÷ 14$\n**b** $38.5 ÷ 11$\n**c** $70.2 ÷ 18$\n**d** $9.36 ÷ 12$\n\nDo **d** below. Work out the other three, then check them.',
-    contentFr: 'Écris d’abord la table dont tu as besoin.\n\n**a** $89.6 ÷ 14$\n**b** $38.5 ÷ 11$\n**c** $70.2 ÷ 18$\n**d** $9.36 ÷ 12$\n\nFais **d** ci-dessous. Trouve les trois autres, puis vérifie-les.',
+    content: '**a** $89.6 ÷ 14$ · **b** $38.5 ÷ 11$ · **c** $70.2 ÷ 18$\n\n**d** $9.36 ÷ 12$ is below.',
+    contentFr: '**a** $89.6 ÷ 14$ · **b** $38.5 ÷ 11$ · **c** $70.2 ÷ 18$\n\n**d** $9.36 ÷ 12$ est ci-dessous.',
     notes: [
       {
         tone: 'write',
-        text: 'To divide by a 2-digit number, write its **times table** first.\nThen use short division. The point goes straight up.',
-        textFr: 'Pour diviser par un nombre à 2 chiffres, écris d’abord sa **table de multiplication**.\nPuis pose une division courte. Le point monte tout droit.',
+        text: 'To divide by a 2-digit number, write its **times table** first.',
+        textFr: 'Pour diviser par un nombre à 2 chiffres, écris d’abord sa **table**.',
       },
     ],
     reveal: {
@@ -376,10 +376,10 @@ export const notes = [
     label: 'Predict',
     labelFr: 'Prédis',
     labelIcon: 'Sparkles',
-    text: 'Three friends share 10 dollars equally. How much does each one get?',
-    textFr: 'Trois amis partagent 10 dollars en parts égales. Combien reçoit chacun ?',
-    sub: 'Divide: $10 ÷ 3 = 3.333...$ — the 3s never stop.',
-    subFr: 'Divise : $10 ÷ 3 = 3.333...$ — les 3 ne s’arrêtent jamais.',
+    text: '3 friends share 10 dollars.',
+    textFr: '3 amis partagent 10 dollars.',
+    sub: 'Equally: $10 ÷ 3 = 3.333...$ and the 3s never stop.',
+    subFr: 'En parts égales : $10 ÷ 3 = 3.333...$, sans fin.',
     activity: {
       id: 'act_money',
       type: 'predict',
@@ -409,8 +409,8 @@ export const notes = [
     notes: [
       {
         tone: 'write',
-        text: 'When a division never ends, **round** it.\nMoney is written to **2 decimal places**: 4.5 dollars is written **4.50** dollars.',
-        textFr: 'Quand une division ne s’arrête jamais, **arrondis**.\nL’argent s’écrit avec **2 décimales** : 4.5 dollars s’écrit **4.50** dollars.',
+        text: 'Money has **2 decimal places**. Round when it never ends; 4.5 dollars is **4.50** dollars.',
+        textFr: 'L’argent a **2 décimales**. Arrondis quand ça ne finit pas ; 4.5 dollars s’écrit **4.50** dollars.',
       },
     ],
     reveal: {
@@ -522,7 +522,7 @@ export const notes = [
       promptFr: 'Qu’est-ce qui ne va pas dans chaque ligne ?',
       bins: [
         { id: 'zero', name: 'Forgot to write the 0', nameFr: 'A oublié d’écrire le 0' },
-        { id: 'stop', name: 'Stopped too early — add a zero', nameFr: 'S’est arrêté trop tôt — ajoute un zéro' },
+        { id: 'stop', name: 'Stopped too early', nameFr: 'S’est arrêté trop tôt' },
         { id: 'point', name: 'The point did not go straight up', nameFr: 'Le point n’est pas monté tout droit' },
         { id: 'people', name: 'Counted the people wrong', nameFr: 'A mal compté les personnes' },
       ],
@@ -530,7 +530,7 @@ export const notes = [
         { id: 'h1', name: '**a** $9.18 ÷ 3 = 3.6$', nameFr: '**a** $9.18 ÷ 3 = 3.6$', bin: 'zero' },
         { id: 'h2', name: '**b** $5.3 ÷ 2 = 2.6$ r 1', nameFr: '**b** $5.3 ÷ 2 = 2.6$ r 1', bin: 'stop' },
         { id: 'h3', name: '**c** $0.75 ÷ 5 = 1.5$', nameFr: '**c** $0.75 ÷ 5 = 1.5$', bin: 'point' },
-        { id: 'h4', name: '**d** Mr Bowen and 2 friends share 12.6 dollars: $12.6 ÷ 2 = 6.3$ each', nameFr: '**d** M. Bowen et 2 amis partagent 12.6 dollars : $12.6 ÷ 2 = 6.3$ chacun', bin: 'people' },
+        { id: 'h4', name: '**d** Mr Bowen and 2 friends: $12.6 ÷ 2 = 6.3$ each', nameFr: '**d** M. Bowen et 2 amis : $12.6 ÷ 2 = 6.3$ chacun', bin: 'people' },
       ],
       explain: '**a** 3 into 1 does not go: write 0, so $3.06$. Check: $3.6 × 3 = 10.8$, not $9.18$. **b** A remainder is not the end — add a zero: 2 into 10 is 5, so $2.65$. **c** The point goes straight up: $0.15$. **d** That is 3 people: $12.6 ÷ 3 = 4.2$ dollars each.',
       explainFr: '**a** 1 divisé par 3 ne va pas : écris 0, donc $3.06$. Vérifie : $3.6 × 3 = 10.8$, pas $9.18$. **b** Un reste, ce n’est pas la fin — ajoute un zéro : 10 divisé par 2 donne 5, donc $2.65$. **c** Le point monte tout droit : $0.15$. **d** Ça fait 3 personnes : $12.6 ÷ 3 = 4.2$ dollars chacun.',
@@ -616,15 +616,13 @@ export const notes = [
     eyebrowFr: 'Avant de commencer les exercices',
     title: 'Can You Do These?',
     titleFr: 'Sais-tu le faire ?',
-    content: '> Say each one out loud. If one feels shaky, go back to its slide before the practice.',
-    contentFr: '> Dis chacune à voix haute. Si l’une te paraît fragile, retourne à sa diapo avant les exercices.',
     items: [
-      { text: 'Divide the short way: the point goes **straight up**.', textFr: 'Diviser par la division courte : le point monte **tout droit**.' },
-      { text: 'A digit too small to divide? **Write 0.**', textFr: 'Un chiffre trop petit pour être divisé ? **Écrire 0.**' },
-      { text: '**Add zeros** after the point until the remainder is 0.', textFr: '**Ajouter des zéros** après le point jusqu’à ce que le reste soit 0.' },
-      { text: '**Check** with the inverse: the answer times the number you divided by.', textFr: '**Vérifier** avec le calcul inverse : la réponse fois le nombre par lequel on a divisé.' },
-      { text: 'Divide by a 2-digit number: write its **times table** first.', textFr: 'Diviser par un nombre à 2 chiffres : écrire d’abord sa **table**.' },
-      { text: '**Share equally** means divide. Money has **2 decimal places**.', textFr: '**Share equally** veut dire diviser. L’argent a **2 décimales**.' },
+      { text: 'The point goes **straight up**.', textFr: 'Le point monte **tout droit**.' },
+      { text: 'Too small to divide? **Write 0.**', textFr: 'Trop petit pour diviser ? **Écrire 0.**' },
+      { text: '**Add zeros** until the remainder is 0.', textFr: '**Ajouter des zéros** jusqu’au reste 0.' },
+      { text: '**Check** with the inverse: multiply back.', textFr: '**Vérifier** avec l’inverse : multiplier.' },
+      { text: 'A 2-digit divisor? Write its **times table**.', textFr: 'Diviseur à 2 chiffres ? Écrire sa **table**.' },
+      { text: '**Share equally** means divide.', textFr: '**Share equally** veut dire diviser.' },
     ],
     check: {
       id: 'chk_exit',
