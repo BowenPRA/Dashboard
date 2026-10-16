@@ -265,12 +265,14 @@ const sig1 = (x) => {
 const fmt = (x) => numText(dec(String(Number(x.toPrecision(6)))));
 /**
  * About how big the answer is, for the decimal-point slip: both numbers to one
- * significant figure, so the estimate never hands over the exact answer.
+ * significant figure ("32 ÷ 1.6 is close to 30 ÷ 2 = 15"), so the estimate
+ * shows the size without handing over the exact answer.
  */
 function estimate(step) {
   const v = sig1(Number(decText(step.value)));
   const g = sig1(Number(decText(step.g)));
-  return { sum: `${fmt(v)} ${step.op} ${fmt(g)}`, text: fmt(sig1(step.op === '×' ? v * g : v / g)) };
+  const e = step.op === '×' ? v * g : v / g;
+  return { exact: `${numText(step.value)} ${step.op} ${numText(step.g)}`, sum: `${fmt(v)} ${step.op} ${fmt(g)}`, text: fmt(Number(e.toPrecision(2))) };
 }
 
 /**
@@ -369,8 +371,8 @@ export function diagnoseCalc(step, typed, unit) {
       const est = estimate(step);
       return {
         ok: false, code: 'point',
-        en: `The digits are right but the size is not — a decimal point or a zero has slipped. Estimate first: ${est.sum} is about ${est.text}.`,
-        fr: `Les chiffres sont bons mais pas la taille — un point ou un zéro a glissé. Estime d’abord : ${est.sum}, c’est environ ${est.text}.`,
+        en: `The digits are right but the size is not — a decimal point or a zero has slipped. Estimate first: ${est.exact} is close to ${est.sum} = ${est.text}.`,
+        fr: `Les chiffres sont bons mais pas la taille — un point ou un zéro a glissé. Estime d’abord : ${est.exact}, c’est proche de ${est.sum} = ${est.text}.`,
       };
     }
   }

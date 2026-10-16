@@ -209,7 +209,8 @@ function GStrip({ step, pick, onPick, disabled, lang, right = null }) {
         const on = pick === p.id;
         const isRight = right === p.id;
         return (
-          <button key={p.id} type="button" disabled={disabled} onClick={() => onPick(p.id)}
+          <button key={p.id} type="button" disabled={disabled} onClick={() => onPick(p.id)} aria-pressed={on}
+            aria-label={`${tr(lang, p.en, null, p.fr)}, ${p.g} N/kg`}
             className={`flex items-center gap-2 rounded-xl border-2 border-b-[4px] px-2.5 py-2 text-left transition-all
               ${isRight ? 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30'
                 : on ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/30'

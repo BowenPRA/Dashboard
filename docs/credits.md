@@ -173,3 +173,17 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 <!-- @@U04_5_CREDITS@@ -->
 
 <!-- @@SCI_U03_1_CREDITS@@ -->
+**Science 3.1 Gravity, Weight and Mass** (`Y7_SCI/U03_1`) — copied from the classroom lesson's `images/` (its `CREDITS.json`); none is a Learner's Book scan. The BBC vacuum-chamber clip the classroom plays from YouTube is not used.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_1/bowling.jpg` | A bowling ball on a plain background (downscaled to 960 px) — the starter | RCraig09 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:20190118A_Plastic_house_bowling_ball_conventional_grip.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_SCI/U03_1/football.jpg` | A black-and-white football on grass (cropped square) — the starter | Wutthichai Charoenburi | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Soccer_Ball_(46208304925).jpg) | CC BY 2.0 |
+| `public/images/Y7_SCI/U03_1/aristotle.jpg` | Marble bust of Aristotle (Roman copy after Lysippos), Palazzo Altemps — FALL_STORY | After Lysippos; photo: Jastrow | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Aristotle_Altemps_Inv8575.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_1/pisa.jpg` | The Leaning Tower of Pisa under a blue sky — FALL_STORY | Saffron Blaze | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Leaning_Tower_of_Pisa_SB.jpeg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_1/galileo.jpg` | Portrait of Galileo Galilei, 1636 — FALL_STORY | Justus Sustermans | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Justus_Sustermans_-_Portrait_of_Galileo_Galilei,_1636.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_1/apollo15.webm` | Video: David Scott drops a hammer and a feather on the Moon, Apollo 15, 1971 (trimmed to 46 s, VP9/Opus WebM, 4.2 MB) | NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Apollo_15_feather_and_hammer_drop.ogv) | Public domain (PD-USGov-NASA) |
+| `public/images/Y7_SCI/U03_1/earth.jpg` | The Blue Marble: the Earth from Apollo 17, 1972 — EARTH_PULL | NASA / Apollo 17 crew | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_1/carsand.jpg` | A car sunk in soft mud and sand, Weston-super-Mare — SAND_CAR | Charlie from United Kingdom | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Oh_dear........._(12568437524).jpg) | CC BY 2.0 |
+| `public/images/Y7_SCI/U03_1/moonjump.webm` | Video: two Apollo 16 astronauts bounding down a slope (14 s, silent loop, VP9 WebM, 0.6 MB) | NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Apollo_16_Nothing_So_Hidden_1972_NASA.webm) | Public domain (PD-USGov-NASA) |
+| `public/images/Y7_SCI/U03_1/strobe.jpg` | Multi-flash photo of a falling ball, 20 flashes a second (downscaled to 1500 px tall) — Accelerate | MichaelMaggs | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Falling_ball.jpg) | CC BY-SA 3.0 |
