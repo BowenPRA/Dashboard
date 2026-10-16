@@ -8,6 +8,7 @@ import TowerDefense from './games/TowerDefense';
 import Survivor from './games/Survivor';
 import TowerVisual from '../components/towerdefense/TowerVisual';
 import { arcadeConfig } from '../components/towerdefense/unitDifficulty';
+import { hasMathChallenge } from '../components/towerdefense/mathChallenges';
 import { ARCADE_KEY, SURVIVOR_KEY, ARCADE_BOARDS, ARCADE_KEYS } from '../utils/progressSchema';
 
 export default function Games({ pool, unitId, track, scores, onComplete, onQuit }) {
@@ -105,6 +106,11 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
   // `arcadeKey` decides WHICH board the run lands on — the two cabinets keep
   // separate high scores, so a Survivor run can never displace a Tower Defense
   // one (or be ranked against it).
+  // The Maths Bolt generator is keyed by unit id, and ids repeat across tracks
+  // (Year 7 Science and Coordinated Science have their own U01_1, U03_1,
+  // U04_1), so ask for it only when it was written for THIS track's unit.
+  const mathUnitId = hasMathChallenge(track, unitId) ? unitId : null;
+
   const handleGameComplete = (score, arcadeKey) => {
     if (onComplete) onComplete(score, null, { arcadeScore: score, arcadeKey });
   };
@@ -114,6 +120,7 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
       <TowerDefense
         pool={pool}
         unitId={unitId}
+        mathUnitId={mathUnitId}
         gameConfig={gameConfig}
         startingCredits={startingCredits}
         onComplete={(score) => handleGameComplete(score, ARCADE_KEY)}
@@ -130,6 +137,7 @@ export default function Games({ pool, unitId, track, scores, onComplete, onQuit 
       <Survivor
         pool={pool}
         unitId={unitId}
+        mathUnitId={mathUnitId}
         gameConfig={gameConfig}
         startingCredits={startingCredits}
         onComplete={(score) => handleGameComplete(score, SURVIVOR_KEY)}

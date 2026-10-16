@@ -18,7 +18,7 @@
 // unit's own slips as the wrong options (7.2000, 35 for 35.0) rather than n ± 1. Every generator is verified against an independent oracle in the
 // build check (parses the prompt back and recomputes).
 
-import { dec, decText, shift, roundTo, truncTo, canon } from '../../utils/decimal.js';
+import { dec, decText, shift, roundTo, truncTo, canon, compare } from '../../utils/decimal.js';
 
 const MINUS = '−'; // − , the typographic minus, matched leniently on input
 
@@ -700,6 +700,126 @@ function bearingsTrig() {
     : { prompt: `Regular polygon, interior angle ${180 - ext}°. Number of sides = ?`, answer: n };
 }
 
+// ── Year 7 Unit 4, decimals ─────────────────────────────────────────────────
+// Answers are decimals, so — like Unit 3 — every question is multiple choice
+// and the wrong options are the unit's own slips: the longer decimal read as
+// the bigger, numbers lined up on the right, the exchange forgotten, the point
+// a place out, the placeholder 0 lost, × 0.2 done as ÷ 2.
+
+const decOf = (n, dp) => canon({ n: BigInt(n), dp });
+const atDp = (v, dp) => v.n * 10n ** BigInt(dp - v.dp);
+const addDec = (a, b) => { const dp = Math.max(a.dp, b.dp); return canon({ n: atDp(a, dp) + atDp(b, dp), dp }); };
+const subDec = (a, b) => { const dp = Math.max(a.dp, b.dp); return canon({ n: atDp(a, dp) - atDp(b, dp), dp }); };
+const timesInt = (v, k) => canon({ n: v.n * BigInt(k), dp: v.dp });
+const txt = (v) => decText(canon(v));
+
+/** Four options: the answer first, then the slips that differ from it and from each other. */
+function withSlips(answer, slips) {
+  const opts = new Set([answer]);
+  for (const s of slips) {
+    if (opts.size >= 4) break;
+    if (s && !String(s).startsWith('-') && s !== 'NaN') opts.add(s);
+  }
+  return [...opts];
+}
+
+// 4.1 — Ordering decimals. "<, >" between two decimals where the longer one is
+// usually the smaller, or the largest / smallest of four.
+function decimalOrder() {
+  const w = ri(0, 12);
+  if (Math.random() < 0.55) {
+    const a = decOf(w * 10 + ri(1, 9), 1);                // 3.3
+    let b = decOf(w * 1000 + ri(10, 999), 3);             // 3.252
+    if (Math.random() < 0.5) b = decOf(w * 100 + ri(1, 99), 2);
+    const [x, y] = Math.random() < 0.5 ? [a, b] : [b, a];
+    if (compare(x, y) === 0) return decimalOrder();
+    return { prompt: `${txt(x)} □ ${txt(y)}: < or > ?`, answer: compare(x, y) < 0 ? '<' : '>', choices: ['<', '>'] };
+  }
+  const vals = new Map();
+  while (vals.size < 4) {
+    const dp = ri(1, 3);
+    const v = decOf(w * 10 ** dp + ri(1, 10 ** dp - 1), dp);
+    vals.set(txt(v), v);
+  }
+  const list = [...vals.values()].sort(compare);
+  const largest = Math.random() < 0.5;
+  const shown = [...vals.keys()];
+  return {
+    prompt: `Which is the ${largest ? 'largest' : 'smallest'}: ${shown.join(', ')}?`,
+    answer: txt(largest ? list[3] : list[0]),
+    choices: shown,
+  };
+}
+
+// 4.2 — Adding and subtracting decimals. The slips: lined up on the right
+// (the digits added as whole numbers), the exchange forgotten, a tenth out.
+function decimalAddSub() {
+  const a = decOf(ri(11, 399), ri(0, 1) ? 1 : 2);
+  const b = decOf(ri(11, 99), a.dp === 1 ? 2 : 1);
+  const add = Math.random() < 0.5 || compare(a, b) <= 0;
+  const [x, y] = add || compare(a, b) > 0 ? [a, b] : [b, a];
+  const answer = add ? addDec(x, y) : subDec(x, y);
+  // Lined up on the right: the digits as whole numbers, the point by the longer one.
+  const dp = Math.max(x.dp, y.dp);
+  const right = canon({ n: add ? x.n + y.n : x.n - y.n, dp });
+  const tenth = decOf(1, 1);
+  const slips = [txt(right), txt(addDec(answer, tenth)), answer.n > 10n ? txt(subDec(answer, tenth)) : null, txt(shift(answer, 1))];
+  return {
+    prompt: `${txt(x)} ${add ? '+' : MINUS} ${txt(y)} = ?`,
+    answer: txt(answer),
+    choices: withSlips(txt(answer), slips),
+  };
+}
+
+// 4.3 — Multiplying a decimal by a whole number. The slips: the point a place
+// out either way, and "decimals make it smaller" (one place too many).
+function decimalMultiply() {
+  const a = decOf(ri(2, 99), ri(1, 2));
+  const k = Math.random() < 0.7 ? ri(2, 9) : ri(11, 25);
+  const answer = timesInt(a, k);
+  return {
+    prompt: `${txt(a)} × ${k} = ?`,
+    answer: txt(answer),
+    choices: withSlips(txt(answer), [txt(shift(answer, -1)), txt(shift(answer, 1)), txt(shift(answer, -2))]),
+  };
+}
+
+// 4.4 — Dividing a decimal by a whole number, often with a placeholder 0 in
+// the answer (8.24 ÷ 4 = 2.06). The slips: the 0 lost, the point a place out.
+function decimalDivide() {
+  const k = ri(2, 9);
+  const q = Math.random() < 0.5
+    ? decOf(ri(1, 9) * 100 + ri(1, 9), 2)                 // 3.06
+    : decOf(ri(11, 199), ri(1, 2));
+  const answer = txt(q);
+  const lost = answer.replace(/\.0(\d)/, '.$1');
+  return {
+    prompt: `${txt(timesInt(q, k))} ÷ ${k} = ?`,
+    answer,
+    choices: withSlips(answer, [lost !== answer ? lost : null, txt(shift(q, 1)), txt(shift(q, -1)), txt(addDec(q, decOf(1, 1)))]),
+  };
+}
+
+// 4.5 — Making decimal calculations easier: × 0.5, 0.25, 0.2, 0.1, × 9, × 11.
+// The slips are the wrong equivalents: × 0.2 as ÷ 2, × 0.25 as ÷ 25, "it must
+// get bigger", × 9 as × 10 + 1.
+function decimalEasy() {
+  const roll = ri(0, 5);
+  if (roll <= 3) {
+    const [b, by, wrong] = [['0.5', 2, 5], ['0.25', 4, 25], ['0.2', 5, 2], ['0.1', 10, 1]][roll];
+    const a = by * ri(3, 60);
+    const answer = txt(decOf(a * 10 / by, 1));
+    // a ÷ wrong may not be whole (92 ÷ 25 = 3.68): read it back through toFixed.
+    const slips = [String(Number((a / wrong).toFixed(4))), String(a * Number(b.split('.')[1])), txt(shift(decOf(a * 10 / by, 1), -1)), String(a * by)];
+    return { prompt: `${a} × ${b} = ?`, answer, choices: withSlips(answer, slips) };
+  }
+  const a = ri(12, 45);
+  const nine = Math.random() < 0.5;
+  const answer = String(a * (nine ? 9 : 11));
+  const slips = nine ? [String(a * 10 + 1), String(a * 10 - 1), String(a * 10 - 9)] : [String(a * 10 + 1), String(a * 10 + 11), String(a * 12)];
+  return { prompt: `${a} × ${nine ? 9 : 11} = ?`, answer, choices: withSlips(answer, slips) };
+}
+
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
 export const MATH_CHALLENGE_GENERATORS = {
   EM_06: setsAndSurds,
@@ -725,6 +845,11 @@ export const MATH_CHALLENGE_GENERATORS = {
   U02_6: inequalities,
   U03_1: powersOfTen,
   U03_2: rounding,
+  U04_1: decimalOrder,
+  U04_2: decimalAddSub,
+  U04_3: decimalMultiply,
+  U04_4: decimalDivide,
+  U04_5: decimalEasy,
 };
 
 /**
@@ -737,6 +862,7 @@ const GENERATOR_TRACK = {
   U01_1: 'Y7_MATH', U01_2: 'Y7_MATH', U01_3: 'Y7_MATH',
   U01_4: 'Y7_MATH', U01_5: 'Y7_MATH', U01_6: 'Y7_MATH',
   U02_6: 'Y7_MATH', U03_1: 'Y7_MATH', U03_2: 'Y7_MATH',
+  U04_1: 'Y7_MATH', U04_2: 'Y7_MATH', U04_3: 'Y7_MATH', U04_4: 'Y7_MATH', U04_5: 'Y7_MATH',
 };
 
 /** True when `unitId` in `track` is the unit a generator was written for. */
