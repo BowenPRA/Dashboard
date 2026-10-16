@@ -167,6 +167,9 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 <!-- @@U04_2_CREDITS@@ -->
 
 <!-- @@U04_3_CREDITS@@ -->
+| File | What it shows | Author | Source | Licence |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U04_3/bolt.jpg` | Usain Bolt smiling, Berlin 2009 — the 2009 World Championships, for "Mr Bowen vs Usain Bolt" (cropped to the top 410 px of the 514 × 640 original; copied from the classroom deck `U04_1_4`) | Erik van Leeuwen (erki.nl) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Usain_Bolt_smiling_Berlin_2009.JPG) | GFDL |
 
 <!-- @@U04_4_CREDITS@@ -->
 

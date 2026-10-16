@@ -53,14 +53,14 @@ const normOp = (op) => {
 const oneSig = (v) => canon(roundSig(canon(v), 1));
 
 /**
- * The estimate a book would write: the decimal to the nearest whole number when
- * it is 0.5 or more (to 1 significant figure below that), a 2-digit whole number
- * to 1 significant figure. `factors` are [decimal, whole].
+ * The estimate a book would write: a decimal of 1 or more to the nearest whole
+ * number (to 1 significant figure below 1: 0.68 is about 0.7), a 2-digit whole
+ * number to 1 significant figure.
  */
 function friendlyOf(v) {
   const c = canon(v);
   if (isWhole(c)) return c.n < 10n ? c : oneSig(c);
-  if (compare(c, dec('0.5')) >= 0) {
+  if (compare(c, dec('1')) >= 0) {
     const w = canon(roundTo(c, 0));
     return sigCount(w) <= 2 ? w : oneSig(c);
   }
@@ -281,7 +281,7 @@ export function diagnoseEstimate(sum, typed) {
   if (v.n !== 0n && (between(v, exact, '5', '20') || between(v, exact, '0.05', '0.2'))) {
     const big = compare(v, exact) > 0;
     return bad('scale',
-      `That is about 10 times too ${big ? 'big' : 'small'}. Round each number, then multiply: ${line}.`,
+      `That is about 10 times too ${big ? 'big' : 'small'}. Round each number, then work it out: ${line}.`,
       `C'est environ 10 fois trop ${big ? 'grand' : 'petit'}. Arrondis chaque nombre, puis calcule : ${line}.`);
   }
   return bad('far',
@@ -340,8 +340,8 @@ export function diagnoseRow(model, i, typed) {
     const tensDigit = r1.by / 10;
     if (sameValue(t, { n: model.top * BigInt(tensDigit), dp: 0 })) {
       return bad('tenszero',
-        `This row is ${top} × ${r1.by}, not ${top} × ${tensDigit}: the ${tensDigit} in ${model.whole} is ${tensDigit} tens. Write a 0 on the right first, then ${top} × ${tensDigit}.`,
-        `Cette ligne, c'est ${top} × ${r1.by}, pas ${top} × ${tensDigit} : le ${tensDigit} de ${model.whole} vaut ${tensDigit} dizaines. Écris d'abord un 0 à droite, puis ${top} × ${tensDigit}.`);
+        `This row is ${top} × ${r1.by}, not ${top} × ${tensDigit}: the ${tensDigit} in ${model.whole} is ${tensDigit} ten${tensDigit === 1 ? '' : 's'}. Write a 0 on the right first, then ${top} × ${tensDigit}.`,
+        `Cette ligne, c'est ${top} × ${r1.by}, pas ${top} × ${tensDigit} : le ${tensDigit} de ${model.whole} vaut ${tensDigit} dizaine${tensDigit === 1 ? '' : 's'}. Écris d'abord un 0 à droite, puis ${top} × ${tensDigit}.`);
     }
     return bad('row', `This row is ${top} × ${r1.by}: write a 0 on the right, then work out ${top} × ${tensDigit}.`,
       `Cette ligne, c'est ${top} × ${r1.by} : écris un 0 à droite, puis calcule ${top} × ${tensDigit}.`);
