@@ -26,6 +26,7 @@ import { langsFor } from '../utils/lang';
 // @@U04_5_IMPORT@@
 
 // @@SCI_U03_1_IMPORT@@
+import { Weight as WeighItIcon } from 'lucide-react';
 
 /**
  * Does this track carry Vietnamese twins? A track that declares
@@ -1698,6 +1699,28 @@ export const TASKS = [
   // @@U04_5_TASKS@@
 
   // @@SCI_U03_1_TASKS@@
+  {
+    id: 'WEIGH_IT',
+    nativeMax: 10,
+    dbKey: 'p80',
+    // Weight from mass and mass from weight with the formula triangle (Y7
+    // Science 3.1): cover the letter you want, choose × or ÷ and the strength
+    // of gravity from the planet strip, then calculate and choose N or kg.
+    // Every sum, answer, unit and named slip (kg written as N, multiplied when
+    // it should divide, Earth's g on the Moon, a slipped point, a mass that
+    // changed on the Moon) is derived by utils/weighIt.js, and
+    // checkWeighConfig proves each item in the validator.
+    label: 'Weigh It',
+    icon: WeighItIcon,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./WeighIt.jsx')),
+    hasContent: (u) => !!u.weighIt?.items?.length,
+    buildPool: (u) => u.weighIt,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));
