@@ -309,7 +309,9 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
           });
           const isPerfect = currentScore === blankWords.length;
           const hasFr = offersFr && !!(currentPassage.frTitle || currentPassage.frText);
-          const showFr = hasFr && trChoice === 'fr';
+          // An English / French unit has no Vietnamese: its French just shows.
+          const hasVn = !!(currentPassage.vnTitle || currentPassage.vnText);
+          const showFr = hasFr && (!hasVn || trChoice === 'fr');
           const trLabelClass = `font-black text-[10px] sm:text-xs uppercase tracking-widest ${isPerfect ? 'text-[#468500] dark:text-[#a3e635]' : 'text-[#C9362A] dark:text-[#f87171]'}`;
 
           return (
@@ -351,14 +353,14 @@ export default function Reading({ pool, track, unitId, savedData = {}, onComplet
 
                   {/* Right Half: Vietnamese (or French) Translation (Scrollable) */}
                   <div className="flex-[2] max-h-[100px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent">
-                    {hasFr ? (
+                    {hasFr && hasVn ? (
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
                         <span className={trLabelClass}>{showFr ? currentPassage.frTitle : currentPassage.vnTitle}</span>
                         <TranslationChoice value={trChoice} onChange={setTrChoice} className="text-slate-500 dark:text-slate-400" />
                       </div>
                     ) : (
                       <span className={`${trLabelClass} block mb-1`}>
-                        {currentPassage.vnTitle}
+                        {showFr ? currentPassage.frTitle : currentPassage.vnTitle}
                       </span>
                     )}
                     <p className="font-medium text-sm text-slate-700 dark:text-slate-300 italic leading-snug">

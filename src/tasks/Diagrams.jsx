@@ -69,7 +69,9 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
   // Written is the default so every item authored before mixed types keeps working.
   const isMcq = currentQ?.type === 'mcq';
   const hasFrExp = (!Array.isArray(langs) || langs.includes('fr')) && !!currentQ?.expFr;
-  const showFrExp = hasFrExp && trChoice === 'fr';
+  // An English / French unit has no Vietnamese: its French just shows.
+  const hasVnExp = !!currentQ?.expVn;
+  const showFrExp = hasFrExp && (!hasVnExp || trChoice === 'fr');
 
   // Feedback is stamped with the item it belongs to and only rendered for that
   // item. Advancing sets currentIndex immediately while the reset effect runs
@@ -464,13 +466,13 @@ export default function Diagrams({ pool, unitId, onComplete, onQuit, savedData =
                           <p className="text-[15px] font-medium leading-relaxed text-slate-700 dark:text-slate-300">{currentQ.expEn}</p>
                         </div>
                         <div>
-                          {hasFrExp ? (
+                          {hasFrExp && hasVnExp ? (
                             <span className={`text-xs font-black uppercase tracking-widest flex flex-wrap items-center gap-2 mb-1.5 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>
                               <span className="opacity-80">{showFrExp ? 'Explication' : 'Giải thích'}</span>
                               <TranslationChoice value={trChoice} onChange={setTrChoice} />
                             </span>
                           ) : (
-                            <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>Giải thích</span>
+                            <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${shownFeedback.correct ? 'text-[#3e7500] dark:text-lime-400' : 'text-[#a32d23] dark:text-rose-400'}`}>{showFrExp ? 'Explication' : 'Giải thích'}</span>
                           )}
                           <p className="text-[15px] font-medium italic leading-relaxed text-slate-700 dark:text-slate-300">{showFrExp ? currentQ.expFr : currentQ.expVn}</p>
                         </div>

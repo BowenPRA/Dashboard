@@ -62,11 +62,15 @@ export default function Feedback({
   const audioState = useRef({ isCancelled: false, currentAudio: null });
   const [btnCooldown, setBtnCooldown] = useState(false);
   const [enterActive, setEnterActive] = useState(false);
-  // VN or FR, offered only when the word (or explanation) has the French too.
+  // VN or FR: a choice only when the word (or explanation) has both. An
+  // English / French unit (Year 7 from Maths Unit 4) has no Vietnamese, so its
+  // French simply shows.
   const [translation, setTranslationState] = useState(rememberedTranslation);
   const setTranslation = (code) => { rememberedTranslation = code; setTranslationState(code); };
   const hasFr = isAssessmentMode ? !!expFr : !!(currentWord?.fr || currentWord?.frDef || currentWord?.frSent);
-  const showFr = hasFr && translation === 'fr';
+  const hasVn = isAssessmentMode ? !!expVn : !!(currentWord?.vn || currentWord?.vnDef || currentWord?.vnSent);
+  const offerChoice = hasFr && hasVn;
+  const showFr = hasFr && (!hasVn || translation === 'fr');
 
   // 1. Enter Key Listener
   useEffect(() => {
@@ -165,13 +169,13 @@ export default function Feedback({
                    <p className={`text-[15px] font-medium leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{expEn}</p>
                  </div>
                  <div>
-                   {hasFr ? (
+                   {offerChoice ? (
                      <span className={`text-xs font-black uppercase tracking-widest flex flex-wrap items-center gap-2 mb-1.5 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>
                        <span className="opacity-80">{showFr ? 'Explication' : 'Giải thích'}</span>
                        <TranslationChoice light value={translation} onChange={setTranslation} />
                      </span>
                    ) : (
-                     <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>Giải thích</span>
+                     <span className={`text-xs font-black uppercase tracking-widest block mb-1.5 opacity-80 ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{showFr ? 'Explication' : 'Giải thích'}</span>
                    )}
                    <p className={`text-[15px] font-medium italic leading-relaxed ${isCorrect ? 'text-[#3E7500]' : 'text-[#A32D23]'}`}>{showFr ? expFr : expVn}</p>
                  </div>
@@ -229,7 +233,7 @@ export default function Feedback({
                   <div>
                     <h3 className="text-3xl font-black text-slate-800 capitalize">{currentWord.word}</h3>
                     <p className="text-xl font-bold text-slate-500 mt-1">{showFr ? currentWord.fr : currentWord.vn}</p>
-                    {hasFr && <TranslationChoice light value={translation} onChange={setTranslation} className="mt-2 text-slate-500" />}
+                    {offerChoice && <TranslationChoice light value={translation} onChange={setTranslation} className="mt-2 text-slate-500" />}
                   </div>
                   <button disabled={btnCooldown} onClick={handleManualAudio} className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl shadow-md transition-all active:scale-95 disabled:opacity-70">
                     <Volume2 className="w-6 h-6 mr-2" /><span className="font-bold text-sm uppercase tracking-widest">Play Audio</span>
