@@ -71,14 +71,14 @@ export const notes = [
     eyebrowFr: 'Unité 3 · 3.1 · Forces et énergie',
     title: 'Gravity, Weight and Mass',
     titleFr: 'Gravité, poids et masse',
-    objective: 'Explain that gravity pulls objects towards each other and acts towards the centre of the Earth; describe weight (in newtons) and the contact force that balances it; describe mass (in kilograms); calculate weight with W = m × 10, and on other planets; explain why falling things speed up, and why heavy and light things land together.',
-    objectiveFr: 'Expliquer que la gravité attire les objets les uns vers les autres et agit vers le centre de la Terre ; décrire le poids (en newtons) et la force de contact qui l’équilibre ; décrire la masse (en kilogrammes) ; calculer un poids avec W = m × 10, et sur d’autres planètes ; expliquer pourquoi ce qui tombe accélère, et pourquoi le lourd et le léger arrivent ensemble.',
+    objective: 'Explain what gravity does and which way it pulls; tell weight (in newtons) from mass (in kilograms); calculate weight with W = m × 10, and on other planets; explain why heavy and light things land together.',
+    objectiveFr: 'Expliquer ce que fait la gravité et dans quel sens elle attire ; distinguer le poids (en newtons) de la masse (en kilogrammes) ; calculer un poids avec W = m × 10, et sur d’autres planètes ; expliquer pourquoi le lourd et le léger arrivent ensemble.',
     card: {
       icon: 'MousePointerClick',
       badge: 'In this lesson',
       badgeFr: 'Dans cette leçon',
-      text: 'You will **predict**, watch a hammer and a feather fall **on the Moon**, tap the **centre of the Earth**, sort **mass** from **weight** and race a drop on the Earth against the Moon. **16 things are scored** — the first is on the next slide.',
-      textFr: 'Tu vas **prédire**, regarder un marteau et une plume tomber **sur la Lune**, toucher le **centre de la Terre**, trier la **masse** et le **poids**, et faire la course entre une chute sur Terre et sur la Lune. **16 activités sont notées** — la première est sur la diapo suivante.',
+      text: 'You will **predict**, watch a hammer and a feather fall **on the Moon**, sort **mass** from **weight** and race a drop on the Earth against the Moon. **16 things are scored** — the first is on the next slide.',
+      textFr: 'Tu vas **prédire**, regarder un marteau et une plume tomber **sur la Lune**, trier la **masse** et le **poids**, et faire la course entre une chute sur Terre et sur la Lune. **16 activités sont notées** — la première est sur la diapo suivante.',
     },
   },
 

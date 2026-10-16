@@ -422,16 +422,16 @@ export const notes = [
     eyebrowFr: 'Où va le point ?',
     title: 'One Fact, Four Answers',
     titleFr: 'Un fait, quatre réponses',
-    content: '**a** $5.3 × 27$\n**b** $0.53 × 27$\n**c** $143.1 ÷ 27$\n**d** $14.31 ÷ 53$\n\nDo **c** below. Work out the other three, then check them.',
-    contentFr: '**a** $5.3 × 27$\n**b** $0.53 × 27$\n**c** $143.1 ÷ 27$\n**d** $14.31 ÷ 53$\n\nFais **c** ci-dessous. Trouve les trois autres, puis vérifie-les.',
+    content: '**a** $5.3 × 27$ · **b** $0.53 × 27$\n**c** $143.1 ÷ 27$ · **d** $14.31 ÷ 53$\nDo **c** below. Work out the other three, then check them.',
+    contentFr: '**a** $5.3 × 27$ · **b** $0.53 × 27$\n**c** $143.1 ÷ 27$ · **d** $14.31 ÷ 53$\nFais **c** ci-dessous. Trouve les trois autres, puis vérifie-les.',
     notes: [
       {
         tone: 'task',
         badge: 'Use this fact',
         badgeFr: 'Utilise ce fait',
         icon: 'Target',
-        text: '$53 × 27 = 1431$\nEstimate first. Then put the point in the right place.',
-        textFr: '$53 × 27 = 1431$\nEstime d’abord. Puis place le point au bon endroit.',
+        text: '$53 × 27 = 1431$. Estimate first. Then put the point in the right place.',
+        textFr: '$53 × 27 = 1431$. Estime d’abord. Puis place le point au bon endroit.',
       },
     ],
     reveal: {

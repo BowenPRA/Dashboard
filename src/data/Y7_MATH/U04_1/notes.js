@@ -205,13 +205,13 @@ export const notes = [
     eyebrowFr: 'Même nombre, plus de zéros',
     title: 'Fill with Zeros',
     titleFr: 'Compléter avec des zéros',
-    content: 'A zero at the **end** of the decimal part changes nothing:\n\n$$6.5 = 6.50 = 6.500$$\n\nA zero straight **after the point** changes everything: $6.05$ is not $6.5$.',
-    contentFr: 'Un zéro à la **fin** de la partie décimale ne change rien :\n\n$$6.5 = 6.50 = 6.500$$\n\nUn zéro juste **après le point** change tout : $6.05$ n’est pas $6.5$.',
+    content: 'A zero at the **end** of the decimal part changes nothing: $6.5 = 6.50 = 6.500$. A zero straight **after the point** changes everything: $6.05$ is not $6.5$.',
+    contentFr: 'Un zéro à la **fin** de la partie décimale ne change rien : $6.5 = 6.50 = 6.500$. Un zéro juste **après le point** change tout : $6.05$ n’est pas $6.5$.',
     notes: [
       {
         tone: 'write',
-        text: '**Fill with zeros:** write zeros at the end of the decimal part, so the numbers have the same number of decimal places.\nIt does not change the number.',
-        textFr: '**Compléter avec des zéros (fill with zeros) :** écrire des zéros à la fin de la partie décimale, pour que les nombres aient le même nombre de décimales.\nCela ne change pas le nombre.',
+        text: '**Fill with zeros:** write zeros at the end of the decimal part, so the numbers have the same number of decimal places. It does not change the number.',
+        textFr: '**Compléter avec des zéros (fill with zeros) :** écrire des zéros à la fin de la partie décimale, pour que les nombres aient le même nombre de décimales. Cela ne change pas le nombre.',
       },
     ],
     check: {
