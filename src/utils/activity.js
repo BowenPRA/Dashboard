@@ -22,6 +22,7 @@ import { checkPhActivity } from './phLab.js';
 // @@U04_1_ACT_IMPORT@@
 
 // @@U04_2_ACT_IMPORT@@
+import { checkDecColumnActivity } from './decColumn.js';
 
 // @@U04_3_ACT_IMPORT@@
 
@@ -70,6 +71,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@U04_1_ACT_TYPES@@
 
   // @@U04_2_ACT_TYPES@@
+  'deccol',
 
   // @@U04_3_ACT_TYPES@@
 
@@ -372,6 +374,8 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@U04_1_ACT_CHECK@@
 
   // @@U04_2_ACT_CHECK@@
+  // `deccol` (Maths 4.2): one written column sum — line up the points, zeros, columns.
+  if (a.type === 'deccol') for (const p of checkDecColumnActivity(a)) out.push(`deccol ${p}`);
 
   // @@U04_3_ACT_CHECK@@
 

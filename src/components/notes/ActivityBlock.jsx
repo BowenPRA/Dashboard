@@ -27,6 +27,7 @@ import { tr, field } from '../../utils/lang';
 // @@U04_1_ACT_IMPORT@@
 
 // @@U04_2_ACT_IMPORT@@
+import { DecColumnActivity } from './DecColumnActivity.jsx';
 
 // @@U04_3_ACT_IMPORT@@
 
@@ -763,6 +764,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@U04_1_ACT_CASE@@
 
     // @@U04_2_ACT_CASE@@
+    case 'deccol': body = <DecColumnActivity {...common} />; break;
 
     // @@U04_3_ACT_CASE@@
 

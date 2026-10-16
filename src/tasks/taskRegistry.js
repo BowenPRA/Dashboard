@@ -18,6 +18,7 @@ import { langsFor } from '../utils/lang';
 // @@U04_1_IMPORT@@
 
 // @@U04_2_IMPORT@@
+import { Columns3 as LineUpPointsIcon } from 'lucide-react';
 
 // @@U04_3_IMPORT@@
 
@@ -1690,6 +1691,29 @@ export const TASKS = [
   // @@U04_1_TASKS@@
 
   // @@U04_2_TASKS@@
+  {
+    id: 'DEC_COLUMN',
+    nativeMax: 10,
+    dbKey: 'p77',
+    // "Line up the points." Written column + and − of decimals: the bottom
+    // number arrives lined up on the RIGHT, the way a hurried student writes
+    // it, and slides until the points share a column; the gaps after the
+    // point fill with zeros; then the columns are worked from the right with
+    // every carry and exchange, and the point drops straight down. Stories
+    // first ask which calculation. utils/decColumn.js derives every square,
+    // zero, carry and exchange and names the slip (lined up on the right, a
+    // missing zero, a forgotten carry, upside down, a forgotten exchange).
+    label: 'Line Up the Points',
+    icon: LineUpPointsIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./DecColumn.jsx')),
+    hasContent: (u) => !!u.decColumn?.items?.length,
+    buildPool: (u) => u.decColumn,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@U04_3_TASKS@@
 

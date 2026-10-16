@@ -33,6 +33,7 @@ export const QF_MODES = [
   // @@U04_1_QF_MODES@@
 
   // @@U04_2_QF_MODES@@
+  'decNear', 'decChange',
 
   // @@U04_3_QF_MODES@@
 
@@ -222,6 +223,9 @@ function integerCard(rng, id) {
 // @@U04_1_QF_CARDS@@
 
 // @@U04_2_QF_CARDS@@
+// 4.2 mental + and −: decNear (8.4 − 2.9: take 3, give 0.1 back) and decChange
+// (10 − 3.65), dealt and marked by utils/decColumn.js.
+import { decNearCard, decChangeCard } from './decColumn.js';
 
 // @@U04_3_QF_CARDS@@
 
@@ -235,6 +239,7 @@ const MAKERS = {
   // @@U04_1_QF_MAKERS@@
 
   // @@U04_2_QF_MAKERS@@
+  decNear: decNearCard, decChange: decChangeCard,
 
   // @@U04_3_QF_MAKERS@@
 
