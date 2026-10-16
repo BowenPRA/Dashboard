@@ -236,7 +236,6 @@ export default function MakeEasy({ pool, savedData = {}, onComplete, onProgress,
 
   const toStage = (next, message) => {
     setStageAt(next); setWrongs(0); setPicks({}); setMsg(message);
-    if (next === 'steps') requestAnimationFrame(() => document.getElementById('makeeasy-step')?.focus());
   };
   const after = (s) => stages[stages.indexOf(s) + 1];
 
@@ -288,7 +287,6 @@ export default function MakeEasy({ pool, savedData = {}, onComplete, onProgress,
     setTyped(''); setMark(null); setWrongs(0);
     if (vals.length >= steps.length) { completeItem(helped || how === 'shown'); return; }
     setStepIdx(stepIdx + 1);
-    requestAnimationFrame(() => document.getElementById('makeeasy-step')?.focus());
   };
   const checkStep = () => {
     if (!current) return;
@@ -407,6 +405,7 @@ export default function MakeEasy({ pool, savedData = {}, onComplete, onProgress,
                               : (
                                 <input
                                   id="makeeasy-step"
+                                  autoFocus
                                   value={typed}
                                   onChange={(e) => { setTyped(e.target.value); if (mark === 'bad') setMark(null); }}
                                   onKeyDown={(e) => { if (e.key === 'Enter') checkStep(); }}

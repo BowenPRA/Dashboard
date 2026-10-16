@@ -20,10 +20,10 @@ export const workbook = [
         prompt: 'Drag the equivalent fraction to each decimal. One card is left over.',
         promptFr: 'Fais glisser la fraction équivalente vers chaque décimal. Une carte reste en trop.',
         bank: [
-          { val: 'six100', text: '$\\frac{6}{100}$' },
-          { val: 'six10', text: '$\\frac{6}{10}$' },
-          { val: 'six1000', text: '$\\frac{6}{1000}$' },
-          { val: 'sf100', text: '$\\frac{75}{100}$' },
+          { val: 'six100', text: '$\\dfrac{6}{100}$' },
+          { val: 'six10', text: '$\\dfrac{6}{10}$' },
+          { val: 'six1000', text: '$\\dfrac{6}{1000}$' },
+          { val: 'sf100', text: '$\\dfrac{75}{100}$' },
         ],
         targets: [
           { id: 't6', title: '$0.6$', titleFr: '$0.6$' },

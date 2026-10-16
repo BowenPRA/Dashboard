@@ -102,6 +102,12 @@ export function ofWords(b) {
   return say(`${bt} of`, `${bt} de`);
 }
 const PLACE = { 1: say('tenths', 'dixièmes'), 2: say('hundredths', 'centièmes') };
+const PLACE_ONE = { 1: say('tenth', 'dixième'), 2: say('hundredth', 'centième') };
+/** "3 tenths", "1 tenth" — a count of a place, in both languages. */
+const countOf = (n, dp) => {
+  const w = String(n) === '1' ? PLACE_ONE[dp] : PLACE[dp];
+  return say(`${n} ${w.en}`, `${n} ${w.fr}`);
+};
 
 /**
  * The routes for a × b: `valid` (each with its steps, a name and the chain to
@@ -237,8 +243,8 @@ function routesFor(fam, a, b, pick) {
       `Le ${txt(digits)} après le point vaut ${txt(part)}, pas ${txt(digits)}. Garde le point : ${txt(part)} × ${B}.`));
     // Mr Bowen's 5.2 × 6 = 30 + 0.12: the decimal part's product one place too small (never offered).
     bad('pointstep', null, addD(s1.value, shift(s2.value, -1)), say(
-      `${txt(part)} × ${B} is ${txt(s2.value)}, not ${txt(shift(s2.value, -1))}: ${txt(digits)} ${PLACE[part.dp].en} × ${B} = ${txt(mulD(digits, b))} ${PLACE[part.dp].en}.`,
-      `${txt(part)} × ${B} donne ${txt(s2.value)}, pas ${txt(shift(s2.value, -1))} : ${txt(digits)} ${PLACE[part.dp].fr} × ${B} = ${txt(mulD(digits, b))} ${PLACE[part.dp].fr}.`));
+      `${txt(part)} × ${B} is ${txt(s2.value)}, not ${txt(shift(s2.value, -1))}: ${countOf(txt(digits), part.dp).en} × ${B} = ${countOf(txt(mulD(digits, b)), part.dp).en}.`,
+      `${txt(part)} × ${B} donne ${txt(s2.value)}, pas ${txt(shift(s2.value, -1))} : ${countOf(txt(digits), part.dp).fr} × ${B} = ${countOf(txt(mulD(digits, b)), part.dp).fr}.`));
     offer = ['partpart', 'point'];
     const tenths = a.dp === 1 ? Number(txt(a).split('.')[1]) : 0;
     if (tenths >= 8) {
@@ -365,16 +371,16 @@ export function diagnoseMeaning(model, id) {
   if (id === 'times') {
     return cue === 'each'
       ? { ok: true, code: 'ok', en: `Right — ${B} lots of ${A}: ${A} × ${B}.`, fr: `Correct — ${B} fois ${A} : ${A} × ${B}.` }
-      : { ok: true, code: 'ok', en: `Right — "of" means ×: ${A} × ${B}.`, fr: `Correct — « of » veut dire × : ${A} × ${B}.` };
+      : { ok: true, code: 'ok', en: `Right — "of" means ×: ${A} × ${B}.`, fr: `Correct — « of » (de) veut dire × : ${A} × ${B}.` };
   }
   if (cue === 'each') {
     return id === 'plus'
-      ? bad('plus', `${B} of them at ${A} each is ${B} lots of ${A} — that is ×, not +.`, `${B} articles à ${A} chacun, c’est ${B} fois ${A} — c’est ×, pas +.`)
-      : bad('share', `÷ shares a total out. Here you know the cost of one, and you want ${B} of them: ×.`, `÷ partage un total. Ici, tu connais le prix d’un seul et tu en veux ${B} : ×.`);
+      ? bad('plus', `${B} of them at ${A} each is ${B} lots of ${A} — that is ×, not +.`, `${B}, à ${A} chacun, c’est ${B} fois ${A} — c’est ×, pas +.`)
+      : bad('share', `÷ shares a total out. Here you know one of them, and you want ${B} of them: ×.`, `÷ partage un total. Ici, tu connais la valeur d’un seul, et tu en veux ${B} : ×.`);
   }
   return id === 'divide'
-    ? bad('divide', `"Of" means ×: ${phrase.en} is ${A} × ${B}. ÷ ${B} would give more than ${A}.`, `« Of » veut dire × : ${phrase.en}, c’est ${A} × ${B}. ÷ ${B} donnerait plus que ${A}.`)
-    : bad('plus', `"Of" means ×, not +: ${phrase.en} is ${A} × ${B}.`, `« Of » veut dire ×, pas + : ${phrase.en}, c’est ${A} × ${B}.`);
+    ? bad('divide', `"Of" means ×: ${phrase.en} is ${A} × ${B}. ÷ ${B} would give more than ${A}.`, `« Of » (de) veut dire × : ${phrase.en} (${phrase.fr}), c’est ${A} × ${B}. ÷ ${B} donnerait plus que ${A}.`)
+    : bad('plus', `"Of" means ×, not +: ${phrase.en} is ${A} × ${B}.`, `« Of » (de) veut dire ×, pas + : ${phrase.en} (${phrase.fr}), c’est ${A} × ${B}.`);
 }
 
 /** Stage "route": the easy way chosen. A right one says what it is; a wrong one, why not. */
@@ -396,12 +402,11 @@ function shiftOf(s) {
 function pointWhy(s) {
   const lv = canon(s.left);
   if (lv.dp >= 1 && lv.dp <= 2) {
-    const digits = txt(W(String(lv.n)));
-    const prod = txt(mulD(W(String(lv.n)), s.right));
-    const pl = PLACE[lv.dp];
+    const n = countOf(txt(W(String(lv.n))), lv.dp);
+    const prod = countOf(txt(mulD(W(String(lv.n)), s.right)), lv.dp);
     return bad('point',
-      `Check the point. ${txt(s.left)} is ${digits} ${pl.en}, and ${digits} ${pl.en} × ${txt(s.right)} = ${prod} ${pl.en}.`,
-      `Vérifie le point. ${txt(s.left)}, c’est ${digits} ${pl.fr}, et ${digits} ${pl.fr} × ${txt(s.right)} = ${prod} ${pl.fr}.`);
+      `Check the point. ${txt(s.left)} is ${n.en}, and ${n.en} × ${txt(s.right)} = ${prod.en}.`,
+      `Vérifie le point. ${txt(s.left)}, c’est ${n.fr}, et ${n.fr} × ${txt(s.right)} = ${prod.fr}.`);
   }
   return bad('point', `Check the size of your answer: ${s.text}. Count the zeros and the point again.`, `Vérifie la taille de ta réponse : ${s.text}. Recompte les zéros et le point.`);
 }

@@ -15,8 +15,9 @@ import { tr } from '../../utils/lang';
  * The task's stages, compact: (the words → the calculation), the easy way
  * from 2–3, then each step's box in turn — the last box is the answer. Each
  * stage allows one wrong answer, named; a second fills it in, and the activity
- * is then scored wrong. (No "bigger or smaller?" stage — the deck asks that
- * with its own `predict` and `order`.)
+ * is then scored wrong. Enter in a box checks it and goes no further (the
+ * deck's Enter-for-next must not skip the verdict). No "bigger or smaller?"
+ * stage — the deck asks that with its own `predict` and `order`.
  */
 
 const GOOD = 'bg-[#d7ffb8] border-[#58a700] text-[#3e7500]';
@@ -155,8 +156,8 @@ export function MakeEasyActivity({ activity, lang, result, onResult, parseText }
                   {done
                     ? <span className={`min-w-[4.5rem] px-2 py-1 rounded-xl border-2 border-b-[4px] font-mono font-black text-lg text-center ${done.mark === 'good' ? GOOD : SHOWN}`}>{done.text}</span>
                     : (
-                      <input value={typed} onChange={(e) => { setTyped(e.target.value); if (msg?.tone === 'bad') setMsg(null); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter') checkStep(); }}
+                      <input autoFocus value={typed} onChange={(e) => { setTyped(e.target.value); if (msg?.tone === 'bad') setMsg(null); }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); checkStep(); } }}
                         inputMode="decimal" autoComplete="off" spellCheck={false} aria-label={t.answer} placeholder="?"
                         className={`w-24 px-2 py-1 rounded-xl border-2 border-b-[4px] font-mono font-black text-lg text-center focus:outline-none focus:border-sky-500 ${msg?.tone === 'bad' ? BAD : IDLE}`} />
                     )}
