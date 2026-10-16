@@ -28,6 +28,9 @@ import { checkPhActivity } from './phLab.js';
 // @@U04_4_ACT_IMPORT@@
 
 // @@U04_5_ACT_IMPORT@@
+// `makeeasy` (Maths 4.5) — Make It Easy on a slide: the words → the calculation,
+// the easy way from 2–3, then each step's box. Checked by utils/makeEasy.js.
+import { checkEasyActivity } from './makeEasy.js';
 
 // @@SCI_U03_1_ACT_IMPORT@@
 
@@ -76,6 +79,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@U04_4_ACT_TYPES@@
 
   // @@U04_5_ACT_TYPES@@
+  'makeeasy',
 
   // @@SCI_U03_1_ACT_TYPES@@
 ];
@@ -378,6 +382,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@U04_4_ACT_CHECK@@
 
   // @@U04_5_ACT_CHECK@@
+  if (a.type === 'makeeasy') for (const p of checkEasyActivity(a, { bilingual })) out.push(`makeeasy ${p}`);
 
   // @@SCI_U03_1_ACT_CHECK@@
   return out;

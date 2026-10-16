@@ -68,6 +68,7 @@ import { frenchProblems, frenchSourceProblems, vnTwinPaths, vnShadow, enFrProble
 // @@U04_4_IMPORT@@
 
 // @@U04_5_IMPORT@@
+import { checkMakeEasyItems } from '../src/utils/makeEasy.js';
 
 // @@SCI_U03_1_IMPORT@@
 
@@ -262,6 +263,17 @@ for (const trackId of TRACK_IDS) {
     // @@U04_4_CHECK@@
 
     // @@U04_5_CHECK@@
+    //    Make It Easy (4.5): every route, step, answer and named slip derived and proved.
+    if (unit.makeEasy !== undefined) {
+      const cfg = unit.makeEasy;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${label}: makeEasy needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${label}: makeEasy has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${label}: makeEasy item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkMakeEasyItems(cfg.items || [], { bilingual })) err(`${label}: makeEasy ${p}`);
+    }
 
     // @@SCI_U03_1_CHECK@@
 

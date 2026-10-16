@@ -39,6 +39,7 @@ export const QF_MODES = [
   // @@U04_4_QF_MODES@@
 
   // @@U04_5_QF_MODES@@
+  'makeeasy', 'easyway',
 ];
 export const QF_ROUNDS = [6, 20];
 
@@ -228,6 +229,11 @@ function integerCard(rng, id) {
 // @@U04_4_QF_CARDS@@
 
 // @@U04_5_QF_CARDS@@
+// Making decimal calculations easier (4.5) — the deck's Make It Easy game, dealt
+// fresh: `makeeasy` (a × b = ?, typed; the slip named by makeEasy.diagnoseAnswer)
+// and `easyway` (two buttons: an easy way and a misconception). The cards are
+// built in utils/makeEasy.js; an import may sit anywhere at the top level.
+import { makeEasyCard as u45MakeEasyCard, easyWayCard as u45EasyWayCard } from './makeEasy.js';
 
 const MAKERS = {
   shift: shiftCard, power: powerCard, mass: massCard, round: roundCard,
@@ -241,6 +247,7 @@ const MAKERS = {
   // @@U04_4_QF_MAKERS@@
 
   // @@U04_5_QF_MAKERS@@
+  makeeasy: u45MakeEasyCard, easyway: u45EasyWayCard,
 };
 
 /** A session of cards for a unit's `quickFire` config. */
