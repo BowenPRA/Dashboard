@@ -24,6 +24,7 @@ import { checkPhActivity } from './phLab.js';
 // @@U04_2_ACT_IMPORT@@
 
 // @@U04_3_ACT_IMPORT@@
+import { checkPointBackActivity } from './pointBack.js';
 
 // @@U04_4_ACT_IMPORT@@
 
@@ -72,6 +73,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@U04_2_ACT_TYPES@@
 
   // @@U04_3_ACT_TYPES@@
+  'pointback',
 
   // @@U04_4_ACT_TYPES@@
 
@@ -374,6 +376,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@U04_2_ACT_CHECK@@
 
   // @@U04_3_ACT_CHECK@@
+  if (a.type === 'pointback') for (const p of checkPointBackActivity(a)) out.push(`pointback: ${p}`);
 
   // @@U04_4_ACT_CHECK@@
 

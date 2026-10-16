@@ -20,6 +20,7 @@ import { langsFor } from '../utils/lang';
 // @@U04_2_IMPORT@@
 
 // @@U04_3_IMPORT@@
+import { LocateFixed } from 'lucide-react';
 
 // @@U04_4_IMPORT@@
 
@@ -1692,6 +1693,29 @@ export const TASKS = [
   // @@U04_2_TASKS@@
 
   // @@U04_3_TASKS@@
+  {
+    id: 'POINT_BACK',
+    nativeMax: 10,
+    dbKey: 'p78',
+    // "Point out, point back." A decimal × a whole number the way 4.3 teaches
+    // it: estimate, take the point out and multiply whole numbers (two rows
+    // and a total for a 2-digit multiplier), tap the gap where the point goes
+    // back, and check against the estimate; money is written to 2 d.p., an
+    // exact 5.00 may be 5. Also "one fact, many answers": place the point in
+    // 4.7 × 23, 108.1 ÷ 23 … from 47 × 23 = 1081 by estimating. utils/
+    // pointBack.js derives every stage and names the slip ("decimals make it
+    // smaller", counted from the left, a place too many/few, a lost 0).
+    label: 'Point Out, Point Back',
+    icon: LocateFixed,
+    color: { bg: 'bg-[#0d9488]', border: 'border-[#0f766e]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./PointBack.jsx')),
+    hasContent: (u) => !!u.pointBack?.items?.length,
+    buildPool: (u) => u.pointBack,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@U04_4_TASKS@@
 

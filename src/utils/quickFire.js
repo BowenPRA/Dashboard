@@ -35,6 +35,7 @@ export const QF_MODES = [
   // @@U04_2_QF_MODES@@
 
   // @@U04_3_QF_MODES@@
+  'pointMul', 'pointFact',
 
   // @@U04_4_QF_MODES@@
 
@@ -224,6 +225,51 @@ function integerCard(rng, id) {
 // @@U04_2_QF_CARDS@@
 
 // @@U04_3_QF_CARDS@@
+// 4.3 multiplying decimals (utils/pointBack.js marks them; an import may sit
+// anywhere at the top level of a module, and this block has no line up there).
+// pointMul   0.3 × 4 = ?     a decimal × a 1-digit number, in your head
+// pointFact  3.6 × 24 = ?    given 36 × 24 = 864 — place the point by estimating
+import { pointModel as pbModel, diagnoseProduct as pbMark, plain as pbPlain } from './pointBack.js';
+
+const PB_SHAPES = [
+  (r) => `0.${intIn(r, 1, 9)}`,
+  (r) => `${intIn(r, 1, 4)}.${intIn(r, 1, 9)}`,
+  (r) => `0.0${intIn(r, 1, 9)}`,
+  (r) => `0.${pickOne(r, ['25', '15', '12', '35', '45', '05'])}`,
+];
+
+function pointMulCard(rng, id) {
+  for (let tries = 0; tries < 60; tries += 1) {
+    const d = pickOne(rng, PB_SHAPES)(rng);
+    const w = intIn(rng, 2, 9);
+    const m = pbModel({ id, a: d, b: String(w) });
+    if (m.product > 120n) continue;
+    const first = rng() < 0.25;
+    return {
+      id, mode: 'pointMul', latex: `${first ? `${w} \\times ${d}` : `${d} \\times ${w}`} =`, answer: pbPlain(m.sum.exact),
+      ask: { en: 'Work it out in your head.', fr: 'Calcule de tête.' },
+      mark: (typed) => pbMark(m, typed),
+    };
+  }
+  return null;
+}
+
+function pointFactCard(rng, id) {
+  for (let tries = 0; tries < 60; tries += 1) {
+    const top = intIn(rng, 12, 98);
+    const w = rng() < 0.3 ? intIn(rng, 3, 9) : intIn(rng, 11, 39);
+    if (top % 10 === 0 || w % 10 === 0) continue;
+    const s = String(top);
+    const d = rng() < 0.6 ? `${s[0]}.${s[1]}` : `0.${s}`;
+    const m = pbModel({ id, a: d, b: String(w) });
+    return {
+      id, mode: 'pointFact', latex: `${d} \\times ${w} =`, answer: pbPlain(m.sum.exact),
+      ask: { en: `You know that ${top} × ${w} = ${m.pText}.`, fr: `Tu sais que ${top} × ${w} = ${m.pText}.` },
+      mark: (typed) => pbMark(m, typed),
+    };
+  }
+  return null;
+}
 
 // @@U04_4_QF_CARDS@@
 
@@ -237,6 +283,7 @@ const MAKERS = {
   // @@U04_2_QF_MAKERS@@
 
   // @@U04_3_QF_MAKERS@@
+  pointMul: pointMulCard, pointFact: pointFactCard,
 
   // @@U04_4_QF_MAKERS@@
 

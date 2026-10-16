@@ -64,6 +64,7 @@ import { frenchProblems, frenchSourceProblems, vnTwinPaths, vnShadow, enFrProble
 // @@U04_2_IMPORT@@
 
 // @@U04_3_IMPORT@@
+import { checkPointBackItems } from '../src/utils/pointBack.js';
 
 // @@U04_4_IMPORT@@
 
@@ -258,6 +259,18 @@ for (const trackId of TRACK_IDS) {
     // @@U04_2_CHECK@@
 
     // @@U04_3_CHECK@@
+    // 4.3 Point Out, Point Back: every item's estimate, product, point and written answer derived and accepted.
+    if (unit.pointBack !== undefined) {
+      const at = `${label}: pointBack`;
+      const cfg = unit.pointBack;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${at} needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${at} has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${at} item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkPointBackItems(cfg.items || [], { bilingual })) err(`${at} ${p}`);
+    }
 
     // @@U04_4_CHECK@@
 
