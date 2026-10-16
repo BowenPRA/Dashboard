@@ -37,6 +37,7 @@ export const QF_MODES = [
   // @@U04_3_QF_MODES@@
 
   // @@U04_4_QF_MODES@@
+  'decdivide', 'divcheck',
 
   // @@U04_5_QF_MODES@@
 ];
@@ -226,6 +227,112 @@ function integerCard(rng, id) {
 // @@U04_3_QF_CARDS@@
 
 // @@U04_4_QF_CARDS@@
+// 4.4 Dividing decimals (U04_4). Two modes, English / French:
+//   decdivide  8.24 ÷ 4 = ?          a decimal ÷ a 1-digit number. Slips named:
+//              a lost 0 (2.6 for 2.06), the point not straight up (20.6,
+//              0.206); any other wrong answer is answered by the inverse —
+//              "2.5 × 4 = 10, not 8.24".
+//   divcheck   9.18 ÷ 3 = 3.6. Right or wrong?   two buttons; the verdict is
+//              the inverse calculation, claim × 3.
+// The quotient is dealt first and the dividend built from it, so every card
+// divides exactly. Helpers are prefixed div44 (other units add blocks here).
+const DIV44_QUOTIENTS = [
+  (r) => `${intIn(r, 1, 9)}.${intIn(r, 1, 9)}`,                   // 1.4
+  (r) => `${intIn(r, 1, 9)}.0${intIn(r, 1, 9)}`,                  // 2.06 — a 0 in the answer
+  (r) => `0.${intIn(r, 1, 9)}${intIn(r, 1, 9)}`,                  // 0.38 — 0 before the point
+  (r) => `${intIn(r, 1, 4)}.${intIn(r, 1, 9)}${intIn(r, 1, 9)}`,  // 2.13
+  (r) => `0.0${intIn(r, 1, 9)}`,                                  // 0.06
+];
+const div44Canon = (v) => {
+  let { n, dp } = v;
+  while (dp > 0 && n % 10n === 0n) { n /= 10n; dp -= 1; }
+  return { n, dp };
+};
+const div44Same = (a, b) => { const x = div44Canon(a); const y = div44Canon(b); return x.n === y.n && x.dp === y.dp; };
+const div44Times = (v, d) => div44Canon({ n: v.n * BigInt(d), dp: v.dp });
+/** Deal one division: quotient text q, divisor d, dividend text D. */
+function div44Deal(rng) {
+  const q = pickOne(rng, DIV44_QUOTIENTS)(rng);
+  const d = intIn(rng, 2, 9);
+  const qv = dec(q);
+  return { q: decText(div44Canon(qv)), qv, d, D: decText(div44Times(qv, d)) };
+}
+/** The quotient with a placeholder 0 left out (2.06 → 2.6, 0.06 → 0.6). */
+function div44NoZero(q) {
+  const out = [];
+  for (let i = 1; i < q.length; i += 1) {
+    if (q[i] !== '0') continue;
+    const s = q.slice(0, i) + q.slice(i + 1);
+    if (!s.endsWith('.') && s !== q && !div44Same(dec(s), dec(q))) out.push(s);
+  }
+  return out;
+}
+
+function div44DivideCard(rng, id) {
+  const { q, qv, d, D } = div44Deal(rng);
+  const mark = (typed) => {
+    const s = String(typed ?? '').trim().replace(/\s+/g, '');
+    if (!s) return { soft: true, en: 'Type the answer first.', fr: 'Tape d’abord la réponse.' };
+    if (s.includes(',')) return { soft: true, en: 'Write the point as a dot: 2.06, not 2,06.', fr: 'Écris le point avec un point : 2.06, pas 2,06.' };
+    let v;
+    try { v = dec(s); } catch { return { soft: true, en: 'Type a number, like 2.06.', fr: 'Tape un nombre, comme 2.06.' }; }
+    if (div44Same(v, qv)) return { ok: true };
+    const T = decText(div44Canon(v));
+    const P = decText(div44Times(v, d));
+    if (div44NoZero(q).some((z) => div44Same(dec(z), v))) {
+      return {
+        ok: false,
+        en: `Check: ${T} × ${d} = ${P}, not ${D}. A digit was too small to divide — write 0 in that place.`,
+        fr: `Vérifie : ${T} × ${d} = ${P}, pas ${D}. Un chiffre était trop petit pour être divisé — écris 0 à cette place.`,
+      };
+    }
+    if (div44Canon(v).n === div44Canon(qv).n) {
+      return {
+        ok: false,
+        en: `The right digits, but the point is in the wrong place. It goes straight up from the point in ${D}. Check: ${T} × ${d} = ${P}.`,
+        fr: `Les bons chiffres, mais le point est mal placé. Il monte tout droit depuis le point de ${D}. Vérifie : ${T} × ${d} = ${P}.`,
+      };
+    }
+    return {
+      ok: false,
+      en: `Check it with the inverse: ${T} × ${d} = ${P}, not ${D}.`,
+      fr: `Vérifie avec le calcul inverse : ${T} × ${d} = ${P}, pas ${D}.`,
+    };
+  };
+  return {
+    id, mode: 'decdivide', latex: `${D} \\div ${d} =`, answer: q,
+    ask: { en: 'Work it out. The point goes straight up.', fr: 'Calcule. Le point monte tout droit.' },
+    mark,
+  };
+}
+
+function div44CheckCard(rng, id) {
+  const { q, qv, d, D } = div44Deal(rng);
+  // The claim: right a little under half the time; otherwise a lost 0, or the
+  // point one place out.
+  let claim = q;
+  if (rng() >= 0.45) {
+    const lost = div44NoZero(q);
+    if (lost.length && rng() < 0.6) claim = pickOne(rng, lost);
+    else {
+      const up = rng() < 0.5 && !q.startsWith('0.0');
+      claim = decText(div44Canon(up ? div44Times(qv, 10) : { n: qv.n, dp: qv.dp + 1 }));
+    }
+  }
+  const cv = dec(claim);
+  const right = div44Same(cv, qv);
+  const P = decText(div44Times(cv, d));
+  const why = right
+    ? { en: `${claim} × ${d} = ${D} — back to ${D}, so it is right.`, fr: `${claim} × ${d} = ${D} — on retrouve ${D}, donc c’est juste.` }
+    : { en: `${claim} × ${d} = ${P}, not ${D} — so it is wrong. ${D} ÷ ${d} = ${q}.`, fr: `${claim} × ${d} = ${P}, pas ${D} — donc c’est faux. ${D} ÷ ${d} = ${q}.` };
+  return {
+    id, mode: 'divcheck', latex: `${D} \\div ${d} = ${claim}`,
+    answer: right ? 'Right' : 'Wrong', answerFr: right ? 'Juste' : 'Faux',
+    ask: { en: 'Check it with the inverse. Is it right?', fr: 'Vérifie avec le calcul inverse. Est-ce juste ?' },
+    choices: [{ val: 'right', en: 'Right', fr: 'Juste' }, { val: 'wrong', en: 'Wrong', fr: 'Faux' }],
+    mark: (val) => ((val === 'right') === right ? { ok: true } : { ok: false, ...why }),
+  };
+}
 
 // @@U04_5_QF_CARDS@@
 
@@ -239,6 +346,7 @@ const MAKERS = {
   // @@U04_3_QF_MAKERS@@
 
   // @@U04_4_QF_MAKERS@@
+  decdivide: div44DivideCard, divcheck: div44CheckCard,
 
   // @@U04_5_QF_MAKERS@@
 };

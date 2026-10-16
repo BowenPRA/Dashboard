@@ -66,6 +66,7 @@ import { frenchProblems, frenchSourceProblems, vnTwinPaths, vnShadow, enFrProble
 // @@U04_3_IMPORT@@
 
 // @@U04_4_IMPORT@@
+import { checkShortDivExtras } from '../src/utils/shortDivExtras.js';
 
 // @@U04_5_IMPORT@@
 
@@ -260,6 +261,8 @@ for (const trackId of TRACK_IDS) {
     // @@U04_3_CHECK@@
 
     // @@U04_4_CHECK@@
+    // Bus Stop's optional stages (4.4): `table` on a 2-digit divisor, `check` on an exact item.
+    if (unit.shortDiv !== undefined) for (const p of checkShortDivExtras(unit.shortDiv.items || [])) err(`${label}: shortDiv ${p}`);
 
     // @@U04_5_CHECK@@
 
