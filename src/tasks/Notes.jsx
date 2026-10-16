@@ -140,6 +140,7 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
 const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
   'chain', 'cycle', 'ph']);
+SIDE_ACTIVITIES.add('makeeasy'); // Maths 4.5 (U04_5): Make It Easy on a slide
 
 SIDE_ACTIVITIES.add('pointback'); // 4.3 (U04_3): the tap row fits a side column; under the slide it hides the slide
 

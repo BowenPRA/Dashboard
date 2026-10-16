@@ -34,6 +34,7 @@ import { PointBackActivity } from './PointBackActivity.jsx';
 // @@U04_4_ACT_IMPORT@@
 
 // @@U04_5_ACT_IMPORT@@
+import { MakeEasyActivity } from './MakeEasyActivity.jsx';
 
 // @@SCI_U03_1_ACT_IMPORT@@
 
@@ -771,6 +772,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@U04_4_ACT_CASE@@
 
     // @@U04_5_ACT_CASE@@
+    case 'makeeasy': body = <MakeEasyActivity {...common} />; break;
 
     // @@SCI_U03_1_ACT_CASE@@
 

@@ -174,5 +174,12 @@ The figures below are cropped from the **Cambridge IGCSE™ Co-ordinated Science
 <!-- @@U04_4_CREDITS@@ -->
 
 <!-- @@U04_5_CREDITS@@ -->
+**4.5 Making decimal calculations easier (`Y7_MATH/U04_5`)**
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U04_5/pizza.jpg` | A pizza cut into eight slices, one with a bite out of it — Mr Bowen's pizza (half, then a quarter, then an eighth). 960 px thumbnail, cropped to x 150–730, y 0–560 to remove a glass at the top right; copied from the classroom deck `y7-math/U04_5` | igorovsyannykov | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Pizza-3007395.jpg) | CC0 |
+
+Every other picture in the unit is a drawn SVG ported from the classroom deck.
 
 <!-- @@SCI_U03_1_CREDITS@@ -->

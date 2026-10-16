@@ -25,6 +25,7 @@ import { LocateFixed } from 'lucide-react';
 // @@U04_4_IMPORT@@
 
 // @@U04_5_IMPORT@@
+import { WandSparkles as MakeEasyIcon } from 'lucide-react';
 
 // @@SCI_U03_1_IMPORT@@
 
@@ -1720,6 +1721,28 @@ export const TASKS = [
   // @@U04_4_TASKS@@
 
   // @@U04_5_TASKS@@
+  {
+    id: 'MAKE_EASY',
+    nativeMax: 10,
+    dbKey: 'p79',
+    // "Same answer, less work." A decimal calculation and two or three ways to
+    // do it: choose the easy one (× 0.2 is ÷ 10 then × 2, × 0.25 is ÷ 4, × 9 is
+    // × 10 then one lot fewer, 4.3 × 6 is 4 × 6 + 0.3 × 6), then fill each
+    // step's box. "Of" words and stories first ask which calculation they are;
+    // × a number less than 1 first asks whether the answer gets smaller.
+    // utils/makeEasy.js derives the routes, the steps and the slip behind a
+    // wrong answer (× 0.2 as ÷ 2, × 0.25 as ÷ 25, × 9 as × 10 + one lot …).
+    label: 'Make It Easy',
+    icon: MakeEasyIcon,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./MakeEasy.jsx')),
+    hasContent: (u) => !!u.makeEasy?.items?.length,
+    buildPool: (u) => u.makeEasy,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@SCI_U03_1_TASKS@@
 ];
