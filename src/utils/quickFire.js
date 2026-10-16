@@ -31,6 +31,7 @@ export const QF_MODES = [
   'shift', 'power', 'mass', 'round', 'compare', 'couldbe', 'integer',
   // Unit 4 (decimals) modes, one block per unit:
   // @@U04_1_QF_MODES@@
+  'deccompare', 'decpick',
 
   // @@U04_2_QF_MODES@@
 
@@ -223,6 +224,9 @@ function integerCard(rng, id) {
 
 // ── Unit 4 (decimals) cards — one block per unit ───────────────────────────
 // @@U04_1_QF_CARDS@@
+// 4.1: deccompare (3.3 □ 3.25, < or >) and decpick (the smallest / largest of
+// four) — choice cards built round a trap, made in utils/decOrder.js.
+import { decCompareCard, decPickCard } from './decOrder.js';
 
 // @@U04_2_QF_CARDS@@
 
@@ -392,6 +396,7 @@ const MAKERS = {
   shift: shiftCard, power: powerCard, mass: massCard, round: roundCard,
   compare: compareCard, couldbe: couldBeCard, integer: integerCard,
   // @@U04_1_QF_MAKERS@@
+  deccompare: decCompareCard, decpick: decPickCard,
 
   // @@U04_2_QF_MAKERS@@
 

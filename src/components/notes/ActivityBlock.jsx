@@ -25,6 +25,7 @@ import { PhActivity } from './PhActivity.jsx';
 import { tr, field } from '../../utils/lang';
 // Unit 4 (decimals) and Science 3.1 deck activities, one line per unit:
 // @@U04_1_ACT_IMPORT@@
+import { DecOrderActivity } from './DecOrderActivity.jsx';
 
 // @@U04_2_ACT_IMPORT@@
 
@@ -763,6 +764,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'ph': body = <PhActivity {...common} />; break;
     // Year 7 maths Unit 4 (decimals) and science 3.1
     // @@U04_1_ACT_CASE@@
+    case 'decorder': body = <DecOrderActivity {...common} />; break;
 
     // @@U04_2_ACT_CASE@@
 

@@ -60,6 +60,7 @@ import { checkQuickFireConfig } from '../src/utils/quickFire.js';
 import { checkIneqItems } from '../src/utils/ineqLine.js';
 import { frenchProblems, frenchSourceProblems, vnTwinPaths, vnShadow, enFrProblems, translatedShapes } from '../src/utils/langCheck.js';
 // @@U04_1_IMPORT@@
+import { checkDecOrderItems } from '../src/utils/decOrder.js';
 
 // @@U04_2_IMPORT@@
 
@@ -257,6 +258,19 @@ for (const trackId of TRACK_IDS) {
 
     // -- Unit 4 decimals and Science 3.1 engines (docs/y7-math/decimal-engines.md)
     // @@U04_1_CHECK@@
+    // Fill the Zeros (4.1): every order, sign, digit set and position derived,
+    // its own answer accepted, and every slip's wrong order named.
+    if (unit.decOrder !== undefined) {
+      const at = `${label}: decOrder`;
+      const cfg = unit.decOrder;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${at} needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${at} has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${at} item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkDecOrderItems(cfg.items || [], { bilingual })) err(`${at} ${p}`);
+    }
 
     // @@U04_2_CHECK@@
 

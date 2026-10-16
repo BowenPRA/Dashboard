@@ -139,10 +139,10 @@ function CheckBlock({ check, lang, answer, onAnswer, isDisplayMode, parseText, c
 // the full width to be tappable, so it keeps the footer under the slide.
 const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspot', 'plot', 'reflect', 'venn',
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
-  'chain', 'cycle', 'ph']);
-SIDE_ACTIVITIES.add('makeeasy'); // Maths 4.5 (U04_5): Make It Easy on a slide
-
-SIDE_ACTIVITIES.add('pointback'); // 4.3 (U04_3): the tap row fits a side column; under the slide it hides the slide
+  'chain', 'cycle', 'ph',
+  // Maths Unit 4: Fill the Zeros (4.1), Point Out Point Back (4.3), Make It
+  // Easy (4.5) — under the slide they squeeze it to a sliver at 1280×720.
+  'decorder', 'pointback', 'makeeasy']);
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
 const FIX_T = {
