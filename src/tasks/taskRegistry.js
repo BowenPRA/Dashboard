@@ -16,6 +16,7 @@ import { langsFor } from '../utils/lang';
 // Unit 4 (Decimals) and Science 3.1 engines import their icons here, one
 // line per unit, so parallel builds never edit the same line.
 // @@U04_1_IMPORT@@
+import { ArrowUp01 as DecOrderIcon } from 'lucide-react';
 
 // @@U04_2_IMPORT@@
 
@@ -1688,6 +1689,28 @@ export const TASKS = [
   // p79 MAKE_EASY (4.5) · p80 Science 3.1, if it needs an engine. 4.4 reuses
   // SHORT_DIV (p56). Item shapes: docs/y7-math/decimal-engines.md.
   // @@U04_1_TASKS@@
+  {
+    id: 'DEC_ORDER',
+    nativeMax: 10,
+    dbKey: 'p76',
+    // "Fill the Zeros." Comparing and ordering decimals (4.1): the numbers
+    // line up at the point, the student fills the gaps with (orange) zeros
+    // until every number has as many decimal places as the longest, then
+    // orders them, writes <, = or >, finds the digits that fit a box, or says
+    // which one is "third fastest". utils/decOrder.js derives the order and
+    // names the slip behind a wrong one (longer is bigger, .25 read as 25,
+    // the whole-number part ignored, the right order the wrong way round).
+    label: 'Fill the Zeros',
+    icon: DecOrderIcon,
+    color: { bg: 'bg-[#1a5fa8]', border: 'border-[#134a85]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./DecOrder.jsx')),
+    hasContent: (u) => !!u.decOrder?.items?.length,
+    buildPool: (u) => u.decOrder,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@U04_2_TASKS@@
 

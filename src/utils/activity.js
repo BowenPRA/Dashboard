@@ -20,6 +20,7 @@ import { checkCycleActivity } from './waterCycle.js';
 import { checkPhActivity } from './phLab.js';
 // Unit 4 (decimals) and Science 3.1 deck activities, one block per unit:
 // @@U04_1_ACT_IMPORT@@
+import { checkDecOrderActivity } from './decOrder.js';
 
 // @@U04_2_ACT_IMPORT@@
 
@@ -68,6 +69,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'terms', 'algebra', 'grid', 'flow', 'periodic', 'particles', 'formula', 'line', 'shift', 'round', 'busstop', 'ineq',
   'chain', 'cycle', 'ph',
   // @@U04_1_ACT_TYPES@@
+  'decorder',
 
   // @@U04_2_ACT_TYPES@@
 
@@ -370,6 +372,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
     if (a.type === type) for (const p of check(a, { bilingual })) out.push(`${type} ${p}`);
   }
   // @@U04_1_ACT_CHECK@@
+  if (a.type === 'decorder') for (const p of checkDecOrderActivity(a)) out.push(p);
 
   // @@U04_2_ACT_CHECK@@
 
