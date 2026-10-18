@@ -41,7 +41,9 @@ const buildQuiz = (pool = []) => {
   }));
 };
 
-export default function Recognition({ pool = [], track, unitId, onComplete, onQuit }) {
+// `bilingual: false` (an English-only track) drops every Vietnamese line, here
+// and on the word card — those units carry no `vn*` twins to show.
+export default function Recognition({ pool = [], track, unitId, onComplete, onQuit, bilingual = true }) {
   const quiz = useMemo(() => buildQuiz(pool), [pool]);
 
   const [phase, setPhase] = useState('study'); // study -> bridge -> check
@@ -146,12 +148,14 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
           <Target className="w-11 h-11 text-[#58a700]" strokeWidth={2.5} />
         </div>
         <h2 className="text-4xl font-black text-slate-800 dark:text-slate-100 mb-3 tracking-tight">Now prove it</h2>
-        <p className="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1 max-w-md">
+        <p className={`text-lg font-bold text-slate-500 dark:text-slate-400 max-w-md ${bilingual ? 'mb-1' : 'mb-10'}`}>
           {quiz.length} words. Pick the right meaning for each one. This part is worth the XP.
         </p>
-        <p className="text-base font-medium italic text-slate-400 dark:text-slate-500 mb-10 max-w-md">
-          {quiz.length} từ. Chọn nghĩa đúng cho mỗi từ. Phần này tính điểm.
-        </p>
+        {bilingual && (
+          <p className="text-base font-medium italic text-slate-400 dark:text-slate-500 mb-10 max-w-md">
+            {quiz.length} từ. Chọn nghĩa đúng cho mỗi từ. Phần này tính điểm.
+          </p>
+        )}
         <button
           onClick={startCheck}
           className="flex items-center px-10 py-5 bg-[#58cc02] text-white rounded-2xl font-black text-lg uppercase tracking-widest border-b-[6px] border-[#58a700] hover:bg-[#46a802] active:border-b-0 active:translate-y-[6px] transition-all"
@@ -172,7 +176,7 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
 
         <div className="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto">
           <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-xs sm:text-sm mb-6 text-center">
-            Which meaning is correct? · Nghĩa nào đúng?
+            Which meaning is correct?{bilingual && ' · Nghĩa nào đúng?'}
           </p>
 
           <h1 className="text-5xl sm:text-6xl font-black text-slate-800 dark:text-slate-100 tracking-tight text-center break-words px-4 capitalize mb-10">
@@ -211,6 +215,7 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
             isCorrect={picked.correct}
             currentWord={question.target}
             isWordRecognition={true}
+            bilingual={bilingual}
             track={track}
             unitId={unitId}
             onNext={nextCheck}
@@ -232,9 +237,11 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
           <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-sm sm:text-base">
             Do you already know this word? Answer honestly — this part is not scored. A check on every word follows.
           </p>
-          <p className="text-slate-400 dark:text-slate-600 font-medium italic text-sm sm:text-base mt-2">
-            Bạn đã biết từ này chưa? Trả lời thật lòng — phần này không tính điểm. Sau đó sẽ có bài kiểm tra.
-          </p>
+          {bilingual && (
+            <p className="text-slate-400 dark:text-slate-600 font-medium italic text-sm sm:text-base mt-2">
+              Bạn đã biết từ này chưa? Trả lời thật lòng — phần này không tính điểm. Sau đó sẽ có bài kiểm tra.
+            </p>
+          )}
         </div>
 
         <div className="w-full flex items-center justify-center mb-12 min-h-[120px]">
@@ -274,6 +281,7 @@ export default function Recognition({ pool = [], track, unitId, onComplete, onQu
           isStudy={true}
           currentWord={studyWord}
           isWordRecognition={true}
+          bilingual={bilingual}
           track={track}
           unitId={unitId}
           onNext={nextStudy}

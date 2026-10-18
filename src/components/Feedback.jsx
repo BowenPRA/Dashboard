@@ -11,6 +11,9 @@ export default function Feedback({
   // colours and no chime — nothing has been marked, so nothing should sound
   // like it was.
   isStudy = false,
+  // English-only tracks (`bilingual: false`) have no `vn*` twins: hide those
+  // lines rather than print a blank one (or an empty pair of quotes).
+  bilingual = true,
   track,
   unitId,
   onNext,
@@ -177,21 +180,21 @@ export default function Feedback({
               </div>
               <div className="flex-1 min-w-0 w-full bg-white/50 p-5 md:p-6 rounded-[2rem] border border-white/60 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-black/5">
-                  <div><h3 className="text-3xl font-black text-slate-800 capitalize">{currentWord.word}</h3><p className="text-xl font-bold text-slate-500 mt-1">{currentWord.vn}</p></div>
+                  <div><h3 className="text-3xl font-black text-slate-800 capitalize">{currentWord.word}</h3>{bilingual && <p className="text-xl font-bold text-slate-500 mt-1">{currentWord.vn}</p>}</div>
                   <button disabled={btnCooldown} onClick={handleManualAudio} className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl shadow-md transition-all active:scale-95 disabled:opacity-70">
                     <Volume2 className="w-6 h-6 mr-2" /><span className="font-bold text-sm uppercase tracking-widest">Play Audio</span>
                   </button>
                 </div>
                 <div className="mb-4">
                   <p className="text-lg font-bold text-slate-800 leading-snug">{currentWord.def}</p>
-                  <p className={`text-md font-medium mt-1 ${accentText}`}>{currentWord.vnDef}</p>
+                  {bilingual && <p className={`text-md font-medium mt-1 ${accentText}`}>{currentWord.vnDef}</p>}
                 </div>
                 <div className={`pt-4 border-t ${accentBorder}`}>
                   <span className={`font-black text-xs uppercase tracking-widest block mb-2 ${textClass}`}>Sample Sentence</span>
                   <p className="text-xl font-medium italic leading-relaxed text-slate-800">
                     {(currentWord.sent || '').split(new RegExp(`(${currentWord.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')).map((part, i) => part.toLowerCase() === currentWord.word.toLowerCase() ? <strong key={i} className={`px-1 rounded ${accentHighlight}`}>{part}</strong> : part)}
                   </p>
-                  <p className={`text-lg font-medium italic mt-1 ${accentText}`}>"{currentWord.vnSent}"</p>
+                  {bilingual && <p className={`text-lg font-medium italic mt-1 ${accentText}`}>"{currentWord.vnSent}"</p>}
                 </div>
               </div>
             </div>
