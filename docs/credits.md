@@ -228,6 +228,14 @@ Every other picture in the unit, including the Storyboard's seven frames, is a d
 
 **Maths 5.1 A Sum of 360°** (`Y7_MATH/U05_1`) uses the pizza photo already in `public/images/Y7_MATH/U04_5/` (credited above under 4.5); every other picture is a drawn SVG.
 
+**Maths 5.2 Intersecting Lines** (`Y7_MATH/U05_2`) — copied from the classroom deck `y7-math/U05_2/images/` (its `CREDITS.json`); none is a Learner's Book scan. Every other picture is a drawn SVG or widget.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U05_2/scissors.jpg` | A pair of open scissors (1280 px thumbnail cropped to the scissors) — SCISSORS_PHOTO, slide 4 | Jiří Sedláček | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Opened_big_scissors.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_2/crossing-above.jpg` | Tarkhovka, Russia: the level crossing of Tarkhovskaya Street from straight above (cropped round the crossing) — TRACKS_PHOTO, slide 6 | Nikolai Bulykin | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:%D0%A2%D0%B0%D1%80%D1%85%D0%BE%D0%B2%D0%BA%D0%B0,_%D0%BF%D0%B5%D1%80%D0%B5%D0%B5%D0%B7%D0%B4_%D0%A2%D0%B0%D1%80%D1%85%D0%BE%D0%B2%D1%81%D0%BA%D0%BE%D0%B9_%D1%83%D0%BB%D0%B8%D1%86%D1%8B_%D1%81%D0%B2%D0%B5%D1%80%D1%85%D1%83.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_2/painters.jpg` | Two men painting a shop shutter, with a wooden ladder ("Mr Bowen's ladder") — LADDER, slide 20 | Sundaram Perumal | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Painting_Time.jpg) | CC BY-SA 4.0 |
+
 **Maths 5.3 Drawing lines and quadrilaterals** (`Y7_MATH/U05_3`, slide 3, TOOLS) — copied from the classroom deck `y7-math/U05_3/images/` (its `CREDITS.json`). Every other picture in the unit is a drawn SVG or widget.
 
 | File | Title / Description | Creator | Source | License |
