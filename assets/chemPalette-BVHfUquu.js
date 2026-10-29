@@ -1,0 +1,1 @@
+var e={teal:`#0087a8`,tealDark:`#026e88`,tealSoft:`rgba(0,135,168,0.10)`,green:`#58cc02`,greenDark:`#3e7500`,red:`#ff4b4b`,amber:`#f59e0b`};export{e as t};
