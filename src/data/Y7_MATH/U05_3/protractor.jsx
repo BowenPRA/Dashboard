@@ -132,7 +132,8 @@ export function ZeroLineBoard({
   if (model.kind === 'sketch') pts.push(model.P.C);
   const lensAt = fig.lens.map((l) => lensPos(l, fig));
   for (const { p, half } of lensAt) pts.push([p[0] - half, p[1]], [p[0] + half, p[1]]);
-  const full = bboxOf(pts, 26);
+  // a plain angle hugs its protractor (it grows to the card on a phone); a figure keeps room for its labels
+  const full = bboxOf(pts, ['read', 'reflex', 'draw'].includes(model.kind) ? 12 : 26);
   const focus = isPerp ? [pc[0], -model.height * S * 0.5] : (onMark && mark != null ? at(prot.c, prot.r, markDir(model.draw, mark)) : model.focus);
   const zw = prot.r * 1.05, zh = zw * 0.72;
   const vb = zoom ? [focus[0] - zw / 2, focus[1] - zh / 2, zw, zh] : full;
