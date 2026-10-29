@@ -29,7 +29,7 @@
 //       p10 x = 49° (corresponding, tilted)
 //   L5  p11 z = 126° (corresponding then straight line, or straight line then Z)
 //       p12 z = 67° (vertically opposite, then corresponding)
-//   L6  p13 C is not parallel (106°, 106°, 110° in the same place)
+//   L6  p13 C is not parallel (printed 106°, 74°, 70°; in the same place 106°, 106°, 110°)
 //       p14 A is not parallel (74°, 79°, 79° in the same place)
 const pair = (a, th, more = {}) => ({ type: 'pair', a, th, ...more });
 
@@ -64,7 +64,7 @@ export const anglePairs = {
     { id: 'p12', level: 5, kind: 'steps', fig: pair(10, 113), given: [0, 1], find: [{ at: [1, 3], letter: 'z' }] },
     {
       id: 'p13', level: 6, kind: 'which', fig: { type: 'three', a: 0, th: 74, bends: [0, 0, 4] },
-      given: [[0, 3], [1, 0], [2, 1]],
+      given: [[0, 3], [1, 2], [2, 0]],
       context: 'Mr Bowen’s gate has three bars, A, B and C, and one bar across them. The numbers are the angles he measured.',
       contextFr: 'Le portail de M. Bowen a trois barres, A, B et C, et une barre qui les traverse. Les nombres sont les angles qu’il a mesurés.',
     },

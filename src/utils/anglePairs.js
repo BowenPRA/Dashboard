@@ -220,7 +220,19 @@ export function diagnoseStone(m, at) {
 export function diagnoseLine(m, i) {
   const l = m.lines[i];
   if (i === m.odd) return { ok: true, ...m2(`Yes: line ${l.name} is not parallel to the other two.`, `Oui : la droite ${l.name} n’est pas parallèle aux deux autres.`) };
-  return { ok: false, code: 'printed', convert: l.conv !== 'self', ...m2(`Move each angle to the same place before you compare. Is line ${l.name}’s angle really different?`, `Ramène chaque angle à la même place avant de comparer. L’angle de la droite ${l.name} est-il vraiment différent ?`) };
+  // The line to move to the same place: the one tapped, or — when its angle is
+  // already there — the other parallel line, never the odd one.
+  if (l.conv !== 'self') {
+    return { ok: false, code: 'printed', convertLine: i, ...m2(`Move each angle to the same place before you compare. Is line ${l.name}’s angle really different?`, `Ramène chaque angle à la même place avant de comparer. L’angle de la droite ${l.name} est-il vraiment différent ?`) };
+  }
+  const j = m.lines.findIndex((o, k) => k !== i && k !== m.odd && o.conv !== 'self');
+  const o = m.lines[j];
+  return {
+    ok: false, code: 'printed', convertLine: j === -1 ? null : j,
+    ...(o
+      ? m2(`Line ${l.name}’s angle is already in its place. Move line ${o.name}’s angle to the same place, then compare.`, `L’angle de la droite ${l.name} est déjà à sa place. Ramène l’angle de la droite ${o.name} à la même place, puis compare.`)
+      : m2('Compare the angles in the same place at each line.', 'Compare les angles à la même place sur chaque droite.')),
+  };
 }
 
 export const REASON_IDS = ['same', 'perp', 'eye'];

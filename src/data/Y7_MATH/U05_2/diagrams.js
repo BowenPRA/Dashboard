@@ -377,13 +377,13 @@ export const DIAGRAMS = {
     <circle cx="342.9" cy="128.0" r="5" fill="#2b2b2b"/>
     <circle cx="257.1" cy="312.0" r="5" fill="#2b2b2b"/>
     <text x="409" y="96" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">65°</text>
-    <text x="316" y="96" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">a</text>
+    <text x="313" y="90" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">a</text>
     <text x="277" y="179" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">b</text>
-    <text x="370" y="179" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">c</text>
+    <text x="373" y="185" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">c</text>
     <text x="323" y="280" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">d</text>
-    <text x="230" y="280" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">e</text>
+    <text x="227" y="274" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">e</text>
     <text x="191" y="363" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">f</text>
-    <text x="284" y="363" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">g</text>
+    <text x="287" y="369" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">g</text>
       <text x="300" y="424" font-family="${FONT}" font-size="20" fill="${MUTED}" text-anchor="middle">a road across two railway lines</text>
   </svg>`,
 
@@ -426,9 +426,9 @@ export const DIAGRAMS = {
     <circle cx="214.2" cy="312.0" r="5" fill="#2b2b2b"/>
     <text x="295" y="177" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">47°</text>
     <text x="305" y="282" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">r</text>
-    <text x="197" y="281" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">p</text>
+    <text x="192" y="270" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">p</text>
     <text x="123" y="361" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">s</text>
-    <text x="232" y="362" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">q</text>
+    <text x="237" y="373" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">q</text>
   </svg>`,
   Q_NOARROWS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" class="w-full h-full">
     <rect x="0" y="0" width="600" height="440" rx="14" fill="#ffffff"/>
@@ -439,8 +439,8 @@ export const DIAGRAMS = {
     <line x1="234.4" y1="422.0" x2="365.6" y2="18.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
     <circle cx="329.9" cy="128.0" r="5" fill="#2b2b2b"/>
     <circle cx="270.1" cy="312.0" r="5" fill="#2b2b2b"/>
-    <text x="299" y="96" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">108°</text>
-    <text x="240" y="280" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">y</text>
+    <text x="297" y="92" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">108°</text>
+    <text x="237" y="276" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">y</text>
   </svg>`,
   Q_SIDE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" class="w-full h-full">
     <rect x="0" y="0" width="600" height="440" rx="14" fill="#ffffff"/>
@@ -454,26 +454,26 @@ export const DIAGRAMS = {
     <circle cx="255.1" cy="128.0" r="5" fill="#2b2b2b"/>
     <circle cx="344.9" cy="312.0" r="5" fill="#2b2b2b"/>
     <text x="322" y="179" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">64°</text>
-    <text x="371" y="280" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">t</text>
+    <text x="375" y="274" font-family="${FONT}" font-size="26" font-weight="bold" fill="#c25e12" text-anchor="middle">t</text>
   </svg>`,
-  Q_THREE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 470" class="w-full h-full">
-    <rect x="0" y="0" width="600" height="470" rx="14" fill="#ffffff"/>
-    <path d="M 327.2 117.0 L 319.6 150.1 A 34 34 0 0 0 361.2 117.0 Z" fill="#e2f2f6" stroke="#0087a8" stroke-width="3"/>
-    <path d="M 300.0 235.0 L 307.6 201.9 A 34 34 0 0 0 266.0 236.8 Z" fill="#e2f2f6" stroke="#0087a8" stroke-width="3"/>
-    <path d="M 272.8 353.0 L 306.8 353.0 A 34 34 0 0 0 280.4 319.9 Z" fill="#e2f2f6" stroke="#0087a8" stroke-width="3"/>
-    <line x1="64.0" y1="117.0" x2="582.0" y2="117.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
-    <line x1="64.0" y1="247.4" x2="582.0" y2="220.2" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
-    <line x1="64.0" y1="353.0" x2="582.0" y2="353.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
-    <line x1="249.9" y1="452.0" x2="350.1" y2="18.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="327.2" cy="117.0" r="5" fill="#2b2b2b"/>
-    <circle cx="300.0" cy="235.0" r="5" fill="#2b2b2b"/>
-    <circle cx="272.8" cy="353.0" r="5" fill="#2b2b2b"/>
-    <text x="360" y="168" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">103°</text>
-    <text x="267" y="205" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">106°</text>
-    <text x="325" y="321" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">77°</text>
-    <text x="38" y="127" font-family="${FONT}" font-size="28" font-weight="bold" fill="#1a5fa8" text-anchor="middle">A</text>
-    <text x="38" y="259" font-family="${FONT}" font-size="28" font-weight="bold" fill="#1a5fa8" text-anchor="middle">B</text>
-    <text x="38" y="363" font-family="${FONT}" font-size="28" font-weight="bold" fill="#1a5fa8" text-anchor="middle">C</text>
+  Q_THREE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" class="w-full h-full">
+    <rect x="0" y="0" width="600" height="500" rx="14" fill="#ffffff"/>
+    <path d="M 330.9 116.0 L 323.3 149.1 A 34 34 0 0 0 364.9 116.0 Z" fill="#e2f2f6" stroke="#0087a8" stroke-width="3"/>
+    <path d="M 300.0 250.0 L 307.6 216.9 A 34 34 0 0 0 266.0 251.8 Z" fill="#e2f2f6" stroke="#0087a8" stroke-width="3"/>
+    <path d="M 269.1 384.0 L 303.1 384.0 A 34 34 0 0 0 276.7 350.9 Z" fill="#e2f2f6" stroke="#0087a8" stroke-width="3"/>
+    <line x1="64.0" y1="116.0" x2="582.0" y2="116.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+    <line x1="64.0" y1="262.4" x2="582.0" y2="235.2" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+    <line x1="64.0" y1="384.0" x2="582.0" y2="384.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+    <line x1="246.4" y1="482.0" x2="353.6" y2="18.0" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="330.9" cy="116.0" r="5" fill="#2b2b2b"/>
+    <circle cx="300.0" cy="250.0" r="5" fill="#2b2b2b"/>
+    <circle cx="269.1" cy="384.0" r="5" fill="#2b2b2b"/>
+    <text x="366" y="169" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">103°</text>
+    <text x="264" y="217" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">106°</text>
+    <text x="321" y="352" font-family="${FONT}" font-size="26" font-weight="bold" fill="#0087a8" text-anchor="middle">77°</text>
+    <text x="38" y="126" font-family="${FONT}" font-size="28" font-weight="bold" fill="#1a5fa8" text-anchor="middle">A</text>
+    <text x="38" y="274" font-family="${FONT}" font-size="28" font-weight="bold" fill="#1a5fa8" text-anchor="middle">B</text>
+    <text x="38" y="394" font-family="${FONT}" font-size="28" font-weight="bold" fill="#1a5fa8" text-anchor="middle">C</text>
   </svg>`,
 }
 

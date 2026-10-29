@@ -36,7 +36,7 @@ function Finished({ activity, lang, result, parseText }) {
   const glow = glows.some((g) => g.letter) ? { paths: glows.filter((g) => g.letter).flatMap((g) => g.paths), tone: result.correct ? 'good' : 'shown' } : null;
   return (
     <div>
-      <AnglePairFigure F={m.F} marks={marks} glow={glow} label={apT(lang).title} className="mx-auto" style={{ maxHeight: '30vh' }} />
+      <AnglePairFigure F={m.F} marks={marks} glow={glow} label={apT(lang).title} className="mx-auto" style={{ maxHeight: '26vh' }} />
       <Verdict ok={result.correct} lang={lang}>
         <Sentences m={m} lang={lang} compact />
         <div className="mt-1">{parseText(tr(lang, activity.explain, null, activity.explainFr))}</div>
@@ -65,7 +65,7 @@ function Running({ activity, lang, onResult }) {
   return (
     <div>
       <AnglePairFigure F={run.m.F} marks={run.marks} glow={run.glow} tap={run.tap} rails={run.rails}
-        onTap={run.actions.tapSector} label={t.title} className="mx-auto" style={{ maxHeight: '30vh' }} />
+        onTap={run.actions.tapSector} label={t.title} className="mx-auto" style={{ maxHeight: '26vh' }} />
       {!run.done && (
         <div className="mt-2">
           <p className="mb-2 text-sm font-black text-slate-600 dark:text-slate-300">{stageTitle(run, lang)}</p>

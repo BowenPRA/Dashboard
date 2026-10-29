@@ -90,9 +90,6 @@ function ItemPanel({ item, pool, lang, header, isLast, onDone, onNext }) {
                   letter={kind === 'stoneSize' ? 'w' : kind === 'convert' ? '?' : run.target.letter} />
               </>
             )}
-            {['tap', 'stone', 'line'].includes(kind) && (
-              <p className="text-sm font-bold text-slate-500 dark:text-slate-400 flex items-center gap-2"><MousePointerClick className="w-4 h-4" strokeWidth={2.5} />{t.tap}</p>
-            )}
             <ApMessage msg={run.msg} lang={lang} />
             <div className="mt-4 flex justify-end">
               <button onClick={run.actions.showMe}

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
-  itemModel, diagnoseTap, diagnosePair, diagnoseSize, diagnoseStone, diagnoseLine, diagnoseReason, REASON_IDS,
+  itemModel, diagnoseTap, diagnosePair, diagnoseSize, diagnoseStone, diagnoseLine, diagnoseReason, readDegrees, REASON_IDS,
 } from '../../utils/anglePairs';
 import { letterOf, sameAt } from '../../utils/anglePairGeom';
 
@@ -89,8 +89,8 @@ export default function useAnglePairItem(item, { onFinish } = {}) {
       openStage('stoneSize', { tone: 'bad', ...join(d, { en: 'First: how big is w, the angle you tapped?', fr: 'D’abord : combien mesure w, l’angle que tu as touché ?' }) });
       return;
     }
-    if (kind === 'line' && d.convert && !answers[`convert:${value}`] && wrongs === 0) {
-      setConvertLine(value);
+    if (kind === 'line' && d.convertLine != null && !answers[`convert:${d.convertLine}`] && wrongs === 0) {
+      setConvertLine(d.convertLine);
       openStage('convert', { tone: 'bad', en: d.en, fr: d.fr });
       return;
     }
@@ -123,10 +123,14 @@ export default function useAnglePairItem(item, { onFinish } = {}) {
         : kind === 'convert' ? { answer: m.lines[convertLine].same, from: m.lines[convertLine].printed, rel: m.lines[convertLine].conv, letter: m.lines[convertLine].name }
           : target;
       let d = diagnoseSize(t, text);
+      // Two steps, and the given angle typed as the answer: the stone was skipped.
+      if (!d.ok && !d.soft && kind === 'size' && m.kind === 'steps' && readDegrees(text) === m.given.size) {
+        d = { ok: false, code: 'skipstone', en: `${t.letter} and the ${m.given.size}° are not joined by one X, F or Z.`, fr: `${t.letter} et le ${m.given.size}° ne sont pas reliés par un seul X, F ou Z.` };
+      }
       if (d.ok && kind === 'convert') {
         d = { ok: true, en: `Yes: in the same place, line ${t.letter}’s angle is ${t.answer}°. Compare the three again, then tap the line that is not parallel.`, fr: `Oui : à la même place, l’angle de la droite ${t.letter} fait ${t.answer}°. Compare encore les trois, puis touche la droite qui n’est pas parallèle.` };
       }
-      judge(d, Number(String(text).replace(/[^\d.]/g, '')));
+      judge(d, readDegrees(text));
     },
     showMe() { fill(null); },
   };

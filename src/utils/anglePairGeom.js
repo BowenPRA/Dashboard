@@ -60,7 +60,7 @@ function clipLine(P, d, [x0, y0, x1, y1]) {
   return [[P[0] + lo * dx, P[1] + lo * dy], [P[0] + hi * dx, P[1] + hi * dy]];
 }
 
-export const FIG = { W: 600, H: 440, H3: 470, ARC: 34, GAP: 92, GAP3: 118 };
+export const FIG = { W: 600, H: 440, H3: 500, ARC: 34, GAP: 92, GAP3: 134 };
 
 /** The box a label takes at 26 px bold: about 15.6 px a character, 28 px tall. */
 export const labelBox = (text) => ({ w: String(text).length * 15.6 + 6, h: 28 });
@@ -128,7 +128,8 @@ export const sizeOf = (F, [c, w]) => F.sectors[c][w].size;
 export function labelAt(F, [c, w]) {
   const q = F.sectors[c][w];
   const r = (Math.max(halfAcross(q.start), halfAcross(q.end)) + 5) / Math.sin(rad(Math.min(q.size, 178) / 2));
-  return at(F.points[c], Math.max(44, Math.min(r, 150)), q.mid);
+  // Never inside the angle's own arc (radius FIG.ARC): at least 56 out.
+  return at(F.points[c], Math.max(56, Math.min(r, 150)), q.mid);
 }
 export const keyOf = ([c, w]) => `${c}-${w}`;
 export const sameAt = (A, B) => !!A && !!B && A[0] === B[0] && A[1] === B[1];
