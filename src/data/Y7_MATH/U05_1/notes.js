@@ -430,8 +430,8 @@ export const notes = [
     activity: {
       id: 'act_words',
       type: 'sort',
-      prompt: 'Sort the Workbook’s sentences by what they tell you to do.',
-      promptFr: 'Range les phrases du cahier selon ce qu’elles te disent de faire.',
+      prompt: 'What does each sentence tell you to do?',
+      promptFr: 'Que te dit de faire chaque phrase ?',
       bins: [
         { id: 'find', name: 'Find a number', nameFr: 'Trouver un nombre' },
         { id: 'b180', name: 'Use 180°', nameFr: 'Utiliser 180°' },
@@ -442,13 +442,12 @@ export const notes = [
         { id: 'w1', name: 'Calculate the value of a.', nameFr: 'Calculate the value of a.', bin: 'find' },
         { id: 'w2', name: 'Work out the size of the angles that have a letter.', nameFr: 'Work out the size of the angles that have a letter.', bin: 'find' },
         { id: 'w3', name: 'AB is a straight line.', nameFr: 'AB is a straight line.', bin: 'b180' },
-        { id: 'w4', name: 'The angles are around a point.', nameFr: 'The angles are around a point.', bin: 'b360' },
         { id: 'w5', name: 'One angle of a quadrilateral is 120°.', nameFr: 'One angle of a quadrilateral is 120°.', bin: 'b360' },
         { id: 'w6', name: 'Give a reason.', nameFr: 'Give a reason.', bin: 'why' },
         { id: 'w7', name: 'Explain how you know.', nameFr: 'Explain how you know.', bin: 'why' },
       ],
-      explain: '**Calculate** and **work out** both mean **find**. “AB is a straight line” tells you to use **180°**. Round a point, or the corners of a quadrilateral: **360°**. **Give a reason** and **explain how you know** mean: write the fact you used, after **because**.',
-      explainFr: '**Calculate** et **work out** veulent dire **trouve**. « AB is a straight line » te dit d’utiliser **180°**. Autour d’un point, ou les coins d’un quadrilatère : **360°**. **Give a reason** et **explain how you know** veulent dire : écris la propriété utilisée, après **because** (car).',
+      explain: '**Calculate** and **work out** both mean **find**. “AB is a straight line” tells you to use **180°**. The corners of a quadrilateral, or round a point: **360°**. **Give a reason** and **explain how you know** mean: write the fact you used, after **because**.',
+      explainFr: '**Calculate** et **work out** veulent dire **trouve**. « AB is a straight line » te dit d’utiliser **180°**. Les coins d’un quadrilatère, ou autour d’un point : **360°**. **Give a reason** et **explain how you know** veulent dire : écris la propriété utilisée, après **because** (car).',
     },
   },
 
