@@ -143,7 +143,16 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // Maths Unit 4: Fill the Zeros (4.1), Line Up the Points (4.2), Point Out
   // Point Back (4.3), Make It Easy (4.5) — under the slide they squeeze it to a
   // sliver at 1280×720.
-  'decorder', 'deccol', 'pointback', 'makeeasy']);
+  'decorder', 'deccol', 'pointback', 'makeeasy',
+  // Maths Unit 5 and Science 3.2, one line per unit:
+  // @@U05_1_SIDE@@
+  'anglesum',
+  // @@U05_2_SIDE@@
+  'anglepair',
+  // @@U05_3_SIDE@@
+  'zeroline',
+  // @@SCI_U03_2_SIDE@@
+]);
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
 const FIX_T = {

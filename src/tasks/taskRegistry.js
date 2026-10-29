@@ -32,6 +32,20 @@ import { WandSparkles as MakeEasyIcon } from 'lucide-react';
 // @@SCI_U03_1_IMPORT@@
 import { Weight as WeighItIcon } from 'lucide-react';
 
+// Unit 5 (Angles & constructions) and Science 3.2, one block per unit:
+// @@U05_1_IMPORT@@
+import { Compass as AngleSumIcon } from 'lucide-react';
+
+// @@U05_2_IMPORT@@
+import { Hash as AnglePairIcon } from 'lucide-react';
+
+// @@U05_3_IMPORT@@
+import { PencilRuler as ZeroLineIcon } from 'lucide-react';
+
+// @@SCI_U03_2_IMPORT@@
+import { Clapperboard as StoryboardIcon } from 'lucide-react';
+
+
 /**
  * Does this track carry Vietnamese twins? A track that declares
  * `bilingual: false` (ADD_MATH, COORD_SCI) has nothing for an EN/VN toggle to
@@ -1815,6 +1829,106 @@ export const TASKS = [
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
+
+  // ── Year 7 Maths Unit 5, angles & constructions (U05_1–U05_3) and Science 3.2 ──
+  // p81 (5.1) · p82 (5.2) · p83 (5.3) · p84 (Science 3.2), if a unit needs an engine.
+  // @@U05_1_TASKS@@
+  {
+    id: 'ANGLE_SUM',
+    nativeMax: 10,
+    dbKey: 'p81',
+    // Find a missing angle and say why (Y7 Maths 5.1, A sum of 360°): on a
+    // straight line 180°, round a point 360°, in a quadrilateral 360°, a
+    // parallelogram's opposite angles. Levels 1–2 walk every stage (find first,
+    // 180 or 360, add, subtract, share, say why); from level 3 the angle and
+    // its reason are given straight away and only a wrong answer opens the
+    // stages, where its slip happened. utils/angleSum.js derives every stage,
+    // answer, reason and named slip; utils/angleSumCheck.js proves each item.
+    label: 'Find It, Say Why',
+    icon: AngleSumIcon,
+    color: { bg: 'bg-[#5c2483]', border: 'border-[#3f1a5c]', text: 'text-white' },
+    defaultMaxXP: 45,
+    phase: 'practice',
+    component: lazy(() => import('./AngleSum.jsx')),
+    hasContent: (u) => !!u.angleSum?.items?.length,
+    buildPool: (u) => u.angleSum,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+
+  // @@U05_2_TASKS@@
+  {
+    id: 'ANGLE_PAIR',
+    nativeMax: 10,
+    dbKey: 'p82',
+    // "X, F or Z?" (Y7 Maths 5.2, Intersecting lines): two lines crossing, or
+    // a line across two parallel lines, drawn fresh from each item. Name the
+    // pair (vertically opposite, corresponding, alternate, a straight line, or
+    // "no arrows: you can't tell"), then give the size; find a stepping stone
+    // for two steps; spot the line that is not parallel. utils/anglePairs.js
+    // derives every angle, answer, reason sentence and named slip, and
+    // checkAnglePairItems proves each item in the validator.
+    label: 'X, F or Z?',
+    icon: AnglePairIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#006d88]', text: 'text-white' },
+    defaultMaxXP: 45,
+    phase: 'practice',
+    component: lazy(() => import('./AnglePairs.jsx')),
+    hasContent: (u) => !!u.anglePairs?.items?.length,
+    buildPool: (u) => u.anglePairs,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+
+  // @@U05_3_TASKS@@
+  {
+    id: 'ZERO_LINE',
+    nativeMax: 10,
+    dbKey: 'p83',
+    // Read, draw and construct with a protractor (Y7 Maths 5.3). The
+    // protractor is placed for the student: they estimate (acute, obtuse,
+    // reflex), choose the 0 on the line, type a reading or tap the scale, place
+    // the perpendicular, copy an angle to draw a parallel, and finish with a
+    // drawing on paper checked against the expected values. utils/zeroLine.js
+    // derives every reading and names each slip (the other scale, 180 − x; not
+    // starting at 0; a reading that disagrees with the estimate; 180 − x at P,
+    // so the line meets AB); checkZeroLineConfig proves every item.
+    label: 'Zero on the Line',
+    icon: ZeroLineIcon,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 45,
+    phase: 'practice',
+    component: lazy(() => import('./ZeroLine.jsx')),
+    hasContent: (u) => !!u.zeroLine?.items?.length,
+    buildPool: (u) => u.zeroLine,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+
+  // @@SCI_U03_2_TASKS@@
+  {
+    id: 'SOLAR_STORY',
+    nativeMax: 10,
+    dbKey: 'p84',
+    // The book's storyboard Activity for Science 3.2, marked: put the
+    // formation story's frames in order, then give the reason for each step
+    // from a bank holding two misconceptions; decide whether a fact supports
+    // the hypothesis or seems to contradict it (and which step it shows, or
+    // what scientists do about it); sort a model's strengths from its
+    // limitations. Every round, answer and named slip is derived by
+    // utils/solarStory.js and proved by utils/solarStoryCheck.js.
+    label: 'Storyboard',
+    icon: StoryboardIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./Storyboard.jsx')),
+    hasContent: (u) => !!u.storyboard?.items?.length,
+    buildPool: (u) => u.storyboard,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));

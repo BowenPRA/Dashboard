@@ -77,6 +77,19 @@ import { checkMakeEasyItems } from '../src/utils/makeEasy.js';
 // @@SCI_U03_1_IMPORT@@
 import { checkWeighConfig } from '../src/utils/weighIt.js';
 
+// @@U05_1_IMPORT@@
+import { checkAngleSumItems } from '../src/utils/angleSumCheck.js';
+
+// @@U05_2_IMPORT@@
+import { checkAnglePairItems } from '../src/utils/anglePairCheck.js';
+
+// @@U05_3_IMPORT@@
+import { checkZeroLineConfig } from '../src/utils/zeroLine.js';
+
+// @@SCI_U03_2_IMPORT@@
+import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
+
+
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
 const AUDIO = path.join(ROOT, 'public/audio');
@@ -320,6 +333,41 @@ for (const trackId of TRACK_IDS) {
 
     // @@SCI_U03_1_CHECK@@
     if (unit.weighIt !== undefined) for (const p of checkWeighConfig(unit.weighIt, { bilingual })) err(`${label}: weighIt ${p}`);
+
+    // @@U05_1_CHECK@@
+    //    Find It, Say Why (5.1): every stage, answer, reason and named slip derived and proved.
+    if (unit.angleSum !== undefined) {
+      const cfg = unit.angleSum;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${label}: angleSum needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${label}: angleSum has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${label}: angleSum item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkAngleSumItems(cfg.items || [], { bilingual })) err(`${label}: angleSum ${p}`);
+    }
+
+    // @@U05_2_CHECK@@
+    // X, F or Z? (5.2): every picture, pair, letter, answer and named slip derived and proved.
+    if (unit.anglePairs !== undefined) {
+      const cfg = unit.anglePairs;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${label}: anglePairs needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${label}: anglePairs has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${label}: anglePairs item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkAnglePairItems(cfg.items || [], { bilingual })) err(`${label}: anglePairs ${p}`);
+    }
+
+    // @@U05_3_CHECK@@
+    //    Zero on the Line (5.3): every reading, mark and named slip derived and proved.
+    if (unit.zeroLine !== undefined) for (const p of checkZeroLineConfig(unit.zeroLine, { bilingual })) err(`${label}: zeroLine ${p}`);
+
+    // @@SCI_U03_2_CHECK@@
+    //    Storyboard (3.2): every round, answer and named slip derived and proved.
+    if (unit.storyboard !== undefined) for (const p of checkStoryConfig(unit.storyboard, { bilingual })) err(`${label}: storyboard ${p}`);
+
 
 
     // -- Find & Fix and Order It: every error must be locatable exactly once in

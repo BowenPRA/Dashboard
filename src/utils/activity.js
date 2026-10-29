@@ -37,6 +37,22 @@ import { checkEasyActivity } from './makeEasy.js';
 
 // @@SCI_U03_1_ACT_IMPORT@@
 
+// @@U05_1_ACT_IMPORT@@
+// `anglesum` (Maths 5.1) — Find It, Say Why on a slide. Proved by utils/angleSumCheck.js.
+import { checkAngleSumActivity } from './angleSumCheck.js';
+
+// @@U05_2_ACT_IMPORT@@
+// `anglepair` (Maths 5.2) — X, F or Z? on a slide: name the pair, then the size.
+import { checkAnglePairActivity } from './anglePairCheck.js';
+
+// @@U05_3_ACT_IMPORT@@
+// `zeroline` (Maths 5.3) — one Zero on the Line item on a slide: read an angle
+// (estimate, then the reading) or draw one (which 0, then the mark).
+import { checkZeroLineActivity } from './zeroLine.js';
+
+// @@SCI_U03_2_ACT_IMPORT@@
+
+
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
 // points, an inequality by SHADING the line, a modulus graph by TAPPING the
@@ -88,6 +104,18 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'makeeasy',
 
   // @@SCI_U03_1_ACT_TYPES@@
+
+  // @@U05_1_ACT_TYPES@@
+  'anglesum',
+
+  // @@U05_2_ACT_TYPES@@
+  'anglepair',
+
+  // @@U05_3_ACT_TYPES@@
+  'zeroline',
+
+  // @@SCI_U03_2_ACT_TYPES@@
+
 ];
 
 export const INEQ_ASKS = ['draw', 'read', 'integer', 'list'];
@@ -395,6 +423,18 @@ export function checkActivity(a, { bilingual = true } = {}) {
   if (a.type === 'makeeasy') for (const p of checkEasyActivity(a, { bilingual })) out.push(`makeeasy ${p}`);
 
   // @@SCI_U03_1_ACT_CHECK@@
+
+  // @@U05_1_ACT_CHECK@@
+  if (a.type === 'anglesum') for (const p of checkAngleSumActivity(a, { bilingual })) out.push(`anglesum ${p}`);
+
+  // @@U05_2_ACT_CHECK@@
+  if (a.type === 'anglepair') for (const p of checkAnglePairActivity(a, { bilingual })) out.push(`anglepair ${p}`);
+
+  // @@U05_3_ACT_CHECK@@
+  if (a.type === 'zeroline') for (const p of checkZeroLineActivity(a)) out.push(`zeroline ${p}`);
+
+  // @@SCI_U03_2_ACT_CHECK@@
+
   return out;
 }
 

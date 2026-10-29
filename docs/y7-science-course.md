@@ -142,7 +142,8 @@ cell). Every explanation says why each distractor is wrong.
 | 2.7 Compounds and mixtures | `U02_7` | built — Particle Lab (mixtures) | `U02_7` |
 | 2.8 Acids and bases | `U02_8` | built — pH Lab | `U02_8` |
 | 3.1 Gravity, weight and mass | `U03_1` | built — Weigh It (EN/FR only) | `U03_1` |
-| 3.2 → | `U03_2` … | next, once taught | — |
+| 3.2 Formation of the Solar System | `U03_2` | built — Storyboard (EN/FR only) | `U03_2` + `U03_models` |
+| 3.3 → | `U03_3` … | next (the classroom has 3.3–3.7) | — |
 
 From 2.5 the units follow [y7-science/particle-engines.md](y7-science/particle-engines.md):
 a denser deck (15–18 scored items, with the new `periodic` / `particles` / `formula`
@@ -157,6 +158,15 @@ are: `meta.vietnamese: false`, `…Fr` twins and no `…Vn` ones (see
 [french.md](french.md) and `src/utils/langCheck.js`). 3.1's engine is Weigh It
 (`WEIGH_IT` p80, `src/utils/weighIt.js`) — W = m × g on the formula triangle, g from a
 planet strip, kg vs N.
+
+**3.2 (2026-10-29) is the first "less busy work" unit**: the deck carries the teaching
+(13 scored items in 21 slides), then ONE flagship task, a short reasoning task and the
+quiz — no Workbook, cloze reading or Quick Fire, so the quiz gate is 65 of 85. It
+absorbs the Models: Space deck (`U03_models`); `U03_coffee`, `U03_earth` and `U03_lab`
+have no twin. Its engine is Storyboard (`SOLAR_STORY` p84, `src/utils/solarStory.js`):
+order the formation frames and give the cause of each step against named
+misconceptions, judge evidence, sort a model's strengths from its limitations. Plan:
+[y7-science/plans/U03_2.md](y7-science/plans/U03_2.md).
 
 Not adapted, by design: `U00_1` (Day One), `U00_2` (the accuracy lab),
 `U00_3` (the planters) — they only exist with a room. Nor are the classroom's

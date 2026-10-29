@@ -207,3 +207,39 @@ Every other picture in the unit is a drawn SVG ported from the classroom deck.
 | `public/images/Y7_SCI/U03_1/carsand.jpg` | A car sunk in soft mud and sand, Weston-super-Mare — SAND_CAR | Charlie from United Kingdom | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Oh_dear........._(12568437524).jpg) | CC BY 2.0 |
 | `public/images/Y7_SCI/U03_1/moonjump.webm` | Video: two Apollo 16 astronauts bounding down a slope (14 s, silent loop, VP9 WebM, 0.6 MB) | NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Apollo_16_Nothing_So_Hidden_1972_NASA.webm) | Public domain (PD-USGov-NASA) |
 | `public/images/Y7_SCI/U03_1/strobe.jpg` | Multi-flash photo of a falling ball, 20 flashes a second (downscaled to 1500 px tall) — Accelerate | MichaelMaggs | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Falling_ball.jpg) | CC BY-SA 3.0 |
+
+## Year 7 Maths Unit 5 and Science 3.2 (2026-10-29)
+
+**Science 3.2 Formation of the Solar System** (`Y7_SCI/U03_2`) — copied from the classroom lesson `y7-science/U03_2/images/` (its `CREDITS.json`); none is a Learner's Book scan. The NASA star-formation film the classroom plays is not used.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_2/orion.jpg` | The Orion Nebula, Hubble mosaic, 2006 (landscape crop, 1200 px) — the nebula slide and MODEL_REAL | NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Orion Treasury Project Team | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/hltau.jpg` | ALMA image of the disc round the young star HL Tauri, 2014 (900 px) — "We can see it happening" | ALMA (ESO/NAOJ/NRAO) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:HL_Tau_protoplanetary_disk.jpg) | CC BY 4.0 |
+| `public/images/Y7_SCI/U03_2/ecliptic.jpg` | Clementine star-tracker image: the Moon, the Sun's corona, Saturn, Mars and Mercury in a line, 1994 — SIDE_VIEW | The Clementine Project, commissioned by NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Plane_of_Ecliptic.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/sun.jpg` | The Sun in extreme ultraviolet (AIA 304), Solar Dynamics Observatory, 19 August 2010 (square, 480 px) | NASA/SDO (AIA) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/jupiter.jpg` | Jupiter in true colour, Hubble OPAL, 5 January 2024 (square, 480 px) | NASA/STScI (Hubble OPAL) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png) | Public domain |
+| `public/images/Y7_SCI/U03_2/earth.jpg` | The Blue Marble: the Earth from Apollo 17, 1972 (square, 480 px) | NASA / Apollo 17 crew (Harrison Schmitt) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/neptune.jpg` | Neptune from Voyager 2, August 1989 (square, 480 px) | NASA / JPL / Voyager-ISS / Aster Cowart | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Neptune_-_Voyager_2_(29347980845)_flatten_crop.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/venus.jpg` | Venus from Mariner 10, newly processed view (PIA23791) (square, 480 px) — SPIN_ODD | NASA/JPL-Caltech | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:PIA23791-Venus-NewlyProcessedView-20200608_(cropped).jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/uranus.jpg` | Uranus from Voyager 2, 1986 (480 px, axis drawn lying on its side) — SPIN_ODD | NASA/JPL-Caltech | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Uranus2.jpg) | Public domain |
+
+Every other picture in the unit, including the Storyboard's seven frames, is a drawn SVG.
+
+**Maths 5.1 A Sum of 360°** (`Y7_MATH/U05_1`) uses the pizza photo already in `public/images/Y7_MATH/U04_5/` (credited above under 4.5); every other picture is a drawn SVG.
+
+**Maths 5.2 Intersecting Lines** (`Y7_MATH/U05_2`) — copied from the classroom deck `y7-math/U05_2/images/` (its `CREDITS.json`); none is a Learner's Book scan. Every other picture is a drawn SVG or widget.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U05_2/scissors.jpg` | A pair of open scissors (1280 px thumbnail cropped to the scissors) — SCISSORS_PHOTO, slide 4 | Jiří Sedláček | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Opened_big_scissors.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_2/crossing-above.jpg` | Tarkhovka, Russia: the level crossing of Tarkhovskaya Street from straight above (cropped round the crossing) — TRACKS_PHOTO, slide 6 | Nikolai Bulykin | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:%D0%A2%D0%B0%D1%80%D1%85%D0%BE%D0%B2%D0%BA%D0%B0,_%D0%BF%D0%B5%D1%80%D0%B5%D0%B5%D0%B7%D0%B4_%D0%A2%D0%B0%D1%80%D1%85%D0%BE%D0%B2%D1%81%D0%BA%D0%BE%D0%B9_%D1%83%D0%BB%D0%B8%D1%86%D1%8B_%D1%81%D0%B2%D0%B5%D1%80%D1%85%D1%83.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_2/painters.jpg` | Two men painting a shop shutter, with a wooden ladder ("Mr Bowen's ladder") — LADDER, slide 20 | Sundaram Perumal | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Painting_Time.jpg) | CC BY-SA 4.0 |
+
+**Maths 5.3 Drawing lines and quadrilaterals** (`Y7_MATH/U05_3`, slide 3, TOOLS) — copied from the classroom deck `y7-math/U05_3/images/` (its `CREDITS.json`). Every other picture in the unit is a drawn SVG or widget.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U05_3/protractor.jpg` | A semicircular protractor with an outer and an inner scale (960 px thumbnail, cropped 910×540 from x 30, y 60, scaled to 800 px) | CatalinaDurhan | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Wooden_Protractor.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_3/setsquare.jpg` | A green 30°–60° set square on white (960 px thumbnail, scaled to 500 px) | Luigi Chiesa | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Squadra_30_60.jpg) | CC BY 3.0 |
+| `public/images/Y7_MATH/U05_3/trysquare.jpg` | A carpenter's try square on a wooden board (960 px thumbnail, cropped 920×680 from x 40, y 20, scaled to 800 px) | Luigi Zanasi | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Trysquare.jpg) | CC BY-SA 2.0 ca |

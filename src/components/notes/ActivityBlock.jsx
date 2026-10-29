@@ -40,6 +40,18 @@ import { MakeEasyActivity } from './MakeEasyActivity.jsx';
 
 // @@SCI_U03_1_ACT_IMPORT@@
 
+// @@U05_1_ACT_IMPORT@@
+import { AngleSumActivity } from './AngleSumActivity.jsx';
+
+// @@U05_2_ACT_IMPORT@@
+import { AnglePairActivity } from './AnglePairActivity.jsx';
+
+// @@U05_3_ACT_IMPORT@@
+import { ZeroLineActivity } from './ZeroLineActivity.jsx';
+
+// @@SCI_U03_2_ACT_IMPORT@@
+
+
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
  * "on your whiteboard" and "hands up". Scored like a check: one item, right or
@@ -779,6 +791,18 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'makeeasy': body = <MakeEasyActivity {...common} />; break;
 
     // @@SCI_U03_1_ACT_CASE@@
+
+    // @@U05_1_ACT_CASE@@
+    case 'anglesum': body = <AngleSumActivity {...common} />; break;
+
+    // @@U05_2_ACT_CASE@@
+    case 'anglepair': body = <AnglePairActivity {...common} />; break;
+
+    // @@U05_3_ACT_CASE@@
+    case 'zeroline': body = <ZeroLineActivity {...common} />; break;
+
+    // @@SCI_U03_2_ACT_CASE@@
+
 
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;
   }

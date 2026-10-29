@@ -465,6 +465,25 @@ export const TRACK_LEVELS = {
       blurb: 'There is always an easier way through. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
     },
+    // Unit 5 (Angles & constructions), one entry per section:
+    // @@U05_1_TD@@
+    U05_1: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Full Turn',
+      blurb: 'A new chapter. The track goes all the way round — 360°, and not one degree less.',
+    },
+    // @@U05_2_TD@@
+    U05_2: {
+      mapId: 'JUNCTION', themeId: 'DESERT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Level Crossing',
+      blurb: 'Two tracks that never meet, and a road across them. Hold the crossing while they pour over.',
+    },
+    // @@U05_3_TD@@
+    U05_3: {
+      mapId: 'COMB', themeId: 'NIGHT', tier: 3, waveMod: 'SIEGE',
+      mapName: 'The Drawing Board',
+      blurb: 'Start at 0 on the line, every time. Armored heavies grind down the ruled lanes.',
+    },
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.
@@ -541,6 +560,12 @@ export const TRACK_LEVELS = {
       mapId: 'WAVE', themeId: 'NIGHT', tier: 1,
       mapName: 'The Drop Zone',
       blurb: 'A new chapter. Everything falls at the same rate — hold the valley while it lands.',
+    },
+    // @@SCI_U03_2_TD@@
+    U03_2: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 2,
+      mapName: 'The Spinning Disc',
+      blurb: 'Everything goes round the same way. Hold the centre while the disc turns.',
     },
   },
 };

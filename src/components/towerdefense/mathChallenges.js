@@ -821,6 +821,39 @@ function decimalEasy() {
 }
 
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
+// Maths Unit 5 generators, one block per unit:
+// @@U05_1_GEN@@
+// 5.1 — A sum of 360°: the missing angle on a straight line, round a point or
+// in a quadrilateral. The wrong choices are the named slips of Find It, Say
+// Why: the other total (180° for a point, 360° for a line), the angles you
+// know added but not taken away, and one known angle left out.
+function angleSum() {
+  const roll = ri(0, 2);
+  if (roll === 0) {
+    const a = ri(25, 120);
+    const b = ri(20, 155 - a);
+    const answer = String(180 - a - b);
+    return { prompt: `On a straight line: ${a}°, ${b}° and x. x = ?`, answer, choices: withSlips(answer, [String(360 - a - b), String(a + b), String(180 - a)]) };
+  }
+  if (roll === 1) {
+    const a = ri(60, 150);
+    const b = ri(60, 150);
+    const answer = String(360 - a - b);
+    return { prompt: `Round a point: ${a}°, ${b}° and x. x = ?`, answer, choices: withSlips(answer, [String(180 - a - b), String(a + b), String(360 - a), String(360 - b)]) };
+  }
+  let a; let b; let c; let x;
+  do { a = ri(60, 130); b = ri(60, 130); c = ri(60, 130); x = 360 - a - b - c; } while (x < 35 || x > 150);
+  const answer = String(x);
+  return { prompt: `A quadrilateral: ${a}°, ${b}°, ${c}° and x. x = ?`, answer, choices: withSlips(answer, [String(a + b + c), String(180 - a - b - c), String(360 - a - b), String(360 - b - c)]) };
+}
+
+
+// @@U05_2_GEN@@
+
+// @@U05_3_GEN@@
+
+// @@SCI_U03_2_GEN@@
+
 export const MATH_CHALLENGE_GENERATORS = {
   EM_06: setsAndSurds,
   EM_07A: inequalitiesSimultaneous,
@@ -850,6 +883,10 @@ export const MATH_CHALLENGE_GENERATORS = {
   U04_3: decimalMultiply,
   U04_4: decimalDivide,
   U04_5: decimalEasy,
+  // @@U05_1_GEN_MAP@@
+  U05_1: angleSum,
+  // @@U05_2_GEN_MAP@@
+  // @@U05_3_GEN_MAP@@
 };
 
 /**
@@ -863,6 +900,10 @@ const GENERATOR_TRACK = {
   U01_4: 'Y7_MATH', U01_5: 'Y7_MATH', U01_6: 'Y7_MATH',
   U02_6: 'Y7_MATH', U03_1: 'Y7_MATH', U03_2: 'Y7_MATH',
   U04_1: 'Y7_MATH', U04_2: 'Y7_MATH', U04_3: 'Y7_MATH', U04_4: 'Y7_MATH', U04_5: 'Y7_MATH',
+  // @@U05_1_GEN_TRACK@@
+  U05_1: 'Y7_MATH',
+  // @@U05_2_GEN_TRACK@@
+  // @@U05_3_GEN_TRACK@@
 };
 
 /** True when `unitId` in `track` is the unit a generator was written for. */

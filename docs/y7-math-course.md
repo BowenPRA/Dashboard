@@ -94,6 +94,20 @@ From the workbook contents. Build in book order; each row is one unit folder.
 | 9 | **Sequences & functions** | 9.1 `U09_1` Generating sequences 1 · 9.2 `U09_2` Generating sequences 2 · 9.3 `U09_3` Using the nth term · 9.4 `U09_4` Representing simple functions |
 | 10 | **Percentages** | 10.1 `U10_1` Fractions, decimals & percentages · 10.2 `U10_2` Percentages large & small |
 
+**Progress (2026-10-29):** Unit 5 **Angles & constructions** (5.1–5.3) is built from the
+classroom decks `U05_1`–`U05_3`, EN/FR only, in a leaner shape the teacher asked for
+("more polish and less busy work"): an interactive deck (14–15 scored items, each where
+answering is the learning), key words, ONE flagship engine, a short reasoning task and
+the quiz — no Workbook, cloze or Quick Fire. Each engine fades its scaffold: levels 1–2
+walk every stage, later items take two or three actions, and a wrong answer opens the
+stages where its slip happened. Find It, Say Why (`ANGLE_SUM` p81, 5.1: which fact, add,
+subtract, share, the reason sentence); X, F or Z? (`ANGLE_PAIR` p82, 5.2: name the pair or
+"no arrows: can't tell", with the upright F and unmirrored Z enforced by the validator);
+Zero on the Line (`ZERO_LINE` p83, 5.3: the protractor placed for the student, which 0,
+read or draw, plus an optional paper level checked within ±0.2 cm / ±2°). Plans:
+`y7-math/plans/U05_1.md`–`U05_3.md`. Unit 6 (Collecting data) is next: the classroom has
+`U06_1` and `U06_2`.
+
 **Progress (2026-10-16):** Unit 4 **Decimals** (4.1–4.5) is built to
 [y7-math/decimal-engines.md](y7-math/decimal-engines.md), from the classroom decks
 `U04_1_4` (4.1–4.4 in one period), `U04_5` and `U04_review` — and, like them, in **English
