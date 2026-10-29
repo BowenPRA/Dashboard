@@ -594,30 +594,33 @@ export const DIAGRAMS = {
     <text x="625" y="510" font-family="${FONT}" font-size="36" font-weight="bold" fill="${KEY}" text-anchor="middle">a few seconds</text>
   </svg>`,
 
-  FOUR_WORDS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 440" class="w-full h-full">
-    ${plate(1120, 440)}
-    <text x="560" y="62" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">Models are not real, so they may not be accurate.</text>
-    <text x="560" y="112" font-family="${FONT}" font-size="34" font-weight="bold" fill="${KEY}" text-anchor="middle">Which word describes this?</text>
+  // Redrawn as a 2 × 2 grid, nearly square (the classroom's is one row of four,
+  // for a showcase), so on the split slide beside its check it fills its side.
+  FOUR_WORDS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 700" class="w-full h-full">
+    ${plate(680, 700)}
+    <text x="340" y="54" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">Models are not real,</text>
+    <text x="340" y="98" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">so they may not be accurate.</text>
+    <text x="340" y="148" font-family="${FONT}" font-size="34" font-weight="bold" fill="${KEY}" text-anchor="middle">Which word describes this?</text>
 
-    <rect x="20" y="148" width="255" height="272" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
-    <circle cx="147.5" cy="236" r="52" fill="${TEAL}"/>
-    <text x="147.5" y="257" font-family="${FONT}" font-size="60" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
-    <text x="147.5" y="364" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">an error</text>
+    <rect x="20" y="180" width="310" height="240" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
+    <circle cx="175" cy="265" r="50" fill="${TEAL}"/>
+    <text x="175" y="286" font-family="${FONT}" font-size="58" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+    <text x="175" y="372" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">an error</text>
 
-    <rect x="295" y="148" width="255" height="272" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
-    <circle cx="422.5" cy="236" r="52" fill="${TEAL}"/>
-    <text x="422.5" y="257" font-family="${FONT}" font-size="60" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
-    <text x="422.5" y="364" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a mistake</text>
+    <rect x="350" y="180" width="310" height="240" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
+    <circle cx="505" cy="265" r="50" fill="${TEAL}"/>
+    <text x="505" y="286" font-family="${FONT}" font-size="58" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+    <text x="505" y="372" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a mistake</text>
 
-    <rect x="570" y="148" width="255" height="272" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
-    <circle cx="697.5" cy="236" r="52" fill="${TEAL}"/>
-    <text x="697.5" y="257" font-family="${FONT}" font-size="60" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
-    <text x="697.5" y="364" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a limitation</text>
+    <rect x="20" y="440" width="310" height="240" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
+    <circle cx="175" cy="525" r="50" fill="${TEAL}"/>
+    <text x="175" y="546" font-family="${FONT}" font-size="58" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+    <text x="175" y="632" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a limitation</text>
 
-    <rect x="845" y="148" width="255" height="272" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
-    <circle cx="972.5" cy="236" r="52" fill="${TEAL}"/>
-    <text x="972.5" y="257" font-family="${FONT}" font-size="60" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
-    <text x="972.5" y="364" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a strength</text>
+    <rect x="350" y="440" width="310" height="240" rx="16" fill="#f7f9fa" stroke="${RULE}" stroke-width="2"/>
+    <circle cx="505" cy="525" r="50" fill="${TEAL}"/>
+    <text x="505" y="546" font-family="${FONT}" font-size="58" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+    <text x="505" y="632" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a strength</text>
   </svg>`,
 
   // ── From the Models deck (content/y7-science/U03_models/diagrams.js) ─────
