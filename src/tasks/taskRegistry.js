@@ -34,6 +34,7 @@ import { Weight as WeighItIcon } from 'lucide-react';
 
 // Unit 5 (Angles & constructions) and Science 3.2, one block per unit:
 // @@U05_1_IMPORT@@
+import { Compass as AngleSumIcon } from 'lucide-react';
 
 // @@U05_2_IMPORT@@
 
@@ -1829,6 +1830,28 @@ export const TASKS = [
   // ── Year 7 Maths Unit 5, angles & constructions (U05_1–U05_3) and Science 3.2 ──
   // p81 (5.1) · p82 (5.2) · p83 (5.3) · p84 (Science 3.2), if a unit needs an engine.
   // @@U05_1_TASKS@@
+  {
+    id: 'ANGLE_SUM',
+    nativeMax: 10,
+    dbKey: 'p81',
+    // Find a missing angle and say why (Y7 Maths 5.1, A sum of 360°): on a
+    // straight line 180°, round a point 360°, in a quadrilateral 360°, a
+    // parallelogram's opposite angles. Levels 1–2 walk every stage (find first,
+    // 180 or 360, add, subtract, share, say why); from level 3 the angle and
+    // its reason are given straight away and only a wrong answer opens the
+    // stages, where its slip happened. utils/angleSum.js derives every stage,
+    // answer, reason and named slip; utils/angleSumCheck.js proves each item.
+    label: 'Find It, Say Why',
+    icon: AngleSumIcon,
+    color: { bg: 'bg-[#5c2483]', border: 'border-[#3f1a5c]', text: 'text-white' },
+    defaultMaxXP: 45,
+    phase: 'practice',
+    component: lazy(() => import('./AngleSum.jsx')),
+    hasContent: (u) => !!u.angleSum?.items?.length,
+    buildPool: (u) => u.angleSum,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@U05_2_TASKS@@
 
