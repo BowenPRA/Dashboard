@@ -234,7 +234,7 @@ export function zeroLineModel(item) {
     const A = cm(0, 0), B = cm(AB, 0), C = cm(cx, cy);
     const fig = {
       segs: [{ a: A, b: B, tone: 'ink' }],
-      pts: [{ p: A, name: 'A', away: 225 }, { p: B, name: 'B', away: 315 }, { p: C, name: 'C', away: 90 }],
+      pts: [{ p: A, name: 'A', away: 180 }, { p: B, name: 'B', away: 0 }, { p: C, name: 'C', away: 90 }],
       arcs: [], lens: [{ a: A, b: B, text: `${AB} cm` }],
     };
     return {

@@ -63,6 +63,17 @@ export function Protractor({ cx, cy, r, ring = null, numbers = true, ringTone = 
 /** The two 0s of a protractor turned to `rot` at c, in board coordinates. */
 const zeroSpots = (c, r, rot) => ({ right: at(c, r * 0.86, rot + 4), left: at(c, r * 0.72, rot + 176) });
 
+/** Where a length label sits: off the middle of its side, away from the figure, and far
+ *  enough out to clear the line by half its width when the side is steep. */
+function lensPos(l, fig) {
+  const mid = [(l.a[0] + l.b[0]) / 2, (l.a[1] + l.b[1]) / 2];
+  const d = dirOf(l.a, l.b);
+  const c = fig.centre || [mid[0], mid[1] - 100];
+  const side = norm(dirOf(mid, c) - d) < 180 ? d - 90 : d + 90;
+  const half = (l.text.length * 13 * 0.58) / 2;
+  return { p: at(mid, 10 + half * Math.abs(Math.cos((side * Math.PI) / 180)), side), half };
+}
+
 function bboxOf(points, pad) {
   const xs = points.map((p) => p[0]), ys = points.map((p) => p[1]);
   const x0 = Math.min(...xs) - pad, y0 = Math.min(...ys) - pad;
@@ -115,10 +126,12 @@ export function ZeroLineBoard({
   // the extent: the figure, the protractor, the ruler
   const pts = [];
   for (const s of fig.segs) pts.push(s.a, s.b);
-  for (const p of fig.pts) pts.push(p.p);
+  for (const p of fig.pts) pts.push(p.p, at(p.p, 30, p.away));
   if (isPerp) { pts.push([-prot.r * 0.6, 0], [model.AB * S + prot.r * 0.6, 0], [0, 50], [model.C[0], model.C[1] - 24]); }
   else for (let d = 0; d <= 180; d += 15) pts.push(at(prot.c, prot.r, prot.rot + d));
   if (model.kind === 'sketch') pts.push(model.P.C);
+  const lensAt = fig.lens.map((l) => lensPos(l, fig));
+  for (const { p, half } of lensAt) pts.push([p[0] - half, p[1]], [p[0] + half, p[1]]);
   const full = bboxOf(pts, 26);
   const focus = isPerp ? [pc[0], -model.height * S * 0.5] : (onMark && mark != null ? at(prot.c, prot.r, markDir(model.draw, mark)) : model.focus);
   const zw = prot.r * 1.05, zh = zw * 0.72;
@@ -163,6 +176,14 @@ export function ZeroLineBoard({
       className={`w-full h-full select-none ${live ? 'cursor-crosshair touch-none' : ''} ${className}`} {...handlers}>
       <rect x={f1(full[0] - 400)} y={f1(full[1] - 400)} width={f1(full[2] + 800)} height={f1(full[3] + 800)} fill="#ffffff" />
 
+      {/* the protractor, placed for the student — under the figure, so the arms cross its scale */}
+      {!(isPerp && (foot || ruler)) && (
+        <g transform={`translate(${f1(pc[0])} ${f1(pc[1])}) rotate(${f1(-prot.rot)})`} opacity={finished ? 0.35 : 1}>
+          <Protractor cx={0} cy={0} r={prot.r} ring={ring} fontScale={1.15} />
+          {isPerp && <line x1="0" y1="0" x2="0" y2={f1(-model.height * S - 26)} stroke={KEY} strokeWidth="1.8" strokeDasharray="6 5" />}
+        </g>
+      )}
+
       {/* the figure */}
       {fig.arcs.map((a, i) => (
         <path key={`a${i}`} d={sector(a.c, a.r, a.from, a.to)} fill={a.tone === 'given' ? ORANGE_T : '#eef2f6'} stroke={a.tone === 'given' ? KEY : MUTED} strokeWidth="1.6" />
@@ -183,18 +204,11 @@ export function ZeroLineBoard({
           <line x1={f1(model.C[0])} y1={f1(model.C[1])} x2={f1(model.foot * S)} y2="0" stroke={BLUE} strokeWidth={lw} strokeLinecap="round" />
           <path d={`M ${f1(model.foot * S + 11)} 0 L ${f1(model.foot * S + 11)} -11 L ${f1(model.foot * S)} -11`} fill="none" stroke={BLUE} strokeWidth="1.6" />
           <circle cx={f1(model.foot * S)} cy="0" r="3.4" fill={BLUE} />
-          <text x={f1(model.foot * S - 9)} y="17" fontFamily={FONT} fontSize="15" fontWeight="900" fill={BLUE} textAnchor="middle">D</text>
+          <text x={f1(model.foot * S - 12)} y="-7" fontFamily={FONT} fontSize="15" fontWeight="900" fill={BLUE} textAnchor="middle">D</text>
         </g>
       )}
       {isPerp && ruler && <Ruler from={[0, 0]} cm={Math.ceil(model.AB)} />}
 
-      {/* the protractor, placed for the student */}
-      {!(isPerp && (foot || ruler)) && (
-        <g transform={`translate(${f1(pc[0])} ${f1(pc[1])}) rotate(${f1(-prot.rot)})`} opacity={finished ? 0.35 : 1}>
-          <Protractor cx={0} cy={0} r={prot.r} ring={ring} fontScale={1.15} />
-          {isPerp && <line x1="0" y1="0" x2="0" y2={f1(-model.height * S - 26)} stroke={KEY} strokeWidth="1.8" strokeDasharray="6 5" />}
-        </g>
-      )}
       {onZero && ['right', 'left'].map((side) => {
         const p = zeroSpots(prot.c, prot.r, prot.rot)[side];
         return (
@@ -229,11 +243,7 @@ export function ZeroLineBoard({
         return <text key={`l${i}`} x={f1(p[0])} y={f1(p[1] + 5)} fontFamily={FONT} fontSize="14" fontWeight="900" fill={KEY} textAnchor="middle">{a.label}</text>;
       })}
       {!ruler && fig.lens.map((l, i) => {
-        const mid = [(l.a[0] + l.b[0]) / 2, (l.a[1] + l.b[1]) / 2];
-        const d = dirOf(l.a, l.b);
-        const c = fig.centre || [mid[0], mid[1] - 100];
-        const side = norm(dirOf(mid, c) - d) < 180 ? d - 90 : d + 90;
-        const p = at(mid, 15, side);
+        const { p } = lensAt[i];
         return <text key={`n${i}`} x={f1(p[0])} y={f1(p[1] + 5)} fontFamily={FONT} fontSize="13" fontWeight="800" fill={BLUE} textAnchor="middle">{l.text}</text>;
       })}
       {fig.pts.filter((p) => p.name).map((p, i) => {
