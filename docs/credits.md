@@ -207,3 +207,21 @@ Every other picture in the unit is a drawn SVG ported from the classroom deck.
 | `public/images/Y7_SCI/U03_1/carsand.jpg` | A car sunk in soft mud and sand, Weston-super-Mare — SAND_CAR | Charlie from United Kingdom | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Oh_dear........._(12568437524).jpg) | CC BY 2.0 |
 | `public/images/Y7_SCI/U03_1/moonjump.webm` | Video: two Apollo 16 astronauts bounding down a slope (14 s, silent loop, VP9 WebM, 0.6 MB) | NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Apollo_16_Nothing_So_Hidden_1972_NASA.webm) | Public domain (PD-USGov-NASA) |
 | `public/images/Y7_SCI/U03_1/strobe.jpg` | Multi-flash photo of a falling ball, 20 flashes a second (downscaled to 1500 px tall) — Accelerate | MichaelMaggs | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Falling_ball.jpg) | CC BY-SA 3.0 |
+
+## Year 7 Maths Unit 5 and Science 3.2 (2026-10-29)
+
+**Science 3.2 Formation of the Solar System** (`Y7_SCI/U03_2`) — copied from the classroom lesson `y7-science/U03_2/images/` (its `CREDITS.json`); none is a Learner's Book scan. The NASA star-formation film the classroom plays is not used.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_2/orion.jpg` | The Orion Nebula, Hubble mosaic, 2006 (landscape crop, 1200 px) — the nebula slide and MODEL_REAL | NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Orion Treasury Project Team | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/hltau.jpg` | ALMA image of the disc round the young star HL Tauri, 2014 (900 px) — "We can see it happening" | ALMA (ESO/NAOJ/NRAO) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:HL_Tau_protoplanetary_disk.jpg) | CC BY 4.0 |
+| `public/images/Y7_SCI/U03_2/ecliptic.jpg` | Clementine star-tracker image: the Moon, the Sun's corona, Saturn, Mars and Mercury in a line, 1994 — SIDE_VIEW | The Clementine Project, commissioned by NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Plane_of_Ecliptic.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/sun.jpg` | The Sun in extreme ultraviolet (AIA 304), Solar Dynamics Observatory, 19 August 2010 (square, 480 px) | NASA/SDO (AIA) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/jupiter.jpg` | Jupiter in true colour, Hubble OPAL, 5 January 2024 (square, 480 px) | NASA/STScI (Hubble OPAL) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png) | Public domain |
+| `public/images/Y7_SCI/U03_2/earth.jpg` | The Blue Marble: the Earth from Apollo 17, 1972 (square, 480 px) | NASA / Apollo 17 crew (Harrison Schmitt) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/neptune.jpg` | Neptune from Voyager 2, August 1989 (square, 480 px) | NASA / JPL / Voyager-ISS / Aster Cowart | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Neptune_-_Voyager_2_(29347980845)_flatten_crop.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/venus.jpg` | Venus from Mariner 10, newly processed view (PIA23791) (square, 480 px) — SPIN_ODD | NASA/JPL-Caltech | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:PIA23791-Venus-NewlyProcessedView-20200608_(cropped).jpg) | Public domain |
+| `public/images/Y7_SCI/U03_2/uranus.jpg` | Uranus from Voyager 2, 1986 (480 px, axis drawn lying on its side) — SPIN_ODD | NASA/JPL-Caltech | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Uranus2.jpg) | Public domain |
+
+Every other picture in the unit, including the Storyboard's seven frames, is a drawn SVG.
