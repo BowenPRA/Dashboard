@@ -207,3 +207,12 @@ Every other picture in the unit is a drawn SVG ported from the classroom deck.
 | `public/images/Y7_SCI/U03_1/carsand.jpg` | A car sunk in soft mud and sand, Weston-super-Mare — SAND_CAR | Charlie from United Kingdom | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Oh_dear........._(12568437524).jpg) | CC BY 2.0 |
 | `public/images/Y7_SCI/U03_1/moonjump.webm` | Video: two Apollo 16 astronauts bounding down a slope (14 s, silent loop, VP9 WebM, 0.6 MB) | NASA | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Apollo_16_Nothing_So_Hidden_1972_NASA.webm) | Public domain (PD-USGov-NASA) |
 | `public/images/Y7_SCI/U03_1/strobe.jpg` | Multi-flash photo of a falling ball, 20 flashes a second (downscaled to 1500 px tall) — Accelerate | MichaelMaggs | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Falling_ball.jpg) | CC BY-SA 3.0 |
+
+<!-- @@U05_3_CREDITS@@ -->
+**Maths 5.3 Drawing lines and quadrilaterals** (`Y7_MATH/U05_3`, slide 3, TOOLS) — copied from the classroom deck `y7-math/U05_3/images/` (its `CREDITS.json`). Every other picture in the unit is a drawn SVG or widget.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U05_3/protractor.jpg` | A semicircular protractor with an outer and an inner scale (960 px thumbnail, cropped 910×540 from x 30, y 60, scaled to 800 px) | CatalinaDurhan | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Wooden_Protractor.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_3/setsquare.jpg` | A green 30°–60° set square on white (960 px thumbnail, scaled to 500 px) | Luigi Chiesa | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Squadra_30_60.jpg) | CC BY 3.0 |
+| `public/images/Y7_MATH/U05_3/trysquare.jpg` | A carpenter's try square on a wooden board (960 px thumbnail, cropped 920×680 from x 40, y 20, scaled to 800 px) | Luigi Zanasi | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Trysquare.jpg) | CC BY-SA 2.0 ca |
