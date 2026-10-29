@@ -38,6 +38,8 @@ import { checkEasyActivity } from './makeEasy.js';
 // @@SCI_U03_1_ACT_IMPORT@@
 
 // @@U05_1_ACT_IMPORT@@
+// `anglesum` (Maths 5.1) — Find It, Say Why on a slide. Proved by utils/angleSumCheck.js.
+import { checkAngleSumActivity } from './angleSumCheck.js';
 
 // @@U05_2_ACT_IMPORT@@
 
@@ -99,6 +101,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@SCI_U03_1_ACT_TYPES@@
 
   // @@U05_1_ACT_TYPES@@
+  'anglesum',
 
   // @@U05_2_ACT_TYPES@@
 
@@ -415,6 +418,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@SCI_U03_1_ACT_CHECK@@
 
   // @@U05_1_ACT_CHECK@@
+  if (a.type === 'anglesum') for (const p of checkAngleSumActivity(a, { bilingual })) out.push(`anglesum ${p}`);
 
   // @@U05_2_ACT_CHECK@@
 

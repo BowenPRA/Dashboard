@@ -467,6 +467,11 @@ export const TRACK_LEVELS = {
     },
     // Unit 5 (Angles & constructions), one entry per section:
     // @@U05_1_TD@@
+    U05_1: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 1,
+      mapName: 'The Full Turn',
+      blurb: 'A new chapter. The track goes all the way round — 360°, and not one degree less.',
+    },
     // @@U05_2_TD@@
     // @@U05_3_TD@@
   },

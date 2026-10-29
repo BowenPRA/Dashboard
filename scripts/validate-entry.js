@@ -78,6 +78,7 @@ import { checkMakeEasyItems } from '../src/utils/makeEasy.js';
 import { checkWeighConfig } from '../src/utils/weighIt.js';
 
 // @@U05_1_IMPORT@@
+import { checkAngleSumItems } from '../src/utils/angleSumCheck.js';
 
 // @@U05_2_IMPORT@@
 
@@ -332,6 +333,17 @@ for (const trackId of TRACK_IDS) {
     if (unit.weighIt !== undefined) for (const p of checkWeighConfig(unit.weighIt, { bilingual })) err(`${label}: weighIt ${p}`);
 
     // @@U05_1_CHECK@@
+    //    Find It, Say Why (5.1): every stage, answer, reason and named slip derived and proved.
+    if (unit.angleSum !== undefined) {
+      const cfg = unit.angleSum;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${label}: angleSum needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${label}: angleSum has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${label}: angleSum item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkAngleSumItems(cfg.items || [], { bilingual })) err(`${label}: angleSum ${p}`);
+    }
 
     // @@U05_2_CHECK@@
 

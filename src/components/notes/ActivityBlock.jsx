@@ -41,6 +41,7 @@ import { MakeEasyActivity } from './MakeEasyActivity.jsx';
 // @@SCI_U03_1_ACT_IMPORT@@
 
 // @@U05_1_ACT_IMPORT@@
+import { AngleSumActivity } from './AngleSumActivity.jsx';
 
 // @@U05_2_ACT_IMPORT@@
 
@@ -790,6 +791,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@SCI_U03_1_ACT_CASE@@
 
     // @@U05_1_ACT_CASE@@
+    case 'anglesum': body = <AngleSumActivity {...common} />; break;
 
     // @@U05_2_ACT_CASE@@
 
