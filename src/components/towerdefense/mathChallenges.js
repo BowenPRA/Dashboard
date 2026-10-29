@@ -821,6 +821,15 @@ function decimalEasy() {
 }
 
 /** unitId → question generator. Units with no entry get vocab-only challenges. */
+// Maths Unit 5 generators, one block per unit:
+// @@U05_1_GEN@@
+
+// @@U05_2_GEN@@
+
+// @@U05_3_GEN@@
+
+// @@SCI_U03_2_GEN@@
+
 export const MATH_CHALLENGE_GENERATORS = {
   EM_06: setsAndSurds,
   EM_07A: inequalitiesSimultaneous,
@@ -850,6 +859,9 @@ export const MATH_CHALLENGE_GENERATORS = {
   U04_3: decimalMultiply,
   U04_4: decimalDivide,
   U04_5: decimalEasy,
+  // @@U05_1_GEN_MAP@@
+  // @@U05_2_GEN_MAP@@
+  // @@U05_3_GEN_MAP@@
 };
 
 /**
@@ -863,6 +875,9 @@ const GENERATOR_TRACK = {
   U01_4: 'Y7_MATH', U01_5: 'Y7_MATH', U01_6: 'Y7_MATH',
   U02_6: 'Y7_MATH', U03_1: 'Y7_MATH', U03_2: 'Y7_MATH',
   U04_1: 'Y7_MATH', U04_2: 'Y7_MATH', U04_3: 'Y7_MATH', U04_4: 'Y7_MATH', U04_5: 'Y7_MATH',
+  // @@U05_1_GEN_TRACK@@
+  // @@U05_2_GEN_TRACK@@
+  // @@U05_3_GEN_TRACK@@
 };
 
 /** True when `unitId` in `track` is the unit a generator was written for. */

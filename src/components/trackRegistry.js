@@ -217,6 +217,7 @@ export const TRACK_REGISTRY = [
       { prefix: 'U02_', label: 'Unit 2', title: 'Expressions, Formulae & Equations' },
       { prefix: 'U03_', label: 'Unit 3', title: 'Place Value & Rounding' },
       { prefix: 'U04_', label: 'Unit 4', title: 'Decimals' },
+      { prefix: 'U05_', label: 'Unit 5', title: 'Angles & Constructions' },
     ],
     theme: {
       bg: 'bg-orange-500', border: 'border-orange-700', hover: 'hover:bg-orange-400',

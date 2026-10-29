@@ -37,6 +37,15 @@ import { checkEasyActivity } from './makeEasy.js';
 
 // @@SCI_U03_1_ACT_IMPORT@@
 
+// @@U05_1_ACT_IMPORT@@
+
+// @@U05_2_ACT_IMPORT@@
+
+// @@U05_3_ACT_IMPORT@@
+
+// @@SCI_U03_2_ACT_IMPORT@@
+
+
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
 // points, an inequality by SHADING the line, a modulus graph by TAPPING the
@@ -88,6 +97,15 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'makeeasy',
 
   // @@SCI_U03_1_ACT_TYPES@@
+
+  // @@U05_1_ACT_TYPES@@
+
+  // @@U05_2_ACT_TYPES@@
+
+  // @@U05_3_ACT_TYPES@@
+
+  // @@SCI_U03_2_ACT_TYPES@@
+
 ];
 
 export const INEQ_ASKS = ['draw', 'read', 'integer', 'list'];
@@ -395,6 +413,15 @@ export function checkActivity(a, { bilingual = true } = {}) {
   if (a.type === 'makeeasy') for (const p of checkEasyActivity(a, { bilingual })) out.push(`makeeasy ${p}`);
 
   // @@SCI_U03_1_ACT_CHECK@@
+
+  // @@U05_1_ACT_CHECK@@
+
+  // @@U05_2_ACT_CHECK@@
+
+  // @@U05_3_ACT_CHECK@@
+
+  // @@SCI_U03_2_ACT_CHECK@@
+
   return out;
 }
 

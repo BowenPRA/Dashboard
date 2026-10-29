@@ -465,6 +465,10 @@ export const TRACK_LEVELS = {
       blurb: 'There is always an easier way through. Queens and broods, the whole way down.',
       bannedTowers: ['NITRO'],
     },
+    // Unit 5 (Angles & constructions), one entry per section:
+    // @@U05_1_TD@@
+    // @@U05_2_TD@@
+    // @@U05_3_TD@@
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.
@@ -542,6 +546,7 @@ export const TRACK_LEVELS = {
       mapName: 'The Drop Zone',
       blurb: 'A new chapter. Everything falls at the same rate — hold the valley while it lands.',
     },
+    // @@SCI_U03_2_TD@@
   },
 };
 

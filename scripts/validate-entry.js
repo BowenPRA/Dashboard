@@ -77,6 +77,15 @@ import { checkMakeEasyItems } from '../src/utils/makeEasy.js';
 // @@SCI_U03_1_IMPORT@@
 import { checkWeighConfig } from '../src/utils/weighIt.js';
 
+// @@U05_1_IMPORT@@
+
+// @@U05_2_IMPORT@@
+
+// @@U05_3_IMPORT@@
+
+// @@SCI_U03_2_IMPORT@@
+
+
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
 const AUDIO = path.join(ROOT, 'public/audio');
@@ -320,6 +329,15 @@ for (const trackId of TRACK_IDS) {
 
     // @@SCI_U03_1_CHECK@@
     if (unit.weighIt !== undefined) for (const p of checkWeighConfig(unit.weighIt, { bilingual })) err(`${label}: weighIt ${p}`);
+
+    // @@U05_1_CHECK@@
+
+    // @@U05_2_CHECK@@
+
+    // @@U05_3_CHECK@@
+
+    // @@SCI_U03_2_CHECK@@
+
 
 
     // -- Find & Fix and Order It: every error must be locatable exactly once in

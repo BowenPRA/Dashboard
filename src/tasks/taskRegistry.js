@@ -32,6 +32,16 @@ import { WandSparkles as MakeEasyIcon } from 'lucide-react';
 // @@SCI_U03_1_IMPORT@@
 import { Weight as WeighItIcon } from 'lucide-react';
 
+// Unit 5 (Angles & constructions) and Science 3.2, one block per unit:
+// @@U05_1_IMPORT@@
+
+// @@U05_2_IMPORT@@
+
+// @@U05_3_IMPORT@@
+
+// @@SCI_U03_2_IMPORT@@
+
+
 /**
  * Does this track carry Vietnamese twins? A track that declares
  * `bilingual: false` (ADD_MATH, COORD_SCI) has nothing for an EN/VN toggle to
@@ -1815,6 +1825,17 @@ export const TASKS = [
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
+
+  // ── Year 7 Maths Unit 5, angles & constructions (U05_1–U05_3) and Science 3.2 ──
+  // p81 (5.1) · p82 (5.2) · p83 (5.3) · p84 (Science 3.2), if a unit needs an engine.
+  // @@U05_1_TASKS@@
+
+  // @@U05_2_TASKS@@
+
+  // @@U05_3_TASKS@@
+
+  // @@SCI_U03_2_TASKS@@
+
 ];
 
 const BY_ID = Object.fromEntries(TASKS.map((t) => [t.id, t]));
