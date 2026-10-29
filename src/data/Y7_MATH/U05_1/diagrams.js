@@ -16,6 +16,8 @@
 //   TEAR       draw, tear off the corners, put the points together — ?
 //   WORKED     70°, 95°, 120° and d
 //   PARA       a parallelogram with one angle given
+//   QZ_*       the quiz's four: a quadrilateral with a small square, three angles
+//              on a line, a reflex angle round a point, a side drawn on (two steps)
 
 const INK = '#2b2b2b'
 const KEY = '#c25e12'
@@ -92,6 +94,12 @@ const box = (P, u, v, s = 22) =>
 const CQ = [[90, 350], [170, 90], [420, 130], [380, 380]]
 const WQ = [[120, 450], [230, 130], [650, 160], [720, 450]]
 const PQ = [[150, 420], [300, 150], [720, 150], [570, 420]]
+// The quiz's two quadrilaterals, built true from their angles by
+// utils/angleSumGeometry.quadPoints and fitted to the plate:
+// 90° (a small square), 105°, t = 85°, 80°; and 92°, 110°, z = 73°, 85° with the
+// bottom side drawn on past the 110° corner (70° outside it).
+const QZ_Q = [[219, 460], [539, 460], [621, 151], [219, 80]]
+const QZ_E = [[131, 432], [452, 432], [562, 131], [120, 108]]
 const wedges = (Q, r, fills) => Q.map((p, i) => corner(p, Q[(i + 3) % 4], Q[(i + 1) % 4], r, fills[i])).join('\n    ')
 
 export const DIAGRAMS = {
@@ -260,5 +268,61 @@ export const DIAGRAMS = {
     <text x="638" y="217" font-family="${FONT}" font-size="38" font-weight="bold" fill="${TEAL}" text-anchor="middle">q</text>
     <text x="533" y="368" font-family="${FONT}" font-size="38" font-weight="bold" fill="${KEY}" text-anchor="middle">r</text>
     <text x="420" y="505" font-family="${FONT}" font-size="28" fill="${MUTED}" text-anchor="middle">a parallelogram</text>
+  </svg>`,
+
+  // ── The quiz's own diagrams (assessment.js), drawn true like the practice task.
+  QZ_QUAD: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">
+    ${plate(840, 560)}
+    ${poly(QZ_Q)}
+    ${corner(QZ_Q[1], QZ_Q[0], QZ_Q[2], 50, TEAL_T)}
+    ${corner(QZ_Q[2], QZ_Q[1], QZ_Q[3], 50, ORANGE_T)}
+    ${corner(QZ_Q[3], QZ_Q[2], QZ_Q[0], 50, TEAL_T)}
+    ${box(QZ_Q[0], [1, 0], [0, -1], 28)}
+    <text x="495" y="415" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">105°</text>
+    <text x="567" y="198" font-family="${FONT}" font-size="40" font-weight="bold" font-style="italic" fill="${KEY}" text-anchor="middle">t</text>
+    <text x="262" y="142" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">80°</text>
+  </svg>`,
+
+  QZ_LINE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">
+    ${plate(840, 560)}
+    ${wedge(420, 370, 90, 0, 38, TEAL_T)}
+    ${wedge(420, 370, 60, 38, 114, ORANGE_T)}
+    ${wedge(420, 370, 70, 114, 180, TEAL_T)}
+    ${ray(80, 370, 760, 370)}
+    ${ray(420, 370, 656.4, 185.3)}
+    ${ray(420, 370, 298, 96)}
+    <circle cx="420" cy="370" r="6" fill="${INK}"/>
+    <text x="548" y="338" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">38°</text>
+    <text x="444" y="286" font-family="${FONT}" font-size="40" font-weight="bold" font-style="italic" fill="${KEY}" text-anchor="middle">m</text>
+    <text x="319" y="318" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">66°</text>
+    <text x="56" y="382" font-family="${FONT}" font-size="34" font-weight="bold" font-style="italic" fill="${MUTED}" text-anchor="middle">A</text>
+    <text x="786" y="382" font-family="${FONT}" font-size="34" font-weight="bold" font-style="italic" fill="${MUTED}" text-anchor="middle">B</text>
+    <text x="420" y="470" font-family="${FONT}" font-size="30" fill="${MUTED}" text-anchor="middle">AB is a straight line.</text>
+  </svg>`,
+
+  QZ_POINT: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">
+    ${plate(840, 560)}
+    ${wedge(420, 280, 60, 20, 145, TEAL_T)}
+    ${wedge(420, 280, 80, 145, 380, ORANGE_T)}
+    ${ray(420, 280, 636.1, 201.3)}
+    ${ray(420, 280, 231.6, 148.1)}
+    <circle cx="420" cy="280" r="6" fill="${INK}"/>
+    <text x="434" y="188" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">125°</text>
+    <text x="406" y="402" font-family="${FONT}" font-size="40" font-weight="bold" font-style="italic" fill="${KEY}" text-anchor="middle">w</text>
+    <text x="420" y="520" font-family="${FONT}" font-size="30" fill="${MUTED}" text-anchor="middle">two angles round a point</text>
+  </svg>`,
+
+  QZ_EXT: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">
+    ${plate(840, 560)}
+    ${poly(QZ_E)}
+    ${ray(452, 432, 720, 432)}
+    ${corner(QZ_E[0], QZ_E[3], QZ_E[1], 50, TEAL_T)}
+    ${corner(QZ_E[2], QZ_E[1], QZ_E[3], 50, ORANGE_T)}
+    ${corner(QZ_E[3], QZ_E[2], QZ_E[0], 50, TEAL_T)}
+    ${wedge(452, 432, 50, 0, 70, PURPLE_T)}
+    <text x="175" y="398" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">92°</text>
+    <text x="509" y="179" font-family="${FONT}" font-size="40" font-weight="bold" font-style="italic" fill="${KEY}" text-anchor="middle">z</text>
+    <text x="167" y="166" font-family="${FONT}" font-size="34" font-weight="bold" fill="${TEAL}" text-anchor="middle">85°</text>
+    <text x="512" y="409" font-family="${FONT}" font-size="34" font-weight="bold" fill="${PURPLE}" text-anchor="middle">70°</text>
   </svg>`,
 }
