@@ -44,6 +44,9 @@ import { checkAngleSumActivity } from './angleSumCheck.js';
 // @@U05_2_ACT_IMPORT@@
 
 // @@U05_3_ACT_IMPORT@@
+// `zeroline` (Maths 5.3) — one Zero on the Line item on a slide: read an angle
+// (estimate, then the reading) or draw one (which 0, then the mark).
+import { checkZeroLineActivity } from './zeroLine.js';
 
 // @@SCI_U03_2_ACT_IMPORT@@
 
@@ -106,6 +109,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@U05_2_ACT_TYPES@@
 
   // @@U05_3_ACT_TYPES@@
+  'zeroline',
 
   // @@SCI_U03_2_ACT_TYPES@@
 
@@ -423,6 +427,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@U05_2_ACT_CHECK@@
 
   // @@U05_3_ACT_CHECK@@
+  if (a.type === 'zeroline') for (const p of checkZeroLineActivity(a)) out.push(`zeroline ${p}`);
 
   // @@SCI_U03_2_ACT_CHECK@@
 

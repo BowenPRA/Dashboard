@@ -225,3 +225,13 @@ Every other picture in the unit is a drawn SVG ported from the classroom deck.
 | `public/images/Y7_SCI/U03_2/uranus.jpg` | Uranus from Voyager 2, 1986 (480 px, axis drawn lying on its side) — SPIN_ODD | NASA/JPL-Caltech | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Uranus2.jpg) | Public domain |
 
 Every other picture in the unit, including the Storyboard's seven frames, is a drawn SVG.
+
+**Maths 5.1 A Sum of 360°** (`Y7_MATH/U05_1`) uses the pizza photo already in `public/images/Y7_MATH/U04_5/` (credited above under 4.5); every other picture is a drawn SVG.
+
+**Maths 5.3 Drawing lines and quadrilaterals** (`Y7_MATH/U05_3`, slide 3, TOOLS) — copied from the classroom deck `y7-math/U05_3/images/` (its `CREDITS.json`). Every other picture in the unit is a drawn SVG or widget.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_MATH/U05_3/protractor.jpg` | A semicircular protractor with an outer and an inner scale (960 px thumbnail, cropped 910×540 from x 30, y 60, scaled to 800 px) | CatalinaDurhan | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Wooden_Protractor.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_MATH/U05_3/setsquare.jpg` | A green 30°–60° set square on white (960 px thumbnail, scaled to 500 px) | Luigi Chiesa | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Squadra_30_60.jpg) | CC BY 3.0 |
+| `public/images/Y7_MATH/U05_3/trysquare.jpg` | A carpenter's try square on a wooden board (960 px thumbnail, cropped 920×680 from x 40, y 20, scaled to 800 px) | Luigi Zanasi | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Trysquare.jpg) | CC BY-SA 2.0 ca |

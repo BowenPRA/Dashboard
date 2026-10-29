@@ -474,6 +474,11 @@ export const TRACK_LEVELS = {
     },
     // @@U05_2_TD@@
     // @@U05_3_TD@@
+    U05_3: {
+      mapId: 'COMB', themeId: 'NIGHT', tier: 3, waveMod: 'SIEGE',
+      mapName: 'The Drawing Board',
+      blurb: 'Start at 0 on the line, every time. Armored heavies grind down the ruled lanes.',
+    },
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.
