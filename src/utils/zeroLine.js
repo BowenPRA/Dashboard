@@ -218,7 +218,7 @@ export function zeroLineModel(item) {
     const g = drawGeom(P, dirOf(P, Q), th, 'acw');
     const fig = {
       segs: [{ a: A, b: B, tone: 'ink' }, { a: low, b: high, tone: 'muted' }],
-      pts: [{ p: A, name: 'A', away: 225 }, { p: B, name: 'B', away: 315 }, { p: Q, name: 'Q', away: 300 }, { p: P, name: 'P', away: 150 }],
+      pts: [{ p: A, name: 'A', away: 225 }, { p: B, name: 'B', away: 315 }, { p: Q, name: 'Q', away: 235 }, { p: P, name: 'P', away: 150 }],
       arcs: [{ c: Q, r: 34, from: norm(-th), to: 360, tone: 'given', label: `${th}°` }],
       lens: [],
     };

@@ -38,6 +38,7 @@ import { Weight as WeighItIcon } from 'lucide-react';
 // @@U05_2_IMPORT@@
 
 // @@U05_3_IMPORT@@
+import { PencilRuler as ZeroLineIcon } from 'lucide-react';
 
 // @@SCI_U03_2_IMPORT@@
 
@@ -1833,6 +1834,29 @@ export const TASKS = [
   // @@U05_2_TASKS@@
 
   // @@U05_3_TASKS@@
+  {
+    id: 'ZERO_LINE',
+    nativeMax: 10,
+    dbKey: 'p83',
+    // Read, draw and construct with a protractor (Y7 Maths 5.3). The
+    // protractor is placed for the student: they estimate (acute, obtuse,
+    // reflex), choose the 0 on the line, type a reading or tap the scale, place
+    // the perpendicular, copy an angle to draw a parallel, and finish with a
+    // drawing on paper checked against the expected values. utils/zeroLine.js
+    // derives every reading and names each slip (the other scale, 180 − x; not
+    // starting at 0; a reading that disagrees with the estimate; 180 − x at P,
+    // so the line meets AB); checkZeroLineConfig proves every item.
+    label: 'Zero on the Line',
+    icon: ZeroLineIcon,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 45,
+    phase: 'practice',
+    component: lazy(() => import('./ZeroLine.jsx')),
+    hasContent: (u) => !!u.zeroLine?.items?.length,
+    buildPool: (u) => u.zeroLine,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@SCI_U03_2_TASKS@@
 

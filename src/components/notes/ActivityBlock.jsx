@@ -45,6 +45,7 @@ import { MakeEasyActivity } from './MakeEasyActivity.jsx';
 // @@U05_2_ACT_IMPORT@@
 
 // @@U05_3_ACT_IMPORT@@
+import { ZeroLineActivity } from './ZeroLineActivity.jsx';
 
 // @@SCI_U03_2_ACT_IMPORT@@
 
@@ -794,6 +795,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@U05_2_ACT_CASE@@
 
     // @@U05_3_ACT_CASE@@
+    case 'zeroline': body = <ZeroLineActivity {...common} />; break;
 
     // @@SCI_U03_2_ACT_CASE@@
 

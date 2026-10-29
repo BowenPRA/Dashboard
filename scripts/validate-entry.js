@@ -82,6 +82,7 @@ import { checkWeighConfig } from '../src/utils/weighIt.js';
 // @@U05_2_IMPORT@@
 
 // @@U05_3_IMPORT@@
+import { checkZeroLineConfig } from '../src/utils/zeroLine.js';
 
 // @@SCI_U03_2_IMPORT@@
 
@@ -335,6 +336,8 @@ for (const trackId of TRACK_IDS) {
     // @@U05_2_CHECK@@
 
     // @@U05_3_CHECK@@
+    //    Zero on the Line (5.3): every reading, mark and named slip derived and proved.
+    if (unit.zeroLine !== undefined) for (const p of checkZeroLineConfig(unit.zeroLine, { bilingual })) err(`${label}: zeroLine ${p}`);
 
     // @@SCI_U03_2_CHECK@@
 
