@@ -84,6 +84,7 @@ import { checkWeighConfig } from '../src/utils/weighIt.js';
 // @@U05_3_IMPORT@@
 
 // @@SCI_U03_2_IMPORT@@
+import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 
 
 const ROOT = process.cwd();
@@ -337,6 +338,8 @@ for (const trackId of TRACK_IDS) {
     // @@U05_3_CHECK@@
 
     // @@SCI_U03_2_CHECK@@
+    //    Storyboard (3.2): every round, answer and named slip derived and proved.
+    if (unit.storyboard !== undefined) for (const p of checkStoryConfig(unit.storyboard, { bilingual })) err(`${label}: storyboard ${p}`);
 
 
 

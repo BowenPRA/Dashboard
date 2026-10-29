@@ -40,6 +40,7 @@ import { Weight as WeighItIcon } from 'lucide-react';
 // @@U05_3_IMPORT@@
 
 // @@SCI_U03_2_IMPORT@@
+import { Clapperboard as StoryboardIcon } from 'lucide-react';
 
 
 /**
@@ -1835,6 +1836,28 @@ export const TASKS = [
   // @@U05_3_TASKS@@
 
   // @@SCI_U03_2_TASKS@@
+  {
+    id: 'SOLAR_STORY',
+    nativeMax: 10,
+    dbKey: 'p84',
+    // The book's storyboard Activity for Science 3.2, marked: put the
+    // formation story's frames in order, then give the reason for each step
+    // from a bank holding two misconceptions; decide whether a fact supports
+    // the hypothesis or seems to contradict it (and which step it shows, or
+    // what scientists do about it); sort a model's strengths from its
+    // limitations. Every round, answer and named slip is derived by
+    // utils/solarStory.js and proved by utils/solarStoryCheck.js.
+    label: 'Storyboard',
+    icon: StoryboardIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./Storyboard.jsx')),
+    hasContent: (u) => !!u.storyboard?.items?.length,
+    buildPool: (u) => u.storyboard,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
 ];
 

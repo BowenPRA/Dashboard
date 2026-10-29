@@ -547,6 +547,11 @@ export const TRACK_LEVELS = {
       blurb: 'A new chapter. Everything falls at the same rate — hold the valley while it lands.',
     },
     // @@SCI_U03_2_TD@@
+    U03_2: {
+      mapId: 'SPIRAL', themeId: 'NIGHT', tier: 2,
+      mapName: 'The Spinning Disc',
+      blurb: 'Everything goes round the same way. Hold the centre while the disc turns.',
+    },
   },
 };
 
