@@ -88,7 +88,7 @@ export function TearIt({ lang = 'en' }) {
   const label = (c) => at(c.P[0], c.P[1], 27, c.a1 + c.d / 2);
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-2 min-h-0">
-      <svg ref={svg} viewBox="0 0 600 360" className="w-full flex-1 min-h-0 max-h-[46vh] lg:max-h-none select-none" role="img"
+      <svg ref={svg} viewBox="0 0 600 360" className="w-full flex-1 min-h-[9rem] select-none" role="img"
         aria-label={t(lang, 'A quadrilateral with four corners you can drag', 'Un quadrilatère avec quatre coins à déplacer')}
         onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <rect x="0" y="0" width="600" height="360" rx="14" fill="#ffffff" />
@@ -110,7 +110,7 @@ export function TearIt({ lang = 'en' }) {
           const style = { transition: 'transform 0.8s ease-in-out', transform: torn ? `translate(${tx - lx}px, ${ty - ly}px)` : 'none' };
           return <text key={i} x={lx} y={ly + 8} textAnchor="middle" fontFamily={FONT} fontSize="24" fontWeight="bold" fontStyle="italic" fill={TEXTS[i]} style={style} pointerEvents="none">{NAMES[i]}</text>;
         })}
-        <text x={C.x} y="318" textAnchor="middle" fontFamily={FONT} fontSize="24" fontWeight="bold" fill={torn ? INK : '#94a3b8'}>
+        <text x={C.x + 8} y="300" textAnchor="middle" fontFamily={FONT} fontSize="20" fontWeight="bold" fill={torn ? INK : '#94a3b8'}>
           {torn ? t(lang, 'a full turn: 360°', 'un tour complet : 360°') : '?'}
         </text>
         {!torn && Q.map(([x, y], i) => (
@@ -120,7 +120,7 @@ export function TearIt({ lang = 'en' }) {
           </g>
         ))}
       </svg>
-      <div className="flex flex-wrap items-center justify-center gap-1.5 text-sm sm:text-base font-black font-mono">
+      <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 text-xs sm:text-base font-black font-mono">
         {deg.map((v, i) => <span key={i} className="px-2 py-0.5 rounded-lg border-2" style={{ color: TEXTS[i], borderColor: TEXTS[i], backgroundColor: FILLS[i] }}><i>{NAMES[i]}</i> = {v}°</span>)}
         <span className="px-1 text-slate-800 dark:text-slate-100">→ {deg.join(' + ')} = 360°</span>
       </div>

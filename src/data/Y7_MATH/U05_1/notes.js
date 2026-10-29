@@ -54,14 +54,14 @@ export const notes = [
     titleFr: 'Une somme de 360°',
     subtitle: 'Find the missing angle. Say why.',
     subtitleFr: 'Trouve l’angle qui manque. Dis pourquoi.',
-    objective: 'Read an angle diagram; find a missing angle on a straight line, around a point and in a quadrilateral in two steps — add the angles you know, then take the total away from 180° or 360°; share what is left between equal angles; use the opposite angles of a parallelogram; and give the fact as your reason.',
-    objectiveFr: 'Lire un dessin d’angles ; trouver un angle qui manque sur une ligne droite, autour d’un point et dans un quadrilatère en deux étapes — additionner les angles connus, puis enlever le total de 180° ou de 360° ; partager ce qui reste entre des angles égaux ; utiliser les angles opposés d’un parallélogramme ; et donner la propriété comme raison.',
+    objective: 'Find a missing angle on a straight line, around a point and in a quadrilateral in two steps — add the angles you know, then take the total away from 180° or 360° — and give the fact as your reason.',
+    objectiveFr: 'Trouver un angle qui manque sur une ligne droite, autour d’un point et dans un quadrilatère en deux étapes — additionner les angles connus, puis enlever le total de 180° ou de 360° — et donner la propriété comme raison.',
     card: {
       icon: 'MousePointerClick',
       badge: 'In this lesson',
       badgeFr: 'Dans cette leçon',
-      text: 'You will **sort**, **predict** and **find missing angles** — and say **why**. **14 things are scored**; the first is on the next slide. One slide has a shape you can pull apart.',
-      textFr: 'Tu vas **trier**, **prédire** et **trouver des angles qui manquent** — et dire **pourquoi**. **14 éléments sont notés** ; le premier est sur la diapo suivante. Une diapo a une figure que tu peux déchirer.',
+      text: 'You will **sort**, **predict** and **find missing angles**, and say **why**. **14 things are scored**; the first is on the next slide.',
+      textFr: 'Tu vas **trier**, **prédire** et **trouver des angles qui manquent**, et dire **pourquoi**. **14 éléments sont notés** ; le premier est sur la diapo suivante.',
     },
   },
 
@@ -366,26 +366,19 @@ export const notes = [
   },
 
   // 12 ─ Tear It (widget, unscored) ───────────────────────────────────────────
+  // A showcase, so the widget gets the whole card: on a phone a split gives
+  // the text 45% of the height and squeezes the shape too small for a finger.
   {
-    layout: 'split',
+    layout: 'showcase',
     accent: GREEN,
     icon: 'Scissors',
-    eyebrow: 'Try it',
-    eyebrowFr: 'Essaie',
+    eyebrow: 'Try it · drag the corners',
+    eyebrowFr: 'Essaie · fais glisser les coins',
     title: 'Always a Full Turn',
     titleFr: 'Toujours un tour complet',
-    ratio: 34,
     widget: TearIt,
-    content: 'Drag the corners. Make the shape as **strange** as you like. Then **tear off the corners**.',
-    contentFr: 'Fais glisser les coins. Rends la figure aussi **bizarre** que tu veux. Puis **déchire les coins**.',
-    notes: [
-      {
-        tone: 'info',
-        badge: false,
-        text: 'Another way to see it: one line from corner to corner cuts a quadrilateral into **two triangles**, and **180° + 180° = 360°**.',
-        textFr: 'Une autre façon de le voir : une ligne d’un coin à l’autre coupe un quadrilatère en **deux triangles**, et **180° + 180° = 360°**.',
-      },
-    ],
+    caption: 'Make the shape as **strange** as you like, then tear off the corners. Another way to see it: one line from corner to corner makes **two triangles**, and **180° + 180° = 360°**.',
+    captionFr: 'Rends la figure aussi **bizarre** que tu veux, puis déchire les coins. Une autre façon de le voir : une ligne d’un coin à l’autre fait **deux triangles**, et **180° + 180° = 360°**.',
   },
 
   // 13 ─ A sum of 360° (ANGLESUM, walked) ──────────────────────────────────────
@@ -570,8 +563,6 @@ export const notes = [
       { text: 'Find a missing angle on a **straight line** (180°).', textFr: 'Trouver un angle sur une **ligne droite** (180°).' },
       { text: 'Find a missing angle **around a point** (360°).', textFr: 'Trouver un angle **autour d’un point** (360°).' },
       { text: 'Find the fourth angle of a **quadrilateral** (360°).', textFr: 'Trouver le quatrième angle d’un **quadrilatère** (360°).' },
-      { text: 'Use the **two steps**: add, then take away.', textFr: 'Utiliser les **deux étapes** : additionner, puis enlever.' },
-      { text: 'Share what is left between angles of **the same size**.', textFr: 'Partager ce qui reste entre des angles de **même taille**.' },
       { text: 'Give a reason: the **fact**, after **because**.', textFr: 'Donner une raison : la **propriété**, après **because** (car).' },
     ],
     activity: {

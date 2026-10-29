@@ -4,7 +4,7 @@ import { SafeInlineMath } from './SafeMath.jsx';
 import { angleModel, bookLatex, reasonLine } from '../../utils/angleSum';
 import { tr } from '../../utils/lang';
 import useAngleSteps from '../math/useAngleSteps';
-import AngleSumStage, { AngleMessage, StageChips, Working } from '../math/AngleSumStage.jsx';
+import AngleSumStage, { StageChips, Working } from '../math/AngleSumStage.jsx';
 
 /**
  * `anglesum` — Find It, Say Why on a Notes slide (Year 7 Maths 5.1). Rendered
@@ -30,13 +30,13 @@ function Runner({ model, lang, onResult }) {
     <div>
       <div className="mb-2"><StageChips run={run} lang={lang} /></div>
       <Working run={run} lang={lang} />
-      <div className={run.finishedSteps.length ? 'mt-2' : ''}><AngleSumStage run={run} model={model} lang={lang} chips /></div>
-      <AngleMessage msg={run.msg} lang={lang} />
-      <div className="mt-2">
-        <button type="button" onClick={run.act.showMe}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[11px] uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-          <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> {t.stuck}
-        </button>
+      <div className={run.finishedSteps.length ? 'mt-2' : ''}>
+        <AngleSumStage run={run} model={model} lang={lang} chips extra={(
+          <button type="button" onClick={run.act.showMe}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[11px] uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
+            <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> {t.stuck}
+          </button>
+        )} />
       </div>
     </div>
   );

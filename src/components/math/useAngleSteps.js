@@ -12,8 +12,9 @@ import {
  * A step is WALKED (its stages one by one) or opens QUICK (the angle and its
  * reason together, after "find first" when two letters are left). In quick, a
  * wrong angle opens the walk at the stage its slip belongs to — the earlier
- * stages are marked as given — and that wrong answer counts as the stage's
- * first; a right angle with a wrong reason opens only "Say why". Everywhere: a
+ * stages are marked as given, a right reason is kept — and that wrong answer
+ * counts as the stage's first; a right angle with a wrong reason opens only
+ * "Say why". Everywhere: a
  * wrong answer is named and tried again; a second, a two-way choice got wrong,
  * or Show me fills the stage in, and the item is then `helped` (it pays ½).
  */
@@ -73,7 +74,8 @@ export default function useAngleSteps(model, { onFinish } = {}) {
     const doneNow = { ...done, [from]: { value: rightOf(step, from), mark } };
     if (from === 'quick') doneNow.why = { value: rightOf(step, 'why'), mark };
     setDone(doneNow); setWrongs(0); setStruck({}); setMsg(message);
-    const next = list[list.indexOf(from) + 1];
+    // The next stage not already settled (a right reason given in quick is kept).
+    const next = list.slice(list.indexOf(from) + 1).find((x) => !doneNow[x]);
     if (next) setStage(next);
     else finishStep(doneNow, wasHelped);
   };
@@ -93,10 +95,11 @@ export default function useAngleSteps(model, { onFinish } = {}) {
   const soft = (d) => setMsg({ tone: 'info', en: d.en, fr: d.fr });
 
   /** Quick → walk, opening at `at`, every stage before it marked as given. */
-  const openWalk = (at, message, firstWrongs = 1, strike = {}) => {
+  const openWalk = (at, message, firstWrongs = 1, strike = {}, whyRight = false) => {
     const walk = step.stages;
     const given = { ...done };
     for (const s of walk.slice(0, walk.indexOf(at))) if (!given[s]) given[s] = { value: rightOf(step, s), mark: 'given' };
+    if (whyRight && at !== 'why') given.why = { value: rightOf(step, 'why'), mark: 'good' };
     setMode('walk'); setDone(given); setStage(at); setWrongs(firstWrongs); setStruck(strike); setMsg(message);
     if (at === 'add') setPicked([]);
   };
@@ -135,8 +138,8 @@ export default function useAngleSteps(model, { onFinish } = {}) {
       if (v.soft) { soft(v); return; }
       if (!reasonId) { soft({ en: 'Choose the reason too.', fr: 'Choisis aussi la raison.' }); return; }
       setSlipped((x) => x || !v.ok);
-      if (!v.ok) { openWalk(v.stage, { tone: 'bad', en: v.en, fr: v.fr, code: v.code }); return; }
       const w = diagnoseWhy(step, reasonId);
+      if (!v.ok) { openWalk(v.stage, { tone: 'bad', en: v.en, fr: v.fr, code: v.code }, 1, {}, w.ok); return; }
       if (w.ok) { advance('good', { tone: 'ok', en: w.en, fr: w.fr }); return; }
       setSlipped(true);
       openWalk('why', { tone: 'bad', en: w.en, fr: w.fr, code: w.code }, 1, { [reasonId]: true });
