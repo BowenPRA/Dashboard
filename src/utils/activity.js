@@ -40,6 +40,8 @@ import { checkEasyActivity } from './makeEasy.js';
 // @@U05_1_ACT_IMPORT@@
 
 // @@U05_2_ACT_IMPORT@@
+// `anglepair` (Maths 5.2) — X, F or Z? on a slide: name the pair, then the size.
+import { checkAnglePairActivity } from './anglePairCheck.js';
 
 // @@U05_3_ACT_IMPORT@@
 
@@ -101,6 +103,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@U05_1_ACT_TYPES@@
 
   // @@U05_2_ACT_TYPES@@
+  'anglepair',
 
   // @@U05_3_ACT_TYPES@@
 
@@ -417,6 +420,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@U05_1_ACT_CHECK@@
 
   // @@U05_2_ACT_CHECK@@
+  if (a.type === 'anglepair') for (const p of checkAnglePairActivity(a, { bilingual })) out.push(`anglepair ${p}`);
 
   // @@U05_3_ACT_CHECK@@
 

@@ -43,6 +43,7 @@ import { MakeEasyActivity } from './MakeEasyActivity.jsx';
 // @@U05_1_ACT_IMPORT@@
 
 // @@U05_2_ACT_IMPORT@@
+import { AnglePairActivity } from './AnglePairActivity.jsx';
 
 // @@U05_3_ACT_IMPORT@@
 
@@ -792,6 +793,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@U05_1_ACT_CASE@@
 
     // @@U05_2_ACT_CASE@@
+    case 'anglepair': body = <AnglePairActivity {...common} />; break;
 
     // @@U05_3_ACT_CASE@@
 

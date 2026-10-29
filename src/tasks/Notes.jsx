@@ -147,6 +147,7 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // Maths Unit 5 and Science 3.2, one line per unit:
   // @@U05_1_SIDE@@
   // @@U05_2_SIDE@@
+  'anglepair',
   // @@U05_3_SIDE@@
   // @@SCI_U03_2_SIDE@@
 ]);
