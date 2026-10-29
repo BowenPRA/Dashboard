@@ -6,8 +6,8 @@
 // An item is the question only; utils/solarStory.js derives the frames, the
 // scramble, the bank of reasons (the right ones and two misconceptions), every
 // answer and every named slip, and utils/solarStoryCheck.js proves each one in
-// the validator. The frames are this unit's drawings (DIAGRAMS.FRAME_*), added
-// in data.js, so this file has no imports and scripts can read it on its own.
+// the validator. The frames are this unit's seven frame drawings (diagrams.js),
+// added in data.js, so this file has no imports and scripts can read it alone.
 //
 // Twelve items, six levels: two short stories, three facts that support the
 // hypothesis, a four-frame story, two models, the whole story, and the hard

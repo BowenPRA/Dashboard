@@ -9,9 +9,10 @@
 //  · PlanetSizes (the zoom from the planets out to the Sun) does not port: the
 //    deck's STAR_PLANET drawing (the Sun and Jupiter to scale) and this table
 //    carry size.
-//  · The 1500-wide table is unreadable at 375 px, so below md the same rows
-//    are cards, one per object. The table is unchanged from md up.
-import { useState } from 'react'
+//  · The 1500-wide table is unreadable below about 760 px (a phone, or beside
+//    the deck's predict panel on a laptop), so there the same rows are cards,
+//    one per object. The widget measures its own width to choose.
+import { useState, useRef, useEffect } from 'react'
 import { Undo2, ChevronRight, RotateCcw } from 'lucide-react'
 import { tr } from '../../../utils/lang'
 import { Btn } from './ui.jsx'
@@ -117,11 +118,24 @@ export function ScaleShrink({ lang = 'en' }) {
   const colX = { name: 40, model: 300, like: 520, far: 760, farModel: 1060, farLike: 1210 }
   const rowY = (i) => 196 + i * 62
   const done = n >= ROWS.length
+  // The table needs about 760 px to be read; narrower (a phone, or beside the
+  // deck's predict panel on a laptop) the same rows are cards.
+  const box = useRef(null)
+  const [wide, setWide] = useState(false)
+  useEffect(() => {
+    const el = box.current
+    if (!el) return undefined
+    const fit = () => setWide(el.getBoundingClientRect().width >= 760)
+    fit()
+    const ro = new ResizeObserver(fit)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   return (
-    <div className="w-full h-full flex flex-col gap-2 md:gap-3 select-none">
-      {/* below md: the same rows as cards */}
-      <div className="md:hidden flex-1 min-h-0 w-full overflow-y-auto rounded-xl bg-white p-2 text-left">
+    <div ref={box} className="w-full h-full flex flex-col gap-2 select-none">
+      {/* narrow: the same rows as cards */}
+      <div className={`${wide ? 'hidden' : ''} flex-1 min-h-0 w-full overflow-y-auto rounded-xl bg-white p-2 text-left`}>
         <div className="flex items-center gap-2 px-1 pb-1.5">
           <svg viewBox="40 20 104 104" className="w-9 h-9 shrink-0" aria-hidden="true">
             <circle cx="92" cy="72" r="44" fill="#ffffff" stroke={INK} strokeWidth="4" />
@@ -153,7 +167,7 @@ export function ScaleShrink({ lang = 'en' }) {
           </div>
         )}
       </div>
-      <div className="hidden md:block flex-1 min-h-0 w-full">
+      <div className={`${wide ? '' : 'hidden'} flex-1 min-h-0 w-full`}>
         <svg viewBox="0 0 1500 560" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <rect x="0" y="0" width="1500" height="560" rx="16" fill="#ffffff" />
           {/* the football Sun */}
