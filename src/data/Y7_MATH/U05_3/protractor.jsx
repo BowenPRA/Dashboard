@@ -22,7 +22,7 @@ const ORANGE_T = '#fdf1e3', GREEN_T = '#eef6e6', RED_T = '#fde8ea';
 
 /** A protractor, straight edge level, centre at (cx, cy). `ring` circles the 0 of one scale:
  *  'right' (the outer scale's) or 'left' (the inner scale's). */
-export function Protractor({ cx, cy, r, ring = null, numbers = true, ringTone = KEY }) {
+export function Protractor({ cx, cy, r, ring = null, numbers = true, ringTone = KEY, fontScale = 1 }) {
   const P = [cx, cy];
   const ticks = [];
   for (let d = 0; d <= 180; d++) {
@@ -33,8 +33,8 @@ export function Protractor({ cx, cy, r, ring = null, numbers = true, ringTone = 
   }
   const outer = r * 0.86;
   const inner = r * 0.72;
-  const fsOuter = r * 0.085;
-  const fsInner = r * 0.07;
+  const fsOuter = r * 0.075 * fontScale;
+  const fsInner = r * 0.062 * fontScale;
   const [i0x, i0y] = at(P, inner, 176);
   const [o0x, o0y] = at(P, outer, 4);
   return (
@@ -191,7 +191,7 @@ export function ZeroLineBoard({
       {/* the protractor, placed for the student */}
       {!(isPerp && (foot || ruler)) && (
         <g transform={`translate(${f1(pc[0])} ${f1(pc[1])}) rotate(${f1(-prot.rot)})`} opacity={finished ? 0.35 : 1}>
-          <Protractor cx={0} cy={0} r={prot.r} ring={ring} />
+          <Protractor cx={0} cy={0} r={prot.r} ring={ring} fontScale={1.15} />
           {isPerp && <line x1="0" y1="0" x2="0" y2={f1(-model.height * S - 26)} stroke={KEY} strokeWidth="1.8" strokeDasharray="6 5" />}
         </g>
       )}
