@@ -468,6 +468,11 @@ export const TRACK_LEVELS = {
     // Unit 5 (Angles & constructions), one entry per section:
     // @@U05_1_TD@@
     // @@U05_2_TD@@
+    U05_2: {
+      mapId: 'JUNCTION', themeId: 'DESERT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Level Crossing',
+      blurb: 'Two tracks that never meet, and a road across them. Hold the crossing while they pour over.',
+    },
     // @@U05_3_TD@@
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5

@@ -53,7 +53,7 @@ const photo = (id, href, x, y, w, h, fit = 'slice') => `<clipPath id="${id}"><re
     <image href="${href}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid ${fit}" clip-path="url(#${id})"/>
     <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="none" stroke="#cbd5e1" stroke-width="2"/>`;
 
-export const PHOTO_DIAGRAMS = {
+export const DIAGRAMS = {
   SCISSORS_PHOTO: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" class="w-full h-full">
     ${plate(840, 560)}
     ${photo('sc-photo', img('scissors.jpg'), 20, 30, 800, 313)}
