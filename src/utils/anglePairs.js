@@ -25,7 +25,7 @@ export const PAIR_LABEL = {
   corr: { mark: 'F', en: 'Corresponding', fr: 'Correspondants' },
   alt: { mark: 'Z', en: 'Alternate', fr: 'Alternes-internes' },
   adj: { mark: '180°', en: 'On a straight line', fr: 'Sur une ligne droite' },
-  none: { mark: '?', en: 'No arrows: you can’t tell', fr: 'Pas de flèches : on ne peut pas savoir' },
+  none: { mark: '?', en: 'No arrows: you can’t tell', fr: 'Pas de flèches : on ne sait pas' },
 };
 const NAME = {
   opp: { en: 'vertically opposite', fr: 'opposés par le sommet' },
