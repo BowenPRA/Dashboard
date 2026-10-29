@@ -154,7 +154,7 @@ export function zeroLineModel(item) {
     const turn = item.turn || 0;
     const base = zero === 'right' ? turn : turn + 180;
     const g = readGeom([0, 0], base, x, zero === 'right' ? 'acw' : 'cw', item.offset || 0);
-    const L = R_ANGLE * 1.42;
+    const L = R_ANGLE * 1.14;
     const fig = {
       segs: [{ a: g.V, b: at(g.V, L, g.base), tone: 'ink' }, { a: g.V, b: at(g.V, L, g.other), tone: 'ink' }],
       pts: [{ p: g.V, name: '', away: g.base + (g.sense === 'acw' ? -90 : 90) }],
@@ -173,7 +173,7 @@ export function zeroLineModel(item) {
     const I = 360 - RX;
     const turn = item.turn || 0;
     const g = readGeom([0, 0], turn, I, 'acw', 0);
-    const L = R_ANGLE * 1.42;
+    const L = R_ANGLE * 1.14;
     const fig = {
       segs: [{ a: g.V, b: at(g.V, L, g.base), tone: 'ink' }, { a: g.V, b: at(g.V, L, g.other), tone: 'ink' }],
       pts: [{ p: g.V, name: '', away: g.base - 90 }],
@@ -192,7 +192,7 @@ export function zeroLineModel(item) {
     const turn = item.turn || 0;
     const line = zero === 'right' ? turn : turn + 180;
     const g = drawGeom([0, 0], line, x, zero === 'right' ? 'acw' : 'cw');
-    const L = R_ANGLE * 1.45;
+    const L = R_ANGLE * 1.16;
     const far = at(g.V, L, g.line);
     const [here, there] = zero === 'right' ? ['A', 'B'] : ['B', 'A'];
     const fig = {
