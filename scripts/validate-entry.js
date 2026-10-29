@@ -81,6 +81,7 @@ import { checkWeighConfig } from '../src/utils/weighIt.js';
 import { checkAngleSumItems } from '../src/utils/angleSumCheck.js';
 
 // @@U05_2_IMPORT@@
+import { checkAnglePairItems } from '../src/utils/anglePairCheck.js';
 
 // @@U05_3_IMPORT@@
 import { checkZeroLineConfig } from '../src/utils/zeroLine.js';
@@ -347,6 +348,17 @@ for (const trackId of TRACK_IDS) {
     }
 
     // @@U05_2_CHECK@@
+    // X, F or Z? (5.2): every picture, pair, letter, answer and named slip derived and proved.
+    if (unit.anglePairs !== undefined) {
+      const cfg = unit.anglePairs;
+      if (!cfg.title || (bilingual && !cfg.titleVn)) err(`${label}: anglePairs needs a ${bilingual ? 'bilingual ' : ''}title`);
+      if (!(cfg.items || []).length) err(`${label}: anglePairs has no items`);
+      for (const it of cfg.items || []) {
+        const lv = cfg.levels?.[it.level];
+        if (!lv?.en || (bilingual && !lv.vn)) err(`${label}: anglePairs item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
+      }
+      for (const p of checkAnglePairItems(cfg.items || [], { bilingual })) err(`${label}: anglePairs ${p}`);
+    }
 
     // @@U05_3_CHECK@@
     //    Zero on the Line (5.3): every reading, mark and named slip derived and proved.

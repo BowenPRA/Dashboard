@@ -42,6 +42,8 @@ import { checkEasyActivity } from './makeEasy.js';
 import { checkAngleSumActivity } from './angleSumCheck.js';
 
 // @@U05_2_ACT_IMPORT@@
+// `anglepair` (Maths 5.2) — X, F or Z? on a slide: name the pair, then the size.
+import { checkAnglePairActivity } from './anglePairCheck.js';
 
 // @@U05_3_ACT_IMPORT@@
 // `zeroline` (Maths 5.3) — one Zero on the Line item on a slide: read an angle
@@ -107,6 +109,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'anglesum',
 
   // @@U05_2_ACT_TYPES@@
+  'anglepair',
 
   // @@U05_3_ACT_TYPES@@
   'zeroline',
@@ -425,6 +428,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   if (a.type === 'anglesum') for (const p of checkAngleSumActivity(a, { bilingual })) out.push(`anglesum ${p}`);
 
   // @@U05_2_ACT_CHECK@@
+  if (a.type === 'anglepair') for (const p of checkAnglePairActivity(a, { bilingual })) out.push(`anglepair ${p}`);
 
   // @@U05_3_ACT_CHECK@@
   if (a.type === 'zeroline') for (const p of checkZeroLineActivity(a)) out.push(`zeroline ${p}`);

@@ -473,6 +473,11 @@ export const TRACK_LEVELS = {
       blurb: 'A new chapter. The track goes all the way round — 360°, and not one degree less.',
     },
     // @@U05_2_TD@@
+    U05_2: {
+      mapId: 'JUNCTION', themeId: 'DESERT', tier: 2, waveMod: 'SWARM',
+      mapName: 'The Level Crossing',
+      blurb: 'Two tracks that never meet, and a road across them. Hold the crossing while they pour over.',
+    },
     // @@U05_3_TD@@
     U05_3: {
       mapId: 'COMB', themeId: 'NIGHT', tier: 3, waveMod: 'SIEGE',

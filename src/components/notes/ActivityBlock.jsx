@@ -44,6 +44,7 @@ import { MakeEasyActivity } from './MakeEasyActivity.jsx';
 import { AngleSumActivity } from './AngleSumActivity.jsx';
 
 // @@U05_2_ACT_IMPORT@@
+import { AnglePairActivity } from './AnglePairActivity.jsx';
 
 // @@U05_3_ACT_IMPORT@@
 import { ZeroLineActivity } from './ZeroLineActivity.jsx';
@@ -795,6 +796,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'anglesum': body = <AngleSumActivity {...common} />; break;
 
     // @@U05_2_ACT_CASE@@
+    case 'anglepair': body = <AnglePairActivity {...common} />; break;
 
     // @@U05_3_ACT_CASE@@
     case 'zeroline': body = <ZeroLineActivity {...common} />; break;

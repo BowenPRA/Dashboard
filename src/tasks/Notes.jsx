@@ -148,6 +148,7 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // @@U05_1_SIDE@@
   'anglesum',
   // @@U05_2_SIDE@@
+  'anglepair',
   // @@U05_3_SIDE@@
   'zeroline',
   // @@SCI_U03_2_SIDE@@

@@ -37,6 +37,7 @@ import { Weight as WeighItIcon } from 'lucide-react';
 import { Compass as AngleSumIcon } from 'lucide-react';
 
 // @@U05_2_IMPORT@@
+import { Hash as AnglePairIcon } from 'lucide-react';
 
 // @@U05_3_IMPORT@@
 import { PencilRuler as ZeroLineIcon } from 'lucide-react';
@@ -1856,6 +1857,28 @@ export const TASKS = [
   },
 
   // @@U05_2_TASKS@@
+  {
+    id: 'ANGLE_PAIR',
+    nativeMax: 10,
+    dbKey: 'p82',
+    // "X, F or Z?" (Y7 Maths 5.2, Intersecting lines): two lines crossing, or
+    // a line across two parallel lines, drawn fresh from each item. Name the
+    // pair (vertically opposite, corresponding, alternate, a straight line, or
+    // "no arrows: you can't tell"), then give the size; find a stepping stone
+    // for two steps; spot the line that is not parallel. utils/anglePairs.js
+    // derives every angle, answer, reason sentence and named slip, and
+    // checkAnglePairItems proves each item in the validator.
+    label: 'X, F or Z?',
+    icon: AnglePairIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#006d88]', text: 'text-white' },
+    defaultMaxXP: 45,
+    phase: 'practice',
+    component: lazy(() => import('./AnglePairs.jsx')),
+    hasContent: (u) => !!u.anglePairs?.items?.length,
+    buildPool: (u) => u.anglePairs,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@U05_3_TASKS@@
   {
