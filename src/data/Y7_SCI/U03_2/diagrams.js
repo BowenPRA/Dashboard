@@ -7,8 +7,9 @@
 //    self-study starter is a `predict`), and the little voting hands are taken
 //    off the keys of CAKE_CLUES and SPIN_ODD — the key words stay.
 //  · Photos come from public/images/Y7_SCI/U03_2/ through assetUrl, not an import.
-//  · Three drawings come from the classroom's Models deck, unchanged: SPIN_FLAT
-//    (the skater and the dough), ROCKY and GIANT. Its other drawings stay there.
+//  · Drawings from the classroom's Models deck: SPIN_FLAT (the skater and the
+//    dough), unchanged, and ROCKY and GIANT, unchanged but side by side in one
+//    picture (ROCKY_GIANT). Its other drawings stay there.
 //  · New: FRAME_CLOUD … FRAME_TODAY, the seven Storyboard frames (see below).
 //
 //   Starter
@@ -646,31 +647,32 @@ export const DIAGRAMS = {
     <text x="970" y="300" font-family="${FONT}" font-size="24" font-weight="bold" fill="${KEY}" text-anchor="middle">spin it: it goes flat</text>
   </svg>`,
 
-  ROCKY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" class="w-full h-full">
-    ${plate(600, 380)}
-    ${drawnSun(70, 190, 40)}
-    <circle cx="350" cy="190" r="110" fill="#d9a27a" stroke="${INK}" stroke-width="3"/>
-    <circle cx="350" cy="190" r="52" fill="#8b5a3c" stroke="${INK}" stroke-width="2.5"/>
-    ${leader(520, 110, 420, 140)}
-    <text x="500" y="98" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}">rock</text>
-    ${leader(520, 300, 380, 210)}
-    <text x="470" y="330" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}">metal core</text>
-    <text x="70" y="270" font-family="${FONT}" font-size="20" font-weight="bold" fill="${MUTED}" text-anchor="middle">hot</text>
-  </svg>`,
-
-  GIANT: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" class="w-full h-full">
-    ${plate(600, 380)}
-    <circle cx="250" cy="190" r="150" fill="#f1dfc1" stroke="${INK}" stroke-width="3"/>
-    <path d="M 108 140 h 284 M 102 196 h 296 M 116 252 h 268" stroke="#d6b88e" stroke-width="14"/>
-    <circle cx="250" cy="190" r="46" fill="#cfe8ff" stroke="${INK}" stroke-width="2.5"/>
-    <circle cx="250" cy="190" r="21" fill="#8b5a3c" stroke="${INK}" stroke-width="2"/>
-    ${leader(430, 76, 350, 104)}
-    <text x="420" y="50" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">huge gas</text>
-    <text x="420" y="74" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">layer</text>
-    ${leader(430, 300, 282, 214)}
-    <text x="420" y="326" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">ice and rock</text>
-    <text x="420" y="350" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">core</text>
-    <text x="60" y="360" font-family="${FONT}" font-size="20" font-weight="bold" fill="${MUTED}" text-anchor="middle">cold</text>
+  // The Models deck's ROCKY and GIANT, side by side in one drawing, each
+  // unchanged: a phone cannot show a two-column compare beside a check.
+  ROCKY_GIANT: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" class="w-full h-full">
+    ${plate(1200, 440)}
+    <text x="300" y="44" font-family="${FONT}" font-size="28" font-weight="bold" fill="${KEY}" text-anchor="middle">Near the Sun: hot</text>
+    <text x="900" y="44" font-family="${FONT}" font-size="28" font-weight="bold" fill="${BLUE}" text-anchor="middle">Far away: cold</text>
+    <line x1="600" y1="20" x2="600" y2="420" stroke="${RULE}" stroke-width="2"/>
+    ${drawnSun(70, 240, 40)}
+    <circle cx="350" cy="240" r="110" fill="#d9a27a" stroke="${INK}" stroke-width="3"/>
+    <circle cx="350" cy="240" r="52" fill="#8b5a3c" stroke="${INK}" stroke-width="2.5"/>
+    ${leader(520, 160, 420, 190)}
+    <text x="500" y="148" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}">rock</text>
+    ${leader(520, 350, 380, 260)}
+    <text x="460" y="380" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}">metal core</text>
+    <text x="70" y="320" font-family="${FONT}" font-size="20" font-weight="bold" fill="${MUTED}" text-anchor="middle">hot</text>
+    <circle cx="850" cy="240" r="150" fill="#f1dfc1" stroke="${INK}" stroke-width="3"/>
+    <path d="M 708 190 h 284 M 702 246 h 296 M 716 302 h 268" stroke="#d6b88e" stroke-width="14"/>
+    <circle cx="850" cy="240" r="46" fill="#cfe8ff" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="850" cy="240" r="21" fill="#8b5a3c" stroke="${INK}" stroke-width="2"/>
+    ${leader(1030, 126, 950, 154)}
+    <text x="1020" y="100" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">huge gas</text>
+    <text x="1020" y="124" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">layer</text>
+    ${leader(1030, 350, 882, 264)}
+    <text x="1020" y="376" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">ice and rock</text>
+    <text x="1020" y="400" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">core</text>
+    <text x="660" y="410" font-family="${FONT}" font-size="20" font-weight="bold" fill="${MUTED}" text-anchor="middle">cold</text>
   </svg>`,
 
   // ── The Storyboard frames: one per step, in the order of the story ───────

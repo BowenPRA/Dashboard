@@ -30,7 +30,6 @@ const TEAL = '#0087a8';
 const PURPLE = '#5c2483';
 const ORANGE = '#c25e12';
 const GREEN = '#4a8b23';
-const BLUE = '#1a5fa8';
 
 // The classroom's orange "write" panel, with a badge a self-study student can act on.
 const keyWord = (text, textFr) => ({ tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen', text, textFr });
@@ -48,14 +47,14 @@ export const notes = [
     eyebrowFr: 'Unité 3 · 3.2 · Forces et énergie',
     title: 'Formation of the Solar System',
     titleFr: 'La formation du système solaire',
-    objective: 'Say what a nebula is; explain how gravity pulls dust and gas together, and why more mass pulls in even more; describe how the Sun and the planets formed, and why they all go round the same way in one flat plane; say whether a fact supports or contradicts a hypothesis, and what a model can and cannot show.',
-    objectiveFr: 'Dire ce qu’est une nébuleuse ; expliquer comment la gravité rassemble la poussière et le gaz, et pourquoi plus de masse attire encore plus ; décrire comment le Soleil et les planètes se sont formés, et pourquoi ils tournent tous dans le même sens dans un seul plan ; dire si un fait confirme ou contredit une hypothèse, et ce qu’un modèle peut montrer ou non.',
+    objective: 'Explain how gravity and one spinning cloud of dust and gas made the Sun and the planets; say whether a fact supports or contradicts that idea, and what a model can and cannot show.',
+    objectiveFr: 'Expliquer comment la gravité et un seul nuage de poussière et de gaz qui tournait ont fait le Soleil et les planètes ; dire si un fait confirme ou contredit cette idée, et ce qu’un modèle peut montrer ou non.',
     card: {
       icon: 'MousePointerClick',
       badge: 'In this lesson',
       badgeFr: 'Dans cette leçon',
-      text: 'Nobody was there — so how do we know? You will **predict** what two models of a dust cloud do, watch them **move**, put the story **in order**, and judge the **evidence**. **13 things are scored** — the first is on the next slide.',
-      textFr: 'Personne n’était là — alors comment le sait-on ? Tu vas **prédire** ce que font deux modèles d’un nuage de poussière, les regarder **bouger**, remettre l’histoire **dans l’ordre**, et juger les **preuves**. **13 activités sont notées** — la première est sur la diapo suivante.',
+      text: 'Nobody was there — so how do we know? You will **predict** what two models do, put the story **in order**, and judge the **evidence**. **13 things are scored**: the first is on the next slide.',
+      textFr: 'Personne n’était là — alors comment le sait-on ? Tu vas **prédire** ce que font deux modèles, remettre l’histoire **dans l’ordre**, et juger les **preuves**. **13 activités sont notées** : la première est sur la diapo suivante.',
     },
   },
 
@@ -207,8 +206,8 @@ export const notes = [
     titleFr: 'Orbite, rotation, axe',
     ratio: 45,
     inlineSvg: DIAGRAMS.ORBIT_SPIN,
-    content: 'The Sun spins the same way too, and most moons orbit the same way.\n\nEight planets, all the same way round, all in one flat plane. **Just luck?** Or did something make it happen?',
-    contentFr: 'Le Soleil tourne aussi dans ce sens, et la plupart des lunes aussi.\n\nHuit planètes, toutes dans le même sens, toutes dans un seul plan. **Un hasard ?** Ou est-ce que quelque chose l’a causé ?',
+    content: 'The Sun spins the same way too, and so do most moons.\n\nAll the same way, all in one plane: **just luck?** Or did something make it happen?',
+    contentFr: 'Le Soleil tourne aussi dans ce sens, et la plupart des lunes aussi.\n\nToutes dans le même sens, dans un seul plan : **un hasard ?** Ou est-ce que quelque chose l’a causé ?',
     notes: [
       panel(
         'The facts', 'Les faits',
@@ -227,19 +226,19 @@ export const notes = [
     eyebrowFr: 'Mots clés · comment naissent les étoiles',
     title: 'A Nebula, and a Model',
     titleFr: 'Une nébuleuse, et un modèle',
-    ratio: 45,
+    ratio: 55,
     inlineSvg: DIAGRAMS.MODEL_REAL,
-    content: 'The **Orion Nebula**, photographed by the Hubble telescope: new stars are forming in it today.\n\nNobody can watch a star form — it takes **millions of years**. So scientists make a **model** on a computer.',
-    contentFr: 'La **nébuleuse d’Orion**, photographiée par le télescope Hubble : de nouvelles étoiles s’y forment aujourd’hui.\n\nPersonne ne peut regarder une étoile se former — cela prend **des millions d’années**. Alors les scientifiques font un **modèle** sur ordinateur.',
+    content: 'The **Orion Nebula** (Hubble): stars are forming in it today. Nobody can watch one form — it takes **millions of years** — so scientists make a **model**. Think of **one other** reason to use one.',
+    contentFr: 'La **nébuleuse d’Orion** (Hubble) : des étoiles s’y forment aujourd’hui. Personne ne peut en voir une se former — cela prend **des millions d’années** — alors les scientifiques font un **modèle**. Trouve **une autre** raison d’en utiliser un.',
     notes: [
-      keyWord('**Nebula:** a cloud of dust and gas in space.', '**Nébuleuse (nebula) :** un nuage de poussière et de gaz dans l’espace.'),
-      keyWord('**Model:** a way of showing something that is hard to observe directly.', '**Modèle (model) :** une façon de montrer quelque chose qu’on ne peut pas bien observer directement.'),
+      keyWord(
+        '**Nebula:** a cloud of dust and gas in space.\n**Model:** a way of showing something that is hard to observe directly.',
+        '**Nébuleuse (nebula) :** un nuage de poussière et de gaz dans l’espace.\n**Modèle (model) :** une façon de montrer quelque chose qu’on ne peut pas bien observer directement.',
+      ),
     ],
     reveal: {
-      prompt: 'A model speeds up millions of years. Think of **one other** reason to use a model. Then open the ideas.',
-      promptFr: 'Un modèle accélère des millions d’années. Trouve **une autre** raison d’utiliser un modèle. Puis ouvre les idées.',
-      label: 'Ideas',
-      labelFr: 'Des idées',
+      label: 'Other reasons',
+      labelFr: 'D’autres raisons',
       answer: 'Nobody can watch it happen · it is far too big for a lab · it is too far away · you can change the cloud and run it again',
       answerFr: 'Personne ne peut le voir se faire · c’est bien trop grand pour un labo · c’est trop loin · on peut changer le nuage et recommencer',
     },
@@ -401,34 +400,20 @@ export const notes = [
   },
 
   // 15 ─ Rocky or giant? + CHECK: why rocky near the Sun ─────────────────────
+  // (The Models deck's two-column compare, as one drawing on a split: a phone
+  // cannot fit two pictures in columns beside a check.)
   {
-    layout: 'compare',
+    layout: 'split',
     accent: TEAL,
     icon: 'Thermometer',
     eyebrow: 'Step 6 of the model',
     eyebrowFr: 'Étape 6 du modèle',
     title: 'Rocky or Giant?',
     titleFr: 'Rocheuse ou géante ?',
-    columns: [
-      {
-        heading: 'Near the Sun: hot',
-        headingFr: 'Près du Soleil : chaud',
-        accent: ORANGE,
-        icon: 'Sun',
-        inlineSvg: DIAGRAMS.ROCKY,
-        caption: 'Mercury, Venus, Earth, Mars: small and **rocky**.',
-        captionFr: 'Mercure, Vénus, la Terre, Mars : petites et **rocheuses**.',
-      },
-      {
-        heading: 'Far away: cold',
-        headingFr: 'Loin : froid',
-        accent: BLUE,
-        icon: 'Thermometer',
-        inlineSvg: DIAGRAMS.GIANT,
-        caption: 'Jupiter, Saturn, Uranus, Neptune: **giants**.',
-        captionFr: 'Jupiter, Saturne, Uranus, Neptune : des **géantes**.',
-      },
-    ],
+    ratio: 30,
+    inlineSvg: DIAGRAMS.ROCKY_GIANT,
+    content: '**Near the Sun (hot):** Mercury, Venus, Earth and Mars are small and **rocky**.\n\n**Far away (cold):** Jupiter, Saturn, Uranus and Neptune are **giants**.',
+    contentFr: '**Près du Soleil (chaud) :** Mercure, Vénus, la Terre et Mars sont petites et **rocheuses**.\n\n**Loin (froid) :** Jupiter, Saturne, Uranus et Neptune sont des **géantes**.',
     check: {
       id: 'chk_rocky',
       q: 'Why are the four planets nearest the Sun small and rocky?',
@@ -598,10 +583,8 @@ export const notes = [
     content: 'Next: the Vocab, then the **Storyboard**.',
     contentFr: 'Ensuite : le vocabulaire, puis le **Storyboard**.',
     items: [
-      { text: 'Say what a **nebula** is, and that stars and planets form from dust and gas.', textFr: 'Dire ce qu’est une **nébuleuse**, et que les étoiles et les planètes se forment à partir de poussière et de gaz.' },
-      { text: 'Explain how **gravity** pulls dust and gas together, and why more mass pulls in more.', textFr: 'Expliquer comment la **gravité** rassemble la poussière et le gaz, et pourquoi plus de masse attire plus.' },
-      { text: 'Describe, in order, how the **Sun** and the **planets** formed.', textFr: 'Décrire, dans l’ordre, comment le **Soleil** et les **planètes** se sont formés.' },
-      { text: 'Explain why the planets go round **the same way**, in one flat **plane**.', textFr: 'Expliquer pourquoi les planètes tournent **dans le même sens**, dans un seul **plan**.' },
+      { text: 'Say what a **nebula** is, and how **gravity** pulls it together.', textFr: 'Dire ce qu’est une **nébuleuse**, et comment la **gravité** la rassemble.' },
+      { text: 'Tell the story in order, and why the planets go round **the same way**.', textFr: 'Raconter l’histoire dans l’ordre, et pourquoi les planètes tournent **dans le même sens**.' },
       { text: 'Say if a fact **supports** or **contradicts** a hypothesis.', textFr: 'Dire si un fait **confirme** ou **contredit** une hypothèse.' },
       { text: 'Say how scientists use a **model**, and give one **limitation**.', textFr: 'Dire comment les scientifiques utilisent un **modèle**, et donner une **limite**.' },
     ],

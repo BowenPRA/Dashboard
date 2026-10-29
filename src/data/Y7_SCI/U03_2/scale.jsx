@@ -10,8 +10,8 @@
 //    deck's STAR_PLANET drawing (the Sun and Jupiter to scale) and this table
 //    carry size.
 //  · The 1500-wide table is unreadable below about 760 px (a phone, or beside
-//    the deck's predict panel on a laptop), so there the same rows are cards,
-//    one per object. The widget measures its own width to choose.
+//    the deck's predict panel on a laptop), so there the same rows are a
+//    compact HTML table. The widget measures its own width to choose.
 import { useState, useRef, useEffect } from 'react'
 import { Undo2, ChevronRight, RotateCcw } from 'lucide-react'
 import { tr } from '../../../utils/lang'
@@ -121,11 +121,12 @@ export function ScaleShrink({ lang = 'en' }) {
   // The table needs about 760 px to be read; narrower (a phone, or beside the
   // deck's predict panel on a laptop) the same rows are cards.
   const box = useRef(null)
-  const [wide, setWide] = useState(false)
+  const [width, setWidth] = useState(0)
+  const wide = width >= 760
   useEffect(() => {
     const el = box.current
     if (!el) return undefined
-    const fit = () => setWide(el.getBoundingClientRect().width >= 760)
+    const fit = () => setWidth(el.getBoundingClientRect().width)
     fit()
     const ro = new ResizeObserver(fit)
     ro.observe(el)
@@ -134,35 +135,38 @@ export function ScaleShrink({ lang = 'en' }) {
 
   return (
     <div ref={box} className="w-full h-full flex flex-col gap-2 select-none">
-      {/* narrow: the same rows as cards */}
-      <div className={`${wide ? 'hidden' : ''} flex-1 min-h-0 w-full overflow-y-auto rounded-xl bg-white p-2 text-left`}>
-        <div className="flex items-center gap-2 px-1 pb-1.5">
-          <svg viewBox="40 20 104 104" className="w-9 h-9 shrink-0" aria-hidden="true">
-            <circle cx="92" cy="72" r="44" fill="#ffffff" stroke={INK} strokeWidth="4" />
-            <path d="M 92 52 l 17 12 -6 20 -22 0 -6 -20 z" fill={INK} />
-          </svg>
-          <div className="min-w-0">
-            <div className="text-sm font-black text-slate-800">{t(lang, 'The Sun is a football: 22 cm', 'Le Soleil est un ballon de foot : 22 cm')}</div>
-            <div className="text-[11px] font-semibold text-slate-500 leading-tight">{t(lang, 'Everything shrunk the same: about 6 300 000 000 times.', 'Tout réduit pareil : environ 6 300 000 000 de fois.')}</div>
-          </div>
+      {/* narrow: the same rows as a compact HTML table */}
+      <div className={`${wide ? 'hidden' : ''} flex-1 min-h-0 w-full overflow-y-auto rounded-xl bg-white px-2 py-1.5 text-left`}>
+        <div className="flex items-baseline flex-wrap gap-x-2 px-1 pb-1">
+          <span className="text-[13px] font-black text-slate-800">{t(lang, 'The Sun is a football: 22 cm', 'Le Soleil est un ballon de foot : 22 cm')}</span>
+          <span className="text-[11px] font-semibold text-slate-500">{t(lang, 'Everything shrunk the same: about 6 300 000 000 times.', 'Tout réduit pareil : environ 6 300 000 000 de fois.')}</span>
         </div>
-        <div className="flex flex-col gap-1">
-          {ROWS.map((r, i) => (
-            <div key={r.key} className={`rounded-lg px-2 py-1.5 ${i % 2 ? 'bg-slate-50' : 'bg-white'} border border-slate-100`}>
-              <div className="text-[13px] font-black text-slate-800">{L(r.name)}{r.sub && <span className="font-semibold text-slate-500"> · {L(r.sub)}</span>}</div>
-              {i < n ? (
-                <div className="grid grid-cols-2 gap-x-2 text-[12px] leading-snug">
-                  <div><span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">{t(lang, 'Model size', 'Taille')}</span><span className="font-black" style={{ color: KEY }}>{L(r.model)}</span> <span className="text-slate-600">{L(r.like)}</span></div>
-                  <div><span className="block text-[9px] font-black uppercase tracking-wider text-slate-400">{t(lang, 'Model distance', 'Dans le modèle')}</span><span className="font-black" style={{ color: KEY }}>{L(r.farModel)}</span> <span className="text-slate-600">{L(r.farLike)}</span></div>
-                </div>
-              ) : (
-                <div className="text-[12px] font-bold text-slate-300">?</div>
-              )}
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-collapse text-[11px] sm:text-[12px] leading-tight">
+          <thead>
+            <tr className="text-[9px] font-black uppercase tracking-wider text-slate-400 text-left">
+              <th className="py-1 px-1 font-black">{t(lang, 'Object', 'Objet')}</th>
+              <th className="py-1 px-1 font-black">{t(lang, 'Model size', 'Taille')}</th>
+              <th className="py-1 px-1 font-black">{t(lang, 'Model distance', 'Dans le modèle')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ROWS.map((r, i) => (
+              <tr key={r.key} className={`align-top border-t border-slate-100 ${i % 2 ? 'bg-slate-50' : ''}`}>
+                <td className="py-1 px-1 font-black text-slate-800">{L(r.name)}</td>
+                {i < n ? (
+                  <>
+                    <td className="py-1 px-1"><span className="font-black" style={{ color: KEY }}>{L(r.model)}</span> <span className="text-slate-600">{L(r.like)}</span></td>
+                    <td className="py-1 px-1"><span className="font-black" style={{ color: KEY }}>{L(r.farModel)}</span> <span className="text-slate-600">{L(r.farLike)}</span></td>
+                  </>
+                ) : (
+                  <td colSpan={2} className="py-1 px-1 font-bold text-slate-300">?</td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {done && (
-          <div className="mt-1.5 rounded-lg border-2 px-2 py-1 text-center text-[12px] font-black" style={{ borderColor: KEY, color: KEY, backgroundColor: '#fdf1e3' }}>
+          <div className="mt-1 rounded-lg border-2 px-2 py-0.5 text-center text-[11px] font-black" style={{ borderColor: KEY, color: KEY, backgroundColor: '#fdf1e3' }}>
             {t(lang, 'The Solar System is almost all EMPTY SPACE.', 'Le système solaire est presque entièrement VIDE.')}
           </div>
         )}
