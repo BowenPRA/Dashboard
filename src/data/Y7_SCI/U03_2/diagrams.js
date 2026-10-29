@@ -7,7 +7,9 @@
 //    self-study starter is a `predict`), and the little voting hands are taken
 //    off the keys of CAKE_CLUES and SPIN_ODD — the key words stay.
 //  · Photos come from public/images/Y7_SCI/U03_2/ through assetUrl, not an import.
-//  · The Models deck's SPIN_FLAT, ROCKY and GIANT are in diagramsB.js.
+//  · Three drawings come from the classroom's Models deck, unchanged: SPIN_FLAT
+//    (the skater and the dough), ROCKY and GIANT. Its other drawings stay there.
+//  · New: FRAME_CLOUD … FRAME_TODAY, the seven Storyboard frames (see below).
 //
 //   Starter
 //     OPTIONS             — Getting started Q2: Earth, Jupiter, the Sun, Neptune (photos)
@@ -39,6 +41,7 @@
 // white halo (paint-order stroke) so they stay readable.
 
 import { assetUrl } from '../../../utils/assetPaths'
+import { PLANETS, mulberry32 } from './planets.js'
 
 const photo = (f) => assetUrl(`images/Y7_SCI/U03_2/${f}`)
 const sun = photo('sun.jpg')
@@ -180,6 +183,169 @@ const laptop = (cx, cy) => `<rect x="${cx - 140}" y="${cy - 110}" width="280" he
     <circle cx="${cx}" cy="${cy - 20}" r="17" fill="${SUNFILL}" stroke="${SUNLINE}" stroke-width="2.5"/>
     <circle cx="${cx + 35}" cy="${cy - 56}" r="6" fill="${PLANETC}"/><circle cx="${cx - 82}" cy="${cy - 2}" r="8" fill="${PLANETC}"/>
     ${dots([[cx + 70, cy + 30], [cx - 40, cy + 34], [cx + 100, cy - 70], [cx - 105, cy - 70], [cx + 20, cy + 40]], 2.5)}`
+
+// ── From the Models deck: SPIN_FLAT, ROCKY, GIANT ────────────────────────────
+// A curved arrow along a circle, from angle a0 to a1 (degrees, screen).
+const arcArrow = (cx, cy, rx, ry, a0, a1, color, w = 4, hd = 16) => {
+  const P = (a) => [cx + rx * Math.cos((a * Math.PI) / 180), cy + ry * Math.sin((a * Math.PI) / 180)]
+  const [x0, y0] = P(a0)
+  const [x1, y1] = P(a1)
+  const large = Math.abs(a1 - a0) > 180 ? 1 : 0
+  const sweep = a1 > a0 ? 1 : 0
+  const [xb, yb] = P(a1 - (a1 > a0 ? 6 : -6))
+  const ang = Math.atan2(y1 - yb, x1 - xb)
+  const px = hd * 0.55 * Math.sin(ang), py = -hd * 0.55 * Math.cos(ang)
+  const hx = x1 - hd * Math.cos(ang), hy = y1 - hd * Math.sin(ang)
+  return `<path d="M ${f1(x0)} ${f1(y0)} A ${rx} ${ry} 0 ${large} ${sweep} ${f1(hx)} ${f1(hy)}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>
+    <path d="M ${f1(x1)} ${f1(y1)} L ${f1(hx + px)} ${f1(hy + py)} L ${f1(hx - px)} ${f1(hy - py)} Z" fill="${color}"/>`
+}
+
+// A drawn Sun: flat pale disc and short rays.
+const drawnSun = (cx, cy, r) => {
+  let rays = ''
+  for (let k = 0; k < 12; k++) {
+    const a = (k * 30 * Math.PI) / 180
+    rays += `<line x1="${f1(cx + (r + 6) * Math.cos(a))}" y1="${f1(cy + (r + 6) * Math.sin(a))}" x2="${f1(cx + (r + 18) * Math.cos(a))}" y2="${f1(cy + (r + 18) * Math.sin(a))}" stroke="#e8a317" stroke-width="4" stroke-linecap="round"/>`
+  }
+  return `${rays}<circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffd45c" stroke="${INK}" stroke-width="3"/>`
+}
+
+// ── The Storyboard frames (the SOLAR_STORY task, utils/solarStory.js) ────────
+// Seven small pictures, one per step of the story, drawn in the Formation
+// model's palette (formation.jsx): its night sky, its pink and blue gas, brown
+// dust that turns warm rock inside the frost line and pale ice outside it, the
+// young Sun's glow and core, and the planets' own colours (planets.js). No words
+// on them: the task writes each step's name under its frame, in English or
+// French. Every frame is 240 × 160, seen from a little above like the model's
+// "Tilted" view, and every arrow is the model's amber. Seeded, so a frame looks
+// the same every time.
+const FX = 120
+const FY = 84
+const TILT = 0.3
+const AMBER = '#fbbf24'
+const ROCK = 'rgb(255,168,96)'
+const ICE = 'rgb(175,215,255)'
+const DUSTC = 'rgb(200,150,120)'
+const FROST_RX = 52
+
+const glowGrad = (id, rgb, a0) =>
+  `<radialGradient id="${id}"><stop offset="0" stop-color="rgb(${rgb})" stop-opacity="${a0}"/><stop offset="1" stop-color="rgb(${rgb})" stop-opacity="0"/></radialGradient>`
+const FRAME_DEFS = [
+  '<defs>',
+  '<radialGradient id="ssf-sky" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#0b1228"/><stop offset="0.6" stop-color="#060a18"/><stop offset="1" stop-color="#020309"/></radialGradient>',
+  glowGrad('ssf-pink', '235,110,175', 0.5),
+  glowGrad('ssf-blue', '105,140,255', 0.45),
+  glowGrad('ssf-glow', '255,190,90', 0.9),
+  glowGrad('ssf-flash', '255,240,210', 0.95),
+  '<radialGradient id="ssf-core"><stop offset="0" stop-color="#fffdf2"/><stop offset="0.6" stop-color="#ffe08a"/><stop offset="1" stop-color="#ffa53a"/></radialGradient>',
+  '<radialGradient id="ssf-hot"><stop offset="0" stop-color="#fffdf2"/><stop offset="0.6" stop-color="#ff9a5a"/><stop offset="1" stop-color="#d84d2a"/></radialGradient>',
+  ...PLANETS.map((p) => `<radialGradient id="ssf-${p.key}" cx="35%" cy="35%" r="70%"><stop offset="0" stop-color="${p.light}"/><stop offset="0.7" stop-color="${p.color}"/><stop offset="1" stop-color="${p.dark}"/></radialGradient>`),
+  '</defs>',
+].join('')
+
+const STAR_PTS = [[14, 18, 0.8], [38, 40, 0.5], [62, 12, 0.6], [95, 26, 0.4], [150, 14, 0.7], [186, 30, 0.5], [214, 12, 0.8],
+  [228, 52, 0.5], [206, 140, 0.6], [176, 151, 0.4], [30, 141, 0.6], [12, 96, 0.5], [58, 126, 0.4], [230, 102, 0.5], [110, 152, 0.4], [132, 6, 0.5]]
+const SKY = '<rect x="0" y="0" width="240" height="160" rx="12" fill="url(#ssf-sky)"/>' +
+  STAR_PTS.map(([x, y, o]) => `<circle cx="${x}" cy="${y}" r="0.9" fill="#e8eeff" opacity="${o}"/>`).join('')
+
+const gauss = (rnd) => (rnd() + rnd() + rnd() + rnd() - 2) * 0.866
+// n grains: `place(rnd)` gives [x, y, colour] for each one.
+const grains = (seed, n, place, r = 1.4, solid = false) => {
+  const rnd = mulberry32(seed)
+  let out = ''
+  for (let i = 0; i < n; i++) {
+    const [x, y, c] = place(rnd)
+    const o = solid ? 1 : f1(0.45 + 0.5 * rnd())
+    out += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r * (0.7 + 0.6 * rnd()))}" fill="${c}" opacity="${o}"/>`
+  }
+  return out
+}
+// A point in the flat disc, between lo and hi of its radius rx, coloured by the
+// frost line when `frost` is on.
+const inDisc = (rx, lo, hi, frost, rockC = ROCK, iceC = ICE) => (rnd) => {
+  const r = rx * (lo + (hi - lo) * Math.sqrt(rnd()))
+  const a = rnd() * 2 * Math.PI
+  const c = !frost ? DUSTC : r < FROST_RX ? rockC : iceC
+  return [FX + r * Math.cos(a), FY + r * TILT * Math.sin(a) + gauss(rnd) * 1.2, c]
+}
+// An arrow along a flat ellipse round the middle, from angle a0 to a1 (degrees).
+// Going from a larger angle to a smaller one is anticlockwise seen from above:
+// on the near side (the bottom) it moves to the RIGHT, as in every 3.2 drawing.
+const arcOn = (rx, ry, a0, a1, w = 2, hs = 7) => {
+  const P = (d) => [FX + rx * Math.cos((d * Math.PI) / 180), FY + ry * Math.sin((d * Math.PI) / 180)]
+  const pts = []
+  for (let k = 0; k <= 12; k++) pts.push(P(a0 + ((a1 - a0) * k) / 12))
+  const [ex, ey] = pts[12]
+  const [bx, by] = pts[11]
+  return `<polyline points="${pts.map((p) => p.map(f1).join(',')).join(' ')}" fill="none" stroke="${AMBER}" stroke-width="${w}" stroke-linecap="round"/>${head(ex, ey, Math.atan2(ey - by, ex - bx), AMBER, hs)}`
+}
+const gasBlob = (x, y, rx, ry, id, o = 1) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="url(#${id})" opacity="${o}"/>`
+const youngSun = (glowR = 30, r = 7) => `<circle cx="${FX}" cy="${FY}" r="${glowR}" fill="url(#ssf-glow)"/><circle cx="${FX}" cy="${FY}" r="${r}" fill="url(#ssf-core)"/>`
+const hotMiddle = (glowR, r, o = 0.6) => `<circle cx="${FX}" cy="${FY}" r="${glowR}" fill="url(#ssf-glow)" opacity="${o}"/><circle cx="${FX}" cy="${FY}" r="${r}" fill="url(#ssf-hot)"/>`
+
+// The eight planets on their (squashed) orbits: [key, orbit rx, angle, radius].
+const ORBITS = [['mercury', 18, 200, 1.8], ['venus', 26, 330, 2.8], ['earth', 34, 105, 3], ['mars', 42, 250, 2.2],
+  ['jupiter', 62, 25, 8], ['saturn', 78, 150, 6.5], ['uranus', 92, 290, 4.5], ['neptune', 104, 65, 4.4]]
+const planetAt = (key, rx, deg) => [FX + rx * Math.cos((deg * Math.PI) / 180), FY + rx * TILT * Math.sin((deg * Math.PI) / 180)]
+const orbitRings = (o) => ORBITS.map(([, rx]) => `<ellipse cx="${FX}" cy="${FY}" rx="${rx}" ry="${f1(rx * TILT)}" fill="none" stroke="rgba(203,213,225,${o})" stroke-width="0.8"/>`).join('')
+const planetDiscs = () => ORBITS.map(([key, rx, deg, r]) => {
+  const [x, y] = planetAt(key, rx, deg)
+  const ring = key === 'saturn' ? `<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1(r * 2)}" ry="${f1(r * 0.6)}" fill="none" stroke="rgba(230,210,165,0.85)" stroke-width="1.6"/>` : ''
+  return `<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="url(#ssf-${key})"/>${ring}`
+}).join('')
+
+const frameCloud = () => {
+  const blobs = [[92, 70], [150, 92], [124, 58], [82, 106]]
+  return gasBlob(95, 72, 70, 48, 'ssf-pink') + gasBlob(150, 92, 64, 44, 'ssf-blue') + gasBlob(124, 58, 50, 32, 'ssf-pink', 0.7) + gasBlob(82, 106, 40, 26, 'ssf-blue', 0.8) +
+    grains(11, 90, (rnd) => {
+      const [bx, by] = blobs[Math.floor(rnd() * blobs.length)]
+      return [bx + gauss(rnd) * 26, by + gauss(rnd) * 18, DUSTC]
+    }) +
+    `<g opacity="0.75">${arcOn(100, 62, 112, 68, 1.8, 6)}</g>`
+}
+const frameCollapse = () =>
+  gasBlob(FX, FY, 50, 40, 'ssf-pink') + gasBlob(FX + 8, FY + 4, 42, 32, 'ssf-blue') +
+  grains(12, 95, (rnd) => [FX + gauss(rnd) * 20, FY + gauss(rnd) * 16, DUSTC]) +
+  hotMiddle(22, 6, 0.5) +
+  arrow(36, FY, 66, FY, AMBER, 2.5, 8) + arrow(204, FY, 174, FY, AMBER, 2.5, 8) +
+  arrow(FX, 14, FX, 38, AMBER, 2.5, 8) + arrow(FX, 154, FX, 130, AMBER, 2.5, 8)
+const frameDisc = () =>
+  gasBlob(FX, FY, 104, 32, 'ssf-pink', 0.9) + gasBlob(FX, FY, 82, 25, 'ssf-blue', 0.7) +
+  grains(13, 130, inDisc(98, 0.08, 1, false), 1.2) +
+  hotMiddle(18, 5, 0.6) +
+  arcOn(108, 33, 118, 66, 2.2, 7) + arcOn(108, 33, 298, 246, 2.2, 7)
+const frameSun = () =>
+  gasBlob(FX, FY, 104, 32, 'ssf-blue', 0.35) +
+  grains(14, 130, inDisc(98, 0.12, 1, true), 1.2) +
+  `<ellipse cx="${FX}" cy="${FY}" rx="${FROST_RX}" ry="${f1(FROST_RX * TILT)}" fill="none" stroke="rgba(165,220,255,0.75)" stroke-width="1" stroke-dasharray="3 3"/>` +
+  youngSun(30, 7)
+const frameClumps = () =>
+  gasBlob(FX, FY, 104, 32, 'ssf-blue', 0.25) +
+  grains(15, 45, inDisc(98, 0.15, 1, true), 1) +
+  grains(16, 24, inDisc(96, 0.22, 1, true, '#d9a27a', '#d8ecff'), 3, true) +
+  youngSun(26, 7)
+const framePlanets = () => {
+  const [ex, ey] = planetAt('earth', 34, 105)
+  return gasBlob(FX, FY, 108, 34, 'ssf-blue', 0.22) + orbitRings(0.22) +
+    grains(17, 18, inDisc(98, 0.2, 1, true, '#d9a27a', '#d8ecff'), 1.6, true) +
+    `<circle cx="${f1(ex + 4)}" cy="${f1(ey - 2)}" r="9" fill="url(#ssf-flash)"/>` +
+    planetDiscs() + youngSun(26, 7)
+}
+const frameToday = () => {
+  const belt = grains(18, 40, (rnd) => {
+    const r = 49 + rnd() * 7
+    const a = rnd() * 2 * Math.PI
+    return [FX + r * Math.cos(a), FY + r * TILT * Math.sin(a), '#b9a48f']
+  }, 0.8)
+  const kuiper = grains(19, 26, (rnd) => {
+    const r = 110 + rnd() * 8
+    const a = rnd() * 2 * Math.PI
+    return [FX + r * Math.cos(a), FY + r * TILT * Math.sin(a), '#cfe2f7']
+  }, 0.8)
+  return orbitRings(0.35) + belt + kuiper + planetDiscs() +
+    arcOn(34, 10.2, 80, 38, 1.8, 6) + arcOn(62, 18.6, 125, 75, 1.8, 6) + arcOn(104, 31.2, 128, 90, 1.8, 6) +
+    youngSun(24, 7)
+}
 
 export const DIAGRAMS = {
   // ── Starter ─────────────────────────────────────────────────────────────
@@ -452,4 +618,67 @@ export const DIAGRAMS = {
     <text x="972.5" y="257" font-family="${FONT}" font-size="60" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
     <text x="972.5" y="364" font-family="${FONT}" font-size="34" font-weight="bold" fill="${INK}" text-anchor="middle">a strength</text>
   </svg>`,
+
+  // ── From the Models deck (content/y7-science/U03_models/diagrams.js) ─────
+  SPIN_FLAT: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 440" class="w-full h-full">
+    ${plate(1120, 440)}
+    <circle cx="150" cy="120" r="22" fill="#f2c9a5" stroke="${INK}" stroke-width="3"/>
+    <line x1="150" y1="142" x2="150" y2="250" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="150" y1="170" x2="60" y2="200" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="150" y1="170" x2="240" y2="200" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="150" y1="250" x2="150" y2="320" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    ${arcArrow(150, 330, 70, 18, 20, 160, BLUE, 3, 12)}
+    <text x="150" y="386" font-family="${FONT}" font-size="24" font-weight="bold" fill="${BLUE}" text-anchor="middle">arms out: slow</text>
+    <circle cx="420" cy="120" r="22" fill="#f2c9a5" stroke="${INK}" stroke-width="3"/>
+    <line x1="420" y1="142" x2="420" y2="250" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 420 168 l -16 22 l 16 18 M 420 168 l 16 22 l -16 18" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="420" y1="250" x2="420" y2="320" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+    ${arcArrow(420, 330, 40, 12, 20, 160, RED, 3, 12)}
+    ${arcArrow(420, 330, 40, 12, 200, 340, RED, 3, 12)}
+    ${arcArrow(420, 200, 46, 14, 200, 340, RED, 3, 12)}
+    <text x="420" y="386" font-family="${FONT}" font-size="24" font-weight="bold" fill="${RED}" text-anchor="middle">arms in: FAST</text>
+    <line x1="560" y1="40" x2="560" y2="400" stroke="${RULE}" stroke-width="2"/>
+    <circle cx="690" cy="200" r="60" fill="#f6e3b8" stroke="${INK}" stroke-width="3"/>
+    <text x="690" y="300" font-family="${FONT}" font-size="24" font-weight="bold" fill="${MUTED}" text-anchor="middle">a ball of dough</text>
+    ${arrow(770, 200, 840, 200, MUTED, 4, 16)}
+    <ellipse cx="970" cy="200" rx="120" ry="26" fill="#f6e3b8" stroke="${INK}" stroke-width="3"/>
+    ${arcArrow(970, 200, 140, 40, 200, 340, RED, 3, 14)}
+    <text x="970" y="300" font-family="${FONT}" font-size="24" font-weight="bold" fill="${KEY}" text-anchor="middle">spin it: it goes flat</text>
+  </svg>`,
+
+  ROCKY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" class="w-full h-full">
+    ${plate(600, 380)}
+    ${drawnSun(70, 190, 40)}
+    <circle cx="350" cy="190" r="110" fill="#d9a27a" stroke="${INK}" stroke-width="3"/>
+    <circle cx="350" cy="190" r="52" fill="#8b5a3c" stroke="${INK}" stroke-width="2.5"/>
+    ${leader(520, 110, 420, 140)}
+    <text x="500" y="98" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}">rock</text>
+    ${leader(520, 300, 380, 210)}
+    <text x="470" y="330" font-family="${FONT}" font-size="22" font-weight="bold" fill="${KEY}">metal core</text>
+    <text x="70" y="270" font-family="${FONT}" font-size="20" font-weight="bold" fill="${MUTED}" text-anchor="middle">hot</text>
+  </svg>`,
+
+  GIANT: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" class="w-full h-full">
+    ${plate(600, 380)}
+    <circle cx="250" cy="190" r="150" fill="#f1dfc1" stroke="${INK}" stroke-width="3"/>
+    <path d="M 108 140 h 284 M 102 196 h 296 M 116 252 h 268" stroke="#d6b88e" stroke-width="14"/>
+    <circle cx="250" cy="190" r="46" fill="#cfe8ff" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="250" cy="190" r="21" fill="#8b5a3c" stroke="${INK}" stroke-width="2"/>
+    ${leader(430, 76, 350, 104)}
+    <text x="420" y="50" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">huge gas</text>
+    <text x="420" y="74" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">layer</text>
+    ${leader(430, 300, 282, 214)}
+    <text x="420" y="326" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">ice and rock</text>
+    <text x="420" y="350" font-family="${FONT}" font-size="21" font-weight="bold" fill="${KEY}">core</text>
+    <text x="60" y="360" font-family="${FONT}" font-size="20" font-weight="bold" fill="${MUTED}" text-anchor="middle">cold</text>
+  </svg>`,
+
+  // ── The Storyboard frames: one per step, in the order of the story ───────
+  FRAME_CLOUD: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${frameCloud()}</svg>`,
+  FRAME_COLLAPSE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${frameCollapse()}</svg>`,
+  FRAME_DISC: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${frameDisc()}</svg>`,
+  FRAME_SUN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${frameSun()}</svg>`,
+  FRAME_CLUMPS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${frameClumps()}</svg>`,
+  FRAME_PLANETS: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${framePlanets()}</svg>`,
+  FRAME_TODAY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" class="w-full h-full">${FRAME_DEFS}${SKY}${frameToday()}</svg>`,
 }
