@@ -156,7 +156,7 @@ function StageBody({ run, model, lang, chips, extra, note }) {
   // quick: the angle and its reason together
   return (
     <>
-      {head(t.quick, t.quickSub)}
+      {head(t.quick, chips ? null : t.quickSub)}
       <div className="flex flex-wrap items-center gap-2 text-xl font-mono font-black text-slate-800 dark:text-slate-100 mb-2">
         <span className="italic">{L} =</span><AngleBox value={typed} onChange={setTyped} onEnter={() => act.checkQuick(typed, reason)} label={L} />
       </div>

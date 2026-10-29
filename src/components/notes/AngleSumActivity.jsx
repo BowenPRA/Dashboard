@@ -28,7 +28,8 @@ function Runner({ model, lang, onResult }) {
   const run = useAngleSteps(model, { onFinish: ({ helped }) => onResult({ done: true, correct: !helped }) });
   return (
     <div>
-      <div className="mb-2"><StageChips run={run} lang={lang} /></div>
+      {/* One chip ("Answer") says nothing in a quick start: room for the panel instead. */}
+      {run.stages.length > 1 && <div className="mb-2"><StageChips run={run} lang={lang} /></div>}
       <Working run={run} lang={lang} />
       <div className={run.finishedSteps.length ? 'mt-2' : ''}>
         <AngleSumStage run={run} model={model} lang={lang} chips extra={(
