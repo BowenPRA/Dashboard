@@ -27,6 +27,8 @@ export const STAGE_IDS = {
   biggest: ['change', 'week', 'moon', 'verdict', 'why'],
 };
 export const MARKS = ['numbered', 'unnumbered', 'half', 'waves'];
+/** How many rivers per item the proof runs; the screen draws one of these. */
+export const SEEDS = 200;
 
 const PERIOD = 12.42; // hours from one high tide to the next
 export const LATER_MIN = 50; // minutes later each day

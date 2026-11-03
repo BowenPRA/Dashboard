@@ -96,6 +96,7 @@ import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 // @@SCI_U03_3_IMPORT@@
 
 // @@SCI_U03_4_IMPORT@@
+import { checkTideConfig } from '../src/utils/tideLabCheck.js';
 
 // @@SCI_U03_5_IMPORT@@
 
@@ -389,6 +390,8 @@ for (const trackId of TRACK_IDS) {
     // @@SCI_U03_3_CHECK@@
 
     // @@SCI_U03_4_CHECK@@
+    //    Tide Lab (3.4): every item over 200 rivers, every answer and named slip proved.
+    if (unit.tideLab !== undefined) for (const p of checkTideConfig(unit.tideLab)) err(`${label}: tideLab ${p}`);
 
     // @@SCI_U03_5_CHECK@@
 

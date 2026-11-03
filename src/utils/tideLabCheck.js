@@ -5,14 +5,12 @@
  * fires on its own wrong answer, that no answer could earn two different codes,
  * and that the picture can show what is asked. An empty list means proved.
  */
-import { KINDS, MARKS, STAGE_IDS, roundModel, seedOf, answerOf, scaleTop, LATER_MIN } from './tideLab.js';
+import { KINDS, MARKS, STAGE_IDS, SEEDS, roundModel, seedOf, answerOf, scaleTop, LATER_MIN } from './tideLab.js';
 import {
   poleSlips, diagnosePole, diagnosePlot, diagnoseInOut, diagnoseHighest, diagnoseChange, diagnoseFind,
   diagnoseTomorrow, diagnoseTest, diagnoseChanges, diagnoseWeek, diagnoseMoon, diagnoseVerdict, diagnoseWhy,
 } from './tideLabMark.js';
 import { SLOTS, DAYS, MOONS, DIRS, VERDICTS, VERDICT_IDS, REASONS, PREDICTIONS } from './tideLabData.js';
-
-export const SEEDS = 200;
 
 const MARKERS = {
   read: diagnosePole, plot: diagnosePlot, inout: diagnoseInOut, highest: diagnoseHighest,

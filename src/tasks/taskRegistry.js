@@ -53,6 +53,7 @@ import { Clapperboard as StoryboardIcon } from 'lucide-react';
 // @@SCI_U03_3_IMPORT@@
 
 // @@SCI_U03_4_IMPORT@@
+import { Waves as TideLabIcon } from 'lucide-react';
 
 // @@SCI_U03_5_IMPORT@@
 
@@ -1954,6 +1955,28 @@ export const TASKS = [
   // @@SCI_U03_3_TASKS@@
 
   // @@SCI_U03_4_TASKS@@
+  {
+    id: 'TIDE_LAB',
+    nativeMax: 10,
+    dbKey: 'p88',
+    // The River Tide Lab (after Science 3.4), at home and marked: read the
+    // water level on a pole (between marks, through waves), graph a day's four
+    // readings, say whether the tide is coming in or going out, find the change,
+    // then test 3.4's two predictions (about 50 minutes later each day; the
+    // biggest tides at new and full moon) on a river the Moon model makes fresh
+    // each time, and say why they come true. utils/tideLab.js derives every
+    // round; utils/tideLabMark.js names the slips; tideLabCheck.js proves them.
+    label: 'Tide Lab',
+    icon: TideLabIcon,
+    color: { bg: 'bg-[#1a5fa8]', border: 'border-[#134a85]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./TideLab.jsx')),
+    hasContent: (u) => !!u.tideLab?.items?.length,
+    buildPool: (u) => u.tideLab,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@SCI_U03_5_TASKS@@
 
