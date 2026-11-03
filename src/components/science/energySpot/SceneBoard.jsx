@@ -59,7 +59,7 @@ export function PinRows({ m, lang, mode, active, placed = {}, fams = {}, per = n
               <span className="w-6 h-6 shrink-0 rounded-full bg-slate-800 text-white text-xs font-black flex items-center justify-center">{p.n}</span>
               <span className="min-w-0 flex-1 text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug">{tr(lang, p.en, null, p.fr)}</span>
               <span className={`shrink-0 text-xs sm:text-sm font-black ${e ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400'}`}
-                style={e && (mode === 'families' || locked) ? { color: familyInk(p.family) } : undefined}>
+                style={e && mode === 'families' && x?.ok ? { color: familyInk(p.family) } : undefined}>
                 {e ? tr(lang, ENERGIES[e].en, null, ENERGIES[e].fr) : '…'}
               </span>
             </div>
