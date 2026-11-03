@@ -29,8 +29,9 @@ const ORANGE = '#c25e12';
 const BLUE = '#1a5fa8';
 const GREEN = '#4a8b23';
 
-// The classroom's orange "write" panel, with a badge a self-study student can act on.
-const keyWord = (text, textFr) => ({ tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen', text, textFr });
+// The classroom's orange "write" panel is a Key word card, written out in full
+// (not through a helper) so the narration reads the definition: the audio
+// generator only reads `text:` fields.
 
 export const notes = [
   // 1 ─ Hero ────────────────────────────────────────────────────────────────
@@ -155,10 +156,11 @@ export const notes = [
     content: 'A big gym ball, slowed down: the bottom goes **flat**, then round again. That is the elastic store.',
     contentFr: 'Un gros ballon de gym, au ralenti : le bas s’**aplatit**, puis redevient rond. C’est la réserve élastique.',
     notes: [
-      keyWord(
-        'When something **happens**, energy is **changed** or **transferred**.',
-        'Quand quelque chose se **passe**, l’énergie est **transformée** (changed) ou **transférée** (transferred).',
-      ),
+      {
+        tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen',
+        text: 'When something **happens**, energy is **changed** or **transferred**.',
+        textFr: 'Quand quelque chose se **passe**, l’énergie est **transformée** (changed) ou **transférée** (transferred).',
+      },
       { tone: 'info', badge: false, text: 'The bounce: **kinetic** → **elastic potential** → **kinetic**.', textFr: 'Le rebond : **cinétique** → **potentielle élastique** → **cinétique**.' },
     ],
   },
@@ -175,10 +177,11 @@ export const notes = [
     ratio: 45,
     inlineSvg: DIAGRAMS.EVENT_PROCESS,
     notes: [
-      keyWord(
-        '**Event:** something that happens once, like a book falling.\n**Process:** something that keeps going, like burning.',
-        '**Événement (event) :** quelque chose qui arrive une fois, comme un livre qui tombe.\n**Processus (process) :** quelque chose qui continue, comme une combustion.',
-      ),
+      {
+        tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen',
+        text: '**Event:** something that happens once, like a book falling.\n**Process:** something that keeps going, like burning.',
+        textFr: '**Événement (event) :** quelque chose qui arrive une fois, comme un livre qui tombe.\n**Processus (process) :** quelque chose qui continue, comme une combustion.',
+      },
     ],
     activity: {
       id: 'act_event_process',
@@ -216,10 +219,11 @@ export const notes = [
     content: 'Read each arrow as **“to”**: chemical **to** thermal. A television has **two** arrows from **one** box.',
     contentFr: 'Lis chaque flèche comme **« vers »** (to) : chemical **to** thermal. Une télévision a **deux** flèches depuis **une** case.',
     notes: [
-      keyWord(
-        '**Energy-change diagram:** a box for each kind of energy, and an arrow for each change.',
-        '**Schéma de transformation (energy-change diagram) :** une case pour chaque forme d’énergie, et une flèche pour chaque changement.',
-      ),
+      {
+        tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen',
+        text: '**Energy-change diagram:** a box for each kind of energy, and an arrow for each change.',
+        textFr: '**Schéma de transformation (energy-change diagram) :** une case pour chaque forme d’énergie, et une flèche pour chaque changement.',
+      },
     ],
     check: {
       id: 'chk_tv_chain',
@@ -379,10 +383,11 @@ export const notes = [
     content: 'The same moving air can light a city, or knock down a tree. Hà Nội, after **Typhoon Yagi** (a huge storm), September 2024.',
     contentFr: 'Le même air en mouvement peut éclairer une ville, ou abattre un arbre. Hà Nội, après le **typhon Yagi** (une énorme tempête), septembre 2024.',
     notes: [
-      keyWord(
-        '**Useful energy change:** a change that does what we want.',
-        '**Changement utile (useful energy change) :** un changement qui fait ce que l’on veut.',
-      ),
+      {
+        tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen',
+        text: '**Useful energy change:** a change that does what we want.',
+        textFr: '**Changement utile (useful energy change) :** un changement qui fait ce que l’on veut.',
+      },
     ],
     check: {
       id: 'chk_candle_light',
@@ -501,10 +506,11 @@ export const notes = [
     content: 'Cold does not move. **Heat** moves. Feel the back of a freezer: it is warm. The freezer **pumps** the heat out there.',
     contentFr: 'Le froid ne bouge pas. La **chaleur** bouge. Touche l’arrière d’un congélateur : c’est chaud. Il y **pompe** la chaleur.',
     notes: [
-      keyWord(
-        '**Thermal** energy moves from **hotter** things to **colder** things.',
-        'L’énergie **thermique** passe des choses plus **chaudes** (hotter) aux choses plus **froides** (colder).',
-      ),
+      {
+        tone: 'write', badge: 'Key word', badgeFr: 'Mot clé', icon: 'BookOpen',
+        text: '**Thermal** energy moves from **hotter** things to **colder** things.',
+        textFr: 'L’énergie **thermique** passe des choses plus **chaudes** (hotter) aux choses plus **froides** (colder).',
+      },
     ],
     check: {
       id: 'chk_ice_hand',

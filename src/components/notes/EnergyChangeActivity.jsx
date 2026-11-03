@@ -1,9 +1,8 @@
-import { useMemo } from 'react';
-import { CheckCircle2, AlertTriangle } from 'lucide-react';
-import { energyModel, diagramText } from '../../utils/energyChange';
+import { Fragment, useMemo } from 'react';
+import { CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { energyModel, ENERGIES } from '../../utils/energyChange';
 import { tr } from '../../utils/lang';
 import EnergyRound from '../science/energychange/EnergyRound.jsx';
-import { Diagram } from '../science/energychange/EnergyBoard.jsx';
 
 /**
  * `energychange` — one From… To… diagram on a Notes slide (Year 7 Science
@@ -23,6 +22,33 @@ const T = {
   fr: { correct: 'Correct !', notQuite: 'Pas tout à fait' },
 };
 
+// The finished diagram on one wrapping line (a column of boxes would make the
+// side panel scroll): the line's energies with arrows, then the outputs together.
+function Chip({ e, lang }) {
+  return (
+    <span className="inline-flex flex-col items-center rounded-lg border-2 border-[#58a700] bg-white px-1.5 py-0.5 leading-tight">
+      <span className="text-xs font-black text-slate-800">{ENERGIES[e].en}</span>
+      {lang === 'fr' && <span className="text-[9px] font-bold text-slate-500">{ENERGIES[e].fr}</span>}
+    </span>
+  );
+}
+function DiagramLine({ model, lang }) {
+  const arrow = <ArrowRight className="w-4 h-4 shrink-0 text-slate-600" strokeWidth={3} />;
+  return (
+    <div className="flex flex-wrap items-center gap-1">
+      {model.line.map((e, i) => <Fragment key={e}>{i > 0 && arrow}<Chip e={e} lang={lang} /></Fragment>)}
+      {model.outputs.length > 0 && (
+        <>
+          {arrow}
+          <span className="inline-flex flex-wrap gap-1 rounded-xl border-2 border-dashed border-slate-400 p-1">
+            {model.outputs.map((e) => <Chip key={e} e={e} lang={lang} />)}
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function EnergyChangeActivity({ activity, lang, result, onResult, parseText }) {
   const t = T[lang] || T.en;
   const model = useMemo(() => energyModel({
@@ -32,16 +58,14 @@ export function EnergyChangeActivity({ activity, lang, result, onResult, parseTe
   if (!checked) {
     return <EnergyRound key={activity.id} model={model} lang={lang} compact onComplete={(helped) => onResult({ done: true, correct: !helped })} />;
   }
-  const marks = Object.fromEntries(model.slots.map((_, i) => [i, 'locked']));
   return (
     <div className={`rounded-xl border-2 mt-1 p-3 ${result.correct ? 'bg-[#d7ffb8] border-[#58a700]' : 'bg-[#ffdfe0] border-[#ea2b2b]'}`}>
       <div className={`flex items-center font-black uppercase tracking-widest text-[10px] lg:text-xs mb-2 ${result.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
         {result.correct ? <CheckCircle2 className="w-4 h-4 mr-2" strokeWidth={3} /> : <AlertTriangle className="w-4 h-4 mr-2" strokeWidth={3} />}
         {result.correct ? t.correct : t.notQuite}
       </div>
-      <Diagram shape={model.shape} n={model.n} fill={model.slots} marks={marks} lang={lang} compact />
-      <div className="mt-2 text-sm font-black text-slate-800">{diagramText(model.slots, model.chain, lang)}</div>
-      <div className={`mt-1 font-bold leading-relaxed text-sm lg:text-base ${result.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
+      <DiagramLine model={model} lang={lang} />
+      <div className={`mt-2 font-bold leading-relaxed text-sm lg:text-base ${result.correct ? 'text-[#3e7500]' : 'text-[#a32d23]'}`}>
         {parseText(tr(lang, activity.explain, null, activity.explainFr))}
       </div>
     </div>

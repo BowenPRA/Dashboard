@@ -41,6 +41,13 @@ export default function EnergyRound({ model: m, pictures, lang, onComplete, onNe
   const [hotKnown, setHotKnown] = useState(m.kind === 'heat' && !m.walk);
   const stage = stages[idx];
   const box = slotOf(stage);
+  // A box's chip: From for the first, To for the last of a line, Then between.
+  const stageLabel = (s) => {
+    const i = slotOf(s);
+    if (i < 0) return t.stages[s] || s;
+    if (i === 0) return t.stages.slot0;
+    return i === m.line.length - 1 && !m.outputs.length ? t.stages.slot1 : t.stages.slot2;
+  };
   const twoWay = stage === 'happens' || stage === 'hotter' || (stage === 'shape' && m.shapes.length === 2);
 
   const lockUpTo = (i, f = fill) => setMarks(Object.fromEntries(f.slice(0, i).map((_, k) => [k, 'locked'])));
@@ -210,7 +217,7 @@ export default function EnergyRound({ model: m, pictures, lang, onComplete, onNe
             {stages.map((s, i) => (
               <span key={s} className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border-2 text-[10px] font-black uppercase tracking-widest
                 ${i < idx ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300' : i === idx ? 'bg-amber-400 border-amber-500 text-slate-950' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}>
-                {i < idx && <CheckCircle2 className="w-3 h-3" strokeWidth={3} />}{t.stages[s] || s}
+                {i < idx && <CheckCircle2 className="w-3 h-3" strokeWidth={3} />}{stageLabel(s)}
               </span>
             ))}
           </div>

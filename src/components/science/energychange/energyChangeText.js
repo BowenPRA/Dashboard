@@ -19,7 +19,7 @@ export const T = {
     filled: 'Here it is filled in for you.',
     shown: 'Here it is. Read it, then go on.',
     stages: {
-      happens: 'Event?', shape: 'Shape', slot0: 'From', slot1: 'To', slot2: 'Then', slot3: 'Then', outputs: 'To',
+      happens: 'Event?', shape: 'Shape', slot0: 'From', slot1: 'To', slot2: 'Then', outputs: 'To',
       build: 'Draw it', pick: 'Which one?', hotter: 'Hotter', way: 'Which way?', then: 'Then',
     },
     heads: { one: 'One change', branch: 'Two arrows from one box', chain: 'A chain', mixed: 'A chain, then two arrows', read: 'Read the diagram', heat: 'Where does the heat go?' },
@@ -62,7 +62,7 @@ export const T = {
     filled: 'Le voici, rempli pour toi.',
     shown: 'Le voici. Lis-le, puis continue.',
     stages: {
-      happens: 'Événement ?', shape: 'Forme', slot0: 'De', slot1: 'À', slot2: 'Puis', slot3: 'Puis', outputs: 'À',
+      happens: 'Événement ?', shape: 'Forme', slot0: 'De', slot1: 'À', slot2: 'Puis', outputs: 'À',
       build: 'Dessine-le', pick: 'Lequel ?', hotter: 'Plus chaud', way: 'Dans quel sens ?', then: 'Ensuite',
     },
     heads: { one: 'Un changement', branch: 'Deux flèches depuis une case', chain: 'Une chaîne', mixed: 'Une chaîne, puis deux flèches', read: 'Lis le schéma', heat: 'Où va la chaleur ?' },
