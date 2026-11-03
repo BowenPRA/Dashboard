@@ -100,6 +100,7 @@ import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 // @@SCI_U03_5_IMPORT@@
 
 // @@SCI_U03_6_IMPORT@@
+import { checkEnergyChangeConfig } from '../src/utils/energyChangeCheck.js';
 
 // @@SCI_U03_7_IMPORT@@
 
@@ -393,6 +394,8 @@ for (const trackId of TRACK_IDS) {
     // @@SCI_U03_5_CHECK@@
 
     // @@SCI_U03_6_CHECK@@
+    //    From… To… (3.6): every stage, answer and named slip derived and proved.
+    if (unit.energyChange !== undefined) for (const p of checkEnergyChangeConfig(unit.energyChange)) err(`${label}: energyChange ${p}`);
 
     // @@SCI_U03_7_CHECK@@
 

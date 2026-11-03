@@ -57,6 +57,7 @@ import { Clapperboard as StoryboardIcon } from 'lucide-react';
 // @@SCI_U03_5_IMPORT@@
 
 // @@SCI_U03_6_IMPORT@@
+import { Repeat as EnergyChangeIcon } from 'lucide-react';
 
 // @@SCI_U03_7_IMPORT@@
 
@@ -1958,6 +1959,29 @@ export const TASKS = [
   // @@SCI_U03_5_TASKS@@
 
   // @@SCI_U03_6_TASKS@@
+  {
+    id: 'ENERGY_CHANGE',
+    nativeMax: 10,
+    dbKey: 'p90',
+    // From… To… (Y7 Science 3.6 Changes in energy): the book's energy-change
+    // diagrams, drawn box by box — where the energy starts and what it
+    // changes into, for an event or a process; a chain (a power station) or
+    // two arrows from one box (a television); a diagram read the other way;
+    // and which way the heat goes, hotter to colder. Every stage, answer and
+    // named slip is derived by utils/energyChange.js and proved by
+    // utils/energyChangeCheck.js. Levels 1–2 walk every stage; later items
+    // are one Check, and a wrong one opens the stage its slip belongs to.
+    label: 'From… To…',
+    icon: EnergyChangeIcon,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 35,
+    phase: 'practice',
+    component: lazy(() => import('./EnergyChange.jsx')),
+    hasContent: (u) => !!u.energyChange?.items?.length,
+    buildPool: (u) => u.energyChange,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@SCI_U03_7_TASKS@@
 

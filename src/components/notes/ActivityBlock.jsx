@@ -62,6 +62,7 @@ import { ZeroLineActivity } from './ZeroLineActivity.jsx';
 // @@SCI_U03_5_ACT_IMPORT@@
 
 // @@SCI_U03_6_ACT_IMPORT@@
+import { EnergyChangeActivity } from './EnergyChangeActivity.jsx';
 
 // @@SCI_U03_7_ACT_IMPORT@@
 
@@ -828,6 +829,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@SCI_U03_5_ACT_CASE@@
 
     // @@SCI_U03_6_ACT_CASE@@
+    case 'energychange': body = <EnergyChangeActivity {...common} />; break;
 
     // @@SCI_U03_7_ACT_CASE@@
 

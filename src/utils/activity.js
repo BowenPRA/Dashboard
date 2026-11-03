@@ -63,6 +63,7 @@ import { checkZeroLineActivity } from './zeroLine.js';
 // @@SCI_U03_5_ACT_IMPORT@@
 
 // @@SCI_U03_6_ACT_IMPORT@@
+import { checkEnergyChangeActivity } from './energyChangeCheck.js';
 
 // @@SCI_U03_7_ACT_IMPORT@@
 
@@ -141,6 +142,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@SCI_U03_5_ACT_TYPES@@
 
   // @@SCI_U03_6_ACT_TYPES@@
+  'energychange',
 
   // @@SCI_U03_7_ACT_TYPES@@
 
@@ -474,6 +476,8 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@SCI_U03_5_ACT_CHECK@@
 
   // @@SCI_U03_6_ACT_CHECK@@
+  // `energychange` (Science 3.6): one From… To… diagram, walked; proved like the task's items.
+  if (a.type === 'energychange') for (const p of checkEnergyChangeActivity(a)) out.push(`energychange ${p}`);
 
   // @@SCI_U03_7_ACT_CHECK@@
 
