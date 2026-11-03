@@ -575,6 +575,12 @@ export const TRACK_LEVELS = {
     // @@SCI_U03_5_TD@@
     // @@SCI_U03_6_TD@@
     // @@SCI_U03_7_TD@@
+    // 3.7 closes Unit 3, as 2.8 closed Unit 2: the top of the chapter's ladder.
+    U03_7: {
+      mapId: 'GAUNTLET', themeId: 'DESERT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Lost Heat',
+      blurb: 'Every wave leaks a little, and none of it comes back. Hold out to the end of the chapter.',
+    },
   },
 };
 

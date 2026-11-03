@@ -2,7 +2,7 @@
 // The pieces the ported 3.7 widgets borrow from other classroom decks, kept
 // local to this unit: the house button (classroom U03_models/ui.jsx, without
 // its phone-remote hook), Mr Bowen (classroom src/lib/mrBowen.js, copied here
-// as mrBowen.js) and the seeded random numbers (U03_models/data.js).
+// as mrBowen.js). The seeded random numbers are in random.js.
 import { mrBowenSvg } from './mrBowen.js'
 
 const TONES = {
@@ -33,15 +33,3 @@ export function MrBowen(props) {
 
 /** An SVG string placed inside a JSX <svg>. */
 export const Pic = ({ svg }) => <g dangerouslySetInnerHTML={{ __html: svg }} />
-
-/** Seeded random numbers, so a model draws the same picture every time. */
-export function mulberry32(seed) {
-  let a = seed >>> 0
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0
-    let t = a
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}

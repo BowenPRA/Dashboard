@@ -23,7 +23,8 @@
 import { useState } from 'react'
 import { Undo2, RotateCcw, ChevronRight } from 'lucide-react'
 import { tr } from '../../../utils/lang'
-import { Btn, Pic, mulberry32 } from './ui.jsx'
+import { Btn, Pic } from './ui.jsx'
+import { mulberry32 } from './random.js'
 import {
   INK, MUTED, FONT, RED, BLUE, USEFUL, WASTED,
   motorbike, squiggles, noise, arrow, potFire, stairs, cyclist, mug, thermometer,

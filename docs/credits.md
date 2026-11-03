@@ -259,3 +259,13 @@ Every other picture in the unit, including the Storyboard's seven frames, is a d
 <!-- @@SCI_U03_6_CREDITS@@ -->
 
 <!-- @@SCI_U03_7_CREDITS@@ -->
+**Science 3.7 Where Does Energy Go?** (`Y7_SCI/U03_7`) — copied from the classroom lesson's `images/` (its `CREDITS.json`); none is a Learner's Book scan.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_7/petrol-shop.jpg` | A petrol shop on Nguyễn Công Trứ street, Hà Nội: motorbikes at the pumps (cropped, brightened, 1200 px) — PUMP_PHOTO, MOTO_PUMP | Amenoc | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Gas_station_in_Hanoi_HFC_Total.jpg) | CC0 |
+| `public/images/Y7_SCI/U03_7/wood-fire.jpg` | Pots of bánh chưng cooking over wood fires, Ninh Hải village, Ninh Bình, before Tết 2024 (960 px) — WOOD_FIRE | Jakub Hałun | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Communal_cooking_in_Ninh_H%E1%BA%A3i_village,_Ninh_Binh_province,_Vietnam,_20240201_1837_4914.jpg) | CC BY 4.0 |
+| `public/images/Y7_SCI/U03_7/lamp-filament.jpg` | A clear filament lamp (60 W, E27) on white (480 px) — LAMP_PAIR, HEAT_CAMERA (lamp A) | KMJ | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Gluehlampe_01_KMJ.jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_7/lamp-twisty.jpg` | A spiral compact fluorescent (energy-saving) lamp on white (cropped, 500 px) — LAMP_PAIR, HEAT_CAMERA (lamp B) | Sun Ladder | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:06_Spiral_CFL_Bulb_2010-03-08_(white_back).jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_7/heat-filament.jpg` | Thermal (infrared) image of a 100 W clear filament lamp, switched on (°F scale bar cropped off, doubled) — HEAT_CAMERA | Zaereth | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Thermal_image_of_an_incandescent_light.jpg) | CC0 |
+| `public/images/Y7_SCI/U03_7/heat-twisty.jpg` | Thermal (infrared) image of a 26 W helical fluorescent lamp, switched on (°F scale bar cropped off, doubled) — HEAT_CAMERA | Zaereth | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Helical_fluorescent_lamp_thermal_image.jpg) | CC0 |
