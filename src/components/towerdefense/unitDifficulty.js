@@ -572,6 +572,11 @@ export const TRACK_LEVELS = {
     },
     // @@SCI_U03_3_TD@@
     // @@SCI_U03_4_TD@@
+    U03_4: {
+      mapId: 'WAVE', themeId: 'STANDARD', tier: 3, waveMod: 'TIDE',
+      mapName: 'High Water',
+      blurb: 'Two tides a day, and the next one always comes. Hold the harbour wall.',
+    },
     // @@SCI_U03_5_TD@@
     // @@SCI_U03_6_TD@@
     // @@SCI_U03_7_TD@@
