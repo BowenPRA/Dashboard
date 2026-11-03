@@ -231,9 +231,8 @@ export default function EnergyRound({ model: m, pictures, lang, onComplete, onNe
         {(stage === 'shape' || (stage === 'build' && m.kind !== 'one')) && (
           <div className={stage === 'build' ? 'mb-2' : ''}>
             <Choices options={m.shapes.map((s) => ({ val: s, label: pickL(lang, SHAPES[s].en, SHAPES[s].fr), icon: <ShapeIcon shape={s} n={m.n} /> }))}
-              tried={stage === 'shape' ? tried : []} found={stage === 'shape' ? found : null}
-              onPick={stage === 'shape' ? choose(diagnoseShape, 'shape') : (v) => { setShape(v); setFill(Array(m.n).fill(null)); setMarks({}); setActive(0); }} />
-            {stage === 'build' && shape && <div className="mt-1 text-[11px] font-bold text-slate-400">✓ {pickL(lang, SHAPES[shape].en, SHAPES[shape].fr)}</div>}
+              tried={stage === 'shape' ? tried : []} found={stage === 'shape' ? found : null} selected={stage === 'build' ? shape : null}
+              onPick={stage === 'shape' ? choose(diagnoseShape, 'shape') : (v) => { if (v !== shape) { setShape(v); setFill(Array(m.n).fill(null)); setMarks({}); setActive(0); } }} />
           </div>
         )}
         {showBoard && (

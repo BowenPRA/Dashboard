@@ -28,18 +28,20 @@ export function Message({ msg, lang }) {
   );
 }
 
-/** Tap-to-answer buttons; tried ones are struck, the found one is green. */
-export function Choices({ options, tried = [], found = null, onPick, cols = 1 }) {
+/** Tap-to-answer buttons; tried ones are struck, the found one is green, a `selected` one amber. */
+export function Choices({ options, tried = [], found = null, selected = null, onPick, cols = 1 }) {
   return (
     <div className={`grid gap-2 ${cols === 2 ? 'sm:grid-cols-2' : ''}`}>
       {options.map((o) => {
         const bad = tried.includes(o.val);
         const ok = found === o.val;
+        const on = selected === o.val;
         return (
           <button key={String(o.val)} type="button" disabled={bad || found != null} onClick={() => onPick(o.val)}
             className={`flex items-center gap-2 text-left px-3 py-2.5 rounded-xl border-2 font-bold text-sm leading-snug transition-colors
               ${ok ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300'
                 : bad ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-300 text-rose-400 line-through'
+                  : on ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-400 text-slate-800 dark:text-slate-100'
                   : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:border-amber-400'}`}>
             {o.icon}<span className="min-w-0">{o.label}</span>
           </button>

@@ -246,13 +246,8 @@ export const notes = [
     eyebrowFr: 'Essaie',
     title: 'Rub Your Hands',
     titleFr: 'Frotte-toi les mains',
-    label: 'Build it',
-    labelFr: 'Construis-le',
-    labelIcon: 'Sparkles',
     text: 'Rub your hands together, **fast**, for 10 seconds. What do you **feel**?',
     textFr: 'Frotte-toi les mains, **vite**, pendant 10 secondes. Que **sens**-tu ?',
-    sub: 'Then build the energy-change diagram: two boxes, one arrow.',
-    subFr: 'Puis construis le schéma de transformation : deux cases, une flèche.',
     activity: {
       id: 'act_rub_hands',
       type: 'energychange',

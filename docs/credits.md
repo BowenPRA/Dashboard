@@ -257,5 +257,13 @@ Every other picture in the unit, including the Storyboard's seven frames, is a d
 <!-- @@SCI_U03_5_CREDITS@@ -->
 
 <!-- @@SCI_U03_6_CREDITS@@ -->
+**Science 3.6 Changes in Energy** (`Y7_SCI/U03_6`) — copied from the classroom lesson `y7-science/U03_6/images/` (its `CREDITS.json`); none is a Learner's Book scan. Every other picture in the unit, including the From… To… scenes, is a drawn SVG or widget.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_6/ball.webm` | Slow-motion video (240 frames a second) of a big exercise ball hitting the floor: it goes flat at the bottom, then bounces back up (trimmed to 14.5 s, 960×540, no audio) — BallFilm, slide 5 | Rhetos / Mathe-AC Lernwerkstatt Aachen | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Gymnastikball-Flummi.webm) | CC BY-SA 4.0 |
+| `public/images/Y7_SCI/U03_6/gasplant.jpg` | Bayside Power Station, a natural-gas power station in Saint John, New Brunswick, Canada (cropped to the chimneys, 560×640) — POWER_PICS, slide 12 | Quintin Soloviev | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bayside_Power_Station.jpg) | CC BY 4.0 |
+| `public/images/Y7_SCI/U03_6/windfarm.jpg` | Bạc Liêu wind farm, Vietnam: wind turbines standing in the sea, at sunset (960 px) — USEFUL_DANGER, slide 13 | [Tycho] (Wikimedia Commons user Shansov.net), shansov.net | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:B%E1%BA%A1c_Li%C3%AAu_windpower_farm.jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_6/typhoon.jpg` | A big tree pulled out by the roots by Typhoon Yagi across a street in Hà Nội, 8 September 2024 (960 px) — USEFUL_DANGER, slide 13 | Octagon | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Typhoon-Yagi_3.jpg) | CC BY-SA 4.0 |
 
 <!-- @@SCI_U03_7_CREDITS@@ -->
