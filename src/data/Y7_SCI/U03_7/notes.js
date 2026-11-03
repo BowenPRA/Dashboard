@@ -510,11 +510,10 @@ export const notes = [
       type: 'energysplit',
       device: 'fan',
       walk: false,
-      picture: DIAGRAMS.DEV_FAN,
       prompt: 'Exit question (Question 3c): an electric fan. Build its energy-change diagram.',
       promptFr: 'Question de sortie (Question 3c) : un ventilateur électrique. Construis son schéma de transformation.',
       explain: '**Electrical → kinetic**: the moving air, which we want. **Thermal and sound**: the warm motor and the hum, which we do not. Even a fan dissipates some energy.',
-      explainFr: '**Électrique → kinetic** : l’air qui bouge, ce qu’on veut. **Thermal et sound** : le moteur qui chauffe et le bourdonnement, ce qu’on ne veut pas. Même un ventilateur dissipe de l’énergie.',
+      explainFr: '**Electrical → kinetic** : l’air qui bouge, ce qu’on veut. **Thermal et sound** : le moteur qui chauffe et le bourdonnement, ce qu’on ne veut pas. Même un ventilateur dissipe de l’énergie.',
     },
   },
 ];

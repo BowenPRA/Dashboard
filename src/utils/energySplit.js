@@ -193,9 +193,11 @@ export function answerOf(m, stage) {
 
 const decoyWhy = (m, chip) => m.device.decoys.find((d) => d.chip === chip) || null;
 
+// A hint, not the answer: it names where the energy comes from (the petrol,
+// the socket, the food you ate) and leaves the student to name the energy.
 function fromMsg(m) {
   const d = m.device;
-  return { en: `The energy comes from ${d.source.en}: ${d.from} energy.`, fr: `Source de l’énergie : ${d.source.fr} (${d.from}).` };
+  return { en: `The energy comes from ${d.source.en}. Which kind of energy is that?`, fr: `Source de l’énergie : ${d.source.fr}. Quelle forme d’énergie est-ce ?` };
 }
 
 /** The From stage: one energy (or chip) said to be where the energy comes from. */

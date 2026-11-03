@@ -19,6 +19,7 @@ import { ChevronRight, Undo2, RotateCcw } from 'lucide-react'
 import { tr } from '../../../utils/lang'
 import { Btn, MrBowen, Pic } from './ui.jsx'
 import { mug, clock, motorbike, bag, squiggles } from './art.js'
+import useNarrow from './useNarrow.js'
 
 const t = (lang, en, fr) => tr(lang, en, null, fr)
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif"
@@ -113,11 +114,22 @@ export function BagStory({ lang = 'en' }) {
   const [k, setK] = useState(0) // panels 0..k are shown; k = 4 adds the clue
   const L = (pair) => (lang === 'fr' ? pair[1] : pair[0])
   const asked = k >= 3
+  // Narrow (a phone): one panel at a time, drawn large (they come one a press
+  // anyway), with its caption, the question and the clue as HTML.
+  const [boxRef, narrow] = useNarrow()
+  const cur = Math.min(k, PANELS.length - 1)
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 select-none">
+    <div ref={boxRef} className="w-full h-full flex flex-col gap-2 sm:gap-3 select-none">
+      {narrow && (
+        <div className="shrink-0 flex items-center gap-1.5">
+          {PANELS.map((_, i) => (
+            <span key={i} className={`w-6 h-6 rounded-full text-[11px] font-black flex items-center justify-center ${i <= k ? 'bg-[#1a5fa8] text-white' : 'bg-slate-200 text-slate-400'}`}>{i + 1}</span>
+          ))}
+        </div>
+      )}
       <div className="flex-1 min-h-0 w-full">
-        <svg viewBox="0 0 1640 610" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox={narrow ? `${px(cur)} ${TOP} ${PANEL_W} ${PANEL_H}` : '0 0 1640 610'} className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <rect x="0" y="0" width="1640" height="610" rx="16" fill="#ffffff" />
           <defs>
             {PANELS.map((_, i) => (
@@ -151,7 +163,7 @@ export function BagStory({ lang = 'en' }) {
               </g>
             )
           })}
-          {asked && (
+          {asked && !narrow && (
             <g>
               <rect x="30" y="514" width="1580" height="88" rx="16" fill="#e2f2f6" stroke={TEAL} strokeWidth="3" />
               <text x="820" y={k >= LAST ? 550 : 568} fontFamily={FONT} fontSize="28" fontWeight="900" fill={INK} textAnchor="middle">
@@ -166,6 +178,17 @@ export function BagStory({ lang = 'en' }) {
           )}
         </svg>
       </div>
+      {narrow && (
+        <div className="shrink-0 text-sm leading-snug text-slate-800">
+          <p className="font-black">{L(CAPTIONS[cur]).join(' ')}</p>
+          {asked && (
+            <p className="mt-1 text-xs font-black rounded-lg px-2 py-1.5 border-2 border-[#0087a8] bg-[#e2f2f6]">
+              {t(lang, 'Where did the heat go? Can he get it back?', 'Où est partie la chaleur ? Peut-il la récupérer ?')}
+              {k >= LAST && <span className="block text-[#0087a8]">{t(lang, 'A clue: heat moves from hotter things to colder things.', 'Un indice : la chaleur va des choses chaudes vers les choses froides.')}</span>}
+            </p>
+          )}
+        </div>
+      )}
       <div className="shrink-0 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
         <Btn tone="slate" icon={Undo2} disabled={k === 0} onClick={() => setK((v) => Math.max(0, v - 1))}>{t(lang, 'Back', 'Retour')}</Btn>
         <Btn tone="orange" icon={ChevronRight} disabled={k === LAST} onClick={() => setK((v) => Math.min(LAST, v + 1))}>

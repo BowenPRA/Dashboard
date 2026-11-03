@@ -44,7 +44,7 @@ export default function SplitRound({ model: m, pictures = {}, lang, onComplete, 
             {run.helped
               ? <Lightbulb className="w-6 h-6 text-amber-500" strokeWidth={2.5} />
               : <CheckCircle2 className="w-6 h-6" style={{ color: GREEN }} strokeWidth={2.5} />}
-            <div className="font-black text-slate-800 dark:text-slate-100">{run.helped ? t.withHelp : t.clean}</div>
+            <div className="font-black text-slate-800 dark:text-slate-100">{run.helped ? t.withHelp : run.slipped ? t.fixed : t.clean}</div>
           </div>
           {run.msg && <Message msg={run.msg} lang={lang} />}
           <div className="mt-3 flex justify-end">

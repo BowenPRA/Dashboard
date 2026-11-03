@@ -29,19 +29,19 @@ export function Chip({ device, chip, lang, onClick, state = 'idle', dragProps = 
   );
 }
 
-function Box({ id, label, color, joules, chips, device, lang, active, run, interactive, hover }) {
+function Box({ id, label, color, joules, chips, device, lang, active, run, interactive, hover, compact = false }) {
   const empty = !chips.length;
   const lit = active || hover === id;
   return (
     <div data-drop={interactive ? id : undefined}
       onClick={interactive && run.selected ? () => run.act.place(run.selected, id) : undefined}
-      className={`rounded-xl border-2 p-2 min-h-[4.25rem] flex flex-col gap-1.5 transition-colors bg-white dark:bg-slate-900 ${lit ? 'ring-2 ring-amber-300' : ''} ${interactive && run.selected ? 'cursor-pointer' : ''}`}
+      className={`rounded-xl border-2 flex flex-col transition-colors bg-white dark:bg-slate-900 min-w-0 ${compact ? 'p-1.5 min-h-[3.5rem] gap-1' : 'p-2 min-h-[4.25rem] gap-1.5'} ${lit ? 'ring-2 ring-amber-300' : ''} ${interactive && run.selected ? 'cursor-pointer' : ''}`}
       style={{ borderColor: color || '#94a3b8', borderStyle: empty && !active ? 'dashed' : 'solid' }}>
-      <div className="flex items-baseline justify-between gap-2">
-        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: color || '#475569' }}>{label}</span>
-        <span className="text-sm font-black tabular-nums" style={{ color: color || '#334155' }}>{joules}</span>
+      <div className={`flex items-baseline justify-between ${compact ? 'gap-1 flex-wrap' : 'gap-2'}`}>
+        <span className={`font-black uppercase tracking-widest ${compact ? 'text-[9px]' : 'text-[10px]'}`} style={{ color: color || '#475569' }}>{label}</span>
+        {joules && <span className="text-sm font-black tabular-nums" style={{ color: color || '#334155' }}>{joules}</span>}
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className={`flex flex-wrap ${compact ? 'gap-1' : 'gap-1.5'}`}>
         {chips.map((c) => (
           <Chip key={c} device={device} chip={c} lang={lang} small
             onClick={active ? (e) => { e.stopPropagation(); run.act.toggle(c); }
@@ -90,7 +90,8 @@ export default function SplitBoard({ m, device = m.device, run, lang, compact = 
   const quick = stage === 'quick';
   const inBox = (b) => Object.keys(boxes).filter((c) => boxes[c] === b);
   const chipsFor = (b) => {
-    if (quick) return inBox(b);
+    // A quick round with no diagram to build (sort: false) shows its given energies.
+    if (quick && m.sort) return inBox(b);
     if (stage === b) return picked;
     const f = filled[b];
     return f == null ? [] : Array.isArray(f) ? f : [f];
@@ -101,8 +102,20 @@ export default function SplitBoard({ m, device = m.device, run, lang, compact = 
   const wastedJ = !counted ? null : J(filled.wastedJ);
   const common = { device, lang, run, hover: run.drag?.hover };
 
+  // On a slide (compact) the three boxes stand in one row — in, useful (green),
+  // wasted (red) — so the panel beside the slide keeps its Check on screen.
+  if (compact) {
+    return (
+      <div className="grid grid-cols-3 gap-1.5">
+        <Box id="from" label={t.boxes.from} joules={totalJ} chips={chipsFor('from')} {...common} compact interactive={quick && m.sort} active={false} />
+        <Box id="useful" label={t.boxes.useful} color={GREEN} joules={usefulJ} chips={chipsFor('useful')} {...common} compact interactive={quick && m.sort} active={stage === 'useful'} />
+        <Box id="wasted" label={t.boxes.wasted} color={RED} joules={wastedJ} chips={chipsFor('wasted')} {...common} compact interactive={quick && m.sort} active={stage === 'wasted'} />
+      </div>
+    );
+  }
+
   return (
-    <div className={`flex flex-col ${compact ? 'gap-1' : 'gap-1.5'}`}>
+    <div className="flex flex-col gap-1.5">
       <div className="mx-auto w-full sm:w-2/3">
         <Box id="from" label={t.boxes.from} joules={totalJ} chips={chipsFor('from')} {...common} interactive={quick && m.sort} active={false} />
       </div>

@@ -60,7 +60,7 @@ function NumberBox({ run, lang }) {
         onChange={(e) => run.act.setNum(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter') run.act.check(); }}
         aria-label={t.joules}
-        className="w-28 px-3 py-2 rounded-xl border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-lg font-black tabular-nums text-slate-900 dark:text-slate-100 focus:outline-none focus:border-sky-500" />
+        className="w-24 sm:w-28 px-3 py-2 rounded-xl border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-lg font-black tabular-nums text-slate-900 dark:text-slate-100 focus:outline-none focus:border-sky-500" />
       <span className="text-lg font-black text-slate-600 dark:text-slate-300">J</span>
     </label>
   );
@@ -90,18 +90,23 @@ export default function SplitStage({ run, lang, compact = false }) {
   const ask = stageAsk(m, stage);
   const placed = new Set(Object.keys(run.boxes));
   const canCheck = stage === 'quick' || stage === 'useful' || stage === 'wasted' || NUM_STAGES.includes(stage);
+  // On a slide (compact) the panel shares a column with the slide's prompt, so
+  // the help line goes and a joules box sits on the button row.
+  const numInRow = compact && (NUM_STAGES.includes(stage) || (stage === 'quick' && m.quickNum && !m.sort));
+  // A quick round with nothing to place is only its number.
+  const help = stage === 'quick' && !m.sort ? t.help.wastedJ : t.help[stage];
 
   return (
     <div className={compact ? '' : 'rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-4 min-w-0'}>
-      <div className="mb-2"><StageChips run={run} lang={lang} /></div>
+      <div className={compact ? 'mb-1.5' : 'mb-2'}><StageChips run={run} lang={lang} /></div>
       <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug ${compact ? 'text-sm' : 'text-base sm:text-lg'}`}>{tr(lang, ask?.en, null, ask?.fr)}</div>
-      {t.help[stage] && <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">{t.help[stage]}</p>}
+      {!compact && help && <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">{help}</p>}
 
-      <div className="mt-2.5">
+      <div className={numInRow ? 'hidden' : compact ? 'mt-2' : 'mt-2.5'}>
         {stage === 'from' && (
           <div className="flex flex-wrap gap-2">
             {m.fromOptions.map((e) => (
-              <Chip key={e} device={device} chip={e} lang={lang} state={run.tried.includes(e) ? 'tried' : 'idle'}
+              <Chip key={e} device={device} chip={e} lang={lang} small={compact} state={run.tried.includes(e) ? 'tried' : 'idle'}
                 onClick={run.tried.includes(e) ? undefined : () => run.act.choose(e)} />
             ))}
           </div>
@@ -109,29 +114,30 @@ export default function SplitStage({ run, lang, compact = false }) {
         {(stage === 'useful' || stage === 'wasted') && (
           <div className="flex flex-wrap gap-2">
             {m.bank.filter((c) => !(stage === 'wasted' && (run.filled.useful || []).includes(c))).map((c) => (
-              <Chip key={c} device={device} chip={c} lang={lang} state={run.picked.includes(c) ? 'on' : 'idle'} onClick={() => run.act.toggle(c)} />
+              <Chip key={c} device={device} chip={c} lang={lang} small={compact} state={run.picked.includes(c) ? 'on' : 'idle'} onClick={() => run.act.toggle(c)} />
             ))}
           </div>
         )}
         {stage === 'quick' && m.sort && (
-          <div data-drop="bank" className="flex flex-wrap gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border-2 border-dashed border-slate-200 dark:border-slate-700 min-h-[3rem]">
-            <span className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400">{t.bank}</span>
+          <div data-drop="bank" className={`flex flex-wrap rounded-xl ${compact ? 'gap-1.5 p-1.5' : 'gap-2 p-2'} bg-slate-50 dark:bg-slate-800/60 border-2 border-dashed border-slate-200 dark:border-slate-700 min-h-[3rem]`}>
+            {!compact && <span className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400">{t.bank}</span>}
             {m.quickBank.filter((c) => !placed.has(c)).map((c) => (
-              <Chip key={c} device={device} chip={c} lang={lang} state={run.selected === c ? 'on' : 'idle'}
+              <Chip key={c} device={device} chip={c} lang={lang} small={compact} state={run.selected === c ? 'on' : 'idle'}
                 onClick={() => { if (!run.drag?.tookDrag()) run.act.select(c); }}
                 dragProps={run.drag ? run.drag.handlers(c) : {}} />
             ))}
           </div>
         )}
-        {stage === 'quick' && m.quickNum && <div className={m.sort ? 'mt-3' : ''}><NumberBox run={run} lang={lang} /></div>}
-        {NUM_STAGES.includes(stage) && <NumberBox run={run} lang={lang} />}
+        {!numInRow && stage === 'quick' && m.quickNum && <div className={m.sort ? 'mt-3' : ''}><NumberBox run={run} lang={lang} /></div>}
+        {!numInRow && NUM_STAGES.includes(stage) && <NumberBox run={run} lang={lang} />}
         {stage === 'chase' && <Options options={m.chaseOptions} run={run} lang={lang} />}
         {stage === 'decide' && <Options options={m.decideOptions} run={run} lang={lang} />}
       </div>
 
       <Message msg={run.msg} lang={lang} />
 
-      <div className="mt-3 flex items-center justify-end gap-2">
+      <div className={`${compact ? 'mt-2' : 'mt-3'} flex items-center justify-end gap-2`}>
+        {numInRow && <div className="mr-auto"><NumberBox run={run} lang={lang} /></div>}
         <button type="button" onClick={run.act.showMe}
           className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
           <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}

@@ -25,6 +25,7 @@ import { Undo2, RotateCcw, ChevronRight } from 'lucide-react'
 import { tr } from '../../../utils/lang'
 import { Btn, Pic } from './ui.jsx'
 import { mulberry32 } from './random.js'
+import useNarrow from './useNarrow.js'
 import {
   INK, MUTED, FONT, RED, BLUE, USEFUL, WASTED,
   motorbike, squiggles, noise, arrow, potFire, stairs, cyclist, mug, thermometer,
@@ -72,27 +73,40 @@ export function PetrolStepper({ lang = 'en' }) {
   const done = DEST.slice(0, k)
   const moved = done.filter((d) => d === 'move').length
   const heated = done.filter((d) => d === 'heat').length
+  // Narrow (a phone): the words become HTML and the drawing is cropped to the money.
+  const [boxRef, narrow] = useNarrow()
+  const lab = narrow ? 34 : 25
+  const status = fr ? P_STAGES[k].fr : P_STAGES[k].en
+  const prompt = k === last
+    ? t(lang, 'Only 25 000 đ moves the bike!', 'Seulement 25 000 đ fait avancer la moto !')
+    : k === 0
+      ? t(lang, 'He rides to school. Decide: does the first 25 000 đ move the bike?', 'Il va à l’école. Décide : les premiers 25 000 đ font-ils avancer la moto ?')
+      : t(lang, 'Decide: does the next 25 000 đ move the bike?', 'Décide : les 25 000 đ suivants font-ils avancer la moto ?')
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 select-none">
+    <div ref={boxRef} className="w-full h-full flex flex-col gap-2 sm:gap-3 select-none">
+      {narrow && <p className="shrink-0 text-sm font-black text-slate-800 leading-snug">{status}</p>}
       <div className="flex-1 min-h-0 w-full">
-        <svg viewBox="0 0 1500 540" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox={narrow ? '615 80 875 410' : '0 0 1500 540'} className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <rect x="0" y="0" width="1500" height="540" rx="16" fill="#ffffff" />
-          <text x="40" y="54" fontFamily={FONT} fontSize="30" fontWeight="900" fill={INK}>{fr ? P_STAGES[k].fr : P_STAGES[k].en}</text>
+          {!narrow && (
+            <g>
+              <text x="40" y="54" fontFamily={FONT} fontSize="30" fontWeight="900" fill={INK}>{status}</text>
+              <line x1="30" y1={ROAD} x2="600" y2={ROAD} stroke={INK} strokeWidth="4" />
+              {k >= 3 && <circle cx={BX} cy={BY + 34 * BS} r="70" fill={WASTED} opacity="0.16" />}
+              <Pic svg={motorbike(BX, BY, BS)} />
+              {k >= 1 && <Pic svg={squiggles(60, BY + 54, 2, 24, 2, WASTED, 6)} />}
+              {k >= 2 && <Pic svg={arrow(486, BY - 10, 590, BY - 10, USEFUL, 10, 34)} />}
+              {k >= 3 && <Pic svg={squiggles(BX + 4, BY + 6, 3, 26, 2, WASTED, 6)} />}
+              {k >= 4 && <Pic svg={noise(BX - 120, BY - 104, '#c25e12', 6)} />}
+            </g>
+          )}
 
-          <line x1="30" y1={ROAD} x2="600" y2={ROAD} stroke={INK} strokeWidth="4" />
-          {k >= 3 && <circle cx={BX} cy={BY + 34 * BS} r="70" fill={WASTED} opacity="0.16" />}
-          <Pic svg={motorbike(BX, BY, BS)} />
-          {k >= 1 && <Pic svg={squiggles(60, BY + 54, 2, 24, 2, WASTED, 6)} />}
-          {k >= 2 && <Pic svg={arrow(486, BY - 10, 590, BY - 10, USEFUL, 10, 34)} />}
-          {k >= 3 && <Pic svg={squiggles(BX + 4, BY + 6, 3, 26, 2, WASTED, 6)} />}
-          {k >= 4 && <Pic svg={noise(BX - 120, BY - 104, '#c25e12', 6)} />}
-
-          <text x={TANK.x + TANK.w / 2} y="114" fontFamily={FONT} fontSize="26" fontWeight="900" fill={INK} textAnchor="middle">{t(lang, 'the petrol', 'l’essence')}</text>
+          <text x={TANK.x + TANK.w / 2} y="114" fontFamily={FONT} fontSize={lab} fontWeight="900" fill={INK} textAnchor="middle">{t(lang, 'the petrol', 'l’essence')}</text>
           <rect x={TANK.x} y={TANK.y} width={TANK.w} height={BOX_H} rx="16" fill="#fffaf0" stroke={MUTED} strokeWidth="3" />
-          <text x={BIN_MOVE.x + BIN_MOVE.w / 2} y="114" fontFamily={FONT} fontSize="25" fontWeight="900" fill={USEFUL} textAnchor="middle">{t(lang, 'moves the bike', 'fait avancer')}</text>
+          <text x={BIN_MOVE.x + BIN_MOVE.w / 2} y="114" fontFamily={FONT} fontSize={lab} fontWeight="900" fill={USEFUL} textAnchor="middle">{t(lang, 'moves the bike', 'fait avancer')}</text>
           <rect x={BIN_MOVE.x} y={TANK.y} width={BIN_MOVE.w} height={BOX_H} rx="16" fill="#eef6e6" stroke={USEFUL} strokeWidth="3" />
-          <text x={BIN_HEAT.x + BIN_HEAT.w / 2} y="114" fontFamily={FONT} fontSize="25" fontWeight="900" fill={WASTED} textAnchor="middle">{t(lang, 'heat and sound', 'chaleur et son')}</text>
+          <text x={BIN_HEAT.x + BIN_HEAT.w / 2} y="114" fontFamily={FONT} fontSize={lab} fontWeight="900" fill={WASTED} textAnchor="middle">{t(lang, 'heat and sound', 'chaleur et son')}</text>
           <rect x={BIN_HEAT.x} y={TANK.y} width={BIN_HEAT.w} height={BOX_H} rx="16" fill="#fdecee" stroke={WASTED} strokeWidth="3" />
           {[0, 1, 2, 3].map((i) => {
             const p = place(i, k)
@@ -107,23 +121,15 @@ export function PetrolStepper({ lang = 'en' }) {
           {moved > 0 && <text x={BIN_MOVE.x + BIN_MOVE.w / 2} y="472" fontFamily={FONT} fontSize="28" fontWeight="900" fill={USEFUL} textAnchor="middle">{money(moved)}</text>}
           {heated > 0 && <text x={BIN_HEAT.x + BIN_HEAT.w / 2} y="472" fontFamily={FONT} fontSize="28" fontWeight="900" fill={WASTED} textAnchor="middle">{money(heated)}</text>}
 
-          {k < last ? (
+          {!narrow && (
             <g>
-              <rect x="30" y="488" width="1440" height="44" rx="12" fill="#e9f1fa" stroke={BLUE_HL} strokeWidth="2.5" />
-              <text x="750" y="519" fontFamily={FONT} fontSize="24" fontWeight="800" fill={BLUE_HL} textAnchor="middle">
-                {k === 0
-                  ? t(lang, 'He rides to school. Decide: does the first 25 000 đ move the bike?', 'Il va à l’école. Décide : les premiers 25 000 đ font-ils avancer la moto ?')
-                  : t(lang, 'Decide: does the next 25 000 đ move the bike?', 'Décide : les 25 000 đ suivants font-ils avancer la moto ?')}
-              </text>
-            </g>
-          ) : (
-            <g>
-              <rect x="30" y="488" width="1440" height="44" rx="12" fill="#fdecee" stroke={WASTED} strokeWidth="2.5" />
-              <text x="750" y="520" fontFamily={FONT} fontSize="25" fontWeight="900" fill={WASTED} textAnchor="middle">{t(lang, 'Only 25 000 đ moves the bike!', 'Seulement 25 000 đ fait avancer la moto !')}</text>
+              <rect x="30" y="488" width="1440" height="44" rx="12" fill={k < last ? '#e9f1fa' : '#fdecee'} stroke={k < last ? BLUE_HL : WASTED} strokeWidth="2.5" />
+              <text x="750" y="519" fontFamily={FONT} fontSize={k < last ? 24 : 25} fontWeight={k < last ? 800 : 900} fill={k < last ? BLUE_HL : WASTED} textAnchor="middle">{prompt}</text>
             </g>
           )}
         </svg>
       </div>
+      {narrow && <p className={`shrink-0 text-xs font-black leading-snug rounded-lg px-2 py-1.5 border-2 ${k < last ? 'text-[#1a5fa8] bg-[#e9f1fa] border-[#1a5fa8]' : 'text-[#d83a2e] bg-[#fdecee] border-[#d83a2e]'}`}>{prompt}</p>}
       <div className="shrink-0 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
         <Btn tone="slate" icon={Undo2} disabled={k === 0} onClick={() => setK((v) => Math.max(0, v - 1))}>{t(lang, 'Back', 'Retour')}</Btn>
         <Btn tone="orange" icon={ChevronRight} disabled={k === last} onClick={() => setK((v) => Math.min(last, v + 1))}>{t(lang, 'Next 25 000 đ', '25 000 đ suivants')}</Btn>
@@ -172,10 +178,44 @@ export function ThreeProcesses({ lang = 'en' }) {
     t(lang, 'What useful energy do we get?', 'Quelle énergie utile obtient-on ?'),
     t(lang, 'What energy is wasted?', 'Quelle énergie est gaspillée ?'),
   ]
+  // Narrow (a phone): the three diagrams become one small table, a row per process.
+  const [boxRef, narrow, short] = useNarrow()
+  const cell = (shown, lines, color) => (
+    <td className="px-1.5 py-1 align-top border-t border-slate-200 font-black leading-tight" style={{ color: shown ? color : RULE }}>
+      {shown ? lines.join(' ').replace(/,$/, '') : '?'}
+    </td>
+  )
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 select-none">
-      <div className="flex-1 min-h-0 w-full">
+    <div ref={boxRef} className="w-full h-full flex flex-col gap-2 sm:gap-3 select-none">
+      {narrow && (
+        <div className="flex-1 min-h-0 w-full overflow-auto rounded-xl border-2 border-slate-200 bg-white">
+          <table className="w-full text-[11px] text-left">
+            <thead>
+              <tr className="text-[9px] uppercase tracking-widest">
+                <th className="px-1.5 py-1" />
+                <th className="px-1.5 py-1 text-slate-600">{t(lang, 'From', 'Vient de')}</th>
+                <th className="px-1.5 py-1" style={{ color: USEFUL }}>{t(lang, 'Useful', 'Utile')}</th>
+                <th className="px-1.5 py-1" style={{ color: WASTED }}>{t(lang, 'Wasted', 'Gaspillée')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {JOBS.map(([, nameEn, nameFr, from, , , useful, wasted]) => (
+                <tr key={nameEn}>
+                  <th className="px-1.5 py-1 align-top border-t border-slate-200 font-black text-slate-800 leading-tight">{fr ? nameFr : nameEn}</th>
+                  {cell(k >= 1, [from], INK)}
+                  {cell(k >= 2, useful, USEFUL)}
+                  {cell(k >= 3, wasted, WASTED)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className={`px-2 py-1.5 text-[11px] font-bold text-slate-500 border-t border-slate-200 ${short ? 'hidden' : ''}`}>
+            {k < 3 ? <>{t(lang, 'Next: ', 'Ensuite : ')}<span className="text-slate-800">{NEXT[k]}</span></> : t(lang, 'Every process wastes some energy.', 'Chaque processus gaspille de l’énergie.')}
+          </p>
+        </div>
+      )}
+      <div className={narrow ? 'hidden' : 'flex-1 min-h-0 w-full'}>
         <svg viewBox="0 0 1500 540" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <rect x="0" y="0" width="1500" height="540" rx="16" fill="#ffffff" />
           {JOBS.map(([pic, nameEn, nameFr, from, hintEn, hintFr, useful, wasted], i) => {
@@ -258,13 +298,27 @@ export function HeatSpread({ lang = 'en' }) {
   const fr = lang === 'fr'
   const last = H_STAGES.length - 1
   const st = H_STAGES[k]
+  // Narrow (a phone): the words, the clock and the two thermometers become HTML;
+  // the drawing is cropped to the room and the dots drawn bigger.
+  const [boxRef, narrow, short] = useNarrow()
+  const nextLine = k < last
+    ? `${t(lang, 'Next: ', 'Ensuite : ')}${fr ? H_NEXT[k][1] : H_NEXT[k][0]}`
+    : t(lang, 'Spread out, it never gathers back by itself.', 'Une fois étalée, elle ne se rassemble jamais toute seule.')
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 select-none">
+    <div ref={boxRef} className="w-full h-full flex flex-col gap-2 sm:gap-3 select-none">
+      {narrow && (
+        <div className="shrink-0">
+          {!short && <p className="text-sm font-black text-slate-800 leading-snug">{fr ? st.fr : st.en}</p>}
+          <p className="text-xs font-black text-slate-600">
+            {fr ? st.time[1] : st.time[0]} · {t(lang, 'coffee', 'café')} <span style={{ color: st.coffee > 30 ? RED : BLUE }}>{st.coffee} °C</span> · {t(lang, 'room', 'pièce')} <span style={{ color: BLUE }}>25 °C</span>
+          </p>
+        </div>
+      )}
       <div className="flex-1 min-h-0 w-full">
-        <svg viewBox="0 0 1500 540" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox={narrow ? '26 80 1048 384' : '0 0 1500 540'} className="w-full h-full" preserveAspectRatio="xMidYMid meet">
           <rect x="0" y="0" width="1500" height="540" rx="16" fill="#ffffff" />
-          <text x="40" y="56" fontFamily={FONT} fontSize="29" fontWeight="900" fill={INK}>{fr ? st.fr : st.en}</text>
+          {!narrow && <text x="40" y="56" fontFamily={FONT} fontSize="29" fontWeight="900" fill={INK}>{fr ? st.fr : st.en}</text>}
 
           <rect x={ROOM.x} y={ROOM.y} width={ROOM.w} height={ROOM.h} rx="14" fill="#f7fafc" stroke={MUTED} strokeWidth="3" />
           <rect x={DESK.x} y={DESK.top} width={DESK.w} height="16" rx="4" fill="#b5835a" stroke={INK} strokeWidth="3" />
@@ -275,11 +329,12 @@ export function HeatSpread({ lang = 'en' }) {
           {DOTS.map((stages, i) => {
             const [x, y] = stages[k]
             return (
-              <circle key={i} cx="0" cy="0" r="7" fill={RED} stroke="#ffffff" strokeWidth="1.5"
+              <circle key={i} cx="0" cy="0" r={narrow ? 13 : 7} fill={RED} stroke="#ffffff" strokeWidth="1.5"
                 style={{ transform: `translate(${x}px, ${y}px)`, transition: back ? 'none' : 'transform 1.6s cubic-bezier(.3,0,.3,1)' }} />
             )
           })}
 
+          {!narrow && (<g>
           <text x="1285" y="124" fontFamily={FONT} fontSize="40" fontWeight="900" fill={INK} textAnchor="middle">{fr ? st.time[1] : st.time[0]}</text>
           <Pic svg={thermometer(1190, 266, (st.coffee - 20) / 70, 0.95)} />
           <text x="1190" y="346" fontFamily={FONT} fontSize="24" fontWeight="800" fill={INK} textAnchor="middle">{t(lang, 'coffee', 'café')}</text>
@@ -290,19 +345,12 @@ export function HeatSpread({ lang = 'en' }) {
           <circle cx="1206" cy="432" r="9" fill={RED} stroke="#ffffff" strokeWidth="1.5" />
           <text x="1224" y="440" fontFamily={FONT} fontSize="22" fontWeight="800" fill={MUTED}>{t(lang, '= some heat', '= de la chaleur')}</text>
 
-          {k < last ? (
-            <g>
-              <rect x="30" y="482" width="1440" height="48" rx="12" fill="#e9f1fa" stroke={BLUE_HL} strokeWidth="2.5" />
-              <text x="750" y="515" fontFamily={FONT} fontSize="25" fontWeight="800" fill={BLUE_HL} textAnchor="middle">{t(lang, 'Next: ', 'Ensuite : ')}{fr ? H_NEXT[k][1] : H_NEXT[k][0]}</text>
-            </g>
-          ) : (
-            <g>
-              <rect x="30" y="482" width="1440" height="48" rx="12" fill="#fdecee" stroke={RED} strokeWidth="2.5" />
-              <text x="750" y="516" fontFamily={FONT} fontSize="26" fontWeight="900" fill={RED} textAnchor="middle">{t(lang, 'Spread out, it never gathers back by itself.', 'Une fois étalée, elle ne se rassemble jamais toute seule.')}</text>
-            </g>
-          )}
+          <rect x="30" y="482" width="1440" height="48" rx="12" fill={k < last ? '#e9f1fa' : '#fdecee'} stroke={k < last ? BLUE_HL : RED} strokeWidth="2.5" />
+          <text x="750" y="515" fontFamily={FONT} fontSize={k < last ? 25 : 26} fontWeight={k < last ? 800 : 900} fill={k < last ? BLUE_HL : RED} textAnchor="middle">{nextLine}</text>
+          </g>)}
         </svg>
       </div>
+      {narrow && !short && <p className={`shrink-0 text-xs font-black leading-snug rounded-lg px-2 py-1.5 border-2 ${k < last ? 'text-[#1a5fa8] bg-[#e9f1fa] border-[#1a5fa8]' : 'text-[#d83a2e] bg-[#fdecee] border-[#d83a2e]'}`}>{nextLine}</p>}
       <div className="shrink-0 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
         <Btn tone="slate" icon={Undo2} disabled={k === 0} onClick={() => go(Math.max(0, k - 1))}>{t(lang, 'Back', 'Retour')}</Btn>
         <Btn tone="orange" icon={ChevronRight} disabled={k === last} onClick={() => go(Math.min(last, k + 1))}>{t(lang, 'Later', 'Plus tard')}</Btn>

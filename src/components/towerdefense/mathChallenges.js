@@ -880,7 +880,8 @@ function energySplit() {
     const pct = [10, 15, 20, 25, 50, 75, 90][ri(0, 6)];
     const useful = (total * pct) / 100;
     const answer = String(useful);
-    return { prompt: `${total} J goes in. ${pct}% is useful. Useful energy = ? J`, answer, choices: withSlips(answer, [String(pct), String(total - useful), String(total), String(useful * 2)]) };
+    // At 100 J the % read as joules is the answer, so two spares fill the four choices.
+    return { prompt: `${total} J goes in. ${pct}% is useful. Useful energy = ? J`, answer, choices: withSlips(answer, [String(pct), String(total - useful), String(total), String(useful * 2), String(useful / 2), String(useful + 10)]) };
   }
   if (roll === 1) {
     const total = [100, 200, 400, 500, 1000][ri(0, 4)];
