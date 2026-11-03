@@ -64,9 +64,9 @@ export const both = (pair, words) => ({ en: fill(pair.en, words, 'en'), fr: fill
 
 // ── pull: the geometry and the eight arrows ───────────────────────────────
 export const STAGE_W = 560;
-export const STAGE_H = 460;
+export const STAGE_H = 480;
 const CX = 280;
-const CY = 230;
+const CY = 240;
 const R = 130;
 const COMET_A = 200;
 const COMET_B = 141.42;

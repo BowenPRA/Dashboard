@@ -51,6 +51,7 @@ import { Clapperboard as StoryboardIcon } from 'lucide-react';
 // @@U06_2_IMPORT@@
 
 // @@SCI_U03_3_IMPORT@@
+import { Orbit as OrbitLabIcon } from 'lucide-react';
 
 // @@SCI_U03_4_IMPORT@@
 
@@ -1952,6 +1953,29 @@ export const TASKS = [
   // @@U06_2_TASKS@@
 
   // @@SCI_U03_3_TASKS@@
+  {
+    id: 'ORBIT_LAB',
+    nativeMax: 10,
+    dbKey: 'p87',
+    // Science 3.3 Movement in Space: the book's three questions used on things
+    // the student has not met. Tap the arrow for the pull and the way it goes
+    // with no pull (a planet, the Moon, the ball on the string, a comet,
+    // Neptune pulling Uranus); draw a bar graph of orbit speeds, name the
+    // pattern, say why, predict; decide what acts against a moving thing in
+    // space and on a road, and what happens to its speed. Every round, answer
+    // and named slip is derived by utils/orbitLab.js and proved by
+    // utils/orbitLabCheck.js.
+    label: 'Orbit Lab',
+    icon: OrbitLabIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./OrbitLab.jsx')),
+    hasContent: (u) => !!u.orbitLab?.items?.length,
+    buildPool: (u) => u.orbitLab,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@SCI_U03_4_TASKS@@
 

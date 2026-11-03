@@ -56,6 +56,7 @@ import { ZeroLineActivity } from './ZeroLineActivity.jsx';
 // @@U06_2_ACT_IMPORT@@
 
 // @@SCI_U03_3_ACT_IMPORT@@
+import { OrbitLabActivity } from './OrbitLabActivity.jsx';
 
 // @@SCI_U03_4_ACT_IMPORT@@
 
@@ -822,6 +823,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     // @@U06_2_ACT_CASE@@
 
     // @@SCI_U03_3_ACT_CASE@@
+    case 'orbitlab': body = <OrbitLabActivity {...common} />; break;
 
     // @@SCI_U03_4_ACT_CASE@@
 

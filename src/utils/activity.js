@@ -57,6 +57,9 @@ import { checkZeroLineActivity } from './zeroLine.js';
 // @@U06_2_ACT_IMPORT@@
 
 // @@SCI_U03_3_ACT_IMPORT@@
+// `orbitlab` (Science 3.3) — one Orbit Lab item on a slide: the pull and the
+// no-pull path on an orbit, or a bar graph of orbit speeds and its pattern.
+import { checkOrbitLabActivity } from './orbitLabCheck.js';
 
 // @@SCI_U03_4_ACT_IMPORT@@
 
@@ -135,6 +138,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   // @@U06_2_ACT_TYPES@@
 
   // @@SCI_U03_3_ACT_TYPES@@
+  'orbitlab',
 
   // @@SCI_U03_4_ACT_TYPES@@
 
@@ -468,6 +472,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   // @@U06_2_ACT_CHECK@@
 
   // @@SCI_U03_3_ACT_CHECK@@
+  if (a.type === 'orbitlab') for (const p of checkOrbitLabActivity(a)) out.push(`orbitlab ${p}`);
 
   // @@SCI_U03_4_ACT_CHECK@@
 

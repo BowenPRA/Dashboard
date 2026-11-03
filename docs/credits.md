@@ -251,6 +251,23 @@ Every other picture in the unit, including the Storyboard's seven frames, is a d
 <!-- @@U06_2_CREDITS@@ -->
 
 <!-- @@SCI_U03_3_CREDITS@@ -->
+**Science 3.3 Movement in Space** (`Y7_SCI/U03_3`) — copied from the classroom lesson `y7-science/U03_3/images/` (its `CREDITS.json`); none is a Learner's Book scan. Venus, the Earth, Jupiter and Uranus in PLANET_ROW and NEPTUNE_STORY are byte for byte 3.2's files, read from `public/images/Y7_SCI/U03_2/` (credited above).
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_3/mercury.jpg` | Mercury in true colour, MESSENGER, 2008 (420 px) — PLANET_ROW | NASA / Johns Hopkins University Applied Physics Laboratory / Arizona State University / Carnegie Institution of Washington | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Mercury_in_true_color.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/mars.jpg` | Mars, 30 August 2021, colour composite (flattened onto black, 420 px) — PLANET_ROW | Kevin M. Gill | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png) | CC BY 2.0 |
+| `public/images/Y7_SCI/U03_3/saturn.jpg` | Saturn at equinox, Cassini, 2008 (640 px) — PLANET_ROW | NASA / JPL / Space Science Institute | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Saturn_during_Equinox.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/neptune.jpg` | Neptune from Voyager 2, 1989, the familiar deep-blue processing (PIA01492, 420 px) — PLANET_ROW, NEPTUNE_STORY | NASA / JPL | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Neptune_Full.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/moon.jpg` | The full Moon, 2010 (300 px) — PLANET_ROW | Gregory H. Revera | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_3/sun.jpg` | The Sun in extreme ultraviolet, Solar Dynamics Observatory, 19 August 2010 (900 px) — slide 4 | NASA / SDO (AIA) | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/spoilers.jpg` | A plane's wing just after landing, spoilers raised, William P. Hobby Airport, Houston (960 px) — slide 12 | Ken Lund | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Spoilers_Activated_on_Landing,_William_P._Hobby_Airport,_Houston,_Texas_(16075468149).jpg) | CC BY-SA 2.0 |
+| `public/images/Y7_SCI/U03_3/juno.jpg` | Juno Mission to Jupiter, artist's concept, 2010 (PIA13746, 960 px) — slide 13 | NASA / JPL | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:JUNO_-_PIA13746.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/voyager.jpg` | Artist's impression of a Voyager spacecraft in space (960 px) — slide 14 | NASA / JPL | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Voyager_spacecraft.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/bouvard.jpg` | Alexis Bouvard (1767–1843), lithograph (480 px) — NEPTUNE_STORY | Julien-Léopold Boilly | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Alexis_Bouvard.jpg) | Public domain |
+| `public/images/Y7_SCI/U03_3/leverrier.jpg` | Urbain Le Verrier (1811–1877), engraving, Smithsonian Institution Libraries (480 px tall) — NEPTUNE_STORY | Unknown 19th-century engraver | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Urbain_Le_Verrier.jpg) | Public domain (PD-old) |
+
+Every other picture in the unit, including Orbit Lab's orbits, bar graphs and coast scenes, is a drawn SVG.
 
 <!-- @@SCI_U03_4_CREDITS@@ -->
 

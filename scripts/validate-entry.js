@@ -94,6 +94,7 @@ import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 // @@U06_2_IMPORT@@
 
 // @@SCI_U03_3_IMPORT@@
+import { checkOrbitLabConfig } from '../src/utils/orbitLabCheck.js';
 
 // @@SCI_U03_4_IMPORT@@
 
@@ -387,6 +388,8 @@ for (const trackId of TRACK_IDS) {
     // @@U06_2_CHECK@@
 
     // @@SCI_U03_3_CHECK@@
+    //    Orbit Lab (3.3): every picture, bar, force, answer and named slip derived and proved.
+    if (unit.orbitLab !== undefined) for (const p of checkOrbitLabConfig(unit.orbitLab)) err(`${label}: orbitLab ${p}`);
 
     // @@SCI_U03_4_CHECK@@
 
