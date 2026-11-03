@@ -166,41 +166,45 @@ export default function Round({ model: m, lang, onComplete, onNext, isLast }) {
   const hasCheck = ['read', 'plot', 'find', 'change', 'test'].includes(stage);
   const view = { stage, done, plotted, crosses, sel, plotMarks, picks, pickMarks, tested, moonsShown };
 
+  // Picture and stage side by side from lg, so a laptop at 1280×720 sees the
+  // reading and its Check together; stacked below that.
   return (
-    <div className="flex flex-col gap-3 min-w-0">
+    <div className="grid gap-3 lg:grid-cols-2 items-start min-w-0">
       <Picture m={m} lang={lang} view={view} act={act} />
 
-      {!done && (
-        <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-5 min-w-0">
-          <div className="flex flex-wrap gap-1.5 mb-2">
-            {stages.map((st, i) => {
-              const Icon = STAGE_ICON[st];
-              const isDone = i < idx;
-              return (
-                <span key={`${st}${i}`} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border-2 text-[10px] sm:text-xs font-black uppercase tracking-widest
-                  ${isDone ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300' : i === idx ? 'bg-amber-400 border-amber-500 text-slate-950' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}>
-                  {isDone ? <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
-                  {t.stages[st]}
-                </span>
-              );
-            })}
+      <div className="flex flex-col gap-3 min-w-0">
+        {!done && (
+          <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-5 min-w-0">
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {stages.map((st, i) => {
+                const Icon = STAGE_ICON[st];
+                const isDone = i < idx;
+                return (
+                  <span key={`${st}${i}`} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border-2 text-[10px] sm:text-xs font-black uppercase tracking-widest
+                    ${isDone ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300' : i === idx ? 'bg-amber-400 border-amber-500 text-slate-950' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}>
+                    {isDone ? <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
+                    {t.stages[st]}
+                  </span>
+                );
+              })}
+            </div>
+            <Stage m={m} stage={stage} lang={lang} s={s} act={act} />
+            <Message msg={msg} lang={lang} />
+            <div className="mt-4 flex items-center justify-end gap-2">
+              <button type="button" onClick={showMe}
+                className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
+                <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
+              </button>
+              {hasCheck && <button type="button" onClick={act.check} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>}
+            </div>
           </div>
-          <Stage m={m} stage={stage} lang={lang} s={s} act={act} />
-          <Message msg={msg} lang={lang} />
-          <div className="mt-4 flex items-center justify-end gap-2">
-            <button type="button" onClick={showMe}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-              <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
-            </button>
-            {hasCheck && <button type="button" onClick={act.check} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>}
-          </div>
-        </div>
-      )}
+        )}
 
-      {done && (
-        <RoundDone m={m} lang={lang} helped={helped} slipped={slipped} onNext={onNext} isLast={isLast}
-          note={msg?.tone === 'shown' ? <Message msg={msg} lang={lang} /> : null} />
-      )}
+        {done && (
+          <RoundDone m={m} lang={lang} helped={helped} slipped={slipped} onNext={onNext} isLast={isLast}
+            note={msg?.tone === 'shown' || (msg?.tone === 'ok' && msg.en !== T.en.right) ? <Message msg={msg} lang={lang} /> : null} />
+        )}
+      </div>
     </div>
   );
 }

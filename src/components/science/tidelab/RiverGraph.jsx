@@ -20,7 +20,6 @@ const GREEN = '#3e7500';
 const RED = '#c8102e';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 const FRAC = [0.16, 0.39, 0.61, 0.84];
-const Y_TOP = 50;
 const Y_BOT = 320;
 
 /** The Moon as the calendar shows it: new (dark), half, full. */
@@ -44,11 +43,13 @@ export default function RiverGraph({
   const svgRef = useRef(null);
   const pick = (en, fr) => tr(lang, en, null, fr);
   const one = days.length === 1;
+  // a fortnight keeps a row above the graph for the Moon on the calendar
+  const Y_TOP = weekLabels ? 84 : 50;
   const band = one ? 520 : days.length > 5 ? 64 : 100;
   const gap = gapAfter != null ? 24 : 0;
   const x0 = 80;
   const width = x0 + band * days.length + gap + 20;
-  const height = weekLabels ? 400 : 372;
+  const height = weekLabels ? 404 : 372;
   const bandX = (d) => x0 + d * band + (gapAfter != null && d > gapAfter ? gap : 0);
   const slotX = (d, s) => bandX(d) + FRAC[s] * band;
   const y = (v) => Y_BOT - (v / top) * (Y_BOT - Y_TOP);
@@ -67,7 +68,7 @@ export default function RiverGraph({
   const markColor = (ok) => (ok == null ? null : ok ? GREEN : RED);
 
   return (
-    <svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} className="w-full h-auto select-none" style={{ fontFamily: FONT, touchAction: 'manipulation' }}>
+    <svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} className="w-full h-auto max-h-[19rem] select-none" style={{ fontFamily: FONT, touchAction: 'manipulation' }}>
       <rect x="0" y="0" width={width} height={height} rx="14" fill="#ffffff" />
       {/* the scale */}
       {grid.map((v) => (
@@ -89,7 +90,7 @@ export default function RiverGraph({
               <rect x={bandX(di) + 3} y={Y_TOP - 14} width={band - 6} height={Y_BOT - Y_TOP + 20} rx="10" fill="#fff8e6"
                 stroke={markColor(mk?.ok) || '#f59e0b'} strokeWidth="3" />
             )}
-            {showMoons && d.moon && <MoonIcon x={bandX(di) + band / 2} y={Y_TOP - 30} r={12} phase={d.moon} />}
+            {showMoons && d.moon && <MoonIcon x={bandX(di) + band / 2} y={Y_TOP - 34} r={17} phase={d.moon} />}
             {one
               ? SLOTS.map((s, si) => (
                 <text key={si} x={slotX(0, si)} y={Y_BOT + 30} fontSize="19" fontWeight="800" fill={selected === si ? KEY : INK} textAnchor="middle">{pick(s.en, s.fr)}</text>

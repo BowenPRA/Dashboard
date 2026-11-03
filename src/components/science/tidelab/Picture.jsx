@@ -30,7 +30,7 @@ export default function Picture({ m, lang, view, act }) {
   if (m.kind === 'day') {
     const plotting = stage === 'plot' && !done;
     return (
-      <div className={`${card} grid gap-3 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] items-start`}>
+      <div className={`${card} grid gap-3 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:grid-cols-1 items-start`}>
         {stage !== 'find' || done
           ? <RiverTable lang={lang} columns={[{ head: { en: '', fr: '' }, values: m.day.readings }]} />
           : <div className="hidden md:block" />}
