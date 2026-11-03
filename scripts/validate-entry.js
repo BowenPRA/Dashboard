@@ -102,6 +102,7 @@ import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 // @@SCI_U03_6_IMPORT@@
 
 // @@SCI_U03_7_IMPORT@@
+import { checkEnergySplitConfig } from '../src/utils/energySplitCheck.js';
 
 
 const ROOT = process.cwd();
@@ -395,6 +396,8 @@ for (const trackId of TRACK_IDS) {
     // @@SCI_U03_6_CHECK@@
 
     // @@SCI_U03_7_CHECK@@
+    //    Where Did It Go? (3.7): every stage, answer and named slip derived and proved.
+    if (unit.energySplit !== undefined) for (const p of checkEnergySplitConfig(unit.energySplit)) err(`${label}: energySplit ${p}`);
 
 
 

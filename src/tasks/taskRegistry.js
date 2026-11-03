@@ -59,6 +59,7 @@ import { Clapperboard as StoryboardIcon } from 'lucide-react';
 // @@SCI_U03_6_IMPORT@@
 
 // @@SCI_U03_7_IMPORT@@
+import { Zap as EnergySplitIcon } from 'lucide-react';
 
 
 /**
@@ -1960,6 +1961,28 @@ export const TASKS = [
   // @@SCI_U03_6_TASKS@@
 
   // @@SCI_U03_7_TASKS@@
+  {
+    id: 'ENERGY_SPLIT',
+    nativeMax: 10,
+    dbKey: 'p91',
+    // Where Did It Go? (Y7 Science 3.7): one device at a time, sort its energy
+    // into the energy-change diagram (from, useful, wasted), count it (useful +
+    // wasted = what goes in, or what must go in for the same light) and chase
+    // the wasted energy (where it goes, whether it can come back). Levels 1–2
+    // walk every stage; later rounds open quick and a wrong part opens its
+    // stage. Every answer and named slip is derived by utils/energySplit.js and
+    // proved by utils/energySplitCheck.js.
+    label: 'Where Did It Go?',
+    icon: EnergySplitIcon,
+    color: { bg: 'bg-[#c25e12]', border: 'border-[#a04a0e]', text: 'text-white' },
+    defaultMaxXP: 35,
+    phase: 'practice',
+    component: lazy(() => import('./EnergySplit.jsx')),
+    hasContent: (u) => !!u.energySplit?.items?.length,
+    buildPool: (u) => u.energySplit,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
 ];
 

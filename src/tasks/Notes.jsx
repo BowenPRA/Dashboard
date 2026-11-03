@@ -160,6 +160,7 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // @@SCI_U03_5_SIDE@@
   // @@SCI_U03_6_SIDE@@
   // @@SCI_U03_7_SIDE@@
+  'energysplit',
 ]);
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).
