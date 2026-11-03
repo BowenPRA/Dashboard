@@ -22,8 +22,8 @@ export const orbitLab = {
     1: { en: 'One step at a time', fr: 'Une étape à la fois' },
     2: { en: 'What slows it down?', fr: 'Qu’est-ce qui le ralentit ?' },
     3: { en: 'Both arrows at once', fr: 'Les deux flèches d’un coup' },
-    4: { en: 'A new scale', fr: 'Une nouvelle échelle' },
-    5: { en: 'Read it and predict', fr: 'Lis et prédis' },
+    4: { en: 'Round the Earth, and on it', fr: 'Autour de la Terre, et dessus' },
+    5: { en: 'Out in space', fr: 'Dans l’espace' },
     6: { en: 'Not where you expect', fr: 'Pas là où on l’attend' },
   },
   items: [

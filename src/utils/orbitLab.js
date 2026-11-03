@@ -35,6 +35,8 @@ export const arrowVec = (k) => ({ x: Math.cos((k * Math.PI) / 4), y: -Math.sin((
 function hash(s) {
   let h = 2166136261;
   for (const ch of String(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  // finalise (murmur3 fmix32), so ids one letter apart do not shuffle alike
+  h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16;
   return h >>> 0;
 }
 /** The same shuffle every time for the same item id. */
@@ -160,7 +162,7 @@ function graphModel(item) {
     if (!above || !below) throw new Error('the object to predict must sit between two rows');
     if (!(p.v < above.v && p.v > below.v)) throw new Error('the predicted speed must lie between its two neighbours');
     const options = [{ val: above.v + 2, code: 'faster' }, { val: p.v, code: 'ok' }, { val: below.v - 1, code: 'slower' }];
-    predict = { ...p, above, below, options: options.sort((a, b) => b.val - a.val) };
+    predict = { ...p, above, below, options: seeded(options, `${item.id}:predict`) };
   }
   return {
     kind: 'graph', id: item.id, level: item.level, set: item.set, title: set.title, centre: set.centre,

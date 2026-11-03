@@ -11,11 +11,11 @@ import { T } from './orbitLabText';
  * a wrong bar turns red and its right height shows as a dashed outline.
  * ------------------------------------------------------------------ */
 const W = 560;
-const H = 318;
 const X0 = 70;
 const X1 = 548;
-const Y0 = 236;
 const YT = 16;
+// The chart is shorter on a slide (`compact`), where it shares a side column.
+const LAYOUT = { full: { H: 318, Y0: 236 }, compact: { H: 280, Y0: 198 } };
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 const INK = '#2b2b2b';
 const MUTED = '#5b6770';
@@ -23,7 +23,8 @@ const TEAL = '#0087a8';
 const KEY = '#c25e12';
 const f1 = (n) => Math.round(n * 10) / 10;
 
-export default function BarBuilder({ m, lang = 'en', heights = {}, sel = null, onSel, onBar, marks = null, locked = false, reveal = false }) {
+export default function BarBuilder({ m, lang = 'en', heights = {}, sel = null, onSel, onBar, marks = null, locked = false, reveal = false, compact = false, extra = null }) {
+  const { H, Y0 } = compact ? LAYOUT.compact : LAYOUT.full;
   const svgRef = useRef(null);
   const drag = useRef(null);
   const n = m.rows.length;
@@ -107,16 +108,19 @@ export default function BarBuilder({ m, lang = 'en', heights = {}, sel = null, o
         <text x={X0 - 8} y={Y0 + 42} fontFamily={FONT} fontSize="12" fontWeight="bold" fill={KEY} textAnchor="end">km/s</text>
       </svg>
       {!locked && selRow && (
-        <div className="mt-2 flex items-center justify-center gap-2">
-          <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{t.bar}: {tr(lang, selRow.en, null, selRow.fr)}</span>
-          <button type="button" aria-label="down" onClick={() => onBar?.(selRow.id, (heights[selRow.id] || 0) - 1)}
-            className="w-11 h-11 rounded-xl border-2 border-b-4 border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-600 flex items-center justify-center active:translate-y-[2px]">
-            <ChevronDown className="w-6 h-6 text-slate-700 dark:text-slate-200" strokeWidth={3} />
-          </button>
-          <button type="button" aria-label="up" onClick={() => onBar?.(selRow.id, (heights[selRow.id] || 0) + 1)}
-            className="w-11 h-11 rounded-xl border-2 border-b-4 border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-600 flex items-center justify-center active:translate-y-[2px]">
-            <ChevronUp className="w-6 h-6 text-slate-700 dark:text-slate-200" strokeWidth={3} />
-          </button>
+        <div className={`mt-2 flex items-center gap-2 ${extra ? 'justify-between' : 'justify-center'}`}>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">{t.bar} {tr(lang, selRow.en, null, selRow.fr)}</span>
+            <button type="button" aria-label="down" onClick={() => onBar?.(selRow.id, (heights[selRow.id] || 0) - 1)}
+              className="w-11 h-11 rounded-xl border-2 border-b-4 border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-600 flex items-center justify-center active:translate-y-[2px]">
+              <ChevronDown className="w-6 h-6 text-slate-700 dark:text-slate-200" strokeWidth={3} />
+            </button>
+            <button type="button" aria-label="up" onClick={() => onBar?.(selRow.id, (heights[selRow.id] || 0) + 1)}
+              className="w-11 h-11 rounded-xl border-2 border-b-4 border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-600 flex items-center justify-center active:translate-y-[2px]">
+              <ChevronUp className="w-6 h-6 text-slate-700 dark:text-slate-200" strokeWidth={3} />
+            </button>
+          </div>
+          {extra}
         </div>
       )}
     </div>

@@ -65,15 +65,19 @@ export function OrbitPicture({ o, lang, compact = false }) {
   if (m.kind === 'pull') {
     const tappable = ['pull', 'path', 'both'].includes(o.stage);
     return (
-      <div className={`${compact ? 'h-[30vh] min-h-[190px] lg:h-[32vh]' : 'h-[44vh] min-h-[250px] max-h-[480px]'} w-full`}>
+      <div className={`${compact ? 'h-[30vh] min-h-[190px] lg:h-[29vh]' : 'h-[44vh] min-h-[250px] max-h-[480px]'} w-full`}>
         <OrbitFigure m={m} lang={lang} arrows={o.arrows} released={o.released} tappable={tappable} onArrow={o.tapArrow} reveal={o.done} />
       </div>
     );
   }
   if (m.kind === 'graph') {
+    // On a slide the Check sits beside ▲ ▼, so the side column stays short.
+    const check = compact && o.stage === 'draw' && o.check
+      ? <button type="button" onClick={o.check} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{(T[lang] || T.en).check}</button>
+      : null;
     return (
       <BarBuilder m={m} lang={lang} heights={o.heights} sel={o.sel} onSel={o.setSel} onBar={o.setBar}
-        marks={o.marks} locked={o.stage !== 'draw'} reveal={!o.queue.includes('draw')} />
+        marks={o.marks} locked={o.stage !== 'draw'} reveal={!o.queue.includes('draw')} compact={compact} extra={check} />
     );
   }
   const sc = COAST_SCENES[m.scene];
@@ -164,7 +168,10 @@ export function StagePanel({ o, lang, showMe = true, compact = false }) {
   const t = T[lang] || T.en;
   if (o.done) return <Message msg={o.msg} lang={lang} />;
   const [title, help] = promptOf(o, lang);
-  const needsCheck = ['pull', 'path', 'both', 'draw', 'forces'].includes(o.stage);
+  // On a slide, the draw stage's Check is beside ▲ ▼ and the activity's own
+  // prompt says what to draw; the message goes under the buttons.
+  const checkInPicture = compact && o.stage === 'draw';
+  const needsCheck = ['pull', 'path', 'both', 'draw', 'forces'].includes(o.stage) && !checkInPicture;
   const stages = o.queue;
   return (
     <div className="min-w-0">
@@ -181,10 +188,10 @@ export function StagePanel({ o, lang, showMe = true, compact = false }) {
           })}
         </div>
       )}
-      <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug ${compact ? 'text-sm lg:text-base' : 'text-base sm:text-lg'}`}>{title}</div>
-      {help ? <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-0.5 mb-3">{help}</p> : <div className="mb-3" />}
+      {!checkInPicture && <div className={`font-black text-slate-800 dark:text-slate-100 leading-snug ${compact ? 'text-sm lg:text-base' : 'text-base sm:text-lg'}`}>{title}</div>}
+      {help ? <p className={`text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-0.5 ${compact ? 'mb-2' : 'mb-3'}`}>{help}</p> : <div className={compact ? 'mb-2' : 'mb-3'} />}
       <StageControls o={o} lang={lang} />
-      <Message msg={o.msg} lang={lang} />
+      {!compact && <Message msg={o.msg} lang={lang} />}
       {(showMe || needsCheck) && (
         <div className="mt-3 flex items-center justify-end gap-2">
           {showMe && (
@@ -196,6 +203,7 @@ export function StagePanel({ o, lang, showMe = true, compact = false }) {
           {needsCheck && <button type="button" onClick={o.check} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>}
         </div>
       )}
+      {compact && <Message msg={o.msg} lang={lang} />}
     </div>
   );
 }
