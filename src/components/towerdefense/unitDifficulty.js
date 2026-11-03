@@ -574,6 +574,11 @@ export const TRACK_LEVELS = {
     // @@SCI_U03_4_TD@@
     // @@SCI_U03_5_TD@@
     // @@SCI_U03_6_TD@@
+    U03_6: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 4,
+      mapName: 'The Power Station',
+      blurb: 'Chemical, thermal, kinetic, electrical. Hold every link of the chain.',
+    },
     // @@SCI_U03_7_TD@@
   },
 };
