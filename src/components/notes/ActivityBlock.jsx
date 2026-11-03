@@ -51,6 +51,20 @@ import { ZeroLineActivity } from './ZeroLineActivity.jsx';
 
 // @@SCI_U03_2_ACT_IMPORT@@
 
+// @@U06_1_ACT_IMPORT@@
+
+// @@U06_2_ACT_IMPORT@@
+
+// @@SCI_U03_3_ACT_IMPORT@@
+
+// @@SCI_U03_4_ACT_IMPORT@@
+
+// @@SCI_U03_5_ACT_IMPORT@@
+
+// @@SCI_U03_6_ACT_IMPORT@@
+
+// @@SCI_U03_7_ACT_IMPORT@@
+
 
 /**
  * An interactive activity on a Notes slide — the self-study replacement for
@@ -802,6 +816,20 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'zeroline': body = <ZeroLineActivity {...common} />; break;
 
     // @@SCI_U03_2_ACT_CASE@@
+
+    // @@U06_1_ACT_CASE@@
+
+    // @@U06_2_ACT_CASE@@
+
+    // @@SCI_U03_3_ACT_CASE@@
+
+    // @@SCI_U03_4_ACT_CASE@@
+
+    // @@SCI_U03_5_ACT_CASE@@
+
+    // @@SCI_U03_6_ACT_CASE@@
+
+    // @@SCI_U03_7_ACT_CASE@@
 
 
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;

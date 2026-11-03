@@ -89,6 +89,20 @@ import { checkZeroLineConfig } from '../src/utils/zeroLine.js';
 // @@SCI_U03_2_IMPORT@@
 import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 
+// @@U06_1_IMPORT@@
+
+// @@U06_2_IMPORT@@
+
+// @@SCI_U03_3_IMPORT@@
+
+// @@SCI_U03_4_IMPORT@@
+
+// @@SCI_U03_5_IMPORT@@
+
+// @@SCI_U03_6_IMPORT@@
+
+// @@SCI_U03_7_IMPORT@@
+
 
 const ROOT = process.cwd();
 const DATA = path.join(ROOT, 'src/data');
@@ -367,6 +381,20 @@ for (const trackId of TRACK_IDS) {
     // @@SCI_U03_2_CHECK@@
     //    Storyboard (3.2): every round, answer and named slip derived and proved.
     if (unit.storyboard !== undefined) for (const p of checkStoryConfig(unit.storyboard, { bilingual })) err(`${label}: storyboard ${p}`);
+
+    // @@U06_1_CHECK@@
+
+    // @@U06_2_CHECK@@
+
+    // @@SCI_U03_3_CHECK@@
+
+    // @@SCI_U03_4_CHECK@@
+
+    // @@SCI_U03_5_CHECK@@
+
+    // @@SCI_U03_6_CHECK@@
+
+    // @@SCI_U03_7_CHECK@@
 
 
 

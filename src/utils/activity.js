@@ -52,6 +52,20 @@ import { checkZeroLineActivity } from './zeroLine.js';
 
 // @@SCI_U03_2_ACT_IMPORT@@
 
+// @@U06_1_ACT_IMPORT@@
+
+// @@U06_2_ACT_IMPORT@@
+
+// @@SCI_U03_3_ACT_IMPORT@@
+
+// @@SCI_U03_4_ACT_IMPORT@@
+
+// @@SCI_U03_5_ACT_IMPORT@@
+
+// @@SCI_U03_6_ACT_IMPORT@@
+
+// @@SCI_U03_7_ACT_IMPORT@@
+
 
 // The three maths types (plot / numberline / reflect) were added for the
 // Additional Mathematics decks: an equation is answered by CLICKING its key
@@ -115,6 +129,20 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'zeroline',
 
   // @@SCI_U03_2_ACT_TYPES@@
+
+  // @@U06_1_ACT_TYPES@@
+
+  // @@U06_2_ACT_TYPES@@
+
+  // @@SCI_U03_3_ACT_TYPES@@
+
+  // @@SCI_U03_4_ACT_TYPES@@
+
+  // @@SCI_U03_5_ACT_TYPES@@
+
+  // @@SCI_U03_6_ACT_TYPES@@
+
+  // @@SCI_U03_7_ACT_TYPES@@
 
 ];
 
@@ -434,6 +462,20 @@ export function checkActivity(a, { bilingual = true } = {}) {
   if (a.type === 'zeroline') for (const p of checkZeroLineActivity(a)) out.push(`zeroline ${p}`);
 
   // @@SCI_U03_2_ACT_CHECK@@
+
+  // @@U06_1_ACT_CHECK@@
+
+  // @@U06_2_ACT_CHECK@@
+
+  // @@SCI_U03_3_ACT_CHECK@@
+
+  // @@SCI_U03_4_ACT_CHECK@@
+
+  // @@SCI_U03_5_ACT_CHECK@@
+
+  // @@SCI_U03_6_ACT_CHECK@@
+
+  // @@SCI_U03_7_ACT_CHECK@@
 
   return out;
 }

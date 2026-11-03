@@ -45,6 +45,21 @@ import { PencilRuler as ZeroLineIcon } from 'lucide-react';
 // @@SCI_U03_2_IMPORT@@
 import { Clapperboard as StoryboardIcon } from 'lucide-react';
 
+// Maths Unit 6 (Collecting data) and Science 3.3–3.7, one block per unit:
+// @@U06_1_IMPORT@@
+
+// @@U06_2_IMPORT@@
+
+// @@SCI_U03_3_IMPORT@@
+
+// @@SCI_U03_4_IMPORT@@
+
+// @@SCI_U03_5_IMPORT@@
+
+// @@SCI_U03_6_IMPORT@@
+
+// @@SCI_U03_7_IMPORT@@
+
 
 /**
  * Does this track carry Vietnamese twins? A track that declares
@@ -1928,6 +1943,23 @@ export const TASKS = [
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
+
+  // ── Year 7 Maths Unit 6, collecting data (U06_1–U06_2) and Science 3.3–3.7 ──
+  // p85 (6.1) · p86 (6.2) · p87 (Sci 3.3) · p88 (Sci 3.4) · p89 (Sci 3.5) · p90 (Sci 3.6) ·
+  // p91 (Sci 3.7), if a unit needs an engine. p92 is the next free key.
+  // @@U06_1_TASKS@@
+
+  // @@U06_2_TASKS@@
+
+  // @@SCI_U03_3_TASKS@@
+
+  // @@SCI_U03_4_TASKS@@
+
+  // @@SCI_U03_5_TASKS@@
+
+  // @@SCI_U03_6_TASKS@@
+
+  // @@SCI_U03_7_TASKS@@
 
 ];
 

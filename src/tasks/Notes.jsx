@@ -152,6 +152,14 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // @@U05_3_SIDE@@
   'zeroline',
   // @@SCI_U03_2_SIDE@@
+  // Maths Unit 6 and Science 3.3–3.7, one line per unit:
+  // @@U06_1_SIDE@@
+  // @@U06_2_SIDE@@
+  // @@SCI_U03_3_SIDE@@
+  // @@SCI_U03_4_SIDE@@
+  // @@SCI_U03_5_SIDE@@
+  // @@SCI_U03_6_SIDE@@
+  // @@SCI_U03_7_SIDE@@
 ]);
 
 // The words around fixing mistakes (the results screen has its own, in NotesReview).

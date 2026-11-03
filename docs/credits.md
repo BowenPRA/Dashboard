@@ -243,3 +243,19 @@ Every other picture in the unit, including the Storyboard's seven frames, is a d
 | `public/images/Y7_MATH/U05_3/protractor.jpg` | A semicircular protractor with an outer and an inner scale (960 px thumbnail, cropped 910×540 from x 30, y 60, scaled to 800 px) | CatalinaDurhan | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Wooden_Protractor.jpg) | CC BY-SA 4.0 |
 | `public/images/Y7_MATH/U05_3/setsquare.jpg` | A green 30°–60° set square on white (960 px thumbnail, scaled to 500 px) | Luigi Chiesa | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Squadra_30_60.jpg) | CC BY 3.0 |
 | `public/images/Y7_MATH/U05_3/trysquare.jpg` | A carpenter's try square on a wooden board (960 px thumbnail, cropped 920×680 from x 40, y 20, scaled to 800 px) | Luigi Zanasi | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Trysquare.jpg) | CC BY-SA 2.0 ca |
+
+## Year 7 Maths Unit 6 and Science 3.3–3.7 (2026-11-03)
+
+<!-- @@U06_1_CREDITS@@ -->
+
+<!-- @@U06_2_CREDITS@@ -->
+
+<!-- @@SCI_U03_3_CREDITS@@ -->
+
+<!-- @@SCI_U03_4_CREDITS@@ -->
+
+<!-- @@SCI_U03_5_CREDITS@@ -->
+
+<!-- @@SCI_U03_6_CREDITS@@ -->
+
+<!-- @@SCI_U03_7_CREDITS@@ -->

@@ -854,6 +854,21 @@ function angleSum() {
 
 // @@SCI_U03_2_GEN@@
 
+// Maths Unit 6 and Science 3.3–3.7 generators, one block per unit:
+// @@U06_1_GEN@@
+
+// @@U06_2_GEN@@
+
+// @@SCI_U03_3_GEN@@
+
+// @@SCI_U03_4_GEN@@
+
+// @@SCI_U03_5_GEN@@
+
+// @@SCI_U03_6_GEN@@
+
+// @@SCI_U03_7_GEN@@
+
 export const MATH_CHALLENGE_GENERATORS = {
   EM_06: setsAndSurds,
   EM_07A: inequalitiesSimultaneous,
@@ -887,6 +902,13 @@ export const MATH_CHALLENGE_GENERATORS = {
   U05_1: angleSum,
   // @@U05_2_GEN_MAP@@
   // @@U05_3_GEN_MAP@@
+  // @@U06_1_GEN_MAP@@
+  // @@U06_2_GEN_MAP@@
+  // @@SCI_U03_3_GEN_MAP@@
+  // @@SCI_U03_4_GEN_MAP@@
+  // @@SCI_U03_5_GEN_MAP@@
+  // @@SCI_U03_6_GEN_MAP@@
+  // @@SCI_U03_7_GEN_MAP@@
 };
 
 /**
@@ -904,6 +926,13 @@ const GENERATOR_TRACK = {
   U05_1: 'Y7_MATH',
   // @@U05_2_GEN_TRACK@@
   // @@U05_3_GEN_TRACK@@
+  // @@U06_1_GEN_TRACK@@
+  // @@U06_2_GEN_TRACK@@
+  // @@SCI_U03_3_GEN_TRACK@@
+  // @@SCI_U03_4_GEN_TRACK@@
+  // @@SCI_U03_5_GEN_TRACK@@
+  // @@SCI_U03_6_GEN_TRACK@@
+  // @@SCI_U03_7_GEN_TRACK@@
 };
 
 /** True when `unitId` in `track` is the unit a generator was written for. */

@@ -484,6 +484,9 @@ export const TRACK_LEVELS = {
       mapName: 'The Drawing Board',
       blurb: 'Start at 0 on the line, every time. Armored heavies grind down the ruled lanes.',
     },
+    // Unit 6 (Collecting data), one entry per section:
+    // @@U06_1_TD@@
+    // @@U06_2_TD@@
   },
   // Year 7 Science: its own campaign, one level per section, climbing 0 → 5
   // like the Maths one. Cells, then particles.
@@ -567,6 +570,11 @@ export const TRACK_LEVELS = {
       mapName: 'The Spinning Disc',
       blurb: 'Everything goes round the same way. Hold the centre while the disc turns.',
     },
+    // @@SCI_U03_3_TD@@
+    // @@SCI_U03_4_TD@@
+    // @@SCI_U03_5_TD@@
+    // @@SCI_U03_6_TD@@
+    // @@SCI_U03_7_TD@@
   },
 };
 
