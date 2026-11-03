@@ -98,6 +98,7 @@ import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 // @@SCI_U03_4_IMPORT@@
 
 // @@SCI_U03_5_IMPORT@@
+import { checkEnergySpotConfig } from '../src/utils/energySpotCheck.js';
 
 // @@SCI_U03_6_IMPORT@@
 
@@ -391,6 +392,8 @@ for (const trackId of TRACK_IDS) {
     // @@SCI_U03_4_CHECK@@
 
     // @@SCI_U03_5_CHECK@@
+    //    Name That Energy (3.5): every energy, family, store list, verdict and named slip derived and proved.
+    if (unit.energySpot !== undefined) for (const p of checkEnergySpotConfig(unit.energySpot, { bilingual })) err(`${label}: energySpot ${p}`);
 
     // @@SCI_U03_6_CHECK@@
 

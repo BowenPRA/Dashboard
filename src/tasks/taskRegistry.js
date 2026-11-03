@@ -55,6 +55,7 @@ import { Clapperboard as StoryboardIcon } from 'lucide-react';
 // @@SCI_U03_4_IMPORT@@
 
 // @@SCI_U03_5_IMPORT@@
+import { Zap as EnergySpotIcon } from 'lucide-react';
 
 // @@SCI_U03_6_IMPORT@@
 
@@ -1956,6 +1957,29 @@ export const TASKS = [
   // @@SCI_U03_4_TASKS@@
 
   // @@SCI_U03_5_TASKS@@
+  {
+    id: 'ENERGY_SPOT',
+    nativeMax: 10,
+    dbKey: 'p89',
+    // Name That Energy (Y7 Science 3.5): look at a thing, find the clue (the
+    // book's table line: moving, lifted up high, hot, food/fuel/battery, a
+    // current, vibrating, luminous…), name the energy and say whether it is a
+    // store or a transfer — walked at levels 1–2, two taps from level 3, with a
+    // slip opening its stages; name every pin of a scene (the circuit, the bus
+    // going uphill); find every store a thing has; say whether a store lasts a
+    // year, and why. utils/energySpot.js derives every answer and named slip
+    // from the clue; utils/energySpotCheck.js proves every item.
+    label: 'Name That Energy',
+    icon: EnergySpotIcon,
+    color: { bg: 'bg-[#0087a8]', border: 'border-[#00697f]', text: 'text-white' },
+    defaultMaxXP: 30,
+    phase: 'practice',
+    component: lazy(() => import('./EnergySpot.jsx')),
+    hasContent: (u) => !!u.energySpot?.items?.length,
+    buildPool: (u) => u.energySpot,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
 
   // @@SCI_U03_6_TASKS@@
 
