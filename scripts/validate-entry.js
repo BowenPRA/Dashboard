@@ -79,6 +79,7 @@ import { checkWeighConfig } from '../src/utils/weighIt.js';
 
 // @@U05_1_IMPORT@@
 import { checkAngleSumItems } from '../src/utils/angleSumCheck.js';
+import { checkAngleChaseConfig } from '../src/utils/angleChaseCheck.js';
 
 // @@U05_2_IMPORT@@
 import { checkAnglePairItems } from '../src/utils/anglePairCheck.js';
@@ -360,6 +361,8 @@ for (const trackId of TRACK_IDS) {
       }
       for (const p of checkAngleSumItems(cfg.items || [], { bilingual })) err(`${label}: angleSum ${p}`);
     }
+    //    Find Every Angle (5.1, 5.2): every printed angle measured from the lines, every letter solved with the unit's facts.
+    if (unit.angleChase !== undefined) for (const p of checkAngleChaseConfig(unit.angleChase)) err(`${label}: angleChase ${p}`);
 
     // @@U05_2_CHECK@@
     // X, F or Z? (5.2): every picture, pair, letter, answer and named slip derived and proved.

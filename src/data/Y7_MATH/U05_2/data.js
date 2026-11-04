@@ -1,8 +1,10 @@
 // src/data/Y7_MATH/U05_2/data.js
 // 5.2 Intersecting lines — self-study unit (plan: docs/y7-math/plans/U05_2.md).
-// 120 XP on offer, capped at 100 by unitXPOf. Gates: 20 of 35 (57%) and 80 of
-// 100 (80%), the same rule as 5.1 and 5.3. One flagship task, X, F or Z?
-// (ANGLE_PAIR, p82): see the pair, name it, find the angle, say why.
+// 160 XP on offer, capped at 100 by unitXPOf. Gates: 20 of 35 (57%) and 80 of
+// 140 (57%), under the 80% rule. X, F or Z? (ANGLE_PAIR, p82): see the pair,
+// name it, find the angle, say why. Find Every Angle (ANGLE_CHASE, p92, added
+// 2026-11-04): the Workbook's several-letter pictures, each angle found from
+// the ones before it, every step scaffolded.
 //
 // English and French only (meta.vietnamese: false), like the classroom deck
 // (classroom/content/y7-math/U05_2). Every learner-facing string has a `…Fr` /
@@ -15,6 +17,7 @@ import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
 import { anglePairs } from './anglePairs.js';
+import { angleChase } from './angleChase.js';
 
 export const U05_2_DATA = {
   meta: {
@@ -42,6 +45,7 @@ export const U05_2_DATA = {
       threshold: 20,
       tasks: [
         { id: 'ANGLE_PAIR', dbKey: 'p82', maxXP: 45 },
+        { id: 'ANGLE_CHASE', dbKey: 'p92', maxXP: 40 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 20 },
       ],
     },
@@ -164,6 +168,7 @@ export const U05_2_DATA = {
 
   // X, F or Z? (ANGLE_PAIR): the items, in anglePairs.js.
   anglePairs: anglePairs,
+  angleChase: angleChase,
 
   notes: notes,
   assessment: assessment,

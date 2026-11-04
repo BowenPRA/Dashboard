@@ -105,7 +105,17 @@ subtract, share, the reason sentence); X, F or Z? (`ANGLE_PAIR` p82, 5.2: name t
 "no arrows: can't tell", with the upright F and unmirrored Z enforced by the validator);
 Zero on the Line (`ZERO_LINE` p83, 5.3: the protractor placed for the student, which 0,
 read or draw, plus an optional paper level checked within ±0.2 cm / ±2°). Plans:
-`y7-math/plans/U05_1.md`–`U05_3.md`. Unit 6 (Collecting data) is next: the classroom has
+`y7-math/plans/U05_1.md`–`U05_3.md`.
+
+**Polish (2026-11-04):** the teacher asked 5.1 and 5.2 for "more emphasis on finding the
+angles … a bunch of problems like in the workbook, figuring out the individual angles
+along the way", with more scaffolding. Both units gained **Find Every Angle**
+(`ANGLE_CHASE` p92, one engine, each unit's own facts): Workbook-style pictures with
+several letters, each found from the angles before it and written on the picture; for
+every letter the fact (it lights the angles and traces the F, Z or straight line), then the
+size. Levels 1–3 choose the next letter and show the sum with its numbers; later levels let
+the student choose, and a stepping stone ("?") appears when no letter is one step away.
+9 pictures in 5.1, 11 in 5.2. Unit 6 (Collecting data) is next: the classroom has
 `U06_1` and `U06_2`.
 
 **Progress (2026-10-16):** Unit 4 **Decimals** (4.1–4.5) is built to

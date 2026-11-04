@@ -1,22 +1,25 @@
 // src/data/Y7_MATH/U05_1/data.js
 // 5.1 A sum of 360° — self-study unit, reduced from the classroom deck
 // lessons/content/y7-math/U05_1 (one period). Plan: docs/y7-math/plans/U05_1.md.
-// 125 XP available, capped at 100 by unitXPOf. Gates: 20 of 35 (57%) and
-// 80 of 105 (76%), both under the 80% rule — the same as 4.5.
+// 165 XP available, capped at 100 by unitXPOf. Gates: 20 of 35 (57%) and
+// 80 of 145 (55%), both under the 80% rule.
 //
 // English and French only (meta.vietnamese: false): every learner-facing
 // string has a `…Fr` / `fr…` twin and no Vietnamese one.
 //
 // One idea: find a missing angle and SAY WHY. Fewer tasks, each doing
 // different work: the deck meets each fact and predicts before it is told;
-// Find It, Say Why (ANGLE_SUM) is the section's real work; Short Answers
-// makes the student write the reason in their own sentence.
+// Find It, Say Why (ANGLE_SUM) is the method on one angle; Find Every Angle
+// (ANGLE_CHASE, p92, added 2026-11-04) is the Workbook's several-letter
+// pictures, each angle found from the ones before it; Short Answers makes the
+// student write the reason in their own sentence.
 //
 // Module properties written in full (`notes: notes,`) — a shorthand right after
 // realWords makes the audio generator skip all word audio.
 import { notes } from './notes.js';
 import { assessment } from './assessment.js';
 import { games } from './games.js';
+import { angleChase } from './angleChase.js';
 
 export const U05_1_DATA = {
   meta: {
@@ -44,6 +47,7 @@ export const U05_1_DATA = {
       threshold: 20,
       tasks: [
         { id: 'ANGLE_SUM', dbKey: 'p81', maxXP: 45 },
+        { id: 'ANGLE_CHASE', dbKey: 'p92', maxXP: 40 },
         { id: 'SHORT_ANSWERS', dbKey: 'p6', maxXP: 25 },
       ],
     },
@@ -222,6 +226,7 @@ export const U05_1_DATA = {
     ],
   },
 
+  angleChase: angleChase,
   notes: notes,
   assessment: assessment,
   games: games,

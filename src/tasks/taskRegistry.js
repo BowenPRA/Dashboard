@@ -35,6 +35,7 @@ import { Weight as WeighItIcon } from 'lucide-react';
 // Unit 5 (Angles & constructions) and Science 3.2, one block per unit:
 // @@U05_1_IMPORT@@
 import { Compass as AngleSumIcon } from 'lucide-react';
+import { Search as AngleChaseIcon } from 'lucide-react';
 
 // @@U05_2_IMPORT@@
 import { Hash as AnglePairIcon } from 'lucide-react';
@@ -1867,6 +1868,30 @@ export const TASKS = [
     component: lazy(() => import('./AngleSum.jsx')),
     hasContent: (u) => !!u.angleSum?.items?.length,
     buildPool: (u) => u.angleSum,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'ANGLE_CHASE',
+    nativeMax: 10,
+    dbKey: 'p92',
+    // Find Every Angle (Y7 Maths 5.1 and 5.2): a Workbook-style picture with
+    // several letters, found one at a time — each angle found is written on
+    // the picture and used for the next. For every letter: the fact (the
+    // unit's `facts`: straight line, around a point, quadrilateral,
+    // parallelogram; X, F, Z, same side, triangle), which lights its angles,
+    // then the size. Guided levels choose the next letter and show the sum
+    // with its numbers; later levels let the student choose. Every fact is
+    // read off the drawing (utils/angleChase.js) and each item is proved by
+    // utils/angleChaseCheck.js. One engine, a unit's `angleChase` pool.
+    label: 'Find Every Angle',
+    icon: AngleChaseIcon,
+    color: { bg: 'bg-[#7a3e00]', border: 'border-[#5a2d00]', text: 'text-white' },
+    defaultMaxXP: 40,
+    phase: 'practice',
+    component: lazy(() => import('./AngleChase.jsx')),
+    hasContent: (u) => !!u.angleChase?.items?.length,
+    buildPool: (u) => u.angleChase,
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
