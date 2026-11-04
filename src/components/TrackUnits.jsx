@@ -242,9 +242,13 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
       )}
 
       {/* One tab per coursebook unit. Only tracks that declare sections (and
-          have more than one in use) get them; the rest are one list. */}
+          have more than one in use) get them; the rest are one list. The tabs
+          WRAP rather than scroll: a sideways row with its scrollbar hidden put
+          Year 7 Maths' fifth tab (Unit 5) off the edge of a 1280 px laptop, and
+          students could not find 5.1 at all. auto-fit keeps a short row full
+          width, the way flex-1 did. */}
       {hasSections && (
-        <div role="tablist" aria-label="Units" className="mb-4 sm:mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 flex gap-2 sm:gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div role="tablist" aria-label="Units" className="mb-4 sm:mb-5 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(9.5rem,1fr))] gap-2 sm:gap-3">
           {sections.map((s) => {
             const active = s.key === activeKey;
             const complete = s.done === s.rows.length;
@@ -254,21 +258,21 @@ export default function TrackUnits({ track, unitScores = {}, previewAll = false,
                 role="tab"
                 aria-selected={active}
                 onClick={() => setSection(s.key)}
-                className={`flex-1 min-w-[9.5rem] sm:min-w-[12rem] text-left p-3 sm:p-4 rounded-2xl border-2 transition-all
+                className={`min-w-0 text-left p-3 sm:p-3.5 rounded-2xl border-2 transition-all
                   ${active
                     ? `bg-white dark:bg-slate-900 border-b-4 ${currentTheme.border || 'border-sky-700'}`
                     : 'bg-slate-100 dark:bg-slate-900/50 border-transparent border-b-4 hover:bg-white dark:hover:bg-slate-900 hover:border-slate-200 dark:hover:border-slate-800'}`}
               >
-                <span className="flex items-center justify-between gap-2">
-                  <span className={`text-[11px] font-black uppercase tracking-widest ${active ? (currentTheme.text || 'text-sky-600') : 'text-slate-400 dark:text-slate-500'}`}>
+                <span className="flex flex-wrap items-center justify-between gap-x-2">
+                  <span className={`whitespace-nowrap text-[11px] font-black uppercase tracking-widest ${active ? (currentTheme.text || 'text-sky-600') : 'text-slate-400 dark:text-slate-500'}`}>
                     {s.label}
                   </span>
-                  <span className={`flex items-center gap-1 text-[11px] font-black tabular-nums ${complete ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                  <span className={`flex items-center gap-1 whitespace-nowrap text-[11px] font-black tabular-nums ${complete ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}>
                     {complete && <Check className="w-3.5 h-3.5" strokeWidth={4} />}
                     {s.done}/{s.rows.length} done
                   </span>
                 </span>
-                <span className={`block mt-0.5 text-sm sm:text-base font-black tracking-tight leading-tight line-clamp-2 sm:line-clamp-1 ${active ? 'text-slate-800 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
+                <span className={`block mt-0.5 text-sm sm:text-base font-black tracking-tight leading-tight line-clamp-2 ${active ? 'text-slate-800 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
                   {s.title || 'More units'}
                 </span>
                 <span className="block mt-2.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
