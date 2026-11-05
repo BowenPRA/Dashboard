@@ -3,7 +3,7 @@
 /** Split a task message into the note about the last step and the feedback on this one. */
 export function msgParts(msg, lang) {
   if (!msg) return { prev: null, now: null };
-  const text = lang === 'fr' ? (msg.fr || msg.en) : msg.en;
+  const text = lang === 'fr' ? (msg.fr || msg.en) : lang === 'vn' ? (msg.vn || msg.en) : msg.en;
   if (!text) return { prev: null, now: null };
   if (msg.tone === 'ok' || msg.tone === 'shown') return { prev: { tone: msg.tone, text }, now: null };
   return { prev: null, now: { tone: msg.tone === 'info' || msg.tone === 'nudge' ? 'info' : 'bad', text } };

@@ -34,16 +34,23 @@ const TONE = {
   good: 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200',
   bad: 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300',
   shown: 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200',
-  idle: 'border-dashed border-slate-200 dark:border-slate-700 bg-transparent text-slate-300',
+  idle: 'border-dashed border-slate-200 dark:border-slate-700 bg-transparent text-slate-300 dark:text-slate-600',
 };
+// roomy: the task — big squares from sm (a 9-square slide still fits the
+// right-hand card at 1024 px); compact: the column beside a deck slide (and,
+// on a phone, the footer under it, where 8 squares must fit 330 px).
+// Every box a student taps is 44 px or more on a laptop (the carry box's
+// whole square takes the tap, not only the small box drawn in it).
 const SIZES = {
   roomy: {
-    cell: 'w-8 sm:w-12', row: 'h-10 sm:h-14', digit: 'text-2xl sm:text-4xl', box: 'w-7 h-9 sm:w-10 sm:h-12 text-xl sm:text-3xl',
-    small: 'h-5 sm:h-6 text-xs sm:text-base', carry: 'w-6 h-6 sm:w-7 sm:h-7 text-sm sm:text-base', op: 'w-6 sm:w-9',
+    cell: 'w-8 sm:w-14', row: 'h-10 sm:h-16', digit: 'text-2xl sm:text-5xl', box: 'w-7 h-9 sm:w-12 sm:h-14 text-xl sm:text-4xl',
+    small: 'h-5 sm:h-7 text-xs sm:text-xl', carry: 'w-6 h-6 sm:w-9 sm:h-9 text-sm sm:text-xl', carryRow: 'h-8 sm:h-11', op: 'w-6 sm:w-10',
+    point: 'w-7 h-9 sm:w-11 sm:h-14 text-2xl sm:text-4xl', ghost: 'w-6 h-6 sm:w-9 sm:h-9', ghostDot: 'text-xl sm:text-3xl',
   },
   compact: {
-    cell: 'w-8', row: 'h-10', digit: 'text-2xl', box: 'w-7 h-9 text-xl',
-    small: 'h-5 text-xs', carry: 'w-6 h-6 text-sm', op: 'w-6',
+    cell: 'w-8 sm:w-10', row: 'h-10 sm:h-11', digit: 'text-2xl sm:text-3xl', box: 'w-7 h-9 sm:w-8 sm:h-10 text-xl sm:text-2xl',
+    small: 'h-5 text-xs sm:text-sm', carry: 'w-6 h-6 sm:w-7 sm:h-7 text-sm sm:text-base', carryRow: 'h-7 sm:h-8', op: 'w-6 sm:w-7',
+    point: 'w-7 h-9 sm:w-8 sm:h-10 text-2xl', ghost: 'w-6 h-6 sm:w-7 sm:h-7', ghostDot: 'text-xl',
   },
 };
 
@@ -123,7 +130,7 @@ export default function DecColumnBoard({
     return (
       <div key={c} className={`${S.cell} ${S.row} shrink-0 flex items-center justify-center rounded-md ${paper(c)} ${pointTint(c)} ${activeTint(c)}`}>
         {k && (k.ghost
-          ? <span className={`flex items-center justify-center w-6 h-6 rounded-full border-2 border-dashed border-orange-300 ${colour}`}>{digitSpan('.', 'text-xl')}</span>
+          ? <span className={`flex items-center justify-center ${S.ghost} rounded-full border-2 border-dashed border-orange-300 ${colour}`}><span className={`font-mono font-black leading-none ${S.ghostDot}`}>.</span></span>
           : digitSpan(k.ch, colour))}
       </div>
     );
@@ -145,7 +152,7 @@ export default function DecColumnBoard({
       return (
         <div key={c} className={`${S.cell} ${S.row} shrink-0 flex items-center justify-center ${activeTint(c)}`}>
           <button type="button" id={domId(uid, 'pt')} onClick={onDropPoint} aria-label={labels.point || 'drop the point'}
-            className="w-7 h-9 sm:w-9 sm:h-11 rounded-lg border-2 border-dashed font-mono font-black text-2xl leading-none animate-pulse"
+            className={`${S.point} rounded-lg border-2 border-dashed font-mono font-black leading-none animate-pulse dark:brightness-150`}
             style={{ borderColor: ink, color: ink }}>.</button>
         </div>
       );
@@ -177,14 +184,17 @@ export default function DecColumnBoard({
   };
 
   // Carries (+): a small box under the answer, in the column the carry goes into.
+  // The row keeps one height, so the sum does not jump when the first box opens;
+  // a tap anywhere in the box's square puts the cursor in it.
   const carryCell = (c) => {
     const id = `c${c}`;
     const st = stateOf(id);
     const text = entries[id] ?? '';
-    if (st === 'idle' || ((st === 'good' || st === 'shown') && !text)) return <div key={c} className={`${S.cell} ${S.small} shrink-0`} />;
+    if (st === 'idle' || ((st === 'good' || st === 'shown') && !text)) return <div key={c} className={`${S.cell} ${S.carryRow} shrink-0`} />;
     const editable = st === 'live' || st === 'bad';
     return (
-      <div key={c} className={`${S.cell} shrink-0 flex justify-center`}>
+      <div key={c} className={`${S.cell} ${S.carryRow} shrink-0 flex items-start justify-center pt-0.5 ${editable ? 'cursor-text' : ''}`}
+        onClick={editable ? (e) => { if (e.target === e.currentTarget) focusBox(uid, id); } : undefined}>
         <input
           id={domId(uid, id)}
           value={text}
@@ -234,8 +244,13 @@ export default function DecColumnBoard({
           <div className={`${S.op} shrink-0`} />
           {cells.map((c) => <div key={c} className={`${S.cell} shrink-0 h-[3px] ${inGrid(c) || lining ? 'bg-slate-800 dark:bg-slate-200' : ''} ${lining ? 'opacity-30' : ''}`} />)}
         </div>
-        <div className="flex">{opCell('ro', '')}{cells.map(answerCell)}</div>
-        {!sub && working && <div className="flex">{opCell('co', '', S.small)}{cells.map(carryCell)}</div>}
+        {/* The answer row and the carries come with the columns (so the arrows of
+            the slide sit right under the number they move); a finished sum
+            with nothing carried has no carry row. */}
+        {working && <div className="flex">{opCell('ro', '')}{cells.map(answerCell)}</div>}
+        {!sub && working && (stage !== 'done' || cells.some((c) => entries[`c${c}`])) && (
+          <div className="flex">{opCell('co', '', S.carryRow)}{cells.map(carryCell)}</div>
+        )}
       </div>
     </div>
   );

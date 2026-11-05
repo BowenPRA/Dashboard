@@ -34,7 +34,9 @@ import { boxOrder, boxDomId as domId, focusBox } from './shortDivBoardHelpers';
  *   ink        accent colour
  *   compact    narrower columns, and the zero buttons under the number — for
  *              the column beside a slide
- *   labels     { addZero, removeZero, top, carry, remainder } — aria / button text
+ *   labels     { addZero, addZeroTip?, removeZero, top, carry, remainder } —
+ *              aria / button text. `addZero` is written on the button beside
+ *              the +0 (a word or two: "Add a zero"); `addZeroTip` is its tooltip.
  * ------------------------------------------------------------------ */
 
 const TONE = {
@@ -44,18 +46,22 @@ const TONE = {
   idle: 'border-dashed border-slate-200 dark:border-slate-700 bg-transparent text-slate-300',
 };
 
+// roomy: the Bus Stop task — from `sm` the digits are big enough to read from
+// the back of a classroom laptop (1280×720) and every box is a 44 px target.
 const SIZES = {
   roomy: {
-    col: 'w-11 sm:w-[3.25rem]', top: 'h-12 sm:h-[3.75rem]', bottom: 'h-14 sm:h-[4.25rem]', point: 'w-3 sm:w-4',
-    q: 'w-9 h-11 sm:w-11 sm:h-[3.25rem] text-2xl sm:text-3xl', digit: 'text-3xl sm:text-[2.6rem]',
-    carry: 'h-6 sm:h-7 text-sm sm:text-lg', carryW: ['w-5 sm:w-6', 'w-7 sm:w-9'],
-    rem: 'h-11 sm:h-[3.25rem] text-2xl sm:text-3xl', remW: ['w-9 sm:w-11', 'w-12 sm:w-16'], r: 'text-2xl sm:text-3xl',
+    col: 'w-11 sm:w-[3.75rem]', top: 'h-12 sm:h-[4.25rem]', bottom: 'h-14 sm:h-20', point: 'w-3 sm:w-5', dot: 'text-3xl sm:text-5xl',
+    q: 'w-9 h-11 sm:w-[3.25rem] sm:h-[3.75rem] text-2xl sm:text-4xl', digit: 'text-3xl sm:text-5xl',
+    carry: 'h-6 sm:h-8 text-sm sm:text-xl', carryW: ['w-5 sm:w-7', 'w-7 sm:w-10'], carryAt: '-left-1.5 top-0.5 sm:-left-2 sm:top-1',
+    rem: 'h-11 sm:h-[3.75rem] text-2xl sm:text-4xl', remW: ['w-9 sm:w-[3.25rem]', 'w-12 sm:w-[4.5rem]'], r: 'text-2xl sm:text-4xl',
+    btn: 'h-11', btnWord: 'text-[11px] sm:text-xs',
   },
   compact: {
-    col: 'w-9 sm:w-10', top: 'h-11', bottom: 'h-14', point: 'w-2.5 sm:w-3',
+    col: 'w-9 sm:w-10', top: 'h-11', bottom: 'h-14', point: 'w-2.5 sm:w-3', dot: 'text-3xl',
     q: 'w-8 h-10 sm:w-9 text-xl', digit: 'text-3xl',
-    carry: 'h-6 text-sm', carryW: ['w-5', 'w-7'],
+    carry: 'h-6 text-sm', carryW: ['w-5', 'w-7'], carryAt: '-left-1.5 top-0.5',
     rem: 'h-10 text-xl', remW: ['w-8 sm:w-9', 'w-11 sm:w-12'], r: 'text-xl',
+    btn: 'h-10', btnWord: 'text-[11px]',
   },
 };
 
@@ -116,20 +122,24 @@ export default function ShortDivBoard({
     // A settled carry of 0 is simply not written.
     if ((st === 'good' || st === 'shown') && (!text || Number(text) === 0)) return null;
     if (st === 'idle') return null;
+    // The remainder is written small, but the label round it is a finger-sized
+    // target: a tap just beside the little box still lands in it.
     return (
-      <input
-        id={domId(uid, id)}
-        value={text}
-        onChange={(e) => type(id, e.target.value, twoDigitCarry ? 2 : 1)}
-        onKeyDown={onKey}
-        readOnly={!editable}
-        inputMode="numeric" autoComplete="off" aria-label={`${labels.carry || 'remainder carried onto digit'} ${c + 1}`}
-        className={`absolute -left-1.5 top-0.5 ${S.carry} ${S.carryW[twoDigitCarry ? 1 : 0]} rounded-md border-[1.5px] text-center font-mono font-black leading-none tabular-nums outline-none transition-colors
-          ${st === 'good' ? 'border-transparent bg-transparent text-orange-600 dark:text-orange-300'
-            : st === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
-              : st === 'bad' ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300'
-                : 'border-orange-400 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-200 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900'}`}
-      />
+      <label className={`absolute ${S.carryAt} -m-2.5 p-2.5 cursor-text`}>
+        <input
+          id={domId(uid, id)}
+          value={text}
+          onChange={(e) => type(id, e.target.value, twoDigitCarry ? 2 : 1)}
+          onKeyDown={onKey}
+          readOnly={!editable}
+          inputMode="numeric" autoComplete="off" aria-label={`${labels.carry || 'remainder carried onto digit'} ${c + 1}`}
+          className={`block ${S.carry} ${S.carryW[twoDigitCarry ? 1 : 0]} rounded-md border-[1.5px] text-center font-mono font-black leading-none tabular-nums outline-none transition-colors
+            ${st === 'good' ? 'border-transparent bg-transparent text-orange-600 dark:text-orange-300'
+              : st === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                : st === 'bad' ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300'
+                  : 'border-orange-400 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-200 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900'}`}
+        />
+      </label>
     );
   };
 
@@ -155,7 +165,7 @@ export default function ShortDivBoard({
   };
 
   const point = (key, height) => (
-    <div key={key} className={`${S.point} ${height} shrink-0 flex items-end justify-center pb-2 font-mono font-black text-3xl leading-none text-slate-800 dark:text-slate-100`}>.</div>
+    <div key={key} className={`${S.point} ${height} shrink-0 flex items-end justify-center pb-2 font-mono font-black ${S.dot} leading-none text-slate-800 dark:text-slate-100`}>.</div>
   );
 
   const top = [];
@@ -189,40 +199,44 @@ export default function ShortDivBoard({
 
   // The zero buttons sit at the end of the number, where the zero is written —
   // or, when there is no room beside it (a phone, a slide's side column), in a
-  // labelled row underneath.
-  const addBtn = (wordy) => onAddZero && (
-    <button type="button" onClick={onAddZero} aria-label={labels.addZero || 'add a zero'} title={labels.addZero || 'add a zero'}
-      className="h-10 px-2.5 rounded-xl border-2 border-dashed border-[#0087a8] text-[#0087a8] dark:border-cyan-400 dark:text-cyan-300 font-mono font-black text-lg flex items-center gap-0.5 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 active:translate-y-0.5 transition-all">
-      <Plus className="w-4 h-4" strokeWidth={3} />0
-      {wordy && labels.addZero && <span className="ml-1.5 font-sans text-[11px] uppercase tracking-widest">{labels.addZero}</span>}
+  // row underneath. The +0 always says what it does in words too.
+  const addWord = labels.addZero || 'add a zero';
+  const addBtn = onAddZero && (
+    <button type="button" onClick={onAddZero} aria-label={addWord} title={labels.addZeroTip || addWord}
+      className={`${S.btn} pl-2 pr-3 rounded-xl border-2 border-dashed border-[#0087a8] text-[#0087a8] dark:border-cyan-400 dark:text-cyan-300 font-black flex items-center gap-1.5 whitespace-nowrap hover:bg-cyan-50 dark:hover:bg-cyan-900/20 active:translate-y-0.5 transition-all`}>
+      <span className="flex items-center font-mono text-lg leading-none"><Plus className="w-4 h-4" strokeWidth={3} />0</span>
+      <span className={`font-sans uppercase tracking-widest ${S.btnWord}`}>{addWord}</span>
     </button>
   );
   const removeBtn = onRemoveZero && (
     <button type="button" onClick={onRemoveZero} aria-label={labels.removeZero || 'take the last zero away'} title={labels.removeZero || 'take the last zero away'}
-      className="h-10 w-9 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-400 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 active:translate-y-0.5 transition-all">
-      <Minus className="w-4 h-4" strokeWidth={3} />
+      className={`${S.btn} ${compact ? 'w-10' : 'w-12'} rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-mono font-black text-lg leading-none flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 active:translate-y-0.5 transition-all`}>
+      <Minus className="w-4 h-4" strokeWidth={3} />0
     </button>
   );
   const hasButtons = !!(onAddZero || onRemoveZero);
 
+  // From `sm` the buttons sit beside the number; when the zeros have made the
+  // number too long for that, they wrap onto a line of their own under it.
+  // ("safe" keeps a board wider than the card scrollable from its left edge.)
   return (
     <div className="w-full">
       <div className="w-full overflow-x-auto">
-        <div className="mx-auto w-max flex items-end pt-1 pb-1 pr-1">
-          {/* the divisor, outside the bus stop, level with the number */}
-          <div className={`${S.bottom} flex items-end pb-1 pr-2 font-mono font-black ${S.digit} tabular-nums leading-none text-slate-800 dark:text-slate-100`}>
-            {model.divisor}
-          </div>
-          <div>
-            <div className="flex pl-2">{top}</div>
-            <div className="flex items-end">
+        <div className="flex flex-wrap items-end justify-center gap-x-3 gap-y-2 pt-1 pb-1 pr-1" style={{ justifyContent: 'safe center' }}>
+          <div className="shrink-0 flex items-end">
+            {/* the divisor, outside the bus stop, level with the number */}
+            <div className={`${S.bottom} flex items-end pb-1 pr-2 font-mono font-black ${S.digit} tabular-nums leading-none text-slate-800 dark:text-slate-100`}>
+              {model.divisor}
+            </div>
+            <div>
+              <div className="flex pl-2">{top}</div>
               <div className="flex pl-2 border-t-[3px] border-l-[3px] border-slate-800 dark:border-slate-200 rounded-tl-xl">{bottom}</div>
-              {hasButtons && !compact && <div className={`ml-2 ${S.bottom} hidden sm:flex items-end pb-1 gap-1`}>{addBtn(false)}{removeBtn}</div>}
             </div>
           </div>
+          {hasButtons && !compact && <div className="shrink-0 mb-1 hidden sm:flex items-center gap-1.5">{addBtn}{removeBtn}</div>}
         </div>
       </div>
-      {hasButtons && <div className={`mt-2 items-center justify-center gap-2 ${compact ? 'flex' : 'flex sm:hidden'}`}>{addBtn(true)}{removeBtn}</div>}
+      {hasButtons && <div className={`mt-2 items-center justify-center gap-2 ${compact ? 'flex' : 'flex sm:hidden'}`}>{addBtn}{removeBtn}</div>}
     </div>
   );
 }

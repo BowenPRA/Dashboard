@@ -42,4 +42,10 @@ export const KT = {
     newLine: 'nouveau',
   },
 };
+// Vietnamese for the step frame only: the Bus Stop it shares with Units 1-3, which offer VN.
+KT.vn = {
+  ...KT.en,
+  find: 'Tìm', onTheWay: 'trên đường', step: 'Bước', workOut: 'Tính',
+  working: 'Bài làm của em', check: 'Kiểm tra', hint: 'Gợi ý', stuck: 'Chỉ cho em', newLine: 'mới',
+};
 export const kt = (lang) => KT[lang] || KT.en;

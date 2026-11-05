@@ -59,7 +59,7 @@ export function TimesTableCard({ divisor, entries = {}, marks = {}, editable = f
     const st = k === 1 ? 'given' : marks[k] || (editable ? 'live' : 'given');
     const text = k === 1 ? String(value) : (st === 'given' ? String(value) : entries[k] ?? '');
     return (
-      <div key={k} className={`flex items-center gap-1.5 font-mono font-black tabular-nums ${compact ? 'text-sm' : 'text-lg sm:text-xl'} text-slate-700 dark:text-slate-200`}>
+      <div key={k} className={`flex items-center gap-1.5 font-mono font-black tabular-nums ${compact ? 'text-sm' : `text-lg sm:text-xl ${editable ? 'min-h-[2.75rem]' : ''}`} text-slate-700 dark:text-slate-200`}>
         <span className={`${compact ? 'w-12' : 'w-16'} text-right whitespace-nowrap`}>{k} × {divisor}</span>
         <span className="text-slate-400">=</span>
         {k === 1 || st === 'given' || !editable || st === 'good' || st === 'shown' ? (
@@ -75,7 +75,7 @@ export function TimesTableCard({ divisor, entries = {}, marks = {}, editable = f
             onKeyDown={onKey(k)}
             inputMode="numeric" autoComplete="off" spellCheck={false} placeholder="?"
             aria-label={`${k} × ${divisor}`}
-            className={`w-[4.5rem] px-2 py-1 rounded-lg border-2 border-b-[3px] text-center font-mono font-black outline-none transition-colors placeholder:text-slate-300 dark:placeholder:text-slate-600 ${CELL[st] || CELL.live}`}
+            className={`w-[4.75rem] h-11 px-2 rounded-lg border-2 border-b-[3px] text-center font-mono font-black outline-none transition-colors placeholder:text-slate-300 dark:placeholder:text-slate-600 ${CELL[st] || CELL.live}`}
           />
         )}
       </div>
@@ -125,7 +125,7 @@ export function InverseChoices({ choices, marks = {}, onPick, disabled = false }
 /** The finished check, for the "copy this into your book" panel. */
 export function InverseDone({ model, product, lang = 'en', ink = '#7c3aed' }) {
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border-2 border-dashed p-3" style={{ borderColor: ink }}>
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border-2 border-dashed p-3" style={{ borderColor: ink }}>
       <RotateCcw className="w-5 h-5 shrink-0" style={{ color: ink }} strokeWidth={3} />
       <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{L(lang, 'Check', 'Vérification')}</div>
       <div className="text-lg text-slate-900 dark:text-slate-100"><SafeInlineMath math={`${model.answerText} \\times ${model.divisor} = ${product}`} /></div>

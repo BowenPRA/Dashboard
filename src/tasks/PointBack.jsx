@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react';
-import {
-  Construction, CheckCircle2, XCircle, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, ListChecks,
-  Target, Calculator, MousePointerClick, PenLine,
-} from 'lucide-react';
+import { Construction, ListChecks, Target, Calculator, MousePointerClick } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import useLang from '../hooks/useLang';
 import { tr, pickTable } from '../utils/lang';
-import { SafeInlineMath, SafeBlockMath } from '../components/notes/SafeMath.jsx';
-import PointTiles from '../components/math/PointTiles.jsx';
+import { SafeInlineMath } from '../components/notes/SafeMath.jsx';
+import PointTiles, { PointReminder } from '../components/math/PointTiles.jsx';
+import { QuestionCard, StepPanel, DoneCard } from '../components/math/StepKit.jsx';
+import { stepsOf } from '../components/math/stepKitParts';
 import { readDec, canon, sameValue } from '../utils/decimal';
 import {
   pointModel, placeSpec, diagnoseEstimate, diagnoseOut, diagnoseRow, diagnosePlace, diagnoseWrite,
@@ -26,7 +25,8 @@ import {
  *       (+ context / contextFr)
  *   ] }
  * utils/pointBack.js derives the estimate, the product, the rows, the point and
- * the slip behind a wrong answer.
+ * the slip behind a wrong answer. (`intro` is no longer shown: the first item
+ * carries a 1-2-3 strip instead.)
  *
  * The stages:
  *   ESTIMATE  round each number, multiply in your head (skipped when rounding
@@ -39,6 +39,11 @@ import {
  *             2 decimal places; an exact 5.00 may be written 5
  * A fact item runs ESTIMATE → BACK once per variant, on the fact's digits.
  *
+ * The frame is components/math/StepKit.jsx, as in the other Unit 4 tasks: the
+ * question on the left (the 1-2-3 strip on the first item), the stage on the
+ * right (its steps as pills, a note about the step just finished above it, the
+ * feedback on this step under the work), the working to copy when it is done.
+ *
  * A wrong answer is named and can be tried again; a second one (or "Show me")
  * fills the stage in and the item pays half. Progress blob: { [itemId]: 1 | 0.5 },
  * score out of 10. English and French (`tr(lang, en, null, fr)`).
@@ -46,36 +51,36 @@ import {
 
 const INK = '#0d9488';
 const INK_DARK = '#0f766e';
-const GREEN = '#58cc02';
-const AMBER = '#f59e0b';
-const KEY = '#c25e12';
 
 const T = {
   en: {
     title: 'Point Out, Point Back',
-    check: 'Check', stuck: 'Show me', next: 'Next question', finish: 'Finish',
+    next: 'Next question', finish: 'Finish',
     solved: 'done', level: 'Level',
     clean: 'Every step right first time.',
     slipped: 'Done — one wrong turn, and you found it yourself.',
     helped: 'Done — with a step or two shown to you.',
     bookCopy: 'Copy this into your book', answer: 'Answer',
     heads: { mul: 'A decimal × a whole number', money: 'Money', measure: 'A measure', fact: 'One fact, many answers' },
+    how: ['Estimate', 'Take the point out and multiply', 'Put the point back'],
     stages: { estimate: 'Estimate', out: 'Point out', back: 'Point back', write: 'Write it' },
     estTitle: 'Estimate first.',
-    estSub: 'Round each number to something easy, then multiply in your head.',
+    estSub: 'Round each number, then multiply in your head.',
+    estSubDiv: 'Round each number, then divide in your head.',
     estRight: (v) => `Good — about ${v}. Keep it in mind.`,
     outTitle: 'Take the point out.',
-    outSub: 'Multiply the whole numbers. The point goes back in later.',
-    outRows: 'One row for each digit of the whole number, then add.',
+    outSub: 'Multiply the whole numbers. The point comes back later.',
+    outSubRows: 'Multiply the whole numbers, one row at a time. Then add.',
     outRight: 'Right.',
     rowOnes: (a, b) => `${a} × ${b}`,
     total: 'total',
     backTitle: 'Put the point back.',
-    backSub: 'Tap the gap where the point goes. Count the decimal places in the question.',
-    backSubFact: 'Tap the gap where the point goes. Let your estimate decide.',
+    backSub: 'Count the decimal places, then tap where the point goes.',
+    backSubFact: 'Use your estimate, then tap where the point goes.',
     tapFirst: 'Tap a gap between the digits first.',
     yourEst: 'Your estimate',
     aboutEst: 'An estimate',
+    pointOut: 'Point out',
     close: (a, e) => `${a} is close to ${e}.`,
     writeMoney: 'Write it as money.',
     writeMoneySub: 'Dollars and cents: always 2 decimal places.',
@@ -85,39 +90,49 @@ const T = {
     kept: (full, simple) => `Right. ${full} is ${simple}: nothing was rounded, so you could leave the zeros off.`,
     moneyRight: 'Right — 2 decimal places, for the cents.',
     filled: 'It is filled in for you.',
-    shown: 'Here it is. Read it, then carry on.',
+    shownEst: (line) => `Here is an estimate: ${line}.`,
+    shownOut: (line) => `Here it is: ${line}.`,
+    shownBack: 'Here is where the point goes.',
+    // (the write stage is the last: its "why" is the Write it line of the working, just under this)
+    shownMoney: (v) => `Here it is: ${v} dollars.`,
+    shownZeros: (full, simple) => `Here it is: ${full} = ${simple}.`,
     variant: (i, n) => `Answer ${i} of ${n}`,
     useFact: 'Use this fact',
-    lines: { est: 'Estimate', out: 'Point out', back: 'Point back', check: 'Check' },
+    lines: { est: 'Estimate', out: 'Point out', back: 'Point back', write: 'Write it', check: 'Check' },
     places: (n) => `${n} decimal place${n === 1 ? '' : 's'}`,
+    moneyTail: '2 decimal places, for the cents',
+    zerosTail: 'nothing was rounded, so the zeros can go',
     typeHere: 'your answer', dollars: 'dollars',
     noItems: 'No questions yet', back: 'Return to Dashboard',
   },
   fr: {
     title: 'Point enlevé, point remis',
-    check: 'Vérifier', stuck: 'Montre-moi', next: 'Suivant', finish: 'Terminer',
+    next: 'Suivant', finish: 'Terminer',
     solved: 'faites', level: 'Niveau',
     clean: 'Toutes les étapes justes du premier coup.',
     slipped: "Fini — une erreur, et tu l'as trouvée toi-même.",
     helped: 'Fini — avec une ou deux étapes montrées.',
     bookCopy: 'Recopie ceci dans ton cahier', answer: 'Réponse',
     heads: { mul: 'Un décimal × un entier', money: "L'argent", measure: 'Une mesure', fact: 'Un fait, plusieurs réponses' },
+    how: ['Estime', 'Enlève le point et multiplie', 'Remets le point'],
     stages: { estimate: 'Estimer', out: 'Point enlevé', back: 'Point remis', write: "L'écrire" },
     estTitle: "Estime d'abord.",
-    estSub: 'Arrondis chaque nombre à une valeur simple, puis multiplie de tête.',
+    estSub: 'Arrondis chaque nombre, puis multiplie de tête.',
+    estSubDiv: 'Arrondis chaque nombre, puis divise de tête.',
     estRight: (v) => `Bien — environ ${v}. Garde-le en tête.`,
     outTitle: 'Enlève le point.',
     outSub: 'Multiplie les nombres entiers. Le point revient plus tard.',
-    outRows: "Une ligne pour chaque chiffre de l'entier, puis additionne.",
+    outSubRows: 'Multiplie les nombres entiers, une ligne à la fois. Puis additionne.',
     outRight: 'Correct.',
     rowOnes: (a, b) => `${a} × ${b}`,
     total: 'total',
     backTitle: 'Remets le point.',
-    backSub: 'Touche l’espace où va le point. Compte les décimales dans la question.',
-    backSubFact: 'Touche l’espace où va le point. Laisse ton estimation décider.',
+    backSub: 'Compte les décimales, puis touche l’espace où va le point.',
+    backSubFact: 'Utilise ton estimation, puis touche l’espace où va le point.',
     tapFirst: "Touche d'abord un espace entre les chiffres.",
     yourEst: 'Ton estimation',
     aboutEst: 'Une estimation',
+    pointOut: 'Point enlevé',
     close: (a, e) => `${a} est proche de ${e}.`,
     writeMoney: "Écris-le comme de l'argent.",
     writeMoneySub: 'Dollars et cents : toujours 2 décimales.',
@@ -127,11 +142,17 @@ const T = {
     kept: (full, simple) => `Correct. ${full}, c'est ${simple} : rien n'a été arrondi, donc tu pouvais enlever les zéros.`,
     moneyRight: 'Correct — 2 décimales, pour les cents.',
     filled: "C'est rempli pour toi.",
-    shown: 'Le voici. Lis-le, puis continue.',
+    shownEst: (line) => `Voici une estimation : ${line}.`,
+    shownOut: (line) => `Le voici : ${line}.`,
+    shownBack: 'Voici où va le point.',
+    shownMoney: (v) => `Le voici : ${v} dollars.`,
+    shownZeros: (full, simple) => `Le voici : ${full} = ${simple}.`,
     variant: (i, n) => `Réponse ${i} sur ${n}`,
     useFact: 'Utilise ce fait',
-    lines: { est: 'Estimation', out: 'Point enlevé', back: 'Point remis', check: 'Vérification' },
+    lines: { est: 'Estimation', out: 'Point enlevé', back: 'Point remis', write: "L'écrire", check: 'Vérification' },
     places: (n) => `${n} décimale${n === 1 ? '' : 's'}`,
+    moneyTail: '2 décimales, pour les cents',
+    zerosTail: 'rien n’a été arrondi, donc les zéros peuvent partir',
     typeHere: 'ta réponse', dollars: 'dollars',
     noItems: 'Pas encore de questions', back: 'Retour au tableau de bord',
   },
@@ -142,9 +163,9 @@ const inAll = (key, ...args) => {
   return { en: one('en'), fr: one('fr') };
 };
 const joinMsg = (a, b) => ({ en: `${a.en} ${b.en}`.trim(), fr: `${a.fr} ${b.fr}`.trim() });
-const STAGE_ICON = { estimate: Target, out: Calculator, back: MousePointerClick, write: PenLine };
 const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
-const inputBase = 'px-2 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-2xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-teal-500';
+// Digits ~text-4xl from sm; every box is at least 50 px high.
+const inputBase = 'px-2 py-1 rounded-xl border-2 border-b-[4px] font-mono font-black text-3xl sm:text-4xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-teal-500';
 const toneOf = (mark) => (mark === 'good' ? 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200'
   : mark === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200'
     : mark === 'bad' ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300'
@@ -161,34 +182,6 @@ function stagesOf(model) {
   return model.stages.map((stage) => ({ stage, step: 0 }));
 }
 
-function Stage({ icon: Icon, label, active, done }) {
-  return (
-    <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all
-      ${done ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300'
-        : active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}
-      style={active && !done ? { backgroundColor: INK } : undefined}>
-      {done ? <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
-      <span>{label}</span>
-    </div>
-  );
-}
-
-function Message({ msg, lang }) {
-  if (!msg) return null;
-  const text = tr(lang, msg.en, null, msg.fr || msg.en);
-  if (!text) return null;
-  const soft = msg.tone === 'shown' || msg.tone === 'info';
-  const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
-    : soft ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
-      : 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-300';
-  return (
-    <div className={`mt-3 flex items-start gap-2 p-3 rounded-xl border-2 font-bold text-sm leading-relaxed animate-in fade-in ${tone}`}>
-      {msg.tone === 'ok' ? <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} /> : soft ? <Lightbulb className="w-5 h-5 shrink-0" strokeWidth={3} /> : <XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />}
-      <span>{text}</span>
-    </div>
-  );
-}
-
 /**
  * Long multiplication with the point out, as whole rows: the top number, × the
  * whole number, one row per digit of it (the tens row ends in a 0), the total.
@@ -202,20 +195,20 @@ function RowsScaffold({ model, parts, marks, active, onChange, onEnter, t }) {
     { label: t.total, rule: true },
   ];
   return (
-    <div className="mx-auto w-fit font-mono font-black text-2xl text-slate-800 dark:text-slate-100">
-      <div className="grid grid-cols-[auto_7.5rem_auto] items-center gap-x-2 gap-y-1.5">
+    <div className="mx-auto w-fit font-mono font-black text-3xl sm:text-4xl text-slate-800 dark:text-slate-100">
+      <div className="grid grid-cols-[auto_7rem_auto] sm:grid-cols-[auto_9rem_auto] items-center gap-x-2 sm:gap-x-3 gap-y-1.5">
         <span />
-        <span className="text-right pr-2.5">{model.topText}</span>
+        <span className="text-right pr-3">{model.topText}</span>
         <span />
         <span className="text-right text-slate-400">×</span>
-        <span className="text-right pr-2.5">{model.whole}</span>
+        <span className="text-right pr-3">{model.whole}</span>
         <span />
         <span className="col-span-2 h-[3px] rounded-full bg-slate-400 dark:bg-slate-500" />
         <span />
         {lines.map((ln, i) => (
           <div key={i} className="contents">
             {ln.rule && <><span className="col-span-2 h-[3px] rounded-full bg-slate-400 dark:bg-slate-500" /><span /></>}
-            <span className="text-right text-slate-400 text-lg">{i === 1 ? '+' : ''}</span>
+            <span className="text-right text-slate-400 text-xl sm:text-2xl">{i === 1 ? '+' : ''}</span>
             <input
               id={`pointback-row-${i}`}
               value={parts[i]}
@@ -223,9 +216,9 @@ function RowsScaffold({ model, parts, marks, active, onChange, onEnter, t }) {
               onChange={(e) => onChange(i, e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') onEnter(i); }}
               inputMode="numeric" autoComplete="off" spellCheck={false} aria-label={ln.label} placeholder={i <= active ? '?' : ''}
-              className={`w-[7.5rem] ${inputBase} !text-right !pr-2 disabled:opacity-90 ${i > active ? 'opacity-40' : ''} ${toneOf(marks[i])}`}
+              className={`w-[7rem] sm:w-[9rem] ${inputBase} !text-right !pr-2.5 disabled:opacity-90 ${i > active ? 'opacity-40' : ''} ${toneOf(marks[i])}`}
             />
-            <span className="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">{ln.label}</span>
+            <span className="text-sm sm:text-base font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">{ln.label}</span>
           </div>
         ))}
       </div>
@@ -374,7 +367,8 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
   const afterPart = (i, tone, m, wasHelped = helped) => {
     setPartMarks((pm) => setPartAt(pm, i, tone));
     setWrongs(0);
-    if (i === 2) { advance({ tone, ...m }, wasHelped); return; }
+    // (a row's mark is 'good'; the message about it is an 'ok' — it was shown red before)
+    if (i === 2) { advance({ tone: tone === 'good' ? 'ok' : tone, ...m }, wasHelped); return; }
     setPart(i + 1);
     setMsg(tone === 'shown' ? { tone, ...m } : null);
     focus(`pointback-row-${i + 1}`);
@@ -393,7 +387,7 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
       setParts([rowWant(0), rowWant(1), rowWant(2)]);
       setPartMarks((pm) => pm.map((x) => (x === 'good' ? x : 'shown')));
     } else { setTyped(model.pText); setMark('shown'); }
-    advance({ tone: 'shown', en: `${outLine}. ${T.en.shown}`, fr: `${outLine}. ${T.fr.shown}` }, true);
+    advance({ tone: 'shown', ...inAll('shownOut', outLine) }, true);
   };
 
   /* ---------------------------------------------------------- point back */
@@ -421,7 +415,7 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
   };
   const showBack = () => {
     setK(spec.want); setKTone('shown'); setHelped(true); setSlipped(true); setPlaced({ ...placed, [cur.step]: true });
-    advance({ tone: 'shown', ...joinMsg(backRight(), inAll('shown')) }, true);
+    advance({ tone: 'shown', ...joinMsg(inAll('shownBack'), backRight()) }, true);
   };
 
   /* ---------------------------------------------------------- write */
@@ -440,10 +434,10 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
   };
   const showWrite = () => {
     setTyped(writeWant); setMark('shown'); setHelped(true); setSlipped(true);
-    const m = model.money ? inAll('moneyRight') : inAll('dropped', model.answerText, model.simpleText);
+    const m = model.money ? inAll('shownMoney', model.moneyText) : inAll('shownZeros', model.answerText, model.simpleText);
     advance({ tone: 'shown', ...m }, true);
   };
-  const showEstimate = () => { setHelped(true); setSlipped(true); fillEstimate({ en: `${estimateLine(sum.est)}. ${T.en.shown}`, fr: `${estimateLine(sum.est)}. ${T.fr.shown}` }); };
+  const showEstimate = () => { setHelped(true); setSlipped(true); fillEstimate(inAll('shownEst', estimateLine(sum.est))); };
 
   /* ---------------------------------------------------------- render helpers */
   const cleared = items.reduce((s, it) => s + (results[it.id]?.score || 0), 0);
@@ -451,15 +445,22 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
   const levelName = typeof levelRaw === 'string' ? levelRaw : pickTable(levelRaw, lang);
   const title = pick(pool?.title, pool?.titleFr) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introFr) : null;
   const context = item.context ? pick(item.context, item.contextFr) : null;
   const unit = model.money ? t.dollars : item.unit ? pick(item.unit, item.unitFr) : '';
   const head = isFact ? t.heads.fact : model.money ? t.heads.money : item.unit ? t.heads.measure : t.heads.mul;
-  const stIndex = itemDone ? stageNames.length : stageNames.indexOf(stage);
+  const si = Math.max(0, stageNames.indexOf(stage));
   const onCheck = stage === 'estimate' ? checkEstimate : stage === 'out' ? (model.rows ? () => checkPart(part) : checkOut) : stage === 'back' ? checkBack : checkWrite;
   const onShow = stage === 'estimate' ? showEstimate : stage === 'out' ? showOut : stage === 'back' ? showBack : showWrite;
-  const answerInput = (lead, after, width = 'w-40') => (
-    <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-2xl text-slate-900 dark:text-slate-100">
+  // Each stage: a short title and ONE line under it.
+  const [stageTitle, stageSub] = {
+    estimate: [t.estTitle, sum.op === '÷' ? t.estSubDiv : t.estSub],
+    out: [t.outTitle, model.rows ? t.outSubRows : t.outSub],
+    back: [t.backTitle, isFact ? t.backSubFact : t.backSub],
+    write: model.money ? [t.writeMoney, t.writeMoneySub] : [t.writePlain, t.writePlainSub],
+  }[stage];
+
+  const answerInput = (lead, after, width = 'w-32 sm:w-44') => (
+    <div className="py-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-3xl sm:text-4xl text-slate-900 dark:text-slate-100">
       {lead}
       <input
         id="pointback-answer"
@@ -472,17 +473,68 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
       {after}
     </div>
   );
-  const stageHead = (titleText, sub) => (
-    <>
-      <div className="font-black text-slate-800 dark:text-slate-100 mb-1 text-lg">{titleText}</div>
-      {sub && <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3">{sub}</p>}
-    </>
+  // What the point-back step leans on, kept in view: the estimate, and the whole-number product (or the fact).
+  const reminders = (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      {shownEst && <PointReminder kind="estimate" icon={Target} label={myEst ? t.yourEst : t.aboutEst}>≈ {plain(shownEst)}</PointReminder>}
+      {isFact
+        ? <PointReminder kind="fact" label={t.useFact}><SafeInlineMath math={model.factLatex} /></PointReminder>
+        : <PointReminder kind="product" icon={Calculator} label={t.pointOut}><SafeInlineMath math={`${model.outLatex} = ${model.pText}`} /></PointReminder>}
+    </div>
   );
-  const estChip = shownEst && (
-    <div className="mb-3 flex justify-center">
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-200 dark:border-teal-800 text-sm font-black text-teal-800 dark:text-teal-200">
-        <Target className="w-4 h-4" strokeWidth={3} /> {myEst ? t.yourEst : t.aboutEst} ≈ {plain(shownEst)}
-      </span>
+
+  let work;
+  if (stage === 'estimate') {
+    work = answerInput(<><SafeInlineMath math={sum.latex} /><span className="font-black text-slate-400">≈</span></>, null, 'w-28 sm:w-36');
+  } else if (stage === 'out') {
+    work = model.rows ? (
+      <RowsScaffold model={model} parts={parts} marks={partMarks} active={part} t={t}
+        onChange={(i, v) => { setParts((p) => setPartAt(p, i, v)); if (partMarks[i] === 'bad') setPartMarks((pm) => setPartAt(pm, i, null)); }}
+        onEnter={(i) => checkPart(i)} />
+    ) : answerInput(<SafeInlineMath math={`${model.outLatex} =`} />);
+  } else if (stage === 'back') {
+    work = (
+      <>
+        {reminders}
+        <PointTiles row={spec.row} k={k} onPick={pickK} tone={kTone === 'bad' ? 'bad' : null} lang={lang} />
+      </>
+    );
+  } else {
+    work = (
+      <>
+        <PointTiles row={spec.row} k={spec.want} tone="good" lang={lang} compact />
+        {answerInput(<SafeInlineMath math={`${model.latex} =`} />, unit ? <span className="text-xl sm:text-2xl font-black text-slate-700 dark:text-slate-200">{unit}</span> : null)}
+      </>
+    );
+  }
+
+  // The question, large: for a fact item the fact to use sits above the variant in hand.
+  const big = (
+    <div className="flex flex-col items-center gap-3">
+      {isFact && (
+        <div className="w-full rounded-xl border-2 border-[#c25e12] dark:border-orange-700 bg-[#c25e12]/[0.07] dark:bg-orange-900/20 px-3 py-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#c25e12] dark:text-orange-300">{t.useFact}</span>
+          <span className="text-xl sm:text-2xl"><SafeInlineMath math={model.factLatex} /></span>
+        </div>
+      )}
+      <span className="max-w-full overflow-x-auto"><SafeInlineMath math={isFact ? step.sum.latex : model.latex} /></span>
+    </div>
+  );
+  // A fact item's answers, the one in hand marked, the finished ones with their answer.
+  const variants = isFact && (
+    <div className="flex flex-col items-center gap-1.5">
+      <div className="flex flex-wrap justify-center gap-1.5">
+        {model.steps.map((s, j) => {
+          const done = itemDone || placed[j];
+          const on = !done && j === cur.step;
+          return (
+            <span key={j} className={`px-1.5 py-1 rounded-lg border-2 text-sm ${done ? 'border-[#58a700] bg-[#d7ffb8] text-[#3e7500] dark:bg-lime-900/30 dark:border-lime-700 dark:text-lime-200' : on ? 'border-teal-600 bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-100' : 'border-slate-200 dark:border-slate-700 text-slate-400'}`}>
+              <SafeInlineMath math={done ? `${s.sum.latex} = ${s.answerText}` : s.sum.latex} />
+            </span>
+          );
+        })}
+      </div>
+      {!itemDone && <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.variant(cur.step + 1, model.steps.length)}</div>}
     </div>
   );
 
@@ -492,139 +544,49 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
         lang={toggleLang ? lang : undefined}
         onLangToggle={toggleLang} />
 
-      <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-5 lg:items-start">
+      <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-5 lg:items-start">
         {/* left: the question */}
         <div className="lg:sticky lg:top-4 flex flex-col gap-3 min-w-0">
-          <div className="rounded-2xl border-2 bg-white dark:bg-slate-800 shadow-sm overflow-hidden" style={{ borderColor: INK }}>
-            <div className="px-4 py-2.5 text-white flex items-center gap-3" style={{ backgroundColor: INK }}>
-              <MousePointerClick className="w-5 h-5 shrink-0" strokeWidth={2.5} />
-              <div className="text-[11px] font-black uppercase tracking-widest opacity-90">{head}</div>
-              <div className="ml-auto text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">{cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / {items.length} {t.solved}</div>
-            </div>
-            {item.level && (
-              <div className="px-4 pt-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-teal-100 dark:bg-teal-900/40 text-teal-800 dark:text-teal-200 text-[10px] font-black uppercase tracking-widest">
-                  <TrendingUp className="w-3 h-3" strokeWidth={3} /> {t.level} {item.level}
-                </span>
-                {levelName && <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{levelName}</span>}
-              </div>
-            )}
-            {context && <p className="px-4 pt-3 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{context}</p>}
-            {isFact && (
-              <div className="mx-4 mt-3 rounded-xl border-2 px-3 py-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1" style={{ borderColor: KEY, backgroundColor: 'rgba(194,94,18,0.07)' }}>
-                <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: KEY }}>{t.useFact}</span>
-                <span className="text-xl text-slate-900 dark:text-slate-100"><SafeInlineMath math={model.factLatex} /></span>
-              </div>
-            )}
-            <div className="px-2 sm:px-4 text-center text-2xl sm:text-3xl text-slate-900 dark:text-slate-100 overflow-x-auto">
-              <SafeBlockMath math={isFact ? step.sum.latex : model.latex} />
-            </div>
-            {intro && <p className="px-4 pb-2 -mt-2 text-center text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
-            {isFact && (
-              <div className="px-3 pb-2 flex flex-wrap justify-center gap-1.5">
-                {model.steps.map((s, j) => {
-                  const done = itemDone || placed[j];
-                  const on = !done && j === cur.step;
-                  return (
-                    <span key={j} className={`px-2 py-1 rounded-lg border-2 text-sm ${done ? 'border-[#58a700] bg-[#d7ffb8] text-[#3e7500]' : on ? 'border-teal-600 bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-100' : 'border-slate-200 dark:border-slate-700 text-slate-400'}`}>
-                      <SafeInlineMath math={done ? `${s.sum.latex} = ${s.answerText}` : s.sum.latex} />
-                    </span>
-                  );
-                })}
-              </div>
-            )}
-            {!itemDone && (
-              <div className="px-3 pb-3 flex flex-wrap gap-1.5">
-                {stageNames.map((s) => <Stage key={s} icon={STAGE_ICON[s]} label={t.stages[s]} active={s === stage} done={stageNames.indexOf(s) < stIndex} />)}
-                {isFact && <span className="ml-auto self-center text-[10px] font-black uppercase tracking-widest text-slate-400">{t.variant(cur.step + 1, model.steps.length)}</span>}
-              </div>
-            )}
-          </div>
+          <QuestionCard ink={INK} icon={MousePointerClick} head={head}
+            doneText={`${cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / ${items.length} ${t.solved}`}
+            levelWord={t.level} level={item.level || null} levelName={levelName}
+            context={context} big={big} how={pos === 0 ? t.how : null}>
+            {variants}
+          </QuestionCard>
         </div>
 
         {/* right: the stage */}
         <div className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0">
           {!itemDone && (
             <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-5 min-w-0">
-              {stage === 'estimate' && (
-                <>
-                  {stageHead(t.estTitle, t.estSub)}
-                  {answerInput(<><SafeInlineMath math={sum.latex} /><span className="font-black text-slate-400">≈</span></>, null, 'w-32')}
-                </>
-              )}
-
-              {stage === 'out' && (
-                <>
-                  {stageHead(t.outTitle, model.rows ? `${t.outSub} ${t.outRows}` : t.outSub)}
-                  {model.rows ? (
-                    <RowsScaffold model={model} parts={parts} marks={partMarks} active={part} t={t}
-                      onChange={(i, v) => { setParts((p) => setPartAt(p, i, v)); if (partMarks[i] === 'bad') setPartMarks((pm) => setPartAt(pm, i, null)); }}
-                      onEnter={(i) => checkPart(i)} />
-                  ) : answerInput(<SafeInlineMath math={`${model.outLatex} =`} />)}
-                </>
-              )}
-
-              {stage === 'back' && (
-                <>
-                  {stageHead(t.backTitle, isFact ? t.backSubFact : t.backSub)}
-                  {estChip}
-                  {!isFact && (
-                    <p className="mb-2 text-center text-sm font-bold text-slate-500 dark:text-slate-400">
-                      <SafeInlineMath math={`${model.outLatex} = ${model.pText}`} />
-                    </p>
-                  )}
-                  <PointTiles row={spec.row} k={k} onPick={pickK} tone={kTone === 'bad' ? 'bad' : null} lang={lang} />
-                </>
-              )}
-
-              {stage === 'write' && (
-                <>
-                  {stageHead(model.money ? t.writeMoney : t.writePlain, model.money ? t.writeMoneySub : t.writePlainSub)}
-                  <PointTiles row={spec.row} k={spec.want} tone="good" lang={lang} compact />
-                  {answerInput(<SafeInlineMath math={`${model.latex} =`} />, unit ? <span className="font-black text-slate-700 dark:text-slate-200">{unit}</span> : null)}
-                </>
-              )}
-
-              <Message msg={msg} lang={lang} />
-
-              <div className="mt-4 flex items-center justify-end gap-2">
-                <button onClick={onShow}
-                  className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-                  <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
-                </button>
-                <button onClick={onCheck} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>
-              </div>
+              <StepPanel ink={INK} lang={lang} plain
+                steps={stepsOf(stageNames, si, t.stages)} n={si + 1} title={stageTitle} sub={stageSub} msg={msg}
+                onShowMe={onShow} onCheck={onCheck}>
+                {work}
+              </StepPanel>
             </div>
           )}
 
           {itemDone && (
-            <div className="rounded-2xl border-2 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300" style={{ borderColor: helped ? AMBER : GREEN }}>
-              <div className="px-4 py-3 flex items-center gap-3 text-white" style={{ backgroundColor: helped ? AMBER : GREEN }}>
-                {helped ? <Lightbulb className="w-6 h-6 shrink-0" strokeWidth={2.5} /> : <Trophy className="w-6 h-6 shrink-0" strokeWidth={2.5} />}
-                <div className="font-black">{helped ? t.helped : slipped ? t.slipped : t.clean}</div>
-              </div>
-              <div className="bg-white dark:bg-slate-900 p-3 sm:p-5">
-                {msg && <div className="-mt-3 mb-3"><Message msg={msg} lang={lang} /></div>}
-                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                  <Pencil className="w-4 h-4" strokeWidth={3} /> {t.bookCopy}
-                </div>
-                <BookLines model={model} t={t} ests={ests} />
-                <div className="mt-3 flex items-center gap-3 rounded-xl border-2 p-3" style={{ borderColor: INK, backgroundColor: 'rgba(13,148,136,0.07)' }}>
-                  <ListChecks className="w-5 h-5 shrink-0" style={{ color: INK }} strokeWidth={3} />
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.answer}</div>
-                  <div className="text-xl text-slate-900 dark:text-slate-100 overflow-x-auto">
-                    {isFact
-                      ? <SafeInlineMath math={model.steps.map((s) => `${s.sum.latex} = ${s.answerText}`).join(' \\quad ')} />
-                      : <><SafeInlineMath math={answerLatex(model)} />{unit && <span className="ml-2 font-black text-base">{unit}</span>}</>}
+            <DoneCard ink={INK} inkDark={INK_DARK} helped={helped} slipped={slipped}
+              words={{ clean: t.clean, slipped: t.slipped, helped: t.helped, bookCopy: t.bookCopy, next: t.next, finish: t.finish }}
+              shown={msg?.tone === 'shown' ? pick(msg.en, msg.fr) : null}
+              isLast={isLast} onNext={isLast ? finish : goNext}>
+              <BookLines model={model} t={t} ests={ests} />
+              <div className="flex items-center gap-3 rounded-xl border-2 border-[#0d9488] bg-teal-50/70 dark:bg-teal-900/20 p-3 min-w-0">
+                <ListChecks className="w-5 h-5 shrink-0 text-[#0d9488] dark:text-teal-300" strokeWidth={3} />
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.answer}</div>
+                {isFact ? (
+                  <div className="flex flex-wrap gap-x-5 gap-y-1 text-lg sm:text-xl text-slate-900 dark:text-slate-100 min-w-0">
+                    {model.steps.map((s) => <span key={s.sum.latex} className="whitespace-nowrap"><SafeInlineMath math={`${s.sum.latex} = ${s.answerText}`} /></span>)}
                   </div>
-                </div>
-                <div className="mt-4 flex justify-end">
-                  <button onClick={isLast ? finish : goNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: INK_DARK }}>
-                    {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />
-                  </button>
-                </div>
+                ) : (
+                  <div className="text-xl sm:text-2xl text-slate-900 dark:text-slate-100 overflow-x-auto">
+                    <SafeInlineMath math={answerLatex(model)} />{unit && <span className="ml-2 font-black text-base sm:text-lg">{unit}</span>}
+                  </div>
+                )}
               </div>
-            </div>
+            </DoneCard>
           )}
         </div>
       </div>
@@ -632,12 +594,17 @@ export default function PointBack({ pool, savedData = {}, onComplete, onProgress
   );
 }
 
-/** The worked lines to copy: estimate, point out, point back, check (or one line per fact variant). */
+/** The worked lines to copy: estimate, point out, point back, write it, check (or one line per fact variant). */
 function BookLines({ model, t, ests }) {
+  // `math`: one formula, or a list of pieces that each stay whole (a narrow screen breaks between them)
   const row = (label, math, tail) => (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 py-1.5 border-b border-slate-200 dark:border-slate-700 last:border-0">
       <span className="w-24 shrink-0 text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</span>
-      {math && <span className="text-lg text-slate-900 dark:text-slate-100"><SafeInlineMath math={math} /></span>}
+      {math && (
+        <span className="inline-flex flex-wrap items-baseline gap-x-2 text-lg sm:text-xl text-slate-900 dark:text-slate-100">
+          {[].concat(math).map((m) => <span key={m} className="whitespace-nowrap"><SafeInlineMath math={m} /></span>)}
+        </span>
+      )}
       {tail && <span className="text-sm font-bold text-slate-500 dark:text-slate-400">{tail}</span>}
     </div>
   );
@@ -645,20 +612,23 @@ function BookLines({ model, t, ests }) {
     return (
       <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 px-3 sm:px-4 py-1 min-w-0 overflow-x-auto">
         {row(t.useFact, model.factLatex)}
-        {model.steps.map((s, j) => row(`${j + 1}`, `${estimateLatex(s.sum.est)} \\;\\Rightarrow\\; ${s.sum.latex} = ${s.answerText}`, null))}
+        {model.steps.map((s, j) => row(`${j + 1}`, [estimateLatex(s.sum.est), '\\Rightarrow', `${s.sum.latex} = ${s.answerText}`], null))}
       </div>
     );
   }
   const est = model.estimate ? model.sum.est : null;
   const close = est ? t.close(model.simpleText, plain(ests[0] || est.value)) : null;
+  // The "write it" stage, kept in the working: money keeps its cents, an exact answer drops its end zeros.
+  const write = !model.write ? null
+    : model.money ? row(t.lines.write, `${model.answerText === model.moneyText ? '' : `${model.answerText} = `}${model.moneyText}\\text{ ${t.dollars}}`, t.moneyTail)
+      : row(t.lines.write, `${model.answerText} = ${model.simpleText}`, t.zerosTail);
   return (
     <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 px-3 sm:px-4 py-1 min-w-0 overflow-x-auto">
       {est && row(t.lines.est, estimateLatex(est))}
       {row(t.lines.out, `${model.outLatex} = ${model.pText}`)}
       {row(t.lines.back, `${model.latex} = ${model.answerText}`, t.places(model.dp))}
+      {write}
       {close && row(t.lines.check, null, `✓ ${close}`)}
     </div>
   );
 }
-
-

@@ -94,9 +94,9 @@ export function Stepper({ steps, accent }) {
           <li key={s.key} className="flex items-center gap-1" aria-current={now ? 'step' : undefined}>
             {i > 0 && <span className={`w-3 h-0.5 rounded ${done || now ? 'bg-slate-300 dark:bg-slate-600' : 'bg-slate-200 dark:bg-slate-800'}`} />}
             <span className={`inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full border-2 text-xs font-black ${pill}`}
-              style={now && accent ? { borderColor: accent, color: accent } : undefined}>
+              style={now && accent ? { backgroundColor: accent, borderColor: accent, color: '#ffffff' } : undefined}>
               <span className={`inline-grid place-items-center w-5 h-5 rounded-full text-[11px] ${done ? 'bg-white/70 dark:bg-black/20' : now ? 'bg-[#e8590c] text-white' : 'bg-slate-100 dark:bg-slate-800'}`}
-                style={now && accent ? { backgroundColor: accent } : undefined}>
+                style={now && accent ? { backgroundColor: '#ffffff', color: accent } : undefined}>
                 {done ? <Check className="w-3 h-3" strokeWidth={4} /> : i + 1}
               </span>
               {s.label}
@@ -112,7 +112,7 @@ export function Stepper({ steps, accent }) {
 export function StepTitle({ n, lang, accent, children }) {
   return (
     <p className="text-[15px] font-black text-slate-700 dark:text-slate-200 flex items-baseline gap-2">
-      {n != null && <span className="shrink-0 text-[11px] uppercase tracking-widest text-[#e8590c] dark:text-orange-400" style={accent ? { color: accent } : undefined}>{kt(lang).step} {n}</span>}
+      {n != null && <span className={`shrink-0 text-[11px] uppercase tracking-widest text-[#e8590c] dark:text-orange-400 ${accent ? 'dark:brightness-[1.9]' : ''}`} style={accent ? { color: accent } : undefined}>{kt(lang).step} {n}</span>}
       <span>{children}</span>
     </p>
   );

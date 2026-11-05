@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Divide, Construction, CheckCircle2, XCircle, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, ListChecks, Target,
-  Grid3x3, RotateCcw,
-} from 'lucide-react';
+import { Divide, Construction, ListChecks } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import useLang from '../hooks/useLang';
 import { tr } from '../utils/lang';
 import { SafeInlineMath } from '../components/notes/SafeMath.jsx';
 import ShortDivBoard from '../components/math/ShortDivBoard.jsx';
+import { QuestionCard, StepPanel, DoneCard } from '../components/math/StepKit.jsx';
+import { stepsOf } from '../components/math/stepKitParts';
 import { focusBox } from '../components/math/shortDivBoardHelpers';
 import {
   shortDivModel, qDigitOk, carryOk, qHint, carryHint, remHint, remainderVerdict, needZeroHint, extraZeroNote, questionText,
@@ -36,13 +35,19 @@ import { TimesTableCard, InverseChoices, InverseDone } from '../components/math/
  * drills of 1.4 and 1.5, every item a remainder item.
  * utils/shortDivision.js derives every column from the two numbers.
  *
+ * The screen wears the step kit (components/math/StepKit.jsx), like Fill the
+ * Zeros: the question on the left (on the first item a 1-2-3 strip in place of
+ * the pool's `intro`, which is no longer shown), the stage in hand on the right
+ * with its steps as pills, one short line under its title, and Show me + Check.
+ *
  * The stages:
  *   DIVIDE  one column at a time, left to right. Type the digit on top and
  *           the remainder in the small box up-left of the NEXT digit. When
  *           the digits run out and it is not finished, +0 adds a zero after
  *           the point (pressing Check there instead is the named slip).
  *           A remainder item has no zeros: at the last digit, what is left
- *           over goes in the r box after the answer.
+ *           over goes in the r box after the answer. The line under the title
+ *           says only what is new in this column (the carry to read with it).
  *   ROUND   (dp items) type the answer rounded to the accuracy asked for.
  *   TABLE   (`table: true`, a 2-digit divisor) BEFORE dividing: write 2 × d …
  *           9 × d by adding d each time. The table then stays on the left.
@@ -50,118 +55,152 @@ import { TimesTableCard, InverseChoices, InverseDone } from '../components/math/
  *           calculation, answer × d, from three. utils/shortDivExtras.js.
  *
  * A wrong box can be tried again; a second wrong answer at the same step (or
- * "Show me") fills it in and the item pays half. Progress blob:
- * { [itemId]: 1 | 0.5 }, score out of 10.
+ * "Show me") fills it in, says what was written, and the item pays half.
+ * Progress blob: { [itemId]: 1 | 0.5 }, score out of 10.
+ *
+ * Vietnamese (3.2, 1.4, 1.5): every word of this screen has its `vn` twin; the
+ * kit's own "Step" and "Show me" have none yet, so they stay English there.
  * ------------------------------------------------------------------ */
 
 const INK = '#7c3aed';
 const INK_DARK = '#5b21b6';
-const GREEN = '#58cc02';
-const AMBER = '#f59e0b';
 const UID = 'busstop';
 
 const T = {
   en: {
     title: 'Bus Stop',
-    check: 'Check', stuck: 'Show me', next: 'Next question', finish: 'Finish',
+    check: 'Check', next: 'Next question', finish: 'Finish',
     solved: 'done', level: 'Level',
     clean: 'Every box right first time.',
     slipped: 'Done — one wrong turn, and you found it yourself.',
     helped: 'Done — with a step or two shown to you.',
     bookCopy: 'Copy this into your book', answer: 'Answer',
     headExact: 'Divide', headRound: 'Divide, then round',
-    stages: { divide: 'Divide', round: 'Round', table: 'Table', check: 'Check' },
+    stages: { divide: 'Divide', round: 'Round', table: 'Table', check: 'Inverse' },
+    how: ['How many fit? Write it on top', 'The remainder goes in the small box'],
+    howPoint: 'The point goes straight up',
+    howR: 'What is left goes after the r',
+    howZero: 'Out of digits? Add a zero',
     tableTitle: (d) => `Write the ${d} times table first.`,
-    tableSub: (d) => `Keep adding ${d}. 1 × ${d} is done for you.`,
-    fillTable: 'Fill in every row of the table first.',
-    checkTitle: 'Check with the inverse calculation.',
-    checkSub: (D) => `Which calculation takes you back to ${D}?`,
+    tableSub: (d) => `Add ${d} each time. 1 × ${d} is done for you.`,
+    fillTable: 'Fill in every row first.',
+    tableShown: (d) => `Filled in: the ${d} times table. Use it to divide.`,
+    tableFixed: 'The wrong rows are filled in.',
+    checkTitle: 'Check it with the inverse.',
+    checkSub: (D) => `Which one takes you back to ${D}?`,
     askCol: (d, cur) => `How many ${d}s in ${cur}?`,
-    readCarry: (k, dg, cur) => `The small ${k} rides on the ${dg} — read them together: ${cur}.`,
-    boxes: 'Digit on top. Remainder in the small box, up and to the left of the next digit.',
-    remLast: 'Last digit: what is left over is the remainder — write it after the r.',
-    typeTop: 'Type the digit that goes on top first.',
-    fillCarry: 'There is a remainder. Write it in the small box — up and to the left of the next digit.',
-    fillRem: 'Something is left over. Write the remainder after the r.',
+    firstCol: 'Answer on top. Remainder in the small box.',
+    readCarry: (k, dg, cur) => `The ${k} rides on the ${dg}: read ${cur}.`,
+    remAfter: 'What is left goes after the r.',
+    remLast: 'Last digit: what is left goes after the r.',
+    typeTop: 'Type the digit on top first.',
+    fillCarry: 'There is a remainder: write it in the small box.',
+    fillRem: 'Something is left over: write it after the r.',
+    shownNone: (s, q) => `Filled in: ${s} = ${q}, nothing left over.`,
+    shownCarry: (s, q, r, isNew) => `Filled in: ${s} = ${q} r ${r} — ${q} on top, ${r} carried${isNew ? ' onto a new 0' : ''}.`,
+    shownR: (s, q, r) => `Filled in: ${s} = ${q} r ${r} — ${q} on top, ${r} after the r.`,
+    shownTop: (s, q, r) => `Filled in: ${s} = ${q} r ${r} — ${q} on top.`,
     filled: 'It is filled in for you.',
-    shown: 'Here it is. Read it, then carry on.',
     pointNote: 'The point goes in the answer too — straight above the one in the number.',
     maxZeros: 'That is as many zeros as the page holds.',
-    addZero: 'Add a zero after the point', removeZero: 'Take the last zero away',
+    addZero: 'Add a zero', addZeroTip: 'Add a zero after the point', removeZero: 'Take the last zero away',
     top: 'digit on top, column', carry: 'remainder carried onto digit', remainder: 'remainder',
     roundTitle: (q, name) => `Now round ${q} to ${name}.`,
-    roundSub: 'The last digit you worked out is the one that decides.',
+    roundSub: 'The last digit you worked out decides.',
     roundRight: 'Right — rounded once, from the digit after.',
+    roundShown: (q, a) => `Filled in: ${q} rounds to ${a}.`,
     typeHere: 'rounded answer',
     noItems: 'No questions yet', back: 'Return to Dashboard',
     dp: 'd.p.',
   },
   vn: {
     title: 'Chia ngắn',
-    check: 'Kiểm tra', stuck: 'Chỉ cho em', next: 'Câu tiếp theo', finish: 'Hoàn thành',
+    check: 'Kiểm tra', next: 'Câu tiếp theo', finish: 'Hoàn thành',
     solved: 'đã xong', level: 'Cấp độ',
     clean: 'Mọi ô đều đúng ngay lần đầu.',
     slipped: 'Đã xong — sai một lần, và em đã tự sửa được.',
     helped: 'Đã xong — có một vài bước được chỉ cho em.',
     bookCopy: 'Chép phần này vào vở', answer: 'Đáp án',
     headExact: 'Chia', headRound: 'Chia, rồi làm tròn',
-    stages: { divide: 'Chia', round: 'Làm tròn', table: 'Bảng nhân', check: 'Thử lại' },
+    stages: { divide: 'Chia', round: 'Làm tròn', table: 'Bảng nhân', check: 'Phép ngược' },
+    how: ['Chia được mấy lần? Viết ở trên', 'Số dư viết vào ô nhỏ'],
+    howPoint: 'Dấu thập phân đi thẳng lên',
+    howR: 'Phần còn dư viết sau chữ r',
+    howZero: 'Hết chữ số? Thêm số 0',
     tableTitle: (d) => `Viết bảng nhân ${d} trước.`,
-    tableSub: (d) => `Cứ cộng thêm ${d}. Dòng 1 × ${d} đã có sẵn.`,
-    fillTable: 'Hãy điền hết các dòng của bảng trước.',
+    tableSub: (d) => `Mỗi lần cộng thêm ${d}. Dòng 1 × ${d} đã có sẵn.`,
+    fillTable: 'Hãy điền hết các dòng trước.',
+    tableShown: (d) => `Đã điền: bảng nhân ${d}. Dùng nó để chia.`,
+    tableFixed: 'Các dòng sai đã được điền sẵn.',
     checkTitle: 'Thử lại bằng phép tính ngược.',
     checkSub: (D) => `Phép tính nào đưa em trở lại ${D}?`,
     askCol: (d, cur) => `${cur} chứa bao nhiêu lần ${d}?`,
-    readCarry: (k, dg, cur) => `Số ${k} nhỏ đi cùng số ${dg} — đọc chung thành ${cur}.`,
-    boxes: 'Chữ số ở trên. Số dư viết vào ô nhỏ, phía trên bên trái của chữ số tiếp theo.',
-    remLast: 'Chữ số cuối: phần còn dư chính là số dư — viết nó sau chữ r.',
-    typeTop: 'Hãy nhập chữ số ở phía trên trước.',
-    fillCarry: 'Có số dư. Hãy viết nó vào ô nhỏ — phía trên bên trái của chữ số tiếp theo.',
-    fillRem: 'Vẫn còn dư. Hãy viết số dư sau chữ r.',
+    firstCol: 'Thương viết ở trên. Số dư viết vào ô nhỏ.',
+    readCarry: (k, dg, cur) => `Số ${k} đi cùng số ${dg}: đọc là ${cur}.`,
+    remAfter: 'Phần còn dư viết sau chữ r.',
+    remLast: 'Chữ số cuối: phần còn dư viết sau chữ r.',
+    typeTop: 'Hãy nhập chữ số ở trên trước.',
+    fillCarry: 'Có số dư: hãy viết nó vào ô nhỏ.',
+    fillRem: 'Vẫn còn dư: hãy viết nó sau chữ r.',
+    shownNone: (s, q) => `Đã điền: ${s} = ${q}, không dư.`,
+    shownCarry: (s, q, r, isNew) => `Đã điền: ${s} = ${q} dư ${r} — ${q} ở trên, nhớ ${r}${isNew ? ' sang số 0 mới' : ''}.`,
+    shownR: (s, q, r) => `Đã điền: ${s} = ${q} dư ${r} — ${q} ở trên, ${r} viết sau chữ r.`,
+    shownTop: (s, q, r) => `Đã điền: ${s} = ${q} dư ${r} — ${q} ở trên.`,
     filled: 'Đã điền sẵn cho em.',
-    shown: 'Đây là đáp án. Đọc kỹ rồi làm tiếp.',
     pointNote: 'Dấu thập phân cũng có ở đáp án — ngay phía trên dấu thập phân của số bị chia.',
     maxZeros: 'Trang giấy chỉ đủ chỗ cho chừng đó số 0.',
-    addZero: 'Thêm một số 0 sau dấu thập phân', removeZero: 'Bỏ số 0 cuối cùng',
+    addZero: 'Thêm số 0', addZeroTip: 'Thêm một số 0 sau dấu thập phân', removeZero: 'Bỏ số 0 cuối cùng',
     top: 'chữ số ở trên, cột', carry: 'số dư nhớ sang chữ số', remainder: 'số dư',
     roundTitle: (q, name) => `Bây giờ làm tròn ${q} đến ${name}.`,
-    roundSub: 'Chữ số cuối cùng em vừa tính chính là chữ số quyết định.',
+    roundSub: 'Chữ số cuối cùng em tính được sẽ quyết định.',
     roundRight: 'Đúng — làm tròn một lần, dựa vào chữ số đứng sau.',
+    roundShown: (q, a) => `Đã điền: ${q} làm tròn thành ${a}.`,
     typeHere: 'đáp án đã làm tròn',
     noItems: 'Chưa có câu hỏi', back: 'Quay lại Bảng điều khiển',
     dp: 'c.s.t.p.',
   },
   fr: {
     title: 'Arrêt de bus',
-    check: 'Vérifier', stuck: 'Montre-moi', next: 'Suivant', finish: 'Terminer',
+    check: 'Vérifier', next: 'Suivant', finish: 'Terminer',
     solved: 'faites', level: 'Niveau',
     clean: 'Toutes les cases justes du premier coup.',
     slipped: "Fini — une erreur, et tu l'as trouvée toi-même.",
     helped: 'Fini — avec une ou deux étapes montrées.',
     bookCopy: 'Recopie ceci dans ton cahier', answer: 'Réponse',
     headExact: 'Divise', headRound: 'Divise, puis arrondis',
-    stages: { divide: 'Diviser', round: 'Arrondir', table: 'Table', check: 'Vérification' },
+    stages: { divide: 'Diviser', round: 'Arrondir', table: 'Table', check: 'Inverse' },
+    how: ['Combien de fois ? Écris-le en haut', 'Le reste va dans la petite case'],
+    howPoint: 'Le point monte tout droit',
+    howR: 'Ce qui reste va après le r',
+    howZero: 'Plus de chiffres ? Ajoute un zéro',
     tableTitle: (d) => `Écris d'abord la table de ${d}.`,
     tableSub: (d) => `Ajoute ${d} à chaque fois. 1 × ${d} est déjà fait.`,
-    fillTable: "Remplis d'abord toutes les lignes de la table.",
+    fillTable: "Remplis d'abord toutes les lignes.",
+    tableShown: (d) => `Rempli : la table de ${d}. Sers-t'en pour diviser.`,
+    tableFixed: 'Les lignes fausses sont remplies.',
     checkTitle: 'Vérifie avec le calcul inverse.',
-    checkSub: (D) => `Quel calcul te ramène à ${D} ?`,
+    checkSub: (D) => `Lequel te ramène à ${D} ?`,
     askCol: (d, cur) => `En ${cur}, combien de fois ${d} ?`,
-    readCarry: (k, dg, cur) => `Le petit ${k} va avec le ${dg} — lis-les ensemble : ${cur}.`,
-    boxes: 'Le chiffre en haut. Le reste dans la petite case, en haut à gauche du chiffre suivant.',
-    remLast: 'Dernier chiffre : ce qui reste est le reste — écris-le après le r.',
+    firstCol: 'La réponse en haut. Le reste dans la petite case.',
+    readCarry: (k, dg, cur) => `Le ${k} va avec le ${dg} : lis ${cur}.`,
+    remAfter: 'Ce qui reste va après le r.',
+    remLast: 'Dernier chiffre : ce qui reste va après le r.',
     typeTop: "Écris d'abord le chiffre du haut.",
-    fillCarry: 'Il y a un reste. Écris-le dans la petite case — en haut à gauche du chiffre suivant.',
-    fillRem: 'Il reste quelque chose. Écris le reste après le r.',
+    fillCarry: 'Il y a un reste : écris-le dans la petite case.',
+    fillRem: 'Il reste quelque chose : écris-le après le r.',
+    shownNone: (s, q) => `Rempli : ${s} = ${q}, il ne reste rien.`,
+    shownCarry: (s, q, r, isNew) => `Rempli : ${s} = ${q} reste ${r} — ${q} en haut, ${r} reporté${isNew ? ' sur un nouveau 0' : ''}.`,
+    shownR: (s, q, r) => `Rempli : ${s} = ${q} reste ${r} — ${q} en haut, ${r} après le r.`,
+    shownTop: (s, q, r) => `Rempli : ${s} = ${q} reste ${r} — ${q} en haut.`,
     filled: "C'est rempli pour toi.",
-    shown: 'Le voici. Lis-le, puis continue.',
     pointNote: 'Le point va aussi dans la réponse — juste au-dessus de celui du nombre.',
     maxZeros: "C'est le maximum de zéros que la page peut contenir.",
-    addZero: 'Ajoute un zéro après le point', removeZero: 'Enlève le dernier zéro',
+    addZero: 'Ajoute un zéro', addZeroTip: 'Ajoute un zéro après le point', removeZero: 'Enlève le dernier zéro',
     top: 'chiffre du haut, colonne', carry: 'reste reporté sur le chiffre', remainder: 'reste',
     roundTitle: (q, name) => `Maintenant, arrondis ${q} ${name}.`,
-    roundSub: 'Le dernier chiffre que tu as calculé est celui qui décide.',
+    roundSub: 'Le dernier chiffre calculé décide.',
     roundRight: 'Correct — arrondi une seule fois, avec le chiffre suivant.',
+    roundShown: (q, a) => `Rempli : ${q} s'arrondit à ${a}.`,
     typeHere: 'réponse arrondie',
     noItems: 'Pas encore de questions', back: 'Retour au tableau de bord',
     dp: 'déc.',
@@ -188,34 +227,6 @@ function extrasOf(item, model) {
     table: item?.table === true && !!model && model.divisor >= TABLE_MIN_DIVISOR,
     check: item?.check === true && !!model && model.dp == null && !model.remainderMode,
   };
-}
-
-function Stage({ icon: Icon, label, active, done }) {
-  return (
-    <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all
-      ${done ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300'
-        : active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}
-      style={active && !done ? { backgroundColor: INK } : undefined}>
-      {done ? <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
-      <span>{label}</span>
-    </div>
-  );
-}
-
-function Message({ msg, lang }) {
-  if (!msg) return null;
-  const text = tr(lang, msg.en, msg.vn || msg.en, msg.fr || msg.en);
-  if (!text) return null;
-  const soft = msg.tone === 'shown' || msg.tone === 'info';
-  const tone = msg.tone === 'ok' ? 'bg-[#58cc02]/10 border-[#58cc02]/40 text-[#3e7500] dark:text-lime-300'
-    : soft ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
-      : 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-300';
-  return (
-    <div className={`mt-3 flex items-start gap-2 p-3 rounded-xl border-2 font-bold text-sm leading-relaxed animate-in fade-in ${tone}`}>
-      {msg.tone === 'ok' ? <CheckCircle2 className="w-5 h-5 shrink-0" strokeWidth={3} /> : soft ? <Lightbulb className="w-5 h-5 shrink-0" strokeWidth={3} /> : <XCircle className="w-5 h-5 shrink-0" strokeWidth={3} />}
-      <span>{text}</span>
-    </div>
-  );
 }
 
 export default function ShortDivision({ pool, savedData = {}, onComplete, onProgress, onQuit, bilingual = true, langs }) {
@@ -260,6 +271,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   // Open with the cursor in the first box.
   useEffect(() => { focusBox(UID, 'q0'); }, []);
   const pick = (en, vn, fr) => tr(lang, en, vn || en, fr || en);
+  const say = (m) => (m ? pick(m.en, m.vn, m.fr) : '');
 
   if (!items.length || !model) {
     return (
@@ -368,8 +380,18 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     focusBox(UID, `q${col + 1}`);
   };
 
-  /** Fill this column in (after two wrong tries, or Show me). */
-  const revealStep = (why) => {
+  /** What was written in this column when it was filled in, as one short line. */
+  const shownCol = (kId, newZero) => {
+    const s = `${column.current} ÷ ${model.divisor}`;
+    const { q, carryOut: r } = column;
+    if (!r) return inAll('shownNone', s, q);
+    if (kId === 'r') return inAll('shownR', s, q, r);
+    if (kId) return inAll('shownCarry', s, q, r, newZero);
+    return inAll('shownTop', s, q, r);
+  };
+
+  /** Fill this column in (after two wrong tries, or Show me) and move on. */
+  const revealStep = () => {
     const qId = `q${col}`;
     const last = col === need - 1;
     let zerosNow = zeros;
@@ -385,8 +407,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     setHelped(true);
     setSlipped(true);
     stepOn(zerosNow, true);
-    const f = inAll(why ? 'filled' : 'shown');
-    setMsg({ tone: 'shown', ...(why ? joinMsg(why, f) : f) });
+    setMsg({ tone: 'shown', ...shownCol(kId, zerosNow > zeros) });
   };
 
   const checkDivide = () => {
@@ -425,7 +446,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     }
     const why = !qOk ? qHint(model, column) : lastRem ? remHint(model, column) : carryHint(model, column);
     setSlipped(true);
-    if (wrongs + 1 >= 2) { revealStep(why); return; }
+    if (wrongs + 1 >= 2) { revealStep(); return; }
     setWrongs(wrongs + 1);
     setMarks((m) => ({ ...m, [qId]: qOk ? 'good' : 'bad', ...(hasBox && qOk ? { [kId]: 'bad' } : {}) }));
     setMsg({ tone: 'bad', ...why });
@@ -455,7 +476,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     setRoundTyped(model.answerText);
     setRoundMark('shown');
     setHelped(true);
-    setMsg({ tone: 'shown', ...inAll('shown') });
+    setMsg({ tone: 'shown', ...inAll('roundShown', model.quotientText, model.answerText) });
     completeItem(true);
   };
 
@@ -489,7 +510,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
       wrong.forEach((k) => { next[k] = 'shown'; });
       setTableEntries((e) => ({ ...e, ...Object.fromEntries(wrong.map((k) => [k, String(k * d)])) }));
       setHelped(true);
-      setMsg({ tone: 'shown', ...joinMsg(hint, inAll('filled')) });
+      setMsg({ tone: 'shown', ...joinMsg(hint, inAll('tableFixed')) });
       tableDone(next);
       return;
     }
@@ -505,7 +526,7 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     setTableEntries((e) => ({ ...e, ...Object.fromEntries(tableKs.map((k) => [k, String(k * d)])) }));
     setHelped(true);
     setSlipped(true);
-    setMsg({ tone: 'shown', ...inAll('shown') });
+    setMsg({ tone: 'shown', ...inAll('tableShown', d) });
     tableDone(next);
   };
 
@@ -539,9 +560,10 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
   const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.vn, levelRaw?.fr);
   const title = pick(pool?.title, pool?.titleVn, pool?.titleFr) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introVn, pool?.introFr) : null;
   const q = questionText(model);
   const context = item.context ? pick(item.context, item.contextVn, item.contextFr) : null;
+  // The first item: how one goes, in three steps. The third is what this kind of item adds.
+  const how = pos === 0 ? [...t.how, rem ? t.howR : model.givenCols > model.intLen ? t.howPoint : t.howZero] : null;
   const want = hasRound ? placeName(model.dp) : null;
   const sum = `${model.dividendText} \\div ${model.divisor}`;
   const answerLatex = hasRound
@@ -552,7 +574,25 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
     : roundMark === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200'
       : roundMark === 'bad' ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300'
         : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100';
-  const labels = { addZero: t.addZero, removeZero: t.removeZero, top: t.top, carry: t.carry, remainder: t.remainder };
+  const labels = { addZero: t.addZero, addZeroTip: t.addZeroTip, removeZero: t.removeZero, top: t.top, carry: t.carry, remainder: t.remainder };
+
+  // The stage in hand: its title, and one short line that says only what is new.
+  const colSub = lastRem
+    ? (column.carryIn > 0 ? `${t.readCarry(column.carryIn, column.digit, column.current)} ${t.remAfter}` : t.remLast)
+    : column.carryIn > 0 ? t.readCarry(column.carryIn, column.digit, column.current)
+      : col === 0 ? t.firstCol : null;
+  const head = stage === 'table' ? { title: t.tableTitle(model.divisor), sub: t.tableSub(model.divisor) }
+    : stage === 'round' ? { title: t.roundTitle(model.quotientText, pick(want.en, want.vn, want.frTo)), sub: t.roundSub }
+      : stage === 'check' ? { title: t.checkTitle, sub: t.checkSub(model.dividendText) }
+        : { title: t.askCol(model.divisor, column.current), sub: colSub };
+  const si = stages.indexOf(stage);
+  const showMe = stage === 'round' ? showRound : stage === 'table' ? showTable : stage === 'check' ? showInverse : revealStep;
+  const check = stage === 'round' ? checkRound : stage === 'table' ? checkTable : stage === 'check' ? null : checkDivide;
+  // The kit reads English or French; a Vietnamese message is handed over already chosen.
+  const kitMsg = msg && say(msg) ? { tone: msg.tone, en: say(msg), vn: say(msg), fr: say(msg) } : null;
+  const noteLine = note && (
+    <p className="text-center text-sm font-bold text-[#0087a8] dark:text-cyan-300 leading-snug">{say(note)}</p>
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300">
@@ -560,64 +600,25 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
         lang={toggleLang ? lang : undefined}
         onLangToggle={toggleLang} />
 
-      <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-5 lg:items-start">
+      <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-5 lg:items-start">
         {/* left: the question */}
         <div className="lg:sticky lg:top-4 flex flex-col gap-3 min-w-0">
-          <div className="rounded-2xl border-2 bg-white dark:bg-slate-800 shadow-sm overflow-hidden" style={{ borderColor: INK }}>
-            <div className="px-4 py-2.5 text-white flex items-center gap-3" style={{ backgroundColor: INK }}>
-              <Divide className="w-5 h-5 shrink-0" strokeWidth={2.5} />
-              <div className="text-[11px] font-black uppercase tracking-widest opacity-90">{hasRound ? t.headRound : t.headExact}</div>
-              <div className="ml-auto text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">{cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / {items.length} {t.solved}</div>
-            </div>
-            {item.level && (
-              <div className="px-4 pt-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-violet-100 dark:bg-violet-900/40 text-violet-800 dark:text-violet-200 text-[10px] font-black uppercase tracking-widest">
-                  <TrendingUp className="w-3 h-3" strokeWidth={3} /> {t.level} {item.level}
-                </span>
-                {levelName && <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{levelName}</span>}
-              </div>
-            )}
-            {context && <p className="px-4 pt-3 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{context}</p>}
-            <p className="px-4 pt-3 pb-1 text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 leading-snug">{pick(q.en, q.vn, q.fr)}</p>
-            {intro && <p className="px-4 pb-1 text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
-            <div className="px-3 py-3 flex flex-wrap gap-1.5">
-              {stages.length > 1 && !itemDone && stages.map((s) => (
-                <Stage key={s} icon={s === 'divide' ? Divide : s === 'table' ? Grid3x3 : s === 'check' ? RotateCcw : Target} label={t.stages[s]} active={s === stage} done={stages.indexOf(s) < stages.indexOf(stage)} />
-              ))}
-            </div>
-          </div>
+          <QuestionCard ink={INK} icon={Divide} head={hasRound ? t.headRound : t.headExact}
+            doneText={`${cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / ${items.length} ${t.solved}`}
+            levelWord={t.level} level={item.level || null} levelName={levelName}
+            context={context} question={pick(q.en, q.vn, q.fr)} how={how} />
           {/* the times table, once written, stays beside the bus stop */}
           {extras.table && stage !== 'table' && (
             <TimesTableCard key={`tt-${item.id}`} divisor={model.divisor} entries={tableEntries} marks={tableMarks} compact uid={UID} lang={lang} ink={INK} />
           )}
         </div>
 
-        {/* right: the bus stop */}
+        {/* right: the stage in hand */}
         <div className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0">
           {!itemDone && (
-            <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-5 min-w-0">
-              {dividing && (
-                <div className="mb-3">
-                  <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{t.askCol(model.divisor, column.current)}</div>
-                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                    {column.carryIn > 0 ? t.readCarry(column.carryIn, column.digit, column.current) : lastRem ? '' : t.boxes}
-                    {lastRem && <span className="text-orange-600 dark:text-orange-300">{column.carryIn > 0 ? ' ' : ''}{t.remLast}</span>}
-                  </p>
-                </div>
-              )}
-              {stage === 'round' && (
-                <div className="mb-3">
-                  <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{t.roundTitle(model.quotientText, pick(want.en, want.vn, want.frTo))}</div>
-                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t.roundSub}</p>
-                </div>
-              )}
-              {(stage === 'table' || stage === 'check') && (
-                <div className="mb-3">
-                  <div className="font-black text-slate-800 dark:text-slate-100 text-lg">{stage === 'table' ? t.tableTitle(model.divisor) : t.checkTitle}</div>
-                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{stage === 'table' ? t.tableSub(model.divisor) : t.checkSub(model.dividendText)}</p>
-                </div>
-              )}
-
+            <StepPanel ink={INK} lang={lang} steps={stepsOf(stages, si, t.stages)} n={si + 1}
+              title={head.title} sub={head.sub} msg={kitMsg}
+              onShowMe={showMe} onCheck={check} checkLabel={t.check}>
               {stage === 'table' ? (
                 <TimesTableCard key={`tt-${item.id}`} divisor={model.divisor} entries={tableEntries} marks={tableMarks} editable
                   onEdit={editTable} onEnter={checkTable} uid={UID} lang={lang} ink={INK} />
@@ -628,18 +629,10 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                   activeCol={dividing ? col : null} uid={UID} ink={INK} labels={labels} />
               )}
 
-              {stage === 'check' && (
-                <div className="mt-4">
-                  <InverseChoices choices={inverseChoices(model)} marks={invMarks} onPick={pickInverse} />
-                </div>
-              )}
-
-              {note && (
-                <p className="mt-2 text-center text-xs font-bold text-orange-600 dark:text-orange-300">{pick(note.en, note.vn, note.fr)}</p>
-              )}
+              {noteLine}
 
               {stage === 'round' && (
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-2xl text-slate-900 dark:text-slate-100">
+                <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-2xl sm:text-3xl text-slate-900 dark:text-slate-100">
                   <SafeInlineMath math={`${sum} \\approx`} />
                   <input
                     id={`${UID}-round`}
@@ -647,56 +640,37 @@ export default function ShortDivision({ pool, savedData = {}, onComplete, onProg
                     onChange={(e) => { setRoundTyped(e.target.value); if (roundMark === 'bad') setRoundMark(null); }}
                     onKeyDown={(e) => { if (e.key === 'Enter') checkRound(); }}
                     inputMode="decimal" autoComplete="off" spellCheck={false} aria-label={t.typeHere} placeholder="?"
-                    className={`w-36 px-2 py-1.5 rounded-xl border-2 border-b-[4px] font-mono font-black text-2xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-violet-500 ${roundTone}`}
+                    className={`w-36 sm:w-40 h-14 px-2 rounded-xl border-2 border-b-[4px] font-mono font-black text-2xl sm:text-3xl text-center placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:border-violet-500 ${roundTone}`}
                   />
                   <span className="text-sm font-bold text-slate-400">({model.dp} {t.dp})</span>
                 </div>
               )}
 
-              <Message msg={msg} lang={lang} />
-
-              <div className="mt-4 flex items-center justify-end gap-2">
-                <button onClick={stage === 'round' ? showRound : stage === 'table' ? showTable : stage === 'check' ? showInverse : () => revealStep(null)}
-                  className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-                  <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
-                </button>
-                {stage !== 'check' && (
-                  <button onClick={stage === 'round' ? checkRound : stage === 'table' ? checkTable : checkDivide} className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>{t.check}</button>
-                )}
-              </div>
-            </div>
+              {stage === 'check' && (
+                <InverseChoices choices={inverseChoices(model)} marks={invMarks} onPick={pickInverse} />
+              )}
+            </StepPanel>
           )}
 
           {itemDone && (
-            <div className="rounded-2xl border-2 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300" style={{ borderColor: helped ? AMBER : GREEN }}>
-              <div className="px-4 py-3 flex items-center gap-3 text-white" style={{ backgroundColor: helped ? AMBER : GREEN }}>
-                {helped ? <Lightbulb className="w-6 h-6 shrink-0" strokeWidth={2.5} /> : <Trophy className="w-6 h-6 shrink-0" strokeWidth={2.5} />}
-                <div className="font-black">{helped ? t.helped : slipped ? t.slipped : t.clean}</div>
+            <DoneCard ink={INK} inkDark={INK_DARK} helped={helped} slipped={slipped}
+              words={{ clean: t.clean, slipped: t.slipped, helped: t.helped, bookCopy: t.bookCopy, next: t.next, finish: t.finish }}
+              shown={msg?.tone === 'shown' ? say(msg) : null}
+              isLast={isLast} onNext={isLast ? finish : goNext}>
+              <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 sm:p-4 min-w-0">
+                <ShortDivBoard model={model} zeros={model.zerosNeeded} entries={entries} stateOf={stateOf} onEdit={() => {}} uid={`${UID}-done`} ink={INK} labels={labels} />
+                {noteLine && <div className="mt-2">{noteLine}</div>}
               </div>
-              <div className="bg-white dark:bg-slate-900 p-3 sm:p-5">
-                {msg?.tone === 'shown' && <div className="-mt-3 mb-3"><Message msg={msg} lang={lang} /></div>}
-                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                  <Pencil className="w-4 h-4" strokeWidth={3} /> {t.bookCopy}
-                </div>
-                <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 sm:p-4 min-w-0">
-                  <ShortDivBoard model={model} zeros={model.zerosNeeded} entries={entries} stateOf={stateOf} onEdit={() => {}} uid={`${UID}-done`} ink={INK} labels={labels} />
-                </div>
-                <div className="mt-3 flex items-center gap-3 rounded-xl border-2 p-3" style={{ borderColor: INK, backgroundColor: 'rgba(124,58,237,0.07)' }}>
-                  <ListChecks className="w-5 h-5 shrink-0" style={{ color: INK }} strokeWidth={3} />
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.answer}</div>
-                  <div className="text-xl text-slate-900 dark:text-slate-100 overflow-x-auto"><SafeInlineMath math={answerLatex} /></div>
-                </div>
-                {extras.check && <InverseDone model={model} product={decText(inverseProduct(model))} lang={lang} ink={INK} />}
-                {verdict && (
-                  <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{pick(verdict.en, verdict.vn, verdict.fr)}</p>
-                )}
-                <div className="mt-4 flex justify-end">
-                  <button onClick={isLast ? finish : goNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: INK_DARK }}>
-                    {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />
-                  </button>
-                </div>
+              <div className="flex items-center gap-3 rounded-xl border-2 p-3 min-w-0" style={{ borderColor: INK, backgroundColor: 'rgba(124,58,237,0.07)' }}>
+                <ListChecks className="w-5 h-5 shrink-0" style={{ color: INK }} strokeWidth={3} />
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t.answer}</div>
+                <div className="text-xl text-slate-900 dark:text-slate-100 overflow-x-auto"><SafeInlineMath math={answerLatex} /></div>
               </div>
-            </div>
+              {extras.check && <InverseDone model={model} product={decText(inverseProduct(model))} lang={lang} ink={INK} />}
+              {verdict && (
+                <p className="text-sm font-bold text-slate-600 dark:text-slate-300 leading-relaxed">{say(verdict)}</p>
+              )}
+            </DoneCard>
           )}
         </div>
       </div>

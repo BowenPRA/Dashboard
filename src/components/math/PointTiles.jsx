@@ -15,6 +15,12 @@ import { tr } from '../../utils/lang';
  *   k       the decimal places chosen (null: no point yet); 0 = after the last digit
  *   onPick  (k) => void; omit for a read-only row
  *   tone    null | 'good' | 'bad' | 'shown'
+ *   compact the smaller row (a deck's side panel, the task's "write it" reminder)
+ *   readout false: no number under the tiles (when the answer is written just below)
+ *
+ * Sizes: at most 7 tiles (utils/pointBack.js MAX_TILES) must fit a 390 px phone,
+ * so the tiles only grow from `sm`. Each gap's tap area runs over the edges of
+ * the tiles beside it (44 px wide from `sm`), without reaching the next gap's.
  */
 const TONE = {
   good: { tile: 'border-[#58a700] bg-[#d7ffb8] dark:bg-lime-900/30 text-[#3e7500] dark:text-lime-200', dot: '#58a700' },
@@ -23,29 +29,43 @@ const TONE = {
 };
 const POINT = '#c25e12';
 
-export default function PointTiles({ row, k = null, onPick, tone = null, lang = 'en', compact = false }) {
+const SIZE = {
+  roomy: {
+    tile: 'w-8 h-12 text-2xl sm:w-12 sm:h-16 sm:text-4xl',
+    gap: 'w-3 sm:w-5 h-12 sm:h-16 pb-1.5 sm:pb-2.5',
+    dot: 'w-2.5 h-2.5 sm:w-3.5 sm:h-3.5',
+    read: 'text-2xl sm:text-3xl',
+  },
+  compact: {
+    tile: 'w-7 h-10 text-xl sm:w-10 sm:h-12 sm:text-3xl',
+    gap: 'w-3 sm:w-4 h-10 sm:h-12 pb-1.5',
+    dot: 'w-2 h-2 sm:w-2.5 sm:h-2.5',
+    read: 'text-xl sm:text-2xl',
+  },
+};
+
+export default function PointTiles({ row, k = null, onPick, tone = null, lang = 'en', compact = false, readout = true }) {
   const digits = String(row).split('');
   const len = digits.length;
   const tiles = [...Array(GHOSTS).fill(null), ...digits];   // null = a faded 0
   const gc = k == null ? null : len + GHOSTS - k;          // the chosen gap's index
   const look = tone ? TONE[tone] : null;
-  const tileSize = compact ? 'w-7 h-10 text-xl sm:w-8 sm:h-11 sm:text-2xl' : 'w-8 h-12 text-2xl sm:w-10 sm:h-14 sm:text-3xl';
-  const gapSize = compact ? 'w-3 h-10 sm:h-11' : 'w-3.5 sm:w-4 h-12 sm:h-14';
+  const size = compact ? SIZE.compact : SIZE.roomy;
 
   const gap = (gi) => {
     const kk = len + GHOSTS - gi;
     const chosen = gi === gc;
     const label = tr(lang, `Put the point here: ${placedText(BigInt(row), kk)}`, null, `Mets le point ici : ${placedText(BigInt(row), kk)}`);
-    const dot = <span className={`block rounded-full ${compact ? 'w-2 h-2' : 'w-2.5 h-2.5 sm:w-3 sm:h-3'}`} style={{ backgroundColor: look?.dot || POINT }} />;
+    const dot = <span className={`block rounded-full ${size.dot}`} style={{ backgroundColor: look?.dot || POINT }} />;
     if (!onPick) {
-      return <span key={`g${gi}`} className={`${gapSize} flex items-end justify-center pb-1.5`} aria-hidden="true">{chosen && dot}</span>;
+      return <span key={`g${gi}`} className={`${size.gap} flex items-end justify-center`} aria-hidden="true">{chosen && dot}</span>;
     }
     return (
       <button key={`g${gi}`} type="button" onClick={() => onPick(kk)} aria-label={label} title={label} aria-pressed={chosen}
-        className={`group relative ${gapSize} flex items-end justify-center pb-1.5 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400`}>
-        {/* a wider, invisible hit area over the tile edges: a 14px gap is a small target for a thumb */}
-        <span className="absolute inset-y-0 -inset-x-2 z-10" aria-hidden="true" />
-        {chosen ? dot : <span className={`block rounded-full opacity-0 group-hover:opacity-40 ${compact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} style={{ backgroundColor: POINT }} />}
+        className={`group relative ${size.gap} flex items-end justify-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400`}>
+        {/* a wider, invisible hit area over the tile edges: a narrow gap is a small target for a finger */}
+        <span className="absolute inset-y-0 -inset-x-3.5 z-10" aria-hidden="true" />
+        {chosen ? dot : <span className={`block rounded-full opacity-0 group-hover:opacity-40 ${size.dot}`} style={{ backgroundColor: POINT }} />}
       </button>
     );
   };
@@ -60,7 +80,7 @@ export default function PointTiles({ row, k = null, onPick, tone = null, lang = 
       : ghost ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-200'
         : look ? look.tile : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100';
     out.push(
-      <span key={`t${t}`} className={`${tileSize} rounded-lg border-2 border-b-[4px] flex items-center justify-center font-mono font-black select-none ${style}`}>
+      <span key={`t${t}`} className={`${size.tile} rounded-lg sm:rounded-xl border-2 border-b-[4px] flex items-center justify-center font-mono font-black select-none ${style}`}>
         {ghost ? '0' : d}
       </span>,
     );
@@ -70,9 +90,32 @@ export default function PointTiles({ row, k = null, onPick, tone = null, lang = 
   return (
     <div>
       <div className="flex items-end justify-center">{out}</div>
-      <div className="mt-2 text-center min-h-[2rem]" aria-live="polite">
-        {k != null && <span className={`font-mono font-black ${compact ? 'text-xl' : 'text-2xl'} ${look ? '' : 'text-slate-800 dark:text-slate-100'}`} style={look ? { color: look.dot } : undefined}>{placedText(BigInt(row), k)}</span>}
-      </div>
+      {readout && (
+        <div className={`mt-2 text-center ${compact ? 'min-h-[2rem]' : 'min-h-[2.25rem]'}`} aria-live="polite">
+          {k != null && <span className={`font-mono font-black ${size.read} ${look ? '' : 'text-slate-800 dark:text-slate-100'}`} style={look ? { color: look.dot } : undefined}>{placedText(BigInt(row), k)}</span>}
+        </div>
+      )}
     </div>
+  );
+}
+
+const CHIP = {
+  estimate: 'bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-200',
+  product: 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200',
+  fact: 'bg-[#c25e12]/[0.07] dark:bg-orange-900/20 border-[#c25e12]/50 dark:border-orange-700 text-slate-800 dark:text-slate-100',
+};
+
+/**
+ * A reminder set beside the tiles — the student's estimate, the whole-number
+ * product, or the fact the digits come from — so the step can be done without
+ * looking back at the question.
+ */
+export function PointReminder({ kind = 'product', icon: Icon, label, children }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 text-sm sm:text-base font-black ${CHIP[kind] || CHIP.product}`}>
+      {Icon && <Icon className="w-4 h-4 shrink-0" strokeWidth={3} />}
+      {label && <span className="text-[10px] sm:text-[11px] uppercase tracking-widest opacity-80">{label}</span>}
+      <span className="text-base sm:text-lg">{children}</span>
+    </span>
   );
 }
