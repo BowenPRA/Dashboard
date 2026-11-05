@@ -111,7 +111,7 @@ export function Figure({ item, lang, big = false }) {
   const t = item.table;
   return (
     <>
-      {item.inlineSvg && <div className="w-full flex justify-center text-slate-800 [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:max-h-[38vh]" dangerouslySetInnerHTML={{ __html: txt(item, 'inlineSvg', lang) }} />}
+      {item.inlineSvg && <div className="w-full flex justify-center text-slate-800 rounded-xl dark:bg-white dark:p-2 [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:max-h-[38vh]" dangerouslySetInnerHTML={{ __html: txt(item, 'inlineSvg', lang) }} />}
       {item.image && <img src={item.image} alt={item.alt || ''} className="max-h-[38vh] mx-auto rounded-xl" />}
       {t && (
         <div className="overflow-x-auto">

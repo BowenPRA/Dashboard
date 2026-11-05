@@ -30,7 +30,7 @@ export default function StepText({ text, done = false, className = '' }) {
         const kind = p.kind === 'find' && done ? 'found' : p.kind;
         return kind === 'plain'
           ? <Prose key={i} text={p.text} />
-          : <span key={i} className={KIND[kind]}><Prose text={p.text} /></span>;
+          : <span key={i} className={`${KIND[kind]} ${p.text.length <= 14 ? 'whitespace-nowrap' : ''}`}><Prose text={p.text} /></span>;
       })}
     </span>
   );

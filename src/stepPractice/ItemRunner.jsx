@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StepText from './StepText.jsx';
 import StepInput from './inputs.jsx';
 import { Stepper, PrevNote, Feedback, HelpRow, CheckButton, Notebook, DoneCard } from './parts.jsx';
@@ -20,6 +20,13 @@ export default function ItemRunner({ item, lang, left, big = false, signed = fal
   const [s, setS] = useState(() => initRun(item));
   const [draft, setDraft] = useState(null);
   const [struck, setStruck] = useState([]);
+  const panel = useRef(null);
+  const moved = useRef(false);
+  // On a phone the step sits under the question: after an answer, bring it back into view.
+  useEffect(() => {
+    if (!moved.current) { moved.current = true; return; }
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) panel.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [s.at, s.msg]);
 
   const apply = (next) => {
     if (next.at !== s.at) { setDraft(null); setStruck([]); }
@@ -47,7 +54,7 @@ export default function ItemRunner({ item, lang, left, big = false, signed = fal
   return (
     <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-5 lg:items-start">
       <div className="lg:sticky lg:top-4 flex flex-col gap-3 min-w-0">{left(finished)}</div>
-      <div className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0">
+      <div ref={panel} className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0 scroll-mt-3">
         {!finished && (
           <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-4 min-w-0 flex flex-col gap-3">
             {s.visible.length > 1 && <Stepper steps={pillsOf(s, item, t.answer, lang)} ink={ink} big={big} />}

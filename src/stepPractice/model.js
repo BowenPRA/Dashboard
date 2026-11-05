@@ -184,6 +184,13 @@ export function findSlip(step, resp) {
   }) || null;
 }
 
+/** A slip value as the response the input would give: tap words become word numbers. */
+export function slipResponse(input, value) {
+  if (input?.type !== 'tap') return value;
+  const words = wordsOf(input.sentence);
+  return [].concat(value).map((w) => (typeof w === 'number' ? w : words.find((x) => norm(x.word) === norm(w))?.n));
+}
+
 /** Where a slip points: a step index (`step` is a step id or a number counted from 1), else null. */
 export function slipTarget(item, slip) {
   if (slip?.step == null) return null;
@@ -229,5 +236,6 @@ export function lineOf(step, lang) {
     const after = txt(input, 'after', lang) || (typeof input.unit === 'string' ? input.unit : '');
     return [txt(input, 'before', lang), found, after].filter(Boolean).join(' ');
   }
-  return `${txt(step, 'title', lang)}: ${found}`;
+  const title = txt(step, 'title', lang);
+  return /[?？]$/.test(title) ? `${title} ${found}` : `${title}: ${found}`;
 }

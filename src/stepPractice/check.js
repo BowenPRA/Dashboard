@@ -3,7 +3,7 @@
 // with "warning:" are advice, the rest fail `npm run validate`.
 
 import { compileExpr } from './equivalence.js';
-import { LEVELS, INPUT_TYPES, askedSteps, markStep, findSlip, slipTarget, gapParts, tapTargets, wordsOf, shownOrder } from './model.js';
+import { LEVELS, INPUT_TYPES, askedSteps, markStep, findSlip, slipTarget, slipResponse, gapParts, tapTargets, wordsOf, shownOrder } from './model.js';
 
 const words = (s) => String(s || '').trim().split(/\s+/).filter(Boolean).length;
 const dollarsOdd = (s) => typeof s === 'string' && (s.replace(/\\\$/g, '').match(/\$/g) || []).length % 2 === 1;
@@ -130,8 +130,9 @@ export function checkStepPractice(cfg, opt = {}) {
         vals.add(key);
         if (!sl.msg) out.push(`${sat}: slip ${key} needs a msg`);
         twin(sl, 'msg', `${sat} slip ${key}`, opt, out);
-        if (s.input && sl.value != null && markStep(s.input, sl.value).ok) out.push(`${sat}: slip ${key} is marked right`);
-        else if (s.input && sl.value != null && findSlip(s, sl.value) !== sl) out.push(`${sat}: slip ${key} is not matched by its own value`);
+        const as = s.input && sl.value != null ? slipResponse(s.input, sl.value) : null;
+        if (as != null && markStep(s.input, as).ok) out.push(`${sat}: slip ${key} is marked right`);
+        else if (as != null && findSlip(s, as) !== sl) out.push(`${sat}: slip ${key} is not matched by its own value (an earlier slip with the same value, or a tap word not in the sentence)`);
         if (sl.step != null) {
           const t = slipTarget({ steps }, sl);
           if (t == null) out.push(`${sat}: slip ${key} points at step "${sl.step}", which is not in this item`);

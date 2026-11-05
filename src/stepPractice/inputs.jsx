@@ -39,7 +39,7 @@ function TypedBox({ input, lang, value, onChange, onEnter, big, signed, numeric 
 function OptionFace({ o, lang, big }) {
   return (
     <span className="flex flex-col items-center gap-1 w-full">
-      {o.svg && <span className="w-full flex justify-center [&>svg]:max-h-28 [&>svg]:w-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: o.svg }} />}
+      {o.svg && <span className="w-full flex justify-center rounded-lg dark:bg-white dark:p-1 [&>svg]:max-h-28 [&>svg]:w-auto [&>svg]:max-w-full" dangerouslySetInnerHTML={{ __html: o.svg }} />}
       {o.image && <img src={o.image} alt={o.alt || ''} className="max-h-28 rounded-lg" />}
       {(o.text || o.textVn) && <span className={big ? 'text-xl' : 'text-base'}><StepText text={txt(o, 'text', lang)} /></span>}
     </span>
@@ -107,7 +107,7 @@ function GapInput({ input, value = [], onChange, onEnter, big }) {
             {i < parts.length - 1 && (
               <input value={value[i] ?? ''} onChange={(e) => set(i, e.target.value)} onKeyDown={keyStop(onEnter)} autoFocus={i === 0}
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} placeholder="?" aria-label={`gap ${i + 1}`}
-                style={{ width: `${Math.max(5, (value[i] || '').length + 2)}ch` }} className={`${boxCls(big)} mx-1 align-baseline`} />
+                style={{ width: `${Math.max(5, (value[i] || '').length + 3) * (big ? 1.25 : 1.1)}ch` }} className={`${boxCls(big)} mx-1 align-baseline`} />
             )}
           </span>
         ))}

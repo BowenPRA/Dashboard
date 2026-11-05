@@ -13,8 +13,8 @@ export function msgText(msg, item, lang) {
     case 'shown': return { text: [t.shown(`<<${answerText(step.input, lang)}>>`), why || txt(step, 'hint', lang)].filter(Boolean).join(' ') };
     case 'nudge': return { text: t.nudge[msg.nudge] || t.nudge.empty };
     case 'notYet': return { text: t.notYet, extra: txt(step, 'hint', lang) };
-    case 'slip': return { text: txt(msg.slip, 'msg', lang), extra: msg.resp != null && typeof msg.resp === 'string' ? t.youWrote(msg.resp) : null };
-    case 'opened': return { text: t.opened, extra: msg.resp != null && typeof msg.resp === 'string' ? t.youWrote(msg.resp) : null };
+    case 'slip': return { text: txt(msg.slip, 'msg', lang), extra: msg.resp != null && typeof msg.resp === 'string' ? t.youWrote(msg.resp.replace(/^-/, '−')) : null };
+    case 'opened': return { text: t.opened, extra: msg.resp != null && typeof msg.resp === 'string' ? t.youWrote(msg.resp.replace(/^-/, '−')) : null };
     default: return null;
   }
 }
