@@ -207,7 +207,9 @@ export function wedgeOf(F, key, opts = {}) {
   const [hx, hy] = atPx(P, R, s.start);
   const [kx, ky] = atPx(P, R, s.start + s.size);
   const hit = `M ${P[0]} ${P[1]} L ${hx} ${hy} A ${R} ${R} 0 ${big ? 1 : 0} 0 ${kx} ${ky} Z`;
-  return { key, path, label, labelDist: d, box: square, labelBox: box, hit, mid, size: s.size, vertex: v.id };
+  // The badge of the letter being found (radius 19) sits clear of the arc.
+  const badge = atPx(P, Math.max(d, arc + 25), mid);
+  return { key, path, label, labelDist: d, badge, box: square, labelBox: box, hit, mid, size: s.size, vertex: v.id };
 }
 
 /** One arrow mark (or two, for par: 2) on each parallel line, away from its vertices. */

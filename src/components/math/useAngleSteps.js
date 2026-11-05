@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  quickStages, diagnoseFirst, diagnoseDecide, diagnosePick, diagnoseSum, diagnoseRest, diagnoseShare,
+  quickStages, DECIDE_FACTS, diagnoseFirst, diagnoseDecide, diagnosePick, diagnoseSum, diagnoseRest, diagnoseShare,
   diagnoseOpp, diagnoseTotal, diagnoseWhy, diagnoseValue,
 } from '../../utils/angleSum';
 
@@ -114,6 +114,12 @@ export default function useAngleSteps(model, { onFinish } = {}) {
       if (struck[total]) return;
       const d = diagnoseDecide(step, total);
       if (d.ok) ok(d); else miss(d, { key: total, left: 1 });
+    },
+    /** The "which fact" stage, answered with a fact card ('line' | 'point' | 'quad'). */
+    chooseFact: (kind) => {
+      if (struck[kind]) return;
+      const d = diagnoseDecide(step, kind);
+      if (d.ok) ok(d); else miss(d, { key: kind, left: DECIDE_FACTS.length - Object.keys(struck).length - 1 });
     },
     togglePick: (key) => setPicked((p) => (p.includes(key) ? p.filter((k) => k !== key) : [...p, key])),
     checkAdd: (typed) => {

@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
-import { CheckCircle2, AlertTriangle, Lightbulb } from 'lucide-react';
+import { CheckCircle2, AlertTriangle } from 'lucide-react';
 import { SafeInlineMath } from './SafeMath.jsx';
 import { angleModel, bookLatex, reasonLine } from '../../utils/angleSum';
 import { tr } from '../../utils/lang';
 import useAngleSteps from '../math/useAngleSteps';
 import AngleSumStage, { StageChips, Working } from '../math/AngleSumStage.jsx';
+import { HelpRow } from '../math/AngleKit.jsx';
 
 /**
  * `anglesum` — Find It, Say Why on a Notes slide (Year 7 Maths 5.1). Rendered
@@ -19,26 +20,19 @@ import AngleSumStage, { StageChips, Working } from '../math/AngleSumStage.jsx';
  */
 
 const T = {
-  en: { correct: 'Correct', notQuite: 'Not quite', answer: 'Answer', stuck: 'Show me' },
-  fr: { correct: 'Correct !', notQuite: 'Pas tout à fait', answer: 'Réponse', stuck: 'Montre-moi' },
+  en: { correct: 'Correct', notQuite: 'Not quite' },
+  fr: { correct: 'Correct !', notQuite: 'Pas tout à fait' },
 };
 
 function Runner({ model, lang, onResult }) {
-  const t = T[lang] || T.en;
   const run = useAngleSteps(model, { onFinish: ({ helped }) => onResult({ done: true, correct: !helped }) });
   return (
-    <div>
-      {/* One chip ("Answer") says nothing in a quick start: room for the panel instead. */}
-      {run.stages.length > 1 && <div className="mb-2"><StageChips run={run} lang={lang} /></div>}
+    <div className="flex flex-col gap-2.5">
+      {/* One step ("Answer") says nothing in a quick start: room for the panel instead. */}
+      {run.stages.length > 1 && <StageChips run={run} lang={lang} />}
+      <AngleSumStage run={run} model={model} lang={lang} chips compact />
+      <HelpRow lang={lang} onShowMe={run.act.showMe} />
       <Working run={run} lang={lang} />
-      <div className={run.finishedSteps.length ? 'mt-2' : ''}>
-        <AngleSumStage run={run} model={model} lang={lang} chips extra={(
-          <button type="button" onClick={run.act.showMe}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[11px] uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-            <Lightbulb className="w-3.5 h-3.5" strokeWidth={2.5} /> {t.stuck}
-          </button>
-        )} />
-      </div>
     </div>
   );
 }

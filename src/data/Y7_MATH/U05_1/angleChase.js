@@ -2,22 +2,24 @@
 // Find Every Angle (ANGLE_CHASE, p92) for 5.1 A sum of 360° — the Workbook's
 // Exercise 5.1 shapes (Focus 1–3, Practice 5 and 7, Challenge 8–9) as
 // several-letter pictures on fresh numbers: each letter is found from the
-// angles already known, then written on the picture for the next one. Only
-// 5.1's facts are on offer (straight line, around a point, quadrilateral,
-// parallelogram): two lines crossing are worked with the straight line, one
-// side at a time — vertically opposite angles are 5.2. utils/angleChase.js
-// reads every fact off the drawing; checkAngleChaseConfig proves each item.
+// angles already known, then written on the picture for the next one. The
+// facts on offer are the simple ones: 5.1's (straight line, around a point,
+// quadrilateral, and a parallelogram's opposite and next-door corners) and,
+// at Mr Bowen's request (2026-11-05), vertically opposite angles — two lines
+// crossing can be worked either way. utils/angleChase.js reads every fact off
+// the drawing, so any true route is marked right; checkAngleChaseConfig
+// proves each item.
 //
 // Levels 1–3 are guided (the next letter is chosen, the sum is shown with its
 // numbers); from level 4 the student chooses which letter to find next.
 // Answers, for the reviewer:
-//   L1  a1 a = 116 · b = 64 (from a) · c = 116 (from b)
-//       a2 a = 81 · b = 58 (from a) · c = 81 (from b) · d = 41 (from c)
+//   L1  a1 a = 116 (line) · b = 64 (vertically opposite, or line from a) · c = 116
+//       a2 a = 81 (line) · b = 58 · c = 81 · d = 41 (each opposite, or line)
 //   L2  p1 x = 75, twice: (360 − 90 − 120) ÷ 2
 //       p2 a = 65 · b = 70
 //   L3  q1 a = 100 (line) · b = 82 (quadrilateral) · c = 98 (line)
 //       q2 a = 88 · b = 76 (both lines) · c = 96 (quadrilateral)
-//   L4  r1 a = 62 (opposite) · b = 118, twice (quadrilateral, shared) · c = 62 (line)
+//   L4  r1 a = 62 (opposite) · b = 118, twice (next-door, or quadrilateral shared) · c = 62 (line)
 //   L5  m1 a = 89 (left quadrilateral) · b = 91 · c = 93 · d = 100 (right quadrilateral)
 //       m2 ? = 82 (quadrilateral, on the way) · x = 98 (line)   (Challenge 8's shape)
 
@@ -29,7 +31,7 @@ export const angleChase = {
   titleFr: 'Trouve tous les angles',
   intro: 'Find the letters one at a time. Each angle you find goes on the picture, and it helps you find the next one. For each angle: choose the fact, then work it out.',
   introFr: 'Trouve les lettres une par une. Chaque angle trouvé va sur le dessin, et il t’aide à trouver le suivant. Pour chaque angle : choisis la propriété, puis calcule.',
-  facts: ['line', 'point', 'quad', 'para'],
+  facts: ['line', 'opp', 'point', 'quad', 'para', 'next'],
   guidedUpTo: 3,
   levels: {
     1: { en: 'Straight lines, one after another', fr: 'Lignes droites, l’une après l’autre' },

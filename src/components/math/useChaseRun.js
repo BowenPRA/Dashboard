@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { readyFor, findable, usefulStones, diagnoseFact, diagnoseSize, workingLine } from '../../utils/angleChase';
+import { readyFor, findable, usefulStones, diagnoseFact, diagnoseSize, workingParts } from '../../utils/angleChase';
 
 /**
  * The step runner of Find Every Angle (utils/angleChase.js), one item.
@@ -61,8 +61,8 @@ export default function useChaseRun(model, { onFinish } = {}) {
 
   const complete = (prev, rel, helped, msg = null) => {
     const name = prev.target;
-    const line = workingLine(m, name, rel, new Set(prev.known), foundOf(m, prev.known));
-    const entry = { name, letter: m.vars[name].letter, kind: rel.kind, line, helped: helped || prev.helped };
+    const parts = workingParts(m, name, rel, new Set(prev.known), foundOf(m, prev.known)).done;
+    const entry = { name, letter: m.vars[name].letter, kind: rel.kind, parts, helped: helped || prev.helped };
     const scores = entry.letter ? { ...prev.scores, [entry.letter]: entry.helped ? 0.5 : 1 } : prev.scores;
     const next = nextOf(m, { ...prev, known: [...prev.known, name], log: [...prev.log, entry], scores, last: entry, helpedAny: prev.helpedAny || entry.helped });
     if (msg) next.msg = msg;

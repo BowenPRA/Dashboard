@@ -134,7 +134,7 @@ export function figureOf(m) {
     const [sx, sy] = at(w.apex, w.a1, w.r);
     const [ex, ey] = at(w.apex, w.a1 + w.span, w.r);
     const [lx, ly] = at(w.apex, w.bis, w.d);
-    const out = { key: w.el.key, text: w.text, fit: w.fit, right: !!w.el.right, letter: w.el.letter || null, ext: !!w.el.ext, span: w.span, lx, ly, ax, ay };
+    const out = { key: w.el.key, text: w.text, fit: w.fit, right: !!w.el.right, letter: w.el.letter || null, ext: !!w.el.ext, span: w.span, lx, ly, ax, ay, r: w.r };
     out.path = `M ${ax} ${ay} L ${sx} ${sy} A ${w.r} ${w.r} 0 ${w.span > 180 ? 1 : 0} 0 ${ex} ${ey} Z`;
     if (w.el.right) {
       const [px, py] = at(w.apex, w.a1, 18);

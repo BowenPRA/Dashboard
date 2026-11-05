@@ -3,10 +3,10 @@ import { Construction, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, Search
 import TopBar from '../components/TopBar';
 import useLang from '../hooks/useLang';
 import { tr } from '../utils/lang';
-import { chaseModel, FACT_KINDS, questionOf, findable, litOf } from '../utils/angleChase';
+import { chaseModel, FACT_KINDS, questionOf, findable, litOf, chaseLines } from '../utils/angleChase';
 import AngleChaseFigure from '../components/math/AngleChaseFigure.jsx';
 import useChaseRun from '../components/math/useChaseRun';
-import { ChaseStep, LetterChips, WorkingList } from '../components/math/AngleChaseParts.jsx';
+import { ChaseStep, LetterChips, HowItWorks, Notebook } from '../components/math/AngleChaseParts.jsx';
 import { CT } from '../components/math/angleChaseWords';
 
 /* ------------------------------------------------------------------ *
@@ -61,7 +61,7 @@ function ItemRunner({ item, model, facts, lang, levelName, intro, isLast, onDone
           </div>
           {context && <p className="px-4 pt-3 text-base font-bold text-slate-700 dark:text-slate-200 leading-relaxed">{context}</p>}
           <p className="px-4 pt-3 text-base font-black text-slate-800 dark:text-slate-100">{pick(q.en, q.fr)}</p>
-          {intro && <p className="px-4 pt-1 text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
+          {intro && <div className="px-4 pt-2"><HowItWorks lang={lang} /></div>}
           <div className="p-2 sm:p-3">
             <AngleChaseFigure model={model} found={finished ? Object.fromEntries(Object.keys(model.vars).filter((n) => model.vars[n].letter).map((n) => [n, model.vars[n].value])) : run.found}
               current={finished ? null : s.target} stones={s.stones} lit={finished ? null : lit}
@@ -73,7 +73,7 @@ function ItemRunner({ item, model, facts, lang, levelName, intro, isLast, onDone
 
       <div className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0">
         {!finished && <ChaseStep model={model} facts={facts} run={run} lang={lang} />}
-        {!finished && s.log.length > 0 && <WorkingList model={model} log={s.log} lang={lang} />}
+        {!finished && <Notebook lines={chaseLines(s.log)} lang={lang} />}
         {finished && (
           <div className="rounded-2xl border-2 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300" style={{ borderColor: s.helpedAny ? AMBER : GREEN }}>
             <div className="px-4 py-3 flex items-center gap-3 text-white" style={{ backgroundColor: s.helpedAny ? AMBER : GREEN }}>
@@ -82,7 +82,7 @@ function ItemRunner({ item, model, facts, lang, levelName, intro, isLast, onDone
             </div>
             <div className="bg-white dark:bg-slate-900 p-3 sm:p-5">
               <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2"><Pencil className="w-4 h-4" strokeWidth={3} /> {t.bookCopy}</div>
-              <WorkingList model={model} log={s.log} lang={lang} bare />
+              <Notebook lines={chaseLines(s.log).map((l) => ({ ...l, fresh: false }))} lang={lang} bare big />
               <div className="mt-4 flex justify-end">
                 <button type="button" onClick={onNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: DARK }}>
                   {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />

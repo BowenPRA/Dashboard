@@ -3,10 +3,12 @@ import { wedgeOf, arrowsOf, chevron } from '../../utils/angleChaseGeom';
 
 /**
  * The diagram of a Find Every Angle item (utils/angleChase.js), drawn to
- * scale. Printed angles teal, letters orange, the letter being found a
- * stronger orange, found letters green with their value, a stepping stone
- * "?" in purple. When a fact is chosen its angles glow amber and its lines
- * are traced (the F, the Z, the straight line, the triangle).
+ * scale. Printed angles teal, letters orange, found letters green with their
+ * value, a stepping stone "?" in purple. The letter being found is a white
+ * letter on an orange badge, its angle filled and outlined in orange — the
+ * same badge as the step panel's "Find b". When a fact is chosen its angles
+ * glow amber and its lines are traced (the F, the Z, the straight line, the
+ * triangle).
  *
  *   <AngleChaseFigure model={m} found={{ a: 67 }} current="b" lit={{ keys, rays, segs, poly }}
  *     tappable={['b', 'c']} onTap={(name) => …} />
@@ -16,10 +18,10 @@ const INK = '#2b2b2b';
 const GLOW = '#f5b301';
 const TONE = {
   known: { fill: '#e2f2f6', text: '#0087a8' },
-  letter: { fill: '#fdf1e3', text: '#c25e12' },
-  current: { fill: '#fbd7b0', text: '#a04a0e' },
+  letter: { fill: '#fff4ea', text: '#c25e12' },
+  current: { fill: '#ffc896', text: '#ffffff', badge: '#e8590c', edge: '#e8590c' },
   found: { fill: '#eef6e6', text: '#3f7a1d' },
-  stone: { fill: '#efe7f6', text: '#5c2483' },
+  stone: { fill: '#e6d9f2', text: '#ffffff', badge: '#5c2483', edge: '#5c2483' },
   stoneFound: { fill: '#f3f0f6', text: '#6b5b7b' },
   lit: { fill: '#fff1c2', text: '#8a5a00' },
 };
@@ -47,7 +49,7 @@ export default function AngleChaseFigure({ model, found = {}, current = null, st
     const isStone = !v.letter;
     if (found[name] != null) return { text: `${found[name]}°`, tone: litKeys.has(key) ? TONE.lit : isStone ? TONE.stoneFound : TONE.found, small: isStone };
     if (name === current) return { text: isStone ? '?' : v.letter, tone: isStone ? TONE.stone : TONE.current, letter: true, current: true };
-    if (isStone) return { text: '?', tone: TONE.stone, letter: true };
+    if (isStone) return { text: '?', tone: { fill: '#efe7f6', text: '#5c2483' }, letter: true };
     return { text: v.letter, tone: TONE.letter, letter: true };
   };
 
@@ -59,12 +61,14 @@ export default function AngleChaseFigure({ model, found = {}, current = null, st
       {(lit?.segs || []).map((s, i) => (
         <polyline key={`g${i}`} points={s.map((p) => p.join(',')).join(' ')} fill="none" stroke={GLOW} strokeOpacity="0.55" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round" />
       ))}
-      {shown.map((key) => {
+      {/* The current angle last, so its orange edge sits on top. */}
+      {[...shown].sort((a, b) => (infoOf(a).current ? 1 : 0) - (infoOf(b).current ? 1 : 0)).map((key) => {
         const w = wedges[key];
         const info = infoOf(key);
+        const edge = litKeys.has(key) ? GLOW : info.tone.edge || INK;
         return (
-          <path key={`w${key}`} d={w.path} fill={info.tone.fill} stroke={litKeys.has(key) ? GLOW : INK} strokeWidth={litKeys.has(key) ? 3 : 1.5}>
-            {info.current && <animate attributeName="fill-opacity" values="1;0.45;1" dur="1.6s" repeatCount="indefinite" />}
+          <path key={`w${key}`} d={w.path} fill={info.tone.fill} stroke={edge} strokeWidth={litKeys.has(key) || info.current ? 3 : 1.25}>
+            {info.current && <animate attributeName="fill-opacity" values="1;0.55;1" dur="1.6s" repeatCount="indefinite" />}
           </path>
         );
       })}
@@ -78,6 +82,15 @@ export default function AngleChaseFigure({ model, found = {}, current = null, st
         const w = wedges[key];
         const info = infoOf(key);
         if (info.right) return null;
+        if (info.current) {
+          return (
+            <g key={`t${key}`} pointerEvents="none">
+              <circle cx={w.badge[0]} cy={w.badge[1]} r="19" fill={info.tone.badge} stroke="#ffffff" strokeWidth="3" />
+              <text x={w.badge[0]} y={w.badge[1] + 9} textAnchor="middle" fontFamily={FONT} fontSize="25" fontWeight="bold"
+                fontStyle={info.text !== '?' ? 'italic' : 'normal'} fill="#ffffff">{info.text}</text>
+            </g>
+          );
+        }
         return (
           <text key={`t${key}`} x={w.label[0]} y={w.label[1] + 8} textAnchor="middle" pointerEvents="none"
             fontFamily={FONT} fontSize={info.letter ? 27 : info.small ? 20 : 23} fontWeight="bold"

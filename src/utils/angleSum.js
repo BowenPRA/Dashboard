@@ -342,9 +342,22 @@ export function diagnoseFirst(s, letter) {
   if (s.findable.includes(letter)) return good(`Yes: ${letter} is the only angle you do not know in its fact. Find it first.`, `Oui : ${letter} est le seul angle inconnu de sa propriété. Trouve-le d’abord.`);
   return bad('twoUnknown', s, { letter, ...(s.blockers?.[letter] || { fact: 'quad', unknown: 2 }) }, 'first');
 }
-/** Decide: 180° or 360°? */
-export function diagnoseDecide(s, total) {
-  if (total === s.total) return good(`Yes: these angles are ${WHERE[s.fact].en}. They add up to ${deg(s.total)}.`, `Oui : ces angles sont ${WHERE[s.fact].fr}. Ils font ${deg(s.total)} en tout.`);
+/** The facts the "which fact" stage offers, as cards (components/math/AngleKit.jsx). */
+export const DECIDE_FACTS = ['line', 'point', 'quad'];
+/**
+ * Decide: which fact — a card ('line' | 'point' | 'quad'), or a bare total
+ * (180 | 360) as the stage first asked. A card with the right total but the
+ * wrong picture (around a point for a quadrilateral) is named `sameTotal`.
+ */
+export function diagnoseDecide(s, choice) {
+  const fact = typeof choice === 'string' ? choice : null;
+  const total = fact ? TOTAL[fact] : choice;
+  if (fact ? fact === s.fact : total === s.total) return good(`Yes: these angles are ${WHERE[s.fact].en}. They add up to ${deg(s.total)}.`, `Oui : ces angles sont ${WHERE[s.fact].fr}. Ils font ${deg(s.total)} en tout.`);
+  if (fact && total === s.total) {
+    return { ok: false, code: 'sameTotal', stage: 'decide',
+      en: `Close — that is 360° too, but these angles are ${WHERE[s.fact].en}, not ${WHERE[fact].en}.`,
+      fr: `Presque — ça fait aussi 360°, mais ces angles sont ${WHERE[s.fact].fr}, pas ${WHERE[fact].fr}.` };
+  }
   return bad(DECIDE_CODE[s.fact], s, {}, 'decide');
 }
 /** Add, part one: which angles go in? `keys` are element keys (letters' keys mean a letter was picked). */

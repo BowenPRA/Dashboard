@@ -43,6 +43,17 @@ function proveFigure(m, keys, out) {
       if (Math.abs(a[0] - b[0]) < gap && Math.abs(a[1] - b[1]) < SLOT.h + 4) out.push(`labels at ${ws[i].vertex} and ${ws[j].vertex} are on top of each other`);
     }
   }
+  // The badge of a letter being found (radius 19, pushed clear of its arc).
+  for (const w of ws) {
+    if (!m.varOf[w.key]) continue;
+    const [bx, by] = w.badge;
+    if (bx < 21 || bx > F.W - 21 || by < 21 || by > F.H - 21) out.push(`the badge at ${w.vertex} leaves the picture`);
+    for (const L of F.lines) if (segDist(w.badge, L.ends[0], L.ends[1]) < 17) out.push(`the badge at ${w.vertex} sits on line ${L.id}`);
+    for (const o of ws) {
+      if (o === w) continue;
+      if (Math.abs(o.label[0] - bx) < o.labelBox.w / 2 + 17 && Math.abs(o.label[1] - by) < o.labelBox.h / 2 + 17) out.push(`the badge at ${w.vertex} covers a label at ${o.vertex}`);
+    }
+  }
   for (const ar of arrowsOf(F)) {
     for (const w of ws) if (Math.hypot(ar.tip[0] - w.label[0], ar.tip[1] - w.label[1]) < 30) out.push(`an arrow on line ${ar.line} touches a label at ${w.vertex}`);
   }

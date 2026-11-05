@@ -5,7 +5,8 @@ import useLang from '../hooks/useLang';
 import { tr } from '../utils/lang';
 import { angleModel, questionText } from '../utils/angleSum';
 import AngleSumFigure from '../components/math/AngleSumFigure.jsx';
-import AngleSumStage, { AngleMessage, StageChips, Working } from '../components/math/AngleSumStage.jsx';
+import AngleSumStage, { AngleMessage, SumHeader, Working } from '../components/math/AngleSumStage.jsx';
+import { HelpRow } from '../components/math/AngleKit.jsx';
 import { INK } from '../components/math/angleSumText';
 import useAngleSteps from '../components/math/useAngleSteps';
 
@@ -72,24 +73,20 @@ function ItemRunner({ item, model, lang, levelName, intro, isLast, onDone, onNex
           <p className="px-4 pt-3 text-base font-black text-slate-800 dark:text-slate-100">{pick(q.en, q.fr)}</p>
           {intro && <p className="px-4 pt-1 text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
           <div className="p-2 sm:p-3">
-            <AngleSumFigure model={model} found={found} current={finished ? [] : step.letters} pickable={pickable} picked={pickable.length ? run.picked : []} onPick={run.act.togglePick} maxHeight="44vh" />
+            <AngleSumFigure model={model} found={found} current={finished || stage === 'first' ? [] : step.letters} pickable={pickable} picked={pickable.length ? run.picked : []} onPick={run.act.togglePick} maxHeight="50vh" />
           </div>
-          {!finished && <div className="px-3 pb-3"><StageChips run={run} lang={lang} /></div>}
         </div>
       </div>
 
       <div className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0">
         {!finished && (
           <>
-            <Working run={run} lang={lang} />
-            <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-5 min-w-0">
-              <AngleSumStage run={run} model={model} lang={lang} extra={(
-                <button type="button" onClick={run.act.showMe}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-                  <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
-                </button>
-              )} />
+            <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-4 min-w-0 flex flex-col gap-3">
+              <SumHeader run={run} lang={lang} />
+              <AngleSumStage run={run} model={model} lang={lang} />
+              <HelpRow lang={lang} onShowMe={run.act.showMe} />
             </div>
+            <Working run={run} lang={lang} />
           </>
         )}
         {finished && (
@@ -101,7 +98,7 @@ function ItemRunner({ item, model, lang, levelName, intro, isLast, onDone, onNex
             <div className="bg-white dark:bg-slate-900 p-3 sm:p-5">
               {run.msg?.tone === 'shown' && <div className="-mt-3 mb-3"><AngleMessage msg={run.msg} lang={lang} /></div>}
               <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2"><Pencil className="w-4 h-4" strokeWidth={3} /> {t.bookCopy}</div>
-              <Working run={run} lang={lang} big />
+              <Working run={run} lang={lang} big bare />
               <div className="mt-4 flex justify-end">
                 <button type="button" onClick={onNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: DARK }}>
                   {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />

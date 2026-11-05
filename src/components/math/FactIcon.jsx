@@ -1,11 +1,14 @@
 /**
- * A small picture of each angle fact, for the reason buttons of Find Every
- * Angle (utils/angleChase.js): the straight line, the full turn, the X, the
- * upright F, the true Z, the same-side pair, the triangle, the quadrilateral
- * and the parallelogram. The two angles the fact joins are filled.
+ * A small picture of each angle fact, for the fact cards of the Year 7 angle
+ * tasks (Find It, Say Why; Find Every Angle): the straight line, the full
+ * turn, the X, the upright F, the true Z, the same-side pair, the triangle,
+ * the quadrilateral, and a parallelogram's opposite and next-door corners.
+ * The colours are the diagram's: the angle you find is orange, the angle (or
+ * angles) you know teal — "use this one to find that one".
  */
 const INK = 'currentColor';
-const FILL = '#f5b301';
+const FIND = '#f28c28';
+const KNOW = '#3fb4c9';
 
 const wedge = (x, y, r, a0, a1) => {
   const p = (a) => [x + r * Math.cos((a * Math.PI) / 180), y - r * Math.sin((a * Math.PI) / 180)];
@@ -13,57 +16,37 @@ const wedge = (x, y, r, a0, a1) => {
   const [ex, ey] = p(a1);
   return `M ${x} ${y} L ${sx.toFixed(1)} ${sy.toFixed(1)} A ${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 0 ${ex.toFixed(1)} ${ey.toFixed(1)} Z`;
 };
+const W = ({ at, r = 8, from, to, find, soft }) => (
+  <path d={wedge(at[0], at[1], r, from, to)} fill={find ? FIND : KNOW} opacity={soft ? 0.6 : 1} stroke="none" />
+);
 
 const PICS = {
-  line: (
-    <>
-      <path d={wedge(24, 26, 9, 0, 55)} fill={FILL} stroke="none" /><path d={wedge(24, 26, 9, 55, 180)} fill={FILL} stroke="none" opacity="0.5" />
-      <path d="M 4 26 L 44 26 M 24 26 L 36 9" />
-    </>
-  ),
+  line: <><W at={[24, 26]} r={9} from={0} to={54.8} /><W at={[24, 26]} r={9} from={54.8} to={180} find /><path d="M 4 26 L 44 26 M 24 26 L 36 9" /></>,
   point: (
     <>
-      <path d={wedge(24, 17, 8, 20, 150)} fill={FILL} stroke="none" /><path d={wedge(24, 17, 8, 150, 270)} fill={FILL} stroke="none" opacity="0.5" />
-      <path d="M 24 17 L 40 11 M 24 17 L 10 9 M 24 17 L 24 33" /><circle cx="24" cy="17" r="2" fill={INK} />
+      <W at={[24, 17]} from={22.4} to={151.9} /><W at={[24, 17]} from={151.9} to={270} soft /><W at={[24, 17]} from={270} to={382.4} find />
+      <path d="M 24 17 L 41 10 M 24 17 L 9 9 M 24 17 L 24 34" /><circle cx="24" cy="17" r="2" fill={INK} />
     </>
   ),
-  opp: (
-    <>
-      <path d={wedge(24, 17, 9, 30, 150)} fill={FILL} stroke="none" /><path d={wedge(24, 17, 9, 210, 330)} fill={FILL} stroke="none" />
-      <path d="M 8 26 L 40 8 M 8 8 L 40 26" />
-    </>
-  ),
-  corr: (
-    <>
-      <path d={wedge(19.2, 10, 8, 301, 360)} fill={FILL} stroke="none" /><path d={wedge(28.8, 26, 8, 301, 360)} fill={FILL} stroke="none" />
-      <path d="M 6 10 L 44 10 M 6 26 L 44 26 M 15 3 L 33 33" />
-    </>
-  ),
-  alt: (
-    <>
-      <path d={wedge(29.3, 10, 8, 180, 236)} fill={FILL} stroke="none" /><path d={wedge(18.7, 26, 8, 0, 56)} fill={FILL} stroke="none" />
-      <path d="M 6 10 L 44 10 M 6 26 L 44 26 M 36 0 L 12 36" />
-    </>
-  ),
-  side: (
-    <>
-      <path d={wedge(19.2, 10, 8, 180, 301)} fill={FILL} stroke="none" /><path d={wedge(28.8, 26, 8, 121, 180)} fill={FILL} stroke="none" opacity="0.6" />
-      <path d="M 6 10 L 44 10 M 6 26 L 44 26 M 15 3 L 33 33" />
-    </>
-  ),
+  opp: <><W at={[24, 17]} r={9} from={29.4} to={150.6} find /><W at={[24, 17]} r={9} from={209.4} to={330.6} /><path d="M 8 26 L 40 8 M 8 8 L 40 26" /></>,
+  corr: <><W at={[19.2, 10]} from={301} to={360} /><W at={[28.8, 26]} from={301} to={360} find /><path d="M 6 10 L 44 10 M 6 26 L 44 26 M 15 3 L 33 33" /></>,
+  alt: <><W at={[29.3, 10]} from={180} to={236.3} /><W at={[18.7, 26]} from={0} to={56.3} find /><path d="M 6 10 L 44 10 M 6 26 L 44 26 M 36 0 L 12 36" /></>,
+  side: <><W at={[19.2, 10]} from={180} to={301} /><W at={[28.8, 26]} from={121} to={180} find /><path d="M 6 10 L 44 10 M 6 26 L 44 26 M 15 3 L 33 33" /></>,
   tri: (
     <>
-      <path d={wedge(8, 30, 8, 0, 57)} fill={FILL} stroke="none" /><path d={wedge(40, 30, 8, 123, 180)} fill={FILL} stroke="none" opacity="0.7" /><path d={wedge(24, 5, 6, 237, 303)} fill={FILL} stroke="none" opacity="0.5" />
+      <W at={[8, 30]} from={0} to={57.4} /><W at={[40, 30]} from={122.6} to={180} soft /><W at={[24, 5]} r={7} from={237.4} to={302.6} find />
       <path d="M 8 30 L 40 30 L 24 5 Z" />
     </>
   ),
-  quad: <path d="M 7 29 L 41 31 L 35 6 L 13 9 Z" />,
-  para: (
+  quad: (
     <>
-      <path d={wedge(6, 29, 8, 0, 70)} fill={FILL} stroke="none" /><path d={wedge(42, 7, 8, 180, 250)} fill={FILL} stroke="none" />
-      <path d="M 6 29 L 34 29 L 42 7 L 14 7 Z" />
+      <W at={[7, 29]} r={7} from={-3.4} to={73.3} /><W at={[41, 31]} r={7} from={103.5} to={176.6} soft />
+      <W at={[35, 6]} r={7} from={187.8} to={283.5} find /><W at={[13, 9]} r={7} from={253.3} to={367.8} soft />
+      <path d="M 7 29 L 41 31 L 35 6 L 13 9 Z" />
     </>
   ),
+  para: <><W at={[6, 29]} from={0} to={70} /><W at={[42, 7]} from={180} to={250} find /><path d="M 6 29 L 34 29 L 42 7 L 14 7 Z" /></>,
+  next: <><W at={[6, 29]} from={0} to={70} /><W at={[34, 29]} from={70} to={180} find /><path d="M 6 29 L 34 29 L 42 7 L 14 7 Z" /></>,
 };
 
 export default function FactIcon({ kind, className = 'w-11 h-8' }) {

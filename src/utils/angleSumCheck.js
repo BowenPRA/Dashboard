@@ -12,7 +12,7 @@
 // classroom's z = 75°).
 
 import {
-  angleModel, KINDS, diagnoseFirst, diagnoseDecide, diagnosePick, diagnoseSum, diagnoseRest,
+  angleModel, KINDS, DECIDE_FACTS, diagnoseFirst, diagnoseDecide, diagnosePick, diagnoseSum, diagnoseRest,
   diagnoseShare, diagnoseOpp, diagnoseTotal, diagnoseWhy, diagnoseValue, openAt,
 } from './angleSum.js';
 import { figureOf, quadPoints } from './angleSumGeometry.js';
@@ -83,6 +83,12 @@ export function proveModel(m) {
       if (s.stages.includes('decide')) {
         if (!diagnoseDecide(s, s.total).ok) out.push(`${at}: decide does not accept ${s.total}°`);
         if (diagnoseDecide(s, s.total === 180 ? 360 : 180).ok) out.push(`${at}: decide accepts the wrong total`);
+        // The fact cards: only this step's fact is right, and every other card is named.
+        for (const f of DECIDE_FACTS) {
+          const d = diagnoseDecide(s, f);
+          if (f === s.fact ? !d.ok : d.ok) out.push(`${at}: the "${f}" card is marked the wrong way`);
+          if (!d.ok && !(d.code && d.en && d.fr)) out.push(`${at}: the "${f}" card is refused with no named message`);
+        }
       }
       if (s.stages.includes('add')) {
         if (!diagnosePick(s, s.knowns.map((k) => k.key)).ok) out.push(`${at}: add does not accept its own angles`);

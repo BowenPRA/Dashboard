@@ -25,12 +25,13 @@
 //   tri   the angles in a triangle add up to 180°
 //   quad  the angles in a quadrilateral add up to 360°
 //   para  opposite angles in a parallelogram are equal
+//   next  next-door angles in a parallelogram add up to 180°
 // Every relation of those kinds is read off the drawing, so any true route to
 // a letter is marked right.
 
 import { buildFigure, vertexOf, sectorToward, norm, atPx } from './angleChaseGeom.js';
 
-export const FACT_KINDS = ['line', 'point', 'opp', 'corr', 'alt', 'side', 'tri', 'quad', 'para'];
+export const FACT_KINDS = ['line', 'point', 'opp', 'corr', 'alt', 'side', 'tri', 'quad', 'para', 'next'];
 export const EQUAL_KINDS = ['opp', 'corr', 'alt', 'para'];
 export const GUIDED_UP_TO = 2;
 const deg = (v) => `${Number.isInteger(v) ? v : Number(v.toFixed(2))}°`;
@@ -49,19 +50,9 @@ export const FACT_WORDS = {
   tri: { en: 'the angles in a triangle add up to 180°', fr: 'les angles d’un triangle font 180° en tout' },
   quad: { en: 'the angles in a quadrilateral add up to 360°', fr: 'les angles d’un quadrilatère font 360° en tout' },
   para: { en: 'opposite angles in a parallelogram are equal', fr: 'dans un parallélogramme, les angles opposés sont égaux' },
+  next: { en: 'next-door angles in a parallelogram add up to 180°', fr: 'dans un parallélogramme, deux angles voisins font 180° en tout' },
 };
-/** The button: a short name and the rule in brief. */
-export const FACT_BUTTONS = {
-  line: { en: ['Straight line', '180°'], fr: ['Ligne droite', '180°'] },
-  point: { en: ['Around a point', '360°'], fr: ['Autour d’un point', '360°'] },
-  opp: { en: ['Vertically opposite', 'X · equal'], fr: ['Opposés par le sommet', 'X · égaux'] },
-  corr: { en: ['Corresponding', 'F · equal'], fr: ['Correspondants', 'F · égaux'] },
-  alt: { en: ['Alternate', 'Z · equal'], fr: ['Alternes-internes', 'Z · égaux'] },
-  side: { en: ['Same side, between', '180°'], fr: ['Même côté, entre', '180°'] },
-  tri: { en: ['Triangle', '180°'], fr: ['Triangle', '180°'] },
-  quad: { en: ['Quadrilateral', '360°'], fr: ['Quadrilatère', '360°'] },
-  para: { en: ['Parallelogram', 'opposite · equal'], fr: ['Parallélogramme', 'opposés · égaux'] },
-};
+// The fact cards' names and pictures live with the screens: components/math/angleKitText.js.
 // "a is not …" — what the fact needs, said where the student chose it and it is not there.
 const NOT_THERE = {
   line: { en: (L) => `${L} is not next to other angles on a straight line.`, fr: (L) => `${L} n’est pas à côté d’autres angles sur une ligne droite.` },
@@ -73,6 +64,7 @@ const NOT_THERE = {
   tri: { en: (L) => `${L} is not a corner of a triangle.`, fr: (L) => `${L} n’est pas un coin d’un triangle.` },
   quad: { en: (L) => `${L} is not a corner of a quadrilateral.`, fr: (L) => `${L} n’est pas un coin d’un quadrilatère.` },
   para: { en: (L) => `${L} is not a corner of a parallelogram.`, fr: (L) => `${L} n’est pas un coin d’un parallélogramme.` },
+  next: { en: (L) => `${L} is not a corner of a parallelogram.`, fr: (L) => `${L} n’est pas un coin d’un parallélogramme.` },
 };
 
 /* ------------------------------------------------------------------ relations read off the figure */
@@ -226,6 +218,12 @@ export function relationsOf(F) {
           for (const key of cs[p].keys) terms[key] = (terms[key] || 0) + 1;
           for (const key of cs[q].keys) terms[key] = (terms[key] || 0) - 1;
           add({ kind: 'para', terms, total: 0, lines: ls.map((l) => l.id), poly: V.map((v) => v.id), corners: [V[p].id, V[q].id] });
+        }
+        // Next-door corners: two ends of one side, between that side's two parallel neighbours.
+        for (let n = 0; n < 4; n += 1) {
+          const terms = {};
+          for (const key of [...cs[n].keys, ...cs[(n + 1) % 4].keys]) terms[key] = (terms[key] || 0) + 1;
+          add({ kind: 'next', terms, total: 180, lines: ls.map((l) => l.id), poly: V.map((v) => v.id), corners: [V[n].id, V[(n + 1) % 4].id] });
         }
       }
     }
@@ -385,12 +383,12 @@ export function slipsOf(m, name, rel, known, found) {
   } else {
     const other = w.total === 180 ? 360 : 180;
     // One known angle on a line: typing it again says "they are equal", not "I forgot to subtract".
-    if (w.parts.length === 1 && ['line', 'side'].includes(rel.kind)) push('equal', w.parts[0].value, { angle: w.parts[0].value });
+    if (w.parts.length === 1 && ['line', 'side', 'next'].includes(rel.kind)) push('equal', w.parts[0].value, { angle: w.parts[0].value });
     push('noSub', w.sum);
     push('wrongTotal', (other - w.sum) / w.k, { total: other });
     if (w.k > 1) push('noShare', w.rest);
     if (w.parts.length >= 2) for (const p of w.parts) push('forgot', (w.total - (w.sum - p.value)) / w.k, { angle: p.value });
-    if (['line', 'side', 'tri'].includes(rel.kind)) for (const p of w.parts) push('equal', p.value, { angle: p.value });
+    if (['line', 'side', 'tri', 'next'].includes(rel.kind)) for (const p of w.parts) push('equal', p.value, { angle: p.value });
   }
   for (const n of m.letters) if (n !== name) push('otherLetter', m.vars[n].value, { letter: n });
   return out;
@@ -408,6 +406,7 @@ const TOTAL_PLACE = {
   side: { en: 'between the parallel lines on the same side', fr: 'entre les parallèles, du même côté' },
   tri: { en: 'in a triangle', fr: 'dans un triangle' },
   quad: { en: 'in a quadrilateral', fr: 'dans un quadrilatère' },
+  next: { en: 'next to each other in a parallelogram', fr: 'voisins dans un parallélogramme' },
 };
 
 /** The size typed for `name` with fact `rel`: { ok } or { ok: false, code, en, fr } (or { soft } for not-a-number). */
@@ -446,27 +445,35 @@ export function diagnoseSize(m, name, rel, typed, known, found) {
 /* ------------------------------------------------------------------ what is shown */
 
 const fmt = (v) => (Number.isInteger(v) ? String(v) : String(Number(v.toFixed(2))));
-/** The working as the book wants it, in plain text: "a = 180° − (64° + 49°) = 67°". */
-export function workingLine(m, name, rel, known, found) {
+/** One known angle of a fact as a coloured part: printed ('g'), a found letter ('f'), a stepping stone ('s'). */
+const partOf = (p) => ({ t: p.name == null ? 'g' : p.name === '?' ? 's' : 'f', v: p.value });
+/**
+ * The working of one step as coloured parts (AngleKit.jsx's Eq), the picture's colours:
+ *   fact   the fact as a sum, "b + 116° = 180°" (null for an equal pair)
+ *   solve  "b = 180° − 116° =", ready for the answer box
+ *   bare   "b =", for a free item before any slip
+ *   done   the line for the book, "b = 180° − 116° = 64°"
+ *   same   for an equal pair, the angle it equals
+ */
+export function workingParts(m, name, rel, known, found = {}) {
   const w = workingOf(m, name, rel, known, found);
-  const L = nameOf(m, name);
-  if (w.equal) return `${L} = ${fmt(w.answer)}°`;
-  const ps = w.parts.map((p) => `${fmt(p.value)}°`);
-  const inner = ps.length === 1 ? ps[0] : `(${ps.join(' + ')})`;
-  if (w.k > 1) return `${w.k}${L} = ${fmt(w.total)}° − ${inner} = ${fmt(w.rest)}°, so ${L} = ${fmt(w.rest)}° ÷ ${w.k} = ${fmt(w.answer)}°`;
-  if (ps.length === 1) return `${L} = ${fmt(w.total)}° − ${ps[0]} = ${fmt(w.answer)}°`;
-  return `${L} = ${fmt(w.total)}° − ${inner} = ${fmt(w.total)}° − ${fmt(w.sum)}° = ${fmt(w.answer)}°`;
-}
-/** The frame shown before the size is typed: the sum to do, with a box for the answer. */
-export function frameOf(m, name, rel, known, found, full) {
-  const w = workingOf(m, name, rel, known, found);
-  const L = nameOf(m, name);
-  if (!full) return { lhs: `${L} =`, hint: null };
-  if (w.equal) return { lhs: `${L} =`, hint: { en: `the same size as ${fmt(w.sum)}°`, fr: `la même taille que ${fmt(w.sum)}°` } };
-  const ps = w.parts.map((p) => `${fmt(p.value)}°`);
-  const body = ps.length === 1 ? `${fmt(w.total)}° − ${ps[0]}` : `${fmt(w.total)}° − (${ps.join(' + ')})`;
-  if (w.k > 1) return { lhs: `${L} = (${body}) ÷ ${w.k} =`, hint: null };
-  return { lhs: `${L} = ${body} =`, hint: null };
+  const stone = !m.vars[name].letter;
+  const L = { t: stone ? 's' : 'cur', v: nameOf(m, name) };
+  const Lbook = { t: stone ? 's' : 'L', v: nameOf(m, name) };
+  const ans = { t: stone ? 's' : 'f', v: w.answer };
+  const op = (v) => ({ t: 'op', v });
+  const ks = w.parts.map(partOf);
+  if (w.equal) return { fact: null, solve: [L, op('=')], bare: [L, op('=')], done: [Lbook, op('='), ans], same: ks[0] };
+  const plus = (xs) => xs.flatMap((x, i) => (i ? [op('+'), x] : [x]));
+  const T = { t: 'n', v: w.total };
+  const inner = ks.length === 1 ? ks : plus(ks).map((x, i, a) => (i === 0 ? { ...x, pre: '(' } : i === a.length - 1 ? { ...x, post: ')' } : x));
+  const fact = [...plus([...Array(w.k).fill(L), ...ks]), op('='), T];
+  if (w.k > 1) {
+    const body = [{ ...T, pre: '(' }, op('−'), ...inner.slice(0, -1), { ...inner[inner.length - 1], post: `${inner[inner.length - 1].post || ''})` }, op('÷'), { t: 'txt', v: String(w.k) }];
+    return { fact, solve: [L, op('='), ...body, op('=')], bare: [L, op('=')], done: [Lbook, op('='), ...body, op('='), ans], same: null };
+  }
+  const body = [T, op('−'), ...inner];
+  return { fact, solve: [L, op('='), ...body, op('=')], bare: [L, op('=')], done: [Lbook, op('='), ...body, op('='), ans], same: null };
 }
 /** The reason, as a sentence. */
 export const reasonOf = (rel) => FACT_WORDS[rel.kind];
@@ -488,7 +495,7 @@ export function litOf(model, rel, target) {
     const v = F.vertById[rel.vertex];
     const L = F.lineById[rel.lines[0]];
     segs.push([atPx(v.px, 140, L.dir + 180), atPx(v.px, 140, L.dir)]);
-  } else if (rel.kind === 'tri' || rel.kind === 'quad' || rel.kind === 'para') {
+  } else if (['tri', 'quad', 'para', 'next'].includes(rel.kind)) {
     const pts = rel.poly.map((id) => F.vertById[id].px);
     segs.push([...pts, pts[0]]);
     return { keys: others, segs, poly: pts };
@@ -501,5 +508,12 @@ export function litOf(model, rel, target) {
     if (rel.pair) segs.push(rel.pair.map((id) => F.vertById[id].px));
   }
   return { keys: others, segs, poly: null };
+}
+/** The notebook lines of the letters found so far; the newest glows. */
+export function chaseLines(log) {
+  return log.map((e, i) => ({
+    key: `${e.name}${i}`, kind: e.kind, parts: e.parts, because: FACT_WORDS[e.kind],
+    tag: !e.letter ? 'stone' : e.helped ? 'helped' : null, fresh: i === log.length - 1,
+  }));
 }
 export { deg, fmt };

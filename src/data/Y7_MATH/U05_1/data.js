@@ -193,8 +193,8 @@ export const U05_1_DATA = {
   angleSum: {
     title: 'Find It, Say Why',
     titleFr: 'Trouve-le, justifie',
-    intro: 'Find each letter, then say why. Levels 1 and 2 go step by step. From level 3 you answer straight away, and a wrong answer opens the steps.',
-    introFr: 'Trouve chaque lettre, puis dis pourquoi. Les niveaux 1 et 2 vont étape par étape. À partir du niveau 3, tu réponds directement, et une réponse fausse ouvre les étapes.',
+    intro: 'Find the letter, then say why. Levels 1 and 2 take you step by step.',
+    introFr: 'Trouve la lettre, puis dis pourquoi. Les niveaux 1 et 2 te guident étape par étape.',
     levels: {
       1: { en: 'On a straight line', fr: 'Sur une ligne droite' },
       2: { en: 'Round a point', fr: 'Autour d’un point' },
