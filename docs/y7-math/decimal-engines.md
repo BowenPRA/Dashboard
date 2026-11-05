@@ -17,7 +17,28 @@ the engine (on `src/utils/decimal.js`) works out every step, the answer and the
 name of the slip behind a wrong answer, and `npm run validate` runs the same code.
 
 Dashboard keys: `DEC_ORDER p76 · DEC_COLUMN p77 · POINT_BACK p78 · MAKE_EASY p79`
-(and `WEIGH_IT p80`, Science 3.1). 4.4 reuses `SHORT_DIV p56`. **p81 is next.**
+(and `WEIGH_IT p80`, Science 3.1). 4.4 reuses `SHORT_DIV p56`. p81 was next when
+these were built; later units have used more, so take the next free key from the
+comments in `src/tasks/taskRegistry.js` (p93 on 2026-11-05).
+
+**One screen for all five (2026-11-05).** Every Unit 4 engine draws its items with
+the shared step kit, `src/components/math/StepKit.jsx` (helpers in
+`stepKitParts.js`; it re-uses AngleKit's Stepper, Feedback and Check row):
+
+- `QuestionCard` on the left: the question set large, and on the first item a
+  1-2-3 `how` strip instead of an intro paragraph.
+- `StepPanel` on the right: numbered stage pills, then `Step n`, a title of
+  about 8 words and ONE short sub line. A message with tone `ok` / `shown` is
+  about the step just finished, so it sits ABOVE the new step; `bad` / `info` is
+  about this step, so it sits UNDER the work.
+- `DoneCard` for the finished item: the kept Show me note, "Copy this into your
+  book", the working, and Next.
+
+Show me always fills the stage in and moves on (the item still pays half). The
+Bus Stop board uses the same kit in Units 1–3, so the kit carries Vietnamese
+words too (`KT.vn`). A new engine or stage keeps to this. Deck activities built
+on an engine pass `compact` / `plain`, and must still fit the side panel at
+1280×720.
 
 ---
 
