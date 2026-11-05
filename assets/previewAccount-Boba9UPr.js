@@ -1,0 +1,1 @@
+var e=new Set([`preview@science.local`,`demo@science.local`]);function t(t){if(!t)return!1;if(t.app_metadata?.preview_all===!0)return!0;let n=(t.email||``).toLowerCase();return e.has(n)}export{t};
