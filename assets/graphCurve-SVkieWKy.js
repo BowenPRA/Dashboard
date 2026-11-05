@@ -1,0 +1,1 @@
+var e=e=>e?.kind||`quadratic`,t=({h:e,k:t})=>[e,t];function n(t,n=0){let{a:r,h:i,k:a}=t;if(!r)return[];let o=(n-a)/r;if(o<0)return[];let s=e(t)===`modulus`?o:Math.sqrt(o);return s===0?[i]:[i-s,i+s]}var r=e=>n(e,0);export{t as i,n,r,e as t};
