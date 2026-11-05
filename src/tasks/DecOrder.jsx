@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { ArrowUp01, Construction, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp } from 'lucide-react';
+import { ArrowUp01, Construction } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import useLang from '../hooks/useLang';
 import { tr, pickTable } from '../utils/lang';
-import DecOrderItem, { DecMessage } from '../components/math/DecOrderItem.jsx';
+import DecOrderItem from '../components/math/DecOrderItem.jsx';
+import { QuestionCard, DoneCard } from '../components/math/StepKit.jsx';
 import { DecOrderFinal } from '../components/math/DecOrderBoard.jsx';
 import { decOrderModel, questionOf } from '../utils/decOrder';
 
@@ -29,8 +30,6 @@ import { decOrderModel, questionOf } from '../utils/decOrder';
 
 const INK = '#1a5fa8';
 const INK_DARK = '#134a85';
-const GREEN = '#58cc02';
-const AMBER = '#f59e0b';
 
 const T = {
   en: {
@@ -38,6 +37,7 @@ const T = {
     clean: 'Right first time.', slipped: 'Done — one wrong turn, and you found it yourself.',
     helped: 'Done — with a step shown to you.', bookCopy: 'Copy this into your book',
     heads: { order: 'Put them in order', compare: 'Compare two decimals', digit: 'A missing digit' },
+    how: ['Fill the gaps with zeros', 'Compare from the left', 'Answer'],
     noItems: 'No questions yet', back: 'Return to Dashboard',
   },
   fr: {
@@ -45,6 +45,7 @@ const T = {
     clean: 'Juste du premier coup.', slipped: 'Fini — une erreur, et tu l’as trouvée toi-même.',
     helped: 'Fini — avec une étape montrée.', bookCopy: 'Recopie ceci dans ton cahier',
     heads: { order: 'Range-les dans l’ordre', compare: 'Compare deux décimaux', digit: 'Un chiffre manquant' },
+    how: ['Complète avec des zéros', 'Compare de gauche à droite', 'Réponds'],
     noItems: 'Pas encore de questions', back: 'Retour au tableau de bord',
   },
 };
@@ -121,7 +122,6 @@ export default function DecOrder({ pool, savedData = {}, onComplete, onProgress,
   const levelRaw = item.level ? pool?.levels?.[item.level] : null;
   const levelName = typeof levelRaw === 'string' ? levelRaw : pick(levelRaw?.en, levelRaw?.fr);
   const title = pick(pool?.title, pool?.titleFr) || t.title;
-  const intro = pos === 0 ? pick(pool?.intro, pool?.introFr) : null;
   const context = item.context ? pick(item.context, item.contextFr) : null;
   const question = questionOf(model);
 
@@ -133,25 +133,10 @@ export default function DecOrder({ pool, savedData = {}, onComplete, onProgress,
       <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-5 lg:items-start">
         {/* left: the question */}
         <div className="lg:sticky lg:top-4 flex flex-col gap-3 min-w-0">
-          <div className="rounded-2xl border-2 bg-white dark:bg-slate-800 shadow-sm overflow-hidden" style={{ borderColor: INK }}>
-            <div className="px-4 py-2.5 text-white flex items-center gap-3" style={{ backgroundColor: INK }}>
-              <ArrowUp01 className="w-5 h-5 shrink-0" strokeWidth={2.5} />
-              <div className="text-[11px] font-black uppercase tracking-widest opacity-90">{t.heads[model.kind]}</div>
-              <div className="ml-auto text-[11px] font-black uppercase tracking-widest opacity-80 whitespace-nowrap">{cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / {items.length} {t.solved}</div>
-            </div>
-            {item.level && (
-              <div className="px-4 pt-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-200 text-[10px] font-black uppercase tracking-widest">
-                  <TrendingUp className="w-3 h-3" strokeWidth={3} /> {t.level} {item.level}
-                </span>
-                {levelName && <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{levelName}</span>}
-              </div>
-            )}
-            {context && <p className="px-4 pt-3 text-base font-bold text-slate-700 dark:text-slate-200 leading-relaxed">{context}</p>}
-            <p className="px-4 pt-3 text-lg sm:text-xl font-black text-slate-900 dark:text-slate-100 leading-snug">{pick(question.en, question.fr)}</p>
-            {intro && <p className="px-4 pt-3 text-sm font-bold text-slate-500 dark:text-slate-400 leading-relaxed">{intro}</p>}
-            <div className="h-3" />
-          </div>
+          <QuestionCard ink={INK} icon={ArrowUp01} head={t.heads[model.kind]}
+            doneText={`${cleared % 1 === 0 ? cleared : cleared.toFixed(1)} / ${items.length} ${t.solved}`}
+            levelWord={t.level} level={item.level || null} levelName={levelName}
+            context={context} question={pick(question.en, question.fr)} how={pos === 0 ? t.how : null} />
         </div>
 
         {/* right: the board */}
@@ -163,26 +148,14 @@ export default function DecOrder({ pool, savedData = {}, onComplete, onProgress,
           )}
 
           {done && (
-            <div className="rounded-2xl border-2 shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-300" style={{ borderColor: done.helped ? AMBER : GREEN }}>
-              <div className="px-4 py-3 flex items-center gap-3 text-white" style={{ backgroundColor: done.helped ? AMBER : GREEN }}>
-                {done.helped ? <Lightbulb className="w-6 h-6 shrink-0" strokeWidth={2.5} /> : <Trophy className="w-6 h-6 shrink-0" strokeWidth={2.5} />}
-                <div className="font-black">{done.helped ? t.helped : done.slipped ? t.slipped : t.clean}</div>
+            <DoneCard ink={INK} inkDark={INK_DARK} helped={done.helped} slipped={done.slipped}
+              words={{ clean: t.clean, slipped: t.slipped, helped: t.helped, bookCopy: t.bookCopy, next: t.next, finish: t.finish }}
+              shown={done.msg?.tone === 'shown' ? pick(done.msg.en, done.msg.fr) : null}
+              isLast={isLast} onNext={isLast ? finish : goNext}>
+              <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 sm:p-4 min-w-0">
+                <DecOrderFinal model={model} ink={INK} />
               </div>
-              <div className="bg-white dark:bg-slate-900 p-3 sm:p-5">
-                {done.msg?.tone === 'shown' && <div className="-mt-3 mb-3"><DecMessage msg={done.msg} lang={lang} /></div>}
-                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                  <Pencil className="w-4 h-4" strokeWidth={3} /> {t.bookCopy}
-                </div>
-                <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 sm:p-4 min-w-0">
-                  <DecOrderFinal model={model} ink={INK} />
-                </div>
-                <div className="mt-4 flex justify-end">
-                  <button onClick={isLast ? finish : goNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: INK_DARK }}>
-                    {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />
-                  </button>
-                </div>
-              </div>
-            </div>
+            </DoneCard>
           )}
         </div>
       </div>

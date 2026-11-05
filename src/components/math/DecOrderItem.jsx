@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, XCircle, Lightbulb, ListOrdered, Hash, Target, Scale, PaintBucket } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb } from 'lucide-react';
 import DecOrderBoard from './DecOrderBoard.jsx';
+import { StepPanel } from './StepKit.jsx';
+import { stepsOf } from './stepKitParts';
 import { SafeInlineMath } from '../notes/SafeMath.jsx';
 import { pickTable, tr } from '../../utils/lang';
 import {
@@ -26,32 +28,31 @@ import {
  * ------------------------------------------------------------------ */
 
 const INK = '#1a5fa8';
-const GREEN = '#58cc02';
 
 const T = {
   en: {
-    stages: { fill: 'Fill', order: 'Order', compare: 'Compare', digit: 'Digits', position: 'Position' },
-    fillTitle: (dp) => `Fill with zeros: give every number ${dp} decimal place${dp === 1 ? '' : 's'}.`,
-    fillSub: 'Tap the empty boxes. The orange zeros change nothing — they only line the numbers up.',
-    orderSub: 'Tap the numbers in order. Tap one again to take it back.',
-    positionSub: 'Tap one of them.',
+    stages: { fill: 'Zeros', order: 'Order', compare: 'Compare', digit: 'Digits', position: 'Choose' },
+    fillTitle: 'Fill the gaps with zeros.',
+    fillSub: (dp) => `Give every number ${dp} decimal place${dp === 1 ? '' : 's'}: tap each empty box. Zeros at the end change nothing.`,
+    orderSub: 'Tap them in order. Tap one again to take it back.',
+    positionSub: 'Tap one.',
     compareTitle: 'Which sign goes in the box?',
-    compareSub: 'Read it from the left: the first number … the second number.',
-    digitTitle: 'Try each digit in the box. Which ones keep the sign true?',
-    digitSub: 'Tap a digit to choose it. Tap it again to take it back.',
+    compareSub: 'Compare from the left, digit by digit.',
+    digitTitle: 'Which digits can go in the box?',
+    digitSub: 'Tap every digit that keeps it true. Tap again to take one back.',
     check: 'Check', done: 'Done', stuck: 'Show me',
     fill: 'fill with a zero', remove: 'take this zero away',
   },
   fr: {
-    stages: { fill: 'Zéros', order: 'Ordre', compare: 'Comparer', digit: 'Chiffres', position: 'Rang' },
-    fillTitle: (dp) => `Complète avec des zéros : donne ${dp} décimale${dp === 1 ? '' : 's'} à chaque nombre.`,
-    fillSub: 'Touche les cases vides. Les zéros orange ne changent rien — ils alignent seulement les nombres.',
-    orderSub: 'Touche les nombres dans l’ordre. Touche-le encore pour le reprendre.',
-    positionSub: 'Touche l’un d’eux.',
+    stages: { fill: 'Zéros', order: 'Ordre', compare: 'Comparer', digit: 'Chiffres', position: 'Choisir' },
+    fillTitle: 'Complète les cases avec des zéros.',
+    fillSub: (dp) => `Donne ${dp} décimale${dp === 1 ? '' : 's'} à chaque nombre : touche chaque case vide. Les zéros à la fin ne changent rien.`,
+    orderSub: 'Touche-les dans l’ordre. Touche-le encore pour le reprendre.',
+    positionSub: 'Touche-en un.',
     compareTitle: 'Quel signe va dans la case ?',
-    compareSub: 'Lis de gauche à droite : le premier nombre … le deuxième nombre.',
-    digitTitle: 'Essaie chaque chiffre dans la case. Lesquels gardent le signe vrai ?',
-    digitSub: 'Touche un chiffre pour le choisir. Touche-le encore pour le reprendre.',
+    compareSub: 'Compare de gauche à droite, chiffre par chiffre.',
+    digitTitle: 'Quels chiffres peuvent aller dans la case ?',
+    digitSub: 'Touche chaque chiffre qui le garde vrai. Touche encore pour en reprendre un.',
     check: 'Vérifier', done: 'Fini', stuck: 'Montre-moi',
     fill: 'compléter avec un zéro', remove: 'enlever ce zéro',
   },
@@ -77,8 +78,6 @@ const M = {
 };
 const join = (a, b) => ({ en: `${a.en} ${b.en}`, fr: `${a.fr} ${b.fr}` });
 
-const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
-
 function Message({ msg, lang }) {
   if (!msg) return null;
   const text = tr(lang, msg.en, msg.en, msg.fr);
@@ -95,8 +94,6 @@ function Message({ msg, lang }) {
   );
 }
 export { Message as DecMessage };
-
-const STAGE_ICON = { fill: PaintBucket, order: ListOrdered, compare: Scale, digit: Hash, position: Target };
 
 export default function DecOrderItem({ model: m, lang = 'en', oneShot = false, compact = false, ink = INK, onDone }) {
   const t = pickTable(T, lang);
@@ -243,7 +240,8 @@ export default function DecOrderItem({ model: m, lang = 'en', oneShot = false, c
 
   /* ------------------------------------------------ show me */
   const showMe = () => {
-    if (stage === 'fill') { setAdded(allZeros(m)); setMsg(null); return; }
+    // The fill is not marked: Show me fills the zeros and moves on, like Done.
+    if (stage === 'fill') { setAdded(allZeros(m)); setMsg({ tone: 'ok', ...M.fillDone(m.maxDp) }); advance(helped, slipped, null); return; }
     const shown = { tone: 'shown', ...(stage === 'order' ? M.shownOrder : stage === 'compare' ? M.shownSign : stage === 'digit' ? M.shownDigits : M.shownPosition) };
     if (stage === 'order') { setPlaced(m.order); setMarks(Object.fromEntries(m.order.map((i) => [i, 'shown']))); }
     if (stage === 'position') { setPick(m.positionAnswer); setMarks({ [m.positionAnswer]: 'shown' }); }
@@ -257,7 +255,7 @@ export default function DecOrderItem({ model: m, lang = 'en', oneShot = false, c
   /* ------------------------------------------------ render */
   if (finished) return null;
   const L = (o) => tr(lang, o.en, o.en, o.fr);
-  const head = stage === 'fill' ? { text: t.fillTitle(m.maxDp), sub: t.fillSub }
+  const head = stage === 'fill' ? { text: t.fillTitle, sub: t.fillSub(m.maxDp) }
     : stage === 'order' ? { text: L(questionOf(m)), sub: t.orderSub }
       : stage === 'position' ? { text: L(positionQuestion(m)), sub: t.positionSub }
         : stage === 'compare' ? { text: t.compareTitle, sub: t.compareSub }
@@ -268,32 +266,13 @@ export default function DecOrderItem({ model: m, lang = 'en', oneShot = false, c
     : st === 'bad' ? 'border-rose-400 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300'
       : st === 'shown' ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200' : '');
 
+  const check = stage === 'fill' ? checkFill : stage === 'order' ? checkOrder : stage === 'position' ? checkPosition : checkDigits;
+
   return (
-    <div className="min-w-0">
-      {stages.length > 1 && (
-        <div className={`flex flex-wrap gap-1.5 ${compact ? 'mb-2' : 'mb-3'}`}>
-          {stages.map((s, k) => {
-            const Icon = STAGE_ICON[s];
-            const done = k < si;
-            const active = k === si;
-            return (
-              <div key={s} className={`flex items-center gap-1.5 px-2 py-1 rounded-xl border-2 text-[10px] sm:text-xs font-black uppercase tracking-widest
-                ${done ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300'
-                  : active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}
-                style={active ? { backgroundColor: ink } : undefined}>
-                {done ? <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
-                <span>{t.stages[s]}</span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <div className={compact ? 'mb-2' : 'mb-3'}>
-        <div className={`font-black text-slate-800 dark:text-slate-100 ${compact ? 'text-base' : 'text-lg'}`}>{head.text}</div>
-        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{head.sub}</p>
-      </div>
-
+    <StepPanel ink={ink} lang={lang} plain compact={compact}
+      steps={stepsOf(stages, si, t.stages)} n={si + 1} title={head.text} sub={head.sub} msg={msg}
+      onShowMe={oneShot ? null : showMe}
+      onCheck={stage === 'compare' ? null : check} checkLabel={stage === 'fill' ? t.done : t.check}>
       {m.kind !== 'digit' && (
         <DecOrderBoard model={m} added={zerosNow} mode={boardMode} onFill={onFill} onTap={tapRow}
           placed={stage === 'order' ? placed : []} picked={pick} toneOf={(i) => marks[i] || null}
@@ -347,24 +326,6 @@ export default function DecOrderItem({ model: m, lang = 'en', oneShot = false, c
         </div>
       )}
 
-      <Message msg={msg} lang={lang} />
-
-      {(stage !== 'compare' || !oneShot) && (
-        <div className="mt-4 flex items-center justify-end gap-2">
-          {!oneShot && (
-            <button type="button" onClick={showMe}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-              <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
-            </button>
-          )}
-          {stage !== 'compare' && (
-            <button type="button" onClick={stage === 'fill' ? checkFill : stage === 'order' ? checkOrder : stage === 'position' ? checkPosition : checkDigits}
-              className={`px-5 py-3 text-white text-xs ${btn}`} style={{ backgroundColor: GREEN, borderColor: '#3e7500' }}>
-              {stage === 'fill' ? t.done : t.check}
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+    </StepPanel>
   );
 }

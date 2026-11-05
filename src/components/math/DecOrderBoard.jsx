@@ -40,7 +40,7 @@ const TONE = {
 };
 
 const SIZE = {
-  roomy: { cell: 'w-7 sm:w-9 h-9 sm:h-11 text-2xl sm:text-3xl', point: 'w-3 sm:w-4 h-9 sm:h-11 text-2xl sm:text-3xl', badge: 'w-7 h-7 text-xs', label: 'w-[4.5rem] sm:w-28 text-xs sm:text-sm' },
+  roomy: { cell: 'w-8 sm:w-11 h-10 sm:h-14 text-2xl sm:text-4xl', point: 'w-3 sm:w-5 h-10 sm:h-14 text-2xl sm:text-4xl', badge: 'w-7 h-7 text-xs', label: 'w-[4.5rem] sm:w-28 text-xs sm:text-sm' },
   compact: { cell: 'w-6 h-8 text-xl', point: 'w-2.5 h-8 text-xl', badge: 'w-6 h-6 text-[11px]', label: 'w-16 text-xs' },
 };
 

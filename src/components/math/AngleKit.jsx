@@ -79,7 +79,8 @@ export function StepHeader({ letter, stone = false, lang, steps = [], title }) {
   );
 }
 
-export function Stepper({ steps }) {
+/** `accent` (a colour) replaces the orange of the step in hand — for a task with its own colour. */
+export function Stepper({ steps, accent }) {
   return (
     <ol className="flex flex-wrap items-center gap-1" aria-label="steps">
       {steps.map((s, i) => {
@@ -87,13 +88,15 @@ export function Stepper({ steps }) {
         const now = s.state === 'now';
         const pill = done
           ? (s.state === 'shown' ? 'bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:border-amber-700' : 'bg-[#effbe5] text-[#2f5d00] border-[#9bd36b] dark:bg-lime-900/30 dark:text-lime-200 dark:border-lime-700')
-          : now ? 'bg-[#fff1e6] text-[#b4460a] border-[#e8590c] dark:bg-orange-900/30 dark:text-orange-200 dark:border-orange-500'
+          : now ? (accent ? 'bg-white dark:bg-slate-900' : 'bg-[#fff1e6] text-[#b4460a] border-[#e8590c] dark:bg-orange-900/30 dark:text-orange-200 dark:border-orange-500')
             : 'bg-white text-slate-400 border-slate-200 dark:bg-slate-900 dark:text-slate-500 dark:border-slate-700';
         return (
           <li key={s.key} className="flex items-center gap-1" aria-current={now ? 'step' : undefined}>
             {i > 0 && <span className={`w-3 h-0.5 rounded ${done || now ? 'bg-slate-300 dark:bg-slate-600' : 'bg-slate-200 dark:bg-slate-800'}`} />}
-            <span className={`inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full border-2 text-xs font-black ${pill}`}>
-              <span className={`inline-grid place-items-center w-5 h-5 rounded-full text-[11px] ${done ? 'bg-white/70 dark:bg-black/20' : now ? 'bg-[#e8590c] text-white' : 'bg-slate-100 dark:bg-slate-800'}`}>
+            <span className={`inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full border-2 text-xs font-black ${pill}`}
+              style={now && accent ? { borderColor: accent, color: accent } : undefined}>
+              <span className={`inline-grid place-items-center w-5 h-5 rounded-full text-[11px] ${done ? 'bg-white/70 dark:bg-black/20' : now ? 'bg-[#e8590c] text-white' : 'bg-slate-100 dark:bg-slate-800'}`}
+                style={now && accent ? { backgroundColor: accent } : undefined}>
                 {done ? <Check className="w-3 h-3" strokeWidth={4} /> : i + 1}
               </span>
               {s.label}
@@ -106,10 +109,10 @@ export function Stepper({ steps }) {
 }
 
 /** The heading of the step in hand: "Step 1 · Which fact finds b?" */
-export function StepTitle({ n, lang, children }) {
+export function StepTitle({ n, lang, accent, children }) {
   return (
     <p className="text-[15px] font-black text-slate-700 dark:text-slate-200 flex items-baseline gap-2">
-      {n != null && <span className="shrink-0 text-[11px] uppercase tracking-widest text-[#e8590c] dark:text-orange-400">{kt(lang).step} {n}</span>}
+      {n != null && <span className="shrink-0 text-[11px] uppercase tracking-widest text-[#e8590c] dark:text-orange-400" style={accent ? { color: accent } : undefined}>{kt(lang).step} {n}</span>}
       <span>{children}</span>
     </p>
   );
@@ -162,11 +165,11 @@ export function AnswerBox({ value, onChange, onEnter, label, inputRef, autoFocus
   );
 }
 
-export function CheckButton({ onClick, disabled, lang }) {
+export function CheckButton({ onClick, disabled, lang, label }) {
   return (
     <button type="button" onClick={onClick} disabled={disabled}
       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-sm font-black uppercase tracking-widest bg-[#58cc02] border-b-[4px] border-[#46a302] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none">
-      <Check className="w-4 h-4" strokeWidth={3} /> {kt(lang).check}
+      <Check className="w-4 h-4" strokeWidth={3} /> {label || kt(lang).check}
     </button>
   );
 }
