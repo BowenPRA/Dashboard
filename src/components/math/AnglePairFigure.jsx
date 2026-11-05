@@ -6,8 +6,11 @@ import { at, f1, labelAt, keyOf, FIG } from '../../utils/anglePairGeom';
  * Used by the ANGLE_PAIR task and the `anglepair` deck activity.
  *
  *   F        figureOf(item.fig)
- *   marks    [{ at: [c, w], tone, text }] — the angles to colour and label
- *            (tone: given · ask · good · bad · stone · shown)
+ *   marks    [{ at: [c, w], tone, text, current? }] — the angles to colour and label
+ *            (tone: given · ask · good · bad · stone · shown); `current` puts
+ *            the letter on an orange badge (purple for w), as in the step
+ *            panel's "Find x". The colours are the other angle tasks': the
+ *            given angle teal, a letter orange, a found angle green.
  *   glow     { paths, tone } — the X, F, Z or straight line, traced under the lines
  *   tap      'sector' (every angle is a button) · 'rail' (each line of a
  *            three-line picture) · null
@@ -19,13 +22,15 @@ import { at, f1, labelAt, keyOf, FIG } from '../../utils/anglePairGeom';
 const FONT = "Inter, 'Segoe UI', system-ui, sans-serif";
 const INK = '#2b2b2b';
 const TONES = {
-  given: ['#fdf1e3', '#c25e12'],
-  ask: ['#e3eef9', '#1a5fa8'],
-  good: ['#e4f4d6', '#3d731c'],
+  given: ['#e2f2f6', '#0087a8'],
+  ask: ['#fff4ea', '#c25e12'],
+  good: ['#eef6e6', '#3f7a1d'],
   bad: ['#fde8ea', '#c8102e'],
-  stone: ['#f2ecf7', '#5c2483'],
+  stone: ['#efe7f6', '#5c2483'],
   shown: ['#fff4d6', '#b45309'],
 };
+const BADGE = { ask: ['#ffc896', '#e8590c'], stone: ['#e6d9f2', '#5c2483'] };
+const GLOW = '#f5b301';
 
 function sectorPath(P, r, a1, a2) {
   const [x1, y1] = at(P, r, a1);
@@ -48,7 +53,6 @@ export default function AnglePairFigure({ F, marks = [], glow = null, tap = null
   const gaps = F.points.flatMap((P, i) => F.points.slice(i + 1).map((Q) => Math.hypot(P[0] - Q[0], P[1] - Q[1])));
   const reach = Math.min(130, ...gaps.map((g) => g / 2 - 4));
   const marked = new Map(marks.map((m) => [keyOf(m.at), m]));
-  const glowColour = glow?.tone === 'shown' ? '#d97706' : '#4a8b23';
 
   return (
     <svg viewBox={`0 0 ${F.W} ${F.H}`} className={`w-full h-auto select-none ${className}`} style={style} role="img" aria-label={label}>
@@ -56,14 +60,18 @@ export default function AnglePairFigure({ F, marks = [], glow = null, tap = null
       <rect x="0.75" y="0.75" width={F.W - 1.5} height={F.H - 1.5} rx="15" fill="none" stroke="#e2e8f0" strokeWidth="1.5" />
 
       {glow?.paths?.map((pts, i) => (
-        <path key={`g${i}`} d={poly(pts)} fill="none" stroke={glowColour} strokeWidth="18" strokeOpacity="0.3" strokeLinecap="round" strokeLinejoin="round" />
+        <path key={`g${i}`} d={poly(pts)} fill="none" stroke={GLOW} strokeWidth="16" strokeOpacity="0.55" strokeLinecap="round" strokeLinejoin="round" />
       ))}
 
       {F.sectors.flatMap((list, c) => list.map((q, w) => {
         const m = marked.get(keyOf([c, w]));
         if (!m) return null;
-        const [fill, stroke] = TONES[m.tone] || TONES.ask;
-        return <path key={`s${c}-${w}`} d={sectorPath(F.points[c], FIG.ARC, q.start, q.end)} fill={fill} stroke={stroke} strokeWidth="3" />;
+        const [fill, stroke] = (m.current && BADGE[m.tone]) || TONES[m.tone] || TONES.ask;
+        return (
+          <path key={`s${c}-${w}`} d={sectorPath(F.points[c], FIG.ARC, q.start, q.end)} fill={fill} stroke={stroke} strokeWidth={m.current ? 3.5 : 3}>
+            {m.current && <animate attributeName="fill-opacity" values="1;0.55;1" dur="1.6s" repeatCount="indefinite" />}
+          </path>
+        );
       }))}
 
       {F.lines.map((l, i) => {
@@ -79,14 +87,23 @@ export default function AnglePairFigure({ F, marks = [], glow = null, tap = null
       {F.points.map((P, i) => <circle key={`p${i}`} cx={f1(P[0])} cy={f1(P[1])} r="5" fill={INK} />)}
       {F.names.map((n, i) => (
         <text key={`n${i}`} x={f1(n.at[0])} y={f1(n.at[1] + 10)} fontFamily={FONT} fontSize="28" fontWeight="900"
-          fill={rails[i] ? TONES[rails[i]][1] : '#1a5fa8'} textAnchor="middle">{n.name}</text>
+          fill={rails[i] ? TONES[rails[i]][1] : '#334155'} textAnchor="middle">{n.name}</text>
       ))}
 
       {marks.filter((m) => m.text).map((m) => {
         const [x, y] = labelAt(F, m.at);
         const stroke = (TONES[m.tone] || TONES.ask)[1];
+        if (m.current && BADGE[m.tone]) {
+          return (
+            <g key={`t${keyOf(m.at)}`} pointerEvents="none">
+              <circle cx={f1(x)} cy={f1(y)} r="20" fill={BADGE[m.tone][1]} stroke="#ffffff" strokeWidth="3" />
+              <text x={f1(x)} y={f1(y + 9.5)} fontFamily={FONT} fontSize="27" fontWeight="900" fontStyle="italic" fill="#ffffff" textAnchor="middle">{m.text}</text>
+            </g>
+          );
+        }
         return (
-          <text key={`t${keyOf(m.at)}`} x={f1(x)} y={f1(y + 9.5)} fontFamily={FONT} fontSize="26" fontWeight="900" fill={stroke} textAnchor="middle">{m.text}</text>
+          <text key={`t${keyOf(m.at)}`} x={f1(x)} y={f1(y + 9.5)} fontFamily={FONT} fontSize="26" fontWeight="900" fill={stroke}
+            fontStyle={/^[a-z]$/.test(m.text) ? 'italic' : 'normal'} textAnchor="middle">{m.text}</text>
         );
       })}
 

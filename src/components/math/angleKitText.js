@@ -25,17 +25,18 @@ export const FACT_CARD = {
   tri: { en: ['Triangle', 'angles add up to 180°'], fr: ['Triangle', 'les angles font 180°'] },
   para: { en: ['Parallelogram, opposite', 'they are equal'], fr: ['Parallélogramme, opposés', 'ils sont égaux'] },
   next: { en: ['Parallelogram, next-door', 'they add up to 180°'], fr: ['Parallélogramme, voisins', 'ils font 180°'] },
+  none: { en: ['No arrows', 'you can’t tell'], fr: ['Pas de flèches', 'on ne peut pas savoir'] },
 };
 
 export const KT = {
   en: {
-    find: 'Find', findStone: 'Find the angle marked ?', onTheWay: 'on the way',
+    find: 'Find', findStone: 'Find the angle marked ?', onTheWay: 'on the way', step: 'Step',
     which: (L) => `Which fact finds ${L}?`, workOut: 'Work it out',
     working: 'Your working', because: 'because', check: 'Check', hint: 'Hint', stuck: 'Show me',
     newLine: 'new',
   },
   fr: {
-    find: 'Trouve', findStone: 'Trouve l’angle marqué ?', onTheWay: 'en chemin',
+    find: 'Trouve', findStone: 'Trouve l’angle marqué ?', onTheWay: 'en chemin', step: 'Étape',
     which: (L) => `Quelle propriété donne ${L} ?`, workOut: 'Calcule',
     working: 'Ton calcul', because: 'car', check: 'Vérifier', hint: 'Indice', stuck: 'Montre-moi',
     newLine: 'nouveau',

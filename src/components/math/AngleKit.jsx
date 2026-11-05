@@ -106,10 +106,10 @@ export function Stepper({ steps }) {
 }
 
 /** The heading of the step in hand: "Step 1 · Which fact finds b?" */
-export function StepTitle({ n, children }) {
+export function StepTitle({ n, lang, children }) {
   return (
     <p className="text-[15px] font-black text-slate-700 dark:text-slate-200 flex items-baseline gap-2">
-      {n != null && <span className="shrink-0 text-[11px] uppercase tracking-widest text-[#e8590c] dark:text-orange-400">Step {n}</span>}
+      {n != null && <span className="shrink-0 text-[11px] uppercase tracking-widest text-[#e8590c] dark:text-orange-400">{kt(lang).step} {n}</span>}
       <span>{children}</span>
     </p>
   );

@@ -6,6 +6,7 @@ import useAnglePairItem, { deriveAnglePair } from '../math/useAnglePairItem';
 import { PairButtons, SizeInput, ApMessage, Sentences } from '../math/AnglePairParts.jsx';
 import { apT, stageTitle } from '../math/anglePairWords';
 import { letterOf } from '../../utils/anglePairGeom';
+import { frameParts } from '../math/anglePairLines';
 
 /**
  * `anglepair` — one X, F or Z? item on a Notes slide (Year 7 Maths 5.2).
@@ -70,7 +71,11 @@ function Running({ activity, lang, onResult }) {
         <div className="mt-2">
           <p className="mb-2 text-sm font-black text-slate-600 dark:text-slate-300">{stageTitle(run, lang)}</p>
           {kind === 'pair' && <PairButtons options={run.target.options} picks={run.picks} onChoose={run.actions.choose} lang={lang} compact />}
-          {kind === 'size' && <SizeInput key={run.stage} letter={run.target.letter} onCheck={run.actions.type} lang={lang} bad={run.msg?.tone === 'bad'} compact />}
+          {kind === 'size' && (
+            <SizeInput key={run.stage} letter={run.target.letter} onCheck={run.actions.type} lang={lang} compact
+              frame={frameParts(run.target.letter, run.target.right, run.target.from, true)}
+              hint={run.target.right !== 'adj' ? t.sameAs(run.target.from) : null} />
+          )}
           {kind === 'tap' && <p className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2"><MousePointerClick className="w-4 h-4" />{t.tap}</p>}
           <ApMessage msg={run.msg} lang={lang} />
         </div>

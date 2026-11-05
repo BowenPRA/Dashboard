@@ -135,7 +135,7 @@ export function ChaseStep({ model, facts, run, lang }) {
       <StepHeader letter={L} stone={stone} lang={lang} steps={steps} />
       {s.stage === 'fact' && (
         <>
-          <StepTitle n={1}>{t.factQ(L)}</StepTitle>
+          <StepTitle lang={lang} n={1}>{t.factQ(L)}</StepTitle>
           <FactGrid kinds={facts} lang={lang} struck={s.tried} onPick={run.act.chooseFact} />
         </>
       )}
@@ -148,7 +148,7 @@ export function ChaseStep({ model, facts, run, lang }) {
               <span className="block text-xs font-bold opacity-75">{t.lit}</span>
             </div>
           </div>
-          <StepTitle n={2}>{t.sizeQ}</StepTitle>
+          <StepTitle lang={lang} n={2}>{t.sizeQ}</StepTitle>
           <SizeBox key={`${s.target}:${s.rel.id}:${s.full ? 1 : 0}`} model={model} run={run} lang={lang} />
         </>
       )}

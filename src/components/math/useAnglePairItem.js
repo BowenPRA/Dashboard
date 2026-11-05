@@ -82,7 +82,7 @@ export default function useAnglePairItem(item, { onFinish } = {}) {
   };
 
   const judge = (d, value, { left = 9 } = {}) => {
-    if (d.ok) { advance(record(value, 'good'), { tone: 'ok', en: d.en, fr: d.fr }); return; }
+    if (d.ok) { advance(record(value, 'good'), { tone: 'ok', en: d.en, fr: d.fr, guide: !!d.guide }); return; }
     if (d.soft) { setMsg({ tone: 'nudge', en: d.en, fr: d.fr }); return; }
     setSlipped(true);
     if (kind === 'size' && m.kind === 'steps' && !answers.stoneSize && wrongs === 0) {
@@ -128,7 +128,8 @@ export default function useAnglePairItem(item, { onFinish } = {}) {
         d = { ok: false, code: 'skipstone', en: `${t.letter} and the ${m.given.size}° are not joined by one X, F or Z.`, fr: `${t.letter} et le ${m.given.size}° ne sont pas reliés par un seul X, F ou Z.` };
       }
       if (d.ok && kind === 'convert') {
-        d = { ok: true, en: `Yes: in the same place, line ${t.letter}’s angle is ${t.answer}°. Compare the three again, then tap the line that is not parallel.`, fr: `Oui : à la même place, l’angle de la droite ${t.letter} fait ${t.answer}°. Compare encore les trois, puis touche la droite qui n’est pas parallèle.` };
+        // The one "yes" worth showing: it says what to do next.
+        d = { ok: true, guide: true, en: `Yes: in the same place, line ${t.letter}’s angle is ${t.answer}°. Compare the three again, then tap the line that is not parallel.`, fr: `Oui : à la même place, l’angle de la droite ${t.letter} fait ${t.answer}°. Compare encore les trois, puis touche la droite qui n’est pas parallèle.` };
       }
       judge(d, readDegrees(text));
     },
@@ -148,15 +149,16 @@ export default function useAnglePairItem(item, { onFinish } = {}) {
     m.targets.forEach((t, n) => {
       const size = answers[`size:${n}`];
       const pair = answers[`pair:${n}`];
-      marks.push({ at: t.at, tone: size ? (size.how === 'good' ? 'good' : 'shown') : 'ask', text: size ? `${t.answer}°` : t.letter });
+      // The letter being worked on carries the orange badge (current).
+      marks.push({ at: t.at, tone: size ? (size.how === 'good' ? 'good' : 'shown') : 'ask', text: size ? `${t.answer}°` : t.letter, current: !size && n === i && (kind === 'pair' || kind === 'size') });
       if (pair && t.right !== 'none') glows.push(letterOf(m.F, m.given.at, t.at));
     });
   }
   if (m?.kind === 'steps') {
     const done = !!answers['size:0'];
-    marks.push({ at: m.target.at, tone: done ? (answers['size:0'].how === 'good' ? 'good' : 'shown') : 'ask', text: done ? `${m.target.answer}°` : m.target.letter });
+    marks.push({ at: m.target.at, tone: done ? (answers['size:0'].how === 'good' ? 'good' : 'shown') : 'ask', text: done ? `${m.target.answer}°` : m.target.letter, current: !done && (kind === 'pair' || kind === 'size') });
     if (stone) {
-      marks.push({ at: stone.at, tone: 'stone', text: answers.stoneSize || done ? `${stone.size}°` : 'w' });
+      marks.push({ at: stone.at, tone: 'stone', text: answers.stoneSize || done ? `${stone.size}°` : 'w', current: kind === 'stoneSize' });
       if (stone.drawn) glows.push(letterOf(m.F, m.given.at, stone.at));
       if (answers['pair:0'] && stone.drawn) glows.push(letterOf(m.F, stone.at, m.target.at));
     } else if (bad) marks.push({ at: bad, tone: 'bad' });

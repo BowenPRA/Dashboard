@@ -2,7 +2,8 @@
  * A small picture of each angle fact, for the fact cards of the Year 7 angle
  * tasks (Find It, Say Why; Find Every Angle): the straight line, the full
  * turn, the X, the upright F, the true Z, the same-side pair, the triangle,
- * the quadrilateral, and a parallelogram's opposite and next-door corners.
+ * the quadrilateral, a parallelogram's opposite and next-door corners, and
+ * two lines with no arrows ("you can't tell").
  * The colours are the diagram's: the angle you find is orange, the angle (or
  * angles) you know teal — "use this one to find that one".
  */
@@ -47,6 +48,13 @@ const PICS = {
   ),
   para: <><W at={[6, 29]} from={0} to={70} /><W at={[42, 7]} from={180} to={250} find /><path d="M 6 29 L 34 29 L 42 7 L 14 7 Z" /></>,
   next: <><W at={[6, 29]} from={0} to={70} /><W at={[34, 29]} from={70} to={180} find /><path d="M 6 29 L 34 29 L 42 7 L 14 7 Z" /></>,
+  // Two lines that look parallel but carry no arrows: you can't tell.
+  none: (
+    <>
+      <path d="M 4 11 L 34 9 M 4 26 L 34 27 M 12 3 L 26 33" />
+      <text x="42" y="25" textAnchor="middle" fontSize="20" fontWeight="900" fill={FIND} stroke="none" fontFamily="Inter, 'Segoe UI', system-ui, sans-serif">?</text>
+    </>
+  ),
 };
 
 export default function FactIcon({ kind, className = 'w-11 h-8' }) {

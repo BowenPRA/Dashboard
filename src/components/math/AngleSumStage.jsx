@@ -93,7 +93,7 @@ function StageBody({ run, model, lang, chips, compact }) {
   if (stage === 'first') {
     return (
       <>
-        <StepTitle n={n}>{t.first}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.first}</StepTitle>
         <p className="-mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">{t.firstSub}</p>
         <div className="flex flex-wrap gap-2">
           {step.first.map((l) => (
@@ -107,7 +107,7 @@ function StageBody({ run, model, lang, chips, compact }) {
   if (stage === 'decide') {
     return (
       <>
-        <StepTitle n={n}>{t.decide(L)}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.decide(L)}</StepTitle>
         <FactGrid kinds={DECIDE_FACTS} lang={lang} struck={Object.keys(struck)} onPick={act.chooseFact} compact={compact} />
       </>
     );
@@ -116,14 +116,14 @@ function StageBody({ run, model, lang, chips, compact }) {
     if (step.fact === 'straight') {
       return (
         <>
-          <StepTitle n={n}>{t.straightWhy}</StepTitle>
+          <StepTitle lang={lang} n={n}>{t.straightWhy}</StepTitle>
           <div className="grid gap-2">{step.reasons.map((r) => <ReasonButton key={r.id} r={r} lang={lang} state={struck[r.id] ? 'struck' : 'idle'} onClick={() => act.chooseWhy(r.id)} />)}</div>
         </>
       );
     }
     return (
       <>
-        <StepTitle n={n}>{t.why}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.why}</StepTitle>
         <div className="flex flex-wrap items-baseline gap-x-2">
           <Eq parts={[...lettersParts(step, 'L'), op('='), { t: 'f', v: step.answer }]} className="text-xl sm:text-2xl" />
           <span className="text-lg font-black text-slate-500 dark:text-slate-400">{ST.en.because} …</span>
@@ -140,7 +140,7 @@ function StageBody({ run, model, lang, chips, compact }) {
       : [{ node: <span className="px-2 py-0.5 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-sm font-bold italic text-slate-400">{t.tapFirst}</span> }];
     return (
       <>
-        <StepTitle n={n}>{t.add}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.add}</StepTitle>
         <p className="-mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">{chips ? t.addChips : t.addFig}</p>
         {chips && (
           <div className="flex flex-wrap gap-2">
@@ -165,7 +165,7 @@ function StageBody({ run, model, lang, chips, compact }) {
     const lhs = step.share > 1 ? [] : [...cur, op('=')];
     return (
       <>
-        <StepTitle n={n}>{t.subtract(step.sum, step.total)}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.subtract(step.sum, step.total)}</StepTitle>
         {row([...lhs, { t: 'n', v: step.total }, op('−'), sub, op('='), box(() => act.checkTyped(typed), 'subtract')], () => act.checkTyped(typed), !typed.trim())}
       </>
     );
@@ -173,7 +173,7 @@ function StageBody({ run, model, lang, chips, compact }) {
   if (stage === 'share') {
     return (
       <>
-        <StepTitle n={n}>{t.share(step.rest, step.share)}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.share(step.rest, step.share)}</StepTitle>
         {row([...cur, op('='), { t: 'n', v: step.rest }, op('÷'), { t: 'txt', v: String(step.share) }, op('='), box(() => act.checkTyped(typed), 'share')], () => act.checkTyped(typed), !typed.trim())}
       </>
     );
@@ -181,7 +181,7 @@ function StageBody({ run, model, lang, chips, compact }) {
   if (stage === 'calc') {
     return (
       <>
-        <StepTitle n={n}>{t.calc(L, step.answer)}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.calc(L, step.answer)}</StepTitle>
         {row([...cur, op('='), box(() => act.checkTyped(typed), L)], () => act.checkTyped(typed), !typed.trim())}
       </>
     );
@@ -190,7 +190,7 @@ function StageBody({ run, model, lang, chips, compact }) {
     const ks = step.knowns.map(knownPart).flatMap((p, i) => (i ? [op('+'), p] : [p]));
     return (
       <>
-        <StepTitle n={n}>{t.total}</StepTitle>
+        <StepTitle lang={lang} n={n}>{t.total}</StepTitle>
         {row([...ks, op('='), box(() => act.checkTyped(typed), 'total')], () => act.checkTyped(typed), !typed.trim())}
       </>
     );
@@ -198,7 +198,7 @@ function StageBody({ run, model, lang, chips, compact }) {
   // quick: the angle and its reason together
   return (
     <>
-      <StepTitle n={n}>{t.quick(L)}</StepTitle>
+      <StepTitle lang={lang} n={n}>{t.quick(L)}</StepTitle>
       {!chips && <p className="-mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">{t.quickSub}</p>}
       <Eq parts={[...cur, op('='), box(() => act.checkQuick(typed, reason), L)]} className="text-xl sm:text-2xl" />
       <p className="text-lg font-black text-slate-500 dark:text-slate-400 -mb-1">{ST.en.because} …</p>

@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
-import {
-  Construction, CheckCircle2, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, Hand, Tags, Ruler, MousePointerClick, Shuffle, HelpCircle,
-} from 'lucide-react';
+import { Construction, ArrowRight, Lightbulb, Trophy, Pencil, TrendingUp, MousePointerClick } from 'lucide-react';
 import TopBar from '../components/TopBar';
 import useLang from '../hooks/useLang';
 import { tr } from '../utils/lang';
 import AnglePairFigure from '../components/math/AnglePairFigure.jsx';
 import useAnglePairItem, { deriveAnglePair } from '../components/math/useAnglePairItem';
-import { PairButtons, ReasonButtons, SizeInput, ApMessage, Sentences } from '../components/math/AnglePairParts.jsx';
+import { PairButtons, ReasonButtons, SizeInput, ApMessage } from '../components/math/AnglePairParts.jsx';
 import { apT, questionOf, stageTitle } from '../components/math/anglePairWords';
+import { pairLines, frameParts } from '../components/math/anglePairLines';
+import { StepHeader, StepTitle, HelpRow, Notebook } from '../components/math/AngleKit.jsx';
 
 /* ------------------------------------------------------------------ *
  * X, F OR Z? — see the pair, then find the angle and say why (Y7 Maths
@@ -16,43 +16,94 @@ import { apT, questionOf, stageTitle } from '../components/math/anglePairWords';
  *   { title, titleFr, intro?, introFr?, levels: { n: { en, fr } }, items }
  * Item shapes and the stages are in utils/anglePairs.js; the picture is
  * drawn from the item by utils/anglePairGeom.js, so nothing is stored but
- * the question.
+ * the question. It wears the angle tasks' shared look (AngleKit.jsx): a
+ * "Find x" header with that letter's steps, pair cards with a picture of
+ * each pair, the size after its sum, and the working written as it goes.
  *
  * Two or three actions an item from level 3 on, and naming the pair always
- * stays. A wrong answer is named and tried again; a second (or Show me)
- * fills the stage in and the item pays half. Blob { [itemId]: 1 | 0.5 },
- * score out of 10.
+ * stays. Levels 1–2 show the sum (180° − 76° = ?) with the size box; later
+ * levels show it after a wrong size. A wrong answer is named and tried
+ * again; a second (or Show me) fills the stage in and the item pays half.
+ * Blob { [itemId]: 1 | 0.5 }, score out of 10.
  * ------------------------------------------------------------------ */
 
 const INK = '#c25e12';
 const INK_DARK = '#a04a0e';
 const GREEN = '#58cc02';
 const AMBER = '#f59e0b';
-const STAGE_ICON = { tap: Hand, pair: Tags, size: Ruler, stone: MousePointerClick, stoneSize: Ruler, line: Shuffle, convert: Ruler, reason: HelpCircle };
 const btn = 'rounded-xl font-black uppercase tracking-widest border-b-[4px] active:border-b-0 active:translate-y-[4px] transition-all disabled:opacity-40 disabled:pointer-events-none';
 
-function StageChip({ icon: Icon, label, active, done }) {
-  return (
-    <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[10px] sm:text-xs font-black uppercase tracking-widest
-      ${done ? 'bg-[#d7ffb8] dark:bg-lime-900/30 border-[#58a700] text-[#3e7500] dark:text-lime-300'
-        : active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}
-      style={active && !done ? { backgroundColor: INK } : undefined}>
-      {done ? <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} /> : <Icon className="w-3.5 h-3.5" strokeWidth={3} />}
-      <span>{label}</span>
-    </div>
-  );
+/** The steps of the angle in hand: that letter's stages, an opened stage lighting the one it belongs to. */
+function stepsOf(run, lang) {
+  const t = apT(lang);
+  const { m, stage, answers } = run;
+  const [kind, idx] = stage.split(':');
+  const i = Number(idx || 0);
+  const active = kind === 'stoneSize' ? 'size:0' : kind === 'convert' ? 'line' : stage;
+  const list = m.kind === 'find' ? m.stages.filter((s) => Number(s.split(':')[1] || 0) === i) : m.stages;
+  return list.map((s) => ({
+    key: s, label: t.stages[s.split(':')[0]],
+    state: answers[s] ? (answers[s].how === 'shown' ? 'shown' : 'done') : s === active ? 'now' : 'todo',
+  }));
+}
+
+function PairHeader({ run, steps, lang }) {
+  const t = apT(lang);
+  const { m, index } = run;
+  if (m.kind === 'spot') return <StepHeader letter={null} title={t.tapTitle} lang={lang} steps={[]} />;
+  if (m.kind === 'which') return <StepHeader letter={null} title={t.whichTitle} lang={lang} steps={steps} />;
+  return <StepHeader letter={m.kind === 'steps' ? m.target.letter : m.targets[index].letter} lang={lang} steps={steps} />;
+}
+
+const TapHint = ({ text }) => (
+  <p className="flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 -mt-1"><MousePointerClick className="w-4 h-4" strokeWidth={2.5} />{text}</p>
+);
+
+/** The body of the stage in hand. */
+function StageBody({ run, item, steps, lang }) {
+  const t = apT(lang);
+  const { m, kind, target, answers } = run;
+  const now = steps.findIndex((s) => s.state === 'now');
+  const title = <StepTitle lang={lang} n={steps.length > 1 && now >= 0 ? now + 1 : null}>{stageTitle(run, lang)}</StepTitle>;
+  // A spot item's header already says "Tap the angle": the hint is all it needs.
+  if (kind === 'tap') return <TapHint text={t.tapHint} />;
+  if (kind === 'stone') return <>{title}<TapHint text={t.tapHint} /></>;
+  if (kind === 'line') return <>{title}<TapHint text={t.lineHint} /></>;
+  if (kind === 'pair') return <>{title}<PairButtons options={target.options} picks={run.picks} onChoose={run.actions.choose} lang={lang} /></>;
+  if (kind === 'reason') return <>{title}<ReasonButtons picks={run.picks} onChoose={run.actions.choose} lang={lang} /></>;
+  if (kind === 'size') {
+    // The sum with its numbers: levels 1–2, or after a wrong size (and in two steps, once w is known).
+    const knowFrom = m.kind !== 'steps' || !!answers.stoneSize;
+    const full = knowFrom && ((item.level || 1) <= 2 || run.msg?.tone === 'bad');
+    const frame = frameParts(target.letter, target.right, target.from, full, { from: m.kind === 'steps' ? 's' : 'g' });
+    return (
+      <>
+        {title}
+        <SizeInput key={`${run.stage}:${full ? 1 : 0}`} letter={target.letter} frame={frame}
+          hint={full && target.right !== 'adj' ? t.sameAs(target.from) : null} onCheck={run.actions.type} lang={lang} />
+      </>
+    );
+  }
+  if (kind === 'stoneSize') {
+    return <>{title}<SizeInput key={run.stage} letter="w" frame={[{ t: 's', v: 'w' }, { t: 'op', v: '=' }]} onCheck={run.actions.type} lang={lang} /></>;
+  }
+  if (kind === 'convert') {
+    const name = m.lines[run.convertLine].name;
+    return <>{title}<SizeInput key={run.stage} letter={name} frame={[{ t: 'cur', v: '?' }, { t: 'op', v: '=' }]} onCheck={run.actions.type} lang={lang} /></>;
+  }
+  return null;
 }
 
 /** One item, keyed by its id so every item starts fresh. */
 function ItemPanel({ item, pool, lang, header, isLast, onDone, onNext }) {
   const run = useAnglePairItem(item, { onFinish: onDone });
   const t = apT(lang);
-  const { m, kind, done } = run;
-
+  const { m, done } = run;
   const context = item.context ? tr(lang, item.context, null, item.contextFr) : null;
-  const intro = item === pool.items[0] ? tr(lang, pool.intro, null, pool.introFr) : null;
-  // The chips follow the item's own stages; an opened stage lights the one it belongs to.
-  const answered = m.stages.filter((s) => run.answers[s]).length;
+  const first = item === pool.items[0];
+  const steps = done ? [] : stepsOf(run, lang);
+  const lines = pairLines(run);
+  const card = 'rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-4 min-w-0 flex flex-col gap-3';
 
   return (
     <div className="flex-1 w-full max-w-6xl mx-auto p-3 sm:p-5 pb-10 lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-5 lg:items-start">
@@ -60,44 +111,32 @@ function ItemPanel({ item, pool, lang, header, isLast, onDone, onNext }) {
         <div className="rounded-2xl border-2 bg-white dark:bg-slate-800 shadow-sm overflow-hidden" style={{ borderColor: INK }}>
           {header}
           <p className="px-4 pt-3 text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 leading-snug">{questionOf(m, lang, context)}</p>
-          {intro && <p className="px-4 pt-1 text-sm font-bold text-slate-500 dark:text-slate-400">{intro}</p>}
+          {first && (
+            <ol className="px-4 pt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13px] font-bold text-slate-600 dark:text-slate-300">
+              {t.how.map((h, n) => (
+                <li key={h} className="flex items-center gap-1.5"><span className="inline-grid place-items-center w-5 h-5 rounded-full bg-[#e8590c] text-white text-[11px] font-black">{n + 1}</span>{h}</li>
+              ))}
+            </ol>
+          )}
           <div className="p-2 sm:p-3">
             <AnglePairFigure F={m.F} marks={run.marks} glow={run.glow} tap={done ? null : run.tap} rails={run.rails}
               onTap={run.tap === 'rail' ? run.actions.tapRail : run.actions.tapSector}
               label={t.title} className="mx-auto" style={{ maxHeight: '52vh' }} />
           </div>
-          {!done && (
-            <div className="px-3 pb-3 flex flex-wrap gap-1.5">
-              {m.stages.map((s, n) => {
-                const k = s.split(':')[0];
-                return <StageChip key={s} icon={STAGE_ICON[k]} label={t.stages[k]} active={n === answered} done={n < answered} />;
-              })}
-            </div>
-          )}
         </div>
       </div>
 
       <div className="mt-3 lg:mt-0 flex flex-col gap-3 min-w-0">
         {!done && (
-          <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm p-3 sm:p-5 min-w-0">
-            <div className="font-black text-slate-800 dark:text-slate-100 mb-3 text-lg">{stageTitle(run, lang)}</div>
-            {kind === 'pair' && <PairButtons options={run.target.options} picks={run.picks} onChoose={run.actions.choose} lang={lang} />}
-            {kind === 'reason' && <ReasonButtons picks={run.picks} onChoose={run.actions.choose} lang={lang} />}
-            {['size', 'stoneSize', 'convert'].includes(kind) && (
-              <>
-                <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">{t.sizeSub}</p>
-                <SizeInput key={run.stage} lang={lang} onCheck={run.actions.type} bad={run.msg?.tone === 'bad'}
-                  letter={kind === 'stoneSize' ? 'w' : kind === 'convert' ? '?' : run.target.letter} />
-              </>
-            )}
-            <ApMessage msg={run.msg} lang={lang} />
-            <div className="mt-4 flex justify-end">
-              <button onClick={run.actions.showMe}
-                className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20">
-                <Lightbulb className="w-4 h-4" strokeWidth={2.5} /> {t.stuck}
-              </button>
+          <>
+            <div className={card}>
+              <PairHeader run={run} steps={steps} lang={lang} />
+              <StageBody run={run} item={item} steps={steps} lang={lang} />
+              <ApMessage msg={run.msg} lang={lang} />
+              <HelpRow lang={lang} onShowMe={run.actions.showMe} />
             </div>
-          </div>
+            <Notebook lines={lines.map((l, n) => ({ ...l, fresh: n === lines.length - 1 }))} lang={lang} />
+          </>
         )}
 
         {done && (
@@ -107,13 +146,11 @@ function ItemPanel({ item, pool, lang, header, isLast, onDone, onNext }) {
               <div className="font-black">{run.filled ? t.helped : run.slipped ? t.slipped : t.clean}</div>
             </div>
             <div className="bg-white dark:bg-slate-900 p-3 sm:p-5">
-              {run.msg && <div className="-mt-3 mb-3"><ApMessage msg={run.msg} lang={lang} /></div>}
+              {run.msg?.tone === 'shown' && <div className="-mt-1 mb-3"><ApMessage msg={run.msg} lang={lang} /></div>}
               <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">
                 <Pencil className="w-4 h-4" strokeWidth={3} /> {t.write}
               </div>
-              <div className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 sm:p-4">
-                <Sentences m={m} stone={run.stone} lang={lang} />
-              </div>
+              <Notebook lines={lines} lang={lang} bare big />
               <div className="mt-4 flex justify-end">
                 <button onClick={onNext} className={`px-6 py-3 text-white text-sm ${btn}`} style={{ backgroundColor: INK, borderColor: INK_DARK }}>
                   {isLast ? t.finish : t.next} <ArrowRight className="w-4 h-4 inline ml-1 -mt-0.5" strokeWidth={3} />
