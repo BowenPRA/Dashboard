@@ -45,6 +45,8 @@ import { PencilRuler as ZeroLineIcon } from 'lucide-react';
 
 // @@SCI_U03_2_IMPORT@@
 import { Clapperboard as StoryboardIcon } from 'lucide-react';
+// STEP_PRACTICE (p93) — the general step practice, src/stepPractice
+import { Footprints as StepPracticeIcon } from 'lucide-react';
 
 // Maths Unit 6 (Collecting data) and Science 3.3–3.7, one block per unit:
 // @@U06_1_IMPORT@@
@@ -1968,6 +1970,32 @@ export const TASKS = [
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
+
+  // ── General step practice (2026-11-05) ──
+  {
+    id: 'STEP_PRACTICE',
+    nativeMax: 10,
+    dbKey: 'p93',
+    // Workbook-style problems broken into short steps, written as data alone
+    // (unit.stepPractice) so a set can be made for any class: Focus items walk
+    // every step, Practice asks the key steps and opens the rest on a wrong
+    // answer, Challenge asks for the answer and opens the step its slip points
+    // at. Inputs: number, text, choice (pictures too), several-choice, order,
+    // fill the gap, tap the word. The screen is the portable core in
+    // src/stepPractice (no Dashboard imports); StepPractice.jsx wraps it.
+    // Rules in src/stepPractice/check.js; docs/step-practice.md.
+    label: 'Step by Step',
+    icon: StepPracticeIcon,
+    color: { bg: 'bg-[#1c6ed6]', border: 'border-[#1757ab]', text: 'text-white' },
+    defaultMaxXP: 40,
+    phase: 'practice',
+    component: lazy(() => import('./StepPractice.jsx')),
+    hasContent: (u) => !!u.stepPractice?.items?.length,
+    buildPool: (u) => u.stepPractice,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  // p94 is the next free key.
 
   // ── Year 7 Maths Unit 6, collecting data (U06_1–U06_2) and Science 3.3–3.7 ──
   // p85 (6.1) · p86 (6.2) · p87 (Sci 3.3) · p88 (Sci 3.4) · p89 (Sci 3.5) · p90 (Sci 3.6) ·
