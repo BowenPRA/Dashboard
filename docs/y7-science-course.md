@@ -143,7 +143,11 @@ cell). Every explanation says why each distractor is wrong.
 | 2.8 Acids and bases | `U02_8` | built — pH Lab | `U02_8` |
 | 3.1 Gravity, weight and mass | `U03_1` | built — Weigh It (EN/FR only) | `U03_1` |
 | 3.2 Formation of the Solar System | `U03_2` | built — Storyboard (EN/FR only) | `U03_2` + `U03_models` |
-| 3.3 → | `U03_3` … | next (the classroom has 3.3–3.7) | — |
+| 3.3 Movement in space | `U03_3` | built — Orbit Lab (EN/FR only) | `U03_3` |
+| 3.4 Tides | `U03_4` | built — Tide Lab (EN/FR only) | `U03_4` + `U03_tidelab` |
+| 3.5 Energy | `U03_5` | built — Name That Energy (EN/FR only) | `U03_5` |
+| 3.6 Changes in energy | `U03_6` | built — From… To… (EN/FR only) | `U03_6` |
+| 3.7 Where does energy go? | `U03_7` | built — Where Did It Go? (EN/FR only) | `U03_7` |
 
 From 2.5 the units follow [y7-science/particle-engines.md](y7-science/particle-engines.md):
 a denser deck (15–18 scored items, with the new `periodic` / `particles` / `formula`
@@ -167,6 +171,15 @@ have no twin. Its engine is Storyboard (`SOLAR_STORY` p84, `src/utils/solarStory
 order the formation frames and give the cause of each step against named
 misconceptions, judge evidence, sort a model's strengths from its limitations. Plan:
 [y7-science/plans/U03_2.md](y7-science/plans/U03_2.md).
+
+**3.3–3.7 (2026-11-03) close Unit 3 in the same shape**, built in parallel from one brief
+([y7-parallel-build-brief.md](y7-parallel-build-brief.md)), one flagship engine each: Orbit Lab
+(`ORBIT_LAB` p87), Tide Lab (`TIDE_LAB` p88, absorbing the River Tide Lab deck `U03_tidelab`),
+Name That Energy (`ENERGY_SPOT` p89), From… To… (`ENERGY_CHANGE` p90) and Where Did It Go?
+(`ENERGY_SPLIT` p91: sort, count and chase useful and wasted energy). Plans, as built:
+[U03_3](y7-science/plans/U03_3.md) · [U03_4](y7-science/plans/U03_4.md) ·
+[U03_5](y7-science/plans/U03_5.md) · [U03_6](y7-science/plans/U03_6.md) ·
+[U03_7](y7-science/plans/U03_7.md). `U03_coffee`, `U03_earth` and `U03_lab` still have no twin.
 
 Not adapted, by design: `U00_1` (Day One), `U00_2` (the accuracy lab),
 `U00_3` (the planters) — they only exist with a room. Nor are the classroom's
