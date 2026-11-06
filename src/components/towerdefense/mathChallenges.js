@@ -862,6 +862,36 @@ function angleSum() {
 // @@SCI_U03_3_GEN@@
 
 // @@SCI_U03_4_GEN@@
+// Science 3.4 — the tide numbers: the next high or low tide, tomorrow's high
+// tide (about 50 minutes later), the deepest water from an average and a
+// range, a range from high and low tide. The wrong choices are Tide Lab's
+// named slips: the same time, earlier, 12 hours for tomorrow, the whole range
+// added, high + low for the range.
+function tideNumbers() {
+  const roll = ri(0, 3);
+  const hm = (min) => { const t = ((min % 1440) + 1440) % 1440; const h = Math.floor(t / 60); if (t === 720) return '12 noon'; if (t === 0) return 'midnight'; return `${h % 12 === 0 ? 12 : h % 12}:${String(t % 60).padStart(2, '0')} ${h < 12 ? 'a.m.' : 'p.m.'}`; };
+  if (roll === 0) {
+    const t = 60 * ri(5, 10) + 5 * ri(0, 11);
+    const answer = hm(t + 50);
+    return { prompt: `High tide is at ${hm(t)} today. When is it tomorrow morning?`, answer, choices: withSlips(answer, [hm(t), hm(t - 50), hm(t + 720)]) };
+  }
+  if (roll === 1) {
+    const t = 60 * ri(1, 9);
+    const low = Math.random() < 0.5;
+    const answer = hm(t + (low ? 360 : 720));
+    return { prompt: `High tide at ${hm(t)}. When is the next ${low ? 'low' : 'high'} tide?`.replace('.. ', '. '), answer, choices: withSlips(answer, [hm(t + (low ? 720 : 360)), hm(t + 50), hm(t + 180)]) };
+  }
+  if (roll === 2) {
+    const avg = ri(3, 9);
+    const range = 2 * ri(1, 3);
+    const answer = `${avg + range / 2} m`;
+    return { prompt: `Average depth ${avg} m, tidal range ${range} m. The depth at high tide?`, answer, choices: withSlips(answer, [`${avg + range} m`, `${avg - range / 2} m`, `${avg - range} m`]) };
+  }
+  const low = ri(1, 4);
+  const high = low + ri(2, 6);
+  const answer = `${high - low} m`;
+  return { prompt: `High tide ${high} m deep, low tide ${low} m deep. The tidal range?`, answer, choices: withSlips(answer, [`${high + low} m`, `${high} m`, `${(high + low) / 2} m`]) };
+}
 
 // @@SCI_U03_5_GEN@@
 
@@ -906,6 +936,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   // @@U06_2_GEN_MAP@@
   // @@SCI_U03_3_GEN_MAP@@
   // @@SCI_U03_4_GEN_MAP@@
+  U03_4: tideNumbers,
   // @@SCI_U03_5_GEN_MAP@@
   // @@SCI_U03_6_GEN_MAP@@
   // @@SCI_U03_7_GEN_MAP@@
@@ -930,6 +961,7 @@ const GENERATOR_TRACK = {
   // @@U06_2_GEN_TRACK@@
   // @@SCI_U03_3_GEN_TRACK@@
   // @@SCI_U03_4_GEN_TRACK@@
+  U03_4: 'Y7_SCI',
   // @@SCI_U03_5_GEN_TRACK@@
   // @@SCI_U03_6_GEN_TRACK@@
   // @@SCI_U03_7_GEN_TRACK@@

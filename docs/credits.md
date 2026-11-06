@@ -270,6 +270,18 @@ Every other picture in the unit, including the Storyboard's seven frames, is a d
 Every other picture in the unit, including Orbit Lab's orbits, bar graphs and coast scenes, is a drawn SVG.
 
 <!-- @@SCI_U03_4_CREDITS@@ -->
+**Science 3.4 Tides** (`Y7_SCI/U03_4`, with the River Tide Lab) — copied from the classroom lessons `y7-science/U03_4/images/` and `U03_tidelab/images/` (their `CREDITS.json`); none is a Learner's Book scan. The lab's water-gauge photo is not used.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_4/holyisland.webm` | Video: the tide coming in over the causeway to Holy Island (Lindisfarne), England, a time-lapse (side bars cropped, 960 px, sound removed, VP9 WebM, 23 s, 2.2 MB) — TideFilm | Gregory Keenan | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Holy_Island_Tide_-_Time_Lapse.webm) | CC BY 3.0 |
+| `public/images/Y7_SCI/U03_4/fundy-high.jpg` | Hall's Harbour, Bay of Fundy, Nova Scotia, at high tide (960 px) — TIDE_PHOTOS | Dylan Kereluk | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bay_of_Fundy_-_Tide_In.jpg) | CC BY 2.0 |
+| `public/images/Y7_SCI/U03_4/fundy-low.jpg` | Hall's Harbour, Bay of Fundy, at low tide (960 px) — TIDE_PHOTOS | Dylan Kereluk | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bay_of_Fundy_-_Tide_Out.jpg) | CC BY 2.0 |
+| `public/images/Y7_SCI/U03_4/harbour.jpg` | Low tide in Clovelly Harbour, Devon: boats on the sand by the harbour wall — EFFECTS | Philip Halling | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Low_tide_in_Clovelly_Harbour_-_geograph.org.uk_-_420671.jpg) | CC BY-SA 2.0 |
+| `public/images/Y7_SCI/U03_4/venice.jpg` | St Mark's Square, Venice, flooded by acqua alta — EFFECTS | Javier Valero Iglesias | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Plaza_de_San_Marcos_con_%27acqua_alta%27._St_Mark%27s_Square_whith_%27acqua_alta%27.jpg) | CC BY-SA 2.0 |
+| `public/images/Y7_SCI/U03_4/oystercatcher.jpg` | A Eurasian oystercatcher at the water's edge — EFFECTS | Andreas Trepte, www.photo-natur.de | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Haematopus_ostralegus_He.jpg) | CC BY-SA 2.5 |
+| `public/images/Y7_SCI/U03_4/rance.jpg` | The Rance tidal power station near Saint-Malo, France (1966) — EFFECTS | Dani 7C3 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rance_tidal_power_plant.JPG) | CC BY 2.5 |
+| `public/images/Y7_SCI/U03_4/king-tide.jpg` | Triều cường (a king tide) flooding a street in Bến Tre, Vietnam, 26 October 2011 (1200 px) — What Happened Here? | cong nguyen huynh | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tri%E1%BB%81u_c%C6%B0%E1%BB%9Dng_-_panoramio.jpg) | CC BY 3.0 |
 
 <!-- @@SCI_U03_5_CREDITS@@ -->
 
