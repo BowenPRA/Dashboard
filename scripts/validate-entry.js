@@ -90,6 +90,10 @@ import { checkZeroLineConfig } from '../src/utils/zeroLine.js';
 // @@SCI_U03_2_IMPORT@@
 import { checkStoryConfig } from '../src/utils/solarStoryCheck.js';
 
+// STEP_PRACTICE (p93): the general step practice, and its sample sets.
+import { checkStepPractice } from '../src/stepPractice/check.js';
+import { SAMPLE_SETS } from '../src/stepPractice/samples/index.js';
+
 // @@U06_1_IMPORT@@
 
 // @@U06_2_IMPORT@@
@@ -380,6 +384,14 @@ for (const trackId of TRACK_IDS) {
         if (!lv?.en || (bilingual && !lv.vn)) err(`${label}: anglePairs item ${it.id}: level ${it.level} has no ${bilingual ? 'bilingual ' : ''}name in levels`);
       }
       for (const p of checkAnglePairItems(cfg.items || [], { bilingual })) err(`${label}: anglePairs ${p}`);
+    }
+
+    // Step by Step (STEP_PRACTICE): every answer, slip and level rule (src/stepPractice/check.js).
+    if (unit.stepPractice !== undefined) {
+      const frTrack = TRACK_REGISTRY.find((t) => t.id === trackId)?.french === true;
+      for (const p of checkStepPractice(unit.stepPractice, { vn: bilingual && unit.meta?.vietnamese !== false, fr: frTrack })) {
+        if (p.startsWith('warning:')) warn(`${label}: stepPractice ${p.slice(9)}`); else err(`${label}: stepPractice ${p}`);
+      }
     }
 
     // @@U05_3_CHECK@@
@@ -1317,6 +1329,15 @@ for (const trackId of TRACK_IDS) {
         err(`${label}: ${missingSlides.length} slide audio file(s) missing, e.g. ${missingSlides[0]} — run npm run sync-audio`);
       }
     }
+  }
+}
+
+// ------------------------------------------------------- step practice samples
+// The sample sets behind preview-steps.html are the pattern other sets copy, so
+// they are held to the same rules as a unit's pool (Vietnamese twins required).
+for (const [key, set] of Object.entries(SAMPLE_SETS)) {
+  for (const p of checkStepPractice(set, { vn: true, fr: false })) {
+    if (p.startsWith('warning:')) warn(`stepPractice sample ${key}: ${p.slice(9)}`); else err(`stepPractice sample ${key}: ${p}`);
   }
 }
 
