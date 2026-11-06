@@ -156,6 +156,7 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // @@U06_1_SIDE@@
   // @@U06_2_SIDE@@
   // @@SCI_U03_3_SIDE@@
+  'orbitlab',
   // @@SCI_U03_4_SIDE@@
   // @@SCI_U03_5_SIDE@@
   // @@SCI_U03_6_SIDE@@

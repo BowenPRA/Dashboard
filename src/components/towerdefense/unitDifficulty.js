@@ -571,6 +571,11 @@ export const TRACK_LEVELS = {
       blurb: 'Everything goes round the same way. Hold the centre while the disc turns.',
     },
     // @@SCI_U03_3_TD@@
+    U03_3: {
+      mapId: 'CIRCUIT', themeId: 'NIGHT', tier: 2, waveMod: 'TIDE',
+      mapName: 'The Long Coast',
+      blurb: 'Nothing out here slows them down. Hold the loop.',
+    },
     // @@SCI_U03_4_TD@@
     // @@SCI_U03_5_TD@@
     // @@SCI_U03_6_TD@@
