@@ -39,6 +39,22 @@ To copy it into another React + Tailwind app: copy `src/stepPractice/` and
 `react`, `katex` and `lucide-react` installed (`tailwindcss-animate` gives the
 fade-ins; without it they are simply absent). No auth, XP, TopBar or Supabase.
 
+**What the host hears.** `onSave` / `onFinish` get `{ score, blob, items, done, total }`.
+Each entry of `items` is one item finished this sitting:
+
+```js
+{ itemId: 'p1', correct: false,          // correct = finished without Show me or a filled-in step
+  slips: ['s2.1', 'neg-sign'],           // the slips hit, each once, in order
+  shows: { s3: 1 },                      // Show me presses per step ("s<n>", from 1)
+  hints: 1, wrong: 3 }                   // hints opened, wrong answers (nudges not counted)
+```
+
+A slip's key is its own `key` when it has one (letters, digits, `. : _ -`, 40 at
+most), else `s<step>.<slip>` counted from 1: `s2.1` is the first slip on step 2.
+`slipsByKey(item)` in `model.js` turns keys back into `{ step, slip }`, so a teacher
+page can show the slip's own `msg`. Nothing the child typed is in the report.
+Give a slip a `key` if its step may move later, so old results still match.
+
 The Dashboard wiring is **`src/tasks/StepPractice.jsx`** alone: the TopBar
 (language toggle, Save & Quit), `useLang`, and the save round-trip
 (`savedData` in, `onProgress?.(score, blob, { items })` after each finished
@@ -95,7 +111,8 @@ stepPractice: {
 **Slips**: `value` has the shape of a response (a number string, an option id,
 a list of ids, a list of gap words, a list of words). `step` (a number from 1,
 or a step `id`) is the step the slip comes from: earlier or this one, never
-later. `msg` names the slip and the right idea; never just "wrong".
+later. `msg` names the slip and the right idea; never just "wrong". Optional
+`key` (e.g. `'neg-sign'`) names the slip in results; it must be unique in the item.
 
 ## 3. How it behaves
 
