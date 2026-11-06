@@ -160,6 +160,7 @@ const SIDE_ACTIVITIES = new Set(['predict', 'sort', 'order', 'estimate', 'hotspo
   // @@SCI_U03_4_SIDE@@
   // @@SCI_U03_5_SIDE@@
   // @@SCI_U03_6_SIDE@@
+  'energychange',
   // @@SCI_U03_7_SIDE@@
 ]);
 

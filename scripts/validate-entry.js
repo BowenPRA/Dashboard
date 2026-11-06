@@ -104,6 +104,7 @@ import { checkTideConfig } from '../src/utils/tideLabCheck.js';
 import { checkEnergySpotConfig } from '../src/utils/energySpotCheck.js';
 
 // @@SCI_U03_6_IMPORT@@
+import { checkEnergyChangeConfig } from '../src/utils/energyChangeCheck.js';
 
 // @@SCI_U03_7_IMPORT@@
 
@@ -405,6 +406,8 @@ for (const trackId of TRACK_IDS) {
     if (unit.energySpot !== undefined) for (const p of checkEnergySpotConfig(unit.energySpot, { bilingual })) err(`${label}: energySpot ${p}`);
 
     // @@SCI_U03_6_CHECK@@
+    //    From… To… (3.6): every stage, answer and named slip derived and proved.
+    if (unit.energyChange !== undefined) for (const p of checkEnergyChangeConfig(unit.energyChange)) err(`${label}: energyChange ${p}`);
 
     // @@SCI_U03_7_CHECK@@
 
