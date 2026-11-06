@@ -583,6 +583,11 @@ export const TRACK_LEVELS = {
       blurb: 'Two tides a day, and the next one always comes. Hold the harbour wall.',
     },
     // @@SCI_U03_5_TD@@
+    U03_5: {
+      mapId: 'CIRCUIT', themeId: 'DESERT', tier: 3,
+      mapName: 'The Uphill Bus',
+      blurb: 'Eight kinds of energy on one road. Hold the hill.',
+    },
     // @@SCI_U03_6_TD@@
     // @@SCI_U03_7_TD@@
   },

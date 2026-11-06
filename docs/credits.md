@@ -284,6 +284,18 @@ Every other picture in the unit, including Orbit Lab's orbits, bar graphs and co
 | `public/images/Y7_SCI/U03_4/king-tide.jpg` | Triều cường (a king tide) flooding a street in Bến Tre, Vietnam, 26 October 2011 (1200 px) — What Happened Here? | cong nguyen huynh | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tri%E1%BB%81u_c%C6%B0%E1%BB%9Dng_-_panoramio.jpg) | CC BY 3.0 |
 
 <!-- @@SCI_U03_5_CREDITS@@ -->
+**Science 3.5 Energy** (`Y7_SCI/U03_5`) — copied from the classroom lesson `y7-science/U03_5/images/` (its `CREDITS.json`); none is a Learner's Book scan.
+
+| File | Title / Description | Creator | Source | License |
+|---|---|---|---|---|
+| `public/images/Y7_SCI/U03_5/runners.jpg` | Six sprinters mid-stride at the finish of the men's 100 m final, Finnish Athletics Championships (Kalevan Kisat) 2018 — slide 5, "What Is Energy?" (the classroom's 16:9 crop) | Tuomas Vitikainen | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Kalevan_Kisat_2018_-_Men%27s_100_m_final_-_3.jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_SCI/U03_5/rice.jpg` | Open sacks of uncooked white rice at a rice shop next to a market in Ho Chi Minh City — slide 17, "Will It Last a Year?" | Takeaway | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Saigon_Rice_shop.jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_5/coal.jpg` | Close-up of shiny black lumps of coal — slide 17 | Nostrifikator | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Coal_lumps.jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_5/battery.jpg` | Four AA batteries on a white background — slide 17 | Multicherry | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Energizer_NiMH_rechargeable_AA_batteries_(four)_(various_positions).jpg) | CC BY-SA 4.0 |
+| `public/images/Y7_SCI/U03_5/dam.jpg` | Hoa Binh hydroelectric dam, Vietnam: the lake held up high behind the dam and the river far below — slide 17 (the classroom's 16:9 crop) | CactiStaccingCrane | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tr%C3%AAn_%C4%91%E1%BA%ADp_th%E1%BB%A7y_%C4%91i%E1%BB%87n_H%C3%B2a_B%C3%ACnh_nh%C3%ACn_to%C3%A0n_c%E1%BA%A3nh.jpg) | CC0 |
+| `public/images/Y7_SCI/U03_5/coffee.jpg` | A white cup of hot black coffee with steam rising from it — slide 17 (the classroom's landscape crop) | Benjamin Balázs | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Coffee_-_K%C3%A1v%C3%A9_(16195785835).jpg) | CC0 |
+| `public/images/Y7_SCI/U03_5/ball.jpg` | Strobe photograph of a bouncing ball: each bounce is lower than the one before — slide 17 | MichaelMaggs, edit by Richard Bartz | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bouncing_ball_strobe_edit.jpg) | CC BY-SA 3.0 |
+| `public/images/Y7_SCI/U03_5/rocket.webm` | Space Shuttle Atlantis launching on STS-135 (8 July 2011), main-engine ignition then lift-off, with sound — slide 13, "How Many Can You Find?" (the classroom's 23-second trim, 1.7 MB) | NASA's Kennedy Space Center | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:STS-135_Space_Shuttle_Launch_7aKYeRSYLB0.webm) | Public domain (NASA) |
 
 <!-- @@SCI_U03_6_CREDITS@@ -->
 
