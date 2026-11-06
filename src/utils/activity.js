@@ -69,6 +69,9 @@ import { checkOrbitLabActivity } from './orbitLabCheck.js';
 import { checkEnergyChangeActivity } from './energyChangeCheck.js';
 
 // @@SCI_U03_7_ACT_IMPORT@@
+// `energysplit` (Science 3.7) — one Where Did It Go? round on a slide: build the
+// energy-change diagram, count the joules. Proved by utils/energySplitCheck.js.
+import { checkEnergySplitActivity } from './energySplitCheck.js';
 
 
 // The three maths types (plot / numberline / reflect) were added for the
@@ -149,6 +152,7 @@ export const ACTIVITY_TYPES = ['sort', 'order', 'estimate', 'hotspot', 'predict'
   'energychange',
 
   // @@SCI_U03_7_ACT_TYPES@@
+  'energysplit',
 
 ];
 
@@ -485,6 +489,7 @@ export function checkActivity(a, { bilingual = true } = {}) {
   if (a.type === 'energychange') for (const p of checkEnergyChangeActivity(a)) out.push(`energychange ${p}`);
 
   // @@SCI_U03_7_ACT_CHECK@@
+  if (a.type === 'energysplit') for (const p of checkEnergySplitActivity(a)) out.push(`energysplit ${p}`);
 
   return out;
 }

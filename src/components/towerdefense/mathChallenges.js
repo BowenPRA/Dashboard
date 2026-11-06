@@ -898,6 +898,31 @@ function tideNumbers() {
 // @@SCI_U03_6_GEN@@
 
 // @@SCI_U03_7_GEN@@
+// Science 3.7 — counting joules: useful + wasted = what goes in. The useful
+// joules from a percentage, the wasted joules, or (the same light) what must go
+// in. The wrong choices are Where Did It Go?'s named slips: the % read as
+// joules, useful and wasted swapped, nothing taken away, added not taken away,
+// halved instead of doubled.
+function energySplit() {
+  const roll = ri(0, 2);
+  if (roll === 0) {
+    const total = [100, 200, 400, 500, 1000][ri(0, 4)];
+    const pct = [10, 15, 20, 25, 50, 75, 90][ri(0, 6)];
+    const useful = (total * pct) / 100;
+    const answer = String(useful);
+    // At 100 J the % read as joules is the answer, so two spares fill the four choices.
+    return { prompt: `${total} J goes in. ${pct}% is useful. Useful energy = ? J`, answer, choices: withSlips(answer, [String(pct), String(total - useful), String(total), String(useful * 2), String(useful / 2), String(useful + 10)]) };
+  }
+  if (roll === 1) {
+    const total = [100, 200, 400, 500, 1000][ri(0, 4)];
+    const useful = (total / 100) * ri(1, 9) * 10;
+    const answer = String(total - useful);
+    return { prompt: `${total} J goes in. ${useful} J is useful. Wasted energy = ? J`, answer, choices: withSlips(answer, [String(total), String(total + useful), String(useful), String(total - useful + 10)]) };
+  }
+  const light = ri(1, 12) * 5;
+  const answer = String(light * 2);
+  return { prompt: `A lamp gives ${light} J of light. Half of its energy becomes light. Energy in = ? J`, answer, choices: withSlips(answer, [String(light / 2), String(light), String(light + 50), String(light * 4)]) };
+}
 
 export const MATH_CHALLENGE_GENERATORS = {
   EM_06: setsAndSurds,
@@ -940,6 +965,7 @@ export const MATH_CHALLENGE_GENERATORS = {
   // @@SCI_U03_5_GEN_MAP@@
   // @@SCI_U03_6_GEN_MAP@@
   // @@SCI_U03_7_GEN_MAP@@
+  U03_7: energySplit,
 };
 
 /**
@@ -965,6 +991,7 @@ const GENERATOR_TRACK = {
   // @@SCI_U03_5_GEN_TRACK@@
   // @@SCI_U03_6_GEN_TRACK@@
   // @@SCI_U03_7_GEN_TRACK@@
+  U03_7: 'Y7_SCI',
 };
 
 /** True when `unitId` in `track` is the unit a generator was written for. */

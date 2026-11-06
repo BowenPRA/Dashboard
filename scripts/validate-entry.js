@@ -107,6 +107,7 @@ import { checkEnergySpotConfig } from '../src/utils/energySpotCheck.js';
 import { checkEnergyChangeConfig } from '../src/utils/energyChangeCheck.js';
 
 // @@SCI_U03_7_IMPORT@@
+import { checkEnergySplitConfig } from '../src/utils/energySplitCheck.js';
 
 
 const ROOT = process.cwd();
@@ -410,6 +411,8 @@ for (const trackId of TRACK_IDS) {
     if (unit.energyChange !== undefined) for (const p of checkEnergyChangeConfig(unit.energyChange)) err(`${label}: energyChange ${p}`);
 
     // @@SCI_U03_7_CHECK@@
+    //    Where Did It Go? (3.7): every stage, answer and named slip derived and proved.
+    if (unit.energySplit !== undefined) for (const p of checkEnergySplitConfig(unit.energySplit)) err(`${label}: energySplit ${p}`);
 
 
 

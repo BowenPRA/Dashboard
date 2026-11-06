@@ -66,6 +66,7 @@ import { OrbitLabActivity } from './OrbitLabActivity.jsx';
 import { EnergyChangeActivity } from './EnergyChangeActivity.jsx';
 
 // @@SCI_U03_7_ACT_IMPORT@@
+import { EnergySplitActivity } from './EnergySplitActivity.jsx';
 
 
 /**
@@ -834,6 +835,7 @@ export default function ActivityBlock({ activity, lang = 'en', result, onResult,
     case 'energychange': body = <EnergyChangeActivity {...common} />; break;
 
     // @@SCI_U03_7_ACT_CASE@@
+    case 'energysplit': body = <EnergySplitActivity {...common} />; break;
 
 
     default: body = <div className="text-rose-500 font-bold text-sm">Unknown activity type “{String(activity.type)}”.</div>;

@@ -595,6 +595,12 @@ export const TRACK_LEVELS = {
       blurb: 'Chemical, thermal, kinetic, electrical. Hold every link of the chain.',
     },
     // @@SCI_U03_7_TD@@
+    // 3.7 closes Unit 3, as 2.8 closed Unit 2: the top of the chapter's ladder.
+    U03_7: {
+      mapId: 'GAUNTLET', themeId: 'DESERT', tier: 5, waveMod: 'BOSS',
+      mapName: 'The Lost Heat',
+      blurb: 'Every wave leaks a little, and none of it comes back. Hold out to the end of the chapter.',
+    },
   },
 };
 
