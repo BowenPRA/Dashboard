@@ -2004,7 +2004,7 @@ export const TASKS = [
 
   // ── Year 7 Maths Unit 6, collecting data (U06_1–U06_2) and Science 3.3–3.7 ──
   // p85 (6.1) · p86 (6.2) · p87 (Sci 3.3) · p88 (Sci 3.4) · p89 (Sci 3.5) · p90 (Sci 3.6) ·
-  // p91 (Sci 3.7), if a unit needs an engine. p92 is the next free key.
+  // p91 (Sci 3.7), if a unit needs an engine. p94 is the next free key (p92 ANGLE_CHASE, p93 STEP_PRACTICE).
   // @@U06_1_TASKS@@
 
   // @@U06_2_TASKS@@
