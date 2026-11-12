@@ -1,7 +1,11 @@
 # AMC 8 Prep (`AMC8`) — Course Guide
 
-How to build a unit of the **AMC 8 Prep** track: one full practice paper, sat under contest
-conditions and then reviewed problem by problem.
+How to build a unit of the **AMC 8 Prep** track. There are two kinds:
+
+- a **practice test** (`PT_NN`): one full paper, sat under contest conditions and then
+  reviewed problem by problem (sections 2 to 5);
+- a **problem type** (`TP_NN`): one kind of question the contest asks every year, taught
+  with one method, practiced, then tested with a short timed test (section 6).
 
 **The exemplar is `src/data/AMC8/PT_01`** (Practice Test 1, the problems of the 2024
 AMC 8). When in doubt, copy its structure.
@@ -10,6 +14,7 @@ AMC 8). When in doubt, copy its structure.
 |---|---|---|---|
 | `PT_01` | 2024 AMC 8 | 14 slides (plan ×3, 9 tools) | also holds hidden vocab / warm-up / Factor Blitz |
 | `PT_02` | 2025 AMC 8 | 12 slides (plan ×1, 9 tools) | only the three live tasks' data; problem 13's choices are histograms (see §4) |
+| `TP_01` | *How Many Ways?* (counting with slots) | 11 slides, one method | **the exemplar for problem-type units** (§6): 10 practice items, a 10-question test |
 
 ---
 
@@ -19,7 +24,7 @@ AMC 8). When in doubt, copy its structure.
 |---|---|
 | Track id | `AMC8` (registered in `src/components/trackRegistry.js`, red, `Trophy`, group *Problem Solving*) |
 | Language | **English only** (`bilingual: false`): no `vn*` twins. The contest words are what the Vocab task teaches. |
-| Unit id | `PT_<two digits>` — `PT_01` is Practice Test 1. One unit is one paper. |
+| Unit id | `PT_<two digits>` is a practice test (one paper); `TP_<two digits>` is a problem type. The track's `sections` list Problem Types first, then Practice Tests. |
 | Folder | `src/data/AMC8/<UNIT>/` and `public/audio/AMC8/<UNIT>/` |
 | Visibility | Not in the `GED` group: the student's `app_metadata.enrolled_tracks` must include `"AMC8"` (teacher admin), or they must be on the preview/QA account. |
 | Harness | `preview-amc8.html?unit=PT_01` mounts every task without auth. `?open=AMC_TEST`, `?paper=mixed` (a handed-in paper, for the Review), `?paper=BCEEB-…` (a paper you choose), `?paper=mixed&over=1` (time ran out and the blanks were answered in extra time; `over=open` is still in extra time), `?left=5` (a paper with 5 seconds left — watch the time run out), `?open=NOTES&slide=12`; the FIGURES and DIAGRAMS cases lay every SVG on one page. |
@@ -165,3 +170,80 @@ them, so **look at them** in the harness (`?open=FIGURES`).
       time running out (`?left=5` → extra time → finish), and the Review in
       `preview-amc8.html` at 1280 × 720 and at 390 px wide
 - [ ] Every deck slide fits 1280 × 720 without scrolling
+
+---
+
+## 6. Problem-type units (`TP_NN`)
+
+**The exemplar is `src/data/AMC8/TP_01`** (How Many Ways?). A problem-type unit takes ONE
+kind of question and ONE method, and carries the student from the first idea to
+contest-level questions of that kind.
+
+### Choosing the type
+
+- It comes up on every paper, more than once. Check the `idea` lines of the papers already
+  in the track (`PT_*/test.js`): counting was 6 of 25 on both.
+- One method covers it. TP_01's is a row of slots; every slide after the method adds one
+  question to ask about the slots (can it repeat? is a slot fussy? is one row enough? does
+  order matter?). If the type needs two unrelated methods, it is two units.
+
+### The shape
+
+| Step | Gate | Task | XP | What only it makes the student do |
+|---|---|---|---|---|
+| Learn the Method | open | `NOTES` | 10 | meet the method one question at a time, with a check on each |
+| Practice | open | `STEP_PRACTICE` | 20 | work the method step by step, then with the steps taken away |
+| Test | open | `AMC_TEST` (`mini`) | 60 | use it cold, on the clock, with the contest's wrong answers on offer |
+| Review | test handed in | `AMC_REVIEW` | 10 | read the solution of each question missed |
+
+Everything but the test is 40 XP, and the track finishes a unit at 60, so a problem-type
+unit is finished only with the test sat and 4 of 10 right. Keep that property if the split
+changes. One or two tasks between the deck and the test, no more.
+
+### The deck (`notes.js`, `diagrams.js`)
+
+Hero, **spot the type** (the words that give it away), the method on its smallest example,
+the method as three steps, then **one slide per question to ask**, then **a contest
+question done slowly** that needs several of them, then the checklist. About 11 slides.
+The practice-test deck rules hold: one idea, one small example, one orange Write card (a
+`steps` slide carries its line in the steps and has **three steps at most**, or it will not
+fit), one check whose wrong options are the real mistakes, and every slide fits 1280 × 720.
+
+### The practice set (`stepPractice.js`, docs/step-practice.md)
+
+Ten items, one per question type the deck teaches: **4 Focus** (every step asked, and the
+empty slots drawn beside the problem with `emptySlots()`), **3 Practice** (only the steps
+where the thinking is, no figure), **3 Challenge** (only the answer; a wrong answer opens
+the step its slip points at). Every slip is a real wrong turn with its number worked out
+(the slots added, a repeat allowed, the fussy slot forgotten, the cases multiplied, a pair
+counted twice) and says which step it comes from.
+
+### The test (`test.js`, `figures.js`)
+
+`mini: true` on `amcTest`, which `checkAmcTest` reads:
+
+- **8 to 15 problems** (TP_01: 10) at the contest's pace of 1.6 minutes each (`minutes: 16`),
+  easiest first, five choices in increasing order, the key spread evenly over A to E.
+- **`topics`**: the unit's sub-skills as `{ id, label }`, and each problem's `topic` is one
+  of the ids. The results screen then says which part of the method to go back to
+  ("By skill"), and the Review's chip names it.
+- **No `awards`**: those are a full paper's cutoffs.
+- The task still reports out of 25 (`nativeScore` in `utils/amcTest.js` scales a short
+  test up), so the registry's `nativeMax` is unchanged.
+- Each problem carries `hint`, `idea`, `solution`, and a `trap` naming the mistake behind a
+  wrong choice. A `solutionFigure` (TP_01: the filled slots, in fill order) where it helps.
+
+### The one rule
+
+**Every problem is original, and nothing is worked twice.** The deck, the practice set and
+the test each have their own numbers and contexts; the test's questions are written in the
+contest's style, not copied from a paper. Work every answer twice before trusting the key.
+
+### Checklist
+
+- [ ] `src/data/AMC8/TP_NN/`: `data.js`, `notes.js`, `diagrams.js`, `stepPractice.js`, `test.js`, `figures.js`
+- [ ] `npm run lint`, `npm run audit:svg AMC8`, `npm run validate`
+- [ ] Every slide fits 1280 × 720 (hidden-iframe sweep, `?unit=TP_NN&open=NOTES&slide=N`)
+- [ ] Practice set clicked through: right, a slip, Show me
+- [ ] Test walked: cover, a problem, results (`?paper=mixed`), Review with a figure
+- [ ] Audio generated, then validate again

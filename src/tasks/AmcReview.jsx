@@ -6,7 +6,7 @@ import {
 import useDarkMode from '../hooks/useDarkMode';
 import { Prose, Inline, Figure, Choices } from '../components/amc/AmcParts';
 import {
-  LETTERS, TOPIC_LABEL, problemsOf, isTestBlob, markOf, missedOf, scoreTest, seenOf, reviewScore, extraOf,
+  LETTERS, topicLabel, problemsOf, isTestBlob, markOf, missedOf, scoreTest, seenOf, reviewScore, extraOf,
 } from '../utils/amcTest';
 
 /* ------------------------------------------------------------------ *
@@ -60,7 +60,7 @@ function Callout({ tone, icon: Icon, title, children }) {
   );
 }
 
-function Solution({ problem }) {
+function Solution({ test, problem }) {
   const letter = problem.correct;
   const answer = problem.choices[LETTERS.indexOf(letter)];
   return (
@@ -70,7 +70,7 @@ function Solution({ problem }) {
         <h3 className="text-sm font-black uppercase tracking-[0.18em] text-slate-700 dark:text-slate-200">Solution</h3>
         <span className="flex-1" />
         <span className="rounded-full bg-white dark:bg-slate-900 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-slate-400 ring-1 ring-slate-200 dark:ring-slate-700">
-          {TOPIC_LABEL[problem.topic] || problem.topic}
+          {topicLabel(test, problem.topic)}
         </span>
       </div>
 
@@ -219,7 +219,7 @@ export default function AmcReview({ pool, paper, savedData, onComplete, onProgre
               </p>
 
               <Choices choices={problem.choices} marks={marks} />
-              <Solution problem={problem} />
+              <Solution test={test} problem={problem} />
             </div>
 
             <div className="flex items-center gap-2.5 border-t-2 border-slate-100 dark:border-slate-800 px-5 sm:px-7 py-3.5">

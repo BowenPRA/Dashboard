@@ -7,7 +7,7 @@ import {
 import useDarkMode from '../hooks/useDarkMode';
 import { Prose, Figure, Choices } from '../components/amc/AmcParts';
 import {
-  LETTERS, TOPICS, TOPIC_LABEL, problemsOf, secondsAllowed, isTestBlob, newPaper,
+  LETTERS, topicsOf, nativeScore, problemsOf, secondsAllowed, isTestBlob, newPaper,
   scoreTest, itemsOf, markOf, awardFor, formatClock, extraOf, scoreExtra,
 } from '../utils/amcTest';
 
@@ -299,13 +299,13 @@ function Results({ test, blob, onDone }) {
               </div>
             )}
 
-            <h2 className="mt-7 text-xs font-black uppercase tracking-[0.2em] text-slate-400">By topic</h2>
+            <h2 className="mt-7 text-xs font-black uppercase tracking-[0.2em] text-slate-400">{test.topics ? 'By skill' : 'By topic'}</h2>
             <div className="mt-3 space-y-2.5">
-              {TOPICS.filter((t) => score.byTopic[t]).map((t) => {
+              {topicsOf(test).filter((t) => score.byTopic[t.id]).map(({ id: t, label }) => {
                 const { right, total } = score.byTopic[t];
                 return (
                   <div key={t} className="flex items-center gap-3">
-                    <span className="w-44 flex-shrink-0 text-sm font-black text-slate-700 dark:text-slate-200">{TOPIC_LABEL[t]}</span>
+                    <span className="w-44 flex-shrink-0 text-sm font-black text-slate-700 dark:text-slate-200">{label}</span>
                     <div className="h-3 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                       <div className="h-full rounded-full bg-[#1e3a8a] dark:bg-blue-500" style={{ width: `${(right / total) * 100}%` }} />
                     </div>
@@ -361,7 +361,7 @@ export default function AmcTest({ pool, savedData, onComplete, onProgress, onQui
 
   const secondsLeft = (until = endsAt) => Math.max(0, Math.round((until - Date.now()) / 1000));
   const secondsSince = (from) => Math.max(0, Math.round((Date.now() - from) / 1000));
-  const lockedScore = (paper) => scoreTest(test, paper.picks).right;
+  const lockedScore = (paper) => nativeScore(test, paper.picks);
 
   /** Save the paper as it stands, with the time now on the clock. */
   const checkpoint = (next, until = endsAt, from = extraFrom) => {
@@ -498,7 +498,7 @@ export default function AmcTest({ pool, savedData, onComplete, onProgress, onQui
       // at them.
       if (blob.logged) { onQuit?.(); return; }
       const finished = { ...blob, logged: true };
-      onComplete?.(scoreTest(test, finished.picks).right, finished, { items: itemsOf(test, finished.picks) });
+      onComplete?.(nativeScore(test, finished.picks), finished, { items: itemsOf(test, finished.picks) });
     };
     return <Results test={test} blob={blob} onDone={done} />;
   }

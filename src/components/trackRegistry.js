@@ -152,12 +152,19 @@ export const TRACK_REGISTRY = [
     // the test has been handed in. See docs/amc8-course.md.
     id: 'AMC8',
     title: 'AMC 8 Prep',
-    desc: 'Timed practice tests, reviewed step by step',
+    desc: 'Problem types and timed practice tests',
     icon: Trophy,
     group: 'Problem Solving',
     // English only: the contest words ("distinct", "ones digit", "least
     // possible") are what the vocabulary task teaches.
     bilingual: false,
+    // Two kinds of unit. A problem-type unit (TP_) teaches one kind of
+    // contest question and ends in a short test on it; a practice test (PT_)
+    // is a whole paper. Types first: they are what the papers are made of.
+    sections: [
+      { prefix: 'TP_', label: 'Problem Types', title: 'Problem Types' },
+      { prefix: 'PT_', label: 'Practice Tests', title: 'Practice Tests' },
+    ],
     // A unit is FINISHED at 60 XP here, not the usual 80 (isUnitComplete).
     // The test is scored like the contest, where 15/25 is a strong paper: at
     // 80, the toolkit and the review done plus 15/25 (76 XP) read "not done".

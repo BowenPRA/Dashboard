@@ -42,6 +42,20 @@ export const TOPIC_LABEL = {
   Counting: 'Counting & Probability',
 };
 export const DEFAULT_MINUTES = 40;
+/** The registry's `nativeMax` for AMC_TEST: a full paper's 25 points. */
+export const NATIVE_MAX = 25;
+
+/**
+ * The headings of the results screen's breakdown, as `{ id, label }`. A full
+ * paper uses the contest's four topics. A problem-type unit's short test
+ * (`mini: true`) is all one topic, so it names its own sub-skills in
+ * `test.topics` and each problem's `topic` is one of those ids.
+ */
+export const topicsOf = (test) =>
+  (Array.isArray(test?.topics) && test.topics.length
+    ? test.topics
+    : TOPICS.map((id) => ({ id, label: TOPIC_LABEL[id] })));
+export const topicLabel = (test, id) => topicsOf(test).find((t) => t.id === id)?.label || id;
 
 export const problemsOf = (test) => (Array.isArray(test?.problems) ? test.problems : []);
 export const secondsAllowed = (test) => Math.round((Number(test?.minutes) || DEFAULT_MINUTES) * 60);
@@ -75,6 +89,17 @@ export function scoreTest(test, picks = {}) {
     if (mark === 'right') t.right += 1;
   }
   return out;
+}
+
+/**
+ * The score the task reports, out of NATIVE_MAX. A full paper's is its number
+ * of correct answers; a short test's is scaled up to the same 25, so 7 of 10
+ * earns the same share of the task's XP as 17.5 of 25 would.
+ */
+export function nativeScore(test, picks = {}) {
+  const { right, total } = scoreTest(test, picks);
+  if (!total || total === NATIVE_MAX) return right;
+  return Math.round((right / total) * NATIVE_MAX);
 }
 
 /** The answers given after the time ran out, from the test's blob. */
@@ -156,7 +181,17 @@ export function checkAmcTest(test) {
   }
 
   const problems = problemsOf(test);
-  if (problems.length !== 25) out.push(`amcTest has ${problems.length} problems — an AMC 8 paper has 25`);
+  // A problem-type unit sets `mini: true`: a short test on one kind of
+  // question, with its own sub-skills for the breakdown.
+  if (test.mini === true) {
+    if (problems.length < 8 || problems.length > 15) out.push(`amcTest (mini) has ${problems.length} problems — a short test has 8 to 15`);
+    if (!Array.isArray(test.topics) || test.topics.length < 2) out.push('amcTest (mini) needs `topics`: two or more { id, label } sub-skills');
+    if ((test.awards || []).length) out.push('amcTest (mini) carries awards — those are the cutoffs of a full paper');
+  } else if (problems.length !== 25) out.push(`amcTest has ${problems.length} problems — an AMC 8 paper has 25`);
+  for (const t of test.topics || []) if (!t?.id || !t?.label) out.push('amcTest: every entry of `topics` needs an id and a label');
+  const topicIds = topicsOf(test).map((t) => t.id);
+  const used = new Set(problems.map((p) => p.topic));
+  for (const id of test.topics ? topicIds : []) if (!used.has(id)) out.push(`amcTest: no problem has the topic "${id}"`);
 
   const seen = new Set();
   const tally = {};
@@ -165,7 +200,7 @@ export function checkAmcTest(test) {
     if (!p.id) out.push(`${at} has no id`);
     else if (seen.has(p.id)) out.push(`${at}: duplicate id "${p.id}"`);
     seen.add(p.id);
-    if (!TOPICS.includes(p.topic)) out.push(`${at}: topic "${p.topic}" is not one of ${TOPICS.join('/')}`);
+    if (!topicIds.includes(p.topic)) out.push(`${at}: topic "${p.topic}" is not one of ${topicIds.join('/')}`);
     if (!p.text) out.push(`${at} has no text`);
     if (!Array.isArray(p.choices) || p.choices.length !== 5) out.push(`${at} has ${p.choices?.length ?? 0} choices — it needs 5, (A) to (E)`);
     else {
@@ -189,7 +224,7 @@ export function checkAmcTest(test) {
 
   // A key that leans on one letter is guessable, and a real paper never does.
   const top = Object.entries(tally).sort((a, b) => b[1] - a[1])[0];
-  if (problems.length >= 20 && top && top[1] / problems.length > 0.4) {
+  if (problems.length >= 8 && top && top[1] / problems.length > 0.4) {
     out.push(`amcTest: ${top[1]} of ${problems.length} answers are (${top[0]})`);
   }
   return out;
