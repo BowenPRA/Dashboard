@@ -14,6 +14,7 @@ AMC 8). When in doubt, copy its structure.
 |---|---|---|---|
 | `PT_01` | 2024 AMC 8 | 14 slides (plan ×3, 9 tools) | also holds hidden vocab / warm-up / Factor Blitz |
 | `PT_02` | 2025 AMC 8 | 12 slides (plan ×1, 9 tools) | only the three live tasks' data; problem 13's choices are histograms (see §4) |
+| `PT_03` | 2026 AMC 8 | 12 slides (plan ×1, 9 tools) | source: the Drive folder "AMC8-Đề tham khảo" (papers 2013–2026); awards 21 / 24 from secondary sources |
 | `TP_01` | *How Many Ways?* (counting with slots) | 11 slides, one method | **the exemplar for problem-type units** (§6): 10 practice items, a 10-question test |
 
 ---
