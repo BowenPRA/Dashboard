@@ -112,6 +112,8 @@ import { checkEnergyChangeConfig } from '../src/utils/energyChangeCheck.js';
 
 // @@SCI_U03_7_IMPORT@@
 import { checkEnergySplitConfig } from '../src/utils/energySplitCheck.js';
+// ACELLUS ALG_QUAD: Factor It (p94), Formula (p95), Quad Solver (p96).
+import { checkFactorQuad, checkQuadFormula, checkQuadSolver } from '../src/utils/quadCheck.js';
 
 
 const ROOT = process.cwd();
@@ -393,6 +395,11 @@ for (const trackId of TRACK_IDS) {
         if (p.startsWith('warning:')) warn(`${label}: stepPractice ${p.slice(9)}`); else err(`${label}: stepPractice ${p}`);
       }
     }
+
+    // Factor It / Formula / Quad Solver (ACELLUS ALG_QUAD): every item's own answers replayed through its marking.
+    if (unit.factorQuad !== undefined) for (const p of checkFactorQuad(unit.factorQuad, { bilingual })) err(`${label}: factorQuad ${p}`);
+    if (unit.quadFormula !== undefined) for (const p of checkQuadFormula(unit.quadFormula, { bilingual })) err(`${label}: quadFormula ${p}`);
+    if (unit.quadSolver !== undefined) for (const p of checkQuadSolver(unit.quadSolver, { bilingual })) err(`${label}: quadSolver ${p}`);
 
     // @@U05_3_CHECK@@
     //    Zero on the Line (5.3): every reading, mark and named slip derived and proved.

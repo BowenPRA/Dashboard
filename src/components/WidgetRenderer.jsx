@@ -7,12 +7,14 @@ const ParabolaLab = lazy(() => import('../components/math/ParabolaLab'));
 const VectorLab = lazy(() => import('../components/math/VectorLab'));
 // The AOPS lines units: one line, a live slope and a live intercept.
 const SlopeLab = lazy(() => import('../components/math/SlopeLab'));
+// ACELLUS ALG_QUAD: the factor-pair table Factor It uses — tap a pair, see its sum.
+const FactorPairs = lazy(() => import('../components/math/FactorPairs'));
 // The Technology track's simulator, in demo mode: the SAME engine and skin the
 // Try It task uses, driving itself through an authored script while the deck
 // explains it. Build once, use twice (docs/digital-skills-course.md §5.1).
 const AppSimDemo = lazy(() => import('../tasks/appsim/AppSimDemo'));
 
-const KNOWN = ['MathGraph', 'ParabolaLab', 'VectorLab', 'AppSim', 'SlopeLab'];
+const KNOWN = ['MathGraph', 'ParabolaLab', 'VectorLab', 'AppSim', 'SlopeLab', 'FactorPairs'];
 
 export default function WidgetRenderer({ config, lang = 'en' }) {
   if (!config) return null;
@@ -43,6 +45,7 @@ export default function WidgetRenderer({ config, lang = 'en' }) {
       {type === 'ParabolaLab' && <ParabolaLab {...params} lang={lang} />}
       {type === 'VectorLab' && <VectorLab {...params} lang={lang} />}
       {type === 'SlopeLab' && <SlopeLab {...params} lang={lang} />}
+      {type === 'FactorPairs' && <div className="w-full h-full overflow-auto p-3 sm:p-4"><FactorPairs {...params} lang={lang} /></div>}
       {type === 'AppSim' && <AppSimDemo {...params} lang={lang} />}
 
       {/* Fallback for unrecognized dynamically requested widgets */}

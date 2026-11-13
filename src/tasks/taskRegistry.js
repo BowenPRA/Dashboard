@@ -47,6 +47,8 @@ import { PencilRuler as ZeroLineIcon } from 'lucide-react';
 import { Clapperboard as StoryboardIcon } from 'lucide-react';
 // STEP_PRACTICE (p93) — the general step practice, src/stepPractice
 import { Footprints as StepPracticeIcon } from 'lucide-react';
+// ACELLUS ALG_QUAD — Factor It (p94), Formula (p95), Quad Solver (p96)
+import { Puzzle as FactorQuadIcon, Sigma as QuadFormulaIcon, Calculator as QuadSolverIcon } from 'lucide-react';
 
 // Maths Unit 6 (Collecting data) and Science 3.3–3.7, one block per unit:
 // @@U06_1_IMPORT@@
@@ -2000,11 +2002,74 @@ export const TASKS = [
     props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
       ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
   },
-  // p94 is the next free key.
+
+  // ── ACELLUS ALG_QUAD: factoring and the quadratic formula (2026-11-13) ──
+  {
+    id: 'FACTOR_QUAD',
+    nativeMax: 10,
+    dbKey: 'p94',
+    // Factor a quadratic and solve it one written line at a time: standard
+    // form, the common factor, multiply-to / add-to, the factor-pair table
+    // (tap a pair, see its sum), split and group for a ≠ 1, the brackets
+    // (marked by multiplying out), and the zero product property. Items are
+    // just `{ id, level, eq }`; utils/quadFactor.js derives the rest and
+    // utils/quadCheck.js replays every item's own answers in the validator.
+    label: 'Factor It',
+    icon: FactorQuadIcon,
+    color: { bg: 'bg-[#7c3aed]', border: 'border-[#5b21b6]', text: 'text-white' },
+    defaultMaxXP: 25,
+    phase: 'practice',
+    component: lazy(() => import('./FactorQuad.jsx')),
+    hasContent: (u) => !!u.factorQuad?.items?.length,
+    buildPool: (u) => u.factorQuad,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'QUAD_FORMULA',
+    nativeMax: 10,
+    dbKey: 'p95',
+    // The quadratic formula in the pieces students get wrong when they do it
+    // in one calculator line: a, b, c with signs, b² − 4ac, how many solutions
+    // the discriminant says, √ simplified, −b and 2a, and the answers in
+    // lowest terms. utils/quadFormula.js derives every stage and named slip.
+    label: 'Formula',
+    icon: QuadFormulaIcon,
+    color: { bg: 'bg-[#db2777]', border: 'border-[#9d174d]', text: 'text-white' },
+    defaultMaxXP: 20,
+    phase: 'practice',
+    component: lazy(() => import('./QuadFormula.jsx')),
+    hasContent: (u) => !!u.quadFormula?.items?.length,
+    buildPool: (u) => u.quadFormula,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  {
+    id: 'QUAD_SOLVER',
+    nativeMax: 10,
+    dbKey: 'p96',
+    // Type any quadratic and read the whole worked solution (utils/quadSolve.js):
+    // standard form, the factoring method that fits or why it does not factor,
+    // the zero product property, the formula line by line, and the graph. A
+    // tool first (homework can be checked here any time); the XP is for the
+    // unit's challenges — find one with no real solutions, build one with
+    // given zeros — which only understanding meets on purpose.
+    label: 'Quad Solver',
+    icon: QuadSolverIcon,
+    color: { bg: 'bg-[#2563eb]', border: 'border-[#1d4ed8]', text: 'text-white' },
+    defaultMaxXP: 10,
+    phase: 'practice',
+    component: lazy(() => import('./QuadSolver.jsx')),
+    hasContent: (u) => !!u.quadSolver,
+    buildPool: (u) => u.quadSolver,
+    props: ({ pool, track, savedData, onComplete, onProgress, onQuit }) =>
+      ({ pool, savedData, onComplete, onProgress, onQuit, bilingual: bilingualOf(track) }),
+  },
+  // p97 is the next free key.
 
   // ── Year 7 Maths Unit 6, collecting data (U06_1–U06_2) and Science 3.3–3.7 ──
   // p85 (6.1) · p86 (6.2) · p87 (Sci 3.3) · p88 (Sci 3.4) · p89 (Sci 3.5) · p90 (Sci 3.6) ·
-  // p91 (Sci 3.7), if a unit needs an engine. p94 is the next free key (p92 ANGLE_CHASE, p93 STEP_PRACTICE).
+  // p91 (Sci 3.7), if a unit needs an engine. p97 is the next free key (p92 ANGLE_CHASE, p93 STEP_PRACTICE, p94–p96 ACELLUS quadratics).
   // @@U06_1_TASKS@@
 
   // @@U06_2_TASKS@@

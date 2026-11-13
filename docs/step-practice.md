@@ -8,7 +8,7 @@ two engines Bowen likes: Find Every Angle (`ANGLE_CHASE`, AngleKit) and the
 Unit 4 step screen (StepKit).
 
 - Task: `STEP_PRACTICE`, dbKey **p93**, label "Step by Step", 40 XP by default,
-  phase `practice`, unit key `stepPractice`. p94 is the next free key.
+  phase `practice`, unit key `stepPractice`. p97 is the next free key (p94–p96: the ACELLUS quadratics tasks).
 - Try it: `npx vite --port 5191` then
   `http://localhost:5191/Dashboard/preview-steps.html?set=y5maths` (see the
   harness header in `src/preview-steps.jsx` for `level`, `item`, `lang`, `big`,
