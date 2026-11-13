@@ -1,0 +1,1 @@
+function e(e,t=!1){let n=[];for(let t=0;t<e;t+=1)n.push(`q${t}`),t+1<e&&n.push(`k${t+1}`);return t&&n.push(`r`),n}var t=(e,t)=>`${e}-${t}`;function n(e,n){let r=()=>{let r=document.getElementById(t(e,n));return r&&!r.readOnly&&!r.disabled?(r.focus(),r.select?.(),!0):!1};r()||requestAnimationFrame(()=>{r()||document.getElementById(t(e,n))?.focus()})}export{e as n,n as r,t};
