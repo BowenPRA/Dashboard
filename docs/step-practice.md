@@ -95,6 +95,9 @@ stepPractice: {
 **Markup** in any text: `{{…}}` given (teal), `[[…]]` what you are finding
 (orange, green when the item is done), `<<…>>` found (green), `**bold**`,
 `$…$` KaTeX. Earlier steps' answers written into a later step use `<<…>>`.
+The marks do not nest: a `{{given}}` inside `[[…]]` shows its braces on screen,
+so put the givens in a sentence of their own before the question
+(`The letters of {{COFFEE}} are arranged … [[How many arrangements are possible?]]`).
 
 **Inputs**
 

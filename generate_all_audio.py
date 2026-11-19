@@ -166,6 +166,12 @@ def speechify(text):
     t = re.sub(r'\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}', r' \1 over \2 ', t)
     t = re.sub(r'\\mathbf\s*\{([^{}]*)\}', r'\1', t)
     t = t.replace('\\times', ' times ').replace('\\div', ' divided by ')
+    # Factorials (AMC8 TP_02, Arrangements). `10!` is "10 factorial" and
+    # `(n - k)!` is "(n - k) factorial"; left alone, the voice reads the mark
+    # as an exclamation and says just "10". A digit, or a lone n or k, must sit
+    # right before the mark, so a word's exclamation ("Well done!") is untouched.
+    t = re.sub(r'(?<![A-Za-z\\])(\d+|[nk])!', r'\1 factorial', t)
+    t = re.sub(r'(\([^()]*[-+−][^()]*\))\s*!', r'\1 factorial', t)
     t = t.replace('\\%', ' percent ').replace('%', ' percent ')
     t = t.replace('\\$', ' dollars ')
     # Named commands that carry meaning in the maths decks. These must be expanded
