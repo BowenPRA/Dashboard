@@ -59,7 +59,7 @@ export const notes = [
     icon: 'Crosshair',
     eyebrow: 'Arrangements · Spot it',
     title: 'Spot the Question',
-    content: 'Many AMC 8 papers ask you to **arrange** things: people in a line, books on a shelf, the letters of a word. Here the **order matters**: A then B is not the same as B then A.\n\nLook for: _arrange_, _in a row_, _line up_, _distinct arrangements of the letters_, _in how many ways can they sit_.',
+    content: 'Many AMC 8 papers ask you to **arrange** things: people in a line, books on a shelf, the letters of a word. Here the **order matters**: A then B is not the same as B then A.\n\nLook for the words *arrange*, *in a row*, *line up*, *distinct arrangements of the letters* and *in how many ways can they sit*.',
     notes: [
       { tone: 'write', text: '**Arrange** = put in order. Draw one slot for each **place** in the row.' },
     ],
@@ -84,7 +84,7 @@ export const notes = [
     icon: 'Layers',
     eyebrow: 'Arrangements · Recap',
     title: 'The Slots Method',
-    content: 'From **How Many Ways?**: one slot per place, its choices inside, multiply.\n\nA license plate of 3 letters then 2 digits: $26 \\times 26 \\times 26 \\times 10 \\times 10 = 1{,}757{,}600$ plates. If nothing may repeat: $26 \\times 25 \\times 24 \\times 10 \\times 9 = 1{,}404{,}000$.',
+    content: 'From Problem type 1: one slot per place, its choices inside, then **multiply**.\n\nA license plate of 3 letters then 2 digits: $26 \\times 26 \\times 26 \\times 10 \\times 10 = 1{,}757{,}600$ plates. If nothing may repeat: $26 \\times 25 \\times 24 \\times 10 \\times 9 = 1{,}404{,}000$.',
     notes: [
       { tone: 'write', text: '**Slots:** one blank per place, fill in the choices, multiply. No repeats: one fewer each time.' },
     ],
@@ -107,7 +107,7 @@ export const notes = [
     layout: 'split',
     accent: COUNTING,
     icon: 'BookOpen',
-    eyebrow: 'Arrangements · Everything',
+    eyebrow: 'Arrangements · All of them',
     title: 'Arrange Everything',
     ratio: 46,
     inlineSvg: DIAGRAMS.BOOKS,
@@ -134,7 +134,7 @@ export const notes = [
     layout: 'callout',
     accent: COUNTING,
     icon: 'ArrowDownUp',
-    eyebrow: 'Arrangements · Some',
+    eyebrow: 'Arrangements · Some of them',
     title: 'Arrange Some',
     content: 'Only **some** of the things go in the row. Play 3 of your 10 songs, in order: $10 \\times 9 \\times 8 = 720$. Draw 3 slots, count down, and **stop**.\n\nWith factorials it is $\\dfrac{10!}{7!}$: the 7 songs left out cancel.',
     notes: [
@@ -159,13 +159,13 @@ export const notes = [
     layout: 'split',
     accent: COUNTING,
     icon: 'Copy',
-    eyebrow: 'Arrangements · Ask 1',
+    eyebrow: 'Arrangements · Repeats',
     title: 'Identical Letters',
     ratio: 46,
     inlineSvg: DIAGRAMS.COPIES,
     content: "Label the two O's of ZOO: $3! = 6$ orders. Take the labels off and each word appears **twice**: $6 \\div 2 = 3$ words.\n\nMISSISSIPPI (four I's, four S's, two P's): $11! \\div (4! \\times 4! \\times 2!) = 34{,}650$.",
     notes: [
-      { tone: 'write', text: '**Identical letters:** count as if all different, then **÷ the orders of each repeated letter**.' },
+      { tone: 'write', text: '**Identical letters:** count as if all different, then **divide by $k!$** for each letter used $k$ times.' },
     ],
     check: {
       id: 'chk_same',
@@ -177,7 +177,7 @@ export const notes = [
         { val: 'D', text: '$40{,}320$' },
       ],
       correct: 'A',
-      expEn: "TOMORROW has 8 letters: three O's and two R's. $\\dfrac{8!}{3! \\times 2!} = \\dfrac{40{,}320}{12} = 3360$. B divides by $3 + 2 = 5$, the number of repeated letters, not by their orders. C divides by $3!$ only and forgets the R's. D forgets to divide.",
+      expEn: "TOMORROW has 8 letters: three O's and two R's. $\\dfrac{8!}{3! \\times 2!} = \\dfrac{40{,}320}{12} = 3360$. B divides by $3 + 2 = 5$ instead of $3! \\times 2! = 12$. C divides by $3!$ only and forgets the R's. D forgets to divide.",
     },
   },
 
@@ -186,13 +186,13 @@ export const notes = [
     layout: 'steps',
     accent: COUNTING,
     icon: 'Type',
-    eyebrow: 'Arrangements · Count the repeats',
+    eyebrow: 'Arrangements · Worked example',
     title: 'MATHCOUNTS',
     content: 'How many distinct arrangements are there of the letters of **MATHCOUNTS**?',
     steps: [
       { text: '**List the letters.** There are 10: M, A, T, H, C, O, U, N, T, S. Only the T comes twice.' },
       { text: '**Arrange them as if all different.** $10! = 3{,}628{,}800$.' },
-      { text: '**Divide by the orders of each repeat.** $\\dfrac{10!}{2!} = 1{,}814{,}400$.' },
+      { text: "**Divide by $2!$ for the two T's.** $\\dfrac{10!}{2!} = 1{,}814{,}400$." },
     ],
     check: {
       id: 'chk_mathcounts',
@@ -213,13 +213,13 @@ export const notes = [
     layout: 'split',
     accent: COUNTING,
     icon: 'Link',
-    eyebrow: 'Arrangements · Ask 2',
+    eyebrow: 'Arrangements · Together',
     title: 'Must Be Together',
     ratio: 46,
     inlineSvg: DIAGRAMS.GLUE,
     content: 'MATHCOUNTS with **A, O and U together**: glue them into one block. That leaves 8 units, T twice.\n\nThe letters in the block can still swap: $3!$ orders. In all, $\\tfrac{8!}{2!} \\times 3! = 120{,}960$.',
     notes: [
-      { tone: 'write', text: '**Must be together:** glue them into **one block**. Arrange the units, then **× the orders inside**.' },
+      { tone: 'write', text: '**Must be together:** glue them into **one block**. Arrange the units, then **$\\times$ the orders inside**.' },
     ],
     check: {
       id: 'chk_glue',
@@ -240,9 +240,9 @@ export const notes = [
     layout: 'callout',
     accent: COUNTING,
     icon: 'Unlink',
-    eyebrow: 'Arrangements · Ask 3',
+    eyebrow: 'Arrangements · Apart',
     title: 'Must Be Apart',
-    content: "\"Not next to each other\" hides many cases, so count the **opposite**.\n\nMATHCOUNTS with the T's **apart**: all $1{,}814{,}400$ less the ones with the T's together. Glue TT: 9 units, $9! = 362{,}880$ (two T's have 1 order). $1{,}814{,}400 - 362{,}880 = 1{,}451{,}520$.",
+    content: "\"Not next to each other\" hides many cases, so count the **opposite**.\n\nMATHCOUNTS with the T's **apart**: all $1{,}814{,}400$ less the ones with the T's together. Glue TT: 9 units, $9! = 362{,}880$ (the two T's are alike, so the block has 1 order). $1{,}814{,}400 - 362{,}880 = 1{,}451{,}520$.",
     notes: [
       { tone: 'write', text: '**Must be apart:** all $-$ together.' },
     ],
@@ -265,9 +265,9 @@ export const notes = [
     layout: 'callout',
     accent: COUNTING,
     icon: 'MapPin',
-    eyebrow: 'Arrangements · Ask 4',
+    eyebrow: 'Arrangements · Fixed',
     title: 'Fixed Spots, Fixed Order',
-    content: '**A fixed spot:** fill it first. MATHCOUNTS starting with M: 9 letters left, T twice, $\\tfrac{9!}{2!} = 181{,}440$.\n\n**A fixed order:** A, O, U in that order, not always together. Only 1 of their $3!$ orders counts, so treat them like a repeated letter: $10! \\div (2! \\times 3!) = 302{,}400$.',
+    content: '**A fixed spot:** fill it first. MATHCOUNTS starting with M: 9 letters left, T twice, $\\tfrac{9!}{2!} = 181{,}440$.\n\n**A fixed order:** A, O, U in that order, anywhere in the word. Only 1 of their $3!$ orders counts, so treat them like a repeated letter: $10! \\div (2! \\times 3!) = 302{,}400$.',
     notes: [
       { tone: 'write', text: '**Fixed spot:** fill it first. **Fixed order** for k things: $\\div k!$.' },
     ],
@@ -295,7 +295,7 @@ export const notes = [
     content: "How many arrangements of **BALLOON** have the L's **together** and the O's **apart**?",
     steps: [
       { text: "**Glue the L's.** B, A, LL, O, O, N: 6 units, O twice. $\\tfrac{6!}{2!} = 360$ (the L's are alike: 1 order inside)." },
-      { text: "**Count the O's together too.** Glue them as well: B, A, LL, OO, N. $5! = 120$." },
+      { text: "**Now glue the O's too.** B, A, LL, OO, N: 5 units, $5! = 120$ with the O's together." },
       { text: '**Apart = all − together.** $360 - 120 = 240$.' },
     ],
     check: {
@@ -325,10 +325,10 @@ export const notes = [
     items: [
       { text: 'All different, all in a row: n!' },
       { text: 'Only k of them: k slots, counting down.' },
-      { text: 'Identical letters: ÷ the orders of each repeat.' },
-      { text: 'Must be together: glue, arrange, × the orders inside.' },
+      { text: 'Identical letters: $\\div k!$ for a letter used k times.' },
+      { text: 'Must be together: glue, arrange, $\\times$ the orders inside.' },
       { text: 'Must be apart: all − together.' },
-      { text: 'Fixed spot: fill it first. Fixed order: ÷ k!' },
+      { text: 'Fixed spot: fill it first. Fixed order: $\\div k!$' },
     ],
   },
 ];

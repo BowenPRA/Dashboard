@@ -57,7 +57,7 @@ export const notes = [
     icon: 'Crosshair',
     eyebrow: 'Counting · Spot it',
     title: 'Spot the Question',
-    content: 'About **one question in four** on an AMC 8 paper is a counting question. Most ask the same thing: in **how many ways** can something be chosen, arranged or built?\n\nLook for: _how many different_, _in how many ways_, codes, outfits, orders, 3-digit numbers.',
+    content: 'About **one question in four** on an AMC 8 paper is a counting question. Most ask the same thing: in **how many ways** can something be chosen, arranged or built?\n\nLook for the words *how many different* and *in how many ways*, and for codes, outfits, orders and 3-digit numbers.',
     notes: [
       { tone: 'write', text: '**"How many ways?"** Draw **slots**: one blank for each choice you make.' },
     ],
@@ -84,7 +84,7 @@ export const notes = [
     title: 'Choice After Choice',
     ratio: 46,
     inlineSvg: DIAGRAMS.TREE,
-    content: 'Pick a shirt, then pants. Each of the **3** shirts goes with each of the **2** pants: $3 \\times 2 = 6$ outfits.\n\nYou do not need the tree, only the number of branches at each step.',
+    content: 'Pick a shirt, then a pair of pants. Each of the **3** shirts goes with each of the **2** pants: $3 \\times 2 = 6$ outfits.\n\nYou do not need the tree, only the number of branches at each step.',
     notes: [
       { tone: 'write', text: '**Slots:** write the number of choices in each blank, then **multiply**.' },
     ],
@@ -134,7 +134,7 @@ export const notes = [
     layout: 'callout',
     accent: COUNTING,
     icon: 'Repeat',
-    eyebrow: 'Counting · Ask 1',
+    eyebrow: 'Counting · Repeats',
     title: 'Can It Repeat?',
     content: '**Yes** (a lock can show 7-7-7): every slot keeps all its choices. Three dials of 5 give $5 \\times 5 \\times 5 = 125$.\n\n**No** (a runner cannot win two medals): each slot has one fewer. 5 runners and 3 medals give $5 \\times 4 \\times 3 = 60$.',
     notes: [
@@ -159,7 +159,7 @@ export const notes = [
     layout: 'split',
     accent: COUNTING,
     icon: 'Star',
-    eyebrow: 'Counting · Ask 2',
+    eyebrow: 'Counting · Rules',
     title: 'Fussy Slot First',
     ratio: 46,
     inlineSvg: DIAGRAMS.FUSSY_FIRST,
@@ -185,8 +185,8 @@ export const notes = [
   {
     layout: 'steps',
     accent: COUNTING,
-    icon: 'Divide',
-    eyebrow: 'Counting · Ask 3',
+    icon: 'Split',
+    eyebrow: 'Counting · Cases',
     title: 'Is One Row Enough?',
     content: 'How many whole numbers from **10 to 999** have only odd digits? Some have 2 digits and some have 3, so one row of slots is not enough.',
     steps: [
@@ -213,7 +213,7 @@ export const notes = [
     layout: 'callout',
     accent: COUNTING,
     icon: 'RotateCcw',
-    eyebrow: 'Counting · A shortcut',
+    eyebrow: 'Counting · At least one',
     title: 'Count the Opposite',
     content: '"**At least one**" hides many cases: exactly one, exactly two, and so on. Count the opposite instead.\n\nHow many 2-letter codes from A, B, C, D, E have at least one A? All the codes: $5 \\times 5 = 25$. Codes with **no** A: $4 \\times 4 = 16$. So $25 - 16 = 9$.',
     notes: [
@@ -238,11 +238,11 @@ export const notes = [
     layout: 'split',
     accent: COUNTING,
     icon: 'Link',
-    eyebrow: 'Counting · Ask 4',
+    eyebrow: 'Counting · Order',
     title: 'Does Order Matter?',
     ratio: 46,
     inlineSvg: DIAGRAMS.PAIRS,
-    content: 'Four friends all shake hands. The slots say $4 \\times 3 = 12$, but A with B and B with A are **one** handshake.\n\nEach was counted twice, so divide: $12 \\div 2 = 6$.',
+    content: 'Four friends all shake hands once. The slots say $4 \\times 3 = 12$, but A with B and B with A are **one** handshake.\n\nEach was counted twice, so divide: $12 \\div 2 = 6$.',
     notes: [
       { tone: 'write', text: '**Order does not matter?** Count with slots, then **divide** by the orders: 2 for a pair, 6 for three.' },
     ],
@@ -256,7 +256,7 @@ export const notes = [
         { val: 'D', text: '$15$' },
       ],
       correct: 'D',
-      expEn: 'Slots: $6 \\times 5 = 30$. But team 1 against team 2 is the same game as team 2 against team 1, so each game was counted twice: $30 \\div 2 = 15$. A forgets to divide. B lets a team play itself. C is $6 \\times 2$.',
+      expEn: 'Slots: $6 \\times 5 = 30$. But team 1 against team 2 is the same game as team 2 against team 1, so each game was counted twice: $30 \\div 2 = 15$. A forgets to divide. B lets a team play itself. C multiplies by 2 where it should divide.',
     },
   },
 
@@ -267,7 +267,7 @@ export const notes = [
     icon: 'Target',
     eyebrow: 'Counting · Put it together',
     title: 'A Contest Question, Slowly',
-    content: 'How many **even** 3-digit numbers have **three different digits**? The hundreds digit cannot be 0 or repeat the last digit, so take the last digit in **cases**.',
+    content: 'How many **even** 3-digit numbers have **three different digits**? The hundreds digit cannot be 0 or the last digit, and ending in 0 changes its choices: two **cases**.',
     steps: [
       { text: '**Ends in 0:** hundreds 9, tens 8. $9 \\times 8 = 72$.' },
       { text: '**Ends in 2, 4, 6 or 8:** 4 ways; hundreds 8; tens 8. $4 \\times 8 \\times 8 = 256$.' },
@@ -279,11 +279,11 @@ export const notes = [
       options: [
         { val: 'A', text: '$360$' },
         { val: 'B', text: '$320$' },
-        { val: 'C', text: '$405$' },
+        { val: 'C', text: '$450$' },
         { val: 'D', text: '$328$' },
       ],
       correct: 'B',
-      expEn: 'Ones digit first: 5 choices. The hundreds digit cannot be 0 or the ones digit: 8 choices. The tens digit can be anything except the two used: 8 choices. $5 \\times 8 \\times 8 = 320$. No cases this time, because an odd number never ends in 0. A forgets that the hundreds digit cannot be 0. C lets digits repeat. D is the count of the even ones.',
+      expEn: 'Ones digit first: 5 choices. The hundreds digit cannot be 0 or the ones digit: 8 choices. The tens digit can be anything except the two used: 8 choices. $5 \\times 8 \\times 8 = 320$. No cases this time, because an odd number never ends in 0. A forgets that the hundreds digit cannot be 0. C lets digits repeat: $9 \\times 10 \\times 5$. D is the count of the even ones.',
     },
   },
 
